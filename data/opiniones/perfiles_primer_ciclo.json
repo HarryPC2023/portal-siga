@@ -1,0 +1,356 @@
+{
+  "ciclo": 1,
+  "notas_extraccion": [
+    "Erwin Salas (Intro. Sistemas): es su primera vez dictando este curso. El PPT solo trae un párrafo de contexto, sin secciones de Para aprobar/Ventajas/Desventajas. Los puntajes de exigencia/carga_trabajo/ritmo/claridad son una estimación con menos respaldo que el resto — conviene revisarlos apenas haya la primera tanda de opiniones reales.",
+    "Javier Echeandía (Geometría Analítica): también primera vez en este curso puntual, aunque el PPT sí trae un párrafo más completo con estilo de enseñanza y consejos.",
+    "Riquelmer Vasquez, Víctor Moncada y Rildo Campana aparecen en dos cursos distintos — son perfiles independientes (profesor_curso distinto), no duplicados."
+  ],
+  "cursos": [
+    { "nombre": "Cálculo Diferencial", "carrera": null },
+    { "nombre": "Geometría Analítica", "carrera": null },
+    { "nombre": "Química I", "carrera": null },
+    { "nombre": "Redacción", "carrera": null },
+    { "nombre": "Introducción a la Computación", "carrera": null },
+    { "nombre": "Ética y Filosofía Política", "carrera": null },
+    { "nombre": "Dibujo en Ingeniería", "carrera": null },
+    { "nombre": "Desarrollo Personal", "carrera": null },
+    { "nombre": "Intro. Sistemas", "carrera": "sistemas" },
+    { "nombre": "Intro. Industrial", "carrera": "industrial" },
+    { "nombre": "Intro. Software", "carrera": "software" }
+  ],
+  "perfiles": [
+    {
+      "curso": "Cálculo Diferencial",
+      "profesor": "Ricardo Chung Ching",
+      "alias": "Chung Bot",
+      "resumen": "Va lento, se desvía del tema y exige tu procedimiento exacto.",
+      "que_esperar": "Clases lentas y con frecuentes desvíos del tema (a veces habla de política). Toma asistencia siempre y exige que sigas su método de resolución al pie de la letra: aunque tu respuesta esté bien, te puede quitar puntos si no lo hiciste a su manera.",
+      "exigencia": 4, "carga_trabajo": 3, "ritmo": 2, "claridad": 2,
+      "recomendaciones": "Haz todas sus tareas y solucionarios, y sigue su método exacto de resolución aunque tu respuesta ya esté correcta."
+    },
+    {
+      "curso": "Cálculo Diferencial",
+      "profesor": "Osmar Bermeo",
+      "resumen": "Explica claro, avanza rápido y corrige planchas grupales en clase.",
+      "que_esperar": "Empieza con teoría por PPT y sigue con ejercicios prácticos que resuelve en pizarra (algo desordenada). Avanza rápido, termina el sílabo un mes antes, y deja planchas grupales en Univirtual que corrige en la siguiente clase.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 4, "claridad": 4,
+      "recomendaciones": "Siéntate adelante (habla bajo) y resuelve las planchas grupales antes de que las corrija en clase."
+    },
+    {
+      "curso": "Cálculo Diferencial",
+      "profesor": "Riquelmer Vasquez",
+      "resumen": "Llega muy tarde, avanza poco, pero aprueba fácil con 'rikipoints'.",
+      "que_esperar": "Llega tarde y avanza lento (a veces solo un ejercicio por semana). El curso depende de que el salón avance en conjunto 'el Rikilibro': si tu grupo no colabora, calificará estricto y buscará mandarte a susti.",
+      "exigencia": 3, "carga_trabajo": 2, "ritmo": 1, "claridad": 2,
+      "recomendaciones": "Elige un buen delegado para avanzar el libro y asiste a las asesorías de Núcleo: ahí aprenderás lo que en clase no."
+    },
+    {
+      "curso": "Cálculo Diferencial",
+      "profesor": "Jesus Cernadez",
+      "resumen": "Profe chévere, considera el procedimiento y no exige asistencia.",
+      "que_esperar": "Ambiente relajado: escribe en pizarra o usa diapositivas, valora la participación en práctica y considera el procedimiento al calificar. No es tan exigente con la asistencia, pero llega tarde con frecuencia.",
+      "exigencia": 2, "carga_trabajo": 2, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Entra a sus asesorías y pide ayuda antes de PC o examen: de ahí suelen salir preguntas parecidas a la evaluación."
+    },
+    {
+      "curso": "Cálculo Diferencial",
+      "profesor": "Alejandro Huaman",
+      "resumen": "Entretenido, generoso con puntos y casi asegura tu aprobación.",
+      "que_esperar": "Clase dinámica con teoría del libro Venero y ejercicios resueltos en vivo. Es generoso calificando (incluso da puntos extra) y muy claro explicando: ser su alumno ya te deja medio aprobado.",
+      "exigencia": 2, "carga_trabajo": 2, "ritmo": 3, "claridad": 5,
+      "recomendaciones": "Estudia del Venero y detalla bien tus procedimientos: casi siempre pesa más que la respuesta final."
+    },
+    {
+      "curso": "Cálculo Diferencial",
+      "profesor": "Huanca",
+      "resumen": "Enseña poco, corrige raro; tendrás que ser autodidacta.",
+      "que_esperar": "Clase poco dinámica: pone videos de YouTube de ejercicios y los intenta replicar en pizarra, a veces con errores de cálculo. Avanza lento y con pocos ejercicios, aprenderás más por tu cuenta que en su clase.",
+      "exigencia": 2, "carga_trabajo": 2, "ritmo": 1, "claridad": 2,
+      "recomendaciones": "Estudia con material de otro profesor y argumenta bien tus respuestas: con Huanca serás mayormente autodidacta."
+    },
+
+    {
+      "curso": "Geometría Analítica",
+      "profesor": "Alexander Bonifacio",
+      "resumen": "Buena pizarra, explica bien y a veces suelta fijas antes del examen.",
+      "que_esperar": "Clases con teoría, ejemplos y demostraciones bien explicadas en pizarra, de las mejores, vale la pena fotografiarlas. No es aburrido y a veces adelanta pistas antes de los exámenes.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 4,
+      "recomendaciones": "Fotografía y estudia su teoría en pizarra, y llena toda la hoja de examen: valora el esfuerzo aunque no llegues a la respuesta."
+    },
+    {
+      "curso": "Geometría Analítica",
+      "profesor": "Pedro Acosta",
+      "resumen": "Clase muy práctica; exige precisión pero da puntos por intentarlo.",
+      "que_esperar": "Casi todo el tiempo de clase resuelve problemas (2-3 por sesión) y busca participación, con poca teoría formal. Corrige revisando bien el detalle del cálculo, pero regala puntos por al menos graficar.",
+      "exigencia": 4, "carga_trabajo": 3, "ritmo": 4, "claridad": 3,
+      "recomendaciones": "Vuelve a resolver por tu cuenta los problemas que hace en clase: ahí sale gran parte del examen."
+    },
+    {
+      "curso": "Geometría Analítica",
+      "profesor": "Riquelmer Vasquez",
+      "resumen": "Curso difícil que depende de la tarea colectiva del salón.",
+      "que_esperar": "Avanza el temario pero conviene reforzar sus explicaciones con otro material. Si el salón coordina hacer 'la tarea' en conjunto, la nota sube bastante; si no, el curso se complica y toca ser autodidacta.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 2,
+      "recomendaciones": "Consigue su libro (última edición) con planchas resueltas: a veces los exámenes repiten preguntas de ahí."
+    },
+    {
+      "curso": "Geometría Analítica",
+      "profesor": "Víctor Moncada",
+      "resumen": "Deja bastante trabajo en tareas; aprendes más por tu cuenta.",
+      "que_esperar": "Resuelve planchas (algunas bastante antiguas) explicando propiedades sobre la marcha. En varias clases pone a los alumnos a resolver solos o en grupo, y a veces se ausenta dejando solo la tarea.",
+      "exigencia": 2, "carga_trabajo": 3, "ritmo": 2, "claridad": 2,
+      "recomendaciones": "Entrega siempre la tarea (suma 'Moncapoints') y resuelve la mayor cantidad de planchas posible por tu cuenta."
+    },
+    {
+      "curso": "Geometría Analítica",
+      "profesor": "Javier Echeandía",
+      "resumen": "Prioriza la práctica, explica claro y avanza rápido con precisión.",
+      "que_esperar": "Poca teoría formal, mucha resolución de problemas aplicados explicados con claridad. Avanza rápido y es exigente con el detalle técnico (por ejemplo, escribir dominio y rango).",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 4, "claridad": 4,
+      "recomendaciones": "Repasa planchas en grupo anotando el paso a paso completo: exige precisión en el procedimiento, no solo el resultado."
+    },
+    {
+      "curso": "Geometría Analítica",
+      "profesor": "Kala Béjar",
+      "resumen": "Exige su método exacto; procedimientos largos y sin concesiones.",
+      "que_esperar": "Teoría entendible aunque a veces densa, resuelve PCs pasadas. Exige seguir su procedimiento exactamente como ella lo enseña: si no, la respuesta vale 0.",
+      "exigencia": 5, "carga_trabajo": 4, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Asiste a todas sus clases y replica su procedimiento al pie de la letra: con Kala no hay atajos ni métodos alternativos."
+    },
+
+    {
+      "curso": "Química I",
+      "profesor": "Alcántara Daniel",
+      "resumen": "Teoría completa y clara, pero exigente y con bullying frecuente.",
+      "que_esperar": "Dicta teoría completa (todo lo que dicta cae en el examen) combinando pizarra con ejemplos. Tiene fama de hacer bullying en clase, sobre todo si eres delegado, pero comparte material completo y es puntual.",
+      "exigencia": 4, "carga_trabajo": 4, "ritmo": 3, "claridad": 5,
+      "recomendaciones": "Copia absolutamente todo lo que dicta en clase y estudia de tu cuaderno: literalmente todo lo que hace en clase sale en el examen."
+    },
+    {
+      "curso": "Química I",
+      "profesor": "Bilma Osorio",
+      "resumen": "Muy accesible y flexible; acepta cualquier método bien sustentado.",
+      "que_esperar": "Explica con PPTs y detalla mucho el procedimiento en pizarra. Es considerada y flexible con el método de resolución, aunque suele atrasarse por explicar todo a fondo.",
+      "exigencia": 2, "carga_trabajo": 2, "ritmo": 2, "claridad": 4,
+      "recomendaciones": "Ten asistencia casi perfecta y haz la tarea: con eso solo ya aseguras 3 puntos para el parcial o final."
+    },
+    {
+      "curso": "Química I",
+      "profesor": "Nancy Fukuda",
+      "resumen": "Teoría rápida y básica; conviene reforzar con material de Alcántara.",
+      "que_esperar": "Clase teórica resumida y rápida, con ejemplos por debajo del nivel de examen. En laboratorio pide preinforme y toma un test corto tras cada experimento; siempre conviene rendirlo, aunque califica los reportes de forma inconsistente.",
+      "exigencia": 2, "carga_trabajo": 3, "ritmo": 3, "claridad": 2,
+      "recomendaciones": "Refuerza la teoría de parcial y final con material de Alcántara: lo que ella da en clase no alcanza el nivel del examen."
+    },
+    {
+      "curso": "Química I",
+      "profesor": "Rosario Reyes Acosta",
+      "resumen": "Explica bien pero rápido; participar en clase suma bastante.",
+      "que_esperar": "Buena explicación teórica por diapositivas con tiempo para practicar ejercicios, aunque avanza rápido. Es considerada y valora mucho la participación constante en clase.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 4, "claridad": 4,
+      "recomendaciones": "Participa activamente en clase y resuelve su seminario de preguntas: suman puntos extra directos al parcial o final."
+    },
+    {
+      "curso": "Química I",
+      "profesor": "Carlos Chafloque",
+      "resumen": "Considerado y da fijas, pero sus clases pueden dar sueño.",
+      "que_esperar": "Clases basadas en diapositivas; el profesor es accesible y resuelve dudas cuando se lo pides. Suele adelantar pistas ('fijas') en las clases previas a los exámenes.",
+      "exigencia": 3, "carga_trabajo": 2, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Presta mucha atención en las clases previas a cada examen: ahí suelta las fijas."
+    },
+    {
+      "curso": "Química I",
+      "profesor": "Petra Rondinel",
+      "resumen": "Laboratorio sencillo y organizado, pero habla muy bajo.",
+      "que_esperar": "Organiza bien cada práctica de laboratorio, indicando en pizarra qué hacer y qué va en el informe. Los tests son simples y muy parecidos a la guía de laboratorio.",
+      "exigencia": 2, "carga_trabajo": 2, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Siéntate adelante (habla muy bajo, incluso con micrófono) y guíate estrictamente de la hoja de práctica: el test sale casi igual."
+    },
+    {
+      "curso": "Química I",
+      "profesor": "Erik Valenzuela",
+      "resumen": "Profesor tranquilo cuyas clases sí caen en el examen.",
+      "que_esperar": "Explica bien y lo que trabaja en clase suele aparecer directo en la PC. Es accesible para consultas y puntual, aunque deja bastantes hojas de informe en el laboratorio.",
+      "exigencia": 2, "carga_trabajo": 3, "ritmo": 3, "claridad": 4,
+      "recomendaciones": "Resuelve sus dirigidas y repasa sus PPTs a fondo: de ahí sale gran parte de sus PCs."
+    },
+    {
+      "curso": "Química I",
+      "profesor": "Susana Gomez",
+      "resumen": "Dinámica y entretenida; hay que ser rápido en cada laboratorio.",
+      "que_esperar": "Explica de forma general los experimentos y deja poco tiempo para ejecutarlos, conviene un grupo ágil. Al final toma un test corto (10 min) sobre lo hecho en el laboratorio.",
+      "exigencia": 2, "carga_trabajo": 3, "ritmo": 4, "claridad": 3,
+      "recomendaciones": "Resuelve el seminario apenas lo deje y sal a la pizarra ('Susanapoints'): suma bastante para tu nota."
+    },
+
+    {
+      "curso": "Redacción",
+      "profesor": "Raquel Chavarri",
+      "resumen": "Muy estricta y puntual; aprendes de verdad pero no perdona nada.",
+      "que_esperar": "Combina teoría, ejemplos y evaluación oral/escrita muy exigente en puntualidad y detalle. Prohibido faltar más de 4 clases, y llegar tarde te cierra la puerta salvo en PCs.",
+      "exigencia": 5, "carga_trabajo": 4, "ritmo": 3, "claridad": 4,
+      "recomendaciones": "Asegura tus dos monografías (cuento + fichas bibliográficas) y no faltes nunca: con eso apruebas tranquilo, aunque no ponderes."
+    },
+    {
+      "curso": "Redacción",
+      "profesor": "Saul Acevedo",
+      "alias": "Acevedogoat",
+      "resumen": "El profesor más generoso del ciclo; casi imposible jalar con él.",
+      "que_esperar": "Clases entretenidas con cine, libros y buena onda constante. Deja una tarea semanal cuyo promedio se convierte directamente en tu cuarta PC.",
+      "exigencia": 1, "carga_trabajo": 2, "ritmo": 3, "claridad": 4,
+      "recomendaciones": "Solo asiste a prácticas y cumple las tareas semanales: con eso el curso prácticamente se aprueba solo."
+    },
+    {
+      "curso": "Redacción",
+      "profesor": "Maria Curotto",
+      "resumen": "Todas las clases se expone; usa lenguaje académico complejo.",
+      "que_esperar": "Cada clase hay exposiciones (todos exponen, no siempre los mismos) sobre temas variados. Permite usar cualquier medio de búsqueda de información, incluido ChatGPT.",
+      "exigencia": 2, "carga_trabajo": 3, "ritmo": 3, "claridad": 2,
+      "recomendaciones": "No faltes a clase (toma asistencia siempre) y participa activamente: cuenta bastante para tu nota."
+    },
+    {
+      "curso": "Redacción",
+      "profesor": "Rildo Campana",
+      "resumen": "Fomenta pensamiento crítico pero se desvía mucho del tema.",
+      "que_esperar": "Clase orientada a coyuntura nacional e internacional, con frecuentes desvíos del temario. Fomenta la investigación y el pensamiento crítico más que el contenido puramente técnico.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 2, "claridad": 3,
+      "recomendaciones": "Entrega todas las tareas con anticipación y desarrolla bien el ensayo guiado semanal: ahí muestra que te toma en cuenta."
+    },
+
+    {
+      "curso": "Introducción a la Computación",
+      "profesor": "Miguel Navarro",
+      "resumen": "Amable pero superficial; hay que reforzar C++ por tu cuenta.",
+      "que_esperar": "Primeras semanas de teoría (diagramas de flujo, pseudocódigo) y luego C++ apoyándose en videos externos. Es amable y claro, aunque no profundiza mucho en el contenido.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Sé autodidacta con C++ apoyándote en canales como Programación ATS: sus PCs repiten mucho de sus diapositivas."
+    },
+    {
+      "curso": "Introducción a la Computación",
+      "profesor": "Cossa",
+      "resumen": "Dice que no jala a nadie, pero califica de forma estricta.",
+      "que_esperar": "Las primeras PCs son 100% teóricas; exige que diagramas de flujo y pseudocódigo sean exactamente como los enseña en sus PPTs. En C++ da algo más de libertad.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 2, "claridad": 2,
+      "recomendaciones": "Replica exactamente el formato de diagramas y pseudocódigo de sus PPTs: se califican con 0 si no coinciden."
+    },
+    {
+      "curso": "Introducción a la Computación",
+      "profesor": "Raúl Huarote",
+      "resumen": "Ritmo muy rápido; el procedimiento vale casi todo.",
+      "que_esperar": "Enseña a un ritmo considerablemente más rápido de lo normal, con proyector y algo de tiza. Al ser profesor nuevo, sus PCs aún no siguen un patrón tan predecible como el de planchas anteriores.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 4, "claridad": 2,
+      "recomendaciones": "Practica el mismo código una y otra vez, buscando variantes: el procedimiento pesa muchísimo con él."
+    },
+    {
+      "curso": "Introducción a la Computación",
+      "profesor": "Aníval Torre",
+      "resumen": "Exámenes 100% a mano; exige seguir sus instrucciones al detalle.",
+      "que_esperar": "Clases con diapositivas propias y bastante libertad en las computadoras, pero los exámenes (parcial, final, susti) se hacen totalmente a mano, incluyendo diagrama, pseudocódigo y código C++. Un error mínimo en el diagrama puede costarte todo el puntaje.",
+      "exigencia": 4, "carga_trabajo": 4, "ritmo": 3, "claridad": 4,
+      "recomendaciones": "Estudia sus diapositivas al pie de la letra y practica escribir diagramas y código C++ a mano: un error de signo o flecha te puede costar todo el puntaje."
+    },
+
+    {
+      "curso": "Intro. Industrial",
+      "profesor": "Daniel Morillo",
+      "resumen": "Explica claro y casi todos aprueban con él.",
+      "que_esperar": "Clase basada en lectura de PPT con ejemplos bien explicados. Es planchero (sus evaluaciones se parecen a exámenes previos) y muy accesible resolviendo dudas.",
+      "exigencia": 2, "carga_trabajo": 2, "ritmo": 3, "claridad": 4,
+      "recomendaciones": "Consigue planchas de ciclos anteriores y ten un buen grupo para la monografía: con eso el curso se hace fácil."
+    },
+    {
+      "curso": "Intro. Industrial",
+      "profesor": "José Villanueva",
+      "resumen": "Clases prácticas orientadas a la carrera; algo informal e impredecible.",
+      "que_esperar": "Enseña con enfoque práctico sobre la ingeniería industrial real, con visitas a laboratorio semanales. El material principal está en su LiveBinders y depende bastante de lo que el delegado gestione con él.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Revisa la teoría de su LiveBinders y mantén buena comunicación vía el delegado: el curso se organiza bastante alrededor de esa relación."
+    },
+
+    {
+      "curso": "Ética y Filosofía Política",
+      "profesor": "Eloy Ayala",
+      "resumen": "Muy accesible; casi imposible jalar y fácil de ponderar.",
+      "que_esperar": "Clase dictada con PPT donde la participación pesa mucho en la nota de PC. Es sumamente flexible, acepta cualquier respuesta razonada y es prácticamente imposible desaprobar.",
+      "exigencia": 1, "carga_trabajo": 2, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Participa en todas las clases posibles: la nota de participación puede superar incluso a la escrita."
+    },
+    {
+      "curso": "Ética y Filosofía Política",
+      "profesor": "Rildo Campana",
+      "resumen": "Se desvía mucho del tema y califica de forma impredecible.",
+      "que_esperar": "Buena parte de la clase se va en temas externos bajo la excusa del pensamiento crítico. Deja bastante carga de trabajo y su forma de calificar es difícil de predecir.",
+      "exigencia": 4, "carga_trabajo": 4, "ritmo": 2, "claridad": 2,
+      "recomendaciones": "Usa APA7 en todos tus trabajos y ve formal a la sustentación del ensayo: pesan directo en la nota."
+    },
+    {
+      "curso": "Ética y Filosofía Política",
+      "profesor": "Carlos Sánchez Huaringa",
+      "resumen": "Curso ponderable y accesible si te gustan temas de coyuntura.",
+      "que_esperar": "Clase con PPT de Univirtual reforzada con pizarra (ahí sale gran parte del examen), videos y coyuntura actual. Deja ensayos cortos frecuentes que promedia con el parcial.",
+      "exigencia": 2, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Presta atención a lo que anota en pizarra (no solo el PPT) y ve los videos que deja en Univirtual: de ahí salen preguntas de examen."
+    },
+
+    {
+      "curso": "Dibujo en Ingeniería",
+      "profesor": "Víctor Moncada",
+      "resumen": "Enseña teoría y luego solo problemas; conviene practicar planchas.",
+      "que_esperar": "Primero enseña teoría y después dedica las clases casi enteramente a resolver problemas en pizarra. Llega unos 15 minutos tarde de forma habitual.",
+      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 2,
+      "recomendaciones": "Practica muchas planchas y cumple con las tareas: dan puntos directos y ayudan a entender mejor que solo escuchar la clase."
+    },
+    {
+      "curso": "Dibujo en Ingeniería",
+      "profesor": "Luis Callo",
+      "resumen": "Clases áridas y exigentes; hay que anotar y practicar todo.",
+      "que_esperar": "Clases poco dinámicas donde explica sobre todo para sí mismo, conviene sentarse adelante y anotar o fotografiar todo. Es estricto con el método exacto y las herramientas de dibujo.",
+      "exigencia": 4, "carga_trabajo": 4, "ritmo": 2, "claridad": 2,
+      "recomendaciones": "Lleva siempre tus herramientas de dibujo completas y anota cada ejercicio resuelto en clase: casi siempre repite alguno en la PC."
+    },
+
+    {
+      "curso": "Intro. Sistemas",
+      "profesor": "Erwin Salas",
+      "alias": "Salaz Coz",
+      "resumen": "Muy exigente y demandante; exige buenas habilidades blandas.",
+      "que_esperar": "Primera vez dictando este curso, pero se sabe que es exigente y con carga equivalente a varios cursos. Forma grupos desde el primer día y evalúa sobre todo la ronda de preguntas tras las exposiciones en Miro: quedarte callado te baja la nota.",
+      "exigencia": 5, "carga_trabajo": 5, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Prepárate para responder cualquier pregunta tras tu exposición, aunque tengas dudas: quedarte en silencio pesa más que responder mal."
+    },
+    {
+      "curso": "Intro. Sistemas",
+      "profesor": "Jorge Yangato",
+      "resumen": "Sabio pero exigente en expos; aprendes de verdad si prestas atención.",
+      "que_esperar": "Clase muy teórica (todo sale de su conocimiento propio) combinada con proyectos grupales que se exponen al final del ciclo. Es duro en la ronda de preguntas de las exposiciones.",
+      "exigencia": 4, "carga_trabajo": 4, "ritmo": 3, "claridad": 4,
+      "recomendaciones": "Prepárate a profundidad para cualquier pregunta en tus exposiciones: no vayas superficial, ahí es donde más exige."
+    },
+
+    {
+      "curso": "Intro. Software",
+      "profesor": "Javier Sánchez",
+      "resumen": "Lee su PPT (basado en Sommerville); fácil de aprobar sin aprender mucho.",
+      "que_esperar": "Clases centradas en leer diapositivas extensas (basadas en Ian Sommerville) con comentarios propios. Los exámenes se rinden vía aula virtual, lo que hace fácil aprobar aunque no se aprenda a fondo.",
+      "exigencia": 2, "carga_trabajo": 2, "ritmo": 2, "claridad": 2,
+      "recomendaciones": "Enfócate en preparar bien tu exposición de PC: el profesor se fija más en eso que en el contenido del PPT."
+    },
+    {
+      "curso": "Intro. Software",
+      "profesor": "Walter Antaurco",
+      "resumen": "Teórico pero accesible; todas las PCs son exposiciones grupales.",
+      "que_esperar": "Combina lectura de diapositivas (basadas en Sommerville) con explicación en pizarra. Todas las PCs son exposiciones grupales sobre herramientas de software, calificadas con generosidad.",
+      "exigencia": 2, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
+      "recomendaciones": "Aprende bien lo básico de la herramienta que te toque exponer y ten el libro de Sommerville a mano en los exámenes: te deja usarlo."
+    },
+
+    {
+      "curso": "Desarrollo Personal",
+      "profesor": "Doris Rojas",
+      "resumen": "Clases dinámicas y fáciles de ponderar; buen apoyo emocional.",
+      "que_esperar": "Clases teóricas con ejemplos y dinámicas donde valora mucho la participación. La primera monografía suele ser un evento grupal (feria de dinámicas o biohuerto) y la segunda es la más importante del curso.",
+      "exigencia": 2, "carga_trabajo": 3, "ritmo": 3, "claridad": 4,
+      "recomendaciones": "Participa constantemente y prioriza la monografía 2: es la que más peso tiene y define si apruebas raspando o con holgura."
+    }
+  ]
+}

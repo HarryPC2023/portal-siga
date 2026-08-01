@@ -1,0 +1,72 @@
+---
+---
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asesorías - SIGA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+  {% include nav.html activo="asesorias" %}
+
+  <section class="dash-hero">
+    <div class="dash-wrap">
+      <h1 class="dash-hero-titulo"><span class="titulo-pildora">ASESORÍAS</span></h1>
+      <p>Apoyo académico diseñado para reforzar tu aprendizaje en los cursos del ciclo, con explicaciones detalladas y
+        recursos de calidad.</p>
+    </div>
+  </section>
+
+  <section class="dash-detalle" style="padding-top:30px;">
+
+    <div class="item-asesoria">
+      <div class="item-asesoria-texto">
+        <span class="item-formato">Web interactiva</span>
+        <h3>PC1 — Diseño de Base de Datos</h3>
+        <p>Herramientas, arquitectura, componentes y checklist antes de exponer.</p>
+      </div>
+      <a href="https://harrypc2023.github.io/asesoria-dbd/" class="item-asesoria-accion" target="_blank"
+        rel="noopener">Abrir →</a>
+    </div>
+
+    <div class="item-asesoria">
+      <div class="item-asesoria-texto">
+        <span class="item-formato">PDF</span>
+        <h3>Monografía — Diseño de Base de Datos</h3>
+        <p>Prototipado de interfaces: coherencia, detalle y datos reales por pantalla.</p>
+      </div>
+      <a href="assets/asesorias/monografia-dbd-avanzado.pdf" class="item-asesoria-accion" target="_blank"
+        rel="noopener">Ver PDF →</a>
+    </div>
+
+    <div class="item-asesoria">
+      <div class="item-asesoria-texto">
+        <span class="item-formato">PDF</span>
+        <h3>Monografía — Modelado Conceptual de Datos</h3>
+        <p>Fundamentos para encarar el trabajo grupal y qué espera el profesor.</p>
+      </div>
+      <a href="assets/asesorias/monografia-mcd.pdf" class="item-asesoria-accion" target="_blank" rel="noopener">Ver PDF
+        →</a>
+    </div>
+
+    <p class="dash-nota-final">Más asesorías en camino, por evaluación y curso.</p>
+
+  </section>
+
+  <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
+
+  <script src="js/landing.js"></script>
+</body>
+
+</html>

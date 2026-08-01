@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opiniones de profesores - SIGA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/opiniones.css">
+</head>
+
+<body>
+
+  <nav class="app-nav">
+    <a href="dashboard.html" class="app-nav-logo">
+        <img src="assets/logo-siga.png" alt="Logo SIGA">
+        <span>SIGA</span>
+    </a>
+    <div class="app-nav-links">
+        <span class="nav-indicador" id="navIndicador" aria-hidden="true"></span>
+        <a href="asesorias.html" >Asesorías</a>
+        <a href="https://harrypc2023.github.io/Generador-de-Horarios/" target="_blank" rel="noopener">Horarios</a>
+        <a href="https://harrypc2023.github.io/intranotas/" target="_blank" rel="noopener">Intranotas</a>
+        <a href="materiales.html" >Materiales</a>
+        <a href="opiniones.html"  class="activo" >Opiniones</a>
+        <a href="dashboard.html" >INICIO</a>
+    </div>
+    <div class="app-nav-user">
+        <button type="button" class="app-nav-avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false"
+            aria-label="Cuenta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+            </svg>
+        </button>
+        <div class="app-nav-user-menu" id="avatarMenu">
+            <div class="app-nav-user-info">
+                <span class="app-nav-user-nombre">Nombre Apellido</span>
+                <span class="app-nav-user-correo">correo@ejemplo.com</span>
+            </div>
+            <a href="#" class="app-nav-user-item">Mi perfil</a>
+            <a href="#" class="app-nav-user-item">Configuración de la cuenta</a>
+            <div class="app-nav-user-sep"></div>
+            <a href="#" class="app-nav-user-item app-nav-user-salir">Cerrar sesión</a>
+        </div>
+    </div>
+</nav>
+
+  <section class="dash-hero">
+    <div class="dash-wrap">
+      <h1 class="dash-hero-titulo"><span class="titulo-pildora">OPINIONES</span></h1>
+      <p>Conoce mejor a tus profesores a partir de las experiencias de otros estudiantes y obtén
+        referencias que te ayuden a elegir tus cursos con mayor criterio.</p>
+    </div>
+  </section>
+
+  <section class="dash-detalle" style="padding-top:30px; max-width:1160px;">
+
+    <div class="proximamente-panel" id="opinionesGate">
+      <span class="modulo-icono" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect x="4" y="10" width="16" height="10" rx="2" />
+          <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+        </svg>
+      </span>
+      <h3>Inicia sesión para ver Opiniones</h3>
+      <p>Esta sección es solo para la comunidad SIGA. Inicia sesión con tu correo personal o
+        institucional para ver y compartir opiniones de profesores.</p>
+      <button type="button" class="btn-primary" id="btnGateLogin" style="margin-top:14px;">Iniciar sesión</button>
+    </div>
+
+    <div class="opiniones-filtros" id="opinionesFiltros" hidden>
+      <select id="filtroCarrera">
+        <option value="">Todas las carreras</option>
+        <option value="sistemas">Sistemas</option>
+        <option value="industrial">Industrial</option>
+        <option value="software">Software</option>
+      </select>
+      <select id="filtroCiclo"></select>
+    </div>
+
+    <div class="opiniones-grid" id="opinionesGrid" hidden></div>
+
+  </section>
+
+  <aside class="detalle-profesor" id="detalleProfesor"></aside>
+
+  <div class="modal-login" id="modalLogin">
+    <div class="modal-login-caja">
+      <button type="button" id="btnCerrarLogin" aria-label="Cerrar">✕</button>
+      <h3>Inicia sesión en SIGA</h3>
+      <p>Usa tu correo personal o institucional. Te enviamos un enlace, sin contraseñas.</p>
+      <form id="formLogin">
+        <input type="email" name="correo" placeholder="tu@correo.com" required>
+        <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Enviar enlace</button>
+      </form>
+      <p class="form-opinion-msg" id="loginMsg"></p>
+    </div>
+  </div>
+
+  <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
+
+  <script src="js/landing.js"></script>
+  <script type="module" src="js/opiniones.js"></script>
+</body>
+
+</html>

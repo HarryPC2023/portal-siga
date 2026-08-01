@@ -1,0 +1,192 @@
+/* ============================================================
+   TEMA SIGA para Intranotas — v3 (integrado a portal-siga)
+   Cargar DESPUÉS de variables.css / landing.css / dashboard.css
+   Y DESPUÉS de intranotas.css. Este archivo es la ÚNICA fuente
+   de identidad de marca: intranotas.css (el núcleo de la app)
+   no se toca.
+
+   v3: ya no vive standalone. El fondo Light ahora lo controla
+   dashboard.css (mismo degradado que el resto del portal). Los
+   fondos Dark/Ocean/Forest siguen siendo propios de Intranotas.
+   El header viejo "siga-topbar" desaparece: el nav global de SIGA
+   (en el HTML) lo reemplaza, y aquí solo queda el estilo de la
+   franja de controles (selector de tema).
+   ============================================================ */
+
+/* ---------- 1. PALETA: mismas variables que usa TEMAS.light en
+   intranotas.js, declaradas también en CSS puro para evitar el
+   "flash" del celeste viejo antes de que el JS pinte el tema
+   guardado. ---------- */
+:root {
+    --color-cian: #6600CC;
+    --color-cian-hover: #4f0099;
+    --color-cian-light: #F3EAFB;
+    --color-verde-oscuro: #3C7CF8;
+    --color-azul: #3C7CF8;
+    --color-azul-claro: #EAF2FF;
+    --color-gris-texto: #4A4A4A;
+    --color-gris-claro: #DDD9CE;
+    --color-fondo-input: #EAF2FF;
+    --color-fondo-tarjeta: #ffffff;
+    --color-fondo-body: #FFFDF9;
+}
+
+/* ---------- FONDO DARK / OCEAN / FOREST — el fondo Light ya lo
+   resuelve dashboard.css (mismo degradado que el resto de SIGA).
+   Estos tres siguen siendo exclusivos de Intranotas, y como usan
+   selector de clase (mayor especificidad que el `body` plano de
+   dashboard.css) lo pisan sin necesitar !important. ---------- */
+body.tema-dark,
+body.tema-ocean,
+body.tema-forest {
+    background-color: var(--color-fondo-body);
+    background-size: 200% 200%;
+    animation: sigaFondoMovimiento 14s ease-in-out infinite;
+}
+
+body.tema-dark {
+    background-image: linear-gradient(135deg,
+            rgba(77, 208, 225, 0.40) 0%,
+            rgba(77, 208, 225, 0.40) 26%,
+            rgba(100, 181, 246, 0.12) 78%,
+            rgba(100, 181, 246, 0.12) 100%);
+}
+
+body.tema-ocean {
+    background-image: linear-gradient(135deg,
+            rgba(101, 238, 241, 0.18) 0%,
+            rgba(101, 238, 241, 0.18) 26%,
+            rgba(29, 78, 216, 0.60) 78%,
+            rgba(29, 78, 216, 0.60) 100%);
+}
+
+body.tema-forest {
+    background-image: linear-gradient(135deg,
+            rgba(171, 221, 95, 0.20) 0%,
+            rgba(171, 221, 95, 0.20) 26%,
+            rgba(42, 161, 18, 0.74) 78%,
+            rgba(42, 161, 18, 0.74) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    body.tema-dark,
+    body.tema-ocean,
+    body.tema-forest {
+        animation: none;
+        background-position: 50% 50%;
+    }
+}
+
+@keyframes sigaFondoMovimiento {
+    0% {
+        background-position: 10% 30%;
+    }
+
+    50% {
+        background-position: 90% 70%;
+    }
+
+    100% {
+        background-position: 10% 30%;
+    }
+}
+
+/* ---------- 2. TIPOGRAFÍA: Orbitron / Black Ops One SOLO en
+   elementos tipo wordmark. El resto de la app se queda con
+   Poppins/Montserrat. ---------- */
+.titulo-intranotas {
+    font-family: 'Black Ops One', sans-serif !important;
+    letter-spacing: 0.02em;
+}
+
+@keyframes pulse-intranotas {
+
+    0%,
+    100% {
+        color: var(--color-verde-oscuro);
+    }
+
+    50% {
+        color: var(--color-cian);
+    }
+}
+
+/* ---------- 3. TARJETAS Y BOTONES: mismo lenguaje visual que el
+   resto de SIGA. ---------- */
+.tarjeta-curso,
+.acordeon,
+.seccion-selector-ciclo {
+    border-radius: 18px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+    border: none !important;
+}
+
+.btn-ingresar-principal,
+.btn-carrera,
+.btn-volver-carrera,
+.btn-guardar,
+.btn-flotante {
+    border-radius: 999px !important;
+}
+
+.btn-ciclo {
+    border-radius: 14px !important;
+}
+
+.btn-ingresar-principal:hover,
+.btn-guardar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(102, 0, 204, 0.28) !important;
+}
+
+/* ---------- 4. LAS 4 PANTALLAS QUEDAN TRANSPARENTES — el fondo
+   ahora vive en el body (dashboard.css o los .tema-* de arriba).
+   Sin esto, .pantalla-bienvenida y .pantalla-seleccion-carrera
+   mostrarían el celeste sólido viejo del núcleo. Ya no hace falta
+   el calc(100vh - header): el nav global de SIGA no es sticky, no
+   reserva espacio fijo permanente. */
+.pantalla-bienvenida,
+.pantalla-seleccion-carrera {
+    background: transparent;
+    min-height: 100vh;
+}
+
+.pantalla-configuracion,
+.pantalla-simulador {
+    background: transparent;
+}
+
+/* ---------- 5. FRANJA DE CONTROLES (selector de tema) — ya no es
+   un header propio con "Volver a SIGA" (el nav global de arriba ya
+   cumple esa función). Ahora es una franja delgada, sticky, debajo
+   del nav global, visible solo en pantallas 3 y 4 (el JS de
+   irAPantalla() sigue controlando el display:block/none tal cual
+   estaba, no se tocó intranotas.js). */
+.contenedor-tema {
+    position: sticky;
+    top: 0;
+    z-index: 490;
+    text-align: right;
+    padding: 8px 24px;
+    background: rgba(255, 253, 249, 0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.btn-tema-trigger,
+.tema-opcion {
+    font-family: 'Orbitron', sans-serif;
+}
+
+@media (max-width: 480px) {
+    .contenedor-tema {
+        padding: 8px 14px;
+    }
+}
+
+/* ---------- 6. Los modales deben quedar SIEMPRE por encima de la
+   franja de controles sticky. ---------- */
+.modal-overlay {
+    z-index: 600;
+}

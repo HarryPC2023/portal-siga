@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materiales - SIGA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+  <nav class="app-nav">
+    <a href="dashboard.html" class="app-nav-logo">
+        <img src="assets/logo-siga.png" alt="Logo SIGA">
+        <span>SIGA</span>
+    </a>
+    <div class="app-nav-links">
+        <span class="nav-indicador" id="navIndicador" aria-hidden="true"></span>
+        <a href="asesorias.html" >Asesorías</a>
+        <a href="https://harrypc2023.github.io/Generador-de-Horarios/" target="_blank" rel="noopener">Horarios</a>
+        <a href="https://harrypc2023.github.io/intranotas/" target="_blank" rel="noopener">Intranotas</a>
+        <a href="materiales.html"  class="activo" >Materiales</a>
+        <a href="opiniones.html" >Opiniones</a>
+        <a href="dashboard.html" >INICIO</a>
+    </div>
+    <div class="app-nav-user">
+        <button type="button" class="app-nav-avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false"
+            aria-label="Cuenta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+            </svg>
+        </button>
+        <div class="app-nav-user-menu" id="avatarMenu">
+            <div class="app-nav-user-info">
+                <span class="app-nav-user-nombre">Nombre Apellido</span>
+                <span class="app-nav-user-correo">correo@ejemplo.com</span>
+            </div>
+            <a href="#" class="app-nav-user-item">Mi perfil</a>
+            <a href="#" class="app-nav-user-item">Configuración de la cuenta</a>
+            <div class="app-nav-user-sep"></div>
+            <a href="#" class="app-nav-user-item app-nav-user-salir">Cerrar sesión</a>
+        </div>
+    </div>
+</nav>
+
+  <section class="dash-hero">
+    <div class="dash-wrap">
+      <h1 class="dash-hero-titulo"><span class="titulo-pildora">MATERIALES</span></h1>
+      <p>Encuentra y comparte recursos académicos organizados para complementar tu aprendizaje
+        cuando más lo necesites.</p>
+    </div>
+  </section>
+
+  <section class="dash-detalle" style="padding-top:30px;">
+    <div class="proximamente-panel">
+      <span class="modulo-icono" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
+        </svg>
+      </span>
+      <h3>Muy pronto podrás subir y buscar materiales aquí</h3>
+      <p>La idea es simple: si el curso todavía no tiene carpeta, se crea sola apenas alguien
+        sube el primer archivo. Estamos preparando el espacio para que subir y compartir sea tan
+        fácil como en cualquier grupo de Facebook, pero organizado por curso y ciclo.</p>
+    </div>
+  </section>
+
+  <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
+
+  <script src="js/landing.js"></script>
+</body>
+
+</html>

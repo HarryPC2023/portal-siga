@@ -1,0 +1,40 @@
+<nav class="app-nav">
+    <a href="{{ site.baseurl }}/dashboard.html" class="app-nav-logo">
+        <img src="{{ site.baseurl }}/assets/logo-siga.png" alt="Logo SIGA">
+        <span>SIGA</span>
+    </a>
+    <div class="app-nav-links">
+        <span class="nav-indicador" id="navIndicador" aria-hidden="true"></span>
+        <a href="{{ site.baseurl }}/asesorias.html" {% if include.activo=="asesorias" %} class="activo" {% endif
+            %}>Asesorías</a>
+        <a href="https://harrypc2023.github.io/Generador-de-Horarios/" target="_blank" rel="noopener">Horarios</a>
+        <a href="{{ site.baseurl }}/intranotas/index.html" {% if include.activo=="intranotas" %} class="activo" {% endif
+            %}>Intranotas</a>
+        <a href="{{ site.baseurl }}/materiales.html" {% if include.activo=="materiales" %} class="activo" {% endif
+            %}>Materiales</a>
+        <a href="{{ site.baseurl }}/opiniones.html" {% if include.activo=="opiniones" %} class="activo" {% endif
+            %}>Opiniones</a>
+        <a href="{{ site.baseurl }}/dashboard.html" {% if include.activo=="inicio" %} class="activo" {% endif
+            %}>INICIO</a>
+    </div>
+    <div class="app-nav-user">
+        <button type="button" class="app-nav-avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false"
+            aria-label="Cuenta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+            </svg>
+        </button>
+        <div class="app-nav-user-menu" id="avatarMenu">
+            <div class="app-nav-user-info">
+                <span class="app-nav-user-nombre">Nombre Apellido</span>
+                <span class="app-nav-user-correo">correo@ejemplo.com</span>
+            </div>
+            <a href="#" class="app-nav-user-item">Mi perfil</a>
+            <a href="#" class="app-nav-user-item">Configuración de la cuenta</a>
+            <div class="app-nav-user-sep"></div>
+            <a href="#" class="app-nav-user-item app-nav-user-salir">Cerrar sesión</a>
+        </div>
+    </div>
+</nav>

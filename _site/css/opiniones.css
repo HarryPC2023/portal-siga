@@ -1,0 +1,340 @@
+.opiniones-filtros {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.opiniones-filtros select {
+    font-family: var(--font-nav);
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    padding: 9px 16px;
+}
+
+.opiniones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.opinion-card {
+    text-align: left;
+    background: #fff;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-family: var(--font-body);
+}
+
+.opinion-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
+}
+
+.opinion-card-curso {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--acento-lavanda);
+    margin-bottom: 6px;
+}
+
+.opinion-card h3 {
+    font-family: var(--font-heading);
+    font-size: 17px;
+    margin-bottom: 8px;
+    color: var(--ink);
+}
+
+.opinion-card-frase {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
+.opinion-card-estrellas {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--brand-morado);
+}
+
+.opinion-card-conteo {
+    color: var(--ink-soft);
+    font-weight: 500;
+}
+
+.opiniones-vacio,
+.opiniones-error {
+    font-size: 14px;
+    color: var(--ink-soft);
+    padding: 20px 0;
+}
+
+/* ===== Detalle — panel deslizable desde la derecha ===== */
+.detalle-profesor {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(480px, 100vw);
+    background: var(--paper);
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.18);
+    padding: 32px 28px;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 50;
+}
+
+.detalle-profesor.visible {
+    transform: translateX(0);
+}
+
+.detalle-cerrar {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+}
+
+.detalle-sello {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--acento-cian);
+    background: var(--bg-cian);
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+}
+
+.detalle-profesor h2 {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.detalle-curso {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+}
+
+.detalle-bloque h4,
+.detalle-panorama h4 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+}
+
+.detalle-bloque {
+    margin-bottom: 22px;
+}
+
+.detalle-consejo {
+    background: var(--brand-morado);
+    color: #fff;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 22px;
+}
+
+.detalle-consejo h4 {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.detalle-panorama {
+    margin-bottom: 22px;
+}
+
+.detalle-panorama-num {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink);
+}
+
+.detalle-panorama-estrellas {
+    color: var(--brand-morado);
+    font-size: 17px;
+}
+
+.detalle-recientes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 26px;
+}
+
+.opinion-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+
+.opinion-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.opinion-item-reportar {
+    border: none;
+    background: transparent;
+    color: var(--acento-ciruela);
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.opinion-item-reportar:disabled {
+    color: var(--ink-soft);
+    cursor: default;
+}
+
+.detalle-cta {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ===== Formulario de opinión ===== */
+.form-opinion {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.form-opinion-banner {
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: var(--brand-azul-tinte);
+    border-radius: 10px;
+    padding: 12px 14px;
+    line-height: 1.5;
+}
+
+.form-opinion label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.form-opinion select,
+.form-opinion textarea {
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+    padding: 9px 12px;
+    resize: vertical;
+}
+
+.form-opinion-msg {
+    font-size: 12.5px;
+    color: var(--acento-cian);
+}
+
+/* ===== Modal de login ===== */
+.modal-login {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 60;
+}
+
+.modal-login.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-login-caja {
+    background: #fff;
+    border-radius: 18px;
+    padding: 32px 28px;
+    width: min(360px, 90vw);
+    position: relative;
+}
+
+.modal-login-caja h3 {
+    font-family: var(--font-heading);
+    margin-bottom: 8px;
+}
+
+.modal-login-caja p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+}
+
+.modal-login-caja input {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+#btnCerrarLogin {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-login-siga {
+    border: none;
+    background: var(--brand-morado);
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+@media (max-width: 640px) {
+    .detalle-profesor {
+        width: 100vw;
+    }
+}

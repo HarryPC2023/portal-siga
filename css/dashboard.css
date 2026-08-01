@@ -1,0 +1,514 @@
+/* SIGA dashboard v2 - reutiliza variables.css y los patrones visuales de landing.css */
+
+/* ---------- FONDO DEGRADADO DE TODA LA PANTALLA (dashboard, asesorias, materiales, opiniones) ---------- */
+/* Antes el degradado solo vivía en .dash-hero y cortaba a blanco donde
+   empezaban las tarjetas. Ahora vive en el body, así se extiende por
+   toda la página (detrás del hero Y detrás de las tarjetas) sin costuras. */
+body {
+  background: var(--paper);
+  background-image: linear-gradient(135deg,
+      rgba(0, 255, 255, 0.13) 0%,
+      rgba(0, 255, 255, 0.13) 26%,
+      rgba(204, 0, 255, 0.2) 78%,
+      rgba(204, 0, 255, 0.2) 100%);
+  background-size: 200% 200%;
+  animation: moverInfo 14s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+/* ---------- NAV DE LA APP (dashboard, asesorias, materiales, opiniones) ---------- */
+/* Ya no es sticky: no sigue al usuario al hacer scroll. Para volver a él
+   sin desplazarse, está el botón flotante "volver-arriba" (abajo a la
+   derecha, ya definido en landing.css) que sube al tope de la página. */
+.app-nav {
+  position: relative;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  max-width: none;
+  margin: 0;
+  gap: 20px;
+  padding: 10px 32px;
+  background: rgba(255, 253, 249, 0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.app-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.app-nav-logo img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.app-nav-logo span {
+  font-family: var(--font-logo);
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+/* flex-wrap:nowrap + overflow-x:auto en vez de wrap: el menú se mantiene
+   SIEMPRE en una sola fila. En pantallas angostas no salta a una segunda
+   línea, se desliza horizontalmente (como pestañas). */
+.app-nav-links {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-top: 12px;
+  font-family: var(--font-nav);
+  font-weight: 500;
+  font-size: 12.5px;
+}
+
+.app-nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.app-nav-links a {
+  position: relative;
+  z-index: 1;
+  padding: 7px 13px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+/* Al pasar el mouse (o clickear/enfocar) sobresale con sombra, igual
+   que los botones blancos del nav del hero. */
+.app-nav-links a:hover,
+.app-nav-links a:focus-visible {
+  background: #fff;
+  color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+}
+
+/* La opción de la página en la que estás: mismo tratamiento elevado,
+   permanentemente encendido (no solo al pasar el mouse). */
+/* La opción de la página en la que estás: mismo tratamiento elevado
+   que el hover (blanco + sombra), permanentemente encendido — sin
+   relleno morado, para no competir visualmente con el resto de la UI. */
+.app-nav-links a.activo {
+  background: #fff;
+  color: var(--ink);
+  font-weight: 600;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+}
+
+/* ---------- AVATAR / MENÚ DE CUENTA ---------- */
+.app-nav-user {
+  position: relative;
+  flex: 0 0 auto;
+  justify-self: end;
+}
+
+.app-nav-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
+  color: #fff;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.app-nav-avatar svg {
+  width: 18px;
+  height: 18px;
+}
+
+.app-nav-avatar:hover,
+.app-nav-avatar[aria-expanded="true"] {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(102, 0, 204, 0.28);
+}
+
+.app-nav-user-menu {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  min-width: 230px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+  padding: 8px;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 30;
+}
+
+.app-nav-user-menu.abierto {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.app-nav-user-info {
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 6px;
+}
+
+.app-nav-user-nombre {
+  display: block;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.app-nav-user-correo {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+.app-nav-user-item {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.app-nav-user-item:hover {
+  background: var(--brand-azul-tinte);
+  color: var(--ink);
+}
+
+.app-nav-user-sep {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 6px 4px;
+}
+
+.app-nav-user-salir {
+  color: var(--acento-ciruela);
+}
+
+.app-nav-user-salir:hover {
+  background: var(--bg-ciruela);
+  color: var(--acento-ciruela);
+}
+
+@media (max-width: 780px) {
+  .app-nav {
+    padding: 10px 20px;
+    gap: 14px;
+  }
+
+  .app-nav-links {
+    justify-content: flex-start;
+  }
+}
+
+.dash-hero {
+  padding: 60px 32px 20px;
+}
+
+.dash-wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.dash-hero-titulo {
+  margin-bottom: 14px;
+}
+
+.dash-hero p {
+  font-size: 15.5px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+/* ---------- MIGA DE PAN ---------- */
+.dash-migas {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  padding: 22px 32px 0;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.dash-migas a {
+  color: var(--brand-morado);
+}
+
+.dash-migas a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- GRID DE MODULOS ---------- */
+/* Sin background propio: deja ver el degradado del body detrás de las tarjetas. */
+.modulos-grid {
+  padding: 20px 32px 100px;
+}
+
+.modulos-grid-wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.modulo-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 32px 28px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.modulo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+}
+
+.modulo-icono {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
+  margin-bottom: 20px;
+}
+
+.modulo-icono svg {
+  width: 24px;
+  height: 24px;
+}
+
+.modulo-card h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.modulo-card p {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  flex-grow: 1;
+  margin-bottom: 22px;
+}
+
+.modulo-accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  background: #6600CC;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 11px 22px;
+  border-radius: 999px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.modulo-accion:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(102, 0, 204, 0.28);
+}
+
+.modulo-card.proximamente {
+  background: #FBFAF6;
+}
+
+.modulo-card.proximamente .modulo-icono {
+  background: var(--ink-soft);
+  opacity: 0.35;
+}
+
+.modulo-card.proximamente h3,
+.modulo-card.proximamente p {
+  opacity: 0.65;
+}
+
+.modulo-badge {
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--ink-soft);
+  background: rgba(0, 0, 0, 0.06);
+  padding: 8px 16px;
+  border-radius: 999px;
+}
+
+/* ---------- PAGINAS DE DETALLE (asesorias, materiales, opiniones) ---------- */
+.dash-detalle {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 32px 100px;
+}
+
+.item-asesoria {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  padding: 22px 26px;
+  margin-bottom: 18px;
+}
+
+.item-asesoria-texto h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.item-asesoria-texto p {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.item-formato {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--acento-lavanda);
+  background: var(--bg-lavanda);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.item-asesoria-accion {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--brand-morado);
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--brand-morado);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.item-asesoria-accion:hover {
+  background: var(--brand-morado);
+  color: #fff;
+}
+
+.dash-nota-final {
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-top: 30px;
+}
+
+/* ---------- ESTADO "PROXIMAMENTE" A PANTALLA COMPLETA ---------- */
+.proximamente-panel {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.proximamente-panel .modulo-icono {
+  margin: 0 auto 20px;
+}
+
+.proximamente-panel h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 19px;
+  margin-bottom: 10px;
+}
+
+.proximamente-panel p {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .item-asesoria {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ---------- NAV PROPIO DEL DASHBOARD ---------- */
+.nav-links>a.activo {
+  background: var(--brand-morado-tinte);
+  color: var(--brand-morado);
+  font-weight: 700;
+}
+
+.nav-links>a.nav-volver {
+  background: transparent;
+  box-shadow: none;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.nav-links>a.nav-volver:hover {
+  color: var(--brand-morado);
+  box-shadow: none;
+  transform: none;
+}
