@@ -1,65 +1,191 @@
----
----
+<!-- SIGA build v9: píldora INFO/MÓDULOS más clara, rebote más notorio (umbral más bajo), lema del hero cayendo en diagonal arriba-derecha con curva más suave -->
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Intranotas - SIGA</title>
-
-  <meta name="description" content="Simulador de Promedio Académico - Universidad Nacional de Ingeniería">
-  <meta name="theme-color" content="#FFFDF9">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="INTRANOTAS">
-
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
-
+  <title>SIGA - Sistema Integrado de Gestión Académica</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Black Ops One: SIGA y "Conecta. Organiza. Avanza." (sin negrita) | Orbitron: todo lo demás. Ambas OFL. -->
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
     rel="stylesheet">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/landing.css">
-  <link rel="stylesheet" href="../css/dashboard.css">
-
-  <link rel="stylesheet" href="css/intranotas.css">
-  <link rel="stylesheet" href="css/siga-theme-intranotas.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/landing.css">
 </head>
 
 <body>
 
-  {% include nav.html activo="intranotas" %}
+  <section class="hero" id="inicio">
+    <nav>
+      <div class="logo">
+        <img src="assets/logo-siga.png" alt="Logo SIGA">
+        <span class="logo-siga">SIGA</span>
+        <span class="logo-nombre">Sistema Integrado de Gestión Académica</span>
+      </div>
+      <div class="nav-links">
+        <span class="nav-indicador" id="navIndicador" aria-hidden="true"></span>
+        <a href="#info">Info</a>
+        <a href="#modulos">Módulos</a>
+        <a href="#inicio">Inicio</a>
+        <a href="dashboard.html" class="btn-registrarse">Registrarse</a>
+      </div>
+    </nav>
 
-  <div class="contenedor-tema" id="contenedor-tema" style="display:none;">
-    <button class="btn-tema-trigger" onclick="toggleDropdownTema()">
-      <span class="tema-icono" id="tema-icono-activo">☀️</span>
-      <span id="tema-label-activo">Light</span>
-      <span class="tema-flecha">▼</span>
-    </button>
-    <div class="tema-dropdown">
-      <button class="tema-opcion activo" data-tema="light" onclick="seleccionarTema('light')">
-        <span class="opcion-icono">☀️</span> Light
-      </button>
-      <button class="tema-opcion" data-tema="dark" onclick="seleccionarTema('dark')">
-        <span class="opcion-icono">🌙</span> Dark
-      </button>
-      <button class="tema-opcion" data-tema="ocean" onclick="seleccionarTema('ocean')">
-        <span class="opcion-icono">🌊</span> Ocean
-      </button>
-      <button class="tema-opcion" data-tema="forest" onclick="seleccionarTema('forest')">
-        <span class="opcion-icono">🌿</span> Forest
-      </button>
+    <div class="hero-content">
+      <div class="hero-panel">
+        <h1 class="hero-lema"><span class="lema-palabra">Conecta.</span> <span class="lema-palabra">Organiza.</span>
+          <span class="lema-palabra">Avanza.</span>
+        </h1>
+
+        <p class="descripcion">Toma el control de tu vida universitaria. Organiza tus horarios, calcula tus notas,
+          accede a materiales y encuentra asesorías, todo en un solo lugar.</p>
+
+        <div class="hero-actions">
+          <a href="dashboard.html" class="btn-primary">Comenzar →</a>
+        </div>
+      </div>
+
+      <div class="escena">
+        <div class="logo-grande">
+          <img src="assets/logo-siga.png" alt="Logo SIGA">
+        </div>
+
+        <div class="iconos-fila">
+          <img class="icono" src="assets/simulador.png" alt="Simulador de notas">
+          <img class="icono" src="assets/horario.png" alt="Horario">
+          <img class="icono" src="assets/asesoria.png" alt="Asesorías">
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- (el resto del body sigue exactamente igual a la versión que ya te pasé:
-         pantalla-1 a pantalla-4, los 3 modales, el toast y la firma digital,
-         cerrando con los <script> de cursos_db.js e intranotas.js) -->
+  <section class="plataforma" id="info">
+    <div class="info-wrap">
+      <h2 class="info-titulo"><span class="titulo-pildora">INFO</span></h2>
+
+      <div class="info-card">
+        <span class="info-marca-agua" aria-hidden="true">SG</span>
+
+        <p class="info-descripcion">La plataforma inteligente diseñada para darte el control total de tu recorrido
+          universitario, eliminando la incertidumbre en tus horarios y notas de cada ciclo,
+          mientras te conecta con opiniones sobre docentes, un banco de recursos para
+          consultar y compartir, y asesorías especializadas.</p>
+
+        <div class="info-filas">
+          <div class="info-fila">
+            <span class="info-icono" style="--angulo:110deg" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="8" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </span>
+            <div class="info-fila-texto">
+              <h3>Cero incertidumbre</h3>
+              <p>Planifica tus horarios sin miedo a los cruces y conoce exactamente qué notas
+                necesitas antes de rendir tus exámenes.</p>
+            </div>
+          </div>
+
+          <div class="info-fila">
+            <span class="info-icono" style="--angulo:150deg" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+                <path d="M4 20V10M12 20V4M20 20v-7" />
+              </svg>
+            </span>
+            <div class="info-fila-texto">
+              <h3>Decisiones con datos</h3>
+              <p>Elige tus secciones con referencias reales de docentes y apóyate en recursos
+                validados por la comunidad.</p>
+            </div>
+          </div>
+
+          <div class="info-fila">
+            <span class="info-icono" style="--angulo:190deg" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+            </span>
+            <div class="info-fila-texto">
+              <h3>Todo en un solo lugar</h3>
+              <p>Centraliza tu gestión académica en un ecosistema fluido, rápido y accesible
+                desde una sola cuenta.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="modulos" id="modulos">
+    <div class="modulos-wrap">
+      <p class="modulos-titulo"><span class="titulo-pildora">MÓDULOS</span></p>
+      <p class="modulos-sub">Organiza tu ciclo, simula tus notas, revisa materiales y más.</p>
+
+      <div class="linea-modulos">
+        <div class="linea-modulos-riel"></div>
+        <div class="linea-modulos-pulso" id="pulsoModulos"></div>
+
+        <div class="mod-fila" id="mod-asesorias">
+          <div class="mod-fila-texto mod-fila-izq">
+            <h3>Asesorías</h3>
+            <p>Apoyo académico diseñado para reforzar tu aprendizaje en los cursos del ciclo, con explicaciones
+              detalladas y recursos de calidad.</p>
+          </div>
+          <span class="mod-nodo"></span>
+          <div class="mod-fila-texto mod-fila-der"></div>
+        </div>
+
+        <div class="mod-fila" id="mod-horarios">
+          <div class="mod-fila-texto mod-fila-izq"></div>
+          <span class="mod-nodo"></span>
+          <div class="mod-fila-texto mod-fila-der">
+            <h3>Generador de horarios</h3>
+            <p>Diseña tu ciclo a tu medida. Organiza tus cursos y secciones de forma inteligente, evitando cruces y
+              optimizando tu tiempo. Guarda tus horarios y descárgalos en Excel o PNG cuando los necesites.</p>
+          </div>
+        </div>
+
+        <div class="mod-fila" id="mod-intranotas">
+          <div class="mod-fila-texto mod-fila-izq">
+            <h3>Intranotas</h3>
+            <p>Anticipa tus resultados y toma mejores decisiones. Simula tus notas y descubre cómo cada evaluación
+              impacta en tu promedio final.</p>
+          </div>
+          <span class="mod-nodo"></span>
+          <div class="mod-fila-texto mod-fila-der"></div>
+        </div>
+
+        <div class="mod-fila" id="mod-materiales">
+          <div class="mod-fila-texto mod-fila-izq"></div>
+          <span class="mod-nodo"></span>
+          <div class="mod-fila-texto mod-fila-der">
+            <h3>Materiales por ciclo</h3>
+            <p>Encuentra y comparte recursos académicos organizados para complementar tu aprendizaje cuando más lo
+              necesites.</p>
+          </div>
+        </div>
+
+        <div class="mod-fila" id="mod-opiniones">
+          <div class="mod-fila-texto mod-fila-izq">
+            <h3>Opiniones de profesores</h3>
+            <p>Conoce mejor a tus profesores a partir de las experiencias de otros estudiantes y obtén referencias que
+              te ayuden a elegir tus cursos con mayor criterio.</p>
+          </div>
+          <span class="mod-nodo"></span>
+          <div class="mod-fila-texto mod-fila-der"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <a href="#inicio" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
+
+  <script src="js/landing.js"></script>
+</body>
+
+</html>
