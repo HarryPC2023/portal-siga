@@ -1,0 +1,1617 @@
+/* ============================================================
+   CONFIGURACIÓN INICIAL Y VARIABLES DEL SISTEMA
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8fafc;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+:root {
+    --color-cian: #00bcd4;
+    --color-cian-hover: #0097a7;
+    --color-cian-light: #e0f7fa;
+    --color-verde-oscuro: #004d40;
+    --color-azul: #2196f3;
+    --color-azul-claro: #e3f2fd;
+    --color-gris-texto: #4b5563;
+    --color-gris-claro: #d1d5db;
+    --color-verde-btn: #10b981;
+    --color-rojo-btn: #ef4444;
+    --color-fondo-input: #f0faff;
+    --sombra-tarjeta: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --sombra-elevada: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================================
+   SISTEMA DE PANTALLAS
+   ============================================================ */
+.pantalla {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+}
+
+.pantalla.activa {
+    display: block;
+}
+
+/* PANTALLA 1: BIENVENIDA */
+.pantalla-bienvenida {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e0f7fa 100%);
+}
+
+.pantalla-bienvenida.activa {
+    display: flex;
+}
+
+/* PANTALLA 2: SELECCIÓN DE CARRERA */
+.pantalla-seleccion-carrera {
+    padding: 40px 20px 80px 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e0f7fa 100%);
+    min-height: 100vh;
+}
+
+/* PANTALLA 3: CONFIGURACIÓN */
+.pantalla-configuracion {
+    padding: 20px;
+    padding-bottom: 100px;
+}
+
+/* PANTALLA 4: SIMULADOR */
+.pantalla-simulador {
+    padding: 20px;
+    padding-bottom: 50px;
+}
+
+/* ============================================================
+   TÍTULOS Y ENCABEZADOS
+   ============================================================ */
+.titulo-intranotas {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    animation: pulse-intranotas 4s infinite ease-in-out;
+}
+
+@keyframes pulse-intranotas {
+
+    0%,
+    100% {
+        color: #006600;
+    }
+
+    50% {
+        color: var(--color-cian);
+    }
+}
+
+.subtitulo-simulador {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-align: center;
+    background: linear-gradient(90deg, #0097a7, #00bcd4, #4dd0e1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 2rem;
+}
+
+.subtitulo-cabecera {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: center;
+    color: var(--color-gris-texto);
+    margin-top: 0.25rem;
+}
+
+.contenedor-principal {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.cabecera-pantalla {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-cian-light);
+}
+
+/* ============================================================
+   BOTÓN VOLVER CARRERA
+   ============================================================ */
+.btn-volver-carrera {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+    background: none;
+    border: 1px solid var(--color-gris-claro);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 0.75rem;
+    display: inline-block;
+}
+
+.btn-volver-carrera:hover {
+    border-color: var(--color-cian);
+    color: var(--color-cian);
+}
+
+/* ============================================================
+   BOTONES PRINCIPALES
+   ============================================================ */
+.btn-ingresar-principal {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: white;
+    background-color: var(--color-cian);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-ingresar-principal:hover {
+    background-color: var(--color-cian-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-elevada);
+}
+
+/* ============================================================
+   TARJETAS DE CARRERA (PANTALLA 2)
+   ============================================================ */
+.grid-carreras {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 1rem;
+}
+
+.btn-carrera {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: var(--sombra-tarjeta);
+    text-align: left;
+}
+
+.btn-carrera:hover {
+    border-color: var(--color-cian);
+    background-color: var(--color-cian-light);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-elevada);
+}
+
+.btn-carrera-img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.btn-carrera-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.btn-carrera-nombre {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-verde-oscuro);
+    line-height: 1.3;
+}
+
+.btn-carrera-ciclos {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #9ca3af;
+}
+
+/* ============================================================
+   SELECTOR DE CICLO (PANTALLA 3)
+   ============================================================ */
+.seccion-selector-ciclo {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--sombra-tarjeta);
+}
+
+.titulo-seccion {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+    margin-bottom: 1rem;
+}
+
+.grupo-botones-ciclo {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-ciclo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    width: 42px;
+    height: 40px;
+    border: 2px solid var(--color-gris-claro);
+    border-radius: 8px;
+    background-color: white;
+    color: var(--color-gris-texto);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-ciclo:hover {
+    border-color: var(--color-cian);
+    color: var(--color-cian);
+}
+
+.btn-ciclo.seleccionado {
+    background-color: var(--color-cian);
+    border-color: var(--color-cian);
+    color: white;
+}
+
+/* ============================================================
+   BADGE CRITERIO OFICIAL (POR CICLO EN ACORDEÓN)
+   ============================================================ */
+.badge-criterio-oficial {
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-left: 8px;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* ============================================================
+   ACORDEONES DE CURSOS (PANTALLA 3)
+   ============================================================ */
+
+/* Colores de barra lateral por ciclo */
+#acordeon-ciclo-1 .acordeon-header {
+    border-left-color: #00bcd4;
+}
+
+#acordeon-ciclo-2 .acordeon-header {
+    border-left-color: #10b981;
+}
+
+#acordeon-ciclo-3 .acordeon-header {
+    border-left-color: #f59e0b;
+}
+
+#acordeon-ciclo-4 .acordeon-header {
+    border-left-color: #ef4444;
+}
+
+#acordeon-ciclo-5 .acordeon-header {
+    border-left-color: #8b5cf6;
+}
+
+#acordeon-ciclo-6 .acordeon-header {
+    border-left-color: #ec4899;
+}
+
+#acordeon-ciclo-7 .acordeon-header {
+    border-left-color: #f97316;
+}
+
+#acordeon-ciclo-8 .acordeon-header {
+    border-left-color: #06b6d4;
+}
+
+#acordeon-ciclo-9 .acordeon-header {
+    border-left-color: #84cc16;
+}
+
+#acordeon-ciclo-10 .acordeon-header {
+    border-left-color: #6366f1;
+}
+
+/* Acordeón especial para electivos */
+.acordeon-electivos .acordeon-header {
+    border-left-color: #8b5cf6;
+}
+
+.acordeon-electivos .acordeon-header-electivos .acordeon-titulo {
+    color: #5b21b6;
+}
+
+.seccion-acordeones {
+    margin-bottom: 1.5rem;
+}
+
+.titulo-acordeones {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+    margin-bottom: 1rem;
+}
+
+.acordeon {
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: var(--sombra-tarjeta);
+    overflow: hidden;
+}
+
+.acordeon-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-left: 4px solid var(--color-cian);
+}
+
+.acordeon-header:hover {
+    background-color: #f8fafc;
+}
+
+.acordeon-icono {
+    font-size: 0.75rem;
+    color: var(--color-gris-texto);
+    margin-right: 12px;
+    transition: transform 0.3s ease;
+    font-weight: bold;
+}
+
+.acordeon.abierto .acordeon-icono {
+    transform: rotate(90deg);
+}
+
+.acordeon-titulo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-verde-oscuro);
+    flex: 1;
+}
+
+.acordeon-contador {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    background-color: var(--color-cian);
+    padding: 2px 8px;
+    border-radius: 10px;
+    min-width: 24px;
+    text-align: center;
+}
+
+.acordeon-contenido {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+    background-color: #fafafa;
+}
+
+.acordeon.abierto .acordeon-contenido {
+    max-height: 2000px;
+}
+
+.acordeon-lista {
+    padding: 10px 16px 16px 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ============================================================
+   LISTA DE CURSOS CON CHECKBOX (PANTALLA 3)
+   ============================================================ */
+.curso-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.curso-item:hover {
+    border-color: var(--color-cian);
+    background-color: var(--color-cian-light);
+}
+
+.curso-item.seleccionado {
+    border-color: var(--color-cian);
+    background-color: var(--color-cian-light);
+}
+
+.curso-checkbox {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    margin-top: 2px;
+    accent-color: var(--color-cian);
+    cursor: pointer;
+}
+
+.curso-info {
+    flex: 1;
+}
+
+.curso-nombre {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1f2937;
+    line-height: 1.3;
+}
+
+.curso-detalles {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.curso-codigo {
+    font-weight: 500;
+}
+
+.curso-creditos {
+    margin-left: 8px;
+    color: var(--color-cian);
+    font-weight: 600;
+}
+
+/* ============================================================
+   MENSAJE DE VALIDACIÓN (PANTALLA 3)
+   ============================================================ */
+.mensaje-validacion {
+    display: none;
+    background-color: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: #92400e;
+    text-align: center;
+}
+
+.mensaje-validacion.visible {
+    display: block;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* ============================================================
+   CABECERA DEL SIMULADOR (PANTALLA 4)
+   ============================================================ */
+.cabecera-simulador {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 10px;
+    border-left: 4px solid var(--color-cian);
+    box-shadow: var(--sombra-tarjeta);
+}
+
+.titulo-ciclo-simulador {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-verde-oscuro);
+    flex: 1;
+    line-height: 1.3;
+}
+
+.titulo-ciclo-simulador .carrera-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.btn-volver {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+    background: none;
+    border: 1px solid var(--color-gris-claro);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-volver:hover {
+    border-color: var(--color-cian);
+    color: var(--color-cian);
+}
+
+/* ============================================================
+   BANNER DE PONDERADO (PANTALLA 4)
+   ============================================================ */
+.banner-ponderado {
+    background-color: var(--color-azul-claro);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.banner-ponderado-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+}
+
+.banner-ponderado-valor {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-azul);
+}
+
+/* ============================================================
+   TARJETAS DE CURSOS (PANTALLA 4)
+   ============================================================ */
+.tarjeta-curso {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--sombra-tarjeta);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+}
+
+.tarjeta-curso:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-elevada);
+}
+
+.tarjeta-header {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    cursor: pointer;
+}
+
+.tarjeta-curso-info {
+    flex: 1;
+}
+
+.tarjeta-curso-nombre {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    line-height: 1.3;
+    margin-bottom: 4px;
+}
+
+.tarjeta-curso-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.tarjeta-curso-codigo {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tarjeta-curso-creditos {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-cian);
+}
+
+.btn-ingresar-notas {
+    display: inline-block;
+    padding: 5px 14px;
+    background-color: #e0f7fa;
+    color: var(--color-cian-hover);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 6px;
+    border: 1px solid #b2ebf2;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.btn-ingresar-notas:hover {
+    background-color: var(--color-cian);
+    color: white;
+    border-color: var(--color-cian);
+}
+
+/* ============================================================
+   CAJA DE PROMEDIO EN TARJETA
+   ============================================================ */
+.caja-promedio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    min-width: 85px;
+    text-align: center;
+}
+
+.caja-promedio-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.caja-promedio-valor {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #d1d5db;
+}
+
+.caja-promedio-valor.tiene-valor {
+    color: var(--color-azul);
+}
+
+/* ============================================================
+   PANEL DE INPUTS (ÁREA DE NOTAS DESPLEGABLE)
+   ============================================================ */
+.panel-notas {
+    background-color: var(--color-fondo-input);
+    border-top: 1px solid #e0e7ef;
+    padding: 0 16px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+.panel-notas.abierto {
+    max-height: 1400px;
+    opacity: 1;
+    padding: 16px;
+}
+
+/* ============================================================
+   GRIDS PARA INPUTS
+   ============================================================ */
+.grid-2-cols {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.grid-4-cols {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.grid-5-cols {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #6b7280;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.input-nota {
+    width: 100%;
+    max-width: 50px;
+    height: 36px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-nota:focus {
+    outline: none;
+    border-color: var(--color-cian);
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.15);
+}
+
+.input-nota::placeholder {
+    color: #d1d5db;
+}
+
+/* ============================================================
+   FILA DE PROMEDIOS DENTRO DEL PANEL DE NOTAS
+   ============================================================ */
+.fila-promedios-panel {
+    display: flex;
+    justify-content: flex-start;
+    gap: 16px;
+    padding-top: 12px;
+    margin-top: 8px;
+    border-top: 1px dashed #d1d5db;
+}
+
+.promedio-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.promedio-item-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.promedio-item-valor {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1f2937;
+    background-color: #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    min-width: 35px;
+    text-align: center;
+}
+
+.promedio-item-valor.tiene-valor {
+    background-color: #dbeafe;
+    color: var(--color-azul);
+}
+
+/* ============================================================
+   ALERTAS DE RIESGO Y ESTADOS DE CURSOS
+   ============================================================ */
+.tarjeta-curso.en-riesgo {
+    border-left: 4px solid #f59e0b;
+}
+
+.tarjeta-curso.critico {
+    border-left: 4px solid #ef4444;
+}
+
+.tarjeta-curso.aprobado {
+    border-left: 4px solid #10b981;
+}
+
+.tarjeta-curso.pendiente {
+    border-left: 4px solid #9ca3af;
+}
+
+.tarjeta-curso.desaprobado {
+    border-left: 4px solid #7f1d1d;
+}
+
+.badge-estado {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.badge-riesgo {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.badge-critico {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.badge-aprobado {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+.badge-pendiente {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+
+.badge-desaprobado {
+    background-color: #7f1d1d;
+    color: #ffffff;
+}
+
+/* Banner de resumen de alertas */
+.banner-alertas {
+    background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 100%);
+    border: 1px solid #f59e0b;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.banner-alertas.visible {
+    display: block;
+}
+
+.banner-alertas-titulo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 6px;
+}
+
+.banner-alertas-lista {
+    font-size: 0.75rem;
+    color: #b45309;
+}
+
+.banner-alertas-item {
+    margin-bottom: 2px;
+}
+
+/* ============================================================
+   SIMULADOR "¿QUÉ NOTA NECESITO?"
+   ============================================================ */
+.seccion-simulador-nota {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px dashed #3b82f6;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+}
+
+.simulador-titulo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #1e40af;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.simulador-contenido {
+    font-size: 0.7rem;
+    color: #1e3a8a;
+    line-height: 1.5;
+}
+
+.simulador-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px dotted #93c5fd;
+}
+
+.simulador-fila:last-child {
+    border-bottom: none;
+}
+
+.simulador-label {
+    font-weight: 500;
+}
+
+.simulador-valor {
+    font-weight: 700;
+    background: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #1d4ed8;
+}
+
+.simulador-valor.imposible {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.simulador-mensaje-ok {
+    background: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ============================================================
+   BOTONES ACCIÓN SIMULADOR (PANTALLA 4) — en flujo normal
+   ============================================================ */
+.botones-accion-simulador {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 0 8px 0;
+}
+
+.btn-flotante {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: var(--sombra-tarjeta);
+}
+
+.btn-guardar {
+    background-color: var(--color-verde-btn);
+    color: white;
+}
+
+.btn-guardar:hover {
+    background-color: #059669;
+    transform: translateY(-2px);
+}
+
+.btn-limpiar {
+    background-color: var(--color-rojo-btn);
+    color: white;
+}
+
+.btn-limpiar:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   FIRMA DIGITAL
+   ============================================================ */
+
+/* El body es el contenedor de referencia para el absolute */
+body {
+    position: relative;
+}
+
+.firma-digital {
+    position: absolute;
+    bottom: 14px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 200;
+    pointer-events: none;
+}
+
+/* Ocultar firma en la pantalla de bienvenida */
+#pantalla-1.activa~.firma-digital {
+    display: none;
+}
+
+.firma-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    opacity: 0.75;
+}
+
+.firma-texto {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: 0.3px;
+}
+
+/* ============================================================
+   MODAL DE CONFIRMACIÓN PERSONALIZADO
+   ============================================================ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 300;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-overlay.visible {
+    display: flex;
+}
+
+.modal-caja {
+    background: white;
+    border-radius: 16px;
+    padding: 28px 24px;
+    max-width: 340px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    animation: modal-entrada 0.25s ease-out;
+}
+
+@keyframes modal-entrada {
+    from {
+        transform: scale(0.88);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-icono {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+}
+
+.modal-titulo {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-verde-oscuro);
+    margin-bottom: 8px;
+}
+
+.modal-mensaje {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    color: var(--color-gris-texto);
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.modal-botones {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.modal-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.modal-btn-cancelar {
+    background-color: #f3f4f6;
+    color: var(--color-gris-texto);
+}
+
+.modal-btn-cancelar:hover {
+    background-color: #e5e7eb;
+}
+
+.modal-btn-confirmar {
+    background-color: var(--color-rojo-btn);
+    color: white;
+}
+
+.modal-btn-confirmar:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+}
+
+/* ============================================================
+   TOAST DE CONFIRMACIÓN
+   ============================================================ */
+.toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1f2937;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 200;
+}
+
+.toast.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* ============================================================
+   FILA DE TÍTULO + BOTÓN INFO (PANTALLA 3)
+   ============================================================ */
+.titulo-acordeones-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.titulo-acordeones-fila .titulo-acordeones {
+    margin-bottom: 0;
+}
+
+.btn-info-importante {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #92400e;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 1.5px solid #f59e0b;
+    border-radius: 20px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(245, 158, 11, 0.3);
+}
+
+.btn-info-importante:hover {
+    background: linear-gradient(135deg, #fde68a, #fcd34d);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(245, 158, 11, 0.35);
+}
+
+/* ============================================================
+   BOTÓN RESETEAR APP (PANTALLA 3)
+   ============================================================ */
+.btn-resetear-app {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6b7280;
+    background: none;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-resetear-app:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+    background-color: #fff5f5;
+}
+
+/* ============================================================
+   MODAL DE INFORMACIÓN (estilo diferenciado)
+   ============================================================ */
+.modal-info-caja {
+    border-top: 4px solid #f59e0b;
+}
+
+/* ============================================================
+   SELECTOR DE TEMA — MENÚ DESPLEGABLE
+   ============================================================ */
+.contenedor-tema {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 500;
+}
+
+.btn-tema-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    background: var(--color-fondo-tarjeta, white);
+    border: 1.5px solid var(--color-gris-claro);
+    border-radius: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+    transition: all 0.2s ease;
+}
+
+.btn-tema-trigger:hover {
+    border-color: var(--color-cian);
+    color: var(--color-cian);
+}
+
+.btn-tema-trigger .tema-icono {
+    font-size: 0.85rem;
+}
+
+.btn-tema-trigger .tema-flecha {
+    font-size: 0.6rem;
+    margin-left: 2px;
+    transition: transform 0.2s ease;
+}
+
+.contenedor-tema.abierto .tema-flecha {
+    transform: rotate(180deg);
+}
+
+.tema-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: var(--color-fondo-tarjeta, white);
+    border: 1.5px solid var(--color-gris-claro);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.13);
+    overflow: hidden;
+    min-width: 150px;
+    animation: dropdown-entrada 0.18s ease-out;
+}
+
+.contenedor-tema.abierto .tema-dropdown {
+    display: block;
+}
+
+@keyframes dropdown-entrada {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tema-opcion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--color-gris-texto);
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+}
+
+.tema-opcion:hover {
+    background: var(--color-cian-light);
+    color: var(--color-cian);
+}
+
+.tema-opcion.activo {
+    font-weight: 700;
+    color: var(--color-cian);
+    background: var(--color-cian-light);
+}
+
+.tema-opcion .opcion-icono {
+    font-size: 1rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* ============================================================
+   META DEL CURSO
+   ============================================================ */
+.meta-curso-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    border: 1px solid #c4b5fd;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #6d28d9;
+    transition: all 0.2s;
+}
+
+.meta-curso-toggle:hover {
+    background: linear-gradient(135deg, #ddd6fe, #c4b5fd);
+}
+
+.meta-curso-flecha {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+
+.meta-curso-contenido {
+    border: 1px dashed #c4b5fd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 16px 14px;
+    margin-top: -1px;
+}
+
+.meta-input-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 12px;
+}
+
+.meta-input-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+    flex-shrink: 0;
+}
+
+.meta-input-final {
+    width: 90px;
+    padding: 8px 10px;
+    border: 1.5px solid var(--color-gris-claro);
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-align: center;
+    color: #1f2937;
+    background: white;
+}
+
+.meta-input-final:focus {
+    outline: none;
+    border-color: var(--color-cian);
+}
+
+.meta-slider-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.meta-slider-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+    width: 110px;
+    flex-shrink: 0;
+}
+
+.meta-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--color-gris-claro);
+    outline: none;
+}
+
+.meta-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-azul);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.meta-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-azul);
+    cursor: pointer;
+    border: none;
+}
+
+.meta-slider-valor {
+    width: 38px;
+    text-align: right;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-azul);
+    flex-shrink: 0;
+}
+
+.meta-nota-ayuda {
+    font-size: 0.68rem;
+    color: #9ca3af;
+    margin: -4px 0 14px 122px;
+    line-height: 1.3;
+}
+
+.meta-resultado {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 8px;
+    padding-top: 12px;
+    text-align: left;
+}
+
+.meta-resultado-label {
+    font-size: 0.78rem;
+    color: var(--color-gris-texto);
+    margin-bottom: 4px;
+}
+
+.meta-resultado-valor {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--color-azul);
+}
+
+.meta-resultado-valor.meta-no-alcanzable {
+    font-size: 0.95rem;
+    color: #dc2626;
+}
+
+.meta-modo-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.meta-modo-btn {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1.5px solid #c4b5fd;
+    background: white;
+    color: #6d28d9;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.meta-modo-btn.activo {
+    background: #6d28d9;
+    color: white;
+    border-color: #6d28d9;
+}
+
+.meta-modo-btn:hover:not(.activo) {
+    background: #ede9fe;
+}
+
+/* ============================================================
+   META DEL CURSO — Adaptación para móviles
+   ============================================================ */
+@media (max-width: 480px) {
+    .meta-slider-group {
+        flex-wrap: wrap;
+        row-gap: 8px;
+    }
+
+    .meta-slider-label {
+        width: 100%;
+        flex-shrink: 0;
+    }
+
+    .meta-slider {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .meta-slider-valor {
+        width: auto;
+        min-width: 36px;
+        flex-shrink: 0;
+    }
+
+    .meta-nota-ayuda {
+        margin-left: 0;
+    }
+
+    .meta-curso-contenido {
+        overflow-x: hidden;
+    }
+}
