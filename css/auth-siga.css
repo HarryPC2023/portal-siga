@@ -133,6 +133,33 @@
   border-color: var(--brand-morado);
 }
 
+.campo-contrasena {
+  position: relative;
+}
+
+.campo-contrasena input {
+  padding-right: 42px;
+}
+
+.btn-ojo {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 8px;
+  color: var(--ink-soft);
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+}
+
+.btn-ojo:hover {
+  opacity: 1;
+}
+
 .link-olvide {
   align-self: center;
   border: none;

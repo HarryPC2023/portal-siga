@@ -35,6 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('formRecuperar').addEventListener('submit', manejarRecuperar);
   document.getElementById('formNuevaContrasena').addEventListener('submit', manejarNuevaContrasena);
 
+  document.querySelectorAll('.btn-ojo').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const input = btn.previousElementSibling;
+      const mostrar = input.type === 'password';
+      input.type = mostrar ? 'text' : 'password';
+      btn.textContent = mostrar ? '🙈' : '👁';
+      btn.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+  });
+
   // Si venimos redirigidos desde una página protegida (o de vuelta de Google), abrir directo.
   const params = new URLSearchParams(window.location.search);
   if (params.get('login') === '1') abrirModal();

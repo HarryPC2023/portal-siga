@@ -213,15 +213,24 @@
 
       <form id="formEntrar" class="form-login">
         <input type="email" name="correo" placeholder="tu@correo.com" required>
-        <input type="password" name="contrasena" placeholder="Contraseña" required>
+        <div class="campo-contrasena">
+          <input type="password" name="contrasena" placeholder="Contraseña" required>
+          <button type="button" class="btn-ojo" aria-label="Mostrar contraseña">👁</button>
+        </div>
         <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Ingresar</button>
         <button type="button" class="link-olvide" id="btnOlvide">¿Olvidaste tu contraseña?</button>
       </form>
 
       <form id="formCrear" class="form-login" hidden>
         <input type="email" name="correo" placeholder="tu@correo.com" required>
-        <input type="password" name="contrasena" placeholder="Crea una contraseña" minlength="6" required>
-        <input type="password" name="confirmar" placeholder="Repite la contraseña" minlength="6" required>
+        <div class="campo-contrasena">
+          <input type="password" name="contrasena" placeholder="Crea una contraseña" minlength="6" required>
+          <button type="button" class="btn-ojo" aria-label="Mostrar contraseña">👁</button>
+        </div>
+        <div class="campo-contrasena">
+          <input type="password" name="confirmar" placeholder="Repite la contraseña" minlength="6" required>
+          <button type="button" class="btn-ojo" aria-label="Mostrar contraseña">👁</button>
+        </div>
         <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Crear cuenta</button>
       </form>
 
@@ -233,7 +242,10 @@
 
       <form id="formNuevaContrasena" class="form-login" hidden>
         <p class="login-info">Ingresa tu nueva contraseña.</p>
-        <input type="password" name="nueva" placeholder="Nueva contraseña" minlength="6" required>
+        <div class="campo-contrasena">
+          <input type="password" name="nueva" placeholder="Nueva contraseña" minlength="6" required>
+          <button type="button" class="btn-ojo" aria-label="Mostrar contraseña">👁</button>
+        </div>
         <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Guardar
           contraseña</button>
       </form>

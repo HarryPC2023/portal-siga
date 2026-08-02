@@ -2,7 +2,7 @@
 // Reemplaza estos dos valores por los de tu proyecto real (Supabase > Settings > API):
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const SUPABASE_URL = 'https://pinoriectlepnihjbxmt.supabase.co/rest/v1/';
+const SUPABASE_URL = 'https://pinoriectlepnihjbxmt.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_2h0qDr857y1KfUfIP2x6DQ_eHz5S40q';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
