@@ -146,8 +146,8 @@ const FORMULAS_SOLO_EXAMENES = ['SOLO_EXAMENES'];
    VARIABLES GLOBALES DE ESTADO
    ============================================================ */
 let carreraSeleccionada = null;
-let cicloSeleccionado = null;
 let cursosSeleccionados = [];
+let periodoSeleccionado = null;
 
 /* ============================================================
    NAVEGACIÓN ENTRE PANTALLAS
@@ -169,7 +169,6 @@ function irAPantalla(num) {
    ============================================================ */
 function seleccionarCarrera(carrera) {
     carreraSeleccionada = carrera;
-    cicloSeleccionado = null;
     cursosSeleccionados = [];
 
     const labelCarrera = document.getElementById('nombre-carrera-activa');
@@ -179,7 +178,7 @@ function seleccionarCarrera(carrera) {
 
     setTimeout(() => {
         generarAcordeones();
-        inicializarSelectoresCiclo();
+        generarOpcionesPeriodo();
         restaurarSeleccionGuardada();
     }, 50);
 }
@@ -322,27 +321,74 @@ function actualizarContadores() {
     }
 }
 
-function seleccionarCiclo(num) {
-    document.querySelectorAll('.btn-ciclo').forEach(b => b.classList.remove('seleccionado'));
-    const btn = document.querySelector(`.btn-ciclo[data-ciclo="${num}"]`);
-    if (btn) btn.classList.add('seleccionado');
-    cicloSeleccionado = num;
-    ocultarMensajeValidacion();
+/* ============================================================
+   SELECTOR DE PERIODO ACADÉMICO (PANTALLA 3)
+   Mismo formato que usa INTRALU internamente ("2026-1"), en vez
+   de preguntar el ciclo — así no hay autoidentificación incómoda,
+   y este dato queda listo para cuando se conecte la importación
+   automática desde INTRALU más adelante.
+   ============================================================ */
+function generarPeriodosDisponibles(cantidad = 10) {
+    const hoy = new Date();
+    // En la UNI el periodo 2 arranca en agosto y el periodo 1 en marzo.
+    // Ajusta este mes de corte si tu universidad usa otro calendario.
+    const MES_CORTE_PERIODO_2 = 7; // agosto = índice 7 (enero = 0)
+
+    let anio = hoy.getFullYear();
+    let periodo = hoy.getMonth() >= MES_CORTE_PERIODO_2 ? 2 : 1;
+
+    const periodos = [];
+    for (let i = 0; i < cantidad; i++) {
+        periodos.push(`${anio}-${periodo}`);
+        if (periodo === 1) {
+            periodo = 2;
+            anio -= 1;
+        } else {
+            periodo = 1;
+        }
+    }
+    return periodos;
 }
 
-function inicializarSelectoresCiclo() {
-    document.querySelectorAll('.btn-ciclo').forEach(b => b.classList.remove('seleccionado'));
-    cicloSeleccionado = null;
+function generarOpcionesPeriodo() {
+    const select = document.getElementById('selector-periodo');
+    if (!select) return;
+
+    const periodos = generarPeriodosDisponibles();
+    const actual = periodos[0];
+
+    select.innerHTML = periodos.map(p => `<option value="${p}">${p}</option>`).join('');
+    select.value = periodoSeleccionado || actual;
+    periodoSeleccionado = select.value;
+}
+
+function seleccionarPeriodo(valor) {
+    periodoSeleccionado = valor;
+}
+
+/* Calcula qué mostrar como "ciclo" según los cursos que el alumno
+   realmente seleccionó, en vez de pedirle que se autoidentifique. */
+function obtenerEtiquetaCiclo() {
+    const ciclos = [...new Set(
+        cursosSeleccionados
+            .map(c => c.cicloOrigen)
+            .filter(c => c !== 'electivos')
+            .map(Number)
+    )].sort((a, b) => a - b);
+
+    if (ciclos.length === 0) return 'CURSOS ELECTIVOS';
+    if (ciclos.length === 1) return NOMBRES_CICLOS[ciclos[0]];
+
+    const esRangoContinuo = ciclos.every((c, i) => i === 0 || c === ciclos[i - 1] + 1);
+    if (esRangoContinuo) return `CICLO ${ciclos[0]} AL ${ciclos[ciclos.length - 1]}`;
+
+    return `CICLOS ${ciclos.join(', ')}`;
 }
 
 /* ============================================================
    VALIDACIÓN Y NAVEGACIÓN AL SIMULADOR
    ============================================================ */
 function irAlSimulador() {
-    if (!cicloSeleccionado) {
-        mostrarMensajeValidacion('⚠️ Debes seleccionar en qué ciclo te encuentras');
-        return;
-    }
     if (cursosSeleccionados.length === 0) {
         mostrarMensajeValidacion('⚠️ Debes seleccionar al menos un curso');
         return;
@@ -385,13 +431,13 @@ function generarSimulador() {
         <div class="cabecera-simulador">
             <div class="titulo-ciclo-simulador">
                 <span class="carrera-label">${NOMBRES_CARRERAS[carreraSeleccionada]}</span>
-                ${NOMBRES_CICLOS[cicloSeleccionado]}
+                ${periodoSeleccionado ? `${periodoSeleccionado} · ` : ''}${obtenerEtiquetaCiclo()}
             </div>
             <button class="btn-volver" onclick="irAPantalla(3)">← Cambiar cursos</button>
         </div>
 
         <div class="banner-ponderado">
-            <span class="banner-ponderado-label">PONDERADO CICLO</span>
+            <span class="banner-ponderado-label">PROMEDIO PONDERADO</span>
             <span class="banner-ponderado-valor" id="ponderado-ciclo">--</span>
         </div>
 
@@ -1222,24 +1268,24 @@ function calcularTodo() {
    ============================================================ */
 function guardarConfiguracion() {
     localStorage.setItem('intranotas_carrera', carreraSeleccionada);
-    localStorage.setItem('intranotas_ciclo', cicloSeleccionado);
     localStorage.setItem('intranotas_cursos', JSON.stringify(cursosSeleccionados));
+    localStorage.setItem('intranotas_periodo', periodoSeleccionado || '');
     limpiarNotasCursosNoSeleccionados();
     limpiarMetasCursosNoSeleccionados();
 }
 
 function restaurarSeleccionGuardada() {
     const carreraG = localStorage.getItem('intranotas_carrera');
-    const cicloG = localStorage.getItem('intranotas_ciclo');
     const cursosG = localStorage.getItem('intranotas_cursos');
+    const periodoG = localStorage.getItem('intranotas_periodo');
 
     // Solo restaurar si coincide con la carrera activa
     if (!carreraG || carreraG !== carreraSeleccionada) return;
 
-    if (cicloG) {
-        cicloSeleccionado = parseInt(cicloG);
-        const btn = document.querySelector(`.btn-ciclo[data-ciclo="${cicloSeleccionado}"]`);
-        if (btn) btn.classList.add('seleccionado');
+    if (periodoG) {
+        periodoSeleccionado = periodoG;
+        const select = document.getElementById('selector-periodo');
+        if (select) select.value = periodoG;
     }
 
     if (cursosG) {
@@ -1349,13 +1395,13 @@ function cerrarModalReset() {
 function confirmarResetearApp() {
     cerrarModalReset();
     localStorage.removeItem('intranotas_carrera');
-    localStorage.removeItem('intranotas_ciclo');
     localStorage.removeItem('intranotas_cursos');
+    localStorage.removeItem('intranotas_periodo');
     localStorage.removeItem('intranotas_notas');
     localStorage.removeItem('intranotas_metas');
     carreraSeleccionada = null;
-    cicloSeleccionado = null;
     cursosSeleccionados = [];
+    periodoSeleccionado = null;
     irAPantalla(2);
     mostrarToast('🔄 App reiniciada. ¡Elige tu carrera de nuevo!');
 }
@@ -1585,25 +1631,25 @@ document.addEventListener('DOMContentLoaded', () => {
    ============================================================ */
 function intentarRestaurarSesion() {
     const carreraG = localStorage.getItem('intranotas_carrera');
-    const cicloG = localStorage.getItem('intranotas_ciclo');
     const cursosG = localStorage.getItem('intranotas_cursos');
+    const periodoG = localStorage.getItem('intranotas_periodo');
 
-    if (!carreraG || !cicloG || !cursosG) return; // Sin sesión previa: se queda en la bienvenida
+    if (!carreraG || !cursosG) return; // Sin sesión previa: se queda en la bienvenida
 
     try {
         const cursosGuardados = JSON.parse(cursosG);
         if (!Array.isArray(cursosGuardados) || cursosGuardados.length === 0) return;
 
         carreraSeleccionada = carreraG;
-        cicloSeleccionado = parseInt(cicloG);
         cursosSeleccionados = cursosGuardados;
+        if (periodoG) periodoSeleccionado = periodoG;
 
         const labelCarrera = document.getElementById('nombre-carrera-activa');
         if (labelCarrera) labelCarrera.textContent = NOMBRES_CARRERAS[carreraSeleccionada];
 
         // Prepara la Pantalla 3 en segundo plano por si el usuario pulsa "Cambiar cursos"
         generarAcordeones();
-        inicializarSelectoresCiclo();
+        generarOpcionesPeriodo();
         restaurarSeleccionGuardada();
 
         // Va directo al simulador con las notas ya cargadas

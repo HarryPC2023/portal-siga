@@ -190,3 +190,25 @@ body.tema-forest {
 .modal-overlay {
     z-index: 600;
 }
+
+/* ---------- Selector de periodo académico (reemplaza al viejo
+   selector de ciclo — usa el mismo formato que INTRALU: "2026-1") ---------- */
+.select-periodo {
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 12px 14px;
+    border: 2px solid var(--color-gris-claro);
+    border-radius: 8px;
+    background-color: var(--color-fondo-input);
+    color: var(--color-gris-texto);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.select-periodo:hover,
+.select-periodo:focus {
+    border-color: var(--color-cian);
+    outline: none;
+}
