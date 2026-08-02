@@ -1,4 +1,4 @@
-// js/auth-siga.js — Módulo de autenticación compartido para SIGA (magic link, Supabase Auth)
+// js/auth-siga.js — Módulo de autenticación compartido para SIGA
 // Reemplaza estos dos valores por los de tu proyecto real (Supabase > Settings > API):
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -9,17 +9,50 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
 });
 
+/** Devuelve la sesión actual (o null si no hay nadie logueado). */
 export async function obtenerSesion() {
     const { data, error } = await supabase.auth.getSession();
     if (error) { console.error('Error al obtener sesión SIGA:', error); return null; }
     return data.session;
 }
 
-export async function iniciarSesionConCorreo(correo) {
-    const { error } = await supabase.auth.signInWithOtp({
-        email: correo,
-        options: { emailRedirectTo: window.location.href },
+/** Crea una cuenta nueva con correo + contraseña. */
+export async function registrarConCorreo(correo, contrasena) {
+    const { data, error } = await supabase.auth.signUp({ email: correo, password: contrasena });
+    return {
+        ok: !error,
+        error,
+        // Si Supabase exige confirmar el correo, signUp devuelve usuario pero SIN sesión activa todavía.
+        requiereConfirmacion: !error && data && !data.session,
+    };
+}
+
+/** Inicia sesión con correo + contraseña ya existentes. */
+export async function iniciarSesionConCorreo(correo, contrasena) {
+    const { error } = await supabase.auth.signInWithPassword({ email: correo, password: contrasena });
+    return { ok: !error, error };
+}
+
+/** Inicia sesión con Google. Redirige fuera de la página y vuelve ya logueado. */
+export async function iniciarSesionConGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + '/portal-siga/index.html?login=1' },
     });
+    return { ok: !error, error };
+}
+
+/** Envía un correo con enlace para restablecer la contraseña. */
+export async function recuperarContrasena(correo) {
+    const { error } = await supabase.auth.resetPasswordForEmail(correo, {
+        redirectTo: window.location.origin + '/portal-siga/index.html?recuperar=1',
+    });
+    return { ok: !error, error };
+}
+
+/** Establece una nueva contraseña (se usa durante el flujo de recuperación). */
+export async function establecerNuevaContrasena(nuevaContrasena) {
+    const { error } = await supabase.auth.updateUser({ password: nuevaContrasena });
     return { ok: !error, error };
 }
 
@@ -27,12 +60,16 @@ export async function cerrarSesion() {
     await supabase.auth.signOut();
 }
 
+/** Suscribe una función a cambios de sesión (login/logout/recuperación). */
 export function alCambiarSesion(callback) {
-    const { data } = supabase.auth.onAuthStateChange((_evento, sesion) => callback(sesion));
+    const { data } = supabase.auth.onAuthStateChange((evento, sesion) => callback(sesion, evento));
     return () => data.subscription.unsubscribe();
 }
 
-/** Pinta el estado de sesión dentro de `.app-nav-user` (ya existe en tu markup). */
+/**
+ * Pinta el estado de sesión dentro de `.app-nav-user` (el mismo hueco que
+ * ya existe en dashboard.css). Reutilizable en cualquier página.
+ */
 export function montarNavUsuario() {
     const cont = document.querySelector('.app-nav-user');
     if (!cont) return;
@@ -47,7 +84,7 @@ export function montarNavUsuario() {
         </button>
         <div class="app-nav-user-menu" id="avatarMenu">
           <div class="app-nav-user-info">
-            <span class="app-nav-user-correo">${sesion.user.email}</span>
+            <span class="app-nav-user-correo">${sesion.user.email ?? ''}</span>
           </div>
           <button type="button" class="app-nav-user-item app-nav-user-salir" id="btnCerrarSesionSiga">Cerrar sesión</button>
         </div>`;
@@ -64,7 +101,12 @@ export function montarNavUsuario() {
                     btn.setAttribute('aria-expanded', 'false');
                 }
             });
-            document.getElementById('btnCerrarSesionSiga').addEventListener('click', cerrarSesion);
+            document.getElementById('btnCerrarSesionSiga').addEventListener('click', async () => {
+                await cerrarSesion();
+                window.location.href = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/')
+                    ? '../index.html'
+                    : 'index.html';
+            });
         } else {
             cont.innerHTML = `<button type="button" class="btn-login-siga" id="btnAbrirLoginSiga">Iniciar sesión</button>`;
             document.getElementById('btnAbrirLoginSiga').addEventListener('click', () => {
@@ -75,4 +117,22 @@ export function montarNavUsuario() {
 
     obtenerSesion().then(pintar);
     alCambiarSesion(pintar);
+}
+
+/**
+ * Protege una página interna: si no hay sesión, redirige a index.html con
+ * el login listo para abrirse (?login=1). Llamar al inicio de cada página
+ * que requiera cuenta (dashboard, asesorias, materiales, intranotas, horarios).
+ *
+ * @param {string} raiz - ruta relativa hacia la raíz del portal.
+ *   '' si la página ya está en la raíz (dashboard.html, asesorias.html...).
+ *   '../' si la página está en una subcarpeta (intranotas/, horarios/).
+ */
+export async function requerirSesion(raiz = '') {
+    const sesion = await obtenerSesion();
+    if (!sesion) {
+        window.location.href = `${raiz}index.html?login=1`;
+        return null;
+    }
+    return sesion;
 }
