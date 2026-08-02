@@ -1,0 +1,430 @@
+/* ============================================================
+   TEMA SIGA para Generador de Horarios — v3
+   ------------------------------------------------------------
+   4 tonos: Claro (= identidad de marca SIGA, tono por defecto) /
+   Oscuro / Ocean / Forest. "Claro" YA ES el tono de marca — no
+   existe una opción de menú aparte llamada "SIGA" (mismo criterio
+   que se aplicó en el rediseño de Intranotas).
+
+   Se carga DESPUÉS de static/css/style.css. Como ese archivo ya
+   usa var(--accent), var(--bg), var(--surface)... en todos sus
+   selectores, con solo redefinir esas variables por tono se
+   repinta TODA la app sin tocar su lógica ni su HTML funcional.
+
+   El tono activo se controla con el atributo data-tema en <html>
+   (ver static/js/tema-horarios.js + el script inline anti-flash
+   en el <head> de cada página).
+
+   v3: el FONDO GENERAL del body ahora usa el MISMO mecanismo que
+   siga-theme-intranotas.css (paradas duras 26%/78%, dos colores
+   con alfa alta sobre un background-color sólido) en vez de la
+   fórmula de 3 tonos casi idénticos que traía v2 — esa fórmula
+   apenas se notaba en movimiento porque los 3 colores eran
+   demasiado parecidos entre sí. La nueva variable es
+   --siga-body-overlay (antes --siga-body-grad, que se deja
+   declarada pero ya no se usa en el body, por si sirve en otro
+   lado más adelante).
+   ============================================================ */
+
+/* ---------- 1. PALETA POR TONO ---------- */
+
+:root,
+html[data-tema="claro"] {
+  --accent: #6600CC;
+  --accent-dim: rgba(102, 0, 204, 0.12);
+  --accent-dark: #4f0099;
+  --bg: #FFFDF9;
+  --surface: #ffffff;
+  --surface2: #FFFDF9;
+  --border: rgba(0, 0, 0, 0.08);
+  --text: #000000;
+  --text-dim: #4A4A4A;
+  --text-faint: #9c9c9c;
+
+  /* Degradado de marca: azul -> LILA (dominante) -> morado, sin
+     tramo blanco — el mismo que quedó en el rediseño de Intranotas,
+     para que ambas apps se sientan de la misma familia visual.
+     (--siga-grad-1/2/3 siguen alimentando la FRANJA SUPERIOR). */
+  --siga-grad-1: #D6F3FA;
+  --siga-grad-2: #E4CAF6;
+  --siga-grad-3: #F3EAFB;
+  /* Punto medio para el FONDO GENERAL (no la franja superior): lila
+     diluido con el fondo, no reemplazado por blanco puro — eso es
+     lo que hacía que se viera pálido antes. ~55% lila / 45% crema.
+     (queda sin usar ahora que --siga-body-overlay de abajo lo
+     reemplaza, se deja definida por si se quiere volver a este
+     estilo). */
+  --siga-grad-mid: #ECD9F7;
+  --siga-body-grad: linear-gradient(135deg,
+      rgba(0, 255, 255, 0.13) 0%,
+      rgba(0, 255, 255, 0.13) 26%,
+      rgba(204, 0, 255, 0.2) 78%,
+      rgba(204, 0, 255, 0.2) 100%);
+
+  /* FONDO GENERAL final — mismo mecanismo que siga-theme-intranotas.css:
+     cian -> magenta en diagonal, cada color "aguanta" su mitad
+     (paradas duras en 26%/78%) antes de mezclarse en el centro. */
+  --siga-body-overlay: linear-gradient(135deg,
+      rgba(0, 255, 255, 0.13) 0%,
+      rgba(0, 255, 255, 0.13) 26%,
+      rgba(204, 0, 255, 0.2) 78%,
+      rgba(204, 0, 255, 0.2) 100%);
+}
+
+html[data-tema="oscuro"] {
+  --accent: #a855f7;
+  --accent-dim: rgba(168, 85, 247, 0.18);
+  /* En claro/ocean/forest --accent-dark es más OSCURO que --accent
+     porque se usa como texto sobre superficies blancas. Acá se
+     invierte a propósito: sobre fondos oscuros necesita ser un tono
+     que siga leyéndose bien tanto de texto como de fondo de botón
+     en hover — por eso es un morado medio, ni muy claro ni muy
+     apagado. */
+  --accent-dark: #7c3aed;
+  --bg: #15121e;
+  --surface: #1e1a2b;
+  --surface2: #241f33;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #f5f3ff;
+  --text-dim: #b7aecb;
+  --text-faint: #6f6580;
+
+  --siga-grad-1: #241b35;
+  --siga-grad-2: #3a2657;
+  --siga-grad-3: #1c1428;
+  --siga-grad-mid: #2A1E3E;
+  --siga-body-grad: linear-gradient(160deg, var(--siga-grad-2) 0%, var(--siga-grad-mid) 50%, var(--siga-grad-3) 100%);
+
+  /* IDÉNTICO a siga-theme-intranotas.css body.tema-dark — mismos
+     valores rgba exactos, no una variación propia, para que el
+     degradado se vea igual en las dos apps. */
+  --siga-body-overlay: linear-gradient(135deg,
+      rgba(77, 208, 225, 0.40) 0%,
+      rgba(77, 208, 225, 0.40) 26%,
+      rgba(100, 181, 246, 0.12) 78%,
+      rgba(100, 181, 246, 0.12) 100%);
+}
+
+html[data-tema="ocean"] {
+  --accent: #0891b2;
+  --accent-dim: rgba(8, 145, 178, 0.12);
+  --accent-dark: #066f8a;
+  --bg: #f0fbfd;
+  --surface: #ffffff;
+  --surface2: #eaf9fb;
+  --border: #d3eef2;
+  --text: #072a30;
+  --text-dim: #3f6b73;
+  --text-faint: #9fc7cd;
+
+  --siga-grad-1: #CFFAFE;
+  --siga-grad-2: #A5F3FC;
+  --siga-grad-3: #E0F7FB;
+  --siga-grad-mid: #C8F6FB;
+  --siga-body-grad: linear-gradient(160deg, var(--siga-grad-2) 0%, var(--siga-grad-mid) 45%, var(--siga-grad-3) 100%);
+
+  /* IDÉNTICO a siga-theme-intranotas.css body.tema-ocean. */
+  --siga-body-overlay: linear-gradient(135deg,
+      rgba(101, 238, 241, 0.18) 0%,
+      rgba(101, 238, 241, 0.18) 26%,
+      rgba(29, 78, 216, 0.60) 78%,
+      rgba(29, 78, 216, 0.60) 100%);
+}
+
+html[data-tema="forest"] {
+  --accent: #16a34a;
+  --accent-dim: rgba(22, 163, 74, 0.12);
+  --accent-dark: #0f7c39;
+  --bg: #f3f9f2;
+  --surface: #ffffff;
+  --surface2: #edf7ea;
+  --border: #d7ead1;
+  --text: #14291a;
+  --text-dim: #47614c;
+  --text-faint: #9dbd9f;
+
+  --siga-grad-1: #DCFCE7;
+  --siga-grad-2: #BBF7D0;
+  --siga-grad-3: #ECFDF3;
+  --siga-grad-mid: #D3F7DE;
+  --siga-body-grad: linear-gradient(160deg, var(--siga-grad-2) 0%, var(--siga-grad-mid) 50%, var(--siga-grad-3) 100%);
+
+  /* IDÉNTICO a siga-theme-intranotas.css body.tema-forest. */
+  --siga-body-overlay: linear-gradient(135deg,
+      rgba(171, 221, 95, 0.20) 0%,
+      rgba(171, 221, 95, 0.20) 26%,
+      rgba(42, 161, 18, 0.74) 78%,
+      rgba(42, 161, 18, 0.74) 100%);
+}
+
+/* La FORMA no cambia entre tonos ni respecto a la app original —
+   se mantienen las tarjetas/botones/inputs redondeados que ya
+   existían, solo cambia color y jerarquía. */
+:root {
+  --radius: 14px;
+  --siga-topbar-alto: 46px;
+}
+
+/* ---------- FONDO GENERAL DE LA APP — mismo mecanismo que
+   siga-theme-intranotas.css: background-color sólido (var(--bg),
+   propio de cada tono) + overlay de dos colores con paradas duras
+   en movimiento. Antes esto usaba --siga-body-grad (3 tonos casi
+   idénticos entre sí), lo que hacía que el movimiento apenas se
+   notara — ahora con --siga-body-overlay el contraste es mucho
+   mayor, igual que en Intranotas. */
+body {
+  font-family: 'Orbitron', sans-serif;
+  background-color: var(--bg);
+  background-image: var(--siga-body-overlay);
+  background-size: 200% 200%;
+  animation: sigaBodyMover 14s ease-in-out infinite;
+  transition: background-color 0.25s ease;
+}
+
+@keyframes sigaBodyMover {
+  0% {
+    background-position: 10% 30%;
+  }
+
+  50% {
+    background-position: 90% 70%;
+  }
+
+  100% {
+    background-position: 10% 30%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+.card-title,
+.topbar-title,
+h1,
+h2,
+h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+}
+
+/* Wordmark: el nombre corto de la app funciona como logotipo junto
+   al ícono (igual que "SIGA" en la web), así que lleva Black Ops
+   One. El resto del texto va en Orbitron, nunca en Black Ops One. */
+.logo-title,
+.sidebar-logo-text {
+  font-family: 'Black Ops One', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* ---------- 2. FRANJA SUPERIOR: degradado + movimiento ----------
+   Mismo tratamiento que la sección INFO de la web (2da pantalla):
+   degradado en movimiento, con el lila con presencia real (no un
+   fondo casi blanco). Aplica al header de ambas pantallas de la
+   app: .idx-header (pantalla 1) y .topbar (pantalla 2). */
+.idx-header,
+.topbar {
+  background: linear-gradient(120deg, var(--siga-grad-1) 0%, var(--siga-grad-2) 50%, var(--siga-grad-3) 100%);
+  background-size: 220% 220%;
+  animation: sigaHeaderMover 14s ease-in-out infinite;
+  border-bottom: 1px solid var(--border);
+}
+
+@keyframes sigaHeaderMover {
+  0% {
+    background-position: 10% 30%;
+  }
+
+  50% {
+    background-position: 90% 70%;
+  }
+
+  100% {
+    background-position: 10% 30%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .idx-header,
+  .topbar {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+/* El sidebar-header es lateral, no la "franja superior" — lleva un
+   tinte suave y quieto para no competir con el topbar animado. */
+.sidebar-header {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ---------- 3. TARJETAS (misma forma, solo color) ---------- */
+.idx-card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: var(--surface);
+}
+
+/* ---------- 4. BOTONES EN PASTILLA (forma ya existente) ---------- */
+.btn-primary,
+.btn-gen {
+  border-radius: 999px !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:hover,
+.btn-gen:hover {
+  box-shadow: 0 8px 18px var(--accent-dim);
+  transform: translateY(-2px);
+}
+
+/* ---------- 5. BARRA "VOLVER / ENTRAR A SIGA" — fila propia ----------
+   A propósito NO es position:fixed: al vivir en el flujo normal del
+   documento, empuja todo lo demás hacia abajo por construcción, así
+   que estructuralmente no puede quedar tapada por el título ni por
+   ningún otro elemento (antes esto se resolvía a mano con z-index en
+   Intranotas; acá se evita el problema desde la raíz). */
+/* Ya no lleva el link "← Volver a SIGA": el nav global de SIGA
+   (arriba, vía {% include nav.html %}) ya cumple esa función. Ahora
+   solo contiene el selector de tono, así que se alinea a la derecha
+   en vez de "space-between" con un solo hijo. */
+.siga-topbar {
+  min-height: var(--siga-topbar-alto);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  row-gap: 8px;
+  gap: 12px;
+  padding: 10px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  position: relative;
+  z-index: 25;
+}
+
+/* Ajusta el alto del layout de escritorio del generador para que
+   siga-topbar + gen-layout + harry-footer (40px) quepan sin
+   solaparse ni generar doble scroll. En index.html no hace falta:
+   esa pantalla ya scrollea libre (body.page-index-body). */
+@media (min-width: 901px) {
+  .gen-layout {
+    height: calc(100vh - 40px - var(--siga-topbar-alto));
+  }
+}
+
+/* ---------- 6. SELECTOR DE TONO ---------- */
+.tema-selector {
+  position: relative;
+}
+
+.tema-boton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.tema-boton:hover {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.tema-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 170px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  z-index: 50;
+}
+
+.tema-menu.abierto {
+  display: flex;
+}
+
+.tema-opcion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tema-opcion:hover {
+  background: var(--accent-dim);
+}
+
+.tema-opcion.activo {
+  background: var(--accent-dim);
+  color: var(--accent-dark);
+}
+
+.tema-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.tema-swatch.claro {
+  background: linear-gradient(135deg, #3C7CF8, #6600CC);
+}
+
+.tema-swatch.oscuro {
+  background: linear-gradient(135deg, #3a2657, #0b0712);
+}
+
+.tema-swatch.ocean {
+  background: linear-gradient(135deg, #0891b2, #a5f3fc);
+}
+
+.tema-swatch.forest {
+  background: linear-gradient(135deg, #16a34a, #bbf7d0);
+}
+
+@media (max-width: 480px) {
+  .siga-topbar {
+    padding: 10px 14px;
+  }
+}
