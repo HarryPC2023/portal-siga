@@ -134,30 +134,36 @@
 }
 
 .campo-contrasena {
-  position: relative;
+  display: flex;
+  align-items: stretch;
 }
 
 .campo-contrasena input {
-  padding-right: 42px;
+  flex: 1;
+  min-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
 }
 
 .btn-ojo {
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  background: transparent;
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-left: none;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background: var(--brand-azul-tinte);
   cursor: pointer;
-  font-size: 15px;
-  padding: 8px;
+  font-size: 16px;
   color: var(--ink-soft);
-  opacity: 0.55;
-  transition: opacity 0.15s ease;
+  padding: 0;
 }
 
 .btn-ojo:hover {
-  opacity: 1;
+  background: #dfeaff;
 }
 
 .link-olvide {
