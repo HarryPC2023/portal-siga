@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/perfil-siga.css">
 </head>
 
 <body>
@@ -98,7 +99,36 @@
 
   <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
+  <div class="modal-perfil" id="modalPerfil">
+    <div class="modal-perfil-caja">
+      <h2>Completa tu perfil</h2>
+      <p class="intro">Un par de datos para identificarte académicamente en SIGA — esto es distinto de la cuenta con
+        la que iniciaste sesión, y solo se pide una vez.</p>
+
+      <form id="formPerfil" class="form-perfil">
+        <label>Nombre completo
+          <input type="text" name="nombre" placeholder="Tu nombre y apellido" required>
+        </label>
+        <label>Código de estudiante
+          <input type="text" name="codigo_estudiante" placeholder="Ej. 20231059E" required>
+        </label>
+        <label>Carrera
+          <select name="carrera" required>
+            <option value="" disabled selected>Selecciona tu carrera</option>
+            <option value="sistemas">Ingeniería de Sistemas</option>
+            <option value="industrial">Ingeniería Industrial</option>
+            <option value="software">Ingeniería de Software</option>
+          </select>
+        </label>
+        <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Guardar y
+          continuar</button>
+        <p class="perfil-msg" id="perfilMsg"></p>
+      </form>
+    </div>
+  </div>
+
   <script src="js/landing.js"></script>
+  <script type="module" src="js/perfil-siga.js"></script>
 </body>
 
 </html>
