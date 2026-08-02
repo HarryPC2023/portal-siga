@@ -110,23 +110,7 @@
             </div>
 
             <div class="seccion-selector-ciclo">
-                <p class="titulo-seccion">¿En qué ciclo te encuentras?</p>
-                <div class="grupo-botones-ciclo" id="grupo-botones-ciclo">
-                    <button class="btn-ciclo" data-ciclo="1" onclick="seleccionarCiclo(1)">1</button>
-                    <button class="btn-ciclo" data-ciclo="2" onclick="seleccionarCiclo(2)">2</button>
-                    <button class="btn-ciclo" data-ciclo="3" onclick="seleccionarCiclo(3)">3</button>
-                    <button class="btn-ciclo" data-ciclo="4" onclick="seleccionarCiclo(4)">4</button>
-                    <button class="btn-ciclo" data-ciclo="5" onclick="seleccionarCiclo(5)">5</button>
-                    <button class="btn-ciclo" data-ciclo="6" onclick="seleccionarCiclo(6)">6</button>
-                    <button class="btn-ciclo" data-ciclo="7" onclick="seleccionarCiclo(7)">7</button>
-                    <button class="btn-ciclo" data-ciclo="8" onclick="seleccionarCiclo(8)">8</button>
-                    <button class="btn-ciclo" data-ciclo="9" onclick="seleccionarCiclo(9)">9</button>
-                    <button class="btn-ciclo" data-ciclo="10" onclick="seleccionarCiclo(10)">10</button>
-                </div>
-            </div>
-
-            <div class="seccion-selector-ciclo">
-                <p class="titulo-seccion">¿En qué periodo académico estás llevando estos cursos?</p>
+                <p class="titulo-seccion">Ingresa tu Periodo Académico</p>
                 <select id="selector-periodo" class="select-periodo" onchange="seleccionarPeriodo(this.value)"></select>
             </div>
 
@@ -183,8 +167,8 @@
         <div class="modal-caja">
             <div class="modal-icono">🔄</div>
             <h2 class="modal-titulo">¿Reiniciar la app?</h2>
-            <p class="modal-mensaje">Se borrará toda la selección de carrera, ciclo, cursos y notas guardadas. Útil
-                para empezar un nuevo ciclo.</p>
+            <p class="modal-mensaje">Se borrará toda la selección de carrera, periodo, cursos y notas guardadas. Útil
+                para empezar un nuevo periodo.</p>
             <div class="modal-botones">
                 <button class="modal-btn modal-btn-cancelar" onclick="cerrarModalReset()">Cancelar</button>
                 <button class="modal-btn modal-btn-confirmar" onclick="confirmarResetearApp()">Sí, reiniciar</button>

@@ -328,7 +328,7 @@ function actualizarContadores() {
    y este dato queda listo para cuando se conecte la importación
    automática desde INTRALU más adelante.
    ============================================================ */
-function generarPeriodosDisponibles(cantidad = 10) {
+function generarPeriodosDisponibles(cantidad = 24) {
     const hoy = new Date();
     // En la UNI el periodo 2 arranca en agosto y el periodo 1 en marzo.
     // Ajusta este mes de corte si tu universidad usa otro calendario.
@@ -350,6 +350,13 @@ function generarPeriodosDisponibles(cantidad = 10) {
     return periodos;
 }
 
+/* "2026-2" -> "26-2" — formato corto y familiar para mostrar en pantalla. */
+function formatoPeriodoCorto(periodo) {
+    if (!periodo) return '';
+    const [anio, num] = periodo.split('-');
+    return `${anio.slice(-2)}-${num}`;
+}
+
 function generarOpcionesPeriodo() {
     const select = document.getElementById('selector-periodo');
     if (!select) return;
@@ -364,25 +371,6 @@ function generarOpcionesPeriodo() {
 
 function seleccionarPeriodo(valor) {
     periodoSeleccionado = valor;
-}
-
-/* Calcula qué mostrar como "ciclo" según los cursos que el alumno
-   realmente seleccionó, en vez de pedirle que se autoidentifique. */
-function obtenerEtiquetaCiclo() {
-    const ciclos = [...new Set(
-        cursosSeleccionados
-            .map(c => c.cicloOrigen)
-            .filter(c => c !== 'electivos')
-            .map(Number)
-    )].sort((a, b) => a - b);
-
-    if (ciclos.length === 0) return 'CURSOS ELECTIVOS';
-    if (ciclos.length === 1) return NOMBRES_CICLOS[ciclos[0]];
-
-    const esRangoContinuo = ciclos.every((c, i) => i === 0 || c === ciclos[i - 1] + 1);
-    if (esRangoContinuo) return `CICLO ${ciclos[0]} AL ${ciclos[ciclos.length - 1]}`;
-
-    return `CICLOS ${ciclos.join(', ')}`;
 }
 
 /* ============================================================
@@ -431,7 +419,7 @@ function generarSimulador() {
         <div class="cabecera-simulador">
             <div class="titulo-ciclo-simulador">
                 <span class="carrera-label">${NOMBRES_CARRERAS[carreraSeleccionada]}</span>
-                ${periodoSeleccionado ? `${periodoSeleccionado} · ` : ''}${obtenerEtiquetaCiclo()}
+                ${formatoPeriodoCorto(periodoSeleccionado)}
             </div>
             <button class="btn-volver" onclick="irAPantalla(3)">← Cambiar cursos</button>
         </div>
