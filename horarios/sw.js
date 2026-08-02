@@ -2,8 +2,8 @@
 // sw.js — Service Worker
 // Permite instalación como PWA y funcionamiento offline
 // ============================================================
-const CACHE_NAME = 'horariogen-v47';
-
+const CACHE_NAME = 'horariogen-v48';
+ 
 // Lista de archivos que se guardan en caché al instalar la app
 const ARCHIVOS_CACHE = [
   'index.html',
@@ -23,7 +23,7 @@ const ARCHIVOS_CACHE = [
   '../css/dashboard.css',
   '../assets/logo-siga.png'
 ];
-
+ 
 // ── INSTALL: guarda todos los archivos en caché ──────────────
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -44,7 +44,7 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
 });
-
+ 
 // ── ACTIVATE: limpia cachés viejas ───────────────────────────
 self.addEventListener('activate', event => {
   event.waitUntil(
@@ -57,19 +57,19 @@ self.addEventListener('activate', event => {
     ).then(() => self.clients.claim())
   );
 });
-
+ 
 // ── FETCH: red primero, caché como respaldo ──────────────────
 // Siempre intenta la red primero y actualiza el caché.
 // Solo usa caché si no hay conexión.
 self.addEventListener('fetch', event => {
   const url = event.request.url;
-
+ 
   // Ignorar peticiones que no sean GET
   if (event.request.method !== 'GET') return;
-
+ 
   // Ignorar chrome-extension y otros esquemas no http
   if (!url.startsWith('http')) return;
-
+ 
   event.respondWith(
     fetch(event.request)
       .then(response => {

@@ -163,6 +163,12 @@ html[data-tema="forest"] {
 :root {
   --radius: 14px;
   --siga-topbar-alto: 46px;
+  /* Alto real del .app-nav global de SIGA (dashboard.css): 38px del
+     botón de avatar + 10px de padding arriba/abajo. Antes el cálculo
+     de .gen-layout solo restaba --siga-topbar-alto (el propio de esta
+     app) sin contar que ahora, integrada en el portal, también carga
+     el nav de SIGA arriba de todo — por eso el layout se veía cortado. */
+  --siga-app-nav-alto: 58px;
 }
 
 /* ---------- FONDO GENERAL DE LA APP — mismo mecanismo que
@@ -322,7 +328,7 @@ h3 {
    esa pantalla ya scrollea libre (body.page-index-body). */
 @media (min-width: 901px) {
   .gen-layout {
-    height: calc(100vh - 40px - var(--siga-topbar-alto));
+    height: calc(100vh - 40px - var(--siga-topbar-alto) - var(--siga-app-nav-alto));
   }
 }
 
