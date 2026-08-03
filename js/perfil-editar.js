@@ -1,7 +1,7 @@
 // js/perfil-editar.js — Página "Mi perfil": carga y permite editar los
 // datos ya guardados en perfiles_usuario en cualquier momento (a diferencia
 // de perfil-siga.js, que solo gatea la primera vez).
-import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=3';
+import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=4';
 
 function generarPeriodosDisponibles(cantidad = 24) {
     const hoy = new Date();

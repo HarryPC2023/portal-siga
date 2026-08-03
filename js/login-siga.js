@@ -3,7 +3,7 @@ import {
   obtenerSesion, alCambiarSesion,
   registrarConCorreo, iniciarSesionConCorreo, iniciarSesionConGoogle,
   recuperarContrasena, establecerNuevaContrasena,
-} from './auth-siga.js?v=2';
+} from './auth-siga.js?v=4';
 
 const FORMULARIOS = {
   entrar: 'formEntrar',

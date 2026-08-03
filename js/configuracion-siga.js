@@ -1,5 +1,5 @@
 // js/configuracion-siga.js — Página "Configuración" → Cambiar contraseña
-import { requerirSesion, establecerNuevaContrasena, montarNavUsuario } from './auth-siga.js?v=3';
+import { requerirSesion, establecerNuevaContrasena, montarNavUsuario } from './auth-siga.js?v=4';
 
 document.addEventListener('DOMContentLoaded', async () => {
     montarNavUsuario();
