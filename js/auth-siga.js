@@ -2,68 +2,68 @@
 // Reemplaza estos dos valores por los de tu proyecto real (Supabase > Settings > API):
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const SUPABASE_URL = 'https://pinoriectlepnihjbxmt.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_2h0qDr857y1KfUfIP2x6DQ_eHz5S40q';
+const SUPABASE_URL = 'https://TU-PROYECTO.supabase.co';
+const SUPABASE_ANON_KEY = 'TU_ANON_KEY_PUBLICA';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
 });
 
 /** Devuelve la sesión actual (o null si no hay nadie logueado). */
 export async function obtenerSesion() {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) { console.error('Error al obtener sesión SIGA:', error); return null; }
-    return data.session;
+  const { data, error } = await supabase.auth.getSession();
+  if (error) { console.error('Error al obtener sesión SIGA:', error); return null; }
+  return data.session;
 }
 
 /** Crea una cuenta nueva con correo + contraseña. */
 export async function registrarConCorreo(correo, contrasena) {
-    const { data, error } = await supabase.auth.signUp({ email: correo, password: contrasena });
-    return {
-        ok: !error,
-        error,
-        // Si Supabase exige confirmar el correo, signUp devuelve usuario pero SIN sesión activa todavía.
-        requiereConfirmacion: !error && data && !data.session,
-    };
+  const { data, error } = await supabase.auth.signUp({ email: correo, password: contrasena });
+  return {
+    ok: !error,
+    error,
+    // Si Supabase exige confirmar el correo, signUp devuelve usuario pero SIN sesión activa todavía.
+    requiereConfirmacion: !error && data && !data.session,
+  };
 }
 
 /** Inicia sesión con correo + contraseña ya existentes. */
 export async function iniciarSesionConCorreo(correo, contrasena) {
-    const { error } = await supabase.auth.signInWithPassword({ email: correo, password: contrasena });
-    return { ok: !error, error };
+  const { error } = await supabase.auth.signInWithPassword({ email: correo, password: contrasena });
+  return { ok: !error, error };
 }
 
 /** Inicia sesión con Google. Redirige fuera de la página y vuelve ya logueado. */
 export async function iniciarSesionConGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: window.location.origin + '/portal-siga/index.html?login=1' },
-    });
-    return { ok: !error, error };
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/portal-siga/index.html?login=1' },
+  });
+  return { ok: !error, error };
 }
 
 /** Envía un correo con enlace para restablecer la contraseña. */
 export async function recuperarContrasena(correo) {
-    const { error } = await supabase.auth.resetPasswordForEmail(correo, {
-        redirectTo: window.location.origin + '/portal-siga/index.html?recuperar=1',
-    });
-    return { ok: !error, error };
+  const { error } = await supabase.auth.resetPasswordForEmail(correo, {
+    redirectTo: window.location.origin + '/portal-siga/index.html?recuperar=1',
+  });
+  return { ok: !error, error };
 }
 
 /** Establece una nueva contraseña (se usa durante el flujo de recuperación). */
 export async function establecerNuevaContrasena(nuevaContrasena) {
-    const { error } = await supabase.auth.updateUser({ password: nuevaContrasena });
-    return { ok: !error, error };
+  const { error } = await supabase.auth.updateUser({ password: nuevaContrasena });
+  return { ok: !error, error };
 }
 
 export async function cerrarSesion() {
-    await supabase.auth.signOut();
+  await supabase.auth.signOut();
 }
 
 /** Suscribe una función a cambios de sesión (login/logout/recuperación). */
 export function alCambiarSesion(callback) {
-    const { data } = supabase.auth.onAuthStateChange((evento, sesion) => callback(sesion, evento));
-    return () => data.subscription.unsubscribe();
+  const { data } = supabase.auth.onAuthStateChange((evento, sesion) => callback(sesion, evento));
+  return () => data.subscription.unsubscribe();
 }
 
 /**
@@ -71,12 +71,15 @@ export function alCambiarSesion(callback) {
  * ya existe en dashboard.css). Reutilizable en cualquier página.
  */
 export function montarNavUsuario() {
-    const cont = document.querySelector('.app-nav-user');
-    if (!cont) return;
+  const cont = document.querySelector('.app-nav-user');
+  if (!cont) return;
 
-    function pintar(sesion) {
-        if (sesion) {
-            cont.innerHTML = `
+  function pintar(sesion) {
+    const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/')
+      ? '../' : '';
+
+    if (sesion) {
+      cont.innerHTML = `
         <button type="button" class="app-nav-avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false" aria-label="Cuenta">
           <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
@@ -86,37 +89,38 @@ export function montarNavUsuario() {
           <div class="app-nav-user-info">
             <span class="app-nav-user-correo">${sesion.user.email ?? ''}</span>
           </div>
+          <a href="${raiz}perfil.html" class="app-nav-user-item">Mi perfil</a>
+          <a href="${raiz}configuracion.html" class="app-nav-user-item">Configuración de la cuenta</a>
+          <div class="app-nav-user-sep"></div>
           <button type="button" class="app-nav-user-item app-nav-user-salir" id="btnCerrarSesionSiga">Cerrar sesión</button>
         </div>`;
 
-            const btn = document.getElementById('avatarBtn');
-            const menu = document.getElementById('avatarMenu');
-            btn.addEventListener('click', () => {
-                const abierto = menu.classList.toggle('abierto');
-                btn.setAttribute('aria-expanded', String(abierto));
-            });
-            document.addEventListener('click', (e) => {
-                if (!cont.contains(e.target)) {
-                    menu.classList.remove('abierto');
-                    btn.setAttribute('aria-expanded', 'false');
-                }
-            });
-            document.getElementById('btnCerrarSesionSiga').addEventListener('click', async () => {
-                await cerrarSesion();
-                window.location.href = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/')
-                    ? '../index.html'
-                    : 'index.html';
-            });
-        } else {
-            cont.innerHTML = `<button type="button" class="btn-login-siga" id="btnAbrirLoginSiga">Iniciar sesión</button>`;
-            document.getElementById('btnAbrirLoginSiga').addEventListener('click', () => {
-                document.dispatchEvent(new CustomEvent('siga:abrir-login'));
-            });
+      const btn = document.getElementById('avatarBtn');
+      const menu = document.getElementById('avatarMenu');
+      btn.addEventListener('click', () => {
+        const abierto = menu.classList.toggle('abierto');
+        btn.setAttribute('aria-expanded', String(abierto));
+      });
+      document.addEventListener('click', (e) => {
+        if (!cont.contains(e.target)) {
+          menu.classList.remove('abierto');
+          btn.setAttribute('aria-expanded', 'false');
         }
+      });
+      document.getElementById('btnCerrarSesionSiga').addEventListener('click', async () => {
+        await cerrarSesion();
+        window.location.href = `${raiz}index.html`;
+      });
+    } else {
+      cont.innerHTML = `<button type="button" class="btn-login-siga" id="btnAbrirLoginSiga">Iniciar sesión</button>`;
+      document.getElementById('btnAbrirLoginSiga').addEventListener('click', () => {
+        document.dispatchEvent(new CustomEvent('siga:abrir-login'));
+      });
     }
+  }
 
-    obtenerSesion().then(pintar);
-    alCambiarSesion(pintar);
+  obtenerSesion().then(pintar);
+  alCambiarSesion(pintar);
 }
 
 /**
@@ -129,10 +133,10 @@ export function montarNavUsuario() {
  *   '../' si la página está en una subcarpeta (intranotas/, horarios/).
  */
 export async function requerirSesion(raiz = '') {
-    const sesion = await obtenerSesion();
-    if (!sesion) {
-        window.location.href = `${raiz}index.html?login=1`;
-        return null;
-    }
-    return sesion;
+  const sesion = await obtenerSesion();
+  if (!sesion) {
+    window.location.href = `${raiz}index.html?login=1`;
+    return null;
+  }
+  return sesion;
 }

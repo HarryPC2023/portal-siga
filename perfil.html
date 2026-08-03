@@ -1,0 +1,70 @@
+---
+---
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi perfil - SIGA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/perfil-siga.css">
+</head>
+
+<body>
+
+    {% include nav.html activo="" %}
+
+    <section class="dash-hero">
+        <div class="dash-wrap">
+            <h1 class="dash-hero-titulo"><span class="titulo-pildora">MI PERFIL</span></h1>
+            <p>Tu identidad académica dentro de SIGA — distinta de la cuenta con la que iniciaste sesión.</p>
+        </div>
+    </section>
+
+    <div class="dash-migas">
+        <a href="dashboard.html">Módulos</a>
+        <span>/</span>
+        <span>Mi perfil</span>
+    </div>
+
+    <section class="dash-detalle" style="padding-top:30px; max-width:520px;">
+        <div class="modal-perfil-caja" style="width:100%; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
+            <form id="formPerfil" class="form-perfil">
+                <label>Nombre completo
+                    <input type="text" name="nombre" placeholder="Tu nombre y apellido" required>
+                </label>
+                <label>Código de estudiante
+                    <input type="text" name="codigo_estudiante" placeholder="Ej. 20231059E" required>
+                </label>
+                <label>Carrera
+                    <select name="carrera" required>
+                        <option value="" disabled>Selecciona tu carrera</option>
+                        <option value="sistemas">Ingeniería de Sistemas</option>
+                        <option value="industrial">Ingeniería Industrial</option>
+                        <option value="software">Ingeniería de Software</option>
+                    </select>
+                </label>
+                <label>Periodo académico actual
+                    <select name="periodo_actual" id="selectorPeriodoPerfil"></select>
+                </label>
+                <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Guardar
+                    cambios</button>
+                <p class="perfil-msg" id="perfilMsg"></p>
+            </form>
+        </div>
+    </section>
+
+    <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
+
+    <script src="js/landing.js"></script>
+    <script type="module" src="js/perfil-editar.js?v=1"></script>
+</body>
+
+</html>
