@@ -3,6 +3,8 @@
 // de perfil-siga.js, que solo gatea la primera vez).
 import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=4';
 
+const BUCKET_AVATARS = 'avatars';
+
 function generarPeriodosDisponibles(cantidad = 24) {
     const hoy = new Date();
     const MES_CORTE_PERIODO_2 = 7; // agosto
@@ -25,13 +27,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     const form = document.getElementById('formPerfil');
     const msg = document.getElementById('perfilMsg');
     const selectorPeriodo = document.getElementById('selectorPeriodoPerfil');
+    const inputFoto = document.getElementById('inputFoto');
+    const previewFoto = document.getElementById('previewFoto');
+    const previewFotoVacia = document.getElementById('previewFotoVacia');
+
+    function mostrarFoto(url) {
+        if (url) {
+            previewFoto.src = url;
+            previewFoto.style.display = 'block';
+            previewFotoVacia.style.display = 'none';
+        } else {
+            previewFoto.style.display = 'none';
+            previewFotoVacia.style.display = 'flex';
+        }
+    }
+
+    inputFoto.addEventListener('change', () => {
+        const archivo = inputFoto.files[0];
+        if (archivo) mostrarFoto(URL.createObjectURL(archivo));
+    });
 
     const periodos = generarPeriodosDisponibles();
     selectorPeriodo.innerHTML = periodos.map((p) => `<option value="${p}">${p}</option>`).join('');
 
     const { data: perfil, error } = await supabase
         .from('perfiles_usuario')
-        .select('nombre, codigo_estudiante, carrera, periodo_actual')
+        .select('nombre, codigo_estudiante, carrera, periodo_actual, foto_url')
         .eq('user_id', sesion.user.id)
         .maybeSingle();
 
@@ -46,11 +67,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         form.codigo_estudiante.value = perfil.codigo_estudiante ?? '';
         if (perfil.carrera) form.carrera.value = perfil.carrera;
         if (perfil.periodo_actual) selectorPeriodo.value = perfil.periodo_actual;
+        mostrarFoto(perfil.foto_url);
     }
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const datos = Object.fromEntries(new FormData(form).entries());
+
+        let fotoUrl = perfil?.foto_url ?? null;
+        const archivo = inputFoto.files[0];
+
+        if (archivo) {
+            const extension = archivo.name.split('.').pop();
+            const ruta = `${sesion.user.id}/avatar.${extension}`;
+
+            const { error: errSubida } = await supabase.storage
+                .from(BUCKET_AVATARS)
+                .upload(ruta, archivo, { upsert: true });
+
+            if (errSubida) {
+                console.error('Error subiendo foto:', errSubida);
+                msg.textContent = 'No se pudo subir la foto. Se guardará el resto de tus datos.';
+            } else {
+                const { data: publica } = supabase.storage.from(BUCKET_AVATARS).getPublicUrl(ruta);
+                fotoUrl = `${publica.publicUrl}?t=${Date.now()}`; // cache-busting: misma ruta, foto nueva
+            }
+        }
 
         const { error: errUpsert } = await supabase
             .from('perfiles_usuario')
@@ -60,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 codigo_estudiante: datos.codigo_estudiante.trim().toUpperCase(),
                 carrera: datos.carrera,
                 periodo_actual: datos.periodo_actual,
+                foto_url: fotoUrl,
             });
 
         if (errUpsert) {
