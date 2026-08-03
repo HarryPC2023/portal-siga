@@ -32,15 +32,16 @@
     <section class="dash-detalle" style="padding-top:30px; max-width:520px;">
         <div class="modal-perfil-caja" style="width:100%; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
             <form id="formPerfil" class="form-perfil">
-                <label style="align-items:center; text-align:center;">
+                <div style="position:relative; width:88px; margin:0 auto 6px;">
                     <img id="previewFoto" src="" alt="Foto de perfil"
                         style="width:88px; height:88px; border-radius:50%; object-fit:cover; background:var(--brand-azul-tinte); display:none;">
                     <div id="previewFotoVacia"
                         style="width:88px; height:88px; border-radius:50%; background:var(--brand-azul-tinte); display:flex; align-items:center; justify-content:center; font-size:32px; color:var(--brand-morado);">
                         👤</div>
-                    <span>Foto de perfil</span>
-                    <input type="file" name="foto" id="inputFoto" accept="image/*">
-                </label>
+                    <button type="button" id="btnCamara" aria-label="Cambiar foto de perfil"
+                        style="position:absolute; bottom:-2px; right:-2px; width:32px; height:32px; border-radius:50%; background:var(--brand-morado); border:3px solid #fff; color:#fff; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center;">📷</button>
+                    <input type="file" name="foto" id="inputFoto" accept="image/*" hidden>
+                </div>
                 <label>Nombre completo
                     <input type="text" name="nombre" placeholder="Tu nombre y apellido" required>
                 </label>
@@ -68,7 +69,7 @@
     <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
     <script src="js/landing.js"></script>
-    <script type="module" src="js/perfil-editar.js?v=5"></script>
+    <script type="module" src="js/perfil-editar.js?v=6"></script>
 </body>
 
 </html>

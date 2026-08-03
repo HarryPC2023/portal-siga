@@ -28,8 +28,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const msg = document.getElementById('perfilMsg');
     const selectorPeriodo = document.getElementById('selectorPeriodoPerfil');
     const inputFoto = document.getElementById('inputFoto');
+    const btnCamara = document.getElementById('btnCamara');
     const previewFoto = document.getElementById('previewFoto');
     const previewFotoVacia = document.getElementById('previewFotoVacia');
+
+    btnCamara.addEventListener('click', () => inputFoto.click());
 
     function mostrarFoto(url) {
         if (url) {
@@ -75,6 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const datos = Object.fromEntries(new FormData(form).entries());
 
         let fotoUrl = perfil?.foto_url ?? null;
+        let avisoFoto = null;
         const archivo = inputFoto.files[0];
 
         if (archivo) {
@@ -87,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (errSubida) {
                 console.error('Error subiendo foto:', errSubida);
-                msg.textContent = 'No se pudo subir la foto. Se guardará el resto de tus datos.';
+                avisoFoto = 'No se pudo subir la foto (revisa que el bucket "avatars" exista). Se guardó el resto de tus datos.';
             } else {
                 const { data: publica } = supabase.storage.from(BUCKET_AVATARS).getPublicUrl(ruta);
                 fotoUrl = `${publica.publicUrl}?t=${Date.now()}`; // cache-busting: misma ruta, foto nueva
@@ -112,6 +116,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        msg.textContent = '¡Perfil actualizado!';
+        msg.textContent = avisoFoto ?? '¡Perfil actualizado!';
     });
 });
