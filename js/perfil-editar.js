@@ -82,6 +82,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const archivo = inputFoto.files[0];
 
         if (archivo) {
+            const { data: chequeoSesion } = await supabase.auth.getSession();
+            console.log('DIAGNÓSTICO — ¿hay sesión activa al subir?', !!chequeoSesion.session);
+            console.log('DIAGNÓSTICO — user.id de la sesión:', chequeoSesion.session?.user?.id);
+            console.log('DIAGNÓSTICO — role del token:', chequeoSesion.session?.access_token ? 'presente' : 'AUSENTE');
+
             const extension = archivo.name.split('.').pop();
             const ruta = `${sesion.user.id}/avatar.${extension}`;
 
