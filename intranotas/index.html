@@ -207,6 +207,13 @@
         <span class="firma-texto">by Harry</span>
     </div>
 
+    <script type="module">
+        import { supabase, obtenerSesion } from '../js/auth-siga.js?v=8';
+        window.sigaSupabase = supabase;
+        window.sigaObtenerSesion = obtenerSesion;
+    </script>
+    <script type="module" src="../js/gate.js"></script>
+
     <script src="cursos_db.js"></script>
     <script src="intranotas.js"></script>
 

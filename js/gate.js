@@ -1,9 +1,9 @@
-// js/gate.js — Protege una página: si no hay sesión, redirige a index.html
-// con el login listo para abrirse. Reutilizable en cualquier página de la
-// raíz que requiera cuenta (asesorias.html, materiales.html, etc.).
+// js/gate.js — Protege una página: si no hay sesión, redirige al login.
+// Auto-detecta si está en una subcarpeta (intranotas/, horarios/) para
+// usar la raíz correcta. Reutilizable en cualquier página de SIGA.
 import { requerirSesion, montarNavUsuario } from './auth-siga.js?v=8';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    montarNavUsuario();
-    await requerirSesion('');
-});
+montarNavUsuario();
+const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/')
+    ? '../' : '';
+await requerirSesion(raiz);
