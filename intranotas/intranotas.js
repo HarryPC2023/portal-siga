@@ -19,9 +19,9 @@ const NOMBRES_CICLOS = {
    cambiar de periodo guardado (Supabase solo guarda el id del curso). */
 function buscarCursoPorId(id) {
     for (const carrera of Object.values(CURSOS_POR_CICLO)) {
-        for (const cursos of Object.values(carrera)) {
+        for (const [ciclo, cursos] of Object.entries(carrera)) {
             const encontrado = cursos.find(c => c.id === id);
-            if (encontrado) return encontrado;
+            if (encontrado) return { ...encontrado, cicloOrigen: ciclo };
         }
     }
     return null;
@@ -203,7 +203,7 @@ function seleccionarCarrera(carrera) {
     setTimeout(() => {
         generarAcordeones();
         generarOpcionesPeriodo();
-        restaurarSeleccionGuardada();
+        marcarCursosSeleccionadosEnUI();
     }, 50);
 }
 
@@ -1280,41 +1280,23 @@ function calcularTodo() {
    PERSISTENCIA EN LOCALSTORAGE
    ============================================================ */
 function guardarConfiguracion() {
-    localStorage.setItem('intranotas_carrera', carreraSeleccionada);
-    localStorage.setItem('intranotas_cursos', JSON.stringify(cursosSeleccionados));
-    localStorage.setItem('intranotas_periodo', periodoSeleccionado || '');
     limpiarMetasCursosNoSeleccionados();
 }
 
-function restaurarSeleccionGuardada() {
-    const carreraG = localStorage.getItem('intranotas_carrera');
-    const cursosG = localStorage.getItem('intranotas_cursos');
-    const periodoG = localStorage.getItem('intranotas_periodo');
-
-    // Solo restaurar si coincide con la carrera activa
-    if (!carreraG || carreraG !== carreraSeleccionada) return;
-
-    if (periodoG) {
-        periodoSeleccionado = periodoG;
-        const select = document.getElementById('selector-periodo');
-        if (select) select.value = periodoG;
-    }
-
-    if (cursosG) {
-        const cursosGuardados = JSON.parse(cursosG);
-        cursosGuardados.forEach(curso => {
-            const cb = document.querySelector(`input[data-curso-id="${curso.id}"]`);
-            const item = document.getElementById(`item-${curso.id}`);
-            if (cb && item) {
-                cb.checked = true;
-                item.classList.add('seleccionado');
-                if (!cursosSeleccionados.find(c => c.id === curso.id)) {
-                    cursosSeleccionados.push(curso);
-                }
-            }
-        });
-        actualizarContadores();
-    }
+/* Marca en la UI de Pantalla 3 (checkboxes + contadores) los cursos que
+   YA están en cursosSeleccionados en memoria. Reemplaza a la vieja
+   restaurarSeleccionGuardada(), que leía un localStorage histórico y
+   reintroducía cursos de sesiones anteriores por error. */
+function marcarCursosSeleccionadosEnUI() {
+    cursosSeleccionados.forEach(curso => {
+        const cb = document.querySelector(`input[data-curso-id="${curso.id}"]`);
+        const item = document.getElementById(`item-${curso.id}`);
+        if (cb && item) {
+            cb.checked = true;
+            item.classList.add('seleccionado');
+        }
+    });
+    actualizarContadores();
 }
 
 async function guardarNotas() {
@@ -1439,9 +1421,6 @@ function confirmarResetearApp() {
        independiente en notas_alumno. "Reiniciar" ahora solo limpia la
        configuración local en pantalla para elegir un periodo NUEVO,
        sin tocar el historial guardado de periodos anteriores. */
-    localStorage.removeItem('intranotas_carrera');
-    localStorage.removeItem('intranotas_cursos');
-    localStorage.removeItem('intranotas_periodo');
     localStorage.removeItem('intranotas_metas');
     carreraSeleccionada = null;
     cursosSeleccionados = [];
@@ -1704,7 +1683,7 @@ async function intentarRestaurarSesion() {
     // Prepara la Pantalla 3 en segundo plano por si el usuario pulsa "Cambiar cursos"
     generarAcordeones();
     generarOpcionesPeriodo();
-    restaurarSeleccionGuardada();
+    marcarCursosSeleccionadosEnUI();
 
     // Va directo al simulador con las notas ya cargadas
     irAPantalla(4);
