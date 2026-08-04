@@ -1,13 +1,13 @@
 // js/perfil-siga.js — Pantalla "Completa tu perfil" (nombre, código, carrera)
 // Se muestra una sola vez, la primera vez que el usuario entra sin tener
 // su fila en perfiles_usuario (o con datos incompletos).
-import { supabase, obtenerSesion, montarNavUsuario } from './auth-siga.js?v=8';
+import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=8';
 
 document.addEventListener('DOMContentLoaded', async () => {
   montarNavUsuario();
 
-  const sesion = await obtenerSesion();
-  if (!sesion) return; // esta página aún no está gateada por sesión (eso es el Paso 4)
+  const sesion = await requerirSesion('');
+  if (!sesion) return; // requerirSesion ya redirige a index.html si no hay cuenta
 
   const { data: perfil, error } = await supabase
     .from('perfiles_usuario')

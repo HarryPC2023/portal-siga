@@ -1,5 +1,5 @@
 // js/opiniones.js
-import { supabase, obtenerSesion, alCambiarSesion, iniciarSesionConCorreo, montarNavUsuario } from './auth-siga.js';
+import { supabase, obtenerSesion, alCambiarSesion, iniciarSesionConCorreo, montarNavUsuario } from './auth-siga.js?v=8';
 
 const CICLOS = Array.from({ length: 10 }, (_, i) => i + 1);
 
