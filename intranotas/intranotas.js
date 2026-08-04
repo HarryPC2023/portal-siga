@@ -194,6 +194,7 @@ function irAPantalla(num) {
 function seleccionarCarrera(carrera) {
     carreraSeleccionada = carrera;
     cursosSeleccionados = [];
+    periodoSeleccionado = null;
 
     const labelCarrera = document.getElementById('nombre-carrera-activa');
     if (labelCarrera) labelCarrera.textContent = NOMBRES_CARRERAS[carrera];
@@ -386,11 +387,9 @@ function generarOpcionesPeriodo() {
     if (!select) return;
 
     const periodos = generarPeriodosDisponibles();
-    const actual = periodos[0];
-
-    select.innerHTML = periodos.map(p => `<option value="${p}">${p}</option>`).join('');
-    select.value = periodoSeleccionado || actual;
-    periodoSeleccionado = select.value;
+    const opciones = `<option value="" disabled ${periodoSeleccionado ? '' : 'selected'}>Escoge tu periodo académico</option>` +
+        periodos.map(p => `<option value="${p}" ${p === periodoSeleccionado ? 'selected' : ''}>${p}</option>`).join('');
+    select.innerHTML = opciones;
 }
 
 function seleccionarPeriodo(valor) {
@@ -401,6 +400,10 @@ function seleccionarPeriodo(valor) {
    VALIDACIÓN Y NAVEGACIÓN AL SIMULADOR
    ============================================================ */
 function irAlSimulador() {
+    if (!periodoSeleccionado) {
+        mostrarMensajeValidacion('⚠️ Debes seleccionar tu periodo académico');
+        return;
+    }
     if (cursosSeleccionados.length === 0) {
         mostrarMensajeValidacion('⚠️ Debes seleccionar al menos un curso');
         return;
@@ -408,13 +411,6 @@ function irAlSimulador() {
     guardarConfiguracion();
     irAPantalla(4);
     generarSimulador();
-}
-
-function mostrarMensajeValidacion(msg) {
-    const el = document.getElementById('mensaje-validacion');
-    el.textContent = msg;
-    el.classList.add('visible');
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function ocultarMensajeValidacion() {
