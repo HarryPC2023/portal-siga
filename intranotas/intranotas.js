@@ -27,6 +27,17 @@ function buscarCursoPorId(id) {
     return null;
 }
 
+/* Dado el id de un curso, encuentra a qué carrera pertenece en el catálogo.
+   Necesario porque notas_alumno solo guarda curso_id, no la carrera. */
+function buscarCarreraPorCursoId(id) {
+    for (const [carrera, ciclos] of Object.entries(CURSOS_POR_CICLO)) {
+        for (const cursos of Object.values(ciclos)) {
+            if (cursos.some(c => c.id === id)) return carrera;
+        }
+    }
+    return null;
+}
+
 /* Ciclos verificados — todos los ciclos de todas las carreras (sin badge) */
 const CICLOS_VERIFICADOS = {
     sistemas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -1666,28 +1677,26 @@ async function intentarRestaurarSesion() {
     const sesion = await window.sigaObtenerSesion();
     if (!sesion) return; // el gate ya protege esta página; por seguridad, no continúa
 
-    const { data: perfil } = await window.sigaSupabase
-        .from('perfiles_usuario')
-        .select('carrera, periodo_actual')
-        .eq('user_id', sesion.user.id)
-        .maybeSingle();
-
-    if (!perfil || !perfil.carrera || !perfil.periodo_actual) return; // primera vez: se queda en pantalla-2
-
-    const { data: notas } = await window.sigaSupabase
+    const { data: notas, error } = await window.sigaSupabase
         .from('notas_alumno')
-        .select('curso_id')
+        .select('curso_id, periodo, actualizado_en')
         .eq('user_id', sesion.user.id)
-        .eq('periodo', perfil.periodo_actual);
+        .order('actualizado_en', { ascending: false });
 
-    if (!notas || !notas.length) return; // aún no hay nada guardado en su periodo actual
+    if (error || !notas || !notas.length) return; // primera vez: se queda en pantalla-2
 
-    const cursosRestaurados = notas.map(f => buscarCursoPorId(f.curso_id)).filter(Boolean);
+    const periodoMasReciente = notas[0].periodo;
+    const cursosDelPeriodo = notas.filter(n => n.periodo === periodoMasReciente);
+
+    const cursosRestaurados = cursosDelPeriodo.map(f => buscarCursoPorId(f.curso_id)).filter(Boolean);
     if (!cursosRestaurados.length) return;
 
-    carreraSeleccionada = perfil.carrera;
+    const carreraInferida = buscarCarreraPorCursoId(cursosRestaurados[0].id);
+    if (!carreraInferida) return;
+
+    carreraSeleccionada = carreraInferida;
     cursosSeleccionados = cursosRestaurados;
-    periodoSeleccionado = perfil.periodo_actual;
+    periodoSeleccionado = periodoMasReciente;
 
     const labelCarrera = document.getElementById('nombre-carrera-activa');
     if (labelCarrera) labelCarrera.textContent = NOMBRES_CARRERAS[carreraSeleccionada];
