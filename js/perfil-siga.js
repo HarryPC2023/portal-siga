@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         nombre,
         codigo_estudiante: codigo,
         carrera: datos.carrera,
+        foto_url: sesion.user.user_metadata?.avatar_url || sesion.user.user_metadata?.picture || null,
       });
 
     if (errUpsert) {
