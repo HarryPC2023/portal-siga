@@ -65,28 +65,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // Si entró con Google y todavía no tiene foto propia guardada, sugerimos
+    // la foto de su cuenta de Google como punto de partida (se puede cambiar).
+    const fotoGoogleSugerida = sesion.user.user_metadata?.avatar_url
+        || sesion.user.user_metadata?.picture
+        || null;
+
     if (perfil) {
         form.nombre.value = perfil.nombre ?? '';
         form.codigo_estudiante.value = perfil.codigo_estudiante ?? '';
         if (perfil.carrera) form.carrera.value = perfil.carrera;
         if (perfil.periodo_actual) selectorPeriodo.value = perfil.periodo_actual;
-        mostrarFoto(perfil.foto_url);
+        mostrarFoto(perfil.foto_url || fotoGoogleSugerida);
+    } else if (fotoGoogleSugerida) {
+        mostrarFoto(fotoGoogleSugerida);
     }
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const datos = Object.fromEntries(new FormData(form).entries());
 
-        let fotoUrl = perfil?.foto_url ?? null;
+        let fotoUrl = perfil?.foto_url || fotoGoogleSugerida || null;
         let avisoFoto = null;
         const archivo = inputFoto.files[0];
 
         if (archivo) {
-            const { data: chequeoSesion } = await supabase.auth.getSession();
-            console.log('DIAGNÓSTICO — ¿hay sesión activa al subir?', !!chequeoSesion.session);
-            console.log('DIAGNÓSTICO — user.id de la sesión:', chequeoSesion.session?.user?.id);
-            console.log('DIAGNÓSTICO — role del token:', chequeoSesion.session?.access_token ? 'presente' : 'AUSENTE');
-
             const extension = archivo.name.split('.').pop();
             const ruta = `${sesion.user.id}/avatar.${extension}`;
 
