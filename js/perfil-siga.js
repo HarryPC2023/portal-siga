@@ -1,7 +1,7 @@
 // js/perfil-siga.js — Pantalla "Completa tu perfil" (nombre, código, carrera)
 // Se muestra una sola vez, la primera vez que el usuario entra sin tener
 // su fila en perfiles_usuario (o con datos incompletos).
-import { supabase, obtenerSesion, montarNavUsuario } from './auth-siga.js?v=4';
+import { supabase, obtenerSesion, montarNavUsuario } from './auth-siga.js?v=8';
 
 document.addEventListener('DOMContentLoaded', async () => {
   montarNavUsuario();

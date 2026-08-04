@@ -74,16 +74,17 @@ export function montarNavUsuario() {
   const cont = document.querySelector('.app-nav-user');
   if (!cont) return;
 
-  function pintar(sesion) {
+  async function pintar(sesion) {
     const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/')
       ? '../' : '';
 
     if (sesion) {
       cont.innerHTML = `
         <button type="button" class="app-nav-avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false" aria-label="Cuenta">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg id="avatarIconoDefault" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
           </svg>
+          <img id="avatarFotoReal" src="" alt="" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
         </button>
         <div class="app-nav-user-menu" id="avatarMenu">
           <div class="app-nav-user-info">
@@ -111,6 +112,23 @@ export function montarNavUsuario() {
         await cerrarSesion();
         window.location.href = `${raiz}index.html`;
       });
+
+      // Si ya tiene foto de perfil guardada, mostrarla en vez del ícono genérico.
+      const { data: perfil } = await supabase
+        .from('perfiles_usuario')
+        .select('foto_url')
+        .eq('user_id', sesion.user.id)
+        .maybeSingle();
+
+      if (perfil?.foto_url) {
+        const img = document.getElementById('avatarFotoReal');
+        const iconoDefault = document.getElementById('avatarIconoDefault');
+        if (img && iconoDefault) {
+          img.src = perfil.foto_url;
+          img.style.display = 'block';
+          iconoDefault.style.display = 'none';
+        }
+      }
     } else {
       cont.innerHTML = `<button type="button" class="btn-login-siga" id="btnAbrirLoginSiga">Iniciar sesión</button>`;
       document.getElementById('btnAbrirLoginSiga').addEventListener('click', () => {
