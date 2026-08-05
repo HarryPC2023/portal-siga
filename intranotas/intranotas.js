@@ -442,6 +442,7 @@ function generarSimulador() {
                 <select id="selector-periodos-guardados" class="select-periodo" onchange="cambiarPeriodoGuardado(this.value)"></select>
             </div>
             <button class="btn-volver" onclick="irAPantalla(3)">← Cambiar cursos</button>
+            <button class="btn-volver" onclick="mostrarInstruccionesIntralu()" style="margin-left:8px;">📥 Importar de INTRALU</button>
         </div>
 
         <div class="banner-ponderado">
