@@ -1334,7 +1334,7 @@ async function cargarNotasGuardadas() {
     const ids = cursosSeleccionados.map(c => c.id);
     const { data, error } = await window.sigaSupabase
         .from('notas_alumno')
-        .select('curso_id, componentes')
+        .select('*')
         .eq('user_id', sesion.user.id)
         .eq('periodo', periodoSeleccionado)
         .in('curso_id', ids);
