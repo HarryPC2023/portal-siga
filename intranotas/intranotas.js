@@ -353,22 +353,39 @@ function actualizarContadores() {
    y este dato queda listo para cuando se conecte la importación
    automática desde INTRALU más adelante.
    ============================================================ */
-function generarPeriodosDisponibles(cantidad = 24) {
+function generarPeriodosDisponibles(cantidad = 36) {
     const hoy = new Date();
-    // En la UNI el periodo 2 arranca en agosto y el periodo 1 en marzo.
-    // Ajusta este mes de corte si tu universidad usa otro calendario.
-    const MES_CORTE_PERIODO_2 = 7; // agosto = índice 7 (enero = 0)
+    const mes = hoy.getMonth(); // 0 = enero
+    const anioCalendario = hoy.getFullYear();
 
-    let anio = hoy.getFullYear();
-    let periodo = hoy.getMonth() >= MES_CORTE_PERIODO_2 ? 2 : 1;
+    // Determina el periodo "actual" real, considerando el ciclo de verano:
+    //   Ene-Feb -> ciclo de verano, se etiqueta con el año del -2 que recupera
+    //              (año calendario - 1), NO con el año calendario en curso.
+    //   Mar-Jul -> periodo 1 del año calendario
+    //   Ago-Dic -> periodo 2 del año calendario
+    // Ajusta estos meses de corte si tu universidad usa otro calendario.
+    let anio, periodo;
+    if (mes <= 1) {                 // enero (0) o febrero (1)
+        anio = anioCalendario - 1;
+        periodo = 3;
+    } else if (mes <= 6) {           // marzo (2) a julio (6)
+        anio = anioCalendario;
+        periodo = 1;
+    } else {                         // agosto (7) a diciembre (11)
+        anio = anioCalendario;
+        periodo = 2;
+    }
 
     const periodos = [];
     for (let i = 0; i < cantidad; i++) {
         periodos.push(`${anio}-${periodo}`);
+        // Retrocede al periodo anterior en la secuencia cronológica real
         if (periodo === 1) {
-            periodo = 2;
+            periodo = 3;
             anio -= 1;
-        } else {
+        } else if (periodo === 3) {
+            periodo = 2;
+        } else { // periodo === 2
             periodo = 1;
         }
     }
