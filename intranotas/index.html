@@ -60,78 +60,85 @@
         </div>
     </div>
 
-    <!-- PANTALLA 2: SELECCIÓN DE CARRERA — punto de entrada dentro de SIGA.
-         (La pantalla-1 de bienvenida, propia del standalone, se quitó: ya
-         era redundante entrar a Intranotas desde SIGA y encima tener que
-         apretar otro "INGRESAR" adentro. intentarRestaurarSesion() y
-         confirmarResetearApp() en intranotas.js ya apuntaban a pantalla-2
-         o pantalla-4, nunca a pantalla-1, así que este cambio no rompe
-         nada de la lógica existente. -->
-    <div id="pantalla-2" class="pantalla pantalla-seleccion-carrera activa">
+    <!-- PANTALLA 3: CARRERA (colapsable) + PERIODO + CURSOS.
+         Fusiona lo que antes era pantalla-2 (elegir carrera) dentro de
+         esta misma pantalla, como un bloque plegable arriba — la carrera
+         casi nunca cambia, así que ya no merece una pantalla propia.
+         Sigue llamándose "pantalla-3" a propósito: así no hay que tocar
+         los irAPantalla(3/4/5) que ya existen por todo el código. -->
+    <div id="pantalla-3" class="pantalla pantalla-configuracion activa">
         <div class="contenedor-principal">
             <div class="cabecera-pantalla">
                 <h1 class="titulo-intranotas" style="font-size: 2rem;">INTRANOTAS</h1>
-                <p class="subtitulo-cabecera">¿Qué carrera estás cursando?</p>
             </div>
 
-            <div class="grid-carreras">
-                <button class="btn-carrera" onclick="seleccionarCarrera('sistemas')">
-                    <img src="sistemas.png" alt="Sistemas" class="btn-carrera-img">
-                    <div class="btn-carrera-texto">
-                        <span class="btn-carrera-nombre">Ingeniería de Sistemas</span>
-                        <span class="btn-carrera-ciclos">10 ciclos</span>
-                    </div>
-                </button>
-                <button class="btn-carrera" onclick="seleccionarCarrera('industrial')">
-                    <img src="industrial.png" alt="Industrial" class="btn-carrera-img">
-                    <div class="btn-carrera-texto">
-                        <span class="btn-carrera-nombre">Ingeniería Industrial</span>
-                        <span class="btn-carrera-ciclos">10 ciclos</span>
-                    </div>
-                </button>
-                <button class="btn-carrera" onclick="seleccionarCarrera('software')">
-                    <img src="software.png" alt="Software" class="btn-carrera-img">
-                    <div class="btn-carrera-texto">
-                        <span class="btn-carrera-nombre">Ingeniería de Software</span>
-                        <span class="btn-carrera-ciclos">10 ciclos</span>
-                    </div>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- PANTALLA 3: CONFIGURACIÓN DE CICLO Y CURSOS -->
-    <div id="pantalla-3" class="pantalla pantalla-configuracion">
-        <div class="contenedor-principal">
-            <div class="cabecera-pantalla">
-                <button class="btn-volver-carrera" onclick="irAPantalla(2)">← Cambiar carrera</button>
-                <h1 class="titulo-intranotas" style="font-size: 2rem; margin-top: 0.5rem;">INTRANOTAS</h1>
-                <p class="subtitulo-cabecera" id="nombre-carrera-activa"></p>
-            </div>
-
-            <div class="seccion-selector-ciclo">
-                <p class="titulo-seccion">Periodo Académico</p>
-                <select id="selector-periodo" class="select-periodo" onchange="seleccionarPeriodo(this.value)"></select>
-            </div>
-
-            <div id="mensaje-validacion" class="mensaje-validacion">
-                ⚠️ Debes seleccionar al menos un curso
-            </div>
-
-            <div class="seccion-acordeones">
-                <div class="titulo-acordeones-fila">
-                    <p class="titulo-acordeones">SELECCIONA TUS CURSOS ACTUALES:</p>
-                    <button class="btn-info-importante" onclick="abrirModalInfo()">⚠️ Importante</button>
+            <div id="bloque-carrera" style="margin-bottom: 1.5rem;">
+                <div id="carrera-resumen" onclick="toggleSelectorCarrera()"
+                    style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:var(--color-fondo-input); border-radius:10px; padding:12px 16px; font-weight:600; color:var(--color-gris-texto);">
+                    <span id="carrera-resumen-texto">Selecciona tu carrera</span>
+                    <span id="carrera-resumen-flecha">▾</span>
                 </div>
-                <div id="contenedor-acordeones"></div>
+                <div class="grid-carreras" id="grid-carreras-colapsable" style="margin-top:12px;">
+                    <button class="btn-carrera" onclick="seleccionarCarrera('sistemas')">
+                        <img src="sistemas.png" alt="Sistemas" class="btn-carrera-img">
+                        <div class="btn-carrera-texto">
+                            <span class="btn-carrera-nombre">Ingeniería de Sistemas</span>
+                            <span class="btn-carrera-ciclos">10 ciclos</span>
+                        </div>
+                    </button>
+                    <button class="btn-carrera" onclick="seleccionarCarrera('industrial')">
+                        <img src="industrial.png" alt="Industrial" class="btn-carrera-img">
+                        <div class="btn-carrera-texto">
+                            <span class="btn-carrera-nombre">Ingeniería Industrial</span>
+                            <span class="btn-carrera-ciclos">10 ciclos</span>
+                        </div>
+                    </button>
+                    <button class="btn-carrera" onclick="seleccionarCarrera('software')">
+                        <img src="software.png" alt="Software" class="btn-carrera-img">
+                        <div class="btn-carrera-texto">
+                            <span class="btn-carrera-nombre">Ingeniería de Software</span>
+                            <span class="btn-carrera-ciclos">10 ciclos</span>
+                        </div>
+                    </button>
+                    <button class="btn-carrera" style="opacity:0.6;"
+                        onclick="mostrarToast('🤖 Muy pronto vamos a sumar Inteligencia Artificial')">
+                        <span
+                            style="font-size:2rem; display:flex; align-items:center; justify-content:center; height:100%;">🤖</span>
+                        <div class="btn-carrera-texto">
+                            <span class="btn-carrera-nombre">Ingeniería de Inteligencia Artificial</span>
+                            <span class="btn-carrera-ciclos">Próximamente</span>
+                        </div>
+                    </button>
+                </div>
             </div>
 
-            <div style="text-align: center; margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                <button class="btn-resetear-app" onclick="resetearApp()">🔄 Reiniciar</button>
-            </div>
+            <div id="bloque-periodo-cursos" style="display:none;">
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1rem;">
+                    <button class="btn-volver-carrera" onclick="cambiarCarrera()">← Cambiar carrera</button>
+                    <button class="btn-volver-carrera" onclick="resetearApp()">🔄 Nuevo periodo</button>
+                </div>
 
-            <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem;">
-                <button class="btn-ingresar-principal" onclick="irAlSimulador()">IR AL SIMULADOR</button>
+                <div class="seccion-selector-ciclo">
+                    <p class="titulo-seccion">Periodo Académico</p>
+                    <select id="selector-periodo" class="select-periodo"
+                        onchange="seleccionarPeriodo(this.value)"></select>
+                </div>
+
+                <div id="mensaje-validacion" class="mensaje-validacion">
+                    ⚠️ Debes seleccionar al menos un curso
+                </div>
+
+                <div class="seccion-acordeones">
+                    <div class="titulo-acordeones-fila">
+                        <p class="titulo-acordeones">SELECCIONA TUS CURSOS ACTUALES:</p>
+                        <button class="btn-info-importante" onclick="abrirModalInfo()">⚠️ Importante</button>
+                    </div>
+                    <div id="contenedor-acordeones"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem;">
+                    <button class="btn-ingresar-principal" onclick="irAlSimulador()">IR AL SIMULADOR</button>
+                </div>
             </div>
         </div>
     </div>
@@ -162,16 +169,16 @@
         </div>
     </div>
 
-    <!-- Modal: resetear app -->
+    <!-- Modal: nuevo periodo -->
     <div id="modal-reset-overlay" class="modal-overlay">
         <div class="modal-caja">
             <div class="modal-icono">🔄</div>
-            <h2 class="modal-titulo">¿Reiniciar la app?</h2>
-            <p class="modal-mensaje">Se borrará toda la selección de carrera, periodo, cursos y notas guardadas. Útil
-                para empezar un nuevo periodo.</p>
+            <h2 class="modal-titulo">¿Empezar un nuevo periodo?</h2>
+            <p class="modal-mensaje">Se borrará la selección del periodo académico y los cursos en pantalla. Tu
+                carrera se mantiene, y tus notas guardadas de otros periodos NO se tocan.</p>
             <div class="modal-botones">
                 <button class="modal-btn modal-btn-cancelar" onclick="cerrarModalReset()">Cancelar</button>
-                <button class="modal-btn modal-btn-confirmar" onclick="confirmarResetearApp()">Sí, reiniciar</button>
+                <button class="modal-btn modal-btn-confirmar" onclick="confirmarResetearApp()">Sí, continuar</button>
             </div>
         </div>
     </div>
