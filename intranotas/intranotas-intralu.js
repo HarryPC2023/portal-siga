@@ -29,10 +29,111 @@ function buscarCursoPorCodigo(codigo, carreraPreferida) {
 
 let importacionIntralu = null; // guarda el payload decodificado + matches, mientras el alumno revisa
 
+/* Patrones de texto para reconocer cada tipo de evaluación dentro de una
+   línea de texto pegado — los mismos que usa el bookmarklet, duplicados
+   aquí porque el copy-paste corre 100% del lado de Intranotas, sin
+   depender de que el bookmarklet se haya usado. */
+const PATRONES_COMPONENTE = [
+    { comp: 'EP', re: /examen\s+parcial/i },
+    { comp: 'EF', re: /examen\s+final/i },
+    { comp: 'ES', re: /examen\s+sustitutorio/i },
+    { comp: 'PC1', re: /pr[aá]ctica\s*1\b/i },
+    { comp: 'PC2', re: /pr[aá]ctica\s*2\b/i },
+    { comp: 'PC3', re: /pr[aá]ctica\s*3\b/i },
+    { comp: 'PC4', re: /pr[aá]ctica\s*4\b/i },
+    { comp: 'PC5', re: /pr[aá]ctica\s*5\b/i },
+    { comp: 'PC6', re: /pr[aá]ctica\s*6\b/i },
+    { comp: 'Monografia1', re: /monograf[ií]a\s*1\b/i },
+    { comp: 'Monografia2', re: /monograf[ií]a\s*2\b/i },
+    { comp: 'Lab1', re: /laboratorio\s*1\b/i },
+    { comp: 'Lab2', re: /laboratorio\s*2\b/i },
+    { comp: 'Lab3', re: /laboratorio\s*3\b/i },
+    { comp: 'Lab4', re: /laboratorio\s*4\b/i },
+    { comp: 'Lab5', re: /laboratorio\s*5\b/i },
+    { comp: 'Lab6', re: /laboratorio\s*6\b/i },
+    { comp: 'Lab7', re: /laboratorio\s*7\b/i },
+    { comp: 'Lab8', re: /laboratorio\s*8\b/i },
+];
+
+/* Recorre línea por línea el texto que el alumno pegó (puede ser una
+   sola pantalla-resumen o varios cursos pegados uno tras otro, no
+   importa). Cada vez que encuentra una línea con un código de curso
+   (ej. 'BMA02'), abre un curso nuevo; las líneas siguientes que calcen
+   con un patrón de evaluación se le asignan a ESE curso hasta que
+   aparezca el siguiente código. */
+function parsearTextoPegado(texto, periodoElegido) {
+    const lineas = texto.split('\n').map(l => l.trim()).filter(Boolean);
+    const regexCodigo = /\b([A-Z]{2,4}\d{2,3}(?:-[A-Z])?)\b/;
+    const cursos = [];
+    let actual = null;
+
+    lineas.forEach(linea => {
+        const mCodigo = linea.match(regexCodigo);
+        const esFilaDeNota = PATRONES_COMPONENTE.some(p => p.re.test(linea));
+
+        if (mCodigo && !esFilaDeNota) {
+            actual = {
+                codigo: mCodigo[1].split('-')[0].toUpperCase(),
+                nombreIntralu: linea,
+                periodo: periodoElegido,
+                componentes: {},
+            };
+            cursos.push(actual);
+            return;
+        }
+
+        if (!actual) return; // aún no vimos ningún curso, ignoramos la línea
+
+        const patron = PATRONES_COMPONENTE.find(p => p.re.test(linea));
+        if (!patron) return;
+        const numeros = linea.match(/\b(\d{1,2}(?:\.\d+)?)\b/g);
+        if (!numeros || !numeros.length) return;
+        const nota = numeros[numeros.length - 1];
+        if (parseFloat(nota) <= 20) actual.componentes[patron.comp] = nota;
+    });
+
+    return cursos.filter(c => Object.keys(c.componentes).length > 0);
+}
+
+function poblarSelectorPeriodoPegado() {
+    const sel = document.getElementById('selector-periodo-pegado');
+    if (!sel) return;
+    const periodos = generarPeriodosDisponibles();
+    sel.innerHTML = '<option value="" disabled selected>Elige el periodo</option>' +
+        periodos.map(p => `<option value="${p}">${p}</option>`).join('');
+}
+
+function procesarTextoPegado() {
+    const periodoElegido = document.getElementById('selector-periodo-pegado').value;
+    if (!periodoElegido) { mostrarToast('⚠️ Primero elige a qué periodo corresponde lo que vas a pegar'); return; }
+
+    const texto = document.getElementById('textarea-pegado-intralu').value;
+    if (!texto.trim()) { mostrarToast('⚠️ Pega primero el contenido de INTRALU'); return; }
+
+    const cursosDetectados = parsearTextoPegado(texto, periodoElegido);
+    if (!cursosDetectados.length) {
+        mostrarToast('⚠️ No se detectó ningún curso con notas en el texto pegado');
+        return;
+    }
+
+    const carreraActual = carreraSeleccionada;
+    importacionIntralu = {
+        periodo: periodoElegido,
+        cursos: cursosDetectados.map(c => ({
+            ...c,
+            cursoSiga: buscarCursoPorCodigo(c.codigo, carreraActual),
+        })),
+    };
+
+    document.getElementById('intralu-instrucciones').style.display = 'none';
+    renderVistaPreviaIntralu();
+}
+
 function mostrarInstruccionesIntralu() {
     irAPantalla(5);
     document.getElementById('intralu-instrucciones').style.display = 'block';
     document.getElementById('intralu-vista-previa').style.display = 'none';
+    poblarSelectorPeriodoPegado();
 }
 
 /* Se llama al cargar la página: si la URL trae datos del bookmarklet
@@ -164,7 +265,17 @@ async function confirmarImportacionIntralu() {
     importacionIntralu = null;
     window.history.replaceState(null, '', window.location.pathname);
 
-    if (carreraSeleccionada) {
+    /* Si el periodo importado es el que está activo en pantalla, agrega
+       los cursos importados que no estuvieran ya marcados — si no, se
+       guardan bien en Supabase pero no se verían hasta recargar. */
+    if (carreraSeleccionada && periodoSeleccionado === (validos[0] && validos[0].periodo)) {
+        validos.forEach(c => {
+            if (!cursosSeleccionados.find(cs => cs.id === c.cursoSiga.id)) {
+                cursosSeleccionados.push(c.cursoSiga);
+            }
+        });
+        generarSimulador();
+    } else if (carreraSeleccionada) {
         cargarNotasGuardadas();
         cargarSelectorPeriodos();
     }
