@@ -506,8 +506,8 @@ function generarSimulador() {
         </div>
 
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;">
-            <button class="btn-volver" onclick="irAPantalla(3)">← Cambiar cursos</button>
-            <button class="btn-volver" onclick="resetearApp()">🔄 Nuevo periodo</button>
+            <button class="btn-volver" onclick="irAPantalla(3)" style="flex:1; min-width:140px;">← Cambiar cursos</button>
+            <button class="btn-volver" onclick="resetearApp()" style="flex:1; min-width:140px;">🔄 Nuevo periodo</button>
         </div>
 
         <details style="margin:12px 0; background:var(--color-fondo-input); border-radius:10px; padding:10px 14px;">
