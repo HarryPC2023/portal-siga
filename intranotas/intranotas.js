@@ -503,10 +503,11 @@ function generarSimulador() {
                 <span class="carrera-label">${NOMBRES_CARRERAS[carreraSeleccionada]}</span>
                 <select id="selector-periodos-guardados" class="select-periodo" onchange="cambiarPeriodoGuardado(this.value)"></select>
             </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
-                <button class="btn-volver" onclick="irAPantalla(3)">← Cambiar cursos</button>
-                <button class="btn-volver" onclick="resetearApp()">🔄 Nuevo periodo</button>
-            </div>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;">
+            <button class="btn-volver" onclick="irAPantalla(3)">← Cambiar cursos</button>
+            <button class="btn-volver" onclick="resetearApp()">🔄 Nuevo periodo</button>
         </div>
 
         <details style="margin:12px 0; background:var(--color-fondo-input); border-radius:10px; padding:10px 14px;">
