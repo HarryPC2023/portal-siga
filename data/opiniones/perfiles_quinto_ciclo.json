@@ -4,20 +4,68 @@
     "'Economía General' (Quinteros, Palacios, Miranda, Mondragón) y 'Realidad Nacional' (Mondragón, Huerta, León) ya existían de ciclos anteriores. Quinteros y Palacios salieron con texto igual o más pobre que lo ya cargado, así que no se tocaron. Miranda, Mondragón (en ambos cursos) y Huerta/León sí traían reseñas nuevas o más completas — van en 'actualizaciones_cursos_existentes'.",
     "Sánchez Huaringa aparece dos veces en este PPT ('Diseño de Base de Datos'... no, en 'Realidad Nacional') sin información real, solo 'es nuevo, en Ética era fija'. Igual que Humberto Linarez (Diseño de Base de Datos) — ambos sin perfil, mismo criterio que profesores nuevos sin testimonios.",
     "'Revilla' aparece listado como profesor de Ingeniería del trabajo en la slide divisoria, pero el PPT no tiene ninguna slide de contenido para él (el PPT termina en la slide 57). No se generó perfil.",
+    "[Actualización PDF 5to_ciclo_26-1] Jose Caballero (DBD), Eloy Ayala (Sociología) y Carmen Lau (Ingeniería del trabajo) aparecen con sello 'PROFE RETIRADO' en el nuevo PPT. Se agregó el campo 'retirado': true en sus perfiles (se mantienen por si vuelven a dictar, según indicación de Harry).",
+    "[Actualización PDF 5to_ciclo_26-1] La slide divisoria de Ing. Sistemas lista 'Ing de Procesos' como curso aparte de 'Teoría Organizacional', pero el PPT solo trae una sección de contenido ('TEORÍA ORGANIZACIONAL') que agrupa a Rojas, Rizabal, Molina, Talaverano y Vento. Se mantuvo la estructura ya existente de dos cursos separados (decisión de Harry): Molina permanece en 'Ingeniería de Procesos' (ya estaba ahí y su contenido es consistente), Huarcaya se mantiene intacta aunque no aparece en esta edición del PPT.",
+    "[Actualización PDF 5to_ciclo_26-1] Profesores nuevos sin testimonios suficientes, sin perfil generado (mismo criterio de siempre): Emilio Castillo (IO-1), Elizabeth Salazar (Matemática Aplicada), Oscar Vento (Ingeniería de Procesos/Teoría Organizacional). Humberto Linarez (DBD) sigue sin perfil propio; el PPT solo agrega que es 'el mal menor frente a Tino, menos exigente, no expulsa de la clase, pero sigue siendo jalable', dato insuficiente para un perfil completo.",
+    "[Actualización PDF 5to_ciclo_26-1] Se enriquecieron los perfiles de Tino Reyna (DBD: comparación con MCD, PC1 fija en Balsamiq, mono = PC1+PC3+PC4+Consulta Crítica, no mentir en la expo) y Luis Medina (IO-1: detalle de la PC4 como proyecto grupal grande en Excel/Open Solver, ej. diseño de redes de cadena de suministro con MILP y Monte Carlo). El resto de perfiles del PPT (Canelo, Oporto, Ulfe, Quinteros, Palacios, Miranda, Mondragón, etc.) traen texto igual o muy similar al ya registrado, no se tocaron.",
     "Carreras: marqué como 'industrial' los cursos con nombre explícito de esa rama (Ingeniería de Procesos, Electricidad y Electrónica Industrial, Ingeniería de Materiales, Procesos Industriales I, Ingeniería del trabajo) — mismo criterio de confianza que usamos para TGS/TCS en sistemas. 'Diseño de Base de Datos' suena a Sistemas/Software pero la dejé común por precaución."
   ],
   "cursos_nuevos": [
-    { "nombre": "Investigación de Operaciones I", "carrera": null, "ciclo": 5 },
-    { "nombre": "Diseño de Base de Datos", "carrera": null, "ciclo": 5 },
-    { "nombre": "Matemática Aplicada", "carrera": null, "ciclo": 5 },
-    { "nombre": "Teoría Organizacional", "carrera": null, "ciclo": 5 },
-    { "nombre": "Ingeniería de Procesos", "carrera": "industrial", "ciclo": 5 },
-    { "nombre": "Electricidad y Electrónica Industrial", "carrera": "industrial", "ciclo": 5 },
-    { "nombre": "Ingeniería de Materiales", "carrera": "industrial", "ciclo": 5 },
-    { "nombre": "Procesos Industriales I", "carrera": "industrial", "ciclo": 5 },
-    { "nombre": "Contabilidad Financiera", "carrera": null, "ciclo": 5 },
-    { "nombre": "Sociología", "carrera": null, "ciclo": 5 },
-    { "nombre": "Ingeniería del trabajo", "carrera": "industrial", "ciclo": 5 }
+    {
+      "nombre": "Investigación de Operaciones I",
+      "carrera": null,
+      "ciclo": 5
+    },
+    {
+      "nombre": "Diseño de Base de Datos",
+      "carrera": null,
+      "ciclo": 5
+    },
+    {
+      "nombre": "Matemática Aplicada",
+      "carrera": null,
+      "ciclo": 5
+    },
+    {
+      "nombre": "Teoría Organizacional",
+      "carrera": null,
+      "ciclo": 5
+    },
+    {
+      "nombre": "Ingeniería de Procesos",
+      "carrera": "industrial",
+      "ciclo": 5
+    },
+    {
+      "nombre": "Electricidad y Electrónica Industrial",
+      "carrera": "industrial",
+      "ciclo": 5
+    },
+    {
+      "nombre": "Ingeniería de Materiales",
+      "carrera": "industrial",
+      "ciclo": 5
+    },
+    {
+      "nombre": "Procesos Industriales I",
+      "carrera": "industrial",
+      "ciclo": 5
+    },
+    {
+      "nombre": "Contabilidad Financiera",
+      "carrera": null,
+      "ciclo": 5
+    },
+    {
+      "nombre": "Sociología",
+      "carrera": null,
+      "ciclo": 5
+    },
+    {
+      "nombre": "Ingeniería del trabajo",
+      "carrera": "industrial",
+      "ciclo": 5
+    }
   ],
   "actualizaciones_cursos_existentes": {
     "Economía General": {
@@ -27,14 +75,20 @@
           "profesor": "Cesar Miranda",
           "resumen": "Basado en el libro Parkin; buen delegado puede negociar puntos extra.",
           "que_esperar": "Enseña principalmente del libro 'Economía' de Parkin con ritmo pausado, y el delegado puede negociar la estructura de evaluaciones y puntos extra. Para acceder a esos puntos extra necesitas haber aprobado al menos una evaluación de la primera parte del curso (PC1, PC2 o parcial).",
-          "exigencia": 3, "carga_trabajo": 3, "ritmo": 2, "claridad": 2,
+          "exigencia": 3,
+          "carga_trabajo": 3,
+          "ritmo": 2,
+          "claridad": 2,
           "recomendaciones": "Ten un buen delegado que negocie puntos extra y asegura aprobar al menos una evaluación temprana: es requisito para acceder a esos puntos adicionales."
         },
         {
           "profesor": "Margarita Mondragón",
           "resumen": "Chévere y con visitas técnicas interesantes; se pone estricta en el final.",
           "que_esperar": "Enseña macro y microeconomía combinando PPT con visitas técnicas sobre tecnología, startups y temas que impactan la economía peruana. El susti es oral y escrito, y se puede ponderar ahí si te esfuerzas.",
-          "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 4,
+          "exigencia": 3,
+          "carga_trabajo": 3,
+          "ritmo": 3,
+          "claridad": 4,
           "recomendaciones": "Pide feedback constante de tu monografía y toma nota de cada visita técnica: puede pedirte un informe sobre ellas."
         }
       ]
@@ -46,181 +100,357 @@
           "profesor": "Margarita Mondragón",
           "resumen": "Puedes faltar a casi todo; la fija si expones bien (sobre todo temas de minería).",
           "que_esperar": "Sus clases de teoría son flojas (lee PPT o hace leer a un alumno), pero destaca por sus visitas técnicas, que pueden ser muy útiles para hacer contactos. Exponer sobre minería suele asegurar una nota alta.",
-          "exigencia": 1, "carga_trabajo": 2, "ritmo": 2, "claridad": 2,
+          "exigencia": 1,
+          "carga_trabajo": 2,
+          "ritmo": 2,
+          "claridad": 2,
           "recomendaciones": "Prepara bien tu exposición (min 20, con un buen tema aseguras 20) y aprovecha sus visitas técnicas: es lo más valioso del curso con ella."
         },
         {
           "profesor": "Javier Huerta",
           "resumen": "Clases largas (4h) pero dinámicas; conviene leer sus PDFs con anticipación.",
           "que_esperar": "Clases de 4 horas con receso cada 45 minutos, estructuradas casi como un conversatorio donde motiva la participación constante. Leer los PDFs de su repositorio y las lecturas para las PCs es clave si faltas.",
-          "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 4,
+          "exigencia": 3,
+          "carga_trabajo": 3,
+          "ritmo": 3,
+          "claridad": 4,
           "recomendaciones": "Asiste seguido (ahí suelta las fijas para las PCs) y si faltas, consigue apuntes de compañeros: te puede pasar factura no saber qué se avanzó."
         },
         {
           "profesor": "Ana León",
           "resumen": "Clases interactivas y entretenidas; estricta con puntualidad y celulares.",
           "que_esperar": "Clases muy interactivas debatiendo temas de actualidad, aunque es estricta con la hora de entrada y el uso de celulares en clase. Preparar una noticia actual para el inicio de la sesión suma puntos.",
-          "exigencia": 3, "carga_trabajo": 2, "ritmo": 3, "claridad": 4,
+          "exigencia": 3,
+          "carga_trabajo": 2,
+          "ritmo": 3,
+          "claridad": 4,
           "recomendaciones": "No faltes a ninguna clase (afecta directo tus tareas de PC) y prepara bien tus trabajos con buena estructura (objetivos, mapa conceptual)."
         }
       ]
     }
   },
   "perfiles": [
-    { "curso": "Investigación de Operaciones I", "profesor": "Cesar Canelo",
+    {
+      "curso": "Investigación de Operaciones I",
+      "profesor": "Cesar Canelo",
       "resumen": "Clases algo aburridas pero considerado calificando y accesible con dudas.",
       "que_esperar": "Usa PPT en todas las clases y las sube al Univirtual (puedes no asistir y estudiar solo, aunque perderías la oportunidad de aclarar dudas). Es considerado con el avance y cerca de las PCs resuelve problemas parecidos a los que pondrá.",
-      "exigencia": 2, "carga_trabajo": 2, "ritmo": 2, "claridad": 3,
-      "recomendaciones": "Asiste cerca de las fechas de PC (ahí resuelve problemas similares) y pregúntale cuando algo no te salga: es bastante accesible dando ideas." },
-    { "curso": "Investigación de Operaciones I", "profesor": "Luis Medina",
-      "resumen": "Exámenes muy operativos (exige velocidad); estricto y sin piedad calificando.",
-      "que_esperar": "Revisa teoría por PPT y luego resuelve ejercicios de su Word, a veces sacados de IA. Sus exámenes son muy operativos y con poco tiempo, así que exigen practicar velocidad de resolución.",
-      "exigencia": 4, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Practica velocidad de resolución con calculadora graficadora (los exámenes dan poco tiempo) y si promete un punto en clase, recuérdaselo en el examen: sí cumple, pero hay que insistir." },
-    { "curso": "Investigación de Operaciones I", "profesor": "Samuel Oporto",
+      "exigencia": 2,
+      "carga_trabajo": 2,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Asiste cerca de las fechas de PC (ahí resuelve problemas similares) y pregúntale cuando algo no te salga: es bastante accesible dando ideas."
+    },
+    {
+      "curso": "Investigación de Operaciones I",
+      "profesor": "Luis Medina",
+      "resumen": "Exámenes muy operativos (exige velocidad); la PC4 es un proyecto grande en Excel que hay que empezar temprano.",
+      "que_esperar": "Revisa teoría por PPT y luego resuelve ejercicios de su Word, a veces sacados de IA. Sus exámenes son muy operativos y con poco tiempo, así que exigen practicar velocidad de resolución. La PC4 es un trabajo grupal de modelamiento (por ejemplo, diseño de redes de cadena de suministro con MILP y simulación Monte Carlo) que se resuelve en Excel con Open Solver, y puede llegar a ocupar más de 100 filas y columnas.",
+      "exigencia": 4,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Practica velocidad de resolución con calculadora graficadora (los exámenes dan poco tiempo) y empieza la PC4 desde el primer día: es un modelo grande en Excel y no alcanza el tiempo si lo dejas para el final. Ninguna evaluación es plancha con él, así que enfócate en entender el método, no en memorizar ejercicios."
+    },
+    {
+      "curso": "Investigación de Operaciones I",
+      "profesor": "Samuel Oporto",
       "resumen": "Clases cortas (casi vacías) pero es de los que más aprueba en sus secciones.",
       "que_esperar": "Llega y se va antes de tiempo, con clases de apenas una hora donde enseña con PPTs, pizarra y códigos en Python/Excel Solver. Hay un trabajo final que cuenta para varias PCs, y las evaluaciones pueden ser grupales, presenciales con o sin laptop.",
-      "exigencia": 2, "carga_trabajo": 3, "ritmo": 2, "claridad": 3,
-      "recomendaciones": "Cuida bien el trabajo final (influye en varias PCs) y en las interpretaciones con IA agrega interpretación real de los resultados, no solo números." },
-    { "curso": "Investigación de Operaciones I", "profesor": "Luis Ulfe",
+      "exigencia": 2,
+      "carga_trabajo": 3,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Cuida bien el trabajo final (influye en varias PCs) y en las interpretaciones con IA agrega interpretación real de los resultados, no solo números."
+    },
+    {
+      "curso": "Investigación de Operaciones I",
+      "profesor": "Luis Ulfe",
       "resumen": "Enseña el software Lingo a fondo; PC2 y PC4 son las más ponderables.",
       "que_esperar": "Combina diapositivas con bastante trabajo en el software Lingo, controlando las computadoras desde su PC central para evitar plagio. La PC2 (proyecto de modelamiento) y la PC4 (pasar el modelo a Lingo) son las más ponderables, con nota mínima 15.",
-      "exigencia": 3, "carga_trabajo": 4, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Domina bien el Lingo desde el inicio del curso y no intentes usar ChatGPT en clase o examen: se da cuenta y te saca del examen." },
-
-    { "curso": "Diseño de Base de Datos", "profesor": "Tino Reyna",
-      "resumen": "Interactivo y bonifica participación; puede botarte de la clase.",
-      "que_esperar": "Dicta con PPT y su libro, verificando la lógica de tus respuestas para darte puntos de cara al parcial y final. El curso se enfoca en optimización del modelo conceptual de base de datos.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Participa activamente para ganar puntos de parcial/final y no faltes ni llegues tarde: te marca en las exposiciones." },
-    { "curso": "Diseño de Base de Datos", "profesor": "Jose Caballero",
+      "exigencia": 3,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Domina bien el Lingo desde el inicio del curso y no intentes usar ChatGPT en clase o examen: se da cuenta y te saca del examen."
+    },
+    {
+      "curso": "Diseño de Base de Datos",
+      "profesor": "Tino Reyna",
+      "resumen": "El profesor con más conocimientos de base de datos; menos estricto que en MCD, pero cuidado con las exposiciones.",
+      "que_esperar": "Dicta con la misma metodología que usa en MCD, pero algo menos estricto en este curso. Verifica la lógica de tus respuestas para darte puntos de cara al parcial y final, evita pedir segunda hoja en los exámenes, y no perdona que le mientas en la exposición.",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "Pondera sobre todo la PC1 (la fija es hacer el sistema en Balsamiq) y participa activamente para sumar puntos de parcial/final. Si llevaste MCD con él, repite el mismo sistema del proyecto. En las últimas PCs, si te conoce y hay tiempo, puede dejarte corregir tu trabajo, pero nunca le mientas en la exposición: lo sabrá."
+    },
+    {
+      "curso": "Diseño de Base de Datos",
+      "profesor": "Jose Caballero",
+      "retirado": true,
       "resumen": "Clases en laboratorio; si el grupo chambea, el curso se aprueba fijo.",
       "que_esperar": "Todas las clases son en laboratorio, proyectando su PPT y enseñando los conceptos necesarios para cada informe. Suele llegar tarde y deja ejercicios en Slack para sumar participación.",
-      "exigencia": 3, "carga_trabajo": 4, "ritmo": 3, "claridad": 4,
-      "recomendaciones": "Asegúrate de que el grupo sepa lo básico de desarrollo web y GitHub: los últimos informes se complican mucho sin eso." },
-
-    { "curso": "Matemática Aplicada", "profesor": "Paul Tocto",
+      "exigencia": 3,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "Asegúrate de que el grupo sepa lo básico de desarrollo web y GitHub: los últimos informes se complican mucho sin eso."
+    },
+    {
+      "curso": "Matemática Aplicada",
+      "profesor": "Paul Tocto",
       "resumen": "Trabajo de investigación en grupos al azar; buena citación es clave.",
       "que_esperar": "Enseña la teoría por PPT y usa el laboratorio de cómputo a mitad de ciclo. El trabajo de investigación (grupos al azar) se expone en PC2 y se aplica en PC4, y necesita estar bien citado y en inglés.",
-      "exigencia": 3, "carga_trabajo": 4, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Cita correctamente todo tu trabajo de investigación (baja mucho la nota si no) y prepárate para exámenes a las 8am." },
-    { "curso": "Matemática Aplicada", "profesor": "Eddie Cueva",
+      "exigencia": 3,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Cita correctamente todo tu trabajo de investigación (baja mucho la nota si no) y prepárate para exámenes a las 8am."
+    },
+    {
+      "curso": "Matemática Aplicada",
+      "profesor": "Eddie Cueva",
       "resumen": "Amable y didáctico; califica generoso los trabajos (rara vez baja de 14).",
       "que_esperar": "Clases didácticas donde resuelve ejercicios simples en pizarra y retroalimenta con preguntas de PCs pasadas. Es flexible con los grupos de trabajo y te avisa qué temas vienen si le preguntas.",
-      "exigencia": 2, "carga_trabajo": 2, "ritmo": 2, "claridad": 3,
-      "recomendaciones": "No dudes en pedirle cambiar de grupo si no colaboran, y pregúntale qué temas vienen: suele responder con gusto." },
-
-    { "curso": "Teoría Organizacional", "profesor": "Doris Rojas",
+      "exigencia": 2,
+      "carga_trabajo": 2,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "No dudes en pedirle cambiar de grupo si no colaboran, y pregúntale qué temas vienen: suele responder con gusto."
+    },
+    {
+      "curso": "Teoría Organizacional",
+      "profesor": "Doris Rojas",
       "resumen": "Relaciona la teoría con casos reales de empresa; monografías bien calificadas.",
       "que_esperar": "Explica con PPT complementado con casos reales de su experiencia laboral, incentivando la participación. Las monografías suelen tener buena calificación, aunque es exigente en parcial y final.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 4,
-      "recomendaciones": "Sigue bien sus indicaciones de formato para las monografías (se molesta si no las cumples) y aprovecha su ayuda para coordinar la visita técnica de la Mono 2." },
-    { "curso": "Teoría Organizacional", "profesor": "Eliana Rizabal",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "Sigue bien sus indicaciones de formato para las monografías (se molesta si no las cumples) y aprovecha su ayuda para coordinar la visita técnica de la Mono 2."
+    },
+    {
+      "curso": "Teoría Organizacional",
+      "profesor": "Eliana Rizabal",
       "resumen": "Teórica y planchera; llega tarde pero casi todos aprueban con ella.",
       "que_esperar": "Clases muy teóricas basadas en PPTs, con preguntas al azar que anota en su cuaderno para dar puntos de participación. Suele llegar tarde (hasta 2 horas), pero casi todos aprueban salvo que descuides el curso.",
-      "exigencia": 2, "carga_trabajo": 3, "ritmo": 2, "claridad": 3,
-      "recomendaciones": "Busca planchas pasadas (suele ser planchera) y evita ir al susti salvo que realmente lo necesites: se maleja calificando ahí." },
-
-    { "curso": "Ingeniería de Procesos", "profesor": "Alejandrina Huarcaya",
+      "exigencia": 2,
+      "carga_trabajo": 3,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Busca planchas pasadas (suele ser planchera) y evita ir al susti salvo que realmente lo necesites: se maleja calificando ahí."
+    },
+    {
+      "curso": "Ingeniería de Procesos",
+      "profesor": "Alejandrina Huarcaya",
       "resumen": "Estricta al calificar pero considera el esfuerzo; da asesoría si la pides.",
       "que_esperar": "Explica su PPT y hace preguntas mientras avanza, con clases más interesantes si te sientas adelante y participas. Es estricta calificando, pero valora el intento y está siempre disponible para resolver dudas.",
-      "exigencia": 4, "carga_trabajo": 4, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Ten un delegado activo (ella comunica todo por él) y pide su asesoría para la monografía o algún proyecto: la brinda con gusto." },
-    { "curso": "Ingeniería de Procesos", "profesor": "Eliana Rizabal",
+      "exigencia": 4,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Ten un delegado activo (ella comunica todo por él) y pide su asesoría para la monografía o algún proyecto: la brinda con gusto."
+    },
+    {
+      "curso": "Ingeniería de Procesos",
+      "profesor": "Eliana Rizabal",
       "resumen": "Clases virtuales accesibles; llega tarde y se maleja en final/susti.",
       "que_esperar": "Clases virtuales apoyadas en PPTs y videos, con preguntas al azar que dan puntos si respondes bien. Las PCs son accesibles estudiando solo de sus diapositivas, aunque suele llegar tarde y calificar duro en final y susti.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 2, "claridad": 3,
-      "recomendaciones": "Repasa bien sus PPTs para las PCs (casi todo sale de ahí) pero cuida el final y el susti: ahí se pone más estricta calificando." },
-    { "curso": "Ingeniería de Procesos", "profesor": "Ninoska Molina",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Repasa bien sus PPTs para las PCs (casi todo sale de ahí) pero cuida el final y el susti: ahí se pone más estricta calificando."
+    },
+    {
+      "curso": "Ingeniería de Procesos",
+      "profesor": "Ninoska Molina",
       "resumen": "Difícil jalar; clases cortas y ligeras, sin mucha tarea.",
       "que_esperar": "Enseña la teoría con PPT, con pocas actividades grupales sin nota mayormente. Es muy amable, no deja mucho trabajo, y aunque el parcial y final no ponderan tanto, prácticamente todos aprueban.",
-      "exigencia": 2, "carga_trabajo": 2, "ritmo": 2, "claridad": 3,
-      "recomendaciones": "Repasa sus PPTs la noche antes de cada PC: con eso alcanza, y pregunta a otras secciones qué vino en parcial/final (mismo examen, distinto caso)." },
-    { "curso": "Ingeniería de Procesos", "profesor": "Julio Talaverano",
+      "exigencia": 2,
+      "carga_trabajo": 2,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Repasa sus PPTs la noche antes de cada PC: con eso alcanza, y pregunta a otras secciones qué vino en parcial/final (mismo examen, distinto caso)."
+    },
+    {
+      "curso": "Ingeniería de Procesos",
+      "profesor": "Julio Talaverano",
       "resumen": "Planchero y generoso calificando monografías; puede sorprenderte con preguntas.",
       "que_esperar": "Combina PPT con videos y lecturas de casos empresariales, dejando actividades grupales para aplicar los conceptos. Sus exámenes suelen ser planchazo y las monografías se califican alto.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Lleva siempre un avance de tu monografía (puede preguntar sobre ella en clase) y consulta material de Huarcaya y Rizabal para el final." },
-
-    { "curso": "Electricidad y Electrónica Industrial", "profesor": "Santiago Tarazona",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Lleva siempre un avance de tu monografía (puede preguntar sobre ella en clase) y consulta material de Huarcaya y Rizabal para el final."
+    },
+    {
+      "curso": "Electricidad y Electrónica Industrial",
+      "profesor": "Santiago Tarazona",
       "resumen": "La fija es dominar Ohm y Kirchhoff; todo lo que enseña sale en el examen.",
       "que_esperar": "Enseña con el libro Dorf y material propio (Words), enfocado en las leyes de Ohm y Kirchhoff. Lo que desarrolla en pizarra suele venir muy parecido en el examen, pero es difícil ponerse al día si faltas.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "No faltes a clase (sus Words no explican tan bien la teoría por sí solos) y ten un delegado que le recuerde los pendientes: es olvidadizo." },
-    { "curso": "Electricidad y Electrónica Industrial", "profesor": "Jose Benites Yarleque",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "No faltes a clase (sus Words no explican tan bien la teoría por sí solos) y ten un delegado que le recuerde los pendientes: es olvidadizo."
+    },
+    {
+      "curso": "Electricidad y Electrónica Industrial",
+      "profesor": "Jose Benites Yarleque",
       "resumen": "Metodología similar a Discreta; o completas bien la respuesta o poco puntaje.",
       "que_esperar": "Explica teoría por PPT y complementa con pizarra y ejercicios, dando puntos de participación en las primeras clases. Es poco flexible calificando: o resuelves completo y ordenado, o el puntaje es mínimo, sin considerar avance parcial.",
-      "exigencia": 4, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Resuelve cada pregunta completa y ordenada (no da puntaje por avance) y no faltes a los laboratorios: los informes suman 3-4 puntos extra en una PC." },
-
-    { "curso": "Ingeniería de Materiales", "profesor": "Guillermo Cruz",
+      "exigencia": 4,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Resuelve cada pregunta completa y ordenada (no da puntaje por avance) y no faltes a los laboratorios: los informes suman 3-4 puntos extra en una PC."
+    },
+    {
+      "curso": "Ingeniería de Materiales",
+      "profesor": "Guillermo Cruz",
       "resumen": "Considera mucho la asistencia; enseña justo lo que viene en el examen.",
       "que_esperar": "Presenta PPT y explica en pizarra, a veces con datos erróneos a propósito para verificar que prestes atención. Considera mucho la asistencia (puntaje en PC) y desarrolla en clase justo los temas que vienen en el examen.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Descarga las PPTs de Univirtual apenas las suba (luego las elimina) y no faltes: la asistencia pesa directo en tu nota." },
-    { "curso": "Ingeniería de Materiales", "profesor": "Alfredo Aguero",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Descarga las PPTs de Univirtual apenas las suba (luego las elimina) y no faltes: la asistencia pesa directo en tu nota."
+    },
+    {
+      "curso": "Ingeniería de Materiales",
+      "profesor": "Alfredo Aguero",
       "resumen": "Sus preguntas de examen salen literal de sus PPTs; no regala puntos.",
       "que_esperar": "Explica detallado y a veces solo lee diapositivas (hay que tomar apuntes). Sus preguntas de examen son datos tal cual de sus PPTs, pero no da puntos gratis por participación ni tareas.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Consigue todas sus PPTs (no solo las usadas en clase) y no descuides la monografía aunque parezca que se olvidó de ella: vale bastante nota." },
-
-    { "curso": "Procesos Industriales I", "profesor": "Bilma Osorio",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Consigue todas sus PPTs (no solo las usadas en clase) y no descuides la monografía aunque parezca que se olvidó de ella: vale bastante nota."
+    },
+    {
+      "curso": "Procesos Industriales I",
+      "profesor": "Bilma Osorio",
       "resumen": "PPTs densas (como en Química I); participación constante suma 3 puntos.",
       "que_esperar": "Clases con PPTs y videos, complementadas con casos prácticos en pizarra. La asistencia y participación continua suman hasta 3 puntos extra en parcial y final, y las exposiciones dan puntos tanto a quien pregunta como a quien responde.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 4,
-      "recomendaciones": "Lee las PPTs con anticipación (son densas) y prepara bien tus exposiciones: calificar según qué tan bien expones, así que ahí puedes ponderar." },
-    { "curso": "Procesos Industriales I", "profesor": "Hernán Parra",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "Lee las PPTs con anticipación (son densas) y prepara bien tus exposiciones: calificar según qué tan bien expones, así que ahí puedes ponderar."
+    },
+    {
+      "curso": "Procesos Industriales I",
+      "profesor": "Hernán Parra",
       "resumen": "El examen es un trabajo de análisis FODA a una empresa; no es obligatorio asistir.",
       "que_esperar": "El parcial y el final consisten en un trabajo de dos partes: primero un análisis FODA de una empresa elegida, y luego un diagnóstico con solución propuesta. No es necesario asistir a clase, aunque ayuda para consultar avances.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Dedica buen tiempo al análisis FODA y a justificar bien tu diagnóstico y solución: ahí está toda tu nota de parcial y final." },
-    { "curso": "Procesos Industriales I", "profesor": "Petra Rondinel",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Dedica buen tiempo al análisis FODA y a justificar bien tu diagnóstico y solución: ahí está toda tu nota de parcial y final."
+    },
+    {
+      "curso": "Procesos Industriales I",
+      "profesor": "Petra Rondinel",
       "resumen": "Se encarga de labos y monografías; da la estructura del informe.",
       "que_esperar": "Guía con PPT (habla en voz baja) y organiza cerca de 6 visitas a distintas empresas, cada una con su informe y test correspondiente. Da la estructura del informe, lo que facilita cumplir bien con la entrega.",
-      "exigencia": 2, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Agrega detalle extra a tus informes (fotos de las visitas, información adicional): es la forma más clara de subir nota con ella." },
-
-    { "curso": "Contabilidad Financiera", "profesor": "Victor Leyton",
+      "exigencia": 2,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Agrega detalle extra a tus informes (fotos de las visitas, información adicional): es la forma más clara de subir nota con ella."
+    },
+    {
+      "curso": "Contabilidad Financiera",
+      "profesor": "Victor Leyton",
       "resumen": "Explica con calma; PCs grupales y deja usar apuntes en todos los exámenes.",
       "que_esperar": "Explica con calma y responde dudas con ejemplos, compartiendo también sus experiencias profesionales. Las PCs son grupales y permite usar apuntes en todos los exámenes (el delegado debe recordárselo).",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 4,
-      "recomendaciones": "Resuelve planchas para ganar velocidad (las preguntas no son difíciles, pero sí trabajosas) y ten un buen delegado que negocie con él discretamente." },
-    { "curso": "Contabilidad Financiera", "profesor": "Rodolfo Falconi",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "Resuelve planchas para ganar velocidad (las preguntas no son difíciles, pero sí trabajosas) y ten un buen delegado que negocie con él discretamente."
+    },
+    {
+      "curso": "Contabilidad Financiera",
+      "profesor": "Rodolfo Falconi",
       "resumen": "No es puntual con la asistencia, pero sus controles de lectura son plancha.",
       "que_esperar": "Se desvía bastante al explicar, así que no aprenderás mucho ahí, pero sus controles de lectura (10 min) son plancha y valen para tu promedio de prácticas. Las tareas valen 50% de tu nota de PC.",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 2, "claridad": 2,
-      "recomendaciones": "No faltes a sus controles de lectura (son plancha descarada) y resuelve los casos del Univirtual: si dominas los casos, dominas el curso." },
-    { "curso": "Contabilidad Financiera", "profesor": "Ana León",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 2,
+      "claridad": 2,
+      "recomendaciones": "No faltes a sus controles de lectura (son plancha descarada) y resuelve los casos del Univirtual: si dominas los casos, dominas el curso."
+    },
+    {
+      "curso": "Contabilidad Financiera",
+      "profesor": "Ana León",
       "resumen": "Muy estricta pero se aprende bien contabilidad; sigue sus normas de clase.",
       "que_esperar": "Clase estricta desde el inicio, con normas claras acordadas con el delegado (tolerancia, no celular, etc.). Se aprende contabilidad de verdad, y cumplir sus tareas y normas puede ayudarte a subir en algunas PCs.",
-      "exigencia": 4, "carga_trabajo": 4, "ritmo": 3, "claridad": 4,
-      "recomendaciones": "Sigue al pie de la letra sus normas de clase (puntualidad, sin celular) y practica bastante el compendio de tareas: se aprende mejor contabilidad con ella que con otros profesores." },
-
-    { "curso": "Sociología", "profesor": "Raquel Chávarri",
+      "exigencia": 4,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "Sigue al pie de la letra sus normas de clase (puntualidad, sin celular) y practica bastante el compendio de tareas: se aprende mejor contabilidad con ella que con otros profesores."
+    },
+    {
+      "curso": "Sociología",
+      "profesor": "Raquel Chávarri",
       "resumen": "Como en Redacción pero sin PCs; muy difícil jalar si trabajas en equipo.",
       "que_esperar": "Clases full PPT con trabajos grupales y una monografía cuyos avances cuentan para parcial y final. Es estricta con las indicaciones y la puntualidad, pero muy difícil de jalar si haces los trabajos.",
-      "exigencia": 3, "carga_trabajo": 4, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Entrega el avance 3 de tu monografía con todo el contenido (así la entrega final solo necesita las correcciones) y no faltes: es estricta con la puntualidad." },
-    { "curso": "Sociología", "profesor": "Carlos Sánchez",
+      "exigencia": 3,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Entrega el avance 3 de tu monografía con todo el contenido (así la entrega final solo necesita las correcciones) y no faltes: es estricta con la puntualidad."
+    },
+    {
+      "curso": "Sociología",
+      "profesor": "Carlos Sánchez",
       "resumen": "Ponderable y accesible; recomendable adelantarlo si te gustan estos temas.",
       "que_esperar": "Usa PPT de apoyo pero lo importante sale en pizarra y en los videos/textos que deja en Univirtual, además de la coyuntura actual que comenta en clase. Es un curso ponderable, recomendable para adelantar.",
-      "exigencia": 2, "carga_trabajo": 2, "ritmo": 2, "claridad": 3,
-      "recomendaciones": "Ve los videos que deja en Univirtual y lee los textos asignados (siempre cae una pregunta de ahí): con eso y sus ensayos, el curso se hace fácil." },
-    { "curso": "Sociología", "profesor": "Eloy Ayala",
+      "exigencia": 2,
+      "carga_trabajo": 2,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Ve los videos que deja en Univirtual y lee los textos asignados (siempre cae una pregunta de ahí): con eso y sus ensayos, el curso se hace fácil."
+    },
+    {
+      "curso": "Sociología",
+      "profesor": "Eloy Ayala",
+      "retirado": true,
       "resumen": "Alta probabilidad de sacar 20; enseña ameno con vivencias propias.",
       "que_esperar": "Prefiere enseñar con experiencias propias en vez de solo leer el PPT (aunque lo hace si nota poco interés). No exige participación, pero la voluntaria pesa bastante junto con la asistencia perfecta.",
-      "exigencia": 2, "carga_trabajo": 2, "ritmo": 2, "claridad": 4,
-      "recomendaciones": "Ten asistencia perfecta y participa cuando puedas: es de los cursos con mayor probabilidad de sacar 20 en toda la carrera." },
-
-    { "curso": "Ingeniería del trabajo", "profesor": "María Egúsquiza",
+      "exigencia": 2,
+      "carga_trabajo": 2,
+      "ritmo": 2,
+      "claridad": 4,
+      "recomendaciones": "Ten asistencia perfecta y participa cuando puedas: es de los cursos con mayor probabilidad de sacar 20 en toda la carrera."
+    },
+    {
+      "curso": "Ingeniería del trabajo",
+      "profesor": "María Egúsquiza",
       "resumen": "Exigente pero manejable si le pones ganas desde el inicio.",
       "que_esperar": "Usa diapositivas semanales y entrega fichas desde la primera clase para tener a la mano todo el ciclo. Es estricta con los plazos y la puntualidad (no deja entrar si llegas 20 minutos tarde).",
-      "exigencia": 3, "carga_trabajo": 3, "ritmo": 3, "claridad": 3,
-      "recomendaciones": "Haz siempre la tarea antes de parcial y final (pesa bastante ahí) y consigue planchas de evaluaciones pasadas: suelen repetirse, incluso las imágenes." },
-    { "curso": "Ingeniería del trabajo", "profesor": "Carmen Lau",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Haz siempre la tarea antes de parcial y final (pesa bastante ahí) y consigue planchas de evaluaciones pasadas: suelen repetirse, incluso las imágenes."
+    },
+    {
+      "curso": "Ingeniería del trabajo",
+      "profesor": "Carmen Lau",
+      "retirado": true,
       "resumen": "Material bien organizado en Univirtual; exámenes tipo planchita.",
       "que_esperar": "Todo el contenido está disponible y organizado en Univirtual, complementado con PPT y pizarra en clase. En parcial, final y susti sigue su propio criterio (no siempre coincide con otro profesor del curso, 'Losta').",
-      "exigencia": 3, "carga_trabajo": 2, "ritmo": 3, "claridad": 4,
-      "recomendaciones": "Sigue el criterio de Lau (no el de otros profesores del curso) para parcial, final y susti, y resuelve planchitas: suelen venir bastante similares." }
+      "exigencia": 3,
+      "carga_trabajo": 2,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "Sigue el criterio de Lau (no el de otros profesores del curso) para parcial, final y susti, y resuelve planchitas: suelen venir bastante similares."
+    }
   ]
 }

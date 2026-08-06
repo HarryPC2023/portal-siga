@@ -304,3 +304,10 @@
         padding: 26px 22px;
     }
 }
+
+/* ---------- BOTONES ALINEADOS A LA DERECHA (Info General y Sugerencias) ---------- */
+.btn-alineado-derecha {
+  align-self: flex-end;
+  padding-left: 26px;
+  padding-right: 26px;
+}
