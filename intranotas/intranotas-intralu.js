@@ -136,8 +136,9 @@ function mostrarInstruccionesIntralu() {
     poblarSelectorPeriodoPegado();
 }
 
-/* Se llama al cargar la página: si la URL trae datos del bookmarklet
-   (la pestaña que abrió el bookmarklet), los procesa automáticamente. */
+/* Se llama al cargar la página, Y cada vez que el bookmarklet reutiliza
+   la misma pestaña con un curso nuevo (eso cambia el "#data=..." sin
+   recargar la página del todo, por eso también escuchamos hashchange). */
 function revisarImportacionEnURL() {
     const hash = window.location.hash;
     if (!hash.startsWith('#data=')) return;
@@ -152,20 +153,28 @@ function revisarImportacionEnURL() {
     }
 }
 
+/* Cada click del bookmarklet trae UN curso — se van acumulando aquí en
+   vez de reemplazar lo anterior, así el alumno puede visitar varios
+   cursos en INTRALU y revisar todos juntos antes de confirmar. */
 function procesarImportacion(payload) {
     const carreraActual = carreraSeleccionada; // puede ser null si aún no eligió carrera
+    const nuevoPeriodo = payload.cursos[0]?.periodo || null;
 
-    importacionIntralu = {
-        periodo: payload.cursos[0]?.periodo || null,
-        cursos: payload.cursos.map(c => ({
-            ...c,
-            cursoSiga: buscarCursoPorCodigo(c.codigo, carreraActual), // null si no hay match
-        })),
-    };
+    if (!importacionIntralu || importacionIntralu.periodo !== nuevoPeriodo) {
+        importacionIntralu = { periodo: nuevoPeriodo, cursos: [] };
+    }
+
+    payload.cursos.forEach(c => {
+        const conMatch = { ...c, cursoSiga: buscarCursoPorCodigo(c.codigo, carreraActual) };
+        const idx = importacionIntralu.cursos.findIndex(existente => existente.codigo === c.codigo);
+        if (idx >= 0) importacionIntralu.cursos[idx] = conMatch; // recaptura del mismo curso: reemplaza
+        else importacionIntralu.cursos.push(conMatch);
+    });
 
     irAPantalla(5);
     document.getElementById('intralu-instrucciones').style.display = 'none';
     renderVistaPreviaIntralu();
+    mostrarToast(`📥 ${importacionIntralu.cursos.length} curso(s) capturado(s) hasta ahora`);
 }
 
 function renderVistaPreviaIntralu() {
@@ -205,7 +214,11 @@ function renderVistaPreviaIntralu() {
     }).join('');
 
     cont.innerHTML = `
-        <p style="font-weight:600; margin-bottom:12px;">Periodo detectado: ${importacionIntralu.periodo}</p>
+        <p style="font-weight:600; margin-bottom:4px;">Periodo detectado: ${importacionIntralu.periodo}</p>
+        <p style="font-size:0.85rem; color:var(--color-gris-texto); margin-bottom:12px;">
+            ${importacionIntralu.cursos.length} curso(s) capturado(s) — ¿falta alguno? Ve a INTRALU, entra a su pestaña
+            "Notas" y activa el botón otra vez. Se agrega aquí mismo, sin perder lo anterior.
+        </p>
         ${filas}
         <div style="margin-top:16px; display:flex; gap:12px;">
             <button class="btn-flotante btn-guardar" onclick="confirmarImportacionIntralu()">✅ Confirmar e importar</button>
@@ -283,3 +296,4 @@ async function confirmarImportacionIntralu() {
 }
 
 document.addEventListener('DOMContentLoaded', revisarImportacionEnURL);
+window.addEventListener('hashchange', revisarImportacionEnURL);
