@@ -223,45 +223,6 @@
 
     <script src="cursos_db.js"></script>
     <script src="intranotas.js"></script>
-    <script src="intranotas-intralu.js"></script>
-
-    <!-- PANTALLA 5: IMPORTAR DESDE INTRALU -->
-    <div id="pantalla-5" class="pantalla pantalla-configuracion">
-        <div class="contenedor-principal">
-            <div class="cabecera-pantalla">
-                <button class="btn-volver-carrera" onclick="irAPantalla(4)">← Volver al simulador</button>
-                <h1 class="titulo-intranotas" style="font-size: 2rem;">Importar desde INTRALU</h1>
-            </div>
-
-            <div id="intralu-instrucciones">
-                <div style="background:#EAF2FF; border-radius:12px; padding:16px; margin-bottom:20px;">
-                    <p><strong>¿Qué hace esto?</strong></p>
-                    <p>Vas a instalar un botón en tu navegador. Cuando lo actives desde "Cursos Matriculados" en
-                        INTRALU, lee solo: curso, nota y periodo de esa página. No accede a tu usuario, contraseña,
-                        trámites, matrícula ni ningún otro dato de INTRALU.</p>
-                    <p>Tú decides cuándo activarlo, y vas a ver exactamente qué se detectó antes de que se guarde nada.
-                    </p>
-                </div>
-
-                <ol style="line-height: 2;">
-                    <li>Arrastra este botón a la barra de marcadores de tu navegador (no le des click):
-                        <br><a
-                            href="javascript:(function%20()%20%7B%0A%20%20%20%20const%20ORIGEN_SIGA%20%3D%20'https%3A%2F%2Fharrypc2023.github.io%2Fportal-siga%2Fintranotas%2Findex.html'%3B%0A%20%20%20%20const%20NOMBRE_VENTANA%20%3D%20'sigaImportIntralu'%3B%0A%20%20%20%20const%20mDetalle%20%3D%20location.pathname.match(%2Fcursos%5C%2F(%5Cd%2B)%5C%2F(%5BA-Z0-9%5D%2B)%5C%2F(%5BA-Z%5D)%2Fi)%3B%0A%20%20%20%20if%20(!mDetalle)%20%7B%0A%20%20%20%20%20%20%20%20alert('Entra%20primero%20al%20detalle%20de%20un%20curso%20(la%20flecha%20-%3E%20en%20%22Cursos%20Matriculados%22)%20y%20activa%20este%20boton%20desde%20ahi%2C%20en%20la%20pestana%20%22Notas%22.')%3B%0A%20%20%20%20%20%20%20%20return%3B%0A%20%20%20%20%7D%0A%20%20%20%20const%20periodoRaw%20%3D%20mDetalle%5B1%5D%3B%0A%20%20%20%20const%20codigo%20%3D%20mDetalle%5B2%5D.toUpperCase()%3B%0A%20%20%20%20const%20PATRONES_COMPONENTE%20%3D%20%5B%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'EP'%2C%20re%3A%20%2Fexamen%5Cs%2Bparcial%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'EF'%2C%20re%3A%20%2Fexamen%5Cs%2Bfinal%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'ES'%2C%20re%3A%20%2Fexamen%5Cs%2Bsustitutorio%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'PC1'%2C%20re%3A%20%2Fpr%5Ba%C3%A1%5Dctica%5Cs*1%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'PC2'%2C%20re%3A%20%2Fpr%5Ba%C3%A1%5Dctica%5Cs*2%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'PC3'%2C%20re%3A%20%2Fpr%5Ba%C3%A1%5Dctica%5Cs*3%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'PC4'%2C%20re%3A%20%2Fpr%5Ba%C3%A1%5Dctica%5Cs*4%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'PC5'%2C%20re%3A%20%2Fpr%5Ba%C3%A1%5Dctica%5Cs*5%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'PC6'%2C%20re%3A%20%2Fpr%5Ba%C3%A1%5Dctica%5Cs*6%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Monografia1'%2C%20re%3A%20%2Fmonograf%5Bi%C3%AD%5Da%5Cs*1%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Monografia2'%2C%20re%3A%20%2Fmonograf%5Bi%C3%AD%5Da%5Cs*2%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Lab1'%2C%20re%3A%20%2Flaboratorio%5Cs*1%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Lab2'%2C%20re%3A%20%2Flaboratorio%5Cs*2%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Lab3'%2C%20re%3A%20%2Flaboratorio%5Cs*3%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Lab4'%2C%20re%3A%20%2Flaboratorio%5Cs*4%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Lab5'%2C%20re%3A%20%2Flaboratorio%5Cs*5%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Lab6'%2C%20re%3A%20%2Flaboratorio%5Cs*6%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Lab7'%2C%20re%3A%20%2Flaboratorio%5Cs*7%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%20comp%3A%20'Lab8'%2C%20re%3A%20%2Flaboratorio%5Cs*8%5Cb%2Fi%20%7D%2C%0A%20%20%20%20%5D%3B%0A%20%20%20%20function%20extraerNotas()%20%7B%0A%20%20%20%20%20%20%20%20const%20filas%20%3D%20Array.from(document.querySelectorAll('tr'))%3B%0A%20%20%20%20%20%20%20%20const%20notas%20%3D%20%7B%7D%3B%0A%20%20%20%20%20%20%20%20filas.forEach(fila%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20texto%20%3D%20fila.textContent.replace(%2F%5Cs%2B%2Fg%2C%20'%20').trim()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20patron%20%3D%20PATRONES_COMPONENTE.find(p%20%3D%3E%20p.re.test(texto))%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(!patron)%20return%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20numeros%20%3D%20texto.match(%2F%5Cb(%5Cd%7B1%2C2%7D(%3F%3A%5C.%5Cd%2B)%3F)%5Cb%2Fg)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(!numeros%20%7C%7C%20!numeros.length)%20return%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20nota%20%3D%20numeros%5Bnumeros.length%20-%201%5D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(parseFloat(nota)%20%3C%3D%2020)%20notas%5Bpatron.comp%5D%20%3D%20nota%3B%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20return%20notas%3B%0A%20%20%20%20%7D%0A%20%20%20%20function%20formatearPeriodo(raw)%20%7B%0A%20%20%20%20%20%20%20%20return%20raw.slice(0%2C%204)%20%2B%20'-'%20%2B%20raw.slice(4)%3B%0A%20%20%20%20%7D%0A%20%20%20%20const%20componentes%20%3D%20extraerNotas()%3B%0A%20%20%20%20if%20(!Object.keys(componentes).length)%20%7B%0A%20%20%20%20%20%20%20%20alert('No%20se%20encontraron%20notas%20en%20esta%20pagina.%20Asegurate%20de%20estar%20en%20la%20pestana%20%22Notas%22%20del%20curso.')%3B%0A%20%20%20%20%20%20%20%20return%3B%0A%20%20%20%20%7D%0A%20%20%20%20const%20nombreCurso%20%3D%20(document.querySelector('h1%2C%20h2')%3F.textContent%20%7C%7C%20codigo).trim()%3B%0A%20%20%20%20const%20payload%20%3D%20%7B%0A%20%20%20%20%20%20%20%20version%3A%202%2C%0A%20%20%20%20%20%20%20%20generadoEn%3A%20new%20Date().toISOString()%2C%0A%20%20%20%20%20%20%20%20cursos%3A%20%5B%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20codigo%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20nombreIntralu%3A%20nombreCurso%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20periodo%3A%20formatearPeriodo(periodoRaw)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20componentes%2C%0A%20%20%20%20%20%20%20%20%7D%5D%2C%0A%20%20%20%20%7D%3B%0A%20%20%20%20const%20datosCodificados%20%3D%20btoa(unescape(encodeURIComponent(JSON.stringify(payload))))%3B%0A%20%20%20%20window.open(ORIGEN_SIGA%20%2B%20'%23data%3D'%20%2B%20datosCodificados%2C%20NOMBRE_VENTANA)%3B%0A%7D)()%3B"
-                            style="display:inline-block; margin-top:8px; padding:10px 20px; background:#6600CC; color:#fff; border-radius:20px; text-decoration:none; font-weight:600;"
-                            onclick="return false;">📥 Traer notas de INTRALU</a>
-                    </li>
-                    <li>Abre INTRALU en otra pestaña. Entra al detalle de un curso (la flecha → en "Cursos
-                        Matriculados") y ve a su pestaña "Notas".</li>
-                    <li>Activa el botón ahí. Se abre una vista previa aquí mismo con ese curso — repite el paso
-                        anterior para cada curso más que quieras traer, se van juntando en la misma vista previa.</li>
-                    <li>Cuando tengas todos los que quieras, revisa la vista previa y confirma. No se guarda nada
-                        hasta que tú lo confirmes.</li>
-                </ol>
-            </div>
-
-            <div id="intralu-vista-previa" style="display:none;"></div>
-        </div>
-    </div>
 
 </body>
 

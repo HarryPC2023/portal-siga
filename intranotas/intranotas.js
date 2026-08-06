@@ -519,12 +519,6 @@ function generarSimulador() {
             </p>
         </details>
 
-        <div style="text-align:center; margin: 4px 0 14px;">
-            <a href="#" onclick="mostrarInstruccionesIntralu(); return false;" style="font-size:0.85rem; color:var(--color-cian); text-decoration:none; font-weight:600;">
-                📥 Importar notas desde INTRALU
-            </a>
-        </div>
-
         <div class="banner-ponderado">
             <span class="banner-ponderado-label">PROMEDIO PONDERADO</span>
             <span class="banner-ponderado-valor" id="ponderado-ciclo">--</span>

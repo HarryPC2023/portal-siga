@@ -3,7 +3,7 @@
    Estrategia: Cache-First para assets estáticos
    ============================================================ */
 
-const CACHE_NAME = 'intranotas-v57';
+const CACHE_NAME = 'intranotas-v58';
 
 const ARCHIVOS_A_CACHEAR = [
     './index.html',
