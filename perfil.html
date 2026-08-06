@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi perfil - SIGA</title>
+    <title>Mi cuenta - SIGA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/landing.css">
     <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/perfil-siga.css">
+    <link rel="stylesheet" href="css/auth-siga.css?v=8">
+    <link rel="stylesheet" href="css/perfil-hub.css?v=1">
 </head>
 
 <body>
@@ -23,53 +24,255 @@
 
     <section class="dash-hero">
         <div class="dash-wrap">
-            <h1 class="dash-hero-titulo"><span class="titulo-pildora">MI PERFIL</span></h1>
-            <p style="max-width:none; white-space:nowrap;">Tu identidad académica dentro de SIGA — distinta de la cuenta
-                con la que iniciaste sesión.</p>
+            <h1 class="dash-hero-titulo"><span class="titulo-pildora">MI CUENTA</span></h1>
+            <p style="max-width:none; white-space:nowrap;">Tu identidad académica, tu cuenta y tus preferencias dentro
+                de SIGA.</p>
         </div>
     </section>
 
-    <section class="dash-detalle" style="padding-top:30px; max-width:520px;">
-        <div class="modal-perfil-caja" style="width:100%; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
-            <form id="formPerfil" class="form-perfil">
-                <div style="position:relative; width:88px; margin:0 auto 6px;">
-                    <img id="previewFoto" src="" alt="Foto de perfil"
-                        style="width:88px; height:88px; border-radius:50%; object-fit:cover; background:var(--brand-azul-tinte); display:none;">
-                    <div id="previewFotoVacia"
-                        style="width:88px; height:88px; border-radius:50%; background:var(--brand-azul-tinte); display:flex; align-items:center; justify-content:center; font-size:32px; color:var(--brand-morado);">
-                        👤</div>
-                    <button type="button" id="btnCamara" aria-label="Cambiar foto de perfil"
-                        style="position:absolute; bottom:-2px; right:-2px; width:32px; height:32px; border-radius:50%; background:var(--brand-morado); border:3px solid #fff; color:#fff; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center;">📷</button>
-                    <input type="file" name="foto" id="inputFoto" accept="image/*" hidden>
+    <section class="perfil-hub">
+        <nav class="perfil-hub-nav" id="perfilHubNav" aria-label="Secciones de mi cuenta">
+            <button type="button" class="perfil-hub-tab" data-tab="info">Información General</button>
+            <button type="button" class="perfil-hub-tab" data-tab="cuenta">Cuenta</button>
+            <button type="button" class="perfil-hub-tab" data-tab="preferencias">Preferencias</button>
+            <button type="button" class="perfil-hub-tab" data-tab="faq">Preguntas Frecuentes</button>
+            <button type="button" class="perfil-hub-tab" data-tab="sugerencias">Sugerencias</button>
+        </nav>
+
+        <div class="perfil-hub-panel">
+
+            <!-- ===== INFORMACIÓN GENERAL ===== -->
+            <div class="perfil-panel" data-panel="info">
+                <form id="formPerfil" class="form-perfil form-perfil-ancho">
+                    <div class="perfil-foto-fila">
+                        <div style="position:relative; width:88px;">
+                            <img id="previewFoto" src="" alt="Foto de perfil"
+                                style="width:88px; height:88px; border-radius:50%; object-fit:cover; background:var(--brand-azul-tinte); display:none;">
+                            <div id="previewFotoVacia"
+                                style="width:88px; height:88px; border-radius:50%; background:var(--brand-azul-tinte); display:flex; align-items:center; justify-content:center; font-size:32px; color:var(--brand-morado);">
+                                👤</div>
+                            <button type="button" id="btnCamara" aria-label="Cambiar foto de perfil"
+                                style="position:absolute; bottom:-2px; right:-2px; width:32px; height:32px; border-radius:50%; background:var(--brand-morado); border:3px solid #fff; color:#fff; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center;">📷</button>
+                            <input type="file" name="foto" id="inputFoto" accept="image/*" hidden>
+                        </div>
+                    </div>
+                    <div class="perfil-grid-campos">
+                        <label>Nombre completo
+                            <input type="text" name="nombre" placeholder="Tu nombre y apellido" required>
+                        </label>
+                        <label>Código de estudiante
+                            <input type="text" name="codigo_estudiante" placeholder="Ej. 20231059E" required>
+                        </label>
+                        <label>Carrera
+                            <select name="carrera" required>
+                                <option value="" disabled>Selecciona tu carrera</option>
+                                <option value="sistemas">Ingeniería de Sistemas</option>
+                                <option value="industrial">Ingeniería Industrial</option>
+                                <option value="software">Ingeniería de Software</option>
+                            </select>
+                        </label>
+                        <label>Periodo académico actual
+                            <select name="periodo_actual" id="selectorPeriodoPerfil"></select>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-primary">Guardar cambios</button>
+                    <p class="perfil-msg" id="perfilMsg"></p>
+                </form>
+            </div>
+
+            <!-- ===== CUENTA ===== -->
+            <div class="perfil-panel" data-panel="cuenta" hidden>
+                <div class="perfil-bloque">
+                    <h2>Cambiar contraseña</h2>
+                    <p class="intro">Solo aplica si iniciaste sesión con correo y contraseña. Si entraste con Google,
+                        tu contraseña se administra desde tu cuenta de Google.</p>
+                    <form id="formCambiarContrasena" class="form-perfil">
+                        <label>Nueva contraseña
+                            <div class="campo-contrasena">
+                                <input type="password" name="nueva" minlength="6" required>
+                                <button type="button" class="btn-ojo" aria-label="Mostrar contraseña">👁</button>
+                            </div>
+                        </label>
+                        <label>Repite la nueva contraseña
+                            <div class="campo-contrasena">
+                                <input type="password" name="confirmar" minlength="6" required>
+                                <button type="button" class="btn-ojo" aria-label="Mostrar contraseña">👁</button>
+                            </div>
+                        </label>
+                        <button type="submit" class="btn-primary">Actualizar contraseña</button>
+                        <p class="perfil-msg" id="configMsg"></p>
+                    </form>
                 </div>
-                <label>Nombre completo
-                    <input type="text" name="nombre" placeholder="Tu nombre y apellido" required>
-                </label>
-                <label>Código de estudiante
-                    <input type="text" name="codigo_estudiante" placeholder="Ej. 20231059E" required>
-                </label>
-                <label>Carrera
-                    <select name="carrera" required>
-                        <option value="" disabled>Selecciona tu carrera</option>
-                        <option value="sistemas">Ingeniería de Sistemas</option>
-                        <option value="industrial">Ingeniería Industrial</option>
-                        <option value="software">Ingeniería de Software</option>
-                    </select>
-                </label>
-                <label>Periodo académico actual
-                    <select name="periodo_actual" id="selectorPeriodoPerfil"></select>
-                </label>
-                <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Guardar
-                    cambios</button>
-                <p class="perfil-msg" id="perfilMsg"></p>
-            </form>
+
+                <div class="perfil-bloque perfil-bloque-peligro">
+                    <h2>Eliminar cuenta</h2>
+                    <p class="intro">Esta acción borra tu cuenta y toda tu información en SIGA de forma permanente.
+                        No se puede deshacer.</p>
+                    <button type="button" class="btn-peligro" id="btnAbrirEliminar">Eliminar mi cuenta</button>
+                </div>
+            </div>
+
+            <!-- ===== PREFERENCIAS ===== -->
+            <div class="perfil-panel" data-panel="preferencias" hidden>
+                <div class="perfil-bloque">
+                    <h2>Preferencias de notificación</h2>
+                    <p class="intro">Elige qué avisos quieres recibir de SIGA.</p>
+                    <div class="perfil-toggle-lista">
+                        <label class="perfil-toggle">
+                            <span>
+                                <strong>Activar notificaciones</strong>
+                                <small>Interruptor general — si lo apagas, no recibes ninguna de las de
+                                    abajo.</small>
+                            </span>
+                            <input type="checkbox" id="prefActivas" checked>
+                            <span class="perfil-toggle-visual"></span>
+                        </label>
+                        <label class="perfil-toggle">
+                            <span>
+                                <strong>Avisos de nuevos materiales</strong>
+                                <small>Cuando alguien suba un recurso nuevo a un curso que sigues.</small>
+                            </span>
+                            <input type="checkbox" id="prefMateriales" checked>
+                            <span class="perfil-toggle-visual"></span>
+                        </label>
+                        <label class="perfil-toggle">
+                            <span>
+                                <strong>Recordatorios</strong>
+                                <small>Avisos sobre asesorías o fechas que guardaste.</small>
+                            </span>
+                            <input type="checkbox" id="prefRecordatorios" checked>
+                            <span class="perfil-toggle-visual"></span>
+                        </label>
+                        <label class="perfil-toggle">
+                            <span>
+                                <strong>Actualizaciones de módulos</strong>
+                                <small>Cuando SIGA lanza mejoras o funciones nuevas.</small>
+                            </span>
+                            <input type="checkbox" id="prefActualizaciones" checked>
+                            <span class="perfil-toggle-visual"></span>
+                        </label>
+                    </div>
+                    <p class="perfil-msg" id="prefMsg"></p>
+                </div>
+            </div>
+
+            <!-- ===== PREGUNTAS FRECUENTES ===== -->
+            <div class="perfil-panel" data-panel="faq" hidden>
+                <div class="perfil-faq-lista" id="faqLista">
+                    <div class="perfil-faq-item">
+                        <button type="button" class="perfil-faq-pregunta">¿Qué es SIGA?</button>
+                        <div class="perfil-faq-respuesta">
+                            <p>SIGA (Sistema Integrado de Gestión Académica) es una plataforma que reúne diferentes
+                                herramientas y recursos para ayudarte a organizar, planificar y gestionar tu ciclo
+                                universitario desde un solo lugar.</p>
+                        </div>
+                    </div>
+                    <div class="perfil-faq-item">
+                        <button type="button" class="perfil-faq-pregunta">¿Qué puedo hacer en Intranotas?</button>
+                        <div class="perfil-faq-respuesta">
+                            <p>Intranotas te permite consultar y trabajar con tus notas de diferentes maneras. Puedes
+                                ingresar tus calificaciones manualmente. También puedes establecer una <strong>"Meta
+                                    del Curso"</strong> para calcular qué calificaciones necesitas obtener en las
+                                evaluaciones restantes para alcanzar el promedio que deseas.</p>
+                        </div>
+                    </div>
+                    <div class="perfil-faq-item">
+                        <button type="button" class="perfil-faq-pregunta">¿Cómo puedo generar mi horario?</button>
+                        <div class="perfil-faq-respuesta">
+                            <p>Para comenzar, carga el archivo de cursos y horarios proporcionado por la
+                                universidad. Luego, busca y selecciona los cursos que deseas llevar por código o
+                                nombre y revisa tu selección antes de continuar. En el siguiente paso, elige las
+                                secciones o profesores de tu preferencia y establece la cantidad de cruces que estás
+                                dispuesto a aceptar. Al generar los horarios, SIGA analizará las combinaciones
+                                disponibles respetando las restricciones establecidas y evitando los cruces que no
+                                estén permitidos. Podrás comparar las alternativas encontradas, guardarlas en
+                                <strong>Favoritos</strong> y exportarlas como <strong>Excel o imagen</strong> listo
+                                para imprimirlas o consultarlas posteriormente.</p>
+                        </div>
+                    </div>
+                    <div class="perfil-faq-item">
+                        <button type="button" class="perfil-faq-pregunta">¿Cómo funcionan las opiniones sobre
+                            profesores?</button>
+                        <div class="perfil-faq-respuesta">
+                            <p>Puedes compartir tu experiencia sobre un curso y su profesor para ayudar a otros
+                                estudiantes a conocer mejor la metodología, el nivel de exigencia, la forma de
+                                evaluación y otros aspectos académicos. Las opiniones deben ser respetuosas,
+                                objetivas y estar relacionadas con la experiencia académica.</p>
+                            <p>Antes de publicar, revisa que tu comentario no incluya insultos, ataques personales,
+                                información privada u otro contenido que no contribuya a orientar a otros
+                                estudiantes. Las opiniones pueden ser revisadas y retiradas si no cumplen con las
+                                normas de convivencia de SIGA.</p>
+                        </div>
+                    </div>
+                    <div class="perfil-faq-item">
+                        <button type="button" class="perfil-faq-pregunta">¿Cómo puedo encontrar materiales para mis
+                            cursos?</button>
+                        <div class="perfil-faq-respuesta">
+                            <p>Ingresa al módulo Materiales y selecciona el curso que deseas consultar. Allí
+                                encontrarás los recursos disponibles, organizados para facilitar su búsqueda y
+                                acceso. Puedes utilizar los filtros o categorías disponibles para encontrar más
+                                rápidamente el material que necesitas.</p>
+                            <p>Si tienes materiales que puedan ser útiles para otros estudiantes, también puedes
+                                compartirlos con la comunidad de SIGA. Tu aporte puede ayudar a que más compañeros
+                                encuentren recursos para sus cursos y, de esta manera, contribuir a ampliar y
+                                mejorar el contenido disponible en la plataforma.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SUGERENCIAS ===== -->
+            <div class="perfil-panel" data-panel="sugerencias" hidden>
+                <div class="perfil-bloque">
+                    <h2>¿Qué mejorarías de SIGA?</h2>
+                    <p class="intro">Cuéntanos tu idea y cómo crees que ayudaría a otros estudiantes.</p>
+                    <form id="formSugerencia" class="form-perfil form-perfil-ancho">
+                        <label>Categoría
+                            <select name="categoria" required>
+                                <option value="" disabled selected>Selecciona una categoría</option>
+                                <option value="nueva_funcion">Nueva función</option>
+                                <option value="mejora_funcion">Mejora de una función existente</option>
+                                <option value="contenido">Contenido</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </label>
+                        <label>Cuéntanos tu idea
+                            <input type="text" name="titulo" placeholder="Resume tu idea en una frase" required>
+                        </label>
+                        <label>Descríbela un poco más (opcional)
+                            <textarea name="descripcion" rows="5"
+                                placeholder="Describe brevemente qué te gustaría que incorporáramos y cómo crees que podría ayudarte."></textarea>
+                        </label>
+                        <button type="submit" class="btn-primary">Enviar sugerencia</button>
+                        <p class="perfil-msg" id="sugerenciaMsg"></p>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </section>
+
+    <!-- Modal de confirmación para eliminar cuenta -->
+    <div class="modal-perfil" id="modalEliminar">
+        <div class="modal-perfil-caja">
+            <h2>¿Eliminar tu cuenta?</h2>
+            <p class="intro">Esta acción es permanente. Se borrará tu perfil, tus preferencias, tus sugerencias y no
+                podrás recuperar el acceso. Escribe <strong>ELIMINAR</strong> para confirmar.</p>
+            <input type="text" id="inputConfirmarEliminar" placeholder="ELIMINAR"
+                style="width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(0,0,0,0.15); margin-bottom:16px;">
+            <p class="perfil-msg" id="eliminarMsg"></p>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button type="button" class="btn-secundario" id="btnCancelarEliminar">Cancelar</button>
+                <button type="button" class="btn-peligro" id="btnConfirmarEliminar" disabled>Sí, eliminar mi
+                    cuenta</button>
+            </div>
+        </div>
+    </div>
 
     <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
     <script src="js/landing.js"></script>
-    <script type="module" src="js/perfil-editar.js?v=9"></script>
+    <script type="module" src="js/perfil-hub.js?v=1"></script>
 </body>
 
 </html>

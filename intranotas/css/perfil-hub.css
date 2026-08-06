@@ -1,0 +1,306 @@
+/* ===== SIGA · Perfil hub — sidebar + panel a pantalla completa ===== */
+
+.perfil-hub {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 30px 32px 100px;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+/* ---------- SIDEBAR ---------- */
+.perfil-hub-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: sticky;
+    top: 24px;
+}
+
+.perfil-hub-tab {
+    text-align: left;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    font-family: var(--font-nav);
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.perfil-hub-tab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+.perfil-hub-tab.activo {
+    background: var(--brand-azul-tinte);
+    color: var(--brand-morado);
+    font-weight: 600;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- PANEL DE CONTENIDO ---------- */
+.perfil-hub-panel {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 34px 36px;
+    min-height: 420px;
+}
+
+.perfil-panel[hidden] {
+    display: none;
+}
+
+.perfil-bloque {
+    max-width: 480px;
+}
+
+.perfil-bloque+.perfil-bloque {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.perfil-bloque h2 {
+    font-family: var(--font-heading);
+    font-size: 19px;
+    margin-bottom: 8px;
+}
+
+.perfil-bloque p.intro {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+.form-perfil-ancho {
+    max-width: 480px;
+}
+
+.perfil-foto-fila {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 6px;
+}
+
+.perfil-grid-campos {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ---------- ZONA DE PELIGRO ---------- */
+.perfil-bloque-peligro h2 {
+    color: #C0392B;
+}
+
+.btn-peligro {
+    background: #E23E3E;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-peligro:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(226, 62, 62, 0.3);
+}
+
+.btn-peligro:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-secundario {
+    background: var(--brand-azul-tinte);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: 999px;
+}
+
+.btn-secundario:hover {
+    background: #dfeaff;
+}
+
+/* ---------- TOGGLES DE PREFERENCIAS ---------- */
+.perfil-toggle-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 520px;
+}
+
+.perfil-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    cursor: pointer;
+}
+
+.perfil-toggle span:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.perfil-toggle strong {
+    font-size: 14px;
+    color: var(--ink);
+}
+
+.perfil-toggle small {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+}
+
+.perfil-toggle input {
+    display: none;
+}
+
+.perfil-toggle-visual {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 26px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.15);
+    position: relative;
+    transition: background 0.2s ease;
+}
+
+.perfil-toggle-visual::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s ease;
+}
+
+.perfil-toggle input:checked+.perfil-toggle-visual {
+    background: var(--brand-morado);
+}
+
+.perfil-toggle input:checked+.perfil-toggle-visual::after {
+    transform: translateX(18px);
+}
+
+.perfil-toggle input:disabled+.perfil-toggle-visual {
+    opacity: 0.4;
+}
+
+/* ---------- FAQ (ACORDEÓN) ---------- */
+.perfil-faq-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.perfil-faq-item {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.perfil-faq-pregunta {
+    width: 100%;
+    text-align: left;
+    padding: 16px 20px;
+    background: #fff;
+    font-family: var(--font-nav);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.perfil-faq-pregunta::after {
+    content: "+";
+    font-size: 18px;
+    color: var(--brand-morado);
+    transition: transform 0.2s ease;
+    flex: 0 0 auto;
+    margin-left: 12px;
+}
+
+.perfil-faq-item.abierto .perfil-faq-pregunta::after {
+    transform: rotate(45deg);
+}
+
+.perfil-faq-item.abierto .perfil-faq-pregunta {
+    background: var(--brand-azul-tinte);
+}
+
+.perfil-faq-respuesta {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+    padding: 0 20px;
+}
+
+.perfil-faq-item.abierto .perfil-faq-respuesta {
+    max-height: 600px;
+    padding: 4px 20px 18px;
+}
+
+.perfil-faq-respuesta p {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+}
+
+.perfil-faq-respuesta p+p {
+    margin-top: 10px;
+}
+
+/* ---------- RESPONSIVE: sidebar -> tabs horizontales ---------- */
+@media (max-width: 780px) {
+    .perfil-hub {
+        grid-template-columns: 1fr;
+        padding: 20px 20px 80px;
+    }
+
+    .perfil-hub-nav {
+        position: static;
+        flex-direction: row;
+        overflow-x: auto;
+        scrollbar-width: none;
+        gap: 8px;
+        padding-bottom: 4px;
+    }
+
+    .perfil-hub-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .perfil-hub-tab {
+        white-space: nowrap;
+        flex: 0 0 auto;
+    }
+
+    .perfil-hub-panel {
+        padding: 26px 22px;
+    }
+}

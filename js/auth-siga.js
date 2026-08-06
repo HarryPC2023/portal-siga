@@ -90,8 +90,8 @@ export function montarNavUsuario() {
           <div class="app-nav-user-info">
             <span class="app-nav-user-correo">${sesion.user.email ?? ''}</span>
           </div>
-          <a href="${raiz}perfil.html" class="app-nav-user-item">Mi perfil</a>
-          <a href="${raiz}configuracion.html" class="app-nav-user-item">Configuración de la cuenta</a>
+          <a href="${raiz}perfil.html#info" class="app-nav-user-item">Mi perfil</a>
+          <a href="${raiz}perfil.html#cuenta" class="app-nav-user-item">Configuración de la cuenta</a>
           <div class="app-nav-user-sep"></div>
           <button type="button" class="app-nav-user-item app-nav-user-salir" id="btnCerrarSesionSiga">Cerrar sesión</button>
         </div>`;
