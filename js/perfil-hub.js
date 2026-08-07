@@ -26,49 +26,6 @@ const CARRERA_LABELS = {
     ia: 'Ingeniería de Inteligencia Artificial',
 };
 
-function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId }) {
-    const trigger = document.getElementById(triggerId);
-    const texto = document.getElementById(textoId);
-    const lista = document.getElementById(listaId);
-    const valor = document.getElementById(valorId);
-
-    function cerrar() {
-        lista.hidden = true;
-        trigger.setAttribute('aria-expanded', 'false');
-    }
-
-    trigger.addEventListener('click', () => {
-        if (!lista.hidden) { cerrar(); return; }
-        lista.hidden = false;
-        trigger.setAttribute('aria-expanded', 'true');
-    });
-
-    lista.querySelectorAll('li').forEach((opcion) => {
-        const elegir = () => {
-            valor.value = opcion.dataset.value;
-            texto.textContent = opcion.textContent.trim();
-            cerrar();
-        };
-        opcion.addEventListener('click', elegir);
-        opcion.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegir(); }
-        });
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!trigger.contains(e.target) && !lista.contains(e.target)) cerrar();
-    });
-
-    return { trigger, texto, lista, valor, establecer: (v, etiqueta) => { valor.value = v; texto.textContent = etiqueta; } };
-}
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.select-custom-lista').forEach((l) => { l.hidden = true; });
-        document.querySelectorAll('.select-custom-trigger').forEach((t) => t.setAttribute('aria-expanded', 'false'));
-    }
-});
-
 document.addEventListener('DOMContentLoaded', async () => {
     montarNavUsuario();
 
@@ -104,7 +61,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ================= INFORMACIÓN GENERAL =================
     const form = document.getElementById('formPerfil');
     const msg = document.getElementById('perfilMsg');
-    const selectorPeriodo = document.getElementById('selectorPeriodoPerfil');
     const inputFoto = document.getElementById('inputFoto');
     const btnCamara = document.getElementById('btnCamara');
     const previewFoto = document.getElementById('previewFoto');
@@ -134,7 +90,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     const periodos = generarPeriodosDisponibles();
-    selectorPeriodo.innerHTML = periodos.map((p) => `<option value="${p}">${p}</option>`).join('');
+    const selectPeriodo = inicializarSelectPersonalizado({
+        triggerId: 'periodoTrigger', textoId: 'periodoTriggerTexto',
+        listaId: 'periodoLista', valorId: 'periodoValor',
+        opciones: periodos.map((p) => ({ value: p, label: p })),
+    });
+    selectPeriodo.establecer(periodos[0], periodos[0]);
 
     const { data: perfil, error: errPerfil } = await supabase
         .from('perfiles_usuario')
@@ -155,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         form.nombre.value = perfil.nombre ?? '';
         form.codigo_estudiante.value = perfil.codigo_estudiante ?? '';
         if (perfil.carrera) selectCarrera.establecer(perfil.carrera, CARRERA_LABELS[perfil.carrera] || perfil.carrera);
-        if (perfil.periodo_actual) selectorPeriodo.value = perfil.periodo_actual;
+        if (perfil.periodo_actual) selectPeriodo.establecer(perfil.periodo_actual, perfil.periodo_actual);
         mostrarFoto(perfil.foto_url || fotoGoogleSugerida);
     } else if (fotoGoogleSugerida) {
         mostrarFoto(fotoGoogleSugerida);

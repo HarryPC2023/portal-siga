@@ -444,18 +444,29 @@ function formatoPeriodoCorto(periodo) {
     return `${anio.slice(-2)}-${num}`;
 }
 
-function generarOpcionesPeriodo() {
-    const select = document.getElementById('selector-periodo');
-    if (!select) return;
-
-    const periodos = generarPeriodosDisponibles();
-    const opciones = `<option value="" disabled ${periodoSeleccionado ? '' : 'selected'}>Escoge tu periodo académico</option>` +
-        periodos.map(p => `<option value="${p}" ${p === periodoSeleccionado ? 'selected' : ''}>${p}</option>`).join('');
-    select.innerHTML = opciones;
-}
-
 function seleccionarPeriodo(valor) {
     periodoSeleccionado = valor;
+}
+
+let selectPeriodoIntranotas = null;
+
+function generarOpcionesPeriodo() {
+    const trigger = document.getElementById('periodoTrigger');
+    if (!trigger) return;
+
+    const periodos = generarPeriodosDisponibles();
+    const actual = periodos[0];
+
+    selectPeriodoIntranotas = inicializarSelectPersonalizado({
+        triggerId: 'periodoTrigger', textoId: 'periodoTriggerTexto',
+        listaId: 'periodoLista', valorId: 'periodoValor',
+        opciones: periodos.map((p) => ({ value: p, label: p })),
+        alElegir: seleccionarPeriodo,
+    });
+
+    const valorInicial = periodoSeleccionado || actual;
+    selectPeriodoIntranotas.establecer(valorInicial, valorInicial);
+    periodoSeleccionado = valorInicial;
 }
 
 /* ============================================================

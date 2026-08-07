@@ -17,7 +17,8 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/auth-siga.css?v=8">
     <link rel="stylesheet" href="css/perfil-siga.css">
-    <link rel="stylesheet" href="css/perfil-hub.css?v=1">
+    <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
+    <link rel="stylesheet" href="css/perfil-hub.css?v=2">
 </head>
 
 <body>
@@ -92,9 +93,16 @@
                             </ul>
                             <input type="hidden" name="carrera" id="carreraValor">
                         </div>
-                        <label>Periodo académico actual
-                            <select name="periodo_actual" id="selectorPeriodoPerfil"></select>
-                        </label>
+                        <div class="campo-select-custom">
+                            <span class="etiqueta-select">Periodo académico actual</span>
+                            <button type="button" class="select-custom-trigger" id="periodoTrigger"
+                                aria-haspopup="listbox" aria-expanded="false">
+                                <span id="periodoTriggerTexto">Selecciona un periodo</span>
+                                <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                            </button>
+                            <ul class="select-custom-lista" id="periodoLista" role="listbox" hidden></ul>
+                            <input type="hidden" name="periodo_actual" id="periodoValor">
+                        </div>
                     </div>
                     <button type="submit" class="btn-primary btn-alineado-derecha">Guardar cambios</button>
                     <p class="perfil-msg" id="perfilMsg"></p>
@@ -330,7 +338,8 @@
     <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
     <script src="js/landing.js"></script>
-    <script type="module" src="js/perfil-hub.js?v=1"></script>
+    <script src="js/selector-personalizado.js?v=1"></script>
+    <script type="module" src="js/perfil-hub.js?v=2"></script>
 </body>
 
 </html>

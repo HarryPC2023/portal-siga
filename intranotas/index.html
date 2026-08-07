@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/landing.css">
     <link rel="stylesheet" href="../css/dashboard.css">
-
+    <link rel="stylesheet" href="../css/selector-personalizado.css?v=1">
     <link rel="stylesheet" href="css/intranotas.css">
     <link rel="stylesheet" href="css/siga-theme-intranotas.css">
 </head>
@@ -120,8 +120,15 @@
 
                 <div class="seccion-selector-ciclo">
                     <p class="titulo-seccion">Periodo Académico</p>
-                    <select id="selector-periodo" class="select-periodo"
-                        onchange="seleccionarPeriodo(this.value)"></select>
+                    <div class="campo-select-custom">
+                        <button type="button" class="select-custom-trigger" id="periodoTrigger" aria-haspopup="listbox"
+                            aria-expanded="false">
+                            <span id="periodoTriggerTexto">Selecciona un periodo</span>
+                            <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <ul class="select-custom-lista" id="periodoLista" role="listbox" hidden></ul>
+                        <input type="hidden" id="periodoValor">
+                    </div>
                 </div>
 
                 <div id="mensaje-validacion" class="mensaje-validacion">
@@ -222,6 +229,7 @@
     <script type="module" src="../js/gate.js"></script>
 
     <script src="cursos_db.js"></script>
+    <script src="../js/selector-personalizado.js?v=1"></script>
     <script src="intranotas.js"></script>
 
 </body>
