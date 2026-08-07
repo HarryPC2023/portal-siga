@@ -216,9 +216,27 @@
 }
 
 .perfil-faq-item {
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 14px;
+    border: none;
+    border-left: 5px solid #3C7CF8;
+    border-radius: 0 9px 9px 0;
     overflow: hidden;
+    background: #fff;
+}
+
+.perfil-faq-item:nth-child(5n+2) {
+    border-left-color: #6600CC;
+}
+
+.perfil-faq-item:nth-child(5n+3) {
+    border-left-color: #00B8A9;
+}
+
+.perfil-faq-item:nth-child(5n+4) {
+    border-left-color: #FF6B6B;
+}
+
+.perfil-faq-item:nth-child(5n+5) {
+    border-left-color: #F4A100;
 }
 
 .perfil-faq-pregunta {
@@ -262,7 +280,7 @@
 
 .perfil-faq-item.abierto .perfil-faq-respuesta {
     max-height: 600px;
-    padding: 4px 20px 18px;
+    padding: 16px 20px 22px;
 }
 
 .perfil-faq-respuesta p {
@@ -307,7 +325,115 @@
 
 /* ---------- BOTONES ALINEADOS A LA DERECHA (Info General y Sugerencias) ---------- */
 .btn-alineado-derecha {
-  align-self: flex-end;
-  padding-left: 26px;
-  padding-right: 26px;
+    align-self: flex-end;
+    padding-left: 26px;
+    padding-right: 26px;
+}
+
+.perfil-hub-panel .btn-primary,
+.perfil-hub-panel .btn-peligro {
+    font-size: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 22px;
+}
+
+/* ---------- DESPLEGABLE PERSONALIZADO (Categoría en Sugerencias) ---------- */
+.campo-select-custom {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+}
+
+.etiqueta-select {
+    font-size: 10.5px;
+    font-weight: 600;
+}
+
+.select-custom-trigger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: var(--brand-azul-tinte);
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+}
+
+.select-custom-trigger[aria-expanded="true"] {
+    border-color: var(--brand-morado);
+}
+
+.select-custom-chevron {
+    color: var(--ink-soft);
+    transition: transform 0.15s ease;
+}
+
+.select-custom-trigger[aria-expanded="true"] .select-custom-chevron {
+    transform: rotate(180deg);
+}
+
+.select-custom-lista {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 5;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+}
+
+.select-custom-lista li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 12.5px;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.select-custom-lista li:nth-child(odd) {
+    background: #F7F2FF;
+}
+
+.select-custom-lista li:hover,
+.select-custom-lista li:focus {
+    background: var(--brand-azul-tinte);
+    outline: none;
+}
+
+.select-swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 3px;
+    flex: 0 0 auto;
+}
+
+/* ---------- TEXTAREA DE TAMAÑO FIJO + CONTADOR ---------- */
+.form-perfil textarea {
+    resize: none;
+}
+
+.contador-caracteres {
+    display: block;
+    text-align: right;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    margin-top: 4px;
 }

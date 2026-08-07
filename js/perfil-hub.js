@@ -295,9 +295,67 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ================= SUGERENCIAS =================
     const formSugerencia = document.getElementById('formSugerencia');
     const sugerenciaMsg = document.getElementById('sugerenciaMsg');
+    const TEXTO_PLACEHOLDER_CATEGORIA = 'Selecciona una categoría';
+
+    // --- desplegable personalizado de Categoría ---
+    const categoriaTrigger = document.getElementById('categoriaTrigger');
+    const categoriaTriggerTexto = document.getElementById('categoriaTriggerTexto');
+    const categoriaLista = document.getElementById('categoriaLista');
+    const categoriaValor = document.getElementById('categoriaValor');
+
+    function cerrarCategoriaLista() {
+        categoriaLista.hidden = true;
+        categoriaTrigger.setAttribute('aria-expanded', 'false');
+    }
+
+    categoriaTrigger.addEventListener('click', () => {
+        const abierta = !categoriaLista.hidden;
+        if (abierta) {
+            cerrarCategoriaLista();
+        } else {
+            categoriaLista.hidden = false;
+            categoriaTrigger.setAttribute('aria-expanded', 'true');
+        }
+    });
+
+    categoriaLista.querySelectorAll('li').forEach((opcion) => {
+        const elegir = () => {
+            categoriaValor.value = opcion.dataset.value;
+            categoriaTriggerTexto.textContent = opcion.textContent.trim();
+            cerrarCategoriaLista();
+        };
+        opcion.addEventListener('click', elegir);
+        opcion.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegir(); }
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!categoriaTrigger.contains(e.target) && !categoriaLista.contains(e.target)) {
+            cerrarCategoriaLista();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') cerrarCategoriaLista();
+    });
+
+    // --- contador de caracteres ---
+    const descripcionSugerencia = document.getElementById('descripcionSugerencia');
+    const contadorDescripcion = document.getElementById('contadorDescripcion');
+
+    descripcionSugerencia.addEventListener('input', () => {
+        contadorDescripcion.textContent = `${descripcionSugerencia.value.length}/500`;
+    });
 
     formSugerencia.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        if (!categoriaValor.value) {
+            sugerenciaMsg.textContent = 'Elige una categoría antes de enviar.';
+            return;
+        }
+
         const datos = Object.fromEntries(new FormData(formSugerencia).entries());
 
         const { error } = await supabase
@@ -317,5 +375,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         sugerenciaMsg.textContent = '¡Gracias por tu idea! La revisaremos pronto.';
         formSugerencia.reset();
+        categoriaTriggerTexto.textContent = TEXTO_PLACEHOLDER_CATEGORIA;
+        categoriaValor.value = '';
+        contadorDescripcion.textContent = '0/500';
     });
 });

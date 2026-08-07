@@ -9,7 +9,8 @@
     <title>Mi cuenta - SIGA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&family=Poppins:wght@300&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/landing.css">
@@ -70,6 +71,7 @@
                                 <option value="sistemas">Ingeniería de Sistemas</option>
                                 <option value="industrial">Ingeniería Industrial</option>
                                 <option value="software">Ingeniería de Software</option>
+                                <option value="ia">Ingeniería de Inteligencia Artificial</option>
                             </select>
                         </label>
                         <label>Periodo académico actual
@@ -250,28 +252,43 @@
                     <h2>¿Qué mejorarías de SIGA?</h2>
                     <p class="intro">Cuéntanos tu idea y cómo crees que ayudaría a otros estudiantes.</p>
                     <form id="formSugerencia" class="form-perfil form-perfil-ancho">
-                        <label>Categoría
-                            <select name="categoria" required>
-                                <option value="" disabled selected>Selecciona una categoría</option>
-                                <option value="nueva_funcion">Nueva función</option>
-                                <option value="mejora_funcion">Mejora de una función existente</option>
-                                <option value="contenido">Contenido</option>
-                                <option value="otro">Otro</option>
-                            </select>
-                        </label>
+                        <div class="campo-select-custom">
+                            <span class="etiqueta-select">Categoría</span>
+                            <button type="button" class="select-custom-trigger" id="categoriaTrigger"
+                                aria-haspopup="listbox" aria-expanded="false">
+                                <span id="categoriaTriggerTexto">Selecciona una categoría</span>
+                                <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                            </button>
+                            <ul class="select-custom-lista" id="categoriaLista" role="listbox" hidden>
+                                <li role="option" data-value="nueva_funcion" tabindex="0">
+                                    <span class="select-swatch" style="background:#3C7CF8;"></span>Nueva función
+                                </li>
+                                <li role="option" data-value="mejora_funcion" tabindex="0">
+                                    <span class="select-swatch" style="background:#00B8A9;"></span>Mejora de una
+                                    función existente
+                                </li>
+                                <li role="option" data-value="contenido" tabindex="0">
+                                    <span class="select-swatch" style="background:#F4A100;"></span>Contenido
+                                </li>
+                                <li role="option" data-value="otro" tabindex="0">
+                                    <span class="select-swatch" style="background:#FF6B6B;"></span>Otro
+                                </li>
+                            </ul>
+                            <input type="hidden" name="categoria" id="categoriaValor">
+                        </div>
                         <label>Cuéntanos tu idea
                             <input type="text" name="titulo" placeholder="Resume tu idea en una frase" required>
                         </label>
-                        <label>Descríbela un poco más (opcional)
-                            <textarea name="descripcion" rows="5"
+                        <label>Detalla tu sugerencia aquí
+                            <textarea name="descripcion" id="descripcionSugerencia" rows="5" maxlength="500" required
                                 placeholder="Describe brevemente qué te gustaría que incorporáramos y cómo crees que podría ayudarte."></textarea>
+                            <span class="contador-caracteres" id="contadorDescripcion">0/500</span>
                         </label>
                         <button type="submit" class="btn-primary btn-alineado-derecha">Enviar sugerencia</button>
                         <p class="perfil-msg" id="sugerenciaMsg"></p>
                     </form>
                 </div>
             </div>
-
         </div>
     </section>
 
