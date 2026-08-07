@@ -65,15 +65,33 @@
                         <label>Código de estudiante
                             <input type="text" name="codigo_estudiante" placeholder="Ej. 20231059E" required>
                         </label>
-                        <label>Carrera
-                            <select name="carrera" required>
-                                <option value="" disabled>Selecciona tu carrera</option>
-                                <option value="sistemas">Ingeniería de Sistemas</option>
-                                <option value="industrial">Ingeniería Industrial</option>
-                                <option value="software">Ingeniería de Software</option>
-                                <option value="ia">Ingeniería de Inteligencia Artificial</option>
-                            </select>
-                        </label>
+                        <div class="campo-select-custom">
+                            <span class="etiqueta-select">Carrera</span>
+                            <button type="button" class="select-custom-trigger" id="carreraTrigger"
+                                aria-haspopup="listbox" aria-expanded="false">
+                                <span id="carreraTriggerTexto">Selecciona tu carrera</span>
+                                <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                            </button>
+                            <ul class="select-custom-lista" id="carreraLista" role="listbox" hidden>
+                                <li role="option" data-value="sistemas" tabindex="0">
+                                    <span class="select-swatch" style="background:#3C7CF8;"></span>Ingeniería de
+                                    Sistemas
+                                </li>
+                                <li role="option" data-value="industrial" tabindex="0">
+                                    <span class="select-swatch" style="background:#00B8A9;"></span>Ingeniería
+                                    Industrial
+                                </li>
+                                <li role="option" data-value="software" tabindex="0">
+                                    <span class="select-swatch" style="background:#F4A100;"></span>Ingeniería de
+                                    Software
+                                </li>
+                                <li role="option" data-value="ia" tabindex="0">
+                                    <span class="select-swatch" style="background:#FF6B6B;"></span>Ingeniería de
+                                    Inteligencia Artificial
+                                </li>
+                            </ul>
+                            <input type="hidden" name="carrera" id="carreraValor">
+                        </div>
                         <label>Periodo académico actual
                             <select name="periodo_actual" id="selectorPeriodoPerfil"></select>
                         </label>
@@ -102,7 +120,7 @@
                                 <button type="button" class="btn-ojo" aria-label="Mostrar contraseña">👁</button>
                             </div>
                         </label>
-                        <button type="submit" class="btn-primary">Actualizar contraseña</button>
+                        <button type="submit" class="btn-primary btn-ancho-automatico">Actualizar contraseña</button>
                         <p class="perfil-msg" id="configMsg"></p>
                     </form>
                 </div>

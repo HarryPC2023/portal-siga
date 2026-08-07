@@ -19,6 +19,56 @@ function generarPeriodosDisponibles(cantidad = 24) {
     return periodos;
 }
 
+const CARRERA_LABELS = {
+    sistemas: 'Ingeniería de Sistemas',
+    industrial: 'Ingeniería Industrial',
+    software: 'Ingeniería de Software',
+    ia: 'Ingeniería de Inteligencia Artificial',
+};
+
+function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId }) {
+    const trigger = document.getElementById(triggerId);
+    const texto = document.getElementById(textoId);
+    const lista = document.getElementById(listaId);
+    const valor = document.getElementById(valorId);
+
+    function cerrar() {
+        lista.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    trigger.addEventListener('click', () => {
+        if (!lista.hidden) { cerrar(); return; }
+        lista.hidden = false;
+        trigger.setAttribute('aria-expanded', 'true');
+    });
+
+    lista.querySelectorAll('li').forEach((opcion) => {
+        const elegir = () => {
+            valor.value = opcion.dataset.value;
+            texto.textContent = opcion.textContent.trim();
+            cerrar();
+        };
+        opcion.addEventListener('click', elegir);
+        opcion.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegir(); }
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!trigger.contains(e.target) && !lista.contains(e.target)) cerrar();
+    });
+
+    return { trigger, texto, lista, valor, establecer: (v, etiqueta) => { valor.value = v; texto.textContent = etiqueta; } };
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.select-custom-lista').forEach((l) => { l.hidden = true; });
+        document.querySelectorAll('.select-custom-trigger').forEach((t) => t.setAttribute('aria-expanded', 'false'));
+    }
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     montarNavUsuario();
 
@@ -62,6 +112,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     btnCamara.addEventListener('click', () => inputFoto.click());
 
+    const selectCarrera = inicializarSelectPersonalizado({
+        triggerId: 'carreraTrigger', textoId: 'carreraTriggerTexto',
+        listaId: 'carreraLista', valorId: 'carreraValor',
+    });
+
     function mostrarFoto(url) {
         if (url) {
             previewFoto.src = url;
@@ -99,7 +154,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (perfil) {
         form.nombre.value = perfil.nombre ?? '';
         form.codigo_estudiante.value = perfil.codigo_estudiante ?? '';
-        if (perfil.carrera) form.carrera.value = perfil.carrera;
+        if (perfil.carrera) selectCarrera.establecer(perfil.carrera, CARRERA_LABELS[perfil.carrera] || perfil.carrera);
         if (perfil.periodo_actual) selectorPeriodo.value = perfil.periodo_actual;
         mostrarFoto(perfil.foto_url || fotoGoogleSugerida);
     } else if (fotoGoogleSugerida) {
@@ -108,6 +163,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        if (!selectCarrera.valor.value) {
+            msg.textContent = 'Elige tu carrera antes de guardar.';
+            return;
+        }
+
         const datos = Object.fromEntries(new FormData(form).entries());
 
         let fotoUrl = perfil?.foto_url || fotoGoogleSugerida || null;
@@ -298,46 +359,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const TEXTO_PLACEHOLDER_CATEGORIA = 'Selecciona una categoría';
 
     // --- desplegable personalizado de Categoría ---
-    const categoriaTrigger = document.getElementById('categoriaTrigger');
-    const categoriaTriggerTexto = document.getElementById('categoriaTriggerTexto');
-    const categoriaLista = document.getElementById('categoriaLista');
-    const categoriaValor = document.getElementById('categoriaValor');
-
-    function cerrarCategoriaLista() {
-        categoriaLista.hidden = true;
-        categoriaTrigger.setAttribute('aria-expanded', 'false');
-    }
-
-    categoriaTrigger.addEventListener('click', () => {
-        const abierta = !categoriaLista.hidden;
-        if (abierta) {
-            cerrarCategoriaLista();
-        } else {
-            categoriaLista.hidden = false;
-            categoriaTrigger.setAttribute('aria-expanded', 'true');
-        }
-    });
-
-    categoriaLista.querySelectorAll('li').forEach((opcion) => {
-        const elegir = () => {
-            categoriaValor.value = opcion.dataset.value;
-            categoriaTriggerTexto.textContent = opcion.textContent.trim();
-            cerrarCategoriaLista();
-        };
-        opcion.addEventListener('click', elegir);
-        opcion.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegir(); }
-        });
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!categoriaTrigger.contains(e.target) && !categoriaLista.contains(e.target)) {
-            cerrarCategoriaLista();
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') cerrarCategoriaLista();
+    const selectCategoria = inicializarSelectPersonalizado({
+        triggerId: 'categoriaTrigger', textoId: 'categoriaTriggerTexto',
+        listaId: 'categoriaLista', valorId: 'categoriaValor',
     });
 
     // --- contador de caracteres ---
@@ -351,7 +375,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     formSugerencia.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!categoriaValor.value) {
+        if (!selectCategoria.valor.value) {
             sugerenciaMsg.textContent = 'Elige una categoría antes de enviar.';
             return;
         }
@@ -375,8 +399,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         sugerenciaMsg.textContent = '¡Gracias por tu idea! La revisaremos pronto.';
         formSugerencia.reset();
-        categoriaTriggerTexto.textContent = TEXTO_PLACEHOLDER_CATEGORIA;
-        categoriaValor.value = '';
+        selectCategoria.establecer('', TEXTO_PLACEHOLDER_CATEGORIA);
         contadorDescripcion.textContent = '0/500';
     });
 });

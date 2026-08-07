@@ -437,3 +437,8 @@
     color: var(--ink-soft);
     margin-top: 4px;
 }
+
+.btn-ancho-automatico {
+    align-self: flex-start;
+    width: auto;
+}
