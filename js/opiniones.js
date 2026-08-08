@@ -88,6 +88,27 @@ function estrellas(valor) {
     return '★'.repeat(llenas) + '☆'.repeat(5 - llenas);
 }
 
+/**
+ * Orden: 1) ciclo ascendente (ciclo variable/null va al final),
+ * 2) curso A-Z, 3) profesor A-Z. Usa localeCompare('es') para que tildes
+ * y ñ ordenen de forma natural.
+ */
+function compararPerfiles(a, b) {
+    const cursoA = a.profesor_curso.cursos;
+    const cursoB = b.profesor_curso.cursos;
+
+    const cicloA = cursoA.ciclo_ref ?? 99;
+    const cicloB = cursoB.ciclo_ref ?? 99;
+    if (cicloA !== cicloB) return cicloA - cicloB;
+
+    const cmpCurso = cursoA.nombre.localeCompare(cursoB.nombre, 'es', { sensitivity: 'base' });
+    if (cmpCurso !== 0) return cmpCurso;
+
+    const profA = a.profesor_curso.profesores.nombre;
+    const profB = b.profesor_curso.profesores.nombre;
+    return profA.localeCompare(profB, 'es', { sensitivity: 'base' });
+}
+
 function renderGrid() {
     const carrera = filtroCarrera.value;
     const ciclo = filtroCiclo.value;
@@ -106,14 +127,26 @@ function renderGrid() {
         return;
     }
 
-    grid.innerHTML = visibles.map((p) => {
+    visibles.sort(compararPerfiles);
+
+    let html = '';
+    let cicloAnterior;
+    let esPrimero = true;
+
+    visibles.forEach((p) => {
         const curso = p.profesor_curso.cursos;
         const profesor = p.profesor_curso.profesores;
         const lista = opinionesPorFicha.get(p.profesor_curso_id) || [];
         const prom = promedioOpiniones(lista);
         const etiquetaCiclo = curso.ciclo_ref ? `Ciclo ${curso.ciclo_ref}` : 'Ciclo variable';
 
-        return `
+        if (esPrimero || curso.ciclo_ref !== cicloAnterior) {
+            html += `<h2 class="opiniones-ciclo-header">${etiquetaCiclo}</h2>`;
+            cicloAnterior = curso.ciclo_ref;
+            esPrimero = false;
+        }
+
+        html += `
       <button class="opinion-card" data-id="${p.id}">
         <span class="opinion-card-curso">${curso.nombre} · ${etiquetaCiclo}</span>
         <h3>${profesor.nombre}</h3>
@@ -123,7 +156,9 @@ function renderGrid() {
           <span class="opinion-card-conteo">${lista.length ? `${prom.toFixed(1)} · ${lista.length} opiniones` : 'Sin opiniones aún'}</span>
         </div>
       </button>`;
-    }).join('');
+    });
+
+    grid.innerHTML = html;
 
     grid.querySelectorAll('.opinion-card').forEach((card) => {
         card.addEventListener('click', () => abrirDetalle(card.dataset.id));
