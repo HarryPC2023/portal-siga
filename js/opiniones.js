@@ -2,42 +2,45 @@
 import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=8';
 
 const CICLOS = Array.from({ length: 10 }, (_, i) => i + 1);
+const POR_PAGINA = 9;
 
 let sesionActual = null;
 let perfiles = [];
 let opinionesPorFicha = new Map();
 let reportadasPorMi = new Set();
+let paginaActual = 1;
 
 const filtrosCont = document.getElementById('opinionesFiltros');
 const grid = document.getElementById('opinionesGrid');
+const paginacionCont = document.getElementById('opinionesPaginacion');
 const detalle = document.getElementById('detalleProfesor');
 const filtroCarrera = document.getElementById('filtroCarrera');
 const filtroCiclo = document.getElementById('filtroCiclo');
 
 document.addEventListener('DOMContentLoaded', async () => {
-    montarNavUsuario();
-    llenarSelectCiclos(filtroCiclo, 'Todos los ciclos');
-    configurarFiltros();
+  montarNavUsuario();
+  llenarSelectCiclos(filtroCiclo, 'Todos los ciclos');
+  configurarFiltros();
 
-    // requerirSesion ya redirige a index.html?login=1 si no hay cuenta,
-    // así que si llegamos aquí, sesionActual siempre existe.
-    sesionActual = await requerirSesion('');
-    if (!sesionActual) return;
+  // requerirSesion ya redirige a index.html?login=1 si no hay cuenta,
+  // así que si llegamos aquí, sesionActual siempre existe.
+  sesionActual = await requerirSesion('');
+  if (!sesionActual) return;
 
-    grid.innerHTML = '<p class="opiniones-vacio">Cargando perfiles…</p>';
-    await cargarTodo();
-    renderGrid();
+  grid.innerHTML = '<p class="opiniones-vacio">Cargando perfiles…</p>';
+  await cargarTodo();
+  renderGrid();
 });
 
 function llenarSelectCiclos(select, etiquetaVacia) {
-    select.innerHTML = `<option value="">${etiquetaVacia}</option>` +
-        CICLOS.map((c) => `<option value="${c}">Ciclo ${c}</option>`).join('');
+  select.innerHTML = `<option value="">${etiquetaVacia}</option>` +
+    CICLOS.map((c) => `<option value="${c}">Ciclo ${c}</option>`).join('');
 }
 
 async function cargarTodo() {
-    const { data: perfilesData, error: errPerfiles } = await supabase
-        .from('perfiles_profesor')
-        .select(`
+  const { data: perfilesData, error: errPerfiles } = await supabase
+    .from('perfiles_profesor')
+    .select(`
       id, profesor_curso_id, resumen, que_esperar,
       exigencia, carga_trabajo, ritmo, claridad, recomendaciones,
       profesor_curso:profesor_curso_id (
@@ -47,45 +50,45 @@ async function cargarTodo() {
       )
     `);
 
-    if (errPerfiles) {
-        console.error('Error cargando perfiles:', errPerfiles);
-        grid.innerHTML = '<p class="opiniones-error">No se pudieron cargar los perfiles. Intenta recargar la página.</p>';
-        return;
+  if (errPerfiles) {
+    console.error('Error cargando perfiles:', errPerfiles);
+    grid.innerHTML = '<p class="opiniones-error">No se pudieron cargar los perfiles. Intenta recargar la página.</p>';
+    return;
+  }
+  perfiles = perfilesData || [];
+
+  const { data: opinionesData, error: errOpiniones } = await supabase
+    .from('opiniones_publicas')
+    .select('*')
+    .order('creado_en', { ascending: false });
+
+  opinionesPorFicha = new Map();
+  if (!errOpiniones) {
+    for (const op of opinionesData) {
+      const lista = opinionesPorFicha.get(op.profesor_curso_id) || [];
+      lista.push(op);
+      opinionesPorFicha.set(op.profesor_curso_id, lista);
     }
-    perfiles = perfilesData || [];
+  } else {
+    console.error('Error cargando opiniones:', errOpiniones);
+  }
 
-    const { data: opinionesData, error: errOpiniones } = await supabase
-        .from('opiniones_publicas')
-        .select('*')
-        .order('creado_en', { ascending: false });
-
-    opinionesPorFicha = new Map();
-    if (!errOpiniones) {
-        for (const op of opinionesData) {
-            const lista = opinionesPorFicha.get(op.profesor_curso_id) || [];
-            lista.push(op);
-            opinionesPorFicha.set(op.profesor_curso_id, lista);
-        }
-    } else {
-        console.error('Error cargando opiniones:', errOpiniones);
-    }
-
-    const { data: misReportes } = await supabase
-        .from('opinion_reportes')
-        .select('opinion_id')
-        .eq('autor_id', sesionActual.user.id);
-    reportadasPorMi = new Set((misReportes || []).map((r) => r.opinion_id));
+  const { data: misReportes } = await supabase
+    .from('opinion_reportes')
+    .select('opinion_id')
+    .eq('autor_id', sesionActual.user.id);
+  reportadasPorMi = new Set((misReportes || []).map((r) => r.opinion_id));
 }
 
 function promedioOpiniones(lista) {
-    if (!lista || !lista.length) return null;
-    const suma = lista.reduce((acc, o) => acc + (o.claridad + o.exigencia + o.carga_trabajo + o.evaluaciones) / 4, 0);
-    return suma / lista.length;
+  if (!lista || !lista.length) return null;
+  const suma = lista.reduce((acc, o) => acc + (o.claridad + o.exigencia + o.carga_trabajo + o.evaluaciones) / 4, 0);
+  return suma / lista.length;
 }
 
 function estrellas(valor) {
-    const llenas = Math.round(valor || 0);
-    return '★'.repeat(llenas) + '☆'.repeat(5 - llenas);
+  const llenas = Math.round(valor || 0);
+  return '★'.repeat(llenas) + '☆'.repeat(5 - llenas);
 }
 
 /**
@@ -94,59 +97,127 @@ function estrellas(valor) {
  * y ñ ordenen de forma natural.
  */
 function compararPerfiles(a, b) {
-    const cursoA = a.profesor_curso.cursos;
-    const cursoB = b.profesor_curso.cursos;
+  const cursoA = a.profesor_curso.cursos;
+  const cursoB = b.profesor_curso.cursos;
 
-    const cicloA = cursoA.ciclo_ref ?? 99;
-    const cicloB = cursoB.ciclo_ref ?? 99;
-    if (cicloA !== cicloB) return cicloA - cicloB;
+  const cicloA = cursoA.ciclo_ref ?? 99;
+  const cicloB = cursoB.ciclo_ref ?? 99;
+  if (cicloA !== cicloB) return cicloA - cicloB;
 
-    const cmpCurso = cursoA.nombre.localeCompare(cursoB.nombre, 'es', { sensitivity: 'base' });
-    if (cmpCurso !== 0) return cmpCurso;
+  const cmpCurso = cursoA.nombre.localeCompare(cursoB.nombre, 'es', { sensitivity: 'base' });
+  if (cmpCurso !== 0) return cmpCurso;
 
-    const profA = a.profesor_curso.profesores.nombre;
-    const profB = b.profesor_curso.profesores.nombre;
-    return profA.localeCompare(profB, 'es', { sensitivity: 'base' });
+  const profA = a.profesor_curso.profesores.nombre;
+  const profB = b.profesor_curso.profesores.nombre;
+  return profA.localeCompare(profB, 'es', { sensitivity: 'base' });
+}
+
+/**
+ * Arma el rango de números de página a mostrar. Con pocas páginas las
+ * muestra todas; con muchas, muestra 1, la última, y las cercanas a la
+ * actual, con "…" en los saltos (mismo patrón que YouTube/Google).
+ */
+function construirRangoPaginas(actual, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const paginas = new Set([1, total, actual - 1, actual, actual + 1]);
+  const ordenadas = [...paginas].filter((p) => p >= 1 && p <= total).sort((a, b) => a - b);
+
+  const resultado = [];
+  let anterior = 0;
+  for (const p of ordenadas) {
+    if (p - anterior > 1) resultado.push('…');
+    resultado.push(p);
+    anterior = p;
+  }
+  return resultado;
+}
+
+function cambiarPagina(n) {
+  paginaActual = n;
+  renderGrid();
+  grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderPaginacion(totalVisibles, totalPaginas) {
+  if (!paginacionCont) return;
+
+  if (totalPaginas <= 1) {
+    paginacionCont.innerHTML = '';
+    return;
+  }
+
+  const desde = (paginaActual - 1) * POR_PAGINA + 1;
+  const hasta = Math.min(paginaActual * POR_PAGINA, totalVisibles);
+  const rango = construirRangoPaginas(paginaActual, totalPaginas);
+
+  paginacionCont.innerHTML = `
+    <p class="opiniones-rango">Mostrando ${desde}–${hasta} de ${totalVisibles}</p>
+    <div class="opiniones-paginacion-barra">
+      <button class="paginacion-flecha" id="btnPagAnterior" ${paginaActual === 1 ? 'disabled' : ''}>‹ Anterior</button>
+      <div class="paginacion-numeros">
+        ${rango.map((p) => p === '…'
+    ? '<span class="paginacion-puntos">…</span>'
+    : `<button class="paginacion-num ${p === paginaActual ? 'activo' : ''}" data-pagina="${p}">${p}</button>`
+  ).join('')}
+      </div>
+      <button class="paginacion-flecha" id="btnPagSiguiente" ${paginaActual === totalPaginas ? 'disabled' : ''}>Siguiente ›</button>
+    </div>
+  `;
+
+  document.getElementById('btnPagAnterior').addEventListener('click', () => cambiarPagina(paginaActual - 1));
+  document.getElementById('btnPagSiguiente').addEventListener('click', () => cambiarPagina(paginaActual + 1));
+  paginacionCont.querySelectorAll('.paginacion-num').forEach((btn) => {
+    btn.addEventListener('click', () => cambiarPagina(Number(btn.dataset.pagina)));
+  });
 }
 
 function renderGrid() {
-    const carrera = filtroCarrera.value;
-    const ciclo = filtroCiclo.value;
+  const carrera = filtroCarrera.value;
+  const ciclo = filtroCiclo.value;
 
-    const visibles = perfiles.filter((p) => {
-        const curso = p.profesor_curso?.cursos;
-        if (!curso) return false;
-        // curso.carrera === null -> curso común a las 3 carreras, siempre visible
-        if (carrera && curso.carrera && curso.carrera !== carrera) return false;
-        if (ciclo && String(curso.ciclo_ref) !== ciclo) return false;
-        return true;
-    });
+  const visibles = perfiles.filter((p) => {
+    const curso = p.profesor_curso?.cursos;
+    if (!curso) return false;
+    // curso.carrera === null -> curso común a las 3 carreras, siempre visible
+    if (carrera && curso.carrera && curso.carrera !== carrera) return false;
+    if (ciclo && String(curso.ciclo_ref) !== ciclo) return false;
+    return true;
+  });
 
-    if (!visibles.length) {
-        grid.innerHTML = '<p class="opiniones-vacio">No hay perfiles para este filtro todavía.</p>';
-        return;
+  if (!visibles.length) {
+    grid.innerHTML = '<p class="opiniones-vacio">No hay perfiles para este filtro todavía.</p>';
+    if (paginacionCont) paginacionCont.innerHTML = '';
+    return;
+  }
+
+  visibles.sort(compararPerfiles);
+
+  const totalPaginas = Math.max(1, Math.ceil(visibles.length / POR_PAGINA));
+  if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+  if (paginaActual < 1) paginaActual = 1;
+
+  const inicio = (paginaActual - 1) * POR_PAGINA;
+  const visiblesPagina = visibles.slice(inicio, inicio + POR_PAGINA);
+
+  let html = '';
+  let cicloAnterior;
+  let esPrimero = true;
+
+  visiblesPagina.forEach((p) => {
+    const curso = p.profesor_curso.cursos;
+    const profesor = p.profesor_curso.profesores;
+    const lista = opinionesPorFicha.get(p.profesor_curso_id) || [];
+    const prom = promedioOpiniones(lista);
+    const etiquetaCiclo = curso.ciclo_ref ? `Ciclo ${curso.ciclo_ref}` : 'Ciclo variable';
+
+    if (esPrimero || curso.ciclo_ref !== cicloAnterior) {
+      html += `<h2 class="opiniones-ciclo-header">${etiquetaCiclo}</h2>`;
+      cicloAnterior = curso.ciclo_ref;
+      esPrimero = false;
     }
 
-    visibles.sort(compararPerfiles);
-
-    let html = '';
-    let cicloAnterior;
-    let esPrimero = true;
-
-    visibles.forEach((p) => {
-        const curso = p.profesor_curso.cursos;
-        const profesor = p.profesor_curso.profesores;
-        const lista = opinionesPorFicha.get(p.profesor_curso_id) || [];
-        const prom = promedioOpiniones(lista);
-        const etiquetaCiclo = curso.ciclo_ref ? `Ciclo ${curso.ciclo_ref}` : 'Ciclo variable';
-
-        if (esPrimero || curso.ciclo_ref !== cicloAnterior) {
-            html += `<h2 class="opiniones-ciclo-header">${etiquetaCiclo}</h2>`;
-            cicloAnterior = curso.ciclo_ref;
-            esPrimero = false;
-        }
-
-        html += `
+    html += `
       <button class="opinion-card" data-id="${p.id}">
         <span class="opinion-card-curso">${curso.nombre} · ${etiquetaCiclo}</span>
         <h3>${profesor.nombre}</h3>
@@ -156,25 +227,27 @@ function renderGrid() {
           <span class="opinion-card-conteo">${lista.length ? `${prom.toFixed(1)} · ${lista.length} opiniones` : 'Sin opiniones aún'}</span>
         </div>
       </button>`;
-    });
+  });
 
-    grid.innerHTML = html;
+  grid.innerHTML = html;
 
-    grid.querySelectorAll('.opinion-card').forEach((card) => {
-        card.addEventListener('click', () => abrirDetalle(card.dataset.id));
-    });
+  grid.querySelectorAll('.opinion-card').forEach((card) => {
+    card.addEventListener('click', () => abrirDetalle(card.dataset.id));
+  });
+
+  renderPaginacion(visibles.length, totalPaginas);
 }
 
 function abrirDetalle(perfilId) {
-    const p = perfiles.find((x) => x.id === perfilId);
-    if (!p) return;
-    const curso = p.profesor_curso.cursos;
-    const profesor = p.profesor_curso.profesores;
-    const lista = opinionesPorFicha.get(p.profesor_curso_id) || [];
-    const prom = promedioOpiniones(lista);
-    const etiquetaCiclo = curso.ciclo_ref ? `Ciclo ${curso.ciclo_ref}` : 'Ciclo variable';
+  const p = perfiles.find((x) => x.id === perfilId);
+  if (!p) return;
+  const curso = p.profesor_curso.cursos;
+  const profesor = p.profesor_curso.profesores;
+  const lista = opinionesPorFicha.get(p.profesor_curso_id) || [];
+  const prom = promedioOpiniones(lista);
+  const etiquetaCiclo = curso.ciclo_ref ? `Ciclo ${curso.ciclo_ref}` : 'Ciclo variable';
 
-    detalle.innerHTML = `
+  detalle.innerHTML = `
     <button class="detalle-cerrar" id="btnCerrarDetalle" aria-label="Cerrar">✕</button>
     <span class="detalle-sello">✓ Perfil verificado por SIGA</span>
     <h2>${profesor.nombre}</h2>
@@ -217,26 +290,26 @@ function abrirDetalle(perfilId) {
     <div id="formOpinionCont"></div>
   `;
 
-    detalle.classList.add('visible');
-    document.getElementById('btnCerrarDetalle').addEventListener('click', cerrarDetalle);
-    detalle.querySelectorAll('.opinion-item-reportar').forEach((btn) => {
-        btn.addEventListener('click', () => reportarOpinion(btn.dataset.op, btn));
-    });
-    document.getElementById('btnCompartirExperiencia').addEventListener('click', () => mostrarFormOpinion(p));
+  detalle.classList.add('visible');
+  document.getElementById('btnCerrarDetalle').addEventListener('click', cerrarDetalle);
+  detalle.querySelectorAll('.opinion-item-reportar').forEach((btn) => {
+    btn.addEventListener('click', () => reportarOpinion(btn.dataset.op, btn));
+  });
+  document.getElementById('btnCompartirExperiencia').addEventListener('click', () => mostrarFormOpinion(p));
 }
 
 function cerrarDetalle() {
-    detalle.classList.remove('visible');
-    detalle.innerHTML = '';
+  detalle.classList.remove('visible');
+  detalle.innerHTML = '';
 }
 
 function etiquetaCampo(campo) {
-    return { claridad: 'Claridad', exigencia: 'Exigencia', carga_trabajo: 'Carga de trabajo', evaluaciones: 'Evaluaciones' }[campo];
+  return { claridad: 'Claridad', exigencia: 'Exigencia', carga_trabajo: 'Carga de trabajo', evaluaciones: 'Evaluaciones' }[campo];
 }
 
 function mostrarFormOpinion(perfil) {
-    const cont = document.getElementById('formOpinionCont');
-    cont.innerHTML = `
+  const cont = document.getElementById('formOpinionCont');
+  cont.innerHTML = `
     <form class="form-opinion" id="formOpinion">
       <p class="form-opinion-banner">Recuerda: esta sección busca orientar a futuros compañeros. Enfócate en la
         metodología de enseñanza, exigencia y consejos útiles. Los comentarios con ataques personales serán
@@ -266,52 +339,58 @@ function mostrarFormOpinion(perfil) {
       <p class="form-opinion-msg" id="formOpinionMsg"></p>
     </form>`;
 
-    document.getElementById('formOpinion').addEventListener('submit', (e) => enviarOpinion(e, perfil));
+  document.getElementById('formOpinion').addEventListener('submit', (e) => enviarOpinion(e, perfil));
 }
 
 async function enviarOpinion(e, perfil) {
-    e.preventDefault();
-    const form = e.target;
-    const msg = document.getElementById('formOpinionMsg');
-    const datos = Object.fromEntries(new FormData(form).entries());
+  e.preventDefault();
+  const form = e.target;
+  const msg = document.getElementById('formOpinionMsg');
+  const datos = Object.fromEntries(new FormData(form).entries());
 
-    const { error } = await supabase.from('opiniones').insert({
-        profesor_curso_id: perfil.profesor_curso_id,
-        autor_id: sesionActual.user.id,
-        ciclo_estudiante: Number(datos.ciclo_estudiante),
-        claridad: Number(datos.claridad),
-        exigencia: Number(datos.exigencia),
-        carga_trabajo: Number(datos.carga_trabajo),
-        evaluaciones: Number(datos.evaluaciones),
-        destacado: datos.destacado || null,
-        a_tener_en_cuenta: datos.a_tener_en_cuenta || null,
-    });
+  const { error } = await supabase.from('opiniones').insert({
+    profesor_curso_id: perfil.profesor_curso_id,
+    autor_id: sesionActual.user.id,
+    ciclo_estudiante: Number(datos.ciclo_estudiante),
+    claridad: Number(datos.claridad),
+    exigencia: Number(datos.exigencia),
+    carga_trabajo: Number(datos.carga_trabajo),
+    evaluaciones: Number(datos.evaluaciones),
+    destacado: datos.destacado || null,
+    a_tener_en_cuenta: datos.a_tener_en_cuenta || null,
+  });
 
-    if (error) {
-        msg.textContent = 'No se pudo publicar tu opinión. Intenta de nuevo.';
-        console.error(error);
-        return;
-    }
+  if (error) {
+    msg.textContent = 'No se pudo publicar tu opinión. Intenta de nuevo.';
+    console.error(error);
+    return;
+  }
 
-    msg.textContent = '¡Gracias! Tu opinión ya está publicada.';
-    await cargarTodo();
-    abrirDetalle(perfil.id);
-    renderGrid();
+  msg.textContent = '¡Gracias! Tu opinión ya está publicada.';
+  await cargarTodo();
+  abrirDetalle(perfil.id);
+  renderGrid();
 }
 
 async function reportarOpinion(opinionId, btn) {
-    btn.disabled = true;
-    const { error } = await supabase.rpc('reportar_opinion', { p_opinion_id: opinionId });
-    if (error) {
-        console.error(error);
-        btn.disabled = false;
-        return;
-    }
-    btn.textContent = 'Reportado';
-    reportadasPorMi.add(opinionId);
+  btn.disabled = true;
+  const { error } = await supabase.rpc('reportar_opinion', { p_opinion_id: opinionId });
+  if (error) {
+    console.error(error);
+    btn.disabled = false;
+    return;
+  }
+  btn.textContent = 'Reportado';
+  reportadasPorMi.add(opinionId);
 }
 
 function configurarFiltros() {
-    filtroCarrera.addEventListener('change', renderGrid);
-    filtroCiclo.addEventListener('change', renderGrid);
+  filtroCarrera.addEventListener('change', () => {
+    paginaActual = 1;
+    renderGrid();
+  });
+  filtroCiclo.addEventListener('change', () => {
+    paginaActual = 1;
+    renderGrid();
+  });
 }
