@@ -373,6 +373,14 @@
     margin-bottom: 22px;
 }
 
+.detalle-bloque p {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink);
+}
+
 .detalle-consejo {
     background: var(--brand-morado);
     color: #fff;
@@ -381,12 +389,25 @@
     margin-bottom: 22px;
 }
 
+.detalle-consejo p {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 13.5px;
+    line-height: 1.6;
+}
+
 .detalle-consejo h4 {
     color: rgba(255, 255, 255, 0.75);
 }
 
 .detalle-panorama {
     margin-bottom: 22px;
+}
+
+.detalle-panorama-num,
+.detalle-panorama .opiniones-vacio {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
 }
 
 .detalle-panorama-num {
