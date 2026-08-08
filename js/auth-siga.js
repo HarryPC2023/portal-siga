@@ -60,9 +60,16 @@ export async function cerrarSesion() {
   await supabase.auth.signOut();
 }
 
+/** Eventos que NO representan un cambio real de sesión — se ignoran para
+ * evitar que la interfaz "parpadee"/recargue solo por volver a la pestaña. */
+const EVENTOS_SESION_IGNORADOS = new Set(['TOKEN_REFRESHED', 'INITIAL_SESSION']);
+
 /** Suscribe una función a cambios de sesión (login/logout/recuperación). */
 export function alCambiarSesion(callback) {
-  const { data } = supabase.auth.onAuthStateChange((evento, sesion) => callback(sesion, evento));
+  const { data } = supabase.auth.onAuthStateChange((evento, sesion) => {
+    if (EVENTOS_SESION_IGNORADOS.has(evento)) return;
+    callback(sesion, evento);
+  });
   return () => data.subscription.unsubscribe();
 }
 
