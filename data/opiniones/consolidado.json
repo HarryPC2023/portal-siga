@@ -376,7 +376,6 @@
     "Javier Sánchez",
     "Jesus Cernadez",
     "Jesus Cossa",
-    "Jesús Antaurco",
     "Jesús Cernades",
     "Joaquín Salcedo",
     "John Valle",
@@ -411,6 +410,7 @@
     "Miguel Ángel Mosquera",
     "Nancy Fukuda",
     "Nestor Audante",
+    "Nilton César Mori",
     "Ninoska Molina",
     "Oria Chavarria",
     "Osmar Bermeo",
@@ -2539,14 +2539,14 @@
     },
     {
       "curso": "Análisis y Diseño de Sistemas",
-      "profesor": "Jesús Antaurco",
-      "resumen": "Chacotero y accesible; repasa UML y planchas para ponderar.",
-      "que_esperar": "Lee y explica el PPT, formando grupos para algunas PCs que son exposiciones grupales. Es de trato relajado (no exige vestimenta formal) y recuerda a sus alumnos, aunque no le gusta que lleguen tarde.",
-      "exigencia": 2,
-      "carga_trabajo": 2,
-      "ritmo": 2,
+      "profesor": "Walter Antaurco",
+      "resumen": "Se volvió bastante más exigente respecto a ciclos anteriores; antes era más fija, ahora hay que tomárselo en serio.",
+      "que_esperar": "Tiene una dinámica de seguimiento constante: da importancia a la asistencia, la participación y, sobre todo, a que cumplas los laboratorios y trabajos con anticipación. En ciclos anteriores era más considerado calificando y otorgaba notas altas con facilidad; actualmente es bastante más exigente, en especial en las evaluaciones principales, aunque esto no significa que busque desaprobar si llevas el curso con responsabilidad. Las prácticas son bastante impredecibles (pueden ser preguntas para marcar, ejercicios sobre el sistema de tu monografía, teoría o casos aplicados), así que no conviene prepararte pensando en un solo formato.",
+      "exigencia": 4,
+      "carga_trabajo": 4,
+      "ritmo": 3,
       "claridad": 3,
-      "recomendaciones": "Lee el libro de UML y repasa planchas para ponderar, y no llegues tarde: es de las pocas cosas que sí le molestan.",
+      "recomendaciones": "Asiste regularmente y evita cruces de horario (es bastante estricto con esto), y sobre todo no dejes de hacer los laboratorios: si no los hiciste se molestará y los resolverá en clase, pero no te lo considerará igual que a quien sí los hizo. Avanza la monografía desde las primeras semanas (es un trabajo grande y espera que expliques con tus propias palabras, no que copies teoría) y mantén un rendimiento constante durante todo el ciclo: bajar el ritmo después de sacar buenas notas en las primeras PCs es justamente lo que más lo endurece. Cuidado con el sustitutorio, suele ser más exigente ahí.",
       "ciclo_origen": 6
     },
     {
@@ -2564,13 +2564,13 @@
     {
       "curso": "Arquitectura Computacional y Redes",
       "profesor": "Rubén Borja",
-      "resumen": "Sus PPTs son del curso oficial de networking de Cisco; domina Packet Tracer.",
-      "que_esperar": "Lee y explica el PPT (que es literalmente el material del curso de networking de Cisco) y en los laboratorios escribe los procedimientos en pizarra antes de explicarlos. Tiene canal de YouTube con todas sus clases.",
+      "resumen": "Sus PPTs son del curso oficial de networking de Cisco; domina Packet Tracer y avisa los temas de examen.",
+      "que_esperar": "Clases enfocadas en redes, hardware y configuración de dispositivos, con bastante componente práctico (el material es literalmente el del curso oficial de networking de Cisco). Puede resultar algo monótono por lo técnico, pero interesante si te gusta el hardware. Sus evaluaciones suelen ser plancha de ciclos anteriores (con 1 o 2 preguntas nuevas), y suele indicar en clase qué temas entrarán. Tienen entre 8 y 13 preguntas, pero muchas requieren bastante desarrollo, así que el tiempo puede ajustarse aunque parezcan pocas. Es bastante considerado calificando: incluso trabajos incompletos no suelen tener notas muy bajas. Tiene canal de YouTube con todas sus clases.",
       "exigencia": 3,
       "carga_trabajo": 3,
       "ritmo": 2,
       "claridad": 4,
-      "recomendaciones": "Domina Packet Tracer y revisa los test públicos del curso de Cisco: varios de sus exámenes son planchitas de ahí (buscar en TKV).",
+      "recomendaciones": "Domina Cisco Packet Tracer con seguridad y rapidez (no basta la teoría) y practica las planchas completas, no solo revisar las respuestas. Verifica siempre que tus cambios en Packet Tracer se hayan guardado correctamente, y administra bien el tiempo en el examen: empieza por lo que domines y evita quedarte atascado en una sola pregunta.",
       "ciclo_origen": 6
     },
     {
@@ -2610,6 +2610,18 @@
       "ciclo_origen": 6
     },
     {
+      "curso": "Arquitectura Empresarial",
+      "profesor": "Nilton César Mori",
+      "resumen": "El docente habitual del curso; comprensivo, pero exige explicar con tus propias palabras.",
+      "que_esperar": "Clases bastante teóricas apoyadas en diapositivas, con ejemplos e intentos de hacerlas más interactivas relacionando la arquitectura empresarial con situaciones reales de las organizaciones. Es relativamente comprensivo y no excesivamente estricto, pero espera que expliques los conceptos con tus propias palabras: reproducir literalmente el PPT puede darte menos puntaje aunque la respuesta coincida con el contenido. Cerca de un 60% de las preguntas de evaluaciones (parcial, final y susti) suele repetirse o ser muy similar a ciclos anteriores. Ninguna de las 3 PCs del curso se elimina.",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Revisa las diapositivas con anticipación, pero enfócate en comprender y explicar los conceptos con tus propias palabras, no en memorizarlos literalmente. Aprovecha los 3 trabajos grupales del ciclo (suben la nota de la monografía, que también da puntos extra por empezar primero la expo con todo el grupo presente) y llega puntual: si llegas tarde puede no considerarte la asistencia.",
+      "ciclo_origen": 6
+    },
+    {
       "curso": "Dinámica de Sistemas",
       "profesor": "Jorge Llanos",
       "resumen": "Curso muy trabajoso y virtual; el profe elige tu grupo, no tú.",
@@ -2624,25 +2636,25 @@
     {
       "curso": "Dinámica de Sistemas",
       "profesor": "Celedonio Méndez",
-      "resumen": "Clases casi trámite; lo importante son los talleres y ahí todos sacan 20.",
-      "que_esperar": "Sus clases son prácticamente un trámite, ya que lo importante son los talleres, con ejercicios simples y sin obligarte a quedarte si terminas temprano. Las PCs ponderables son exposiciones, y una de ellas ya cuenta con puntos de los talleres.",
-      "exigencia": 1,
-      "carga_trabajo": 2,
-      "ritmo": 2,
-      "claridad": 4,
-      "recomendaciones": "Consigue los ejercicios resueltos de talleres pasados (planchas) para ir más rápido, y si puedes eliminar una PC, elimina la PC4: suele ser la más complicada.",
+      "resumen": "Accesible para aprobar, pero exige constancia semanal con los laboratorios (~13 en total).",
+      "que_esperar": "El curso se desarrolla principalmente mediante laboratorios semanales (unos 13 en total), cuya nota depende bastante del orden de entrega: quien entrega primero suele obtener mejor calificación que quien entrega después. También incluye un trabajo individual basado en una función de Stella y un trabajo grupal a partir de un artículo que el propio profesor proporciona. Es bastante considerado calificando: incluso un trabajo poco desarrollado no suele tener una nota muy baja. La PC3 depende directamente del promedio de los laboratorios.",
+      "exigencia": 2,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Entrega los laboratorios lo antes posible cada semana (el orden de entrega afecta directamente tu nota) y no faltes: aunque tengas una justificación válida (como una cita médica), el laboratorio de esa semana puede no ser considerado igual. Si buscas una nota superior a 18, sé muy constante durante todo el ciclo y considera ser delegado, ya que facilita el seguimiento; si solo buscas aprobar, el curso es bastante accesible incluso si empiezas a esforzarte más adelante.",
       "ciclo_origen": 6
     },
     {
       "curso": "Investigación de Operaciones II",
       "profesor": "Cesar Canelo",
-      "resumen": "Planchero también en IO II; clases tranquilas y algo vacías.",
-      "que_esperar": "Lee el PPT y resuelve ejemplos en pizarra, con clases bastante tranquilas (el salón suele estar medio vacío). Es planchero, así que estudiar sus exámenes pasados ayuda bastante.",
-      "exigencia": 2,
-      "carga_trabajo": 2,
-      "ritmo": 2,
+      "resumen": "Planchero también en IO II, pero exige llegar al resultado correcto y valora bastante la asistencia.",
+      "que_esperar": "Explica bien la teoría y complementa con bastantes ejercicios semanales (aunque no siempre alcanza a resolverlos todos en clase; conviene revisar los pendientes de las prácticas dirigidas). Sus prácticas y exámenes suelen usar ejercicios similares a los de planchas de ciclos anteriores, aunque ya ha empezado a incluir ejercicios de nivel intermedio, sobre todo en parcial y final, que pueden salir más difíciles de lo esperado. Su calificación es bastante estricta: prioriza llegar a la respuesta correcta y no siempre valora demasiado el procedimiento si el resultado final está mal. También toma en cuenta la asistencia y participación: si nota poca participación o muchas faltas durante el ciclo, las evaluaciones pueden volverse más exigentes.",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
       "claridad": 3,
-      "recomendaciones": "Estudia sus planchas y resuelve los problemas igual a como él los resuelve en sus ejemplos de pizarra.",
+      "recomendaciones": "Practica constantemente con sus planchas (hay bastante material de ciclos anteriores en Trickavengers) y resuelve semanalmente tanto los ejercicios de clase como los pendientes de las prácticas dirigidas. No te confíes solo con saber plantear el ejercicio: practica hasta poder resolverlo correctamente, con especial cuidado antes del parcial y el final. Ojo con su puntualidad: a veces llega tarde incluso a las evaluaciones, lo que puede reducir el tiempo real disponible (se han dado casos de menos de 2 horas efectivas para resolver).",
       "ciclo_origen": 6
     },
     {
@@ -2694,6 +2706,18 @@
       "ciclo_origen": 6
     },
     {
+      "curso": "Modelado de Procesos de Ciclo de Vida de Sistemas",
+      "profesor": "Miguel Navarro",
+      "resumen": "Primera vez dictando este curso; relajado y accesible, pero exigente en las exposiciones.",
+      "que_esperar": "Es relativamente nuevo enseñando este curso, con clases relajadas y una actitud agradable, siempre abierto a preguntas. El contenido gira bastante en torno a Bizagi y BPMN, con bastante similitud a Análisis y Diseño de Sistemas si lo llevas con él en paralelo. Las clases pueden resultar algo monótonas por lo práctico del contenido. Las evaluaciones mezclan teoría y casos prácticos, y aunque las exposiciones pueden dar buena nota, no son fáciles de ponderar: es exigente calificándolas. En general no suele desaprobar a nadie (notas entre 10 y 15, más si le pones empeño).",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Usa el poco material disponible en Trickavengers (por ahora solo hay del ciclo 26-1) como referencia de práctica, sin depender únicamente de memorizarlo. Si también llevas Análisis y Diseño de Sistemas con él, aprovecha la ventaja de contenidos similares. Ojo: suele demorar bastante en subir notas (llegó a subir la del final una semana después del susti).",
+      "ciclo_origen": 6
+    },
+    {
       "curso": "Sistema y Gestión Financiera",
       "profesor": "Oria Chavarria",
       "resumen": "El hard de hards; no se puede eliminar ninguna PC y califica muy estricto.",
@@ -2708,13 +2732,13 @@
     {
       "curso": "Sistema y Gestión Financiera",
       "profesor": "John Valle",
-      "resumen": "Planchero con PCs tipo plantilla; sus clases no explican tan bien.",
-      "que_esperar": "Explica el PPT y deja talleres grupales, resolviendo ejemplos parecidos a lo que vendrá en las PCs (que suelen ser plantillas). No explica muy bien, así que conviene leer las fuentes externas que recomienda.",
+      "resumen": "Planchero pero con clases que no profundizan mucho, y riesgo real de errores al registrar notas.",
+      "que_esperar": "El curso se desarrolla principalmente mediante exposiciones grupales, monografías y evaluaciones. Las prácticas (trabajos y exposiciones en grupo) son relativamente fáciles de aprobar si el grupo cumple, pero muchas indicaciones se comunican solo al delegado, así que conviene mantenerse en contacto constante con él para no perderse detalles. Sus clases no profundizan demasiado en los contenidos, por lo que para sacar buena nota conviene practicar por cuenta propia y revisar material de ciclos anteriores. El parcial y el final suelen basarse en planchas de ciclos anteriores, pero exigen resolver bastantes cálculos con el tiempo bastante ajustado: no basta con haber visto los ejercicios una vez. En el ciclo 26-1 hubo errores considerables (más de 10 puntos de diferencia en algunos casos) al registrar notas de exposiciones, monografías e incluso el examen final en INTRALU, además de bastante demora en publicarlas.",
       "exigencia": 3,
-      "carga_trabajo": 3,
+      "carga_trabajo": 4,
       "ritmo": 3,
       "claridad": 2,
-      "recomendaciones": "Resuelve planchas y lee los libros que recomienda (no siempre explica bien en clase) y coordina con el delegado la gestión de puntos extra.",
+      "recomendaciones": "Consigue las planchas de ciclos anteriores con anticipación y practica hasta poder resolver los ejercicios con rapidez, sobre todo los que requieren varios cálculos. Coordina con el delegado para cumplir exactamente lo que pide en trabajos, exposiciones y monografías (ahí es más estricto calificando), y revisa tus notas apenas se publiquen: no dejes ningún reclamo para el último momento, ya que en el 26-1 hubo errores de registro considerables y demoras importantes en subirlas.",
       "ciclo_origen": 6
     }
   ]
