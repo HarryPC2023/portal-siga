@@ -14,6 +14,7 @@ const filtrosCont = document.getElementById('opinionesFiltros');
 const grid = document.getElementById('opinionesGrid');
 const paginacionCont = document.getElementById('opinionesPaginacion');
 const detalle = document.getElementById('detalleProfesor');
+const buscador = document.getElementById('buscadorOpiniones');
 const filtroCarrera = document.getElementById('filtroCarrera');
 const filtroCiclo = document.getElementById('filtroCiclo');
 
@@ -35,6 +36,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 function llenarSelectCiclos(select, etiquetaVacia) {
   select.innerHTML = `<option value="">${etiquetaVacia}</option>` +
     CICLOS.map((c) => `<option value="${c}">Ciclo ${c}</option>`).join('');
+}
+
+/** Quita tildes/diacríticos y pasa a minúsculas, para comparar sin exigir tildes exactas. */
+function normalizar(texto) {
+  return (texto || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
 }
 
 async function cargarTodo() {
@@ -175,6 +185,7 @@ function renderPaginacion(totalVisibles, totalPaginas) {
 function renderGrid() {
   const carrera = filtroCarrera.value;
   const ciclo = filtroCiclo.value;
+  const busqueda = normalizar(buscador ? buscador.value : '');
 
   const visibles = perfiles.filter((p) => {
     const curso = p.profesor_curso?.cursos;
@@ -182,11 +193,16 @@ function renderGrid() {
     // curso.carrera === null -> curso común a las 3 carreras, siempre visible
     if (carrera && curso.carrera && curso.carrera !== carrera) return false;
     if (ciclo && String(curso.ciclo_ref) !== ciclo) return false;
+    if (busqueda) {
+      const profesor = p.profesor_curso.profesores.nombre;
+      const coincide = normalizar(profesor).includes(busqueda) || normalizar(curso.nombre).includes(busqueda);
+      if (!coincide) return false;
+    }
     return true;
   });
 
   if (!visibles.length) {
-    grid.innerHTML = '<p class="opiniones-vacio">No hay perfiles para este filtro todavía.</p>';
+    grid.innerHTML = `<p class="opiniones-vacio">${busqueda ? 'No encontramos resultados para tu búsqueda.' : 'No hay perfiles para este filtro todavía.'}</p>`;
     if (paginacionCont) paginacionCont.innerHTML = '';
     return;
   }
@@ -393,4 +409,10 @@ function configurarFiltros() {
     paginaActual = 1;
     renderGrid();
   });
+  if (buscador) {
+    buscador.addEventListener('input', () => {
+      paginaActual = 1;
+      renderGrid();
+    });
+  }
 }
