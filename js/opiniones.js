@@ -9,18 +9,16 @@ let perfiles = [];
 let opinionesPorFicha = new Map();
 let reportadasPorMi = new Set();
 let paginaActual = 1;
+let selectCarrera = null;
+let selectCiclo = null;
 
-const filtrosCont = document.getElementById('opinionesFiltros');
 const grid = document.getElementById('opinionesGrid');
 const paginacionCont = document.getElementById('opinionesPaginacion');
 const detalle = document.getElementById('detalleProfesor');
 const buscador = document.getElementById('buscadorOpiniones');
-const filtroCarrera = document.getElementById('filtroCarrera');
-const filtroCiclo = document.getElementById('filtroCiclo');
 
 document.addEventListener('DOMContentLoaded', async () => {
   montarNavUsuario();
-  llenarSelectCiclos(filtroCiclo, 'Todos los ciclos');
   configurarFiltros();
 
   // requerirSesion ya redirige a index.html?login=1 si no hay cuenta,
@@ -32,11 +30,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   await cargarTodo();
   renderGrid();
 });
-
-function llenarSelectCiclos(select, etiquetaVacia) {
-  select.innerHTML = `<option value="">${etiquetaVacia}</option>` +
-    CICLOS.map((c) => `<option value="${c}">Ciclo ${c}</option>`).join('');
-}
 
 /** Quita tildes/diacríticos y pasa a minúsculas, para comparar sin exigir tildes exactas. */
 function normalizar(texto) {
@@ -183,8 +176,8 @@ function renderPaginacion(totalVisibles, totalPaginas) {
 }
 
 function renderGrid() {
-  const carrera = filtroCarrera.value;
-  const ciclo = filtroCiclo.value;
+  const carrera = selectCarrera ? selectCarrera.valor.value : '';
+  const ciclo = selectCiclo ? selectCiclo.valor.value : '';
   const busqueda = normalizar(buscador ? buscador.value : '');
 
   const visibles = perfiles.filter((p) => {
@@ -248,7 +241,11 @@ function renderGrid() {
   grid.innerHTML = html;
 
   grid.querySelectorAll('.opinion-card').forEach((card) => {
-    card.addEventListener('click', () => abrirDetalle(card.dataset.id));
+    card.addEventListener('click', () => {
+      grid.querySelectorAll('.opinion-card.activa').forEach((c) => c.classList.remove('activa'));
+      card.classList.add('activa');
+      abrirDetalle(card.dataset.id);
+    });
   });
 
   renderPaginacion(visibles.length, totalPaginas);
@@ -317,6 +314,7 @@ function abrirDetalle(perfilId) {
 function cerrarDetalle() {
   detalle.classList.remove('visible');
   detalle.innerHTML = '';
+  grid.querySelectorAll('.opinion-card.activa').forEach((c) => c.classList.remove('activa'));
 }
 
 function etiquetaCampo(campo) {
@@ -401,14 +399,19 @@ async function reportarOpinion(opinionId, btn) {
 }
 
 function configurarFiltros() {
-  filtroCarrera.addEventListener('change', () => {
-    paginaActual = 1;
-    renderGrid();
+  selectCarrera = inicializarSelectPersonalizado({
+    triggerId: 'carreraTrigger', textoId: 'carreraTriggerTexto',
+    listaId: 'carreraLista', valorId: 'carreraValor',
+    alElegir: () => { paginaActual = 1; renderGrid(); },
   });
-  filtroCiclo.addEventListener('change', () => {
-    paginaActual = 1;
-    renderGrid();
+
+  selectCiclo = inicializarSelectPersonalizado({
+    triggerId: 'cicloTrigger', textoId: 'cicloTriggerTexto',
+    listaId: 'cicloLista', valorId: 'cicloValor',
+    opciones: [{ value: '', label: 'Todos los ciclos' }, ...CICLOS.map((c) => ({ value: String(c), label: `Ciclo ${c}` }))],
+    alElegir: () => { paginaActual = 1; renderGrid(); },
   });
+
   if (buscador) {
     buscador.addEventListener('input', () => {
       paginaActual = 1;

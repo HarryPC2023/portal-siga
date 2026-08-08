@@ -9,11 +9,13 @@
   <title>Opiniones de profesores - SIGA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&family=Poppins:wght@300&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
   <link rel="stylesheet" href="css/opiniones.css">
 </head>
 
@@ -34,13 +36,39 @@
     <div class="opiniones-filtros" id="opinionesFiltros">
       <input type="search" id="buscadorOpiniones" class="opiniones-buscador" placeholder="Buscar profesor o curso…"
         autocomplete="off">
-      <select id="filtroCarrera">
-        <option value="">Todas las carreras</option>
-        <option value="sistemas">Sistemas</option>
-        <option value="industrial">Industrial</option>
-        <option value="software">Software</option>
-      </select>
-      <select id="filtroCiclo"></select>
+
+      <div class="campo-select-custom campo-select-opiniones">
+        <button type="button" class="select-custom-trigger" id="carreraTrigger" aria-haspopup="listbox"
+          aria-expanded="false">
+          <span id="carreraTriggerTexto">Todas las carreras</span>
+          <span class="select-custom-chevron" aria-hidden="true">▾</span>
+        </button>
+        <ul class="select-custom-lista" id="carreraLista" role="listbox" hidden>
+          <li role="option" data-value="" tabindex="0">
+            <span class="select-swatch" style="background:#C9C9D6;"></span>Todas las carreras
+          </li>
+          <li role="option" data-value="sistemas" tabindex="0">
+            <span class="select-swatch" style="background:#3C7CF8;"></span>Ingeniería de Sistemas
+          </li>
+          <li role="option" data-value="industrial" tabindex="0">
+            <span class="select-swatch" style="background:#00B8A9;"></span>Ingeniería Industrial
+          </li>
+          <li role="option" data-value="software" tabindex="0">
+            <span class="select-swatch" style="background:#F4A100;"></span>Ingeniería de Software
+          </li>
+        </ul>
+        <input type="hidden" id="carreraValor">
+      </div>
+
+      <div class="campo-select-custom campo-select-opiniones">
+        <button type="button" class="select-custom-trigger" id="cicloTrigger" aria-haspopup="listbox"
+          aria-expanded="false">
+          <span id="cicloTriggerTexto">Todos los ciclos</span>
+          <span class="select-custom-chevron" aria-hidden="true">▾</span>
+        </button>
+        <ul class="select-custom-lista" id="cicloLista" role="listbox" hidden></ul>
+        <input type="hidden" id="cicloValor">
+      </div>
     </div>
 
     <div class="opiniones-grid" id="opinionesGrid"></div>
@@ -54,7 +82,8 @@
   <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
   <script src="js/landing.js"></script>
-  <script type="module" src="js/opiniones.js?v=5"></script>
+  <script src="js/selector-personalizado.js?v=1"></script>
+  <script type="module" src="js/opiniones.js?v=6"></script>
 </body>
 
 </html>

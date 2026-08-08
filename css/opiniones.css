@@ -27,15 +27,12 @@
     border-color: var(--brand-morado);
 }
 
-.opiniones-filtros select {
-    font-family: var(--font-nav);
-    font-weight: 500;
-    font-size: 13.5px;
-    color: var(--ink);
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 999px;
-    padding: 9px 16px;
+/* Los selects de Carrera/Ciclo usan el componente compartido
+   (campo-select-custom, ver selector-personalizado.css). Aquí solo
+   les damos un ancho fijo para que se comporten bien en esta barra
+   horizontal, en vez del 100% que usan en formularios verticales. */
+.campo-select-opiniones {
+    flex: 0 0 210px;
 }
 
 .opiniones-grid {
@@ -160,6 +157,13 @@
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
 }
 
+/* Estado activo: tarjeta cuyo detalle está abierto en el panel lateral.
+   Usa box-shadow como "anillo" en vez de border, para no empujar el
+   contenido ni cambiar el tamaño de la tarjeta. */
+.opinion-card.activa {
+    box-shadow: 0 0 0 2px var(--brand-morado), 0 14px 34px rgba(102, 0, 204, 0.18);
+}
+
 .opinion-card-curso {
     display: block;
     font-size: 12px;
@@ -176,6 +180,8 @@
 }
 
 .opinion-card-frase {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
     font-size: 13.5px;
     color: var(--ink-soft);
     line-height: 1.5;
