@@ -1,5 +1,5 @@
 // js/opiniones.js
-import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=8';
+import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
 
 const CICLOS = Array.from({ length: 10 }, (_, i) => i + 1);
 const POR_PAGINA = 9;

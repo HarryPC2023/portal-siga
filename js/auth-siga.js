@@ -68,7 +68,7 @@ const EVENTOS_SESION_IGNORADOS = new Set(['TOKEN_REFRESHED', 'INITIAL_SESSION'])
 export function alCambiarSesion(callback) {
   const { data } = supabase.auth.onAuthStateChange((evento, sesion) => {
     if (EVENTOS_SESION_IGNORADOS.has(evento)) return;
-    callback(sesion, evento);
+    callback(sesion, evento)
   });
   return () => data.subscription.unsubscribe();
 }

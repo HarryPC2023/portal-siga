@@ -1,7 +1,7 @@
 // js/perfil-hub.js — Página "Mi cuenta": Información General, Cuenta,
 // Preferencias, Preguntas Frecuentes y Sugerencias, todo en una sola
 // página con pestañas (reemplaza a perfil.html + configuracion.html).
-import { supabase, requerirSesion, montarNavUsuario, establecerNuevaContrasena } from './auth-siga.js?v=8';
+import { supabase, requerirSesion, montarNavUsuario, establecerNuevaContrasena } from './auth-siga.js?v=9';
 
 const BUCKET_AVATARS = 'avatars';
 const TABS_VALIDAS = ['info', 'cuenta', 'preferencias', 'faq', 'sugerencias'];
