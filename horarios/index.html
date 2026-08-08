@@ -37,6 +37,16 @@
 
     <!-- SheetJS: equivale a openpyxl, lee el Excel en el navegador -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- Gate de sesión: sin cuenta, redirige a index.html con el login
+         listo para abrirse. Antes faltaba en este módulo. Mismo patrón
+         que ya usa Intranotas. -->
+    <script type="module">
+        import { supabase, obtenerSesion } from '../js/auth-siga.js?v=8';
+        window.sigaSupabase = supabase;
+        window.sigaObtenerSesion = obtenerSesion;
+    </script>
+    <script type="module" src="../js/gate.js"></script>
 </head>
 
 <body class="page-index-body">
