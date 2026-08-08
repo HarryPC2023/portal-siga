@@ -319,6 +319,36 @@
       "nombre": "Sistema y Gestión Financiera",
       "carrera": "sistemas",
       "ciclo_ref": 6
+    },
+    {
+      "nombre": "Administración y Organización",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Control Estadístico de Procesos",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Ingeniería del Trabajo II",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Maquinaria e Instrumentación Industrial",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Procesos Industriales II",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Investigación de Operaciones II",
+      "carrera": "industrial",
+      "ciclo_ref": 6
     }
   ],
   "profesores": [
@@ -329,11 +359,13 @@
     "Alfredo Marino Ramos Muñoz",
     "Ana León",
     "Antonio Zegarra",
+    "Antonio Zuñiga",
     "Aníval Torre",
     "Benito Ostos",
     "Bilma Osorio",
     "Carlos Arámbulo",
     "Carlos Chafloque",
+    "Carlos Muñoz",
     "Carlos Muñoz Inga",
     "Carlos Nelson Ramos Montes",
     "Carlos Neyra",
@@ -341,9 +373,10 @@
     "Carlos Sánchez Huaringa",
     "Carmen Lau",
     "Celedonio Méndez",
-    "Cesar Canelo",
+    "Cesar Delzo",
     "Cesar Miranda",
     "Christian Ayala",
+    "César Canelo",
     "Daniel Alcántara",
     "Daniel Morillo",
     "Doris Rojas",
@@ -365,6 +398,7 @@
     "Gómez Viviana",
     "Hernán Parra",
     "Hiromoto",
+    "Huaman Peñafort",
     "Huanca",
     "Héctor Herrera",
     "Héctor Valdivia",
@@ -392,7 +426,9 @@
     "Juan Romero",
     "Juan Sotelo",
     "Julio Talaverano",
+    "Julio Torres",
     "Kala Béjar",
+    "Leoncio Acuña",
     "Leoncio Palacios",
     "Lourdes Kala",
     "Luis Alberto Lescano",
@@ -401,6 +437,7 @@
     "Luis Luján",
     "Luis Medina",
     "Luis Ulfe",
+    "Luisa Llancce",
     "Margarita Mondragón",
     "Maria Curotto",
     "Mario Heinrich Fisfalen",
@@ -1183,7 +1220,7 @@
     },
     {
       "curso": "TGS",
-      "profesor": "Jesús Antaurco",
+      "profesor": "Walter Antaurco",
       "resumen": "La fija; buena teoría y examen de opción múltiple.",
       "que_esperar": "Explica buena teoría, llega temprano y hasta da consejos sobre la vida universitaria. El examen es de opción múltiple, aunque no hay planchas previas para practicar.",
       "exigencia": 2,
@@ -2191,7 +2228,7 @@
     },
     {
       "curso": "Investigación de Operaciones I",
-      "profesor": "Cesar Canelo",
+      "profesor": "César Canelo",
       "resumen": "Clases algo aburridas pero considerado calificando y accesible con dudas.",
       "que_esperar": "Usa PPT en todas las clases y las sube al Univirtual (puedes no asistir y estudiar solo, aunque perderías la oportunidad de aclarar dudas). Es considerado con el avance y cerca de las PCs resuelve problemas parecidos a los que pondrá.",
       "exigencia": 2,
@@ -2204,13 +2241,13 @@
     {
       "curso": "Investigación de Operaciones I",
       "profesor": "Luis Medina",
-      "resumen": "Exámenes muy operativos (exige velocidad); estricto y sin piedad calificando.",
-      "que_esperar": "Revisa teoría por PPT y luego resuelve ejercicios de su Word, a veces sacados de IA. Sus exámenes son muy operativos y con poco tiempo, así que exigen practicar velocidad de resolución.",
+      "resumen": "Exámenes muy operativos (exige velocidad); la PC4 es un proyecto grande en Excel que hay que empezar temprano.",
+      "que_esperar": "Revisa teoría por PPT y luego resuelve ejercicios de su Word, a veces sacados de IA. Sus exámenes son muy operativos y con poco tiempo, así que exigen practicar velocidad de resolución. La PC4 es un trabajo grupal de modelamiento (por ejemplo, diseño de redes de cadena de suministro con MILP y simulación Monte Carlo) que se resuelve en Excel con Open Solver, y puede llegar a ocupar más de 100 filas y columnas.",
       "exigencia": 4,
-      "carga_trabajo": 3,
+      "carga_trabajo": 4,
       "ritmo": 3,
       "claridad": 3,
-      "recomendaciones": "Practica velocidad de resolución con calculadora graficadora (los exámenes dan poco tiempo) y si promete un punto en clase, recuérdaselo en el examen: sí cumple, pero hay que insistir.",
+      "recomendaciones": "Practica velocidad de resolución con calculadora graficadora (los exámenes dan poco tiempo) y empieza la PC4 desde el primer día: es un modelo grande en Excel y no alcanza el tiempo si lo dejas para el final. Ninguna evaluación es plancha con él, así que enfócate en entender el método, no en memorizar ejercicios.",
       "ciclo_origen": 5
     },
     {
@@ -2240,13 +2277,13 @@
     {
       "curso": "Diseño de Base de Datos",
       "profesor": "Tino Reyna",
-      "resumen": "Interactivo y bonifica participación; puede botarte de la clase.",
-      "que_esperar": "Dicta con PPT y su libro, verificando la lógica de tus respuestas para darte puntos de cara al parcial y final. El curso se enfoca en optimización del modelo conceptual de base de datos.",
+      "resumen": "El profesor con más conocimientos de base de datos; menos estricto que en MCD, pero cuidado con las exposiciones.",
+      "que_esperar": "Dicta con la misma metodología que usa en MCD, pero algo menos estricto en este curso. Verifica la lógica de tus respuestas para darte puntos de cara al parcial y final, evita pedir segunda hoja en los exámenes, y no perdona que le mientas en la exposición.",
       "exigencia": 3,
       "carga_trabajo": 3,
       "ritmo": 3,
-      "claridad": 3,
-      "recomendaciones": "Participa activamente para ganar puntos de parcial/final y no faltes ni llegues tarde: te marca en las exposiciones.",
+      "claridad": 4,
+      "recomendaciones": "Pondera sobre todo la PC1 (la fija es hacer el sistema en Balsamiq) y participa activamente para sumar puntos de parcial/final. Si llevaste MCD con él, repite el mismo sistema del proyecto. En las últimas PCs, si te conoce y hay tiempo, puede dejarte corregir tu trabajo, pero nunca le mientas en la exposición: lo sabrá.",
       "ciclo_origen": 5
     },
     {
@@ -2259,7 +2296,8 @@
       "ritmo": 3,
       "claridad": 4,
       "recomendaciones": "Asegúrate de que el grupo sepa lo básico de desarrollo web y GitHub: los últimos informes se complican mucho sin eso.",
-      "ciclo_origen": 5
+      "ciclo_origen": 5,
+      "retirado": true
     },
     {
       "curso": "Matemática Aplicada",
@@ -2511,7 +2549,8 @@
       "ritmo": 2,
       "claridad": 4,
       "recomendaciones": "Ten asistencia perfecta y participa cuando puedas: es de los cursos con mayor probabilidad de sacar 20 en toda la carrera.",
-      "ciclo_origen": 5
+      "ciclo_origen": 5,
+      "retirado": true
     },
     {
       "curso": "Ingeniería del trabajo",
@@ -2535,7 +2574,8 @@
       "ritmo": 3,
       "claridad": 4,
       "recomendaciones": "Sigue el criterio de Lau (no el de otros profesores del curso) para parcial, final y susti, y resuelve planchitas: suelen venir bastante similares.",
-      "ciclo_origen": 5
+      "ciclo_origen": 5,
+      "retirado": true
     },
     {
       "curso": "Análisis y Diseño de Sistemas",
@@ -2647,7 +2687,7 @@
     },
     {
       "curso": "Investigación de Operaciones II",
-      "profesor": "Cesar Canelo",
+      "profesor": "César Canelo",
       "resumen": "Planchero también en IO II, pero exige llegar al resultado correcto y valora bastante la asistencia.",
       "que_esperar": "Explica bien la teoría y complementa con bastantes ejercicios semanales (aunque no siempre alcanza a resolverlos todos en clase; conviene revisar los pendientes de las prácticas dirigidas). Sus prácticas y exámenes suelen usar ejercicios similares a los de planchas de ciclos anteriores, aunque ya ha empezado a incluir ejercicios de nivel intermedio, sobre todo en parcial y final, que pueden salir más difíciles de lo esperado. Su calificación es bastante estricta: prioriza llegar a la respuesta correcta y no siempre valora demasiado el procedimiento si el resultado final está mal. También toma en cuenta la asistencia y participación: si nota poca participación o muchas faltas durante el ciclo, las evaluaciones pueden volverse más exigentes.",
       "exigencia": 3,
@@ -2739,6 +2779,174 @@
       "ritmo": 3,
       "claridad": 2,
       "recomendaciones": "Consigue las planchas de ciclos anteriores con anticipación y practica hasta poder resolver los ejercicios con rapidez, sobre todo los que requieren varios cálculos. Coordina con el delegado para cumplir exactamente lo que pide en trabajos, exposiciones y monografías (ahí es más estricto calificando), y revisa tus notas apenas se publiquen: no dejes ningún reclamo para el último momento, ya que en el 26-1 hubo errores de registro considerables y demoras importantes en subirlas.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Administración y Organización",
+      "profesor": "Luisa Llancce",
+      "resumen": "Muy estricta y exigente calificando exposiciones; solo el delegado tiene contacto directo con ella.",
+      "que_esperar": "Solo lee sus PPTs con pocos ejemplos, pero exige asistencia constante (te llama la atención o nota si faltas). Sus prácticas son casos reales con preguntas de análisis y criterio, y es muy exigente calificando exposiciones: si no están bien elaboradas o no van acorde a lo dicho en clase, te corta y pasa al siguiente grupo, aunque valora bastante un buen análisis.",
+      "exigencia": 4,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Organiza bien a tu grupo para las exposiciones (ella sortea los grupos) y presenta avances constantes de la monografía. Solo el delegado se comunica con ella por correo, así que mantenlo al tanto de todo.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Administración y Organización",
+      "profesor": "Daniel Morillo",
+      "resumen": "Exámenes plancha (solo cambia el orden); talleres opcionales dan práctica extra.",
+      "que_esperar": "Lee sus PPTs con pocos ejemplos y clase algo teórica, pero complementa con talleres opcionales al final de la clase que sirven de práctica adicional. Sus exámenes son plancha de exámenes pasados (solo cambia el orden), y es exigente con la presentación en las exposiciones.",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Resuelve las planchas pasadas (las encuentras en Trikavenger) y ve a los talleres opcionales: ahí da ejemplos aplicables que suelen caer en el examen. Si vas al susti, la nota mínima que coloca es 18.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Control Estadístico de Procesos",
+      "profesor": "Leoncio Acuña",
+      "resumen": "Curso sencillo antes del parcial, se complica con Minitab después; claro y paciente.",
+      "que_esperar": "Enseña teoría un día (salón) y práctica otro día (laboratorio), usando pizarra, PPT, Excel y Minitab. Es muy claro y paciente, exigente con el orden, y no permite celular ni comer en clase. Antes del parcial el curso es sencillo; después se complica al entrar Minitab con más detalle. Avisa qué temas vienen si se lo preguntas, y en general aprueban casi todos.",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 5,
+      "recomendaciones": "Sé delegado o subdelegado si puedes (ayuda bastante) y asiste a todas las clases: hay detalles pequeños de Minitab (marcar casilleros específicos, tipos de prueba) que si no sabes, te quitan puntos en el examen aunque el procedimiento esté bien.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Control Estadístico de Procesos",
+      "profesor": "Carmen Lau",
+      "resumen": "Amable y negociable con fechas; el examen en laboratorio es tedioso por el tiempo.",
+      "que_esperar": "Explica teoría y práctica en la misma clase, es didáctica, paciente y facilita bastante material para repasar, incluyendo ejemplos tipo examen. Antes del parcial el examen es escrito; después es en laboratorio con plantillas, y el reto principal es el tiempo (las preguntas son tediosas de resolver).",
+      "exigencia": 2,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "Practica sus planchas para ganar velocidad (el examen es más de tiempo que de dificultad) y no dudes en conversarle si tienes un cruce de horario: es negociable con fechas y temas. En clase puedes ganar hasta 2 puntos extra si sales a resolver un ejercicio en pizarra, incluso si no te sale del todo bien.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Ingeniería del Trabajo II",
+      "profesor": "Cesar Delzo",
+      "resumen": "Se puede aprobar tranquilo; varios temas y preguntas se repiten de IDT1.",
+      "que_esperar": "Divide el curso en teoría y práctica (laboratorio), lee bastante PPT y hace ejemplos en clase. Es muy paciente. Sus exámenes tienen 5 o más problemas, incluyendo verdadero/falso y preguntas sobre videos de YouTube, lecturas y la empresa que elijas para tu estudio. Se repiten preguntas de las PCs en parcial, final e incluso el susti.",
+      "exigencia": 2,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "Escoge una empresa pequeña o mediana para tu estudio (facilita bastante el trabajo) y no faltes a las exposiciones. Presenta todos los avances y trabajos semanales: son la mayor carga del curso, pero no hay planchitas para compensar si te atrasas.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Ingeniería del Trabajo II",
+      "profesor": "Julio Torres",
+      "resumen": "Comprensivo y no complica sus exámenes; demora en subir notas.",
+      "que_esperar": "Llega puntual, lee sus PPTs y profundiza los temas con talleres al final de la clase (sin nota, solo dinámica). Es comprensivo, no se enoja fácilmente, y suele avisar los temas y lecturas fijas para el examen, así que no hay sorpresas.",
+      "exigencia": 2,
+      "carga_trabajo": 2,
+      "ritmo": 2,
+      "claridad": 4,
+      "recomendaciones": "Haz resúmenes de sus PPTs y PDFs (las lecturas son algo extensas) y estudia justo los temas que él anuncia para el examen: no suele desviarse de lo avisado.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Maquinaria e Instrumentación Industrial",
+      "profesor": "Huaman Peñafort",
+      "resumen": "Exigente calificando (rara vez pasa de 13-16); cuidado con contradecirlo.",
+      "que_esperar": "Da 12 minutos de tolerancia para entrar al aula, domina bien los temas y usa la pizarra con dibujos para explicar teoría y el proyecto. Si pregunta de forma oral, evita florear la respuesta. Es exquisito calificando: su nota máxima en exámenes suele ser 16, y en la mayoría de casos termina colocando 13. Después del parcial el curso 'cae por sí solo' si estás al día con tu proyecto.",
+      "exigencia": 4,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 4,
+      "recomendaciones": "No dejes ninguna pregunta en blanco (rellena con lo que recuerdes, el profesor considera lo escrito) y evita contradecirlo: se enoja con facilidad. Considera que el proyecto tiene un costo aproximado de S/400, aunque se aprende bastante con él.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Maquinaria e Instrumentación Industrial",
+      "profesor": "Antonio Zuñiga",
+      "resumen": "Monótono antes del parcial, muy práctico y ponderable después.",
+      "que_esperar": "Explica sus PPTs de forma algo monótona antes del parcial (examen escrito, full teoría), pero después se vuelve mucho más práctico y didáctico en el laboratorio de automatización, donde se aprende bastante. Considera la asistencia de forma indirecta (afecta cómo evalúa tu interés y participación), y el curso es ponderable si el salón se muestra comprometido.",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Ten un buen delegado que coordine con él fechas, temas y grupos para las PCs, y no faltes a clase: influye directamente en cómo te considera para el examen y la participación. Deja 2 trabajos adicionales que también ponderan.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Investigación de Operaciones II",
+      "profesor": "César Canelo",
+      "resumen": "Clases algo soporíferas pero justo calificando; exámenes suelen ser plancha.",
+      "que_esperar": "Solo lee las PPTs y luego resuelve ejercicios en pizarra; sus clases se resumen prácticamente en eso. Es justo y accesible si le haces preguntas, y las preguntas de examen suelen venir igual o parecidas a lo resuelto en clase.",
+      "exigencia": 2,
+      "carga_trabajo": 2,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Repasa las planchas y cómo resuelve él los ejercicios en pizarra (suele salir igual en el examen). Asistir a clase es casi opcional si consigues las fotos de la pizarra de algún compañero.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Investigación de Operaciones II",
+      "profesor": "Luis Luján",
+      "resumen": "Clases cortas (usa WinQSB); exige términos exactos al calificar.",
+      "que_esperar": "Llega puntual con clases cortas (a veces media hora basta para un tema) y usa el software WinQSB, que da la solución pero no el procedimiento. Suele resolver problemas de exámenes pasados casi iguales a los que pondrá, pero es más estricto en parcial y final, donde exige que emplees los términos exactos que mencionó en clase.",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 4,
+      "claridad": 3,
+      "recomendaciones": "Anota bien las soluciones y los términos exactos que usa en clase (si no los replicas, no te da puntaje completo) y aprovecha los trabajos extra que deja para subir puntos. Cuida el tiempo: los exámenes duran solo 1 hora y a veces no alcanza.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Investigación de Operaciones II",
+      "profesor": "Luis Medina",
+      "resumen": "No enseña lo que evalúa; exige estudiar mucho por planchas.",
+      "que_esperar": "Su personalidad es cerrada y no enseña casi nada de lo que realmente viene en sus exámenes. Puede complicar bastante el examen, e incluso quitarte tiempo antes de la hora acordada. Si participas en clase, puede darte puntos adicionales.",
+      "exigencia": 4,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 1,
+      "recomendaciones": "Resuelve exámenes pasados (pueden repetirse) y estudia en grupo, revisando internet y libros del curso: es difícil ponderar con él, sobre todo en parcial y final.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Procesos Industriales II",
+      "profesor": "Guillermo Cruz",
+      "resumen": "Curso muy teórico y algo aburrido; hay que dibujar/graficar en los exámenes.",
+      "que_esperar": "Clase con muchos gráficos, imágenes y casos prácticos, poca pizarra, y un ritmo lento que puede resultar aburrido, aunque tiene mucho conocimiento y paciencia. Solo hay 3 PCs (ninguna se elimina), más parcial y final. Considera hasta 2 puntos de participación obligatoria en alguna práctica.",
+      "exigencia": 3,
+      "carga_trabajo": 3,
+      "ritmo": 2,
+      "claridad": 3,
+      "recomendaciones": "Responde con dibujos y gráficos, no solo texto narrado: es como él explica en clase, y así te considera mejor el puntaje aunque escribas dos hojas seguidas de texto. No faltes: ninguna de las 3 PCs se elimina.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Procesos Industriales II",
+      "profesor": "Alfredo Aguero",
+      "resumen": "Llega tarde y solo lee PDFs; poco exigente pero sube notas tarde.",
+      "que_esperar": "Suele llegar 30-40 minutos tarde (viene de trabajar) y la mayoría de clases solo lee sus PDFs sin mucha explicación, por lo que asiste poca gente. No es muy exigente ni en exámenes ni en las 2 monografías, y algunas preguntas de examen se repiten. Deja 2 monografías y 2 PCs como carga adicional.",
+      "exigencia": 2,
+      "carga_trabajo": 3,
+      "ritmo": 2,
+      "claridad": 2,
+      "recomendaciones": "Estudia de sus PDFs (son extensos, conviene resumirlos) y junta resúmenes con compañeros ya que las preguntas pueden salir de cualquier parte. Ten un buen delegado: puede lograr que sea más flexible con los tiempos de entrega de las monografías.",
+      "ciclo_origen": 6
+    },
+    {
+      "curso": "Procesos Industriales II",
+      "profesor": "Carlos Muñoz",
+      "resumen": "Curso no ponderable, exigente calificando; plancha de Univirtual y PCs.",
+      "que_esperar": "Lee sus diapositivas y suelta bastante información adicional, siempre abierto a preguntas y dudas. Es exquisito calificando exámenes: exige que sigas su método tal cual, sin dar nota completa por respuestas 'parecidas'. Las PCs son 2 prácticas escritas (verdadero/falso y alternativas, unas 60 preguntas) más un trabajo monográfico que se expone; parcial y final son full ejercicios.",
+      "exigencia": 4,
+      "carga_trabajo": 4,
+      "ritmo": 3,
+      "claridad": 3,
+      "recomendaciones": "Estudia bien las planchas de Univirtual y de las PCs (suelen repetirse) y sigue su método exacto al resolver, no uno alternativo aunque llegues al mismo resultado. No es ponderable, así que apunta a asegurar cada evaluación: con un 10-11 en parcial y ~13 en final ya apruebas el curso.",
       "ciclo_origen": 6
     }
   ]
