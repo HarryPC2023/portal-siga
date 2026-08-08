@@ -1,5 +1,5 @@
 // js/opiniones.js
-import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
+import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=8';
 
 const CICLOS = Array.from({ length: 10 }, (_, i) => i + 1);
 const POR_PAGINA = 9;
@@ -44,18 +44,20 @@ function normalizar(texto) {
 }
 
 async function cargarTodo() {
-  const { data: perfilesData, error: errPerfiles } = await supabase
-    .from('perfiles_profesor')
-    .select(`
-      id, profesor_curso_id, resumen, que_esperar,
-      exigencia, carga_trabajo, ritmo, claridad, recomendaciones,
+  const [perfilesResp, opinionesResp, reportesResp] = await Promise.all([
+    supabase.from('perfiles_profesor').select(`
+      id, profesor_curso_id, resumen, que_esperar, recomendaciones,
       profesor_curso:profesor_curso_id (
         id,
         profesores ( nombre ),
         cursos ( nombre, codigo, carrera, ciclo_ref )
       )
-    `);
+    `),
+    supabase.from('opiniones_publicas').select('*').order('creado_en', { ascending: false }),
+    supabase.from('opinion_reportes').select('opinion_id').eq('autor_id', sesionActual.user.id),
+  ]);
 
+  const { data: perfilesData, error: errPerfiles } = perfilesResp;
   if (errPerfiles) {
     console.error('Error cargando perfiles:', errPerfiles);
     grid.innerHTML = '<p class="opiniones-error">No se pudieron cargar los perfiles. Intenta recargar la página.</p>';
@@ -63,11 +65,7 @@ async function cargarTodo() {
   }
   perfiles = perfilesData || [];
 
-  const { data: opinionesData, error: errOpiniones } = await supabase
-    .from('opiniones_publicas')
-    .select('*')
-    .order('creado_en', { ascending: false });
-
+  const { data: opinionesData, error: errOpiniones } = opinionesResp;
   opinionesPorFicha = new Map();
   if (!errOpiniones) {
     for (const op of opinionesData) {
@@ -79,10 +77,7 @@ async function cargarTodo() {
     console.error('Error cargando opiniones:', errOpiniones);
   }
 
-  const { data: misReportes } = await supabase
-    .from('opinion_reportes')
-    .select('opinion_id')
-    .eq('autor_id', sesionActual.user.id);
+  const { data: misReportes } = reportesResp;
   reportadasPorMi = new Set((misReportes || []).map((r) => r.opinion_id));
 }
 
