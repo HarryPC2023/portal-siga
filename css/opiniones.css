@@ -3,6 +3,7 @@
     gap: 14px;
     margin-bottom: 28px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .opiniones-buscador {
@@ -35,10 +36,53 @@
     flex: 0 0 210px;
 }
 
+/* ===== Toggle vista lista/cuadrícula ===== */
+.opiniones-vista-toggle {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    padding: 4px;
+}
+
+.vista-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.vista-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.vista-btn:hover {
+    color: var(--brand-morado);
+}
+
+.vista-btn.activo {
+    background: var(--brand-morado);
+    color: #fff;
+}
+
 .opiniones-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
+}
+
+.opiniones-grid.vista-lista {
+    grid-template-columns: 1fr;
 }
 
 .opiniones-ciclo-header {
@@ -199,6 +243,58 @@
 .opinion-card-conteo {
     color: var(--ink-soft);
     font-weight: 500;
+}
+
+/* ---------- Vista lista: la tarjeta pasa a fila ancha, con las
+   estrellas centradas a la derecha en vez de abajo a la izquierda ---------- */
+.vista-lista .opinion-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 28px;
+    row-gap: 2px;
+    align-items: start;
+}
+
+.vista-lista .opinion-card-curso {
+    grid-column: 1;
+    grid-row: 1;
+    margin-bottom: 2px;
+}
+
+.vista-lista .opinion-card h3 {
+    grid-column: 1;
+    grid-row: 2;
+    margin-bottom: 4px;
+}
+
+.vista-lista .opinion-card-frase {
+    grid-column: 1;
+    grid-row: 3;
+    margin-bottom: 0;
+}
+
+.vista-lista .opinion-card-estrellas {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    align-self: center;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+    .vista-lista .opinion-card {
+        grid-template-columns: 1fr;
+    }
+
+    .vista-lista .opinion-card-estrellas {
+        grid-column: 1;
+        grid-row: 4;
+        flex-direction: row;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
 }
 
 .opiniones-vacio,

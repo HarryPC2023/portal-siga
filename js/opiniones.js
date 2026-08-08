@@ -3,6 +3,7 @@ import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=8';
 
 const CICLOS = Array.from({ length: 10 }, (_, i) => i + 1);
 const POR_PAGINA = 9;
+const LS_VISTA = 'opiniones_vista';
 
 let sesionActual = null;
 let perfiles = [];
@@ -11,6 +12,7 @@ let reportadasPorMi = new Set();
 let paginaActual = 1;
 let selectCarrera = null;
 let selectCiclo = null;
+let vistaActual = localStorage.getItem(LS_VISTA) || 'grid';
 
 const grid = document.getElementById('opinionesGrid');
 const paginacionCont = document.getElementById('opinionesPaginacion');
@@ -20,6 +22,7 @@ const buscador = document.getElementById('buscadorOpiniones');
 document.addEventListener('DOMContentLoaded', async () => {
   montarNavUsuario();
   configurarFiltros();
+  configurarVista();
 
   // requerirSesion ya redirige a index.html?login=1 si no hay cuenta,
   // así que si llegamos aquí, sesionActual siempre existe.
@@ -418,4 +421,22 @@ function configurarFiltros() {
       renderGrid();
     });
   }
+}
+
+function aplicarVista() {
+  grid.classList.toggle('vista-lista', vistaActual === 'lista');
+  document.querySelectorAll('.vista-btn').forEach((btn) => {
+    btn.classList.toggle('activo', btn.dataset.vista === vistaActual);
+  });
+}
+
+function configurarVista() {
+  document.querySelectorAll('.vista-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      vistaActual = btn.dataset.vista;
+      localStorage.setItem(LS_VISTA, vistaActual);
+      aplicarVista();
+    });
+  });
+  aplicarVista();
 }
