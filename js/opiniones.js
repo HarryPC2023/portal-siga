@@ -1,5 +1,5 @@
 // js/opiniones.js
-import { supabase, obtenerSesion, alCambiarSesion, iniciarSesionConCorreo, montarNavUsuario } from './auth-siga.js?v=8';
+import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=8';
 
 const CICLOS = Array.from({ length: 10 }, (_, i) => i + 1);
 
@@ -8,7 +8,6 @@ let perfiles = [];
 let opinionesPorFicha = new Map();
 let reportadasPorMi = new Set();
 
-const gate = document.getElementById('opinionesGate');
 const filtrosCont = document.getElementById('opinionesFiltros');
 const grid = document.getElementById('opinionesGrid');
 const detalle = document.getElementById('detalleProfesor');
@@ -18,35 +17,17 @@ const filtroCiclo = document.getElementById('filtroCiclo');
 document.addEventListener('DOMContentLoaded', async () => {
     montarNavUsuario();
     llenarSelectCiclos(filtroCiclo, 'Todos los ciclos');
-    configurarModalLogin();
     configurarFiltros();
-    document.addEventListener('siga:abrir-login', abrirModalLogin);
-    document.getElementById('btnGateLogin').addEventListener('click', abrirModalLogin);
 
-    sesionActual = await obtenerSesion();
-    await pintarSegunSesion(sesionActual);
+    // requerirSesion ya redirige a index.html?login=1 si no hay cuenta,
+    // así que si llegamos aquí, sesionActual siempre existe.
+    sesionActual = await requerirSesion('');
+    if (!sesionActual) return;
 
-    alCambiarSesion(async (s) => {
-        sesionActual = s;
-        await pintarSegunSesion(s);
-    });
-});
-
-async function pintarSegunSesion(sesion) {
-    if (!sesion) {
-        gate.hidden = false;
-        filtrosCont.hidden = true;
-        grid.hidden = true;
-        cerrarDetalle();
-        return;
-    }
-    gate.hidden = true;
-    filtrosCont.hidden = false;
-    grid.hidden = false;
     grid.innerHTML = '<p class="opiniones-vacio">Cargando perfiles…</p>';
     await cargarTodo();
     renderGrid();
-}
+});
 
 function llenarSelectCiclos(select, etiquetaVacia) {
     select.innerHTML = `<option value="">${etiquetaVacia}</option>` +
@@ -298,26 +279,4 @@ async function reportarOpinion(opinionId, btn) {
 function configurarFiltros() {
     filtroCarrera.addEventListener('change', renderGrid);
     filtroCiclo.addEventListener('change', renderGrid);
-}
-
-function configurarModalLogin() {
-    const modal = document.getElementById('modalLogin');
-    const form = document.getElementById('formLogin');
-    const msg = document.getElementById('loginMsg');
-
-    document.getElementById('btnCerrarLogin').addEventListener('click', () => modal.classList.remove('visible'));
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const correo = new FormData(form).get('correo');
-        const { ok, error } = await iniciarSesionConCorreo(correo);
-        msg.textContent = ok
-            ? 'Listo. Revisa tu correo y haz clic en el enlace para iniciar sesión.'
-            : 'No se pudo enviar el enlace. Verifica el correo e intenta de nuevo.';
-        if (error) console.error(error);
-    });
-}
-
-function abrirModalLogin() {
-    document.getElementById('modalLogin').classList.add('visible');
 }
