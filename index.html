@@ -19,6 +19,51 @@
 <body>
 
   <section class="hero" id="inicio">
+    <div class="hero-fondo" aria-hidden="true">
+      <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="olaG1" x1="0" y1="0" x2="1" y2="0.3">
+            <stop offset="0%" stop-color="#FBFBFB" />
+            <stop offset="50%" stop-color="#F0F0F0" />
+            <stop offset="100%" stop-color="#F8F8F8" />
+          </linearGradient>
+          <linearGradient id="olaG2" x1="0" y1="0.1" x2="1" y2="0.5">
+            <stop offset="0%" stop-color="#F6F6F6" />
+            <stop offset="50%" stop-color="#E8E8E8" />
+            <stop offset="100%" stop-color="#F2F2F2" />
+          </linearGradient>
+          <linearGradient id="olaG3" x1="0" y1="0.2" x2="1" y2="0.7">
+            <stop offset="0%" stop-color="#F9F9F9" />
+            <stop offset="50%" stop-color="#EAEAEA" />
+            <stop offset="100%" stop-color="#F5F5F5" />
+          </linearGradient>
+          <linearGradient id="olaG4" x1="0" y1="0.3" x2="1" y2="0.8">
+            <stop offset="0%" stop-color="#F7F7F7" />
+            <stop offset="50%" stop-color="#E3E3E3" />
+            <stop offset="100%" stop-color="#F1F1F1" />
+          </linearGradient>
+        </defs>
+        <g class="hero-ola capa1">
+          <path fill="url(#olaG1)"
+            d="M-500,-100 C-150,-180 200,-30 550,-110 C850,-180 1150,-40 1550,-120 L1550,80 C1150,160 850,20 550,90 C200,170 -150,20 -500,100 Z" />
+        </g>
+        <g class="hero-ola capa2">
+          <path fill="url(#olaG2)"
+            d="M-500,150 C-150,70 200,220 550,140 C850,70 1150,210 1550,130 L1550,340 C1150,420 850,280 550,350 C200,430 -150,280 -500,360 Z" />
+        </g>
+        <g class="hero-ola capa3">
+          <path fill="url(#olaG3)"
+            d="M-500,420 C-150,340 200,490 550,410 C850,340 1150,480 1550,400 L1550,610 C1150,690 850,550 550,620 C200,700 -150,550 -500,630 Z" />
+        </g>
+        <g class="hero-ola capa4">
+          <path fill="url(#olaG4)"
+            d="M-500,-260 C-150,-330 200,-190 550,-270 C850,-330 1150,-200 1550,-280 L1550,-70 C1150,10 850,-130 550,-60 C200,20 -150,-130 -500,-50 Z" />
+        </g>
+      </svg>
+    </div>
+
+    <span class="hero-marca-agua" aria-hidden="true">SG</span>
+
     <nav>
       <div class="logo">
         <img src="assets/logo-siga.png" alt="Logo SIGA">
@@ -36,8 +81,8 @@
 
     <div class="hero-content">
       <div class="hero-panel">
-        <h1 class="hero-lema"><span class="lema-palabra">Conecta.</span> <span class="lema-palabra">Organiza.</span>
-          <span class="lema-palabra">Avanza.</span>
+        <h1 class="hero-lema"><span class="lema-palabra">Conecta</span> <span class="lema-palabra">Organiza</span>
+          <span class="lema-palabra lema-acento">Avanza</span>
         </h1>
 
         <p class="descripcion">Toma el control de tu vida universitaria. Organiza tus horarios, calcula tus notas,
@@ -49,14 +94,20 @@
       </div>
 
       <div class="escena">
-        <div class="logo-grande">
-          <img src="assets/logo-siga.png" alt="Logo SIGA">
+        <div class="modulo-icono mi-1">
+          <img src="assets/simulador.png" alt="Simulador de notas">
         </div>
-
-        <div class="iconos-fila">
-          <img class="icono" src="assets/simulador.png" alt="Simulador de notas">
-          <img class="icono" src="assets/horario.png" alt="Horario">
-          <img class="icono" src="assets/asesoria.png" alt="Asesorías">
+        <div class="modulo-icono mi-2">
+          <img src="assets/horario.png" alt="Generador de horarios">
+        </div>
+        <div class="modulo-icono mi-3">
+          <img src="assets/asesoria.png" alt="Asesorías">
+        </div>
+        <div class="modulo-icono mi-4">
+          <img src="assets/materiales.png" alt="Materiales">
+        </div>
+        <div class="modulo-icono mi-5">
+          <img src="assets/opiniones.png" alt="Opiniones de profesores">
         </div>
       </div>
     </div>

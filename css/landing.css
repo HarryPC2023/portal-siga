@@ -21,48 +21,124 @@ a {
   text-decoration: none;
 }
 
-/* ===== HERO: radial blanco -> #E1FFE1, con movimiento suave ===== */
+/* ===== HERO: ondas grises en diagonal (esquina sup. izq. -> inf. der.),
+   via SVG dentro del propio hero, con textura interna (cada onda es un
+   degradado claro-oscuro) y movimiento en dos velocidades distintas. ===== */
 .hero {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 50%, #FFFFFF 0%, #E1FFE1 100%);
-  background-size: 200% 200%;
-  animation: mover 20s ease-in-out infinite;
+  background: var(--paper);
 }
 
-@keyframes mover {
-  0% {
-    background-position: 20% 20%;
+.hero-fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-fondo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-ola {
+  transform-origin: 600px 400px;
+}
+
+.capa1 {
+  opacity: 0.55;
+  animation: olaLenta 30s ease-in-out infinite;
+}
+
+.capa2 {
+  opacity: 0.45;
+  animation: olaRapida 20s ease-in-out infinite;
+}
+
+.capa3 {
+  opacity: 0.5;
+  animation: olaLenta 36s ease-in-out infinite reverse;
+}
+
+.capa4 {
+  opacity: 0.35;
+  animation: olaRapida 24s ease-in-out infinite reverse;
+}
+
+@keyframes olaLenta {
+
+  0%,
+  100% {
+    transform: rotate(-38deg) translate(0, 0);
   }
 
   50% {
-    background-position: 80% 80%;
+    transform: rotate(-38deg) translate(2%, 1.5%);
+  }
+}
+
+@keyframes olaRapida {
+
+  0%,
+  100% {
+    transform: rotate(-38deg) translate(0, 0);
   }
 
-  100% {
-    background-position: 20% 20%;
+  50% {
+    transform: rotate(-38deg) translate(-3%, -2%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero {
+
+  .capa1,
+  .capa2,
+  .capa3,
+  .capa4 {
     animation: none;
-    background-position: 50% 50%;
   }
 }
 
-/* ===== NAV: logo arriba, sliders del menú en su propia fila debajo, todo a la izquierda ===== */
+/* Marca de agua "SG": grande, centrada en todo el hero, en tinte morado
+   muy tenue. El titular y el resto del contenido pasan por encima sin
+   problema, es intencional que quede parcialmente tapada. */
+.hero-marca-agua {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-logo);
+  font-weight: 400;
+  font-size: clamp(160px, 22vw, 320px);
+  line-height: 1;
+  color: var(--brand-morado);
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ===== NAV: barra champagne rectangular (esquinas suavizadas, no
+   ovalada), flotando sobre el fondo de ondas. Logo a la izquierda,
+   sliders del menu a la derecha, todo en una sola fila. ===== */
 nav {
   position: relative;
   z-index: 20;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 40px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
   max-width: 1160px;
-  margin: 0 auto;
-  padding: 26px 32px 0;
+  margin: 24px auto 0;
+  padding: 16px 28px;
+  background: linear-gradient(120deg, #FDFCF7 0%, #F5EFDE 50%, #FDFCF7 100%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
 }
 
 .logo {
@@ -72,27 +148,28 @@ nav {
 }
 
 .logo img {
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
 }
 
 /* "SIGA" y el nombre completo tienen color independiente entre si:
-   cambiar uno no mueve al otro. Por defecto ambos negros (solo blanco/negro
-   permitido en texto), pero --color-logo-siga se puede recolorear aparte. */
+   cambiar uno no mueve al otro. Por defecto el tono champagne (marron
+   calido) para que combinen con el fondo de la barra, pero
+   --color-logo-siga se puede recolorear aparte si se necesita. */
 .logo-siga {
   font-family: var(--font-logo);
   font-weight: 400;
-  font-size: 26px;
-  color: var(--color-logo-siga, var(--ink));
+  font-size: 19px;
+  color: var(--color-logo-siga, #4A4433);
   letter-spacing: 0.02em;
 }
 
 .logo-nombre {
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: 17px;
-  color: var(--color-logo-nombre, var(--ink));
+  font-size: 12px;
+  color: var(--color-logo-nombre, #8a806a);
 }
 
 /* Sliders del menú: pastillas ovaladas blancas con sombra, texto negro.
@@ -103,14 +180,12 @@ nav {
   position: relative;
   display: flex;
   align-items: center;
-  width: 100%;
-  gap: 20px;
-  padding-top: 14px;
+  gap: 10px;
   font-family: var(--font-nav);
-  font-weight: 500;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 13px;
   letter-spacing: 0.02em;
-  color: var(--ink);
+  color: #4A4433;
 }
 
 /* Línea delgada arriba de los botones: se desliza hasta quedar sobre el
@@ -134,15 +209,14 @@ nav {
 .nav-links>a {
   position: relative;
   z-index: 1;
-  flex: 1 1 0;
   display: block;
-  width: 100%;
   box-sizing: border-box;
   text-align: center;
-  padding: 16px 10px;
-  border-radius: 16px;
+  padding: 12px 18px;
+  border-radius: 14px;
   background: #FFFFFF;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  color: #4A4433;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
@@ -230,18 +304,22 @@ nav {
   text-align: left;
 }
 
-/* "Conecta. Organiza. Avanza." en una sola linea: font-size mas chico que
-   antes (antes se partia en 2 lineas) + white-space:nowrap. En pantallas
-   muy angostas el clamp sigue bajando el tamano para que quepa. */
+/* "Conecta / Organiza / Avanza" en 3 lineas, cada palabra ocupando todo
+   el ancho disponible para que el tamano de letra pueda ser grande de
+   verdad (el impacto tipografico que buscabamos). "Avanza" lleva el
+   color de excepcion #9900FF -- puntual solo aqui, no es color de marca. */
 .hero-panel h1 {
   font-family: var(--font-logo);
   font-weight: 400;
-  font-size: clamp(26px, 3.6vw, 46px);
-  line-height: 1.1;
+  font-size: clamp(40px, 6vw, 76px);
+  line-height: 1.05;
   color: var(--ink);
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  margin-bottom: 22px;
+  letter-spacing: 0.005em;
+  margin-bottom: 24px;
+}
+
+.lema-acento {
+  color: #9900FF;
 }
 
 /* Lema del hero: cada palabra cae en su lugar por separado, con un pequeño
@@ -250,7 +328,7 @@ nav {
    .animar) — así no es un efecto de una sola vez que nadie vuelve a ver,
    pero tampoco se anima cuando el usuario ya está mirando otra sección. */
 .lema-palabra {
-  display: inline-block;
+  display: block;
   opacity: 1;
 }
 
@@ -293,12 +371,6 @@ nav {
   }
 }
 
-@media (max-width:600px) {
-  .hero-panel h1 {
-    white-space: normal;
-  }
-}
-
 .hero-panel .descripcion {
   font-size: 15.5px;
   font-weight: 500;
@@ -335,17 +407,17 @@ nav {
   box-shadow: 0 10px 22px rgba(102, 0, 204, 0.28);
 }
 
-/* ===== escena derecha: logo grande + iconos flotando debajo, sin fondo ===== */
+/* ===== escena derecha: los 5 iconos de modulo, superpuestos en tamanos
+   distintos. Cada uno es un contenedor lila (mismo tono que el fondo de
+   la seccion MODULOS) con la imagen del icono adentro; el drop-shadow
+   blanco duplicado crea el halo alrededor de la linea negra del PNG
+   (box-shadow no serviria aqui porque no sigue la transparencia). ===== */
 .escena {
   position: relative;
   width: 100%;
   max-width: 560px;
+  min-height: 420px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 20px;
 }
 
 @keyframes flotar {
@@ -360,46 +432,99 @@ nav {
   }
 }
 
-.logo-grande img {
-  width: clamp(240px, 30vw, 420px);
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.18));
-}
-
-.iconos-fila {
+.modulo-icono {
+  position: absolute;
   display: flex;
-  gap: 22px;
-  margin-top: 10px;
-}
-
-.icono {
-  width: 100px;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.12));
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background: var(--brand-morado-tinte);
+  box-shadow: 0 10px 24px rgba(102, 0, 204, 0.1);
   animation: flotar 7s ease-in-out infinite;
 }
 
-.iconos-fila .icono:nth-child(2) {
-  animation-delay: 0.5s;
+.modulo-icono img {
+  display: block;
+  width: 55%;
+  height: auto;
+  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px rgba(255, 255, 255, 0.7));
 }
 
-.iconos-fila .icono:nth-child(3) {
-  animation-delay: 1s;
+.mi-1 {
+  width: 100px;
+  height: 100px;
+  top: 0;
+  left: 80px;
 }
 
-@media (max-width:520px) {
-  .logo-grande img {
-    width: 200px;
+.mi-2 {
+  width: 74px;
+  height: 74px;
+  top: 40px;
+  right: 30px;
+  animation-delay: 0.4s;
+}
+
+.mi-3 {
+  width: 114px;
+  height: 114px;
+  top: 160px;
+  left: 10px;
+  animation-delay: 0.8s;
+}
+
+.mi-4 {
+  width: 82px;
+  height: 82px;
+  top: 200px;
+  right: 80px;
+  animation-delay: 1.2s;
+}
+
+.mi-5 {
+  width: 104px;
+  height: 104px;
+  top: 300px;
+  left: 120px;
+  animation-delay: 1.6s;
+}
+
+@media (max-width:880px) {
+  .escena {
+    min-height: 320px;
+    max-width: 420px;
   }
 
-  .iconos-fila {
-    gap: 14px;
-  }
-
-  .icono {
+  .mi-1 {
     width: 76px;
+    height: 76px;
+    left: 60px;
+  }
+
+  .mi-2 {
+    width: 56px;
+    height: 56px;
+    top: 30px;
+  }
+
+  .mi-3 {
+    width: 86px;
+    height: 86px;
+    top: 120px;
+  }
+
+  .mi-4 {
+    width: 62px;
+    height: 62px;
+    top: 150px;
+    right: 50px;
+  }
+
+  .mi-5 {
+    width: 78px;
+    height: 78px;
+    top: 220px;
+    left: 90px;
   }
 }
 
