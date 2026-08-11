@@ -1,0 +1,352 @@
+/* ===== Visor de Asesorías (PDF embebido + web embebida) =====
+   Un solo "shell" de modal reutilizado en dos modos:
+   - modo="pdf": lienzo <canvas> + capa de texto de pdf.js, con toolbar
+     completo (buscar, paginación, zoom, imprimir, descargar...).
+   - modo="web": <iframe> a una web externa, con toolbar mínimo (esa web
+     ya trae su propia navegación, no tiene sentido duplicar controles
+     de "documento" encima).
+   Mismo overlay, misma animación de entrada/cierre, misma X — así las
+   tres tarjetas de asesorias.html abren con la misma sensación aunque
+   el contenido interno cambie. */
+
+/* Las tarjetas de asesorias.html pasaron de <a> a <button> (para poder
+   interceptar el clic y abrir el visor en vez de navegar) — reset minimo
+   para que un <button> se vea idéntico al <a> que reemplaza. El resto de
+   estilos (.item-asesoria-accion) ya vive en dashboard.css. */
+.item-asesoria-accion {
+    font-family: inherit;
+    background: transparent;
+    cursor: pointer;
+}
+
+.visor-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.visor-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.visor-caja {
+    width: min(1100px, 100%);
+    height: min(880px, 100%);
+    background: var(--paper);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(14px) scale(0.98);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.visor-overlay.visible .visor-caja {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* Cuando el navegador pone la caja en pantalla completa (Fullscreen API),
+   que ocupe todo y pierda las esquinas redondeadas / sombra flotante. */
+.visor-caja:fullscreen {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+}
+
+/* ---------- Toolbar ---------- */
+.visor-toolbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 10px 16px;
+    background: var(--brand-azul-tinte);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-wrap: wrap;
+}
+
+.visor-toolbar-izq {
+    min-width: 0;
+    flex: 1 1 160px;
+}
+
+.visor-titulo {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.visor-toolbar-centro {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.visor-toolbar-der {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+}
+
+.visor-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.visor-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.visor-btn:hover:not(:disabled) {
+    background: rgba(60, 124, 248, 0.14);
+    color: var(--brand-azul);
+}
+
+.visor-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.visor-btn.activo {
+    background: var(--brand-azul);
+    color: #fff;
+}
+
+.visor-btn-cerrar:hover {
+    background: rgba(193, 63, 148, 0.16);
+    color: var(--acento-ciruela);
+}
+
+/* Paginación: "‹ [2] de 6 ›" */
+.visor-paginacion {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-family: var(--font-nav);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+}
+
+.visor-paginacion input {
+    width: 34px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    text-align: center;
+    font-family: var(--font-nav);
+    font-size: 12.5px;
+    padding: 3px 2px;
+    -moz-appearance: textfield;
+}
+
+.visor-paginacion input::-webkit-outer-spin-button,
+.visor-paginacion input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Zoom: "– 100% +" */
+.visor-zoom {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    border-radius: 999px;
+    padding: 3px 8px;
+}
+
+.visor-zoom span {
+    font-family: var(--font-nav);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    min-width: 38px;
+    text-align: center;
+}
+
+/* Buscador desplegable, anclado al botón de lupa */
+.visor-buscador {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 5;
+    width: min(320px, 80vw);
+}
+
+.visor-buscador input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-family: var(--font-nav);
+    font-size: 12.5px;
+}
+
+.visor-buscar-contador {
+    font-size: 11px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.visor-buscador .visor-btn {
+    width: 28px;
+    height: 28px;
+}
+
+/* ---------- Contenido ---------- */
+.visor-contenido {
+    flex: 1 1 auto;
+    min-height: 0;
+    position: relative;
+    background: #E9ECF2;
+    overflow: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 22px;
+}
+
+.visor-cargando {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-nav);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: #E9ECF2;
+}
+
+.visor-cargando[hidden] {
+    display: none;
+}
+
+.visor-pdf-pagina {
+    margin: auto;
+}
+
+.visor-pdf-lienzo-wrap {
+    position: relative;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+    background: #fff;
+    line-height: 0;
+}
+
+.visor-pdf-lienzo-wrap canvas {
+    display: block;
+}
+
+.visor-web-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #fff;
+}
+
+/* ---------- Capa de texto de pdf.js (búsqueda + selección) ----------
+   Reglas minimas requeridas por pdf.js para que cada <span> de texto se
+   posicione exactamente encima del glifo dibujado en el canvas. El texto
+   queda transparente (el dibujo real vive en el canvas); esta capa solo
+   habilita selección/copiado y resaltado de resultados de búsqueda. */
+.textLayer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    line-height: 1;
+    text-align: initial;
+}
+
+.textLayer span,
+.textLayer br {
+    color: transparent;
+    position: absolute;
+    white-space: pre;
+    cursor: text;
+    transform-origin: 0% 0%;
+}
+
+.textLayer ::selection {
+    background: rgba(60, 124, 248, 0.35);
+}
+
+.textLayer mark.visor-resaltado {
+    background: rgba(249, 238, 184, 0.85);
+    color: transparent;
+    border-radius: 2px;
+}
+
+.textLayer mark.visor-resaltado-activo {
+    background: rgba(166, 123, 0, 0.55);
+}
+
+@media (max-width: 720px) {
+    .visor-overlay {
+        padding: 0;
+    }
+
+    .visor-caja {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .visor-toolbar {
+        gap: 8px;
+    }
+
+    .visor-titulo {
+        flex-basis: 100%;
+        order: -1;
+        text-align: center;
+        margin-bottom: 2px;
+    }
+
+    .visor-toolbar-centro {
+        justify-content: center;
+        flex: 1 1 100%;
+    }
+}

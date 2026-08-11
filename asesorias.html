@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/asesorias-visor.css?v=1">
 </head>
 
 <body>
@@ -36,8 +37,9 @@
         <h3>PC1 — Diseño de Base de Datos</h3>
         <p>Herramientas, arquitectura, componentes y checklist antes de exponer.</p>
       </div>
-      <a href="https://harrypc2023.github.io/asesoria-dbd/" class="item-asesoria-accion" target="_blank"
-        rel="noopener">Abrir →</a>
+      <button type="button" class="item-asesoria-accion" data-visor="web"
+        data-src="https://harrypc2023.github.io/asesoria-dbd/" data-titulo="PC1 — Diseño de Base de Datos">Abrir
+        →</button>
     </div>
 
     <div class="item-asesoria">
@@ -46,8 +48,9 @@
         <h3>Monografía — Diseño de Base de Datos</h3>
         <p>Prototipado de interfaces: coherencia, detalle y datos reales por pantalla.</p>
       </div>
-      <a href="assets/asesorias/monografia-dbd-avanzado.pdf" class="item-asesoria-accion" target="_blank"
-        rel="noopener">Ver PDF →</a>
+      <button type="button" class="item-asesoria-accion" data-visor="pdf"
+        data-src="assets/asesorias/monografia-dbd-avanzado.pdf" data-titulo="Monografía — Diseño de Base de Datos">Ver
+        PDF →</button>
     </div>
 
     <div class="item-asesoria">
@@ -56,8 +59,8 @@
         <h3>Monografía — Modelado Conceptual de Datos</h3>
         <p>Fundamentos para encarar el trabajo grupal y qué espera el profesor.</p>
       </div>
-      <a href="assets/asesorias/monografia-mcd.pdf" class="item-asesoria-accion" target="_blank" rel="noopener">Ver PDF
-        →</a>
+      <button type="button" class="item-asesoria-accion" data-visor="pdf" data-src="assets/asesorias/monografia-mcd.pdf"
+        data-titulo="Monografía — Modelado Conceptual de Datos">Ver PDF →</button>
     </div>
 
     <p class="dash-nota-final">Más asesorías en camino, por evaluación y curso.</p>
@@ -68,6 +71,7 @@
 
   <script src="js/landing.js"></script>
   <script type="module" src="js/gate.js"></script>
+  <script type="module" src="js/asesorias-visor.js?v=1"></script>
 </body>
 
 </html>
