@@ -36,6 +36,7 @@ const ICONOS = {
     nuevaPestana: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
     fullscreen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/></svg>',
     cerrar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+    chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
 };
 
 const ZOOM_PASO = 0.15;
@@ -44,7 +45,8 @@ const ZOOM_MAX = 3;
 
 let overlay, caja, toolbar;
 let elTitulo, elControlesPDF, elContenido, elCargando;
-let elPdfPagina, elCanvas, elTextLayer, elWebIframe;
+let elPdfPagina, elCanvas, elTextLayer, elWebIframe, elPdfContinuo;
+let elVistaBtn, elVistaLabel, elVistaMenu, btnVistaPagina, btnVistaContinua;
 let btnBuscar, buscadorBox, inputBuscar, contadorBuscar, btnBuscarAnt, btnBuscarSig;
 let btnPagAnt, btnPagSig, inputPagina, spanTotalPaginas;
 let btnZoomMenos, btnZoomMas, spanZoomPct;
@@ -66,6 +68,11 @@ const estado = {
     coincidencias: [],     // lista de numeros de pagina con al menos 1 coincidencia
     indiceCoincidencia: -1,
     consultaActual: '',
+    modoVista: 'pagina',        // 'pagina' | 'continuo'
+    paginasRenderizadas: new Set(), // numeros de pagina ya dibujadas en modo continuo
+    wrappersContinuo: new Map(),    // numPagina -> { wrap, canvas, textLayer }
+    observadorLazy: null,       // IntersectionObserver: dispara el render al acercarse
+    observadorActual: null,     // IntersectionObserver: detecta que pagina esta a la vista
 };
 
 function normalizar(txt) {
@@ -86,6 +93,16 @@ function construirModal() {
     <div class="visor-caja">
       <header class="visor-toolbar">
         <div class="visor-toolbar-izq">
+          <div class="visor-vista-selector">
+            <button type="button" class="visor-vista-btn" data-accion="vista-menu" aria-haspopup="true" aria-expanded="false">
+              <span data-rol="vista-label">Una página</span>
+              ${ICONOS.chevron}
+            </button>
+            <div class="visor-vista-menu" hidden>
+              <button type="button" class="visor-vista-opcion activa" data-accion="vista-pagina">Una página</button>
+              <button type="button" class="visor-vista-opcion" data-accion="vista-continua">Desplazamiento continuo</button>
+            </div>
+          </div>
           <span class="visor-titulo"></span>
         </div>
 
@@ -129,6 +146,7 @@ function construirModal() {
             <div class="textLayer"></div>
           </div>
         </div>
+        <div class="visor-pdf-continuo" hidden></div>
         <iframe class="visor-web-iframe" hidden></iframe>
         <div class="visor-cargando" hidden>Cargando documento…</div>
       </div>
@@ -143,9 +161,16 @@ function construirModal() {
     elContenido = overlay.querySelector('.visor-contenido');
     elCargando = overlay.querySelector('.visor-cargando');
     elPdfPagina = overlay.querySelector('.visor-pdf-pagina');
-    elCanvas = overlay.querySelector('canvas');
-    elTextLayer = overlay.querySelector('.textLayer');
+    elCanvas = overlay.querySelector('.visor-pdf-pagina canvas');
+    elTextLayer = overlay.querySelector('.visor-pdf-pagina .textLayer');
+    elPdfContinuo = overlay.querySelector('.visor-pdf-continuo');
     elWebIframe = overlay.querySelector('.visor-web-iframe');
+
+    elVistaBtn = overlay.querySelector('[data-accion="vista-menu"]');
+    elVistaLabel = overlay.querySelector('[data-rol="vista-label"]');
+    elVistaMenu = overlay.querySelector('.visor-vista-menu');
+    btnVistaPagina = overlay.querySelector('[data-accion="vista-pagina"]');
+    btnVistaContinua = overlay.querySelector('[data-accion="vista-continua"]');
 
     btnBuscar = overlay.querySelector('[data-accion="buscar"]');
     buscadorBox = overlay.querySelector('.visor-buscador');
@@ -226,6 +251,24 @@ function enlazarEventos() {
     btnBuscarAnt.addEventListener('click', () => moverCoincidencia(-1));
     btnBuscarSig.addEventListener('click', () => moverCoincidencia(1));
 
+    // --- Selector de vista (una página / desplazamiento continuo) ---
+    elVistaBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const abrir = elVistaMenu.hidden;
+        elVistaMenu.hidden = !abrir;
+        elVistaBtn.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', (ev) => {
+        if (!elVistaMenu.hidden && !elVistaBtn.contains(ev.target) && !elVistaMenu.contains(ev.target)) {
+            elVistaMenu.hidden = true;
+            elVistaBtn.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    btnVistaPagina.addEventListener('click', () => { cambiarModoVista('pagina'); elVistaMenu.hidden = true; });
+    btnVistaContinua.addEventListener('click', () => { cambiarModoVista('continuo'); elVistaMenu.hidden = true; });
+
     // --- Paginación ---
     btnPagAnt.addEventListener('click', () => irAPagina(estado.paginaActual - 1));
     btnPagSig.addEventListener('click', () => irAPagina(estado.paginaActual + 1));
@@ -301,6 +344,12 @@ function resetEstado() {
     inputBuscar.value = '';
     contadorBuscar.textContent = '';
     spanZoomPct.textContent = '100%';
+
+    desconectarObservadoresContinuo();
+    estado.paginasRenderizadas = new Set();
+    estado.wrappersContinuo = new Map();
+    elPdfContinuo.innerHTML = '';
+    cambiarModoVista('pagina', { silencioso: true });
 }
 
 function mostrarOverlay() {
@@ -321,11 +370,158 @@ function cerrarVisor() {
         estado.tareaRender.cancel();
         estado.tareaRender = null;
     }
+    desconectarObservadoresContinuo();
     if (estado.pdf) {
         estado.pdf.destroy();
         estado.pdf = null;
     }
     elWebIframe.src = 'about:blank';
+}
+
+// ---------- Selector de vista: una página / desplazamiento continuo ----------
+function cambiarModoVista(modo, { silencioso = false } = {}) {
+    const yaEstabaEnEseModo = modo === estado.modoVista;
+    estado.modoVista = modo;
+
+    elVistaLabel.textContent = modo === 'continuo' ? 'Desplazamiento continuo' : 'Una página';
+    btnVistaPagina.classList.toggle('activa', modo === 'pagina');
+    btnVistaContinua.classList.toggle('activa', modo === 'continuo');
+    elPdfPagina.hidden = modo !== 'pagina';
+    elPdfContinuo.hidden = modo !== 'continuo';
+
+    if (silencioso || !estado.pdf || yaEstabaEnEseModo) return;
+
+    if (modo === 'continuo') {
+        const paginaAncla = estado.paginaActual;
+        construirVistaContinua().then(() => {
+            const info = estado.wrappersContinuo.get(paginaAncla);
+            if (info) info.wrap.scrollIntoView({ block: 'start' });
+        });
+    } else {
+        renderizarPaginaActual();
+    }
+}
+
+function desconectarObservadoresContinuo() {
+    if (estado.observadorLazy) {
+        estado.observadorLazy.disconnect();
+        estado.observadorLazy = null;
+    }
+    if (estado.observadorActual) {
+        estado.observadorActual.disconnect();
+        estado.observadorActual = null;
+    }
+}
+
+// Arma el contenedor con TODAS las páginas apiladas. Cada página solo se
+// dibuja (canvas + texto) cuando está a punto de entrar en pantalla —
+// para un PDF de 30 páginas no tiene sentido renderizar las 30 de una,
+// la mayoría el usuario nunca las llega a ver.
+async function construirVistaContinua() {
+    if (!estado.pdf) return;
+
+    desconectarObservadoresContinuo();
+    elPdfContinuo.innerHTML = '';
+    estado.wrappersContinuo = new Map();
+    estado.paginasRenderizadas = new Set();
+
+    for (let n = 1; n <= estado.totalPaginas; n++) {
+        const pagina = await estado.pdf.getPage(n);
+        const viewport = pagina.getViewport({ scale: estado.escala });
+
+        const wrap = document.createElement('div');
+        wrap.className = 'visor-pdf-continuo-pagina';
+        wrap.dataset.pagina = n;
+        wrap.style.width = `${viewport.width}px`;
+        wrap.style.height = `${viewport.height}px`;
+
+        const lienzoWrap = document.createElement('div');
+        lienzoWrap.className = 'visor-pdf-lienzo-wrap';
+        const canvasEl = document.createElement('canvas');
+        const textLayerDiv = document.createElement('div');
+        textLayerDiv.className = 'textLayer';
+        lienzoWrap.append(canvasEl, textLayerDiv);
+        wrap.append(lienzoWrap);
+        elPdfContinuo.append(wrap);
+
+        estado.wrappersContinuo.set(n, { wrap, canvas: canvasEl, textLayer: textLayerDiv });
+    }
+
+    estado.observadorLazy = new IntersectionObserver((entradas) => {
+        entradas.forEach((entrada) => {
+            if (!entrada.isIntersecting) return;
+            const numero = parseInt(entrada.target.dataset.pagina, 10);
+            estado.observadorLazy.unobserve(entrada.target);
+            renderizarPaginaEnWrapper(numero);
+        });
+    }, { root: elContenido, rootMargin: '600px 0px', threshold: 0.01 });
+
+    // Detecta qué página está a la vista mientras el usuario hace scroll,
+    // para mantener el indicador "X de N" de arriba siempre al día.
+    estado.observadorActual = new IntersectionObserver((entradas) => {
+        let mejor = null;
+        entradas.forEach((entrada) => {
+            if (entrada.isIntersecting && (!mejor || entrada.intersectionRatio > mejor.intersectionRatio)) {
+                mejor = entrada;
+            }
+        });
+        if (!mejor) return;
+        const numero = parseInt(mejor.target.dataset.pagina, 10);
+        if (numero === estado.paginaActual) return;
+        estado.paginaActual = numero;
+        inputPagina.value = numero;
+        btnPagAnt.disabled = numero <= 1;
+        btnPagSig.disabled = numero >= estado.totalPaginas;
+    }, { root: elContenido, threshold: [0.25, 0.5, 0.75] });
+
+    estado.wrappersContinuo.forEach(({ wrap }) => {
+        estado.observadorLazy.observe(wrap);
+        estado.observadorActual.observe(wrap);
+    });
+}
+
+async function dibujarPaginaEnCanvas(pagina, viewport, canvasEl, textLayerDiv) {
+    const contexto = canvasEl.getContext('2d');
+    canvasEl.width = viewport.width;
+    canvasEl.height = viewport.height;
+    canvasEl.style.width = `${viewport.width}px`;
+    canvasEl.style.height = `${viewport.height}px`;
+    textLayerDiv.style.width = `${viewport.width}px`;
+    textLayerDiv.style.height = `${viewport.height}px`;
+    textLayerDiv.style.setProperty('--scale-factor', estado.escala);
+
+    try {
+        await pagina.render({ canvasContext: contexto, viewport }).promise;
+    } catch (err) {
+        console.error('Error dibujando la página:', err);
+        return false;
+    }
+
+    try {
+        const contenidoTexto = await pagina.getTextContent();
+        const capa = new pdfjsLib.TextLayer({ textContentSource: contenidoTexto, container: textLayerDiv, viewport });
+        await capa.render();
+    } catch (err) {
+        console.warn('No se pudo construir la capa de texto:', err);
+    }
+    return true;
+}
+
+async function renderizarPaginaEnWrapper(numero) {
+    if (!estado.pdf || estado.paginasRenderizadas.has(numero)) return;
+    const info = estado.wrappersContinuo.get(numero);
+    if (!info) return;
+
+    const pagina = await estado.pdf.getPage(numero);
+    const viewport = pagina.getViewport({ scale: estado.escala });
+    const ok = await dibujarPaginaEnCanvas(pagina, viewport, info.canvas, info.textLayer);
+
+    if (ok) {
+        estado.paginasRenderizadas.add(numero);
+        if (estado.consultaActual && estado.coincidencias.includes(numero)) {
+            resaltarCoincidenciasEnCapa(info.textLayer, estado.consultaActual);
+        }
+    }
 }
 
 // ---------- Carga y render del PDF ----------
@@ -421,7 +617,7 @@ async function renderizarPaginaActual() {
         console.warn('No se pudo construir la capa de texto:', err);
     }
 
-    if (estado.consultaActual) resaltarCoincidenciasEnPaginaActual();
+    if (estado.consultaActual) resaltarCoincidenciasEnCapa(elTextLayer, estado.consultaActual);
 
     inputPagina.value = estado.paginaActual;
     btnPagAnt.disabled = estado.paginaActual <= 1;
@@ -431,6 +627,18 @@ async function renderizarPaginaActual() {
 async function irAPagina(numero, { forzar = false } = {}) {
     if (!estado.pdf) return;
     const destino = Math.min(Math.max(numero, 1), estado.totalPaginas);
+
+    if (estado.modoVista === 'continuo') {
+        estado.paginaActual = destino;
+        inputPagina.value = destino;
+        btnPagAnt.disabled = destino <= 1;
+        btnPagSig.disabled = destino >= estado.totalPaginas;
+        await renderizarPaginaEnWrapper(destino);
+        const info = estado.wrappersContinuo.get(destino);
+        if (info) info.wrap.scrollIntoView({ block: 'start', behavior: forzar ? 'auto' : 'smooth' });
+        return;
+    }
+
     if (destino === estado.paginaActual && !forzar) {
         inputPagina.value = estado.paginaActual;
         return;
@@ -446,7 +654,16 @@ function cambiarZoom(delta) {
     if (nuevo === estado.escala) return;
     estado.escala = nuevo;
     actualizarZoomPct();
-    renderizarPaginaActual();
+
+    if (estado.modoVista === 'continuo') {
+        const paginaAncla = estado.paginaActual;
+        construirVistaContinua().then(() => {
+            const info = estado.wrappersContinuo.get(paginaAncla);
+            if (info) info.wrap.scrollIntoView({ block: 'start' });
+        });
+    } else {
+        renderizarPaginaActual();
+    }
 }
 
 function actualizarZoomPct() {
@@ -495,18 +712,32 @@ async function ejecutarBusqueda() {
         return;
     }
 
+    // En modo continuo, varias páginas pueden estar dibujadas a la vez —
+    // resalta de una las que ya están renderizadas, sin esperar a que el
+    // usuario llegue a cada una haciendo scroll.
+    if (estado.modoVista === 'continuo') {
+        paginasConCoincidencia.forEach((n) => {
+            if (estado.paginasRenderizadas.has(n)) {
+                const info = estado.wrappersContinuo.get(n);
+                if (info) resaltarCoincidenciasEnCapa(info.textLayer, consulta);
+            }
+        });
+    }
+
     // Si la página actual ya tiene coincidencia, nos quedamos ahí; si no,
     // saltamos a la primera página con resultado.
     const idxEnActual = paginasConCoincidencia.indexOf(estado.paginaActual);
     estado.indiceCoincidencia = idxEnActual >= 0 ? idxEnActual : 0;
-
     actualizarContadorBusqueda();
 
+    const objetivo = paginasConCoincidencia[estado.indiceCoincidencia];
+
     if (idxEnActual >= 0) {
-        resaltarCoincidenciasEnPaginaActual();
+        if (estado.modoVista === 'pagina') resaltarCoincidenciasEnCapa(elTextLayer, consulta);
     } else {
-        await irAPagina(paginasConCoincidencia[0]);
+        await irAPagina(objetivo);
     }
+    marcarComoActivaLaCoincidencia(objetivo);
 }
 
 function actualizarContadorBusqueda() {
@@ -521,11 +752,21 @@ async function moverCoincidencia(direccion) {
     if (nuevoIndice >= estado.coincidencias.length) nuevoIndice = 0;
     estado.indiceCoincidencia = nuevoIndice;
     actualizarContadorBusqueda();
-    await irAPagina(estado.coincidencias[nuevoIndice]);
+    const destino = estado.coincidencias[nuevoIndice];
+    await irAPagina(destino);
+    marcarComoActivaLaCoincidencia(destino);
+}
+
+function marcarComoActivaLaCoincidencia(numero) {
+    overlay.querySelectorAll('mark.visor-resaltado-activo').forEach((m) => m.classList.remove('visor-resaltado-activo'));
+    const capa = estado.modoVista === 'continuo'
+        ? estado.wrappersContinuo.get(numero)?.textLayer
+        : (numero === estado.paginaActual ? elTextLayer : null);
+    capa?.querySelectorAll('mark.visor-resaltado').forEach((m) => m.classList.add('visor-resaltado-activo'));
 }
 
 function limpiarResaltados() {
-    elTextLayer.querySelectorAll('mark.visor-resaltado').forEach((marca) => {
+    overlay.querySelectorAll('mark.visor-resaltado').forEach((marca) => {
         const padre = marca.parentNode;
         if (!padre) return;
         padre.replaceChild(document.createTextNode(marca.textContent), marca);
@@ -533,12 +774,9 @@ function limpiarResaltados() {
     });
 }
 
-function resaltarCoincidenciasEnPaginaActual() {
-    if (!estado.consultaActual) return;
-    limpiarResaltados();
-
-    const consulta = estado.consultaActual;
-    const spans = elTextLayer.querySelectorAll('span');
+function resaltarCoincidenciasEnCapa(capa, consulta) {
+    if (!consulta || !capa) return;
+    const spans = capa.querySelectorAll('span');
 
     spans.forEach((span) => {
         const original = span.textContent;

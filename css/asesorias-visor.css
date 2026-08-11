@@ -81,8 +81,11 @@
 }
 
 .visor-toolbar-izq {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     min-width: 0;
-    flex: 1 1 160px;
+    flex: 1 1 220px;
 }
 
 .visor-titulo {
@@ -94,6 +97,97 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;
+    min-width: 0;
+}
+
+/* Selector de vista: "Una página ▾" con menú desplegable, esquina
+   superior izquierda del visor. */
+.visor-vista-selector {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.visor-vista-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: #fff;
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-family: var(--font-nav);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: box-shadow 0.15s ease;
+}
+
+.visor-vista-btn:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.visor-vista-btn svg {
+    width: 13px;
+    height: 13px;
+    color: var(--ink-soft);
+}
+
+.visor-vista-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    padding: 6px;
+    z-index: 6;
+    min-width: 200px;
+}
+
+.visor-vista-opcion {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: var(--font-nav);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+}
+
+.visor-vista-opcion:hover {
+    background: var(--brand-azul-tinte);
+    color: var(--ink);
+}
+
+.visor-vista-opcion.activa {
+    background: var(--brand-azul-tinte);
+    color: var(--brand-azul);
+    font-weight: 600;
+}
+
+/* ---------- Vista de desplazamiento continuo ---------- */
+.visor-pdf-continuo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+}
+
+.visor-pdf-continuo-pagina {
+    flex: 0 0 auto;
+}
+
+.visor-pdf-continuo-pagina .visor-pdf-lienzo-wrap {
+    width: 100%;
+    height: 100%;
 }
 
 .visor-toolbar-centro {
@@ -213,6 +307,14 @@
     gap: 6px;
     z-index: 5;
     width: min(320px, 80vw);
+}
+
+/* Sin esto, el "display: flex" de arriba le gana al [hidden] del
+   navegador (misma especificidad, pero regla de autor > regla UA) y el
+   atributo hidden queda sin ningún efecto — la barra se queda "pegada"
+   visible para siempre, sin importar cuántas veces se togglee. */
+.visor-buscador[hidden] {
+    display: none;
 }
 
 .visor-buscador input {
@@ -338,6 +440,11 @@
 
     .visor-toolbar {
         gap: 8px;
+    }
+
+    .visor-toolbar-izq {
+        justify-content: center;
+        flex: 1 1 100%;
     }
 
     .visor-titulo {
