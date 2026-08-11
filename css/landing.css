@@ -45,22 +45,22 @@ a {
 
 .capa1 {
   opacity: 0.55;
-  animation: olaLenta 30s ease-in-out infinite;
+  animation: olaLenta 9s ease-in-out infinite;
 }
 
 .capa2 {
   opacity: 0.45;
-  animation: olaRapida 20s ease-in-out infinite;
+  animation: olaRapida 6s ease-in-out infinite;
 }
 
 .capa3 {
   opacity: 0.5;
-  animation: olaLenta 36s ease-in-out infinite reverse;
+  animation: olaLenta 11s ease-in-out infinite reverse;
 }
 
 .capa4 {
   opacity: 0.35;
-  animation: olaRapida 24s ease-in-out infinite reverse;
+  animation: olaRapida 7s ease-in-out infinite reverse;
 }
 
 @keyframes olaLenta {
@@ -71,7 +71,7 @@ a {
   }
 
   50% {
-    transform: translate(-18px, 26px);
+    transform: translate(-70px, 100px);
   }
 }
 
@@ -83,7 +83,7 @@ a {
   }
 
   50% {
-    transform: translate(22px, -30px);
+    transform: translate(85px, -110px);
   }
 }
 
