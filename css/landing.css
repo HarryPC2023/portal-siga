@@ -29,7 +29,7 @@ a {
   min-height: 100vh;
   overflow: hidden;
   background-color: var(--paper);
-  background-image: url('assets/fondo-1.jpg');
+  background-image: url('../assets/fondo-1.jpg');
   background-size: 170% 170%;
   animation: moverHero 26s ease-in-out infinite;
 }
@@ -571,16 +571,31 @@ nav {
   overflow: hidden;
   background: #fff;
   border-radius: 20px;
-  border: 2px solid transparent;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 30px 34px;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.info-card::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--brand-azul), var(--brand-morado));
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
 .info-card:hover {
-  border-color: var(--brand-azul);
   box-shadow: 0 14px 34px rgba(60, 124, 248, 0.16);
   transform: translateY(-2px);
+}
+
+.info-card:hover::after {
+  opacity: 1;
 }
 
 /* Dentro del mosaico, cada .info-fila ya es su propia tarjeta -- se le
@@ -666,13 +681,14 @@ nav {
 
 .info-icono {
   flex: 0 0 auto;
+  align-self: flex-start;
   width: 44px;
   height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(var(--angulo, 135deg), var(--brand-azul), var(--brand-morado));
+  background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
   transition: transform 0.25s ease;
 }
 
