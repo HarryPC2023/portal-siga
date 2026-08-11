@@ -706,6 +706,7 @@ nav {
   justify-content: center;
   background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
   transition: transform 0.25s ease;
+  margin-left: 22px;
 }
 
 .info-icono svg {
@@ -727,6 +728,10 @@ nav {
   color: var(--ink-soft);
   line-height: 1.6;
   max-width: 560px;
+}
+
+.info-card-ancho .info-fila-texto p {
+  max-width: none;
 }
 
 @media (max-width:640px) {
