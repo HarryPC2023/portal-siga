@@ -583,7 +583,7 @@ nav {
   transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-.info-card::after {
+.info-card:not(.info-card-desc)::after {
   content: '';
   position: absolute;
   left: 0;
