@@ -21,79 +21,41 @@ a {
   text-decoration: none;
 }
 
-/* ===== HERO: ondas grises en diagonal (esquina sup. izq. -> inf. der.),
-   via SVG dentro del propio hero, con textura interna (cada onda es un
-   degradado claro-oscuro) y movimiento en dos velocidades distintas. ===== */
+/* ===== HERO: degradado diagonal blanco -> gris clarito, con la misma
+   tecnica de background-position animado que ya usan INFO, MODULOS y el
+   dashboard (comprobada, sin la ambiguedad de mover un SVG con transform). ===== */
 .hero {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background: var(--paper);
+  background-color: var(--paper);
+  background-image: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(255, 255, 255, 0.92) 40%,
+      rgba(236, 238, 240, 0.74) 70%,
+      rgba(236, 238, 240, 0.74) 100%);
+  background-size: 220% 220%;
+  animation: moverHero 12s ease-in-out infinite;
 }
 
-.hero-fondo {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.hero-fondo svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.capa1 {
-  opacity: 0.55;
-  animation: olaLenta 9s ease-in-out infinite;
-}
-
-.capa2 {
-  opacity: 0.45;
-  animation: olaRapida 6s ease-in-out infinite;
-}
-
-.capa3 {
-  opacity: 0.5;
-  animation: olaLenta 11s ease-in-out infinite reverse;
-}
-
-.capa4 {
-  opacity: 0.35;
-  animation: olaRapida 7s ease-in-out infinite reverse;
-}
-
-@keyframes olaLenta {
-
-  0%,
-  100% {
-    transform: translate(0, 0);
+@keyframes moverHero {
+  0% {
+    background-position: 15% 25%;
   }
 
   50% {
-    transform: translate(-70px, 100px);
+    background-position: 85% 75%;
   }
-}
 
-@keyframes olaRapida {
-
-  0%,
   100% {
-    transform: translate(0, 0);
-  }
-
-  50% {
-    transform: translate(85px, -110px);
+    background-position: 15% 25%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-
-  .capa1,
-  .capa2,
-  .capa3,
-  .capa4 {
+  .hero {
     animation: none;
+    background-position: 50% 50%;
   }
 }
 
@@ -692,7 +654,11 @@ nav {
 
 /* ---------- MODULOS: línea vertical con los 5 módulos alternados ---------- */
 .modulos {
-  background: linear-gradient(120deg, var(--brand-morado-tinte) 0%, #ffffff 55%, var(--brand-morado-tinte) 100%);
+  background-image: linear-gradient(135deg,
+      rgba(236, 238, 240, 0.74) 0%,
+      rgba(236, 238, 240, 0.74) 30%,
+      rgba(255, 255, 255, 0.92) 60%,
+      rgba(255, 255, 255, 0.92) 100%);
   background-size: 220% 220%;
   animation: moverModulos 14s ease-in-out infinite;
   padding: 90px 32px 100px;
