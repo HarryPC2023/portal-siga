@@ -29,7 +29,7 @@ a {
   min-height: 100vh;
   overflow: hidden;
   background-color: var(--paper);
-  background-image: url('assets/fondo-hero.jpg');
+  background-image: url('assets/fondo-1.jpg');
   background-size: 170% 170%;
   animation: moverHero 26s ease-in-out infinite;
 }
