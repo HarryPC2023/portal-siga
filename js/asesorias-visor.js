@@ -12,17 +12,17 @@
 // prearmado — así el look final es 100% de SIGA y no el generico de Mozilla.
 
 // Autohospedado (no CDN): el motor de pdf.js vive en el propio repo, en
-// js/vendor-pdfjs/. Esto evita el problema clásico de "Worker cross-origin"
-// que da pdf.js cuando el workerSrc apunta a un CDN externo — el navegador
-// a veces bloquea o falla al instanciar un Worker de módulo desde otro
-// origen, y ahí es donde suele fallar la carga sin dar un error claro.
-// Con el archivo en el mismo origen, ese problema desaparece del todo.
-// Bonus: una petición menos a un DNS externo, y cero dependencia de que
-// jsdelivr esté arriba.
-import * as pdfjsLib from './vendor-pdfjs/pdf.min.mjs';
+// vendor-pdfjs/ (raíz del repo, junto a assets/). Esto evita el problema
+// clásico de "Worker cross-origin" que da pdf.js cuando el workerSrc
+// apunta a un CDN externo — el navegador a veces bloquea o falla al
+// instanciar un Worker de módulo desde otro origen, y ahí es donde suele
+// fallar la carga sin dar un error claro. Con el archivo en el mismo
+// origen, ese problema desaparece del todo. Bonus: una petición menos a
+// un DNS externo, y cero dependencia de que jsdelivr esté arriba.
+import * as pdfjsLib from '../vendor-pdfjs/pdf.min.mjs';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-    new URL('./vendor-pdfjs/pdf.worker.min.mjs', import.meta.url).href;
+    new URL('../vendor-pdfjs/pdf.worker.min.mjs', import.meta.url).href;
 
 // ---------- Iconos (SVG inline, trazo simple, heredan color con currentColor) ----------
 const ICONOS = {
