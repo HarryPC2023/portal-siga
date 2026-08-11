@@ -349,7 +349,7 @@ async function cargarPDF(url) {
     }
 
     try {
-        const tarea = pdfjsLib.getDocument(url);
+        const tarea = pdfjsLib.getDocument({ url });
         estado.pdf = await tarea.promise;
         estado.totalPaginas = estado.pdf.numPages;
         spanTotalPaginas.textContent = estado.totalPaginas;
