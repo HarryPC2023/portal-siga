@@ -14,7 +14,9 @@
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/dashboard.css">
-  <link rel="stylesheet" href="css/asesorias-visor.css?v=1">
+  <link rel="stylesheet" href="css/selector-personalizado.css">
+  <link rel="stylesheet" href="css/asesorias-lista.css?v=1">
+  <link rel="stylesheet" href="css/asesorias-visor.css?v=2">
 </head>
 
 <body>
@@ -29,49 +31,69 @@
     </div>
   </section>
 
-  <section class="dash-detalle" style="padding-top:30px;">
+  <section class="dash-detalle" style="padding-top:30px; max-width:1160px;">
 
-    <div class="item-asesoria">
-      <div class="item-asesoria-texto">
-        <span class="item-formato">Web interactiva</span>
-        <h3>PC1 — Diseño de Base de Datos</h3>
-        <p>Herramientas, arquitectura, componentes y checklist antes de exponer.</p>
+    <div class="asesorias-filtros" id="asesoriasFiltros">
+      <input type="search" id="buscadorAsesorias" class="asesorias-buscador" placeholder="Buscar asesoría o curso…">
+
+      <div class="campo-select-custom campo-select-asesorias">
+        <button type="button" class="select-custom-trigger" id="cursoTrigger" aria-haspopup="listbox"
+          aria-expanded="false">
+          <span id="cursoTriggerTexto">Todos los cursos</span>
+          <svg class="select-custom-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <ul class="select-custom-lista" id="cursoLista" role="listbox" hidden></ul>
+        <input type="hidden" id="cursoValor" value="">
       </div>
-      <button type="button" class="item-asesoria-accion" data-visor="web"
-        data-src="https://harrypc2023.github.io/asesoria-dbd/" data-titulo="PC1 — Diseño de Base de Datos">Abrir
-        →</button>
+
+      <div class="campo-select-custom campo-select-asesorias">
+        <button type="button" class="select-custom-trigger" id="cicloTrigger" aria-haspopup="listbox"
+          aria-expanded="false">
+          <span id="cicloTriggerTexto">Todos los ciclos</span>
+          <svg class="select-custom-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <ul class="select-custom-lista" id="cicloLista" role="listbox" hidden></ul>
+        <input type="hidden" id="cicloValor" value="">
+      </div>
+
+      <div class="asesorias-vista-toggle">
+        <button type="button" class="vista-btn" data-vista="grid" title="Vista en cuadrícula"
+          aria-label="Vista en cuadrícula">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+        </button>
+        <button type="button" class="vista-btn" data-vista="lista" title="Vista en lista" aria-label="Vista en lista">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <line x1="4" y1="6" x2="20" y2="6" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="18" x2="20" y2="18" />
+          </svg>
+        </button>
+      </div>
     </div>
 
-    <div class="item-asesoria">
-      <div class="item-asesoria-texto">
-        <span class="item-formato">PDF</span>
-        <h3>Monografía — Diseño de Base de Datos</h3>
-        <p>Prototipado de interfaces: coherencia, detalle y datos reales por pantalla.</p>
-      </div>
-      <button type="button" class="item-asesoria-accion" data-visor="pdf"
-        data-src="assets/asesorias/monografia-dbd-avanzado.pdf" data-titulo="Monografía — Diseño de Base de Datos">Ver
-        PDF →</button>
-    </div>
-
-    <div class="item-asesoria">
-      <div class="item-asesoria-texto">
-        <span class="item-formato">PDF</span>
-        <h3>Monografía — Modelado Conceptual de Datos</h3>
-        <p>Fundamentos para encarar el trabajo grupal y qué espera el profesor.</p>
-      </div>
-      <button type="button" class="item-asesoria-accion" data-visor="pdf" data-src="assets/asesorias/monografia-mcd.pdf"
-        data-titulo="Monografía — Modelado Conceptual de Datos">Ver PDF →</button>
-    </div>
-
-    <p class="dash-nota-final">Más asesorías en camino, por evaluación y curso.</p>
+    <div class="asesorias-grid" id="asesoriasGrid"></div>
 
   </section>
 
   <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
   <script src="js/landing.js"></script>
+  <script src="js/selector-personalizado.js"></script>
   <script type="module" src="js/gate.js"></script>
-  <script type="module" src="js/asesorias-visor.js?v=1"></script>
+  <script type="module" src="js/asesorias-lista.js?v=1"></script>
 </body>
 
 </html>

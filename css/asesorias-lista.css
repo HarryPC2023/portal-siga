@@ -1,0 +1,202 @@
+/* ===== Barra de filtros: buscador + curso + ciclo + toggle de vista =====
+   Mismo patrón visual que .opiniones-filtros (opiniones.css), pero con
+   su propio prefijo de clases para no crear una dependencia cruzada
+   entre módulos (asesorias.html no necesita cargar opiniones.css). */
+.asesorias-filtros {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.asesorias-buscador {
+    flex: 1 1 260px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--ink);
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8a99' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 16px center;
+    background-size: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    padding: 9px 16px 9px 40px;
+}
+
+.asesorias-buscador::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+.asesorias-buscador:focus {
+    outline: none;
+    border-color: var(--brand-morado);
+}
+
+/* Los selects de Curso/Ciclo usan el componente compartido
+   (campo-select-custom, selector-personalizado.css) — aquí solo se les
+   da un ancho fijo para la barra horizontal. */
+.campo-select-asesorias {
+    flex: 0 0 210px;
+}
+
+/* ===== Toggle vista lista/cuadrícula (idéntico al de Opiniones) ===== */
+.asesorias-vista-toggle {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 999px;
+    padding: 4px;
+}
+
+.vista-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.vista-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.vista-btn:hover {
+    color: var(--brand-morado);
+}
+
+.vista-btn.activo {
+    background: var(--brand-morado);
+    color: #fff;
+}
+
+/* ===== Grid / Lista ===== */
+.asesorias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.asesorias-grid.vista-lista {
+    grid-template-columns: 1fr;
+}
+
+.asesorias-curso-header {
+    grid-column: 1 / -1;
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--brand-morado);
+    margin: 28px 0 4px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--brand-azul-tinte);
+}
+
+.asesorias-curso-header:first-child {
+    margin-top: 0;
+}
+
+.asesorias-vacio {
+    font-size: 14px;
+    color: var(--ink-soft);
+    padding: 20px 0;
+}
+
+/* ===== Tarjeta de asesoría ===== */
+.asesoria-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    text-align: left;
+    background: #fff;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
+    padding: 22px 24px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.asesoria-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
+}
+
+.asesoria-card-formato {
+    display: inline-block;
+    width: fit-content;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--acento-lavanda);
+    background: var(--bg-lavanda);
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+}
+
+.asesoria-card h3 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+
+.asesoria-card-texto p {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    line-height: 1.5;
+}
+
+.asesoria-card-accion {
+    align-self: flex-start;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--brand-morado);
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1.5px solid var(--brand-morado);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.asesoria-card-accion:hover {
+    background: var(--brand-morado);
+    color: #fff;
+}
+
+/* ---------- Vista lista: la tarjeta pasa a fila ancha ---------- */
+.vista-lista .asesoria-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+@media (max-width: 640px) {
+    .vista-lista .asesoria-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .asesoria-card-accion {
+        align-self: stretch;
+        justify-content: center;
+    }
+}

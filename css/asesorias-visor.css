@@ -317,6 +317,15 @@
     display: none;
 }
 
+/* Regla general: CUALQUIER elemento dentro del visor con "display"
+   explícito en su propia clase (.visor-toolbar-centro, .visor-pdf-
+   continuo, y cualquiera que se agregue después) queda inmune a este
+   mismo problema de una vez, en vez de ir parchando caso por caso cada
+   vez que aparece en un elemento nuevo. */
+.visor-caja [hidden] {
+    display: none !important;
+}
+
 .visor-buscador input {
     flex: 1;
     min-width: 0;

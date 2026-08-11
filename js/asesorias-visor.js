@@ -344,6 +344,8 @@ function resetEstado() {
     inputBuscar.value = '';
     contadorBuscar.textContent = '';
     spanZoomPct.textContent = '100%';
+    spanTotalPaginas.textContent = '–';
+    inputPagina.value = 1;
 
     desconectarObservadoresContinuo();
     estado.paginasRenderizadas = new Set();
