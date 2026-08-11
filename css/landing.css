@@ -433,43 +433,43 @@ nav {
 }
 
 .mi-1 {
-  width: 150px;
-  height: 150px;
-  top: 0;
-  right: 30px;
+  width: 175px;
+  height: 175px;
+  top: -20px;
+  right: 80px;
   z-index: 2;
 }
 
 .mi-2 {
-  width: 195px;
-  height: 195px;
+  width: 175px;
+  height: 175px;
   top: 100px;
-  left: 120px;
-  z-index: 5;
+  left: 135px;
+  z-index: 3;
 }
 
 .mi-3 {
   width: 175px;
   height: 175px;
-  top: 30px;
+  top: -20px;
   left: 0;
-  z-index: 3;
+  z-index: 5;
 }
 
 .mi-4 {
-  width: 165px;
-  height: 165px;
+  width: 175px;
+  height: 175px;
   top: 250px;
   left: 10px;
   z-index: 2;
 }
 
 .mi-5 {
-  width: 180px;
-  height: 180px;
-  top: 240px;
-  right: 0;
-  z-index: 3;
+  width: 175px;
+  height: 175px;
+  top: 250px;
+  right: 80px;
+  z-index: 5;
 }
 
 @media (max-width:880px) {
