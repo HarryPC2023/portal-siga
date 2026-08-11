@@ -37,19 +37,6 @@
       <input type="search" id="buscadorAsesorias" class="asesorias-buscador" placeholder="Buscar asesoría o curso…">
 
       <div class="campo-select-custom campo-select-asesorias">
-        <button type="button" class="select-custom-trigger" id="cursoTrigger" aria-haspopup="listbox"
-          aria-expanded="false">
-          <span id="cursoTriggerTexto">Todos los cursos</span>
-          <svg class="select-custom-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </button>
-        <ul class="select-custom-lista" id="cursoLista" role="listbox" hidden></ul>
-        <input type="hidden" id="cursoValor" value="">
-      </div>
-
-      <div class="campo-select-custom campo-select-asesorias">
         <button type="button" class="select-custom-trigger" id="cicloTrigger" aria-haspopup="listbox"
           aria-expanded="false">
           <span id="cicloTriggerTexto">Todos los ciclos</span>
@@ -60,6 +47,19 @@
         </button>
         <ul class="select-custom-lista" id="cicloLista" role="listbox" hidden></ul>
         <input type="hidden" id="cicloValor" value="">
+      </div>
+
+      <div class="campo-select-custom campo-select-asesorias">
+        <button type="button" class="select-custom-trigger" id="cursoTrigger" aria-haspopup="listbox"
+          aria-expanded="false">
+          <span id="cursoTriggerTexto">Todos los cursos</span>
+          <svg class="select-custom-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <ul class="select-custom-lista" id="cursoLista" role="listbox" hidden></ul>
+        <input type="hidden" id="cursoValor" value="">
       </div>
 
       <div class="asesorias-vista-toggle">
