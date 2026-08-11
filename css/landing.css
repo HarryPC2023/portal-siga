@@ -414,7 +414,7 @@ nav {
   margin: 0 auto;
 }
 
-.modulo-icono {
+.hero-icono-modulo {
   position: absolute;
   display: flex;
   align-items: center;
@@ -425,7 +425,7 @@ nav {
   box-shadow: 0 20px 40px rgba(102, 0, 204, 0.16), 0 6px 14px rgba(0, 0, 0, 0.08);
 }
 
-.modulo-icono img {
+.hero-icono-modulo img {
   display: block;
   width: 55%;
   height: auto;
