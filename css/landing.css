@@ -617,19 +617,28 @@ nav {
   display: none;
 }
 
-.info-descripcion,
 .info-fila {
   position: relative;
   padding-left: 22px;
 }
 
-.info-descripcion::before,
 .info-fila::before {
   content: '';
   position: absolute;
   left: 0;
   top: 2px;
   bottom: 2px;
+  width: 4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--brand-azul), var(--brand-morado));
+}
+
+.info-card-desc::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
   width: 4px;
   border-radius: 3px;
   background: linear-gradient(180deg, var(--brand-azul), var(--brand-morado));
