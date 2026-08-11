@@ -11,10 +11,18 @@
 // Solo se usa el motor de pdf.js (build/pdf.min.mjs), nunca su viewer.html
 // prearmado — así el look final es 100% de SIGA y no el generico de Mozilla.
 
-import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.1.200/build/pdf.min.mjs';
+// Autohospedado (no CDN): el motor de pdf.js vive en el propio repo, en
+// js/vendor-pdfjs/. Esto evita el problema clásico de "Worker cross-origin"
+// que da pdf.js cuando el workerSrc apunta a un CDN externo — el navegador
+// a veces bloquea o falla al instanciar un Worker de módulo desde otro
+// origen, y ahí es donde suele fallar la carga sin dar un error claro.
+// Con el archivo en el mismo origen, ese problema desaparece del todo.
+// Bonus: una petición menos a un DNS externo, y cero dependencia de que
+// jsdelivr esté arriba.
+import * as pdfjsLib from './vendor-pdfjs/pdf.min.mjs';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.1.200/build/pdf.worker.min.mjs';
+    new URL('./vendor-pdfjs/pdf.worker.min.mjs', import.meta.url).href;
 
 // ---------- Iconos (SVG inline, trazo simple, heredan color con currentColor) ----------
 const ICONOS = {
@@ -326,6 +334,20 @@ async function cargarPDF(url) {
     elCargando.textContent = 'Cargando documento…';
     elPdfPagina.style.visibility = 'hidden';
 
+    // Chequeo previo con fetch: así, si algo falla, sabemos EXACTAMENTE
+    // por qué (404 = ruta mal escrita o archivo no subido al repo, error
+    // de red = problema de conexión/CORS) en vez de un mensaje genérico.
+    try {
+        const resp = await fetch(url, { method: 'HEAD' });
+        if (!resp.ok) {
+            elCargando.textContent = `No se encontró el archivo (HTTP ${resp.status}). Revisa que esta ruta exista en el repo: ${url}`;
+            return;
+        }
+    } catch (errFetch) {
+        elCargando.textContent = `No se pudo conectar con el archivo (${errFetch.message}). Revisa la ruta: ${url}`;
+        return;
+    }
+
     try {
         const tarea = pdfjsLib.getDocument(url);
         estado.pdf = await tarea.promise;
@@ -347,7 +369,8 @@ async function cargarPDF(url) {
         elPdfPagina.style.visibility = 'visible';
     } catch (err) {
         console.error('No se pudo cargar el PDF:', err);
-        elCargando.textContent = 'No se pudo cargar el documento. Puedes abrirlo en una pestaña nueva con el botón de arriba.';
+        const detalle = err && err.message ? ` (${err.message})` : '';
+        elCargando.textContent = `No se pudo cargar el documento${detalle}. Puedes abrirlo en una pestaña nueva con el botón de arriba.`;
     }
 }
 

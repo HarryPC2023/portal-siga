@@ -73,7 +73,9 @@
     justify-content: space-between;
     gap: 14px;
     padding: 10px 16px;
-    background: var(--brand-azul-tinte);
+    /* Mismo tono champagne que .titulo-pildora (landing.css) — no el
+     azul-tinte que tenía antes. */
+    background: linear-gradient(120deg, #FDFCF7 0%, #F5EFDE 50%, #FDFCF7 100%);
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     flex-wrap: wrap;
 }
