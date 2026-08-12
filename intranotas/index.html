@@ -29,8 +29,7 @@
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/landing.css">
     <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/tema-siga.css?v=1">
-    <link rel="stylesheet" href="../css/selector-personalizado.css?v=1">
+
     <link rel="stylesheet" href="css/intranotas.css">
     <link rel="stylesheet" href="css/siga-theme-intranotas.css">
 </head>
@@ -39,114 +38,78 @@
 
     {% include nav.html activo="intranotas" %}
 
-    <div class="contenedor-tema" id="contenedor-tema" style="display:none;">
-        <button class="btn-tema-trigger" onclick="toggleDropdownTema()">
-            <span class="tema-icono" id="tema-icono-activo">☀️</span>
-            <span id="tema-label-activo">Light</span>
-            <span class="tema-flecha">▼</span>
-        </button>
-        <div class="tema-dropdown">
-            <button class="tema-opcion activo" data-tema="light" onclick="seleccionarTema('light')">
-                <span class="opcion-icono">☀️</span> Light
-            </button>
-            <button class="tema-opcion" data-tema="dark" onclick="seleccionarTema('dark')">
-                <span class="opcion-icono">🌙</span> Dark
-            </button>
-            <button class="tema-opcion" data-tema="ocean" onclick="seleccionarTema('ocean')">
-                <span class="opcion-icono">🌊</span> Ocean
-            </button>
-            <button class="tema-opcion" data-tema="forest" onclick="seleccionarTema('forest')">
-                <span class="opcion-icono">🌿</span> Forest
-            </button>
-        </div>
-    </div>
-
-    <!-- PANTALLA 3: CARRERA (colapsable) + PERIODO + CURSOS.
-         Fusiona lo que antes era pantalla-2 (elegir carrera) dentro de
-         esta misma pantalla, como un bloque plegable arriba — la carrera
-         casi nunca cambia, así que ya no merece una pantalla propia.
-         Sigue llamándose "pantalla-3" a propósito: así no hay que tocar
-         los irAPantalla(3/4/5) que ya existen por todo el código. -->
-    <div id="pantalla-3" class="pantalla pantalla-configuracion activa">
+    <!-- PANTALLA 2: SELECCIÓN DE CARRERA — punto de entrada dentro de SIGA.
+         (La pantalla-1 de bienvenida, propia del standalone, se quitó: ya
+         era redundante entrar a Intranotas desde SIGA y encima tener que
+         apretar otro "INGRESAR" adentro. intentarRestaurarSesion() y
+         confirmarResetearApp() en intranotas.js ya apuntaban a pantalla-2
+         o pantalla-4, nunca a pantalla-1, así que este cambio no rompe
+         nada de la lógica existente. -->
+    <div id="pantalla-2" class="pantalla pantalla-seleccion-carrera activa">
         <div class="contenedor-principal">
             <div class="cabecera-pantalla">
                 <h1 class="titulo-intranotas" style="font-size: 2rem;">INTRANOTAS</h1>
+                <p class="subtitulo-cabecera">¿Qué carrera estás cursando?</p>
             </div>
 
-            <div id="bloque-carrera" style="margin-bottom: 1.5rem;">
-                <div id="carrera-resumen" onclick="toggleSelectorCarrera()"
-                    style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:var(--color-fondo-input); border-radius:10px; padding:12px 16px; font-weight:600; color:var(--color-gris-texto);">
-                    <span id="carrera-resumen-texto">Selecciona tu carrera</span>
-                    <span id="carrera-resumen-flecha">▾</span>
-                </div>
-                <div class="grid-carreras" id="grid-carreras-colapsable" style="margin-top:12px;">
-                    <button class="btn-carrera" onclick="seleccionarCarrera('sistemas')">
-                        <img src="sistemas.png" alt="Sistemas" class="btn-carrera-img">
-                        <div class="btn-carrera-texto">
-                            <span class="btn-carrera-nombre">Ingeniería de Sistemas</span>
-                            <span class="btn-carrera-ciclos">10 ciclos</span>
-                        </div>
-                    </button>
-                    <button class="btn-carrera" onclick="seleccionarCarrera('industrial')">
-                        <img src="industrial.png" alt="Industrial" class="btn-carrera-img">
-                        <div class="btn-carrera-texto">
-                            <span class="btn-carrera-nombre">Ingeniería Industrial</span>
-                            <span class="btn-carrera-ciclos">10 ciclos</span>
-                        </div>
-                    </button>
-                    <button class="btn-carrera" onclick="seleccionarCarrera('software')">
-                        <img src="software.png" alt="Software" class="btn-carrera-img">
-                        <div class="btn-carrera-texto">
-                            <span class="btn-carrera-nombre">Ingeniería de Software</span>
-                            <span class="btn-carrera-ciclos">10 ciclos</span>
-                        </div>
-                    </button>
-                    <button class="btn-carrera" style="opacity:0.6;"
-                        onclick="mostrarToast('🤖 Muy pronto vamos a sumar Inteligencia Artificial')">
-                        <span
-                            style="font-size:2rem; display:flex; align-items:center; justify-content:center; height:100%;">🤖</span>
-                        <div class="btn-carrera-texto">
-                            <span class="btn-carrera-nombre">Ingeniería de Inteligencia Artificial</span>
-                            <span class="btn-carrera-ciclos">Próximamente</span>
-                        </div>
-                    </button>
-                </div>
+            <div class="grid-carreras">
+                <button class="btn-carrera" onclick="seleccionarCarrera('sistemas')">
+                    <img src="sistemas.png" alt="Sistemas" class="btn-carrera-img">
+                    <div class="btn-carrera-texto">
+                        <span class="btn-carrera-nombre">Ingeniería de Sistemas</span>
+                        <span class="btn-carrera-ciclos">10 ciclos</span>
+                    </div>
+                </button>
+                <button class="btn-carrera" onclick="seleccionarCarrera('industrial')">
+                    <img src="industrial.png" alt="Industrial" class="btn-carrera-img">
+                    <div class="btn-carrera-texto">
+                        <span class="btn-carrera-nombre">Ingeniería Industrial</span>
+                        <span class="btn-carrera-ciclos">10 ciclos</span>
+                    </div>
+                </button>
+                <button class="btn-carrera" onclick="seleccionarCarrera('software')">
+                    <img src="software.png" alt="Software" class="btn-carrera-img">
+                    <div class="btn-carrera-texto">
+                        <span class="btn-carrera-nombre">Ingeniería de Software</span>
+                        <span class="btn-carrera-ciclos">10 ciclos</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA 3: CONFIGURACIÓN DE CICLO Y CURSOS -->
+    <div id="pantalla-3" class="pantalla pantalla-configuracion">
+        <div class="contenedor-principal">
+            <div class="cabecera-pantalla">
+                <button class="btn-volver-carrera" onclick="irAPantalla(2)">← Cambiar carrera</button>
+                <h1 class="titulo-intranotas" style="font-size: 2rem; margin-top: 0.5rem;">INTRANOTAS</h1>
+                <p class="subtitulo-cabecera" id="nombre-carrera-activa"></p>
             </div>
 
-            <div id="bloque-periodo-cursos" style="display:none;">
-                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1rem;">
-                    <button class="btn-volver-carrera" onclick="cambiarCarrera()">← Cambiar carrera</button>
-                    <button class="btn-volver-carrera" onclick="resetearApp()">🔄 Nuevo periodo</button>
-                </div>
+            <div class="seccion-selector-ciclo">
+                <p class="titulo-seccion">Ingresa tu Periodo Académico</p>
+                <select id="selector-periodo" class="select-periodo" onchange="seleccionarPeriodo(this.value)"></select>
+            </div>
 
-                <div class="seccion-selector-ciclo">
-                    <p class="titulo-seccion">Periodo Académico</p>
-                    <div class="campo-select-custom">
-                        <button type="button" class="select-custom-trigger" id="periodoTrigger" aria-haspopup="listbox"
-                            aria-expanded="false">
-                            <span id="periodoTriggerTexto">Selecciona un periodo</span>
-                            <span class="select-custom-chevron" aria-hidden="true">▾</span>
-                        </button>
-                        <ul class="select-custom-lista" id="periodoLista" role="listbox" hidden></ul>
-                        <input type="hidden" id="periodoValor">
-                    </div>
-                </div>
+            <div id="mensaje-validacion" class="mensaje-validacion">
+                ⚠️ Debes seleccionar al menos un curso
+            </div>
 
-                <div id="mensaje-validacion" class="mensaje-validacion">
-                    ⚠️ Debes seleccionar al menos un curso
+            <div class="seccion-acordeones">
+                <div class="titulo-acordeones-fila">
+                    <p class="titulo-acordeones">SELECCIONA TUS CURSOS ACTUALES:</p>
+                    <button class="btn-info-importante" onclick="abrirModalInfo()">⚠️ Importante</button>
                 </div>
+                <div id="contenedor-acordeones"></div>
+            </div>
 
-                <div class="seccion-acordeones">
-                    <div class="titulo-acordeones-fila">
-                        <p class="titulo-acordeones">SELECCIONA TUS CURSOS ACTUALES:</p>
-                        <button class="btn-info-importante" onclick="abrirModalInfo()">⚠️ Importante</button>
-                    </div>
-                    <div id="contenedor-acordeones"></div>
-                </div>
+            <div style="text-align: center; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                <button class="btn-resetear-app" onclick="resetearApp()">🔄 Reiniciar</button>
+            </div>
 
-                <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem;">
-                    <button class="btn-ingresar-principal" onclick="irAlSimulador()">IR AL SIMULADOR</button>
-                </div>
+            <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem;">
+                <button class="btn-ingresar-principal" onclick="irAlSimulador()">IR AL SIMULADOR</button>
             </div>
         </div>
     </div>
@@ -177,16 +140,16 @@
         </div>
     </div>
 
-    <!-- Modal: nuevo periodo -->
+    <!-- Modal: resetear app -->
     <div id="modal-reset-overlay" class="modal-overlay">
         <div class="modal-caja">
             <div class="modal-icono">🔄</div>
-            <h2 class="modal-titulo">¿Empezar un nuevo periodo?</h2>
-            <p class="modal-mensaje">Se borrará la selección del periodo académico y los cursos en pantalla. Tu
-                carrera se mantiene, y tus notas guardadas de otros periodos NO se tocan.</p>
+            <h2 class="modal-titulo">¿Reiniciar la app?</h2>
+            <p class="modal-mensaje">Se borrará toda la selección de carrera, periodo, cursos y notas guardadas. Útil
+                para empezar un nuevo periodo.</p>
             <div class="modal-botones">
                 <button class="modal-btn modal-btn-cancelar" onclick="cerrarModalReset()">Cancelar</button>
-                <button class="modal-btn modal-btn-confirmar" onclick="confirmarResetearApp()">Sí, continuar</button>
+                <button class="modal-btn modal-btn-confirmar" onclick="confirmarResetearApp()">Sí, reiniciar</button>
             </div>
         </div>
     </div>
@@ -222,17 +185,8 @@
         <span class="firma-texto">by Harry</span>
     </div>
 
-    <script type="module">
-        import { supabase, obtenerSesion } from '../js/auth-siga.js?v=8';
-        window.sigaSupabase = supabase;
-        window.sigaObtenerSesion = obtenerSesion;
-    </script>
-    <script type="module" src="../js/gate.js"></script>
-
     <script src="cursos_db.js"></script>
-    <script src="../js/selector-personalizado.js?v=1"></script>
     <script src="intranotas.js"></script>
-    <script src="../js/tema-siga.js?v=1"></script>
 
 </body>
 
