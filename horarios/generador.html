@@ -9,17 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador de Horarios - Generador</title>
 
-  <!-- Anti-flash de tema: aplica el tono guardado ANTES del primer
-       pintado (misma clave que usa index.html, así el tono viaja
-       de una pantalla a la otra). Debe ir lo más arriba posible. -->
-  <script>
-    (function () {
-      try {
-        var t = localStorage.getItem('horarioGen_tema') || 'claro';
-        document.documentElement.setAttribute('data-tema', t);
-      } catch (e) { }
-    })();
-  </script>
+  {% include tema-anti-flash.html %}
 
   <link
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
@@ -31,6 +21,7 @@
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/landing.css">
   <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/tema-siga.css?v=1">
 
   <link rel="stylesheet" href="static/css/style.css">
   <link rel="stylesheet" href="static/css/siga-theme-horarios.css">
@@ -43,32 +34,6 @@
 <body>
 
   {% include nav.html activo="horarios" %}
-
-  <!-- ═══ BARRA SIGA — fila propia, fuera del layout de la app ═══
-       No es position:fixed a propósito: al vivir en el flujo normal
-       empuja el gen-layout hacia abajo por construcción (el CSS le
-       resta su alto), así que nunca puede quedar tapada por nada. -->
-  <div class="siga-topbar">
-    <div class="tema-selector">
-      <button type="button" class="tema-boton" aria-haspopup="true" aria-expanded="false">
-        <span class="tema-boton-icono">☀️</span> Tema
-      </button>
-      <div class="tema-menu">
-        <button type="button" class="tema-opcion activo" data-tema="claro">
-          <span class="tema-swatch claro"></span> Claro
-        </button>
-        <button type="button" class="tema-opcion" data-tema="oscuro">
-          <span class="tema-swatch oscuro"></span> Oscuro
-        </button>
-        <button type="button" class="tema-opcion" data-tema="ocean">
-          <span class="tema-swatch ocean"></span> Ocean
-        </button>
-        <button type="button" class="tema-opcion" data-tema="forest">
-          <span class="tema-swatch forest"></span> Forest
-        </button>
-      </div>
-    </div>
-  </div>
 
   <div class="gen-layout">
 
@@ -204,8 +169,7 @@
   <script src="static/js/parser.js"></script>
   <script src="static/js/scheduler.js"></script>
   <script src="static/js/generador.js"></script>
-  <!-- Motor de temas SIGA (Claro/Oscuro/Ocean/Forest), compartido con index.html -->
-  <script src="static/js/tema-horarios.js"></script>
+  <script src="../js/tema-siga.js?v=1"></script>
   <script>
     // Recupera los cursos seleccionados de la URL
     // Funciona igual que antes: index.html los pasa por ?curso=...

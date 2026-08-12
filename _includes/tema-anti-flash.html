@@ -1,0 +1,8 @@
+<script>
+    (function () {
+        try {
+            var t = localStorage.getItem('siga_tema') || localStorage.getItem('horarioGen_tema') || 'claro';
+            document.documentElement.setAttribute('data-tema', t);
+        } catch (e) { }
+    })();
+</script>
