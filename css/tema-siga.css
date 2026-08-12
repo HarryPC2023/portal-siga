@@ -31,13 +31,18 @@
 }
 
 html[data-tema="oscuro"] {
-    --ink: #f5f3ff;
-    --ink-soft: #b7aecb;
     --paper: #15121e;
     --brand-azul: #7c5cff;
     --brand-morado: #a855f7;
     --brand-azul-tinte: #241f33;
     --brand-morado-tinte: #2a1e3e;
+
+    /* Solo para texto que flota directo sobre el fondo animado del body,
+     sin ninguna tarjeta blanca detrás (ej. el párrafo del hero). TODO
+     el resto del texto (--ink, --ink-soft) se queda igual que en Claro
+     a propósito: vive dentro de tarjetas blancas, donde texto oscuro
+     siempre se lee bien sin importar el tono del fondo general. */
+    --hero-texto: #cbc3e8;
 
     /* Mismos valores rgba que ya usa Intranotas para su tema Dark
      (siga-theme-intranotas.css) — mantenemos la tonalidad ya
@@ -202,4 +207,18 @@ html[data-tema="forest"] {
 
 .tema-swatch.forest {
     background: linear-gradient(135deg, #16a34a, #bbf7d0);
+}
+
+/* ============================================================
+   FIX DE CONTRASTE — el fondo del nav global (.app-nav) NUNCA
+   cambia con el tema, siempre queda crema/blanco (dashboard.css:
+   rgba(255,253,249,0.92)). Si su texto lee las variables de tema
+   (--ink/--ink-soft), en Oscuro el texto se vuelve casi blanco y
+   queda invisible sobre ese fondo que nunca oscureció. Se fija
+   el nav a sus valores originales de "claro" siempre, sin
+   importar qué tono esté activo en el resto de la página.
+   ============================================================ */
+.app-nav {
+    --ink: #000000;
+    --ink-soft: #4A4A4A;
 }
