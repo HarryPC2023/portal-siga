@@ -166,18 +166,64 @@ function irAPantalla(num) {
    ============================================================ */
 function seleccionarCarrera(carrera) {
     carreraSeleccionada = carrera;
+    periodoSeleccionado = null;
     cursosSeleccionados = [];
 
-    const labelCarrera = document.getElementById('nombre-carrera-activa');
-    if (labelCarrera) labelCarrera.textContent = NOMBRES_CARRERAS[carrera];
+    actualizarResumenCarrera();
+    mostrarSelectorCarrera(false);
+    const bloque = document.getElementById('bloque-periodo-cursos');
+    if (bloque) bloque.style.display = 'block';
 
     irAPantalla(3);
 
     setTimeout(() => {
         generarAcordeones();
         generarOpcionesPeriodo();
-        restaurarSeleccionGuardada();
+        marcarCursosSeleccionadosEnUI();
     }, 50);
+}
+
+/* ============================================================
+   BLOQUE DE CARRERA COLAPSABLE (PANTALLA 3)
+   Reemplaza a la vieja pantalla-2 — la carrera casi nunca cambia,
+   así que vive plegada arriba en vez de ocupar una pantalla propia.
+   ============================================================ */
+function actualizarResumenCarrera() {
+    const texto = document.getElementById('carrera-resumen-texto');
+    if (texto) texto.textContent = carreraSeleccionada ? NOMBRES_CARRERAS[carreraSeleccionada] : 'Selecciona tu carrera';
+}
+
+function mostrarSelectorCarrera(expandido) {
+    const grid = document.getElementById('grid-carreras-colapsable');
+    const flecha = document.getElementById('carrera-resumen-flecha');
+    if (grid) grid.style.display = expandido ? 'grid' : 'none';
+    if (flecha) flecha.textContent = expandido ? '▴' : '▾';
+}
+
+function toggleSelectorCarrera() {
+    const grid = document.getElementById('grid-carreras-colapsable');
+    if (!grid) return;
+    const expandido = grid.style.display !== 'none';
+    mostrarSelectorCarrera(!expandido);
+}
+
+/* Botón "← Cambiar carrera": despliega el selector sin borrar nada
+   todavía — solo se limpia si el alumno de verdad elige una carrera
+   nueva en seleccionarCarrera(). */
+function cambiarCarrera() {
+    mostrarSelectorCarrera(true);
+    const bloque = document.getElementById('bloque-periodo-cursos');
+    if (bloque) bloque.style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* Desmarca todas las casillas de curso en la UI — usado al empezar un
+   nuevo periodo o cambiar a un periodo guardado, para que no queden
+   casillas de una selección anterior marcadas por error. */
+function desmarcarTodosLosCursos() {
+    document.querySelectorAll('.curso-checkbox').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.curso-item.seleccionado').forEach(item => item.classList.remove('seleccionado'));
+    actualizarContadores();
 }
 
 /* ============================================================
@@ -332,7 +378,7 @@ function actualizarContadores() {
    académico 2025, no abre el 2026). Ajusta los meses de corte si
    tu universidad usa otro calendario.
    ============================================================ */
-function generarPeriodosDisponibles(cantidad = 24) {
+function generarPeriodosDisponibles(cantidad = 36) {
     const hoy = new Date();
     const mes = hoy.getMonth(); // enero = 0
 
@@ -371,6 +417,41 @@ function formatoPeriodoCorto(periodo) {
     return `${anio.slice(-2)}-${num}`;
 }
 
+/* Marca en la UI (checkboxes + contadores) los cursos que YA están en
+   cursosSeleccionados en memoria — nunca lee de localStorage acá, para
+   no reintroducir selecciones de sesiones anteriores por error. */
+function marcarCursosSeleccionadosEnUI() {
+    cursosSeleccionados.forEach(curso => {
+        const cb = document.querySelector(`input[data-curso-id="${curso.id}"]`);
+        const item = document.getElementById(`item-${curso.id}`);
+        if (cb && item) {
+            cb.checked = true;
+            item.classList.add('seleccionado');
+        }
+    });
+    actualizarContadores();
+}
+
+/* ============================================================
+   PERSISTENCIA MULTI-PERIODO EN LOCALSTORAGE
+   Cada periodo académico guarda su propia carrera, cursos y notas,
+   bajo una sola clave: { "2025-1": {carrera, cursos, notas}, ... }
+   Así, cambiar de periodo (o volver a uno anterior) nunca borra los
+   datos de los demás.
+   ============================================================ */
+const LS_KEY_DATOS_PERIODOS = 'intranotas_datos_periodos';
+const LS_KEY_ULTIMO_PERIODO = 'intranotas_ultimo_periodo';
+
+function leerDatosPeriodos() {
+    const raw = localStorage.getItem(LS_KEY_DATOS_PERIODOS);
+    if (!raw) return {};
+    try { return JSON.parse(raw); } catch (e) { return {}; }
+}
+
+function guardarDatosPeriodos(datos) {
+    localStorage.setItem(LS_KEY_DATOS_PERIODOS, JSON.stringify(datos));
+}
+
 function generarOpcionesPeriodo() {
     const select = document.getElementById('selector-periodo');
     if (!select) return;
@@ -391,6 +472,10 @@ function seleccionarPeriodo(valor) {
    VALIDACIÓN Y NAVEGACIÓN AL SIMULADOR
    ============================================================ */
 function irAlSimulador() {
+    if (!periodoSeleccionado) {
+        mostrarMensajeValidacion('⚠️ Debes seleccionar tu periodo académico');
+        return;
+    }
     if (cursosSeleccionados.length === 0) {
         mostrarMensajeValidacion('⚠️ Debes seleccionar al menos un curso');
         return;
@@ -433,10 +518,23 @@ function generarSimulador() {
         <div class="cabecera-simulador">
             <div class="titulo-ciclo-simulador">
                 <span class="carrera-label">${NOMBRES_CARRERAS[carreraSeleccionada]}</span>
-                ${formatoPeriodoCorto(periodoSeleccionado)}
+                <select id="selector-periodos-guardados" class="select-periodo" onchange="cambiarPeriodoGuardado(this.value)"></select>
             </div>
-            <button class="btn-volver" onclick="irAPantalla(3)">← Cambiar cursos</button>
         </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;">
+            <button class="btn-volver" onclick="irAPantalla(3)" style="flex:1; min-width:140px;">← Cambiar cursos</button>
+            <button class="btn-volver" onclick="iniciarNuevoPeriodo()" style="flex:1; min-width:140px;">🔄 Nuevo periodo</button>
+        </div>
+
+        <details style="margin:12px 0; background:var(--color-fondo-input); border-radius:10px; padding:10px 14px;">
+            <summary style="cursor:pointer; font-weight:600; font-size:0.85rem; color:var(--color-cian);">💾 ¿Sabías que puedes guardar varios periodos?</summary>
+            <p style="font-size:0.82rem; color:var(--color-gris-texto); margin:8px 0 0; line-height:1.6;">
+                Cada periodo que armes se guarda por separado. Para guardar otro: toca "🔄 Nuevo periodo" (arriba),
+                elige tus cursos, ingresa tus notas y presiona "💾 Guardar". Puedes volver a cualquier periodo
+                guardado desde el selector de arriba en cualquier momento.
+            </p>
+        </details>
 
         <div class="banner-ponderado">
             <span class="banner-ponderado-label">PROMEDIO PONDERADO</span>
@@ -456,6 +554,7 @@ function generarSimulador() {
     contenedor.innerHTML = html;
     cargarNotasGuardadas();
     cargarMetasGuardadas();
+    cargarSelectorPeriodosGuardados();
     cursosSeleccionados.forEach(c => calcularMetaCurso(c.id));
 }
 
@@ -1266,58 +1365,30 @@ function calcularTodo() {
 }
 
 /* ============================================================
-   PERSISTENCIA EN LOCALSTORAGE
+   PERSISTENCIA EN LOCALSTORAGE (por periodo — ver leerDatosPeriodos)
    ============================================================ */
 function guardarConfiguracion() {
-    localStorage.setItem('intranotas_carrera', carreraSeleccionada);
-    localStorage.setItem('intranotas_cursos', JSON.stringify(cursosSeleccionados));
-    localStorage.setItem('intranotas_periodo', periodoSeleccionado || '');
-    limpiarNotasCursosNoSeleccionados();
+    const datos = leerDatosPeriodos();
+    const notasPrevias = (datos[periodoSeleccionado] && datos[periodoSeleccionado].notas) || {};
+    const ids = cursosSeleccionados.map(c => c.id);
+    const notasFiltradas = {};
+    Object.keys(notasPrevias).forEach(id => { if (ids.includes(id)) notasFiltradas[id] = notasPrevias[id]; });
+
+    datos[periodoSeleccionado] = {
+        carrera: carreraSeleccionada,
+        cursos: cursosSeleccionados,
+        notas: notasFiltradas,
+    };
+    guardarDatosPeriodos(datos);
+    localStorage.setItem(LS_KEY_ULTIMO_PERIODO, periodoSeleccionado);
     limpiarMetasCursosNoSeleccionados();
 }
 
-function restaurarSeleccionGuardada() {
-    const carreraG = localStorage.getItem('intranotas_carrera');
-    const cursosG = localStorage.getItem('intranotas_cursos');
-    const periodoG = localStorage.getItem('intranotas_periodo');
-
-    // Solo restaurar si coincide con la carrera activa
-    if (!carreraG || carreraG !== carreraSeleccionada) return;
-
-    if (periodoG) {
-        periodoSeleccionado = periodoG;
-        const select = document.getElementById('selector-periodo');
-        if (select) select.value = periodoG;
-    }
-
-    if (cursosG) {
-        const cursosGuardados = JSON.parse(cursosG);
-        cursosGuardados.forEach(curso => {
-            const cb = document.querySelector(`input[data-curso-id="${curso.id}"]`);
-            const item = document.getElementById(`item-${curso.id}`);
-            if (cb && item) {
-                cb.checked = true;
-                item.classList.add('seleccionado');
-                if (!cursosSeleccionados.find(c => c.id === curso.id)) {
-                    cursosSeleccionados.push(curso);
-                }
-            }
-        });
-        actualizarContadores();
-    }
-}
-
-function limpiarNotasCursosNoSeleccionados() {
-    const guardadas = localStorage.getItem('intranotas_notas');
-    if (!guardadas) return;
-    const notas = JSON.parse(guardadas);
-    const ids = cursosSeleccionados.map(c => c.id);
-    const filtradas = {};
-    Object.keys(notas).forEach(id => { if (ids.includes(id)) filtradas[id] = notas[id]; });
-    localStorage.setItem('intranotas_notas', JSON.stringify(filtradas));
-}
-
 function guardarNotas() {
+    const datos = leerDatosPeriodos();
+    if (!datos[periodoSeleccionado]) {
+        datos[periodoSeleccionado] = { carrera: carreraSeleccionada, cursos: cursosSeleccionados, notas: {} };
+    }
     const notas = {};
     cursosSeleccionados.forEach(curso => {
         notas[curso.id] = {};
@@ -1326,23 +1397,59 @@ function guardarNotas() {
             if (el) notas[curso.id][comp] = el.value.trim();
         });
     });
-    localStorage.setItem('intranotas_notas', JSON.stringify(notas));
+    datos[periodoSeleccionado].notas = notas;
+    datos[periodoSeleccionado].cursos = cursosSeleccionados;
+    guardarDatosPeriodos(datos);
+    localStorage.setItem(LS_KEY_ULTIMO_PERIODO, periodoSeleccionado);
     mostrarToast('✅ Notas guardadas correctamente');
 }
 
 function cargarNotasGuardadas() {
-    const guardadas = localStorage.getItem('intranotas_notas');
-    if (!guardadas) return;
-    const notas = JSON.parse(guardadas);
+    const datos = leerDatosPeriodos();
+    const entrada = datos[periodoSeleccionado];
+    if (!entrada || !entrada.notas) return;
     const ids = cursosSeleccionados.map(c => c.id);
-    Object.keys(notas).forEach(cursoId => {
+    Object.keys(entrada.notas).forEach(cursoId => {
         if (!ids.includes(cursoId)) return;
-        Object.keys(notas[cursoId]).forEach(comp => {
+        Object.keys(entrada.notas[cursoId]).forEach(comp => {
             const el = document.getElementById(`input-${cursoId}-${comp}`);
-            if (el) el.value = notas[cursoId][comp];
+            if (el) el.value = entrada.notas[cursoId][comp];
         });
     });
     calcularTodo();
+}
+
+/* ============================================================
+   SELECTOR DE PERIODOS GUARDADOS (Pantalla 4)
+   Deja saltar entre cualquier periodo que ya tenga datos guardados,
+   sin perder lo que había en cada uno.
+   ============================================================ */
+function cargarSelectorPeriodosGuardados() {
+    const sel = document.getElementById('selector-periodos-guardados');
+    if (!sel) return;
+    const datos = leerDatosPeriodos();
+    const periodosConDatos = Object.keys(datos).sort().reverse();
+    if (periodoSeleccionado && !periodosConDatos.includes(periodoSeleccionado)) periodosConDatos.unshift(periodoSeleccionado);
+    sel.innerHTML = periodosConDatos.map(p =>
+        `<option value="${p}" ${p === periodoSeleccionado ? 'selected' : ''}>${formatoPeriodoCorto(p)}</option>`
+    ).join('');
+}
+
+function cambiarPeriodoGuardado(periodo) {
+    if (periodo === periodoSeleccionado) return;
+    const datos = leerDatosPeriodos();
+    const entrada = datos[periodo];
+    if (!entrada || !entrada.cursos || !entrada.cursos.length) {
+        mostrarToast('⚠️ No hay cursos guardados en ese periodo');
+        return;
+    }
+    carreraSeleccionada = entrada.carrera;
+    cursosSeleccionados = entrada.cursos;
+    periodoSeleccionado = periodo;
+    generarSimulador();
+
+    desmarcarTodosLosCursos();
+    marcarCursosSeleccionadosEnUI();
 }
 
 function limpiarTodo() {
@@ -1361,7 +1468,11 @@ function confirmarLimpiarTodo() {
             if (el) el.value = '';
         });
     });
-    localStorage.removeItem('intranotas_notas');
+    const datos = leerDatosPeriodos();
+    if (datos[periodoSeleccionado]) {
+        datos[periodoSeleccionado].notas = {};
+        guardarDatosPeriodos(datos);
+    }
     calcularTodo();
     mostrarToast('🗑️ Todas las notas han sido borradas');
 }
@@ -1373,25 +1484,22 @@ function limpiarNotasCurso(cursoId) {
         const el = document.getElementById(`input-${cursoId}-${comp}`);
         if (el) el.value = '';
     });
-    const guardadas = localStorage.getItem('intranotas_notas');
-    if (guardadas) {
-        const notas = JSON.parse(guardadas);
-        delete notas[cursoId];
-        localStorage.setItem('intranotas_notas', JSON.stringify(notas));
+    const datos = leerDatosPeriodos();
+    if (datos[periodoSeleccionado] && datos[periodoSeleccionado].notas) {
+        delete datos[periodoSeleccionado].notas[cursoId];
+        guardarDatosPeriodos(datos);
     }
     calcularTodo();
     mostrarToast('🗑️ Notas del curso borradas');
 }
 
 /* ============================================================
-   NUEVO PERIODO (botón pantalla 3)
-   Antes esto era "Reiniciar" y mandaba de vuelta a elegir carrera
-   (pantalla 2), borrando incluso ese dato. Eso era un flujo roto:
-   casi nunca cambias de carrera de un periodo a otro. Ahora solo
-   limpia periodo, cursos y notas, y te deja en pantalla 3 listo
-   para elegir el siguiente periodo — la carrera se mantiene. Si
-   alguna vez sí necesitas cambiar de carrera, para eso está el
-   botón "← Cambiar carrera" que ya vive en pantalla 3.
+   NUEVO PERIODO (botón pantalla 3 y pantalla 4)
+   Ya NO borra ningún dato guardado — cada periodo vive aparte en
+   intranotas_datos_periodos. Esto solo limpia la pantalla (cursos
+   marcados, periodo elegido) para que armes el siguiente periodo
+   desde cero. La carrera se mantiene; si alguna vez sí necesitas
+   cambiar de carrera, para eso está "← Cambiar carrera".
    ============================================================ */
 function iniciarNuevoPeriodo() {
     document.getElementById('modal-reset-overlay').classList.add('visible');
@@ -1403,16 +1511,17 @@ function cerrarModalReset() {
 
 function confirmarNuevoPeriodo() {
     cerrarModalReset();
-    localStorage.removeItem('intranotas_cursos');
-    localStorage.removeItem('intranotas_periodo');
-    localStorage.removeItem('intranotas_notas');
-    localStorage.removeItem('intranotas_metas');
     cursosSeleccionados = [];
     periodoSeleccionado = null;
-    generarAcordeones();
-    generarOpcionesPeriodo();
+
     irAPantalla(3);
-    mostrarToast('🔄 Listo para tu nuevo periodo');
+    const bloque = document.getElementById('bloque-periodo-cursos');
+    if (bloque) bloque.style.display = 'block';
+    mostrarSelectorCarrera(false);
+    desmarcarTodosLosCursos();
+    generarOpcionesPeriodo();
+
+    mostrarToast('🔄 Elige el periodo y los cursos que quieres guardar');
 }
 
 /* ============================================================
@@ -1453,27 +1562,26 @@ document.addEventListener('DOMContentLoaded', () => {
    RESTAURAR SESIÓN GUARDADA (saltar directo al simulador)
    ============================================================ */
 function intentarRestaurarSesion() {
-    const carreraG = localStorage.getItem('intranotas_carrera');
-    const cursosG = localStorage.getItem('intranotas_cursos');
-    const periodoG = localStorage.getItem('intranotas_periodo');
-
-    if (!carreraG || !cursosG) return; // Sin sesión previa: se queda en la bienvenida
-
     try {
-        const cursosGuardados = JSON.parse(cursosG);
-        if (!Array.isArray(cursosGuardados) || cursosGuardados.length === 0) return;
+        const datos = leerDatosPeriodos();
+        const ultimoPeriodo = localStorage.getItem(LS_KEY_ULTIMO_PERIODO);
+        if (!ultimoPeriodo || !datos[ultimoPeriodo]) return; // Sin sesión previa: se queda en la bienvenida
 
-        carreraSeleccionada = carreraG;
-        cursosSeleccionados = cursosGuardados;
-        if (periodoG) periodoSeleccionado = periodoG;
+        const entrada = datos[ultimoPeriodo];
+        if (!entrada.cursos || !Array.isArray(entrada.cursos) || !entrada.cursos.length) return;
 
-        const labelCarrera = document.getElementById('nombre-carrera-activa');
-        if (labelCarrera) labelCarrera.textContent = NOMBRES_CARRERAS[carreraSeleccionada];
+        carreraSeleccionada = entrada.carrera;
+        periodoSeleccionado = ultimoPeriodo;
+        cursosSeleccionados = entrada.cursos;
 
         // Prepara la Pantalla 3 en segundo plano por si el usuario pulsa "Cambiar cursos"
+        actualizarResumenCarrera();
+        mostrarSelectorCarrera(false);
+        const bloque = document.getElementById('bloque-periodo-cursos');
+        if (bloque) bloque.style.display = 'block';
         generarAcordeones();
         generarOpcionesPeriodo();
-        restaurarSeleccionGuardada();
+        marcarCursosSeleccionadosEnUI();
 
         // Va directo al simulador con las notas ya cargadas
         irAPantalla(4);
