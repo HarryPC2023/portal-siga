@@ -324,24 +324,41 @@ function actualizarContadores() {
    de preguntar el ciclo — así no hay autoidentificación incómoda,
    y este dato queda listo para cuando se conecte la importación
    automática desde INTRALU más adelante.
+
+   Tres periodos por año: 1 (marzo-julio), 2 (agosto-diciembre) y
+   3 (verano, enero-febrero). El de verano se etiqueta con el año
+   académico al que pertenece, no con el año calendario en que cae:
+   el verano de enero-febrero 2026 es "2025-3" (cierra el año
+   académico 2025, no abre el 2026). Ajusta los meses de corte si
+   tu universidad usa otro calendario.
    ============================================================ */
 function generarPeriodosDisponibles(cantidad = 24) {
     const hoy = new Date();
-    // En la UNI el periodo 2 arranca en agosto y el periodo 1 en marzo.
-    // Ajusta este mes de corte si tu universidad usa otro calendario.
-    const MES_CORTE_PERIODO_2 = 7; // agosto = índice 7 (enero = 0)
+    const mes = hoy.getMonth(); // enero = 0
 
     let anio = hoy.getFullYear();
-    let periodo = hoy.getMonth() >= MES_CORTE_PERIODO_2 ? 2 : 1;
+    let periodo;
+
+    if (mes <= 1) {
+        // Enero-febrero: verano, cierra el año académico anterior.
+        periodo = 3;
+        anio -= 1;
+    } else if (mes <= 6) {
+        // Marzo-julio
+        periodo = 1;
+    } else {
+        // Agosto-diciembre
+        periodo = 2;
+    }
 
     const periodos = [];
     for (let i = 0; i < cantidad; i++) {
         periodos.push(`${anio}-${periodo}`);
-        if (periodo === 1) {
-            periodo = 2;
-            anio -= 1;
+        if (periodo > 1) {
+            periodo -= 1;
         } else {
-            periodo = 1;
+            periodo = 3;
+            anio -= 1;
         }
     }
     return periodos;
@@ -1367,9 +1384,16 @@ function limpiarNotasCurso(cursoId) {
 }
 
 /* ============================================================
-   RESETEAR APP COMPLETA (botón pantalla 3)
+   NUEVO PERIODO (botón pantalla 3)
+   Antes esto era "Reiniciar" y mandaba de vuelta a elegir carrera
+   (pantalla 2), borrando incluso ese dato. Eso era un flujo roto:
+   casi nunca cambias de carrera de un periodo a otro. Ahora solo
+   limpia periodo, cursos y notas, y te deja en pantalla 3 listo
+   para elegir el siguiente periodo — la carrera se mantiene. Si
+   alguna vez sí necesitas cambiar de carrera, para eso está el
+   botón "← Cambiar carrera" que ya vive en pantalla 3.
    ============================================================ */
-function resetearApp() {
+function iniciarNuevoPeriodo() {
     document.getElementById('modal-reset-overlay').classList.add('visible');
 }
 
@@ -1377,18 +1401,18 @@ function cerrarModalReset() {
     document.getElementById('modal-reset-overlay').classList.remove('visible');
 }
 
-function confirmarResetearApp() {
+function confirmarNuevoPeriodo() {
     cerrarModalReset();
-    localStorage.removeItem('intranotas_carrera');
     localStorage.removeItem('intranotas_cursos');
     localStorage.removeItem('intranotas_periodo');
     localStorage.removeItem('intranotas_notas');
     localStorage.removeItem('intranotas_metas');
-    carreraSeleccionada = null;
     cursosSeleccionados = [];
     periodoSeleccionado = null;
-    irAPantalla(2);
-    mostrarToast('🔄 App reiniciada. ¡Elige tu carrera de nuevo!');
+    generarAcordeones();
+    generarOpcionesPeriodo();
+    irAPantalla(3);
+    mostrarToast('🔄 Listo para tu nuevo periodo');
 }
 
 /* ============================================================
