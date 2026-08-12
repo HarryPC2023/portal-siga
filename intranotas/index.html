@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="css/intranotas.css">
     <link rel="stylesheet" href="css/siga-theme-intranotas.css">
     <link rel="stylesheet" href="../css/tema-siga.css?v=1">
+    <link rel="stylesheet" href="../css/selector-personalizado.css?v=1">
 </head>
 
 <body>
@@ -96,16 +97,23 @@
 
             <div id="bloque-periodo-cursos" style="display:none;">
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1rem;">
-                    <button class="btn-volver-carrera" onclick="cambiarCarrera()" style="flex:1; min-width:140px;">←
-                        Cambiar carrera</button>
+                    <button class="btn-volver-carrera" onclick="cambiarCarrera()"
+                        style="flex:1; min-width:140px;">← Cambiar carrera</button>
                     <button class="btn-volver-carrera" onclick="iniciarNuevoPeriodo()"
                         style="flex:1; min-width:140px;">🔄 Nuevo periodo</button>
                 </div>
 
                 <div class="seccion-selector-ciclo">
                     <p class="titulo-seccion">Periodo Académico</p>
-                    <select id="selector-periodo" class="select-periodo"
-                        onchange="seleccionarPeriodo(this.value)"></select>
+                    <div class="campo-select-custom">
+                        <button type="button" class="select-custom-trigger" id="periodoTrigger"
+                            aria-haspopup="listbox" aria-expanded="false">
+                            <span id="periodoTriggerTexto">Selecciona un periodo</span>
+                            <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <ul class="select-custom-lista" id="periodoLista" role="listbox" hidden></ul>
+                        <input type="hidden" id="periodoValor">
+                    </div>
                 </div>
 
                 <div id="mensaje-validacion" class="mensaje-validacion">
@@ -199,7 +207,8 @@
     </div>
 
     <script src="cursos_db.js"></script>
-    <script src="intranotas.js?v=2"></script>
+    <script src="../js/selector-personalizado.js?v=1"></script>
+    <script src="intranotas.js?v=3"></script>
     <script src="../js/tema-siga.js?v=1"></script>
 
 </body>
