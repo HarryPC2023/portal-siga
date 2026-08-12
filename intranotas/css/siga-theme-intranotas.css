@@ -1,22 +1,29 @@
 /* ============================================================
-   TEMA SIGA para Intranotas — v4 (Entrega 2: se quita el
-   selector propio, el look interno de Intranotas NO cambia)
-   Cargar DESPUÉS de variables.css / landing.css / dashboard.css.
-   Y DESPUÉS de intranotas.css. Este archivo es la ÚNICA fuente
-   de identidad de marca: intranotas.css (el núcleo de la app)
-   no se toca.
+   TEMA SIGA para Intranotas — v4 (Entrega 2: motor único)
+   Cargar DESPUÉS de variables.css / landing.css / dashboard.css /
+   tema-siga.css, y DESPUÉS de intranotas.css. Este archivo es la
+   ÚNICA fuente de identidad de marca: intranotas.css (el núcleo
+   de la app) no se toca.
 
-   v4: Intranotas deja de tener su propio selector de tema — ese
-   botón ahora vive en el nav global de SIGA y controla el resto
-   del portal. El look de Intranotas (tarjetas, acordeones,
-   textos, acentos morado/cian) se queda SIEMPRE igual, sin
-   importar qué tono esté activo en el resto de SIGA. Por eso
-   la paleta de acá abajo vuelve a ser un solo :root fijo, y ya
-   no hay bloques por data-tema ni fondo condicional del body.
+   v4: la paleta ya NO se pinta por JS (aplicarTema() en
+   intranotas.js dejó de existir). Ahora cada tono vive en CSS
+   puro, bajo el mismo atributo html[data-tema] que usa el resto
+   de SIGA — así el widget único del nav global también controla
+   Intranotas, sin motor propio.
+
+   El fondo del body (Claro/Oscuro/Ocean/Forest) también se
+   simplificó: ya no hace falta redefinirlo acá — dashboard.css
+   (background-image: var(--siga-body-gradiente)) + tema-siga.css
+   (que define esa variable por cada data-tema) ya lo resuelven
+   igual que en el resto del portal. La franja de controles
+   (.contenedor-tema) también se elimina: el selector de tema
+   ahora vive en el nav global, no en esta página.
    ============================================================ */
 
-/* ---------- 1. PALETA FIJA — identidad visual de Intranotas,
-   siempre la misma. ---------- */
+/* ---------- 1. PALETA POR TONO — mismos valores que antes vivían
+   en TEMAS (intranotas.js), ahora expresados como CSS puro sobre
+   html[data-tema="..."]. "claro" es el default: no necesita
+   bloque propio, son los valores base de siempre. ---------- */
 :root {
     --color-cian: #6600CC;
     --color-cian-hover: #4f0099;
@@ -26,9 +33,67 @@
     --color-azul-claro: #EAF2FF;
     --color-gris-texto: #4A4A4A;
     --color-gris-claro: #DDD9CE;
+    --color-verde-btn: #10b981;
+    --color-rojo-btn: #ef4444;
     --color-fondo-input: #EAF2FF;
-    --color-fondo-tarjeta: #ffffff;
     --color-fondo-body: #FFFDF9;
+    --color-fondo-tarjeta: #ffffff;
+    --color-texto-principal: #000000;
+    --color-texto-nombre: #000000;
+}
+
+html[data-tema="oscuro"] {
+    --color-cian: #4dd0e1;
+    --color-cian-hover: #00bcd4;
+    --color-cian-light: #1e3a3f;
+    --color-verde-oscuro: #80cbc4;
+    --color-azul: #64b5f6;
+    --color-azul-claro: #1a2a3a;
+    --color-gris-texto: #9ca3af;
+    --color-gris-claro: #374151;
+    --color-verde-btn: #34d399;
+    --color-rojo-btn: #f87171;
+    --color-fondo-input: #1f2937;
+    --color-fondo-body: #111827;
+    --color-fondo-tarjeta: #1f2937;
+    --color-texto-principal: #f9fafb;
+    --color-texto-nombre: #f3f4f6;
+}
+
+html[data-tema="ocean"] {
+    --color-cian: #0369a1;
+    --color-cian-hover: #075985;
+    --color-cian-light: #bae6fd;
+    --color-verde-oscuro: #0c4a6e;
+    --color-azul: #6d28d9;
+    --color-azul-claro: #ddd6fe;
+    --color-gris-texto: #1e3a5f;
+    --color-gris-claro: #bfdbfe;
+    --color-verde-btn: #0284c7;
+    --color-rojo-btn: #be123c;
+    --color-fondo-input: #e0f2fe;
+    --color-fondo-body: #dbeafe;
+    --color-fondo-tarjeta: #f0f9ff;
+    --color-texto-principal: #0c1f3f;
+    --color-texto-nombre: #0c1f3f;
+}
+
+html[data-tema="forest"] {
+    --color-cian: #15803d;
+    --color-cian-hover: #166534;
+    --color-cian-light: #bbf7d0;
+    --color-verde-oscuro: #14532d;
+    --color-azul: #b45309;
+    --color-azul-claro: #fde68a;
+    --color-gris-texto: #1f3a1f;
+    --color-gris-claro: #bbf7d0;
+    --color-verde-btn: #15803d;
+    --color-rojo-btn: #b91c1c;
+    --color-fondo-input: #dcfce7;
+    --color-fondo-body: #d1fae5;
+    --color-fondo-tarjeta: #f0fdf4;
+    --color-texto-principal: #0f2e0f;
+    --color-texto-nombre: #0f2e0f;
 }
 
 /* ---------- 2. TIPOGRAFÍA: Orbitron / Black Ops One SOLO en
@@ -80,9 +145,9 @@
 }
 
 /* ---------- 4. LAS 4 PANTALLAS QUEDAN TRANSPARENTES — el fondo
-   vive en el body (dashboard.css, degradado fijo de marca). Sin
-   esto, .pantalla-bienvenida y .pantalla-seleccion-carrera
-   mostrarían el celeste sólido viejo del núcleo. ---------- */
+   vive en el body (dashboard.css + tema-siga.css). Sin esto,
+   .pantalla-bienvenida y .pantalla-seleccion-carrera mostrarían
+   el celeste sólido viejo del núcleo. ---------- */
 .pantalla-bienvenida,
 .pantalla-seleccion-carrera {
     background: transparent;
