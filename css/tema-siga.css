@@ -34,8 +34,14 @@ html[data-tema="oscuro"] {
     --paper: #15121e;
     --brand-azul: #7c5cff;
     --brand-morado: #a855f7;
-    --brand-azul-tinte: #241f33;
-    --brand-morado-tinte: #2a1e3e;
+
+    /* --brand-azul-tinte / --brand-morado-tinte NO se oscurecen: se
+     usan como fondo en varios componentes (selects, dropdowns) que
+     siempre muestran texto con --ink, y --ink se queda igual que en
+     Claro (oscuro/legible) a propósito. Si estos tintes se oscurecen,
+     ese texto se vuelve ilegible (oscuro sobre oscuro). Se quedan en
+     sus valores de Claro (definidos en variables.css) sin bloque
+     propio acá. */
 
     /* Solo para texto que flota directo sobre el fondo animado del body,
      sin ninguna tarjeta blanca detrás (ej. el párrafo del hero). TODO

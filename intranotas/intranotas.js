@@ -1410,20 +1410,17 @@ document.addEventListener('DOMContentLoaded', () => {
        <html> y pinta el widget del nav — Intranotas solo necesita que
        siga-theme-intranotas.css tenga los colores por data-tema, que
        ya los tiene. */
+    /* Ya no se registra Service Worker: Intranotas se actualiza igual
+       que el resto de SIGA (recarga normal, sin caché propio ni aviso
+       de "nueva versión disponible"). Se pierde la función offline a
+       cambio de un comportamiento consistente con el resto del portal.
+       Esta línea limpia el Service Worker viejo que haya quedado
+       instalado de antes (si no se desregistra activamente, se queda
+       corriendo indefinidamente aunque el código ya no lo registre). */
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-            .then(r => {
-                console.log('SW registrado:', r.scope);
-                r.onupdatefound = () => {
-                    const nuevoSW = r.installing;
-                    nuevoSW.onstatechange = () => {
-                        if (nuevoSW.state === 'installed' && navigator.serviceWorker.controller) {
-                            mostrarBannerActualizacion();
-                        }
-                    };
-                };
-            })
-            .catch(e => console.log('SW error:', e));
+        navigator.serviceWorker.getRegistrations().then(regs => {
+            regs.forEach(reg => reg.unregister());
+        });
     }
     intentarRestaurarSesion();
 });
@@ -1460,79 +1457,4 @@ function intentarRestaurarSesion() {
     } catch (e) {
         console.log('No se pudo restaurar la sesión:', e);
     }
-}
-
-function mostrarBannerActualizacion() {
-    if (document.getElementById('banner-actualizacion')) return; // ya está mostrado, no duplicar
-
-    const banner = document.createElement('div');
-    banner.id = 'banner-actualizacion';
-    banner.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 999999;
-        background: linear-gradient(90deg, #0369a1, #0284c7);
-        color: #ffffff;
-        padding: 10px 16px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 14px;
-        flex-wrap: wrap;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.25);
-        font-family: 'Poppins', Arial, sans-serif;
-    `;
-
-    const texto = document.createElement('span');
-    texto.textContent = '🔄 Hay una nueva versión de INTRANOTAS disponible';
-    texto.style.cssText = `
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #ffffff;
-    `;
-
-    const acciones = document.createElement('div');
-    acciones.style.cssText = 'display:flex; align-items:center; gap:8px;';
-
-    const btnActualizar = document.createElement('button');
-    btnActualizar.textContent = 'Actualizar ahora';
-    btnActualizar.style.cssText = `
-        background: #ffffff;
-        color: #0369a1;
-        border: none;
-        border-radius: 20px;
-        padding: 7px 16px;
-        font-family: 'Poppins', Arial, sans-serif;
-        font-size: 0.8rem;
-        font-weight: 700;
-        cursor: pointer;
-    `;
-    btnActualizar.onclick = () => window.location.reload();
-
-    const btnCerrar = document.createElement('button');
-    btnCerrar.textContent = '✕';
-    btnCerrar.setAttribute('aria-label', 'Cerrar aviso');
-    btnCerrar.style.cssText = `
-        background: transparent;
-        color: #ffffff;
-        border: none;
-        font-size: 1rem;
-        cursor: pointer;
-        padding: 2px 8px;
-        opacity: 0.85;
-    `;
-    btnCerrar.onclick = () => cerrarBannerActualizacion();
-
-    acciones.appendChild(btnActualizar);
-    acciones.appendChild(btnCerrar);
-    banner.appendChild(texto);
-    banner.appendChild(acciones);
-    document.body.appendChild(banner);
-}
-
-function cerrarBannerActualizacion() {
-    const banner = document.getElementById('banner-actualizacion');
-    if (banner) banner.remove();
 }
