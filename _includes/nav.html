@@ -39,23 +39,29 @@
                 </button>
             </div>
         </div>
-        <button type="button" class="app-nav-avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false"
-            aria-label="Cuenta">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
-            </svg>
-        </button>
-        <div class="app-nav-user-menu" id="avatarMenu">
-            <div class="app-nav-user-info">
-                <span class="app-nav-user-nombre">Nombre Apellido</span>
-                <span class="app-nav-user-correo">correo@ejemplo.com</span>
+        <!-- auth-siga.js (montarNavUsuario) pinta acá adentro el avatar
+             o el botón "Iniciar sesión" según haya sesión o no. Antes
+             pintaba directo sobre .app-nav-user y borraba el selector
+             de tema de arriba; ahora queda aislado en este hueco. -->
+        <div class="app-nav-account">
+            <button type="button" class="app-nav-avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false"
+                aria-label="Cuenta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+                </svg>
+            </button>
+            <div class="app-nav-user-menu" id="avatarMenu">
+                <div class="app-nav-user-info">
+                    <span class="app-nav-user-nombre">Nombre Apellido</span>
+                    <span class="app-nav-user-correo">correo@ejemplo.com</span>
+                </div>
+                <a href="{{ site.baseurl }}/perfil.html" class="app-nav-user-item">Mi perfil</a>
+                <a href="{{ site.baseurl }}/perfil.html" class="app-nav-user-item">Configuración de la cuenta</a>
+                <div class="app-nav-user-sep"></div>
+                <a href="#" class="app-nav-user-item app-nav-user-salir">Cerrar sesión</a>
             </div>
-            <a href="{{ site.baseurl }}/perfil.html" class="app-nav-user-item">Mi perfil</a>
-            <a href="{{ site.baseurl }}/perfil.html" class="app-nav-user-item">Configuración de la cuenta</a>
-            <div class="app-nav-user-sep"></div>
-            <a href="#" class="app-nav-user-item app-nav-user-salir">Cerrar sesión</a>
         </div>
     </div>
 </nav>

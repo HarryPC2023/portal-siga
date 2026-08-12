@@ -78,7 +78,7 @@ export function alCambiarSesion(callback) {
  * ya existe en dashboard.css). Reutilizable en cualquier página.
  */
 export function montarNavUsuario() {
-  const cont = document.querySelector('.app-nav-user');
+  const cont = document.querySelector('.app-nav-account');
   if (!cont) return;
 
   async function pintar(sesion) {
