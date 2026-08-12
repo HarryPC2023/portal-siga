@@ -148,6 +148,7 @@ const FORMULAS_SOLO_EXAMENES = ['SOLO_EXAMENES'];
 let carreraSeleccionada = null;
 let cursosSeleccionados = [];
 let periodoSeleccionado = null;
+let selectorPeriodoInstancia = null; // instancia del select-custom de Pantalla 3 (se crea una sola vez)
 
 /* ============================================================
    NAVEGACIÓN ENTRE PANTALLAS
@@ -452,16 +453,27 @@ function guardarDatosPeriodos(datos) {
     localStorage.setItem(LS_KEY_DATOS_PERIODOS, JSON.stringify(datos));
 }
 
+/* Se inicializa una sola vez (guardián selectorPeriodoInstancia): el
+   trigger y la lista viven fijos en el DOM de Pantalla 3, así que
+   volver a llamar inicializarSelectPersonalizado() en cada refresco
+   duplicaría los listeners de clic. Las llamadas posteriores solo
+   actualizan el valor mostrado con .establecer(). */
 function generarOpcionesPeriodo() {
-    const select = document.getElementById('selector-periodo');
-    if (!select) return;
-
     const periodos = generarPeriodosDisponibles();
     const actual = periodos[0];
+    const valorInicial = periodoSeleccionado || actual;
 
-    select.innerHTML = periodos.map(p => `<option value="${p}">${p}</option>`).join('');
-    select.value = periodoSeleccionado || actual;
-    periodoSeleccionado = select.value;
+    if (!selectorPeriodoInstancia) {
+        selectorPeriodoInstancia = inicializarSelectPersonalizado({
+            triggerId: 'periodoTrigger', textoId: 'periodoTriggerTexto',
+            listaId: 'periodoLista', valorId: 'periodoValor',
+            opciones: periodos.map(p => ({ value: p, label: p })),
+            alElegir: (valor) => seleccionarPeriodo(valor),
+        });
+    }
+
+    if (selectorPeriodoInstancia) selectorPeriodoInstancia.establecer(valorInicial, valorInicial);
+    periodoSeleccionado = valorInicial;
 }
 
 function seleccionarPeriodo(valor) {
@@ -518,7 +530,15 @@ function generarSimulador() {
         <div class="cabecera-simulador">
             <div class="titulo-ciclo-simulador">
                 <span class="carrera-label">${NOMBRES_CARRERAS[carreraSeleccionada]}</span>
-                <select id="selector-periodos-guardados" class="select-periodo" onchange="cambiarPeriodoGuardado(this.value)"></select>
+                <div class="campo-select-custom" style="max-width:160px;">
+                    <button type="button" class="select-custom-trigger" id="periodoGuardadoTrigger"
+                        aria-haspopup="listbox" aria-expanded="false">
+                        <span id="periodoGuardadoTriggerTexto">${formatoPeriodoCorto(periodoSeleccionado)}</span>
+                        <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                    </button>
+                    <ul class="select-custom-lista" id="periodoGuardadoLista" role="listbox" hidden></ul>
+                    <input type="hidden" id="periodoGuardadoValor">
+                </div>
             </div>
         </div>
 
@@ -1422,17 +1442,23 @@ function cargarNotasGuardadas() {
 /* ============================================================
    SELECTOR DE PERIODOS GUARDADOS (Pantalla 4)
    Deja saltar entre cualquier periodo que ya tenga datos guardados,
-   sin perder lo que había en cada uno.
+   sin perder lo que había en cada uno. Se reinicializa en cada
+   render (a diferencia del de Pantalla 3) porque generarSimulador()
+   reconstruye #contenedor-simulador entero cada vez — el trigger y
+   la lista son nodos nuevos, así que no hay listeners duplicados.
    ============================================================ */
 function cargarSelectorPeriodosGuardados() {
-    const sel = document.getElementById('selector-periodos-guardados');
-    if (!sel) return;
     const datos = leerDatosPeriodos();
     const periodosConDatos = Object.keys(datos).sort().reverse();
     if (periodoSeleccionado && !periodosConDatos.includes(periodoSeleccionado)) periodosConDatos.unshift(periodoSeleccionado);
-    sel.innerHTML = periodosConDatos.map(p =>
-        `<option value="${p}" ${p === periodoSeleccionado ? 'selected' : ''}>${formatoPeriodoCorto(p)}</option>`
-    ).join('');
+
+    const instancia = inicializarSelectPersonalizado({
+        triggerId: 'periodoGuardadoTrigger', textoId: 'periodoGuardadoTriggerTexto',
+        listaId: 'periodoGuardadoLista', valorId: 'periodoGuardadoValor',
+        opciones: periodosConDatos.map(p => ({ value: p, label: formatoPeriodoCorto(p) })),
+        alElegir: (valor) => cambiarPeriodoGuardado(valor),
+    });
+    if (instancia) instancia.establecer(periodoSeleccionado, formatoPeriodoCorto(periodoSeleccionado));
 }
 
 function cambiarPeriodoGuardado(periodo) {
