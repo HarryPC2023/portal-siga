@@ -398,6 +398,70 @@ function dibujar(idx) {
             anchor.appendChild(block);
         });
     });
+
+    generarBannerReferenciasHorario(combo);
+}
+
+/* ============================================================
+   BANNER "DEJAR MI REFERENCIA" (debajo del calendario armado)
+   A diferencia de Intranotas, acá sí hay profesor real por sección
+   (sec.docente), así que el selector es por profesor directamente.
+   Estos cursos aún no se cursan — por eso el mensaje apunta a
+   "lo que sabes" (propia experiencia previa u oído de otros), no a
+   "cómo te fue" como en Intranotas.
+   ============================================================ */
+let profesoresComboActual = [];
+
+function generarBannerReferenciasHorario(combo) {
+    const cont = document.getElementById('banner-referencias-horarios');
+    if (!cont) return;
+    if (!combo || !combo.length) { cont.innerHTML = ''; profesoresComboActual = []; return; }
+
+    // Profesor único por curso — si un mismo profesor dicta varias sesiones
+    // del mismo curso (teoría + práctica), aparece una sola vez en la lista.
+    const vistos = new Set();
+    profesoresComboActual = [];
+    combo.forEach(sec => {
+        const clave = `${sec.docente}|${sec.nombre}`;
+        if (vistos.has(clave)) return;
+        vistos.add(clave);
+        profesoresComboActual.push({ docente: sec.docente, curso: sec.nombre });
+    });
+
+    cont.innerHTML = `
+        <div style="background:#fff; border-radius:14px; padding:22px 24px; text-align:center; margin:24px 0 8px; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
+            <p style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Qué sabes de tus profesores de este ciclo?</p>
+            <p style="font-size:0.85rem; color:var(--ink-soft); max-width:480px; margin:0 auto 16px; line-height:1.6;">
+                Por experiencia propia o por lo que escuchaste de ellos — tu aporte ayuda a que otros elijan con más criterio.
+            </p>
+            <button type="button" class="btn-primary" onclick="toggleSelectorReferenciaHorario()">Dejar mi referencia →</button>
+            <div id="selectorReferenciaHorarioLista" hidden
+                style="margin-top:16px; display:flex; flex-direction:column; gap:6px; max-width:420px; margin-left:auto; margin-right:auto; text-align:left;"></div>
+        </div>
+    `;
+}
+
+function toggleSelectorReferenciaHorario() {
+    const lista = document.getElementById('selectorReferenciaHorarioLista');
+    if (!lista) return;
+
+    if (!lista.hidden) { lista.hidden = true; return; }
+
+    const COLOR_MORADO = 'rgba(102, 0, 204, 0.05)';
+    const COLOR_AZUL = 'rgba(60, 124, 248, 0.08)';
+
+    lista.innerHTML = `
+        <p style="font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:2px;">¿De qué profesor quieres dejar tu referencia?</p>
+        ${profesoresComboActual.map((p, i) => {
+        const color = i % 2 === 0 ? COLOR_MORADO : COLOR_AZUL;
+        return `
+            <a href="../opiniones.html?buscar=${encodeURIComponent(p.docente)}"
+                style="display:block; padding:10px 14px; background:${color}; border-radius:8px; font-size:0.85rem; font-weight:500; color:var(--ink); text-decoration:none;">
+                ${p.docente} <span style="opacity:0.65; font-weight:400;">· ${p.curso}</span>
+            </a>`;
+    }).join('')}
+    `;
+    lista.hidden = false;
 }
 
 // ── NAVEGAR ───────────────────────────────────────────────────
