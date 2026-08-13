@@ -16,14 +16,14 @@ function pintarBanner() {
     const cursosUnicos = [...new Set(ASESORIAS.map((a) => a.curso))].sort((a, b) => a.localeCompare(b, 'es'));
 
     cont.innerHTML = `
-        <div id="cajaProponerAsesoria" style="background:#fff; border-radius:12px; padding:16px 18px; text-align:center; max-width:340px; margin:28px auto; box-shadow:0 6px 14px rgba(0,0,0,0.05); transition:max-width 0.2s ease;">
+        <div id="cajaProponerAsesoria" style="background:#fff; border-radius:12px; padding:16px 18px; text-align:center; max-width:460px; margin:28px auto; box-shadow:0 6px 14px rgba(0,0,0,0.05);">
             <p style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:5px;">¿Tienes una asesoría, guía o resumen que le sirvió a otros?</p>
             <p style="font-family:'Poppins', sans-serif; font-weight:300; font-size:0.75rem; color:var(--ink-soft); margin:0 auto 12px; max-width:300px; line-height:1.45;">
                 Compártela en SIGA y ayuda al siguiente ciclo.
             </p>
             <button type="button" class="btn-primary" id="btnAbrirFormAsesoria"
-                style="display:inline-flex; align-items:center; gap:6px;">
-                <span>Proponer una asesoría</span>
+                style="display:inline-flex; align-items:center; gap:6px; padding:9px 22px; font-size:0.85rem;">
+                <span>Compartir asesoría</span>
                 <span id="flechaFormAsesoria" aria-hidden="true">▾</span>
             </button>
 
@@ -56,8 +56,8 @@ function pintarBanner() {
                 </div>
 
                 <div>
-                    <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Tipo de recurso</label>
-                    <div style="display:flex; gap:16px; font-size:0.85rem;">
+                    <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:8px;">Tipo de recurso</label>
+                    <div style="display:flex; gap:16px; font-family:'Poppins', sans-serif; font-weight:400; font-size:0.85rem; line-height:1.6;">
                         <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                             <input type="radio" name="fpTipo" value="pdf" checked> PDF
                         </label>
@@ -81,10 +81,10 @@ function pintarBanner() {
                 </div>
 
                 <div>
-                    <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Sube el archivo desde tu computadora</label>
+                    <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:8px;">Sube el archivo desde tu computadora</label>
                     <input type="file" id="fpArchivo" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-                        style="width:100%; font-size:0.8rem;">
-                    <p style="font-size:0.7rem; color:var(--ink-soft); margin:4px 0 0;">PDF, Word, PowerPoint o Excel — máx. 20 MB.</p>
+                        style="width:100%; font-family:'Poppins', sans-serif; font-size:0.8rem;">
+                    <p style="font-family:'Poppins', sans-serif; font-size:0.7rem; color:var(--ink-soft); margin:8px 0 0; line-height:1.6;">PDF, Word, PowerPoint o Excel — máx. 20 MB.</p>
                 </div>
 
                 <div>
@@ -94,7 +94,7 @@ function pintarBanner() {
                         style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box; resize:vertical;"></textarea>
                 </div>
 
-                <button type="submit" id="btnEnviarAsesoria" class="btn-primary" style="align-self:center; margin-top:4px;">
+                <button type="submit" id="btnEnviarAsesoria" class="btn-primary" style="align-self:center; margin-top:4px; padding:9px 24px; font-size:0.85rem;">
                     Enviar propuesta
                 </button>
 
@@ -114,13 +114,11 @@ function pintarBanner() {
 function toggleFormulario() {
     const form = document.getElementById('formProponerAsesoria');
     const flecha = document.getElementById('flechaFormAsesoria');
-    const caja = document.getElementById('cajaProponerAsesoria');
     if (!form) return;
 
     const abierto = form.style.display !== 'none';
     form.style.display = abierto ? 'none' : 'flex';
     if (flecha) flecha.textContent = abierto ? '▾' : '▴';
-    if (caja) caja.style.maxWidth = abierto ? '340px' : '460px';
 }
 
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
