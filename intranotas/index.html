@@ -61,7 +61,8 @@
                     <span id="carrera-resumen-texto">Selecciona tu carrera</span>
                     <span id="carrera-resumen-flecha">▾</span>
                 </div>
-                <div class="grid-carreras" id="grid-carreras-colapsable" style="margin-top:12px;">
+                <div class="grid-carreras" id="grid-carreras-colapsable"
+                    style="margin-top:12px; overflow:hidden; max-height:2000px; opacity:1; transition:max-height 0.25s ease, opacity 0.2s ease, margin-top 0.25s ease;">
                     <button class="btn-carrera" onclick="seleccionarCarrera('sistemas')">
                         <img src="sistemas.png" alt="Sistemas" class="btn-carrera-img">
                         <div class="btn-carrera-texto">
@@ -95,7 +96,8 @@
                 </div>
             </div>
 
-            <div id="bloque-periodo-cursos" style="display:none;">
+            <div id="bloque-periodo-cursos"
+                style="overflow:hidden; max-height:0; opacity:0; transition:max-height 0.3s ease, opacity 0.25s ease;">
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1rem;">
                     <button class="btn-volver-carrera" onclick="cambiarCarrera()" style="flex:1; min-width:140px;">←
                         Cambiar carrera</button>

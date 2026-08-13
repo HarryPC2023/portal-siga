@@ -172,10 +172,7 @@ function seleccionarCarrera(carrera) {
 
     actualizarResumenCarrera();
     mostrarSelectorCarrera(false);
-    const bloque = document.getElementById('bloque-periodo-cursos');
-    if (bloque) bloque.style.display = 'block';
-
-    irAPantalla(3);
+    mostrarBloquePeriodoCursos(true);
 
     setTimeout(() => {
         generarAcordeones();
@@ -197,15 +194,30 @@ function actualizarResumenCarrera() {
 function mostrarSelectorCarrera(expandido) {
     const grid = document.getElementById('grid-carreras-colapsable');
     const flecha = document.getElementById('carrera-resumen-flecha');
-    if (grid) grid.style.display = expandido ? 'grid' : 'none';
+    if (grid) {
+        grid.style.maxHeight = expandido ? '2000px' : '0px';
+        grid.style.opacity = expandido ? '1' : '0';
+        grid.style.marginTop = expandido ? '12px' : '0px';
+    }
     if (flecha) flecha.textContent = expandido ? '▴' : '▾';
 }
 
 function toggleSelectorCarrera() {
     const grid = document.getElementById('grid-carreras-colapsable');
     if (!grid) return;
-    const expandido = grid.style.display !== 'none';
+    const expandido = grid.style.maxHeight !== '0px';
     mostrarSelectorCarrera(!expandido);
+}
+
+/* Igual que mostrarSelectorCarrera(), pero para el bloque de periodo
+   académico + cursos — misma animación de max-height/opacity, para que
+   ambos bloques se sientan como el mismo acordeón y no como una
+   pantalla que se corta y otra que aparece de golpe. */
+function mostrarBloquePeriodoCursos(expandido) {
+    const bloque = document.getElementById('bloque-periodo-cursos');
+    if (!bloque) return;
+    bloque.style.maxHeight = expandido ? '4000px' : '0px';
+    bloque.style.opacity = expandido ? '1' : '0';
 }
 
 /* Botón "← Cambiar carrera": despliega el selector sin borrar nada
@@ -213,8 +225,7 @@ function toggleSelectorCarrera() {
    nueva en seleccionarCarrera(). */
 function cambiarCarrera() {
     mostrarSelectorCarrera(true);
-    const bloque = document.getElementById('bloque-periodo-cursos');
-    if (bloque) bloque.style.display = 'none';
+    mostrarBloquePeriodoCursos(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1604,8 +1615,7 @@ function confirmarNuevoPeriodo() {
     periodoSeleccionado = null;
 
     irAPantalla(3);
-    const bloque = document.getElementById('bloque-periodo-cursos');
-    if (bloque) bloque.style.display = 'block';
+    mostrarBloquePeriodoCursos(true);
     mostrarSelectorCarrera(false);
     desmarcarTodosLosCursos();
     generarOpcionesPeriodo();
@@ -1666,8 +1676,7 @@ function intentarRestaurarSesion() {
         // Prepara la Pantalla 3 en segundo plano por si el usuario pulsa "Cambiar cursos"
         actualizarResumenCarrera();
         mostrarSelectorCarrera(false);
-        const bloque = document.getElementById('bloque-periodo-cursos');
-        if (bloque) bloque.style.display = 'block';
+        mostrarBloquePeriodoCursos(true);
         generarAcordeones();
         generarOpcionesPeriodo();
         marcarCursosSeleccionadosEnUI();
