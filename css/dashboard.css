@@ -84,7 +84,7 @@ body {
   position: relative;
   z-index: 1;
   padding: 7px 13px;
-  border-radius: 12px;
+  border-radius: 999px;
   color: var(--ink-soft);
   background: transparent;
   transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
@@ -288,24 +288,25 @@ body {
   gap: 24px;
 }
 
+/* Sombra en dos capas: el anillo morado finito + la sombra cerrada son
+   el mismo tratamiento que .hero-icono-modulo (landing.css) usa en los
+   íconos del hero -- así el módulo se siente con relieve, como una
+   placa elevada, y no solo "flotando" con una sombra difusa. La sombra
+   grande y suave se mantiene para no perder la profundidad que ya tenía. */
 .modulo-card {
   position: relative;
   display: flex;
   flex-direction: column;
   background: #fff;
   border-radius: 20px;
-  box-shadow:
-    0 5px 10px rgba(0, 0, 0, 0.10),
-    0 24px 40px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 0 0 1px rgba(102, 0, 204, 0.08), 0 3px 8px rgba(0, 0, 0, 0.10), 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 32px 28px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .modulo-card:hover {
   transform: translateY(-4px);
-  box-shadow:
-    0 6px 12px rgba(0, 0, 0, 0.14),
-    0 30px 48px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 0 0 1px rgba(102, 0, 204, 0.14), 0 6px 14px rgba(0, 0, 0, 0.14), 0 16px 36px rgba(0, 0, 0, 0.12);
 }
 
 .modulo-icono {
