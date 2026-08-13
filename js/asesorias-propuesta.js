@@ -69,9 +69,22 @@ function pintarBanner() {
 
                 <div>
                     <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Enlace al recurso</label>
-                    <input type="url" id="fpUrl" required
+                    <input type="url" id="fpUrl"
                         placeholder="Link de Drive, Notion, YouTube, etc."
                         style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box;">
+                </div>
+
+                <div style="display:flex; align-items:center; gap:10px; margin:-4px 0;">
+                    <div style="flex:1; height:1px; background:rgba(0,0,0,0.1);"></div>
+                    <span style="font-size:0.72rem; color:var(--ink-soft);">o</span>
+                    <div style="flex:1; height:1px; background:rgba(0,0,0,0.1);"></div>
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Sube el archivo desde tu computadora</label>
+                    <input type="file" id="fpArchivo" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                        style="width:100%; font-size:0.8rem;">
+                    <p style="font-size:0.7rem; color:var(--ink-soft); margin:4px 0 0;">PDF, Word, PowerPoint o Excel — máx. 20 MB.</p>
                 </div>
 
                 <div>
@@ -110,6 +123,23 @@ function toggleFormulario() {
     if (caja) caja.style.maxWidth = abierto ? '340px' : '460px';
 }
 
+const BUCKET_ASESORIAS = 'asesorias-adjuntos';
+const TAMANO_MAXIMO_MB = 20;
+
+/** Sube el archivo a Storage dentro de la carpeta del propio usuario
+ * (requisito de la política RLS: (storage.foldername(name))[1] = auth.uid()),
+ * y devuelve la URL pública para guardarla como url_recurso. */
+async function subirArchivo(file, userId) {
+    const nombreLimpio = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    const ruta = `${userId}/${Date.now()}-${nombreLimpio}`;
+
+    const { error } = await supabase.storage.from(BUCKET_ASESORIAS).upload(ruta, file);
+    if (error) throw error;
+
+    const { data } = supabase.storage.from(BUCKET_ASESORIAS).getPublicUrl(ruta);
+    return data.publicUrl;
+}
+
 async function enviarPropuesta(e) {
     e.preventDefault();
 
@@ -119,24 +149,53 @@ async function enviarPropuesta(e) {
         return;
     }
 
+    const urlManual = document.getElementById('fpUrl').value.trim();
+    const archivo = document.getElementById('fpArchivo').files[0];
+
+    if (!urlManual && !archivo) {
+        mostrarMensaje('⚠️ Pega un enlace o sube un archivo — al menos uno de los dos.', 'error');
+        return;
+    }
+    if (archivo && archivo.size > TAMANO_MAXIMO_MB * 1024 * 1024) {
+        mostrarMensaje(`⚠️ El archivo pesa más de ${TAMANO_MAXIMO_MB} MB. Sube algo más liviano o pega un enlace.`, 'error');
+        return;
+    }
+
     const btn = document.getElementById('btnEnviarAsesoria');
+    btn.disabled = true;
+
+    let urlFinal = urlManual;
+    if (archivo) {
+        btn.textContent = 'Subiendo archivo…';
+        try {
+            urlFinal = await subirArchivo(archivo, sesion.user.id);
+        } catch (err) {
+            console.error('Error al subir archivo:', err);
+            btn.disabled = false;
+            btn.textContent = 'Enviar propuesta';
+            mostrarMensaje('⚠️ No se pudo subir el archivo. Intenta de nuevo.', 'error');
+            return;
+        }
+    }
+
     const datos = {
         titulo: document.getElementById('fpTitulo').value.trim(),
         curso: document.getElementById('fpCurso').value.trim(),
         ciclo: document.getElementById('fpCiclo').value ? Number(document.getElementById('fpCiclo').value) : null,
         tipo_recurso: document.querySelector('input[name="fpTipo"]:checked').value,
-        url_recurso: document.getElementById('fpUrl').value.trim(),
+        url_recurso: urlFinal,
         descripcion: document.getElementById('fpDescripcion').value.trim() || null,
         autor_id: sesion.user.id,
         autor_email: sesion.user.email,
     };
 
     if (!datos.titulo || !datos.curso || !datos.url_recurso) {
-        mostrarMensaje('⚠️ Completa al menos el título, el curso y el enlace.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Enviar propuesta';
+        mostrarMensaje('⚠️ Completa al menos el título y el curso.', 'error');
         return;
     }
 
-    btn.disabled = true;
     btn.textContent = 'Enviando…';
 
     const { error } = await supabase.from('asesorias_propuestas').insert(datos);
@@ -149,6 +208,7 @@ async function enviarPropuesta(e) {
         mostrarMensaje('⚠️ No se pudo enviar. Intenta de nuevo en un momento.', 'error');
         return;
     }
+
 
     document.getElementById('formProponerAsesoria').reset();
     toggleFormulario();
