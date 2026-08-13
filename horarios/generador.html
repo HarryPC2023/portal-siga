@@ -130,6 +130,10 @@
 
   <div class="toast" id="toast"></div>
 
+  <!-- Botón flotante: mismo componente que usan Asesorías/Materiales
+       (estilo ya definido en landing.css como .volver-arriba). -->
+  <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
+
   <!-- ═══ FIRMA ═══ -->
   <div class="harry-stamp">
     <img src="static/img/harry.png" alt="Harry" class="harry-stamp-img">
@@ -170,6 +174,33 @@
   <script src="static/js/scheduler.js"></script>
   <script src="static/js/generador.js"></script>
   <script src="../js/tema-siga.js?v=1"></script>
+  <!-- Botón "volver arriba": aparece pasados ~400px de scroll, sube
+       suave al hacer clic. El scroll relevante acá es el interno de
+       .calendar-wrap (no el de la ventana), por eso se escucha ahí
+       también, no solo en window. -->
+  <script>
+    (function () {
+      const boton = document.getElementById('volverArriba');
+      const scrollWrap = document.getElementById('calendarWrap');
+      if (!boton) return;
+
+      function actualizarVisibilidad() {
+        const bajoEnVentana = window.scrollY > 400;
+        const bajoEnCalendario = scrollWrap && scrollWrap.scrollTop > 400;
+        boton.classList.toggle('visible', bajoEnVentana || bajoEnCalendario);
+      }
+
+      window.addEventListener('scroll', actualizarVisibilidad, { passive: true });
+      if (scrollWrap) scrollWrap.addEventListener('scroll', actualizarVisibilidad, { passive: true });
+      actualizarVisibilidad();
+
+      boton.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (scrollWrap) scrollWrap.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+  </script>
   <script>
     // Recupera los cursos seleccionados de la URL
     // Funciona igual que antes: index.html los pasa por ?curso=...

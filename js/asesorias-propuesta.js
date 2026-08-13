@@ -3,7 +3,6 @@
 // asesorias_propuestas con estado 'pendiente'; Harry la revisa y decide
 // si la sube a asesorias-datos.js (mismo flujo manual que ya usaba).
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
-import { ASESORIAS } from './asesorias-datos.js?v=1';
 
 const cont = document.getElementById('banner-proponer-asesoria');
 
@@ -13,7 +12,33 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function pintarBanner() {
-    const cursosUnicos = [...new Set(ASESORIAS.map((a) => a.curso))].sort((a, b) => a.localeCompare(b, 'es'));
+    // Hoja de estilo puntual para el botón nativo del <input type="file">:
+    // el navegador lo pinta con su propio pseudo-elemento (::file-selector-button),
+    // que no se puede tocar con un atributo style="" normal -- necesita una
+    // regla CSS real. Se inyecta una sola vez, la primera vez que se pinta el banner.
+    if (!document.getElementById('estiloArchivoAsesoria')) {
+        const estilo = document.createElement('style');
+        estilo.id = 'estiloArchivoAsesoria';
+        estilo.textContent = `
+            #fpArchivo::file-selector-button {
+                font-family: 'Poppins', sans-serif;
+                font-weight: 600;
+                font-size: 0.78rem;
+                color: #fff;
+                background: #6600CC;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 14px;
+                margin-right: 10px;
+                cursor: pointer;
+                transition: background 0.15s ease;
+            }
+            #fpArchivo::file-selector-button:hover {
+                background: #4f0099;
+            }
+        `;
+        document.head.appendChild(estilo);
+    }
 
     cont.innerHTML = `
         <div id="cajaProponerAsesoria" style="background:#fff; border-radius:12px; padding:16px 18px; text-align:center; max-width:460px; margin:28px auto; box-shadow:0 6px 14px rgba(0,0,0,0.05);">
@@ -28,27 +53,34 @@ function pintarBanner() {
             </button>
 
             <form id="formProponerAsesoria" style="display:none; margin-top:20px; flex-direction:column; gap:12px; text-align:left;">
+                <div style="text-align:center;">
+                    <button type="button" id="btnAvisoAutoria"
+                        style="font-family:'Poppins', sans-serif; font-size:0.66rem; font-weight:700; color:#92400e; background:linear-gradient(135deg, #fef3c7, #fde68a); border:1.5px solid #f59e0b; border-radius:20px; padding:3px 10px; cursor:pointer;">
+                        ⚠️ Importante
+                    </button>
+                    <p id="avisoAutoriaTexto" style="display:none; font-family:'Poppins', sans-serif; font-size:0.72rem; color:#92400e; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:8px 12px; margin-top:8px; line-height:1.5; text-align:left;">
+                        Comparte solo material de tu propia autoría (tus resúmenes, guías o apuntes). No subas documentos de terceros sin su permiso.
+                    </p>
+                </div>
+
                 <div>
                     <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Título</label>
                     <input type="text" id="fpTitulo" required maxlength="120"
                         placeholder="Ej. Resumen de Álgebra Lineal - Autovalores y autovectores"
-                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box;">
+                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box;">
                 </div>
 
                 <div style="display:flex; gap:10px;">
                     <div style="flex:2;">
                         <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Curso relacionado</label>
-                        <input type="text" id="fpCurso" required list="fpCursoLista" maxlength="80"
+                        <input type="text" id="fpCurso" required maxlength="80"
                             placeholder="Ej. Álgebra Lineal"
-                            style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box;">
-                        <datalist id="fpCursoLista">
-                            ${cursosUnicos.map((c) => `<option value="${c}"></option>`).join('')}
-                        </datalist>
+                            style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box;">
                     </div>
                     <div style="flex:1;">
                         <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Ciclo</label>
                         <select id="fpCiclo"
-                            style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box; background:#fff;">
+                            style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box; background:#fff;">
                             <option value="">—</option>
                             ${Array.from({ length: 10 }, (_, i) => i + 1).map((c) => `<option value="${c}">${c}</option>`).join('')}
                         </select>
@@ -71,7 +103,7 @@ function pintarBanner() {
                     <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Enlace al recurso</label>
                     <input type="url" id="fpUrl"
                         placeholder="Link de Drive, Notion, YouTube, etc."
-                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box;">
+                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box;">
                 </div>
 
                 <div style="display:flex; align-items:center; gap:10px; margin:-4px 0;">
@@ -91,14 +123,14 @@ function pintarBanner() {
                     <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Descripción breve</label>
                     <textarea id="fpDescripcion" rows="3" maxlength="300"
                         placeholder="¿Qué encontrará quien la abra?"
-                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box; resize:vertical;"></textarea>
+                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box; resize:vertical;"></textarea>
                 </div>
 
                 <button type="submit" id="btnEnviarAsesoria" class="btn-primary" style="align-self:center; margin-top:4px; padding:9px 24px; font-size:0.85rem;">
                     Enviar propuesta
                 </button>
 
-                <p style="font-size:0.75rem; color:var(--ink-soft); text-align:center; margin:0;">
+                <p style="font-family:'Poppins', sans-serif; font-size:0.75rem; color:var(--ink-soft); text-align:center; margin:0;">
                     La revisamos antes de publicarla — no aparece de inmediato en la lista.
                 </p>
             </form>
@@ -109,6 +141,13 @@ function pintarBanner() {
 
     document.getElementById('btnAbrirFormAsesoria').addEventListener('click', toggleFormulario);
     document.getElementById('formProponerAsesoria').addEventListener('submit', enviarPropuesta);
+    document.getElementById('btnAvisoAutoria').addEventListener('click', toggleAvisoAutoria);
+}
+
+function toggleAvisoAutoria() {
+    const texto = document.getElementById('avisoAutoriaTexto');
+    if (!texto) return;
+    texto.style.display = texto.style.display === 'none' ? 'block' : 'none';
 }
 
 function toggleFormulario() {
