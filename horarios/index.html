@@ -125,11 +125,38 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- Botón flotante "volver arriba" — mismo componente que usan
+         Asesorías/Materiales (estilo ya definido en landing.css como
+         .volver-arriba). Aparece pasados 400px de scroll de la ventana
+         (acá no hay scroll interno propio, a diferencia de generador.html). -->
+    <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
+
     <!-- ── Scripts ── -->
     <!-- parser.js debe cargarse antes que este script -->
     <script src="static/js/parser.js"></script>
     <!-- Motor de temas SIGA (Claro/Oscuro/Ocean/Forest), compartido con generador.html -->
     <script src="../js/tema-siga.js?v=1"></script>
+
+    <!-- Botón "volver arriba": aparece pasados ~400px de scroll de la
+         ventana, sube suave al hacer clic. -->
+    <script>
+        (function () {
+            const boton = document.getElementById('volverArriba');
+            if (!boton) return;
+
+            function actualizarVisibilidad() {
+                boton.classList.toggle('visible', window.scrollY > 400);
+            }
+
+            window.addEventListener('scroll', actualizarVisibilidad, { passive: true });
+            actualizarVisibilidad();
+
+            boton.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        })();
+    </script>
 
     <script>
         // ── Referencias al DOM ──────────────────────────────────
