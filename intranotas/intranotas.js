@@ -198,7 +198,7 @@ function mostrarSelectorCarrera(expandido) {
     if (grid) {
         grid.style.maxHeight = expandido ? '2000px' : '0px';
         grid.style.opacity = expandido ? '1' : '0';
-        grid.style.marginTop = expandido ? '12px' : '0px';
+        grid.style.marginTop = expandido ? '32px' : '0px';
     }
     if (flecha) flecha.textContent = expandido ? '▴' : '▾';
     // Mientras el selector está abierto para elegir/cambiar, el texto
