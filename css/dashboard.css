@@ -7,7 +7,7 @@
 body {
   background: var(--paper);
   /* ahora */
-background-image: var(--siga-body-gradiente);
+  background-image: var(--siga-body-gradiente);
   background-size: 200% 200%;
   animation: moverInfo 14s ease-in-out infinite;
 }
@@ -84,7 +84,7 @@ background-image: var(--siga-body-gradiente);
   position: relative;
   z-index: 1;
   padding: 7px 13px;
-  border-radius: 999px;
+  border-radius: 12px;
   color: var(--ink-soft);
   background: transparent;
   transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;

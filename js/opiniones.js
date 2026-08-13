@@ -226,6 +226,7 @@ function renderGrid() {
 
     html += `
       <button class="opinion-card" data-id="${p.id}">
+        <span class="opinion-card-flecha" aria-hidden="true">↗</span>
         <span class="opinion-card-curso">${curso.nombre} · ${etiquetaCiclo}</span>
         <h3>${profesor.nombre}</h3>
         <p class="opinion-card-frase">${p.resumen}</p>

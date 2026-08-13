@@ -185,6 +185,7 @@
 }
 
 .opinion-card {
+    position: relative;
     text-align: left;
     background: #fff;
     border: none;
@@ -199,6 +200,25 @@
 .opinion-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Flechita que indica que la tarjeta se puede abrir para ver el
+   detalle completo del profesor. Sutil por defecto, se pinta del
+   morado de marca y se desplaza un poco al pasar el mouse — mismo
+   lenguaje visual que las flechas "→" de los botones de acción. */
+.opinion-card-flecha {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    color: var(--ink-soft);
+    opacity: 0.45;
+    transition: color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.opinion-card:hover .opinion-card-flecha {
+    color: var(--brand-morado);
+    opacity: 1;
+    transform: translate(2px, -2px);
 }
 
 /* Estado activo: tarjeta cuyo detalle está abierto en el panel lateral.
