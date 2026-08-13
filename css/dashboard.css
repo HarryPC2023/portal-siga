@@ -293,20 +293,29 @@ body {
    íconos del hero -- así el módulo se siente con relieve, como una
    placa elevada, y no solo "flotando" con una sombra difusa. La sombra
    grande y suave se mantiene para no perder la profundidad que ya tenía. */
+/* Doble sombra para dar sensación de relieve real:
+   1) un filo negro muy delgado (0 0 0 1px) que actúa como borde sutil,
+      separando la tarjeta del fondo con degradado sin necesitar un
+      border real.
+   2) una sombra cerrada y algo más oscura (0 4px 10px) que crea la
+      "elevación" inmediata, como si la tarjeta estuviera apenas
+      despegada de la superficie.
+   3) la sombra grande y difusa de siempre (0 14px 34px) para que no
+      se sienta recortada, sino flotando con profundidad de verdad. */
 .modulo-card {
   position: relative;
   display: flex;
   flex-direction: column;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 0 0 1px rgba(102, 0, 204, 0.08), 0 3px 8px rgba(0, 0, 0, 0.10), 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.07), 0 4px 10px rgba(0, 0, 0, 0.12), 0 14px 34px rgba(0, 0, 0, 0.10);
   padding: 32px 28px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .modulo-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 0 1px rgba(102, 0, 204, 0.14), 0 6px 14px rgba(0, 0, 0, 0.14), 0 16px 36px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.16), 0 20px 40px rgba(0, 0, 0, 0.14);
 }
 
 .modulo-icono {
