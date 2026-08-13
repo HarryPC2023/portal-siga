@@ -452,13 +452,13 @@ function construirBannerReferenciasHorario() {
                 Por experiencia propia o por lo que escuchaste de ellos — tu aporte ayuda a que otros elijan con más criterio.
             </p>
             <button type="button" class="btn-primary" id="btnReferenciaHorario"
-                style="display:inline-flex; align-items:center; gap:6px; font-size:0.85rem; padding:9px 18px;"
+                style="display:inline-flex; align-items:center; gap:6px;"
                 onclick="toggleSelectorReferenciaHorario()">
                 <span>Dejar mi referencia</span>
                 <span id="flechaReferenciaHorario" aria-hidden="true">▾</span>
             </button>
-            <div id="selectorReferenciaHorarioLista" hidden
-                style="margin-top:14px; display:flex; flex-direction:column; gap:6px; text-align:left;"></div>
+            <div id="selectorReferenciaHorarioLista"
+                style="margin-top:14px; display:none; flex-direction:column; gap:6px; text-align:left;"></div>
         </div>
     `;
 }
@@ -468,8 +468,9 @@ function toggleSelectorReferenciaHorario() {
     const flecha = document.getElementById('flechaReferenciaHorario');
     if (!lista) return;
 
-    if (!lista.hidden) {
-        lista.hidden = true;
+    const abierto = lista.style.display !== 'none';
+    if (abierto) {
+        lista.style.display = 'none';
         if (flecha) flecha.textContent = '▾';
         return;
     }
@@ -488,7 +489,7 @@ function toggleSelectorReferenciaHorario() {
             </a>`;
     }).join('')}
     `;
-    lista.hidden = false;
+    lista.style.display = 'flex';
     if (flecha) flecha.textContent = '▴';
 
     // La lista queda debajo del pliegue dentro de #calendarWrap (que

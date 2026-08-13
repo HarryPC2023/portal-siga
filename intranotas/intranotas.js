@@ -615,8 +615,8 @@ function generarBannerReferencias() {
                 <span>Dejar mi referencia</span>
                 <span id="flechaReferencia" aria-hidden="true">▾</span>
             </button>
-            <div id="selectorReferenciaLista" hidden
-                style="margin-top:16px; display:flex; flex-direction:column; gap:6px; max-width:420px; margin-left:auto; margin-right:auto; text-align:left;"></div>
+            <div id="selectorReferenciaLista"
+                style="margin-top:16px; display:none; flex-direction:column; gap:6px; max-width:420px; margin-left:auto; margin-right:auto; text-align:left;"></div>
         </div>
     `;
 }
@@ -626,8 +626,9 @@ function toggleSelectorReferencia() {
     const flecha = document.getElementById('flechaReferencia');
     if (!lista) return;
 
-    if (!lista.hidden) {
-        lista.hidden = true;
+    const abierto = lista.style.display !== 'none';
+    if (abierto) {
+        lista.style.display = 'none';
         if (flecha) flecha.textContent = '▾';
         return;
     }
@@ -648,7 +649,7 @@ function toggleSelectorReferencia() {
             </a>`;
     }).join('')}
     `;
-    lista.hidden = false;
+    lista.style.display = 'flex';
     if (flecha) flecha.textContent = '▴';
 }
 
