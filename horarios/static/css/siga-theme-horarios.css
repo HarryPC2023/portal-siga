@@ -278,10 +278,11 @@ h3 {
   background: var(--surface);
 }
 
-/* ---------- 4. BOTONES EN PASTILLA (forma ya existente) ---------- */
+/* ---------- 4. BOTONES: antes eran píldora (999px); ahora
+   rectangulares con esquinas apenas curvadas, como el resto de SIGA. ---------- */
 .btn-primary,
 .btn-gen {
-  border-radius: 999px !important;
+  border-radius: var(--radius) !important;
   font-weight: 700;
   letter-spacing: 0.02em;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -291,6 +292,27 @@ h3 {
 .btn-gen:hover {
   box-shadow: 0 8px 18px var(--accent-dim);
   transform: translateY(-2px);
+}
+
+/* "Cargar archivo" y "Generar horarios →" (pantalla 1, dentro de
+   .idx-card): en vez de estirarse a lo ancho de la tarjeta (heredado
+   de .btn-primary { width:100% } en style.css), se achican al tamaño
+   de su texto y quedan centrados. */
+#btnUpload,
+#btnNext {
+  display: block;
+  width: fit-content;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 12px 32px;
+}
+
+/* "Dejar mi referencia" (pantalla 2): mismo criterio — su contenedor
+   (generador.js) ya centra el texto, así que solo hace falta que el
+   botón deje de forzar 100% de ancho. */
+#btnReferenciaHorario {
+  width: fit-content;
+  padding: 11px 28px;
 }
 
 /* ---------- 5. BARRA "VOLVER / ENTRAR A SIGA" — fila propia ----------
