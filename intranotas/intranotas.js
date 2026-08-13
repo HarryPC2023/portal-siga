@@ -593,10 +593,10 @@ function generarBannerReferencias() {
     if (!cont || !cursosSeleccionados.length) { if (cont) cont.innerHTML = ''; return; }
 
     cont.innerHTML = `
-        <div style="background:var(--color-fondo-input); border-radius:14px; padding:22px 24px; text-align:center; margin:24px 0 8px;">
-            <p style="font-size:1rem; font-weight:700; margin-bottom:6px;">¿Qué sabes de tus profesores de este ciclo?</p>
-            <p style="font-size:0.85rem; color:var(--color-gris-texto); max-width:480px; margin:0 auto 16px; line-height:1.6;">
-                Por experiencia propia o por lo que escuchaste de ellos — tu aporte ayuda a que otros elijan con más criterio.
+        <div style="background:#fff; border-radius:14px; padding:22px 24px; text-align:center; margin:24px 0 8px; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
+            <p style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Cómo te fue con tus profesores este ciclo?</p>
+            <p style="font-size:0.85rem; color:var(--ink-soft); max-width:480px; margin:0 auto 16px; line-height:1.6;">
+                Ya los conoces de primera mano — cuéntale a otros estudiantes cómo enseñan y ayúdales a elegir mejor.
             </p>
             <button type="button" class="btn-primary" onclick="toggleSelectorReferencia()">Dejar mi referencia →</button>
             <div id="selectorReferenciaLista" hidden
@@ -612,10 +612,12 @@ function toggleSelectorReferencia() {
     if (!lista.hidden) { lista.hidden = true; return; }
 
     lista.innerHTML = `
-        <p style="font-size:0.78rem; font-weight:600; color:var(--color-gris-texto); margin-bottom:2px;">¿De qué curso quieres opinar sobre el profesor?</p>
+        <p style="font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:2px;">¿De qué curso quieres opinar sobre el profesor?</p>
         ${[...cursosSeleccionados].sort((a, b) => a.name.localeCompare(b.name)).map(c => `
             <a href="../opiniones.html?buscar=${encodeURIComponent(c.name)}"
-                style="display:block; padding:10px 14px; background:#fff; border-radius:8px; font-size:0.85rem; font-weight:500; color:var(--color-verde-oscuro); text-decoration:none;">
+                style="display:block; padding:10px 14px; background:var(--brand-azul-tinte); border-radius:8px; font-size:0.85rem; font-weight:500; color:var(--ink); text-decoration:none; transition:background 0.15s ease, color 0.15s ease;"
+                onmouseover="this.style.background='var(--brand-morado-tinte)'; this.style.color='var(--brand-morado)';"
+                onmouseout="this.style.background='var(--brand-azul-tinte)'; this.style.color='var(--ink)';">
                 ${c.name}
             </a>
         `).join('')}
