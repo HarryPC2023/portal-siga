@@ -327,6 +327,7 @@ body {
 .curso-nombre {
   flex: 1;
   font-weight: 500;
+  font-family: 'Poppins', sans-serif;
 }
 
 .curso-action {
