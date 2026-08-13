@@ -220,12 +220,13 @@ function mostrarBloquePeriodoCursos(expandido) {
     bloque.style.opacity = expandido ? '1' : '0';
 }
 
-/* Botón "← Cambiar carrera": despliega el selector sin borrar nada
-   todavía — solo se limpia si el alumno de verdad elige una carrera
-   nueva en seleccionarCarrera(). */
+/* Botón "← Cambiar carrera": despliega el selector arriba y sube el
+   scroll — sin borrar ni ocultar nada de lo que ya tenías abajo
+   (periodo, cursos marcados). Solo se reemplaza todo si de verdad
+   eliges una carrera nueva en seleccionarCarrera(); si vuelves a
+   tocar la misma carrera o cierras el selector, no perdiste nada. */
 function cambiarCarrera() {
     mostrarSelectorCarrera(true);
-    mostrarBloquePeriodoCursos(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
