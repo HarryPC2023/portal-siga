@@ -611,16 +611,21 @@ function toggleSelectorReferencia() {
 
     if (!lista.hidden) { lista.hidden = true; return; }
 
+    const COLOR_MORADO = 'rgba(102, 0, 204, 0.05)';
+    const COLOR_AZUL = 'rgba(60, 124, 248, 0.08)';
+
     lista.innerHTML = `
         <p style="font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:2px;">¿De qué curso quieres opinar sobre el profesor?</p>
-        ${[...cursosSeleccionados].sort((a, b) => a.name.localeCompare(b.name)).map(c => `
+        ${[...cursosSeleccionados].sort((a, b) => a.name.localeCompare(b.name)).map((c, i) => {
+        const color = i % 2 === 0 ? COLOR_MORADO : COLOR_AZUL;
+        return `
             <a href="../opiniones.html?buscar=${encodeURIComponent(c.name)}"
-                style="display:block; padding:10px 14px; background:var(--brand-azul-tinte); border-radius:8px; font-size:0.85rem; font-weight:500; color:var(--ink); text-decoration:none; transition:background 0.15s ease, color 0.15s ease;"
-                onmouseover="this.style.background='var(--brand-morado-tinte)'; this.style.color='var(--brand-morado)';"
-                onmouseout="this.style.background='var(--brand-azul-tinte)'; this.style.color='var(--ink)';">
+                style="display:block; padding:10px 14px; background:${color}; border-radius:8px; font-size:0.85rem; font-weight:500; color:var(--ink); text-decoration:none; transition:filter 0.15s ease;"
+                onmouseover="this.style.filter='brightness(0.96)';"
+                onmouseout="this.style.filter='none';">
                 ${c.name}
-            </a>
-        `).join('')}
+            </a>`;
+    }).join('')}
     `;
     lista.hidden = false;
 }
