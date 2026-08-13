@@ -294,14 +294,18 @@ body {
   flex-direction: column;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.10),
+    0 24px 40px rgba(0, 0, 0, 0.10);
   padding: 32px 28px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .modulo-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 6px 12px rgba(0, 0, 0, 0.14),
+    0 30px 48px rgba(0, 0, 0, 0.14);
 }
 
 .modulo-icono {

@@ -16,9 +16,9 @@ function pintarBanner() {
     const cursosUnicos = [...new Set(ASESORIAS.map((a) => a.curso))].sort((a, b) => a.localeCompare(b, 'es'));
 
     cont.innerHTML = `
-        <div style="background:#fff; border-radius:14px; padding:20px 22px; text-align:center; max-width:420px; margin:32px auto; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
-            <p style="font-size:0.95rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Tienes una asesoría, guía o resumen que le sirvió a otros?</p>
-            <p style="font-family:'Poppins', sans-serif; font-weight:300; font-size:0.8rem; color:var(--ink-soft); margin:0 auto 14px; max-width:380px; line-height:1.5;">
+        <div id="cajaProponerAsesoria" style="background:#fff; border-radius:12px; padding:16px 18px; text-align:center; max-width:340px; margin:28px auto; box-shadow:0 6px 14px rgba(0,0,0,0.05); transition:max-width 0.2s ease;">
+            <p style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:5px;">¿Tienes una asesoría, guía o resumen que le sirvió a otros?</p>
+            <p style="font-family:'Poppins', sans-serif; font-weight:300; font-size:0.75rem; color:var(--ink-soft); margin:0 auto 12px; max-width:300px; line-height:1.45;">
                 Compártela en SIGA y ayuda al siguiente ciclo.
             </p>
             <button type="button" class="btn-primary" id="btnAbrirFormAsesoria"
@@ -101,11 +101,13 @@ function pintarBanner() {
 function toggleFormulario() {
     const form = document.getElementById('formProponerAsesoria');
     const flecha = document.getElementById('flechaFormAsesoria');
+    const caja = document.getElementById('cajaProponerAsesoria');
     if (!form) return;
 
     const abierto = form.style.display !== 'none';
     form.style.display = abierto ? 'none' : 'flex';
     if (flecha) flecha.textContent = abierto ? '▾' : '▴';
+    if (caja) caja.style.maxWidth = abierto ? '340px' : '460px';
 }
 
 async function enviarPropuesta(e) {
