@@ -188,18 +188,29 @@ function seleccionarCarrera(carrera) {
    ============================================================ */
 function actualizarResumenCarrera() {
     const texto = document.getElementById('carrera-resumen-texto');
-    if (texto) texto.textContent = carreraSeleccionada ? NOMBRES_CARRERAS[carreraSeleccionada] : 'Selecciona tu carrera';
+    if (texto) texto.textContent = carreraSeleccionada ? NOMBRES_CARRERAS[carreraSeleccionada] : 'Elige tu carrera';
 }
 
 function mostrarSelectorCarrera(expandido) {
     const grid = document.getElementById('grid-carreras-colapsable');
     const flecha = document.getElementById('carrera-resumen-flecha');
+    const texto = document.getElementById('carrera-resumen-texto');
     if (grid) {
         grid.style.maxHeight = expandido ? '2000px' : '0px';
         grid.style.opacity = expandido ? '1' : '0';
         grid.style.marginTop = expandido ? '12px' : '0px';
     }
     if (flecha) flecha.textContent = expandido ? '▴' : '▾';
+    // Mientras el selector está abierto para elegir/cambiar, el texto
+    // se pone en modo "placeholder" (no muestra la carrera actual) —
+    // así queda claro que se está eligiendo, no confirmando de nuevo
+    // la misma. Al cerrar sin elegir una nueva, vuelve a mostrar la
+    // carrera ya guardada (o el placeholder, si todavía no hay ninguna).
+    if (texto) {
+        texto.textContent = expandido
+            ? 'Elige tu carrera'
+            : (carreraSeleccionada ? NOMBRES_CARRERAS[carreraSeleccionada] : 'Elige tu carrera');
+    }
 }
 
 function toggleSelectorCarrera() {
@@ -605,13 +616,13 @@ function generarBannerReferencias() {
     if (!cont || !cursosSeleccionados.length) { if (cont) cont.innerHTML = ''; return; }
 
     cont.innerHTML = `
-        <div style="background:#fff; border-radius:14px; padding:22px 24px; text-align:center; margin:24px 0 8px; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
+        <div style="background:#fff; border-radius:14px; padding:22px 24px; text-align:center; margin:24px auto 8px; width:fit-content; max-width:min(480px, 90%); box-shadow:0 8px 20px rgba(0,0,0,0.06);">
             <p style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Cómo te fue con tus profesores este ciclo?</p>
-            <p style="font-size:0.85rem; color:var(--ink-soft); max-width:480px; margin:0 auto 16px; line-height:1.6;">
+            <p style="font-size:0.85rem; color:var(--ink-soft); max-width:400px; margin:0 auto 16px; line-height:1.6;">
                 Ya los conoces de primera mano — cuéntale a otros estudiantes cómo enseñan y ayúdales a elegir mejor.
             </p>
             <button type="button" class="btn-primary" id="btnReferencia"
-                style="display:inline-flex; align-items:center; gap:6px;"
+                style="display:inline-flex; align-items:center; gap:6px; padding:9px 24px; font-size:0.9rem;"
                 onclick="toggleSelectorReferencia()">
                 <span>Dejar mi referencia</span>
                 <span id="flechaReferencia" aria-hidden="true">▾</span>

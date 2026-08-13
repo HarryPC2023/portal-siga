@@ -57,12 +57,12 @@
 
             <div id="bloque-carrera" style="margin-bottom: 1.5rem;">
                 <div id="carrera-resumen" onclick="toggleSelectorCarrera()"
-                    style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:var(--color-fondo-input); border-radius:10px; padding:12px 16px; font-weight:600; color:var(--color-gris-texto);">
-                    <span id="carrera-resumen-texto">Selecciona tu carrera</span>
+                    style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fff; box-shadow:var(--sombra-tarjeta); border-radius:10px; padding:12px 16px; font-weight:600; color:var(--color-gris-texto);">
+                    <span id="carrera-resumen-texto">Elige tu carrera</span>
                     <span id="carrera-resumen-flecha">▾</span>
                 </div>
                 <div class="grid-carreras" id="grid-carreras-colapsable"
-                    style="margin-top:12px; overflow:hidden; max-height:2000px; opacity:1; transition:max-height 0.25s ease, opacity 0.2s ease, margin-top 0.25s ease;">
+                    style="margin-top:20px; overflow:hidden; max-height:2000px; opacity:1; transition:max-height 0.25s ease, opacity 0.2s ease, margin-top 0.25s ease;">
                     <button class="btn-carrera" onclick="seleccionarCarrera('sistemas')">
                         <img src="sistemas.png" alt="Sistemas" class="btn-carrera-img">
                         <div class="btn-carrera-texto">
@@ -210,10 +210,39 @@
         <span class="firma-texto">by Harry</span>
     </div>
 
+    <!-- Botón flotante "volver arriba" — mismo componente que Asesorías/
+         Materiales/Horarios (estilo en landing.css). Pantalla 3 y Pantalla 4
+         viven en este mismo documento (se muestran/ocultan con la clase
+         .activa, no son páginas separadas), así que un solo botón cubre
+         a las dos: la ventana es la misma en ambos casos. -->
+    <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
+
     <script src="cursos_db.js"></script>
     <script src="../js/selector-personalizado.js?v=1"></script>
-    <script src="intranotas.js?v=5"></script>
+    <script src="intranotas.js?v=6"></script>
     <script src="../js/tema-siga.js?v=1"></script>
+
+    <!-- Botón "volver arriba": aparece pasados ~400px de scroll de la
+         ventana, sube suave al hacer clic. Funciona igual sin importar
+         si estás en Pantalla 3 o Pantalla 4 (mismo documento). -->
+    <script>
+        (function () {
+            const boton = document.getElementById('volverArriba');
+            if (!boton) return;
+
+            function actualizarVisibilidad() {
+                boton.classList.toggle('visible', window.scrollY > 400);
+            }
+
+            window.addEventListener('scroll', actualizarVisibilidad, { passive: true });
+            actualizarVisibilidad();
+
+            boton.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        })();
+    </script>
 
 </body>
 
