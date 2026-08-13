@@ -281,7 +281,7 @@ function dibujar(idx) {
     </tr>`;
     });
     html += `</tbody></table>`;
-    html += construirBannerReferenciasHorario(combo);
+    html += construirBannerReferenciasHorario();
     if (calWrap) calWrap.innerHTML = html;
 
     // ── Construir bloques por día ─────────────────────────────
@@ -410,37 +410,51 @@ function dibujar(idx) {
    fuera de #calendarWrap le roba alto al calendario en vez de
    aparecer al hacer scroll.
 
-   A diferencia de Intranotas, acá sí hay profesor real por sección
-   (sec.docente), así que el selector es por profesor directamente.
-   Estos cursos aún no se cursan — por eso el mensaje apunta a
-   "lo que sabes" (propia experiencia previa u oído de otros), no a
-   "cómo te fue" como en Intranotas.
+   Se arma a partir de las SECCIONES MARCADAS en la barra lateral
+   (.p-check:checked + seccionesData), no del combo que se está
+   viendo — a propósito: el combo cambia con cada una de las N
+   combinaciones, y si el alumno se queda con la primera que le
+   gustó, nunca navega las demás. Basarlo en la selección real
+   evita que profesores que sí consideró (pero no terminaron en el
+   combo elegido) se queden fuera de la invitación.
+
+   A diferencia de Intranotas, acá sí hay profesor real por sección,
+   así que el selector es por profesor directamente. Estos cursos
+   aún no se cursan — por eso el mensaje apunta a "lo que sabes"
+   (propia experiencia previa u oído de otros), no a "cómo te fue"
+   como en Intranotas.
    ============================================================ */
 let profesoresComboActual = [];
 
-function construirBannerReferenciasHorario(combo) {
-    if (!combo || !combo.length) { profesoresComboActual = []; return ''; }
-
-    // Profesor único por curso — si un mismo profesor dicta varias sesiones
-    // del mismo curso (teoría + práctica), aparece una sola vez en la lista.
+function construirBannerReferenciasHorario() {
+    // Profesor único por curso — si un mismo profesor dicta varias
+    // secciones marcadas del mismo curso (teoría + práctica), aparece
+    // una sola vez en la lista.
     const vistos = new Set();
     profesoresComboActual = [];
-    combo.forEach(sec => {
-        const clave = `${sec.docente}|${sec.nombre}`;
+    document.querySelectorAll('.p-check:checked').forEach(cb => {
+        const curso = cb.dataset.curso;
+        const seccion = cb.dataset.seccion;
+        const info = seccionesData[curso] && seccionesData[curso][seccion];
+        if (!info || !info.docente) return;
+        const clave = `${info.docente}|${curso}`;
         if (vistos.has(clave)) return;
         vistos.add(clave);
-        profesoresComboActual.push({ docente: sec.docente, curso: sec.nombre });
+        profesoresComboActual.push({ docente: info.docente, curso });
     });
 
+    if (!profesoresComboActual.length) return '';
+
     return `
-        <div style="background:#fff; border-radius:14px; padding:22px 24px; text-align:center; margin:24px 0 8px; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
-            <p style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Qué sabes de tus profesores de este ciclo?</p>
-            <p style="font-size:0.85rem; color:var(--ink-soft); max-width:480px; margin:0 auto 16px; line-height:1.6;">
+        <div style="background:#fff; border-radius:14px; padding:20px; text-align:center; margin:24px auto 8px; max-width:420px; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
+            <p style="font-size:0.95rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Qué sabes de tus profesores de este ciclo?</p>
+            <p style="font-size:0.8rem; color:var(--ink-soft); margin:0 auto 14px; line-height:1.5;">
                 Por experiencia propia o por lo que escuchaste de ellos — tu aporte ayuda a que otros elijan con más criterio.
             </p>
-            <button type="button" class="btn-primary" onclick="toggleSelectorReferenciaHorario()">Dejar mi referencia →</button>
+            <button type="button" class="btn-primary" style="display:inline-flex; font-size:0.85rem; padding:9px 18px;"
+                onclick="toggleSelectorReferenciaHorario()">Dejar mi referencia →</button>
             <div id="selectorReferenciaHorarioLista" hidden
-                style="margin-top:16px; display:flex; flex-direction:column; gap:6px; max-width:420px; margin-left:auto; margin-right:auto; text-align:left;"></div>
+                style="margin-top:14px; display:flex; flex-direction:column; gap:6px; text-align:left;"></div>
         </div>
     `;
 }
@@ -466,6 +480,11 @@ function toggleSelectorReferenciaHorario() {
     }).join('')}
     `;
     lista.hidden = false;
+
+    // La lista queda debajo del pliegue dentro de #calendarWrap (que
+    // tiene su propio scroll interno) — sin esto, el usuario no ve nada
+    // al primer clic y tiene que buscar la barra deslizante a ciegas.
+    setTimeout(() => lista.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 30);
 }
 
 // ── NAVEGAR ───────────────────────────────────────────────────
