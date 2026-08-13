@@ -281,6 +281,7 @@ function dibujar(idx) {
     </tr>`;
     });
     html += `</tbody></table>`;
+    html += construirBannerReferenciasHorario(combo);
     if (calWrap) calWrap.innerHTML = html;
 
     // ── Construir bloques por día ─────────────────────────────
@@ -398,12 +399,17 @@ function dibujar(idx) {
             anchor.appendChild(block);
         });
     });
-
-    generarBannerReferenciasHorario(combo);
 }
 
 /* ============================================================
    BANNER "DEJAR MI REFERENCIA" (debajo del calendario armado)
+   Se arma DENTRO del mismo innerHTML de #calendarWrap (después de
+   la tabla), no como un contenedor aparte en .main — esta pantalla
+   es un app-shell de altura fija (.gen-layout: 100vh, overflow
+   hidden) donde SOLO #calendarWrap tiene scroll propio. Un hermano
+   fuera de #calendarWrap le roba alto al calendario en vez de
+   aparecer al hacer scroll.
+
    A diferencia de Intranotas, acá sí hay profesor real por sección
    (sec.docente), así que el selector es por profesor directamente.
    Estos cursos aún no se cursan — por eso el mensaje apunta a
@@ -412,10 +418,8 @@ function dibujar(idx) {
    ============================================================ */
 let profesoresComboActual = [];
 
-function generarBannerReferenciasHorario(combo) {
-    const cont = document.getElementById('banner-referencias-horarios');
-    if (!cont) return;
-    if (!combo || !combo.length) { cont.innerHTML = ''; profesoresComboActual = []; return; }
+function construirBannerReferenciasHorario(combo) {
+    if (!combo || !combo.length) { profesoresComboActual = []; return ''; }
 
     // Profesor único por curso — si un mismo profesor dicta varias sesiones
     // del mismo curso (teoría + práctica), aparece una sola vez en la lista.
@@ -428,7 +432,7 @@ function generarBannerReferenciasHorario(combo) {
         profesoresComboActual.push({ docente: sec.docente, curso: sec.nombre });
     });
 
-    cont.innerHTML = `
+    return `
         <div style="background:#fff; border-radius:14px; padding:22px 24px; text-align:center; margin:24px 0 8px; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
             <p style="font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Qué sabes de tus profesores de este ciclo?</p>
             <p style="font-size:0.85rem; color:var(--ink-soft); max-width:480px; margin:0 auto 16px; line-height:1.6;">
