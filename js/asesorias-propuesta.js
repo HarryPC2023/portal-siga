@@ -16,9 +16,9 @@ function pintarBanner() {
     const cursosUnicos = [...new Set(ASESORIAS.map((a) => a.curso))].sort((a, b) => a.localeCompare(b, 'es'));
 
     cont.innerHTML = `
-        <div style="background:#fff; border-radius:14px; padding:28px 24px; text-align:center; max-width:560px; margin:32px auto; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
-            <p style="font-size:1.05rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Tienes una asesoría, guía o resumen que le sirvió a otros?</p>
-            <p style="font-size:0.85rem; color:var(--ink-soft); margin:0 auto 16px; max-width:440px; line-height:1.6;">
+        <div style="background:#fff; border-radius:14px; padding:20px 22px; text-align:center; max-width:420px; margin:32px auto; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
+            <p style="font-size:0.95rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Tienes una asesoría, guía o resumen que le sirvió a otros?</p>
+            <p style="font-family:'Poppins', sans-serif; font-weight:300; font-size:0.8rem; color:var(--ink-soft); margin:0 auto 14px; max-width:380px; line-height:1.5;">
                 Compártela en SIGA y ayuda al siguiente ciclo.
             </p>
             <button type="button" class="btn-primary" id="btnAbrirFormAsesoria"
