@@ -29,6 +29,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   sesionActual = await requerirSesion('');
   if (!sesionActual) return;
 
+  // Si se llega con ?buscar=curso (ej. desde el banner de Intranotas
+  // u Horarios), precarga el buscador para que el usuario caiga
+  // directo sobre el curso/profesor que le interesa.
+  const parametros = new URLSearchParams(window.location.search);
+  const busquedaInicial = parametros.get('buscar');
+  if (busquedaInicial && buscador) buscador.value = busquedaInicial;
+
   grid.innerHTML = '<p class="opiniones-vacio">Cargando perfiles…</p>';
   await cargarTodo();
   renderGrid();

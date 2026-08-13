@@ -576,6 +576,51 @@ function generarSimulador() {
     cargarMetasGuardadas();
     cargarSelectorPeriodosGuardados();
     cursosSeleccionados.forEach(c => calcularMetaCurso(c.id));
+    generarBannerReferencias();
+}
+
+/* ============================================================
+   BANNER "DEJAR MI REFERENCIA" (Pantalla 4, debajo de Guardar /
+   Limpiar todo). Intranotas no sabe qué profesor dicta cada curso
+   (cursos_db.js no trae esa info, a diferencia de Horarios que sí
+   elige por sección con profesor incluido), así que el paso
+   intermedio ofrece CURSOS, no profesores. Al elegir uno, se abre
+   Opiniones con ese curso ya buscado, y ahí la persona elige el
+   profesor exacto para dejar su referencia.
+   ============================================================ */
+function generarBannerReferencias() {
+    const cont = document.getElementById('banner-referencias');
+    if (!cont || !cursosSeleccionados.length) { if (cont) cont.innerHTML = ''; return; }
+
+    cont.innerHTML = `
+        <div style="background:var(--color-fondo-input); border-radius:14px; padding:22px 24px; text-align:center; margin:24px 0 8px;">
+            <p style="font-size:1rem; font-weight:700; margin-bottom:6px;">¿Qué sabes de tus profesores de este ciclo?</p>
+            <p style="font-size:0.85rem; color:var(--color-gris-texto); max-width:480px; margin:0 auto 16px; line-height:1.6;">
+                Por experiencia propia o por lo que escuchaste de ellos — tu aporte ayuda a que otros elijan con más criterio.
+            </p>
+            <button type="button" class="btn-primary" onclick="toggleSelectorReferencia()">Dejar mi referencia →</button>
+            <div id="selectorReferenciaLista" hidden
+                style="margin-top:16px; display:flex; flex-direction:column; gap:6px; max-width:420px; margin-left:auto; margin-right:auto; text-align:left;"></div>
+        </div>
+    `;
+}
+
+function toggleSelectorReferencia() {
+    const lista = document.getElementById('selectorReferenciaLista');
+    if (!lista) return;
+
+    if (!lista.hidden) { lista.hidden = true; return; }
+
+    lista.innerHTML = `
+        <p style="font-size:0.78rem; font-weight:600; color:var(--color-gris-texto); margin-bottom:2px;">¿De qué curso quieres opinar sobre el profesor?</p>
+        ${[...cursosSeleccionados].sort((a, b) => a.name.localeCompare(b.name)).map(c => `
+            <a href="../opiniones.html?buscar=${encodeURIComponent(c.name)}"
+                style="display:block; padding:10px 14px; background:#fff; border-radius:8px; font-size:0.85rem; font-weight:500; color:var(--color-verde-oscuro); text-decoration:none;">
+                ${c.name}
+            </a>
+        `).join('')}
+    `;
+    lista.hidden = false;
 }
 
 function generarTarjetaCurso(curso) {
