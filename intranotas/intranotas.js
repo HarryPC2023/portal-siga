@@ -598,7 +598,12 @@ function generarBannerReferencias() {
             <p style="font-size:0.85rem; color:var(--ink-soft); max-width:480px; margin:0 auto 16px; line-height:1.6;">
                 Ya los conoces de primera mano — cuéntale a otros estudiantes cómo enseñan y ayúdales a elegir mejor.
             </p>
-            <button type="button" class="btn-primary" onclick="toggleSelectorReferencia()">Dejar mi referencia →</button>
+            <button type="button" class="btn-primary" id="btnReferencia"
+                style="display:inline-flex; align-items:center; gap:6px;"
+                onclick="toggleSelectorReferencia()">
+                <span>Dejar mi referencia</span>
+                <span id="flechaReferencia" aria-hidden="true">▾</span>
+            </button>
             <div id="selectorReferenciaLista" hidden
                 style="margin-top:16px; display:flex; flex-direction:column; gap:6px; max-width:420px; margin-left:auto; margin-right:auto; text-align:left;"></div>
         </div>
@@ -607,9 +612,14 @@ function generarBannerReferencias() {
 
 function toggleSelectorReferencia() {
     const lista = document.getElementById('selectorReferenciaLista');
+    const flecha = document.getElementById('flechaReferencia');
     if (!lista) return;
 
-    if (!lista.hidden) { lista.hidden = true; return; }
+    if (!lista.hidden) {
+        lista.hidden = true;
+        if (flecha) flecha.textContent = '▾';
+        return;
+    }
 
     const COLOR_MORADO = 'rgba(102, 0, 204, 0.05)';
     const COLOR_AZUL = 'rgba(60, 124, 248, 0.08)';
@@ -628,6 +638,7 @@ function toggleSelectorReferencia() {
     }).join('')}
     `;
     lista.hidden = false;
+    if (flecha) flecha.textContent = '▴';
 }
 
 function generarTarjetaCurso(curso) {

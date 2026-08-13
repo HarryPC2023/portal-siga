@@ -451,8 +451,12 @@ function construirBannerReferenciasHorario() {
             <p style="font-size:0.8rem; color:var(--ink-soft); margin:0 auto 14px; line-height:1.5;">
                 Por experiencia propia o por lo que escuchaste de ellos — tu aporte ayuda a que otros elijan con más criterio.
             </p>
-            <button type="button" class="btn-primary" style="display:inline-flex; font-size:0.85rem; padding:9px 18px;"
-                onclick="toggleSelectorReferenciaHorario()">Dejar mi referencia →</button>
+            <button type="button" class="btn-primary" id="btnReferenciaHorario"
+                style="display:inline-flex; align-items:center; gap:6px; font-size:0.85rem; padding:9px 18px;"
+                onclick="toggleSelectorReferenciaHorario()">
+                <span>Dejar mi referencia</span>
+                <span id="flechaReferenciaHorario" aria-hidden="true">▾</span>
+            </button>
             <div id="selectorReferenciaHorarioLista" hidden
                 style="margin-top:14px; display:flex; flex-direction:column; gap:6px; text-align:left;"></div>
         </div>
@@ -461,9 +465,14 @@ function construirBannerReferenciasHorario() {
 
 function toggleSelectorReferenciaHorario() {
     const lista = document.getElementById('selectorReferenciaHorarioLista');
+    const flecha = document.getElementById('flechaReferenciaHorario');
     if (!lista) return;
 
-    if (!lista.hidden) { lista.hidden = true; return; }
+    if (!lista.hidden) {
+        lista.hidden = true;
+        if (flecha) flecha.textContent = '▾';
+        return;
+    }
 
     const COLOR_MORADO = 'rgba(102, 0, 204, 0.05)';
     const COLOR_AZUL = 'rgba(60, 124, 248, 0.08)';
@@ -480,6 +489,7 @@ function toggleSelectorReferenciaHorario() {
     }).join('')}
     `;
     lista.hidden = false;
+    if (flecha) flecha.textContent = '▴';
 
     // La lista queda debajo del pliegue dentro de #calendarWrap (que
     // tiene su propio scroll interno) — sin esto, el usuario no ve nada
