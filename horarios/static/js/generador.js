@@ -25,6 +25,41 @@ if (typeof cargaGlobal === 'undefined') var cargaGlobal = null;
 const LS_GEN_SECCIONES = 'horarioGen_seccionesGen';
 const LS_GEN_CRUCES = 'horarioGen_cruces';
 
+// ── Puente con Supabase (auth-siga.js) ──────────────────────────
+function esperarSupabaseListo() {
+    if (window.sigaSupabase) return Promise.resolve();
+    return new Promise(resolve => window.addEventListener('siga:supabase-listo', resolve, { once: true }));
+}
+
+async function obtenerUserIdActual() {
+    await esperarSupabaseListo();
+    try {
+        const sesion = await window.sigaObtenerSesion();
+        return sesion?.user?.id || null;
+    } catch (e) {
+        console.warn('No se pudo obtener la sesión actual:', e);
+        return null;
+    }
+}
+
+// Autoguardado en la nube con debounce (evita un upsert por cada checkbox).
+let _debounceNubeGen = null;
+function guardarEnNube(campos) {
+    clearTimeout(_debounceNubeGen);
+    _debounceNubeGen = setTimeout(async () => {
+        const userId = await obtenerUserIdActual();
+        if (!userId) return;
+        try {
+            const { error } = await window.sigaSupabase
+                .from('horarios_alumno')
+                .upsert({ user_id: userId, actualizado_en: new Date().toISOString(), ...campos });
+            if (error) console.warn('No se pudo sincronizar con la nube:', error);
+        } catch (e) {
+            console.warn('Error sincronizando con la nube:', e);
+        }
+    }, 800);
+}
+
 // ── TOOLTIP ───────────────────────────────────────────────────
 let tooltipEl = null;
 document.addEventListener('DOMContentLoaded', () => {
@@ -68,6 +103,45 @@ function inicializar(cursos) {
     // por defecto (todas las secciones marcadas, 0 cruces).
     restaurarSeleccionSecciones();
     restaurarCruces();
+
+    // Si había algo guardado (local o en la nube), genera automáticamente
+    // en vez de esperar a que el usuario vuelva a pulsar "Generar Horarios".
+    sincronizarYGenerarSiHabiaAlgo();
+}
+
+// ── Reconciliación con la nube + auto-generar ───────────────────
+async function sincronizarYGenerarSiHabiaAlgo() {
+    let huboAlgoQueRestaurar = !!localStorage.getItem(LS_GEN_SECCIONES) || !!localStorage.getItem(LS_GEN_CRUCES);
+
+    const userId = await obtenerUserIdActual();
+    if (userId) {
+        try {
+            const { data, error } = await window.sigaSupabase
+                .from('horarios_alumno')
+                .select('secciones_generador, cruces')
+                .eq('user_id', userId)
+                .maybeSingle();
+
+            if (!error && data && data.secciones_generador) {
+                document.querySelectorAll('.p-check').forEach(cb => {
+                    const curso = cb.dataset.curso;
+                    if (curso in data.secciones_generador) {
+                        cb.checked = data.secciones_generador[curso].includes(cb.dataset.seccion);
+                    }
+                });
+                try { localStorage.setItem(LS_GEN_SECCIONES, JSON.stringify(data.secciones_generador)); } catch (e) { /* no crítico */ }
+                huboAlgoQueRestaurar = true;
+            }
+            if (!error && data && data.cruces != null) {
+                setCruces(data.cruces);
+                huboAlgoQueRestaurar = true;
+            }
+        } catch (e) {
+            console.warn('No se pudo sincronizar la selección del generador desde la nube:', e);
+        }
+    }
+
+    if (huboAlgoQueRestaurar) generar();
 }
 
 // ── AUTOGUARDADO: secciones/profesores marcados ────────────────
@@ -84,6 +158,7 @@ function guardarSeleccionSecciones() {
         // no interrumpe el uso normal del generador.
         console.warn('No se pudo guardar la selección de secciones:', e);
     }
+    guardarEnNube({ secciones_generador: seleccion });
 }
 
 function restaurarSeleccionSecciones() {
@@ -113,6 +188,7 @@ function guardarCruces(v) {
     } catch (e) {
         console.warn('No se pudo guardar la cantidad de cruces:', e);
     }
+    guardarEnNube({ cruces: v });
 }
 
 function restaurarCruces() {
