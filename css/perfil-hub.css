@@ -20,6 +20,8 @@
 }
 
 .perfil-hub-tab {
+    display: block;
+    width: 100%;
     text-align: left;
     padding: 14px 16px;
     border-radius: 14px;
