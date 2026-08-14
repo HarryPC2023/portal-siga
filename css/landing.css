@@ -1,965 +1,1804 @@
-/* SIGA build v11 */
-html {
-  scroll-behavior: smooth;
+/* ── VARIABLES ─────────────────────────────────────────────── */
+:root {
+  --accent: #06b6d4;
+  --accent-dim: rgba(6, 182, 212, 0.1);
+  --accent-dark: #0891b2;
+  --bg: #f1f5f9;
+  --surface: #ffffff;
+  --surface2: #f8fafc;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-dim: #64748b;
+  --text-faint: #cbd5e1;
+  --radius: 10px;
+  --sidebar-w: 290px;
+  --row-h: 38px;
+
+  /* NUEVA VARIABLE: Dorado Brillante */
+  --gold: #ffd700;
 }
 
-* {
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* Antes overflow:hidden a secas -- se habilita overflow-y:auto para
+     que la página pueda hacer un pequeño scroll extra al final (donde
+     vive la firma "by Harry"). .gen-layout sigue calculando su propia
+     altura con vh, así que el calendario y el sidebar mantienen su
+     comportamiento de "app de una pantalla" -- lo único que cambia es
+     que ahora hay un poquito de scroll de sobra después de todo eso. */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* En móvil el body necesita scroll libre */
+@media (max-width: 900px) {
+
+  html,
+  body {
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
+
+html:has(body.page-index-body),
+body.page-index-body {
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100%;
+}
+
+html:has(body.page-index-body),
+body.page-index-body {
+  overflow-y: auto;
+  height: auto;
+  min-height: 100%;
+}
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 body {
-  font-family: var(--font-body);
-  font-weight: 500;
-  color: var(--ink);
-  background: var(--paper);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* ===== HERO: degradado diagonal blanco -> gris clarito, con la misma
-   tecnica de background-position animado que ya usan INFO, MODULOS y el
-   dashboard (comprobada, sin la ambiguedad de mover un SVG con transform). ===== */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  overflow: hidden;
-  background-color: var(--paper);
-  background-image: url('../assets/fondo-1.jpg');
-  background-size: 170% 170%;
-  animation: moverHero 26s ease-in-out infinite;
-}
-
-@keyframes moverHero {
-  0% {
-    background-position: 10% 20%;
-  }
-
-  50% {
-    background-position: 90% 40%;
-  }
-
-  100% {
-    background-position: 10% 20%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero {
-    animation: none;
-    background-position: 50% 50%;
-  }
-}
-
-/* Marca de agua: tu logo real (no texto), centrado en todo el hero, muy
-   semi-transparente -- asi conserva los colores azul-morado del logo en
-   vez de quedar en un solo tono plano. El titular y el resto del
-   contenido pasan por encima sin problema, es intencional que quede
-   parcialmente tapada. */
-.hero-marca-agua {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  width: clamp(340px, 34vw, 620px);
-  height: auto;
-  opacity: 0.1;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* ===== NAV: barra champagne rectangular (esquinas suavizadas, no
-   ovalada), flotando sobre el fondo de ondas. Logo a la izquierda,
-   sliders del menu a la derecha, todo en una sola fila. ===== */
-nav {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  max-width: 1160px;
-  margin: 24px auto 0;
-  padding: 22px 28px;
-  background: linear-gradient(120deg, #FDFCF7 0%, #F5EFDE 50%, #FDFCF7 100%);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 18px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.logo img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
-
-/* "SIGA" y el nombre completo tienen color independiente entre si:
-   cambiar uno no mueve al otro. Por defecto el tono champagne (marron
-   calido) para que combinen con el fondo de la barra, pero
-   --color-logo-siga se puede recolorear aparte si se necesita. */
-.logo-siga {
-  font-family: var(--font-logo);
-  font-weight: 400;
-  font-size: 19px;
-  color: var(--color-logo-siga, #4A4433);
-  letter-spacing: 0.02em;
-}
-
-.logo-nombre {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 12px;
-  color: var(--color-logo-nombre, #8a806a);
-}
-
-/* Sliders del menú: pastillas ovaladas blancas con sombra, texto negro.
-   "Módulos" queda azul #33A2FC de forma permanente (marca la entrada al
-   submenú). Los demás sliders principales solo se ponen azules cuando se
-   les agrega la clase .activo (por JS, según en qué sección esté el usuario). */
-.nav-links {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-top: 20px;
-  font-family: var(--font-nav);
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  color: #4A4433;
-}
-
-/* Línea delgada arriba de los botones: se desliza hasta quedar sobre el
-   que se está pasando el mouse (o con foco de teclado). Los botones ya no
-   cambian de color — esta línea es la única señal de "esto es lo que
-   estás mirando". */
-.nav-indicador {
-  position: absolute;
-  top: 0;
+.harry-footer {
+  position: fixed;
+  bottom: 0;
   left: 0;
-  height: 3px;
-  width: 0;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--brand-azul), var(--brand-morado));
-  opacity: 0;
-  pointer-events: none;
-  z-index: 0;
-  transition: left 0.3s cubic-bezier(.4, 0, .2, 1), width 0.3s cubic-bezier(.4, 0, .2, 1), opacity 0.2s ease;
-}
-
-.nav-links>a {
-  position: relative;
-  z-index: 1;
-  display: block;
-  box-sizing: border-box;
-  text-align: center;
-  padding: 12px 18px;
-  border-radius: 14px;
-  background: #FFFFFF;
-  color: #4A4433;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
-}
-
-.nav-links>a:hover,
-.nav-links>a:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
-}
-
-/* Píldora de título: usada en "INFO" y "MÓDULOS". Tono champagne/plateado
-   con texto oscuro (en vez del degradado azul-morado a toda página), con
-   un borde fino para distinguirse del fondo blanco de la tarjeta. Entra
-   con un pequeño rebote la primera vez que aparece en pantalla (JS le
-   agrega .visible via IntersectionObserver). Sin halo: en este tono más
-   sobrio un resplandor de color se veía fuera de lugar. */
-.titulo-pildora {
-  position: relative;
-  display: inline-block;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 18px;
-  letter-spacing: 0.04em;
-  color: #4A4433;
-  padding: 10px 30px;
-  border-radius: 999px;
-  background: linear-gradient(120deg, #FDFCF7 0%, #F5EFDE 50%, #FDFCF7 100%);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.07);
-  opacity: 0;
-  transform: translateY(-40px) scale(0.6);
-  transition: opacity 0.8s cubic-bezier(.34, 1.8, .64, 1), transform 0.8s cubic-bezier(.34, 1.8, .64, 1);
-}
-
-.titulo-pildora.visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .titulo-pildora {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
-/* Registrarse: slider morado #6600CC */
-.btn-registrarse {
-  background: #6600CC !important;
-  color: #fff !important;
-  font-weight: 600;
-}
-
-.btn-registrarse:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(102, 0, 204, 0.28);
-}
-
-/* ===== CONTENIDO HERO ===== */
-.hero-content {
-  position: relative;
-  z-index: 5;
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 70px 32px 60px;
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 20px;
+  width: 100%;
+  height: 40px;
+  display: flex;
   align-items: center;
-  min-height: calc(100vh - 260px);
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 15px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  z-index: 99999;
 }
 
-@media (max-width:880px) {
-  .hero-content {
-    grid-template-columns: 1fr;
-    padding-top: 50px;
-  }
+.harry-footer-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  object-fit: cover;
+  border: none;
+  box-shadow: none;
 }
 
-.hero-panel {
+.harry-footer-text {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f172a;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── INDEX PAGE ─────────────────────────────────────────────── */
+.page-index {
+  min-height: calc(100vh - 40px);
+  /* ← resta el footer */
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
 }
 
-/* "Conecta / Organiza / Avanza" en 3 lineas, cada palabra ocupando todo
-   el ancho disponible para que el tamano de letra pueda ser grande de
-   verdad (el impacto tipografico que buscabamos). "Avanza" lleva el
-   color de excepcion #9900FF -- puntual solo aqui, no es color de marca. */
-.hero-panel h1 {
-  font-family: var(--font-logo);
-  font-weight: 400;
-  font-size: clamp(40px, 6vw, 76px);
-  line-height: 1.05;
-  color: var(--ink);
-  letter-spacing: 0.005em;
-  margin-bottom: 24px;
+.idx-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 32px;
 }
 
-.lema-acento {
-  color: #9900FF;
-}
 
-/* Lema del hero: cada palabra cae en su lugar por separado, con un pequeño
-   desfase entre una y otra. El JS repite este efecto cada 12-15s, pero
-   solo mientras el hero está en pantalla (agrega y quita la clase
-   .animar) — así no es un efecto de una sola vez que nadie vuelve a ver,
-   pero tampoco se anima cuando el usuario ya está mirando otra sección. */
-.lema-palabra {
-  display: block;
-  opacity: 1;
-}
-
-.lema-palabra.animar {
-  animation-name: caerPalabra;
-  animation-duration: 1.1s;
-  animation-timing-function: cubic-bezier(.25, .8, .35, 1);
-  animation-fill-mode: backwards;
-}
-
-.lema-palabra:nth-child(1).animar {
-  animation-delay: 0.1s;
-}
-
-.lema-palabra:nth-child(2).animar {
-  animation-delay: 0.35s;
-}
-
-.lema-palabra:nth-child(3).animar {
-  animation-delay: 0.6s;
-}
-
-@keyframes caerPalabra {
-  0% {
-    opacity: 0;
-    transform: translateX(-28px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .lema-palabra.animar {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.hero-panel .descripcion {
-  font-size: 15.5px;
-  font-weight: 500;
-  color: var(--ink-soft);
-  line-height: 1.6;
-  max-width: 480px;
-  margin-bottom: 34px;
-}
-
-.hero-actions {
+.idx-logo {
   display: flex;
   align-items: center;
-  gap: 22px;
-  flex-wrap: wrap;
-  margin-bottom: 36px;
+  gap: 12px;
 }
 
-/* Comenzar: mismo morado #6600CC que Registrarse */
-.btn-primary {
-  background: #6600CC;
-  color: #fff;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 15px 28px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+.logo-app-img {
+  width: 45px;
+  /* Tamaño ideal para el header */
+  height: 45px;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(102, 0, 204, 0.28);
+.logo-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text);
 }
 
-/* ===== escena derecha: los 5 iconos de modulo, superpuestos en tamanos
-   distintos. Cada uno es un contenedor lila (mismo tono que el fondo de
-   la seccion MODULOS) con la imagen del icono adentro; el drop-shadow
-   blanco duplicado crea el halo alrededor de la linea negra del PNG
-   (box-shadow no serviria aqui porque no sigue la transparencia). ===== */
-.escena {
-  position: relative;
+.logo-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.idx-body {
+  flex: 1;
+  max-width: 680px;
+  margin: 16px auto;
+  padding: 0 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   width: 100%;
-  max-width: 540px;
-  min-height: 460px;
-  margin: 0 auto;
 }
 
-.hero-icono-modulo {
+.idx-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+
+.card-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+
+/* ── UPLOAD ZONE ── */
+.upload-zone {
+  border: 1.5px dashed var(--text-faint);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  background: var(--surface2);
+  margin-bottom: 10px;
+}
+
+.upload-zone:hover,
+.upload-zone.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.upload-zone input {
   position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.upload-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.upload-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.upload-label strong {
+  color: var(--text);
+  display: block;
+  font-size: 14px;
+}
+
+.file-badge {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 24px;
-  background: var(--brand-morado-tinte);
-  border: 5px solid #fff;
-  box-shadow: 0 0 0 1px rgba(102, 0, 204, 0.12), 0 3px 8px rgba(0, 0, 0, 0.10);
+  gap: 6px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.hero-icono-modulo img {
-  display: block;
-  width: 55%;
-  height: auto;
-  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px rgba(255, 255, 255, 0.7));
+.upload-status {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+  min-height: 20px;
 }
 
-.mi-1 {
-  width: 175px;
-  height: 175px;
-  top: -20px;
-  right: 80px;
-  z-index: 2;
-}
-
-.mi-2 {
-  width: 175px;
-  height: 175px;
-  top: 100px;
-  left: 135px;
-  z-index: 3;
-}
-
-.mi-3 {
-  width: 175px;
-  height: 175px;
-  top: -20px;
-  left: 0;
-  z-index: 5;
-}
-
-.mi-4 {
-  width: 175px;
-  height: 175px;
-  top: 250px;
-  left: 10px;
-  z-index: 2;
-}
-
-.mi-5 {
-  width: 175px;
-  height: 175px;
-  top: 250px;
-  right: 80px;
-  z-index: 5;
-}
-
-@media (max-width:880px) {
-  .escena {
-    min-height: 340px;
-    max-width: 400px;
-  }
-
-  .mi-1 {
-    width: 110px;
-    height: 110px;
-    right: 20px;
-  }
-
-  .mi-2 {
-    width: 145px;
-    height: 145px;
-    top: 70px;
-    left: 90px;
-  }
-
-  .mi-3 {
-    width: 130px;
-    height: 130px;
-    top: 20px;
-    left: 0;
-  }
-
-  .mi-4 {
-    width: 122px;
-    height: 122px;
-    top: 180px;
-    left: 5px;
-  }
-
-  .mi-5 {
-    width: 132px;
-    height: 132px;
-    top: 175px;
-    right: 0;
-  }
-}
-
-/* ---------- INFO (antes "Sobre la Plataforma") ---------- */
-.plataforma {
+/* ── SEARCH & CURSOS ── */
+.search-wrap {
   position: relative;
-  overflow: hidden;
-  background: linear-gradient(120deg, var(--brand-azul-tinte) 0%, #ffffff 55%, var(--brand-azul-tinte) 100%);
-  background-size: 280% 280%;
-  animation: moverInfo 10s ease-in-out infinite;
-  padding: 90px 32px;
+  margin-bottom: 10px;
 }
 
-@keyframes moverInfo {
-  0% {
-    background-position: 15% 25%;
-  }
-
-  50% {
-    background-position: 85% 75%;
-  }
-
-  100% {
-    background-position: 15% 25%;
-  }
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 13px;
+  background: var(--surface2);
+  outline: none;
+  transition: border-color 0.2s;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .plataforma {
-    animation: none;
-    background-position: 50% 50%;
-  }
-}
-
-/* Marca de agua de seccion: el logo real, grande y centrado en TODA la
-   seccion (no por tarjeta) -- se reutiliza igual en INFO, MODULOS, y el
-   hero. Al no repetirse dentro de la misma vista, no se siente saturado. */
-.seccion-marca-agua {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 0;
-  width: clamp(320px, 32vw, 560px);
-  height: auto;
-  opacity: 0.08;
-  pointer-events: none;
-  user-select: none;
-}
-
-.info-wrap {
-  position: relative;
-  z-index: 1;
-  max-width: 1160px;
-  margin: 0 auto;
-}
-
-.info-titulo {
-  margin-bottom: 24px;
-}
-
-/* Mosaico bento: la descripcion ocupa una tarjeta alta a la izquierda,
-   los primeros 2 beneficios se apilan a la derecha, y el tercero cierra
-   abajo en una tarjeta ancha de todo el ancho -- evita el hueco vacio
-   que dejaba una version anterior con 3 columnas parejas. */
-.info-bento {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 18px;
-}
-
-.info-card-desc {
-  grid-column: 1;
-  grid-row: 1 / 3;
-  align-self: center;
-}
-
-.info-card-ancho {
-  grid-column: 1 / 3;
-  grid-row: 3;
-}
-
-@media (max-width:820px) {
-  .info-bento {
-    grid-template-columns: 1fr;
-  }
-
-  .info-card-desc {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
-  .info-bento>.info-fila:nth-child(2),
-  .info-bento>.info-fila:nth-child(3) {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
-  .info-card-ancho {
-    grid-column: 1;
-    grid-row: auto;
-  }
-}
-
-.info-card {
-  position: relative;
-  overflow: hidden;
+.search-input:focus {
+  border-color: var(--accent);
   background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  padding: 34px 38px;
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-.info-card:not(.info-card-desc)::after {
-  content: '';
+.search-icon {
   position: absolute;
-  left: 0;
-  top: 12px;
-  bottom: 12px;
-  width: 4px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, var(--brand-azul), var(--brand-morado));
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  pointer-events: none;
 }
 
-.info-card:hover {
-  box-shadow: 0 14px 34px rgba(60, 124, 248, 0.16);
-  transform: translateY(-2px);
+.cursos-lista {
+  max-height: 180px;
+  overflow-y: auto;
+  margin-bottom: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
 }
 
-.info-card:hover::after {
-  opacity: 1;
+.cursos-lista::-webkit-scrollbar {
+  width: 5px;
 }
 
-/* Dentro del mosaico, cada .info-fila ya es su propia tarjeta -- se le
-   quita la barra de color lateral que tenia en la version anterior (una
-   sola tarjeta continua), porque ahora el contorno de la tarjeta blanca
-   ya cumple ese rol de separar visualmente un bloque de otro. */
-.info-bento .info-fila {
-  padding-left: 0;
+.cursos-lista::-webkit-scrollbar-thumb {
+  background: var(--text-faint);
+  border-radius: 4px;
 }
 
-.info-bento .info-fila::before {
+.cursos-lista:empty {
   display: none;
 }
 
-.info-fila {
-  position: relative;
-  padding-left: 22px;
-}
-
-.info-fila::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 2px;
-  bottom: 2px;
+.cursos-lista::-webkit-scrollbar {
   width: 4px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, var(--brand-azul), var(--brand-morado));
 }
 
-.info-card-desc::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 12px;
-  bottom: 12px;
-  width: 4px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, var(--brand-azul), var(--brand-morado));
+.cursos-lista::-webkit-scrollbar-thumb {
+  background: var(--text-faint);
+  border-radius: 4px;
 }
 
-.info-descripcion {
-  z-index: 1;
-  max-width: 620px;
-  font-size: 15.5px;
-  font-weight: 500;
-  line-height: 1.7;
-  color: var(--ink);
-}
-
-.info-filas {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.info-fila {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.info-fila.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.info-fila:hover .info-icono {
-  transform: scale(1.08);
-}
-
-.info-fila:hover .info-fila-texto h3 {
-  color: var(--brand-morado);
-}
-
-.info-fila-texto {
-  padding: 10px 14px;
-  border-radius: 14px;
-  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.info-fila:hover .info-fila-texto {
-  background: var(--brand-azul-tinte);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-  transform: translateX(4px);
-}
-
-.info-icono {
-  flex: 0 0 auto;
-  align-self: flex-start;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+.curso-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
-  transition: transform 0.25s ease;
-  margin-left: 22px;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+  background: var(--surface);
 }
 
-.info-icono svg {
-  width: 20px;
-  height: 20px;
+.curso-item:last-child {
+  border-bottom: none;
 }
 
-.info-fila-texto h3 {
-  font-family: var(--font-heading);
-  font-weight: 600;
+.curso-item:hover {
+  background: var(--surface2);
+}
+
+.curso-item.selected {
+  background: var(--accent-dim);
+}
+
+.curso-nombre {
+  flex: 1;
+  font-weight: 500;
+}
+
+.curso-action {
   font-size: 16px;
-  margin-bottom: 4px;
-  transition: color 0.2s ease;
+  font-weight: 700;
+  color: var(--accent);
+  margin-left: 8px;
 }
 
-.info-fila-texto p {
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--ink-soft);
-  line-height: 1.6;
-  max-width: 560px;
+/* ── CHIPS & SELECCION ── */
+.seleccionados-wrap {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
 }
 
-.info-card-ancho .info-fila-texto p {
-  max-width: none;
+.sel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
-@media (max-width:640px) {
-  .info-marca-agua {
-    display: none;
+.sel-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sel-count {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 20px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sel-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.sel-chips-empty {
+  font-size: 12px;
+  color: var(--text-faint);
+  font-style: italic;
+  padding: 4px 2px 10px 2px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.chip button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  margin-left: 2px;
+}
+
+.chip button:hover {
+  color: #ef4444;
+}
+
+/* ── BUTTONS ── */
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-next {
+  margin-top: 0;
+}
+
+/* ── SPINNER ── */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--text-faint);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-
-  .info-card {
-    padding: 32px 24px 32px 30px;
-  }
 }
 
-/* ---------- MODULOS: línea vertical con los 5 módulos alternados ---------- */
-.modulos {
-  position: relative;
+/* ── GENERADOR PAGE ─────────────────────────────────────────── */
+.gen-layout {
+  display: flex;
+  height: calc(100vh - 40px);
   overflow: hidden;
-  background: linear-gradient(120deg, var(--brand-morado-tinte) 0%, #ffffff 55%, var(--brand-morado-tinte) 100%);
-  background-size: 280% 280%;
-  animation: moverModulos 10s ease-in-out infinite;
-  padding: 90px 32px 100px;
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes moverModulos {
-  0% {
-    background-position: 15% 25%;
-  }
-
-  50% {
-    background-position: 85% 75%;
-  }
-
-  100% {
-    background-position: 15% 25%;
-  }
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .modulos {
-    animation: none;
-    background-position: 50% 50%;
-  }
+.sidebar-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.modulos-wrap {
-  position: relative;
-  z-index: 1;
-  max-width: 1160px;
-  margin: 0 auto;
+.back-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.15s;
 }
 
-.modulos-titulo {
-  margin-bottom: 16px;
+.back-btn:hover {
+  color: var(--accent-dark);
 }
 
-.modulos-sub {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ink-soft);
-  margin-bottom: 60px;
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
-.linea-modulos {
-  position: relative;
+.logo-icon-sm {
+  width: 22px;
+  height: 22px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  color: #fff;
+}
+
+.logo-icon-img {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.sidebar-logo-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: normal;
+  line-height: 1.3;
+  max-width: 130px;
+}
+
+.sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: var(--text-faint);
+  border-radius: 4px;
+}
+
+.sidebar-footer {
+  padding: 14px;
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+}
+
+.sb-section {}
+
+.sb-loading {
+  font-size: 12px;
+  color: var(--text-dim);
   padding: 10px 0;
 }
 
-.linea-modulos-riel {
+.step-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+/* Course blocks en sidebar */
+.course-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border-left-width: 3px;
+  margin-bottom: 6px;
+}
+
+.course-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.course-header:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.course-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.course-name {
+  font-size: 11px;
+  font-weight: 600;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.course-chevron {
+  font-size: 9px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+}
+
+.course-chevron.open {
+  transform: rotate(90deg);
+}
+
+.course-profs {
+  display: none;
+  padding: 0 10px 8px;
+  border-top: 1px solid var(--border);
+}
+
+.course-profs.open {
+  display: block;
+}
+
+.prof-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px 0;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-dim);
+  transition: color 0.15s;
+}
+
+.prof-option:hover {
+  color: var(--text);
+}
+
+.prof-option input {
+  accent-color: var(--accent);
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.prof-option span strong {
+  color: var(--text);
+}
+
+/* Crossings */
+.crossings-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.crossings-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  flex: 1;
+  line-height: 1.5;
+}
+
+.crossings-label strong {
+  display: block;
+  color: var(--text);
+  font-size: 12px;
+  margin-bottom: 1px;
+}
+
+.crossings-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.spinner-input {
+  width: 48px;
+  height: 32px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  text-align: center;
+  outline: none;
+  padding: 0;
+}
+
+.spinner-input:focus {
+  border-color: var(--accent);
+}
+
+.spinner-btns {
+  display: flex;
+  gap: 3px;
+}
+
+.spinner-btn {
+  width: 22px;
+  height: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dim);
+  display: grid;
+  place-items: center;
+  transition: all 0.15s;
+  font-family: monospace;
+}
+
+.spinner-btn:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.btn-gen {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-gen:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
+}
+
+/* Main Content Area */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.topbar {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.topbar-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  flex: 1;
+}
+
+.topbar-title span {
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-nav {
+  width: 30px;
+  height: 30px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: grid;
+  place-items: center;
+}
+
+.btn-nav:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.counter-pill {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.btn-action {
+  padding: 6px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text);
+}
+
+.btn-action:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.btn-action.btn-favs {
+  color: var(--text-dim);
+}
+
+/* Calendar */
+.calendar-wrap {
+  flex: 1;
+  overflow: auto;
+  padding: 12px 16px 12px 16px;
+  min-height: 0;
+}
+
+.calendar-wrap::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.calendar-wrap::-webkit-scrollbar-thumb {
+  background: var(--text-faint);
+  border-radius: 4px;
+}
+
+/* ── FOOTER FIRMA ── */
+.gen-footer {
+  height: 40px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 16px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 10px;
+  color: var(--text-faint);
+}
+
+.empty-icon {
+  font-size: 44px;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.empty-sub {
+  font-size: 11px;
+}
+
+/* Schedule Table */
+.sched-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 680px;
+  background: var(--surface);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
+}
+
+.sched-table thead th {
+  background: var(--accent);
+  color: #fff;
+  padding: 6px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+  letter-spacing: 0.03em;
+}
+
+.sched-table thead th.hour-th {
+  background: var(--accent-dark);
+  width: 54px;
+}
+
+.sched-table tbody td {
+  border: 1px solid var(--border);
+  vertical-align: top;
+  padding: 0;
+  height: var(--row-h);
+  position: relative;
+  min-width: 80px;
+}
+
+.sched-table tbody td.hour-td {
+  text-align: center;
+  padding: 2px 4px 0 0;
+  font-size: 9px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  color: #334155;
+  background: var(--surface2);
+  white-space: nowrap;
+}
+
+.sched-table tbody tr:nth-child(even) td:not(.hour-td) {
+  background: #fafcff;
+}
+
+/* Class blocks */
+.class-block {
   position: absolute;
-  left: 50%;
+  border-radius: 5px;
+  padding: 10px 4px 5px 4px;
+  z-index: 2;
+  cursor: default;
+  overflow: hidden;
+  transition: filter 0.15s;
+  border-left: 3px solid rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1px;
+}
+
+.class-block:hover {
+  filter: brightness(0.93);
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cb-name {
+  font-size: 9px;
+  font-weight: 700;
+  color: #000;
+  line-height: 1.2;
+  white-space: normal;
+  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.cb-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  margin-top: auto;
+}
+
+.cb-meta {
+  font-size: 8px;
+  color: rgba(0, 0, 0, 0.5);
+  font-family: 'JetBrains Mono', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.cb-badge {
+  font-size: 7px;
+  font-weight: 800;
+  padding: 0px 4px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.28);
+  line-height: 1.4;
+}
+
+.cb-badge.teoria-badge {
+  background: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* Tooltip */
+.tooltip {
+  position: fixed;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 11px;
+  pointer-events: none;
+  z-index: 1000;
+  display: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  max-width: 220px;
+  min-width: 170px;
+}
+
+.tooltip strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.tooltip span {
+  color: var(--text-dim);
+  display: block;
+  line-height: 1.8;
+}
+
+/* ── FAVORITOS PANEL ── */
+.favs-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 200;
+}
+
+.favs-panel {
+  position: fixed;
+  right: 0;
   top: 0;
   bottom: 0;
-  width: 2px;
-  background: rgba(0, 0, 0, 0.08);
-  transform: translateX(-50%);
+  width: 320px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Se estira desde arriba hasta el nodo activo (JS ajusta la altura
-   al hacer scroll), como un pulso que va "iluminando" el camino. */
-.linea-modulos-pulso {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  height: 0;
-  width: 2px;
-  background: linear-gradient(180deg, var(--brand-azul), var(--brand-morado));
-  transform: translateX(-50%);
-  transition: height 0.25s ease;
-}
-
-.mod-fila {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 40px 1fr;
+.favs-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
   align-items: center;
-  margin-bottom: 56px;
-}
-
-.mod-fila:last-child {
-  margin-bottom: 0;
-}
-
-.mod-fila-texto {
-  opacity: 0;
-  padding: 14px 18px;
-  border-radius: 14px;
-  transition: opacity 0.5s ease, transform 0.3s ease, background 0.25s ease, box-shadow 0.25s ease;
-}
-
-.mod-fila-izq {
-  text-align: right;
-  transform: translateX(-24px);
-}
-
-.mod-fila-der {
-  transform: translateX(24px);
-}
-
-.mod-fila.visible .mod-fila-izq,
-.mod-fila.visible .mod-fila-der {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Tarjeta sutil con sombra: aparece muy tenue al pasar el mouse por la
-   fila, y se queda encendida en la fila que está activa por scroll —
-   mismo tratamiento en ambos casos, solo cambia qué lo dispara. */
-.mod-fila.visible:hover .mod-fila-izq:not(:empty),
-.mod-fila.activo .mod-fila-izq:not(:empty) {
-  background: var(--brand-azul-tinte);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-  transform: translateX(6px);
-}
-
-.mod-fila.visible:hover .mod-fila-der:not(:empty),
-.mod-fila.activo .mod-fila-der:not(:empty) {
-  background: var(--brand-morado-tinte);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-  transform: translateX(-6px);
-}
-
-.mod-fila h3 {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 19px;
-  margin-bottom: 8px;
-  color: var(--ink);
-  transition: color 0.2s ease;
-}
-
-.mod-fila p {
+  justify-content: space-between;
   font-size: 14px;
-  font-weight: 500;
-  color: var(--ink-soft);
-  line-height: 1.6;
+  font-weight: 700;
 }
 
-.mod-nodo {
-  justify-self: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #fff;
-  border: 3px solid var(--brand-azul);
-  z-index: 2;
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+.favs-header button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--text-dim);
+  line-height: 1;
 }
 
-.mod-fila.activo .mod-nodo {
-  background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
-  border-color: transparent;
-  box-shadow: 0 0 0 6px rgba(102, 0, 204, 0.15);
-  transform: scale(1.15);
+.favs-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
 }
 
-.mod-fila.activo h3 {
-  color: var(--brand-morado);
+.fav-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 10px;
 }
 
-@media (max-width:760px) {
-  .mod-fila {
-    grid-template-columns: 32px 1fr;
-    row-gap: 4px;
-  }
-
-  .linea-modulos-riel,
-  .linea-modulos-pulso {
-    left: 16px;
-  }
-
-  .mod-nodo {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .mod-fila-izq,
-  .mod-fila-der {
-    grid-column: 2;
-    grid-row: 1;
-    text-align: left;
-    padding-left: 16px;
-    padding-right: 0;
-    transform: none !important;
-  }
+.fav-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 
-/* ---------- VOLVER ARRIBA ---------- */
-.volver-arriba {
+.fav-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fav-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.fav-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.fav-btn.ver {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  color: var(--accent-dark);
+}
+
+.fav-btn.del {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #ef4444;
+}
+
+.fav-courses {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+.favs-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+/* ── TOAST ── */
+.toast {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
-  width: 48px;
-  height: 48px;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(85vw, 300px);
+  text-align: center;
+  background: var(--text);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 500;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.toast.error {
+  background: #ef4444;
+}
+
+.toast.success {
+  background: #10b981;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PARCHES: elementos que faltaban en index
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Botón X para limpiar búsqueda ─────────────────────────── */
+.clear-search-btn {
+  display: none;
+  /* oculto hasta que haya texto */
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--border);
+  border: none;
   border-radius: 50%;
-  background: #6600CC;
+  width: 22px;
+  height: 22px;
+  font-size: 13px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text-dim);
+  transition: all 0.15s;
+  z-index: 2;
+}
+
+.clear-search-btn:hover {
+  background: var(--text-faint);
+  color: var(--text);
+}
+
+/* ── Check verde al seleccionar curso ──────────────────────── */
+.curso-check {
+  display: none;
+  /* oculto hasta seleccionar */
+  color: #22c55e;
+  font-size: 18px;
+  font-weight: 700;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+/* ── Curso seleccionado ────────────────────────────────────── */
+.curso-item.seleccionado {
+  background: var(--accent-dim) !important;
+  border-color: var(--accent) !important;
+}
+
+/* ── Pantallas medianas (tablets) ── */
+@media (max-width: 1024px) {
+  :root {
+    --row-h: 34px;
+    --sidebar-w: 240px;
+  }
+
+  .sidebar-scroll {
+    padding: 10px;
+  }
+
+  .course-name {
+    font-size: 10px;
+  }
+
+  .prof-option {
+    font-size: 10px;
+  }
+
+  .cb-name {
+    font-size: 8px;
+    -webkit-line-clamp: 2;
+  }
+
+  .cb-meta {
+    font-size: 7px;
+  }
+
+  .cb-badge {
+    font-size: 6px;
+  }
+}
+
+/* ── Móvil: columna única con scroll libre (< 900px) ── */
+@media (max-width: 900px) {
+  :root {
+    --row-h: 44px;
+  }
+
+  .gen-layout {
+    flex-direction: column;
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    position: relative;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    flex-shrink: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow: visible;
+  }
+
+  .sidebar-scroll {
+    max-height: none;
+    overflow-y: visible;
+    padding: 14px;
+  }
+
+  .sidebar-footer {
+    flex-shrink: 0;
+    padding: 12px 14px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  /* El main fluye normalmente, sin altura fija */
+  .main {
+    flex: none;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  /* Topbar sin sticky — se queda en su lugar natural con el scroll */
+  .topbar {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    flex-shrink: 0;
+    gap: 6px;
+    position: static;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .topbar-title {
+    width: 100%;
+    font-size: 11px;
+  }
+
+  .topbar-actions {
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  /* Calendario: scroll horizontal interno, vertical por la página */
+  .calendar-wrap {
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 12px 20px 12px;
+  }
+
+  .sched-table {
+    min-width: 520px;
+    table-layout: fixed;
+  }
+
+  .sched-table tbody td {
+    height: var(--row-h);
+  }
+
+  /* Nombres completos sin recorte */
+  .cb-name {
+    font-size: 9px;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    display: block;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .class-block {
+    padding: 3px 4px;
+    border-left-width: 2px;
+    overflow: visible;
+  }
+
+  .btn-action {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .btn-nav {
+    width: 26px;
+    height: 26px;
+  }
+
+  .cb-meta {
+    display: none;
+  }
+
+  .cb-badge {
+    font-size: 6px;
+  }
+}
+
+/* ── Pantallas muy pequeñas (< 480px) ── */
+@media (max-width: 480px) {
+  :root {
+    --row-h: 40px;
+  }
+
+  .sched-table {
+    min-width: 420px;
+  }
+
+  .topbar-title {
+    font-size: 10px;
+  }
+
+  .counter-pill {
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+}
+
+/* ── Scroll para página de inicio ── */
+
+html:has(body.page-index-body),
+body.page-index-body {
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100%;
+}
+
+/* ── Ocultar firma en la pantalla de inicio ── */
+.page-index-body .harry-footer {
+  display: none;
+}
+
+/* ── Scrollbar visible en page-index-body ── */
+html:has(body.page-index-body)::-webkit-scrollbar {
+  width: 8px;
+}
+
+html:has(body.page-index-body)::-webkit-scrollbar-track {
+  background: var(--border);
+}
+
+html:has(body.page-index-body)::-webkit-scrollbar-thumb {
+  background: var(--text-faint);
+  border-radius: 4px;
+}
+
+html:has(body.page-index-body)::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+body.page-index-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-faint) var(--border);
+}
+
+/* ═══════════════════════════════════════════════
+   FIRMA "by Harry" — en el flujo normal de la página (no fixed), se
+   descubre al llegar al final del contenido. Ya no hace falta una
+   excepción para la pantalla 2: ahora que el body permite un pequeño
+   scroll extra (ver overflow-y arriba), las dos pantallas de Horarios
+   se comportan igual que el resto de SIGA.
+   ═══════════════════════════════════════════════ */
+.harry-stamp {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 24px 20px 32px;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.harry-stamp-img {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.harry-stamp-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Ocultar footer antiguo en generador */
+.gen-layout~.harry-footer {
+  display: none;
+}
+
+/* ── AVISO DE ACTUALIZACIÓN PWA ────────────────────────────── */
+.update-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  background: var(--accent-dark);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  animation: slideDown 0.25s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.update-banner button {
+  background: #fff;
+  color: var(--accent-dark);
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.update-banner button:hover {
+  background: var(--surface2);
+}
+
+/* ── CÓDIGO DE CURSO ────────────────────────────────────────── */
+.curso-codigo {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  background: var(--accent-dim);
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* ── T (azul) vs P (rojo) ──────────────────────────────────── */
+.cb-badge.teoria-badge {
+  background: #2563eb;
+  color: #fff;
+}
+
+.cb-badge.practica-badge {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* ── MODAL: Guardar favorito ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(148, 148, 158, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+}
+
+.modal-card {
+  background:
+    linear-gradient(135deg, rgba(153, 0, 255, 0.4), rgba(255, 255, 255, 0.4)),
+    #ffffff;
+  border: 1px solid rgba(153, 0, 255, 0.35);
+  border-radius: 16px;
+  padding: 28px 26px;
+  width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(153, 0, 255, 0.15);
+  text-align: center;
+  transform: translateY(8px) scale(0.97);
+  transition: transform 0.15s ease;
+}
+
+.modal-overlay.show .modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.modal-icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #9900FF, #7a00cc);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(10px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  z-index: 30;
 }
 
-.volver-arriba.visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
+.modal-title {
+  font-weight: 700;
+  font-size: 17px;
+  color: #2d1b4e;
+  margin-bottom: 4px;
+}
+
+.modal-desc {
+  font-size: 13px;
+  color: #6b5b7d;
+  margin-bottom: 18px;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #d8c4f0;
+  background: #ffffff;
+  color: #2d1b4e;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+  margin-bottom: 18px;
+}
+
+.modal-input:focus {
+  border-color: #9900FF;
+  box-shadow: 0 0 0 3px rgba(153, 0, 255, 0.25);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-btn-cancel,
+.modal-btn-primary {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.modal-btn-cancel:hover,
+.modal-btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.modal-btn-cancel:active,
+.modal-btn-primary:active {
+  transform: scale(0.97);
+}
+
+.modal-btn-cancel {
+  background: #ece3f7;
+  color: #6b5b7d;
+}
+
+.modal-btn-primary {
+  background: linear-gradient(135deg, #9900FF, #7a00cc);
+  color: #fff;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SISTEMA DE TEMAS + DEGRADADO ANIMADO (mismo mecanismo que Intranotas)
+   ══════════════════════════════════════════════════════════════ */
+
+@keyframes horarioGenFondoMovimiento {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+body {
+  background: linear-gradient(135deg, var(--grad-start, var(--bg)) 0%, var(--grad-end, var(--surface2)) 100%);
+  background-size: 400% 400%;
+  animation: horarioGenFondoMovimiento 18s ease infinite;
+  transition: background-color 0.4s ease;
+}
+
+/* ── Selector de tema (dropdown) ─────────────────────────────── */
+.idx-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tema-selector {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.tema-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tema-trigger:hover {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.tema-caret {
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+.tema-opciones {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  min-width: 150px;
+  z-index: 500;
+}
+
+.tema-opciones.abierto {
+  display: block;
+}
+
+.tema-opcion {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 14px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.tema-opcion:hover {
+  background: var(--surface2);
+}
+
+.tema-opcion.activo {
+  background: var(--accent-dim);
+  color: var(--accent-dark);
+}
+
+@media (max-width: 480px) {
+  #temaLabelActivo {
+    display: none;
+  }
 }
