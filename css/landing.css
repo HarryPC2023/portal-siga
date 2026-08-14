@@ -938,13 +938,10 @@ nav {
 }
 
 /* ---------- VOLVER ARRIBA ---------- */
-/* bottom:76px (antes 24px) para dejarle aire a .harry-stamp, que vive
-   en el mismo rincón inferior derecho -- así no se tapan entre sí en
-   ninguna página donde convivan ambos. */
 .volver-arriba {
   position: fixed;
   right: 24px;
-  bottom: 76px;
+  bottom: 24px;
   width: 48px;
   height: 48px;
   border-radius: 50%;

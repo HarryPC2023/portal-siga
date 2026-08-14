@@ -507,33 +507,19 @@ body {
   }
 }
 
-/* ---------- FIRMA FIJA "by Harry" ----------
-   Disponible en toda página que cargue dashboard.css (Asesorías,
-   Horarios, Intranotas, Opiniones...) -- mismo componente que ya
-   usaba en solitario Horarios pantalla 2 (antes vivía solo en
-   style.css, exclusivo de ese módulo). Fixed de verdad: no se mueve
-   ni con el scroll ni con la barra lateral. */
+/* ---------- FIRMA "by Harry" ----------
+   A propósito NO es fixed: vive en el flujo normal de la página, al
+   final de todo el contenido -- así solo se descubre cuando alguien
+   llega hasta abajo del todo, en vez de flotar encima mientras se
+   hace scroll. Disponible en toda página que cargue dashboard.css. */
 .harry-stamp {
-  position: fixed;
-  bottom: 12px;
-  right: 16px;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 6px;
-  z-index: 9999;
-  opacity: 0.6;
+  padding: 24px 20px 32px;
+  opacity: 0.55;
   pointer-events: none;
-}
-
-@media (max-width: 900px) {
-  .harry-stamp {
-    position: relative;
-    bottom: auto;
-    right: auto;
-    justify-content: flex-end;
-    padding: 20px 16px 32px 16px;
-    opacity: 0.5;
-  }
 }
 
 .harry-stamp-img {
