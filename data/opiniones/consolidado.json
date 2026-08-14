@@ -77,7 +77,7 @@
     },
     {
       "nombre": "Química II",
-      "carrera": null,
+      "carrera": "industrial",
       "ciclo_ref": 2
     },
     {
@@ -87,7 +87,7 @@
     },
     {
       "nombre": "TGS",
-      "carrera": "sistemas",
+      "carrera": "industrial",
       "ciclo_ref": 2
     },
     {
@@ -137,7 +137,7 @@
     },
     {
       "nombre": "Diseño asistido por Computador",
-      "carrera": null,
+      "carrera": "industrial",
       "ciclo_ref": 3
     },
     {
@@ -157,7 +157,7 @@
     },
     {
       "nombre": "Arquitectura de Computadoras I",
-      "carrera": null,
+      "carrera": "software",
       "ciclo_ref": 3
     },
     {
@@ -167,7 +167,7 @@
     },
     {
       "nombre": "Algoritmia Avanzada",
-      "carrera": null,
+      "carrera": "software",
       "ciclo_ref": 3
     },
     {
@@ -277,12 +277,12 @@
     },
     {
       "nombre": "Contabilidad Financiera",
-      "carrera": null,
+      "carrera": "industrial",
       "ciclo_ref": 5
     },
     {
       "nombre": "Sociología",
-      "carrera": null,
+      "carrera": "industrial",
       "ciclo_ref": 5
     },
     {
@@ -357,7 +357,6 @@
     }
   ],
   "profesores": [
-    "Alcántara Daniel",
     "Alejandrina Huarcaya",
     "Alejandro Huamán",
     "Alexander Bonifacio",
@@ -371,11 +370,9 @@
     "Bilma Osorio",
     "Carlos Arámbulo",
     "Carlos Chafloque",
-    "Carlos Muñoz",
     "Carlos Muñoz Inga",
     "Carlos Nelson Ramos Montes",
     "Carlos Neyra",
-    "Carlos Sánchez",
     "Carlos Sánchez Huaringa",
     "Carmen Lau",
     "Celedonio Méndez",
@@ -383,9 +380,8 @@
     "Cesar Miranda",
     "Christian Ayala",
     "Chung Ching",
-    "Cossa",
     "César Canelo",
-    "Daniel Alcantara",
+    "Daniel Alcántara",
     "Daniel Morillo",
     "Doris Rojas",
     "Eddie Cueva",
@@ -407,9 +403,7 @@
     "Guillermo Cruz",
     "Gómez Viviana",
     "Hernán Parra",
-    "Huallpa",
     "Huaman Peñafort",
-    "Huanca",
     "Héctor Herrera",
     "Héctor Valdivia",
     "Jaime San Bartolomé",
@@ -419,7 +413,6 @@
     "Javier Echeandía",
     "Javier Huerta",
     "Javier Sánchez Espinoza",
-    "Jesus Cernadez",
     "Jesus Cossa",
     "Jesús Cernades",
     "Joaquín Salcedo",
@@ -428,9 +421,8 @@
     "Jorge Llanos",
     "Jorge Luis Alvarado",
     "Jorge Yangato",
-    "Jose Benites Yarleque",
     "Jose Caballero",
-    "José Benites",
+    "José Benites Yarleque",
     "José Villanueva",
     "Juan Broncano",
     "Juan Pablo Mansilla López",
@@ -442,7 +434,6 @@
     "Leoncio Acuña",
     "Leoncio Palacios",
     "Lourdes Kala",
-    "Luis Alberto Lescano",
     "Luis Callo",
     "Luis Lescano",
     "Luis Luján",
@@ -476,18 +467,15 @@
     "Ricardo Chung Ching",
     "Rildo Campana",
     "Riquelmer Vasquez",
-    "Rocío Salas",
     "Rocío Salas Cordero",
     "Rodolfo Falconi",
     "Rodriguez Ulloa",
-    "Rosario Reyes",
     "Rosario Reyes Acosta",
     "Rubén Borja",
     "Samuel Oporto",
     "Santiago Tarazona",
     "Saul Acevedo",
     "Silvio Quinteros",
-    "Susana",
     "Susana Gomez",
     "Teodoro Córdova",
     "Tino Reyna",
@@ -500,8 +488,7 @@
     "Walter Antaurco",
     "Walter Huallpa",
     "Yarko Cerna Valdez",
-    "Yolanda Segura",
-    "Zegarra"
+    "Yolanda Segura"
   ],
   "perfiles": [
     {
@@ -556,7 +543,7 @@
       "claridad": 4,
       "recomendaciones": "Vuélvete 'el planchero' del salón y repasa junto al libro de Venero: los ejercicios de su dirigida suelen aparecer parecidos en la PC. Entra a sus asesorías antes de examen.",
       "curso": "Cálculo Diferencial",
-      "profesor": "Jesus Cernadez",
+      "profesor": "Jesús Cernades",
       "ciclo_origen": 1
     },
     {
@@ -583,7 +570,7 @@
       "claridad": 2,
       "recomendaciones": "Estudia con material de otro profesor y argumenta bien tus respuestas: con Huanca serás mayormente autodidacta.",
       "curso": "Cálculo Diferencial",
-      "profesor": "Huanca",
+      "profesor": "Víctor Huanca",
       "ciclo_origen": 1
     },
     {
@@ -700,7 +687,7 @@
       "claridad": 5,
       "recomendaciones": "Copia absolutamente todo lo que dicta en clase y estudia de tu cuaderno: literalmente todo lo que hace en clase sale en el examen.",
       "curso": "Química I",
-      "profesor": "Alcántara Daniel",
+      "profesor": "Daniel Alcántara",
       "ciclo_origen": 1
     },
     {
@@ -868,7 +855,7 @@
       "claridad": 2,
       "recomendaciones": "Búscate ayuda de alguien de ciclos superiores que ya lo haya llevado: es la mejor forma de anticipar cómo te va a ir.",
       "curso": "Introducción a la Computación",
-      "profesor": "Cossa",
+      "profesor": "Jesus Cossa",
       "ciclo_origen": 2,
       "retirado": true
     },
@@ -1051,7 +1038,7 @@
       "claridad": 2,
       "recomendaciones": "Aprovecha el tiempo libre que deja para tus otros cursos, y en los exámenes escritos responde lo más apegado posible a lo dictado en clase.",
       "curso": "Intro. Sistemas",
-      "profesor": "Rocío Salas",
+      "profesor": "Rocío Salas Cordero",
       "ciclo_origen": 1
     },
     {
@@ -1155,7 +1142,7 @@
       "claridad": 1,
       "recomendaciones": "Estudia por tu cuenta o cuélate con otro profesor: las diapositivas de Broncano son el mejor apoyo que tendrás.",
       "curso": "Cálculo Integral",
-      "profesor": "Huanca",
+      "profesor": "Víctor Huanca",
       "ciclo_origen": 2
     },
     {
@@ -1299,7 +1286,7 @@
       "claridad": 5,
       "recomendaciones": "Anota todo en clase y prepárate a fondo tu exposición semanal: su examen sigue de cerca lo que enseña.",
       "curso": "Química II",
-      "profesor": "Daniel Alcantara",
+      "profesor": "Daniel Alcántara",
       "ciclo_origen": 2
     },
     {
@@ -1351,7 +1338,7 @@
       "claridad": 4,
       "recomendaciones": "Aprovecha que da buena nota de laboratorio, pero no discutas una decisión suya una vez tomada: no cambia de opinión.",
       "curso": "Química II",
-      "profesor": "Susana",
+      "profesor": "Susana Gomez",
       "ciclo_origen": 2
     },
     {
@@ -1532,7 +1519,7 @@
       "claridad": 2,
       "recomendaciones": "Estudia el libro casi de memoria para sus prácticas escritas: exige respuestas muy cercanas al texto original.",
       "curso": "TCS",
-      "profesor": "Rocío Salas",
+      "profesor": "Rocío Salas Cordero",
       "ciclo_origen": 2
     },
     {
@@ -1643,7 +1630,7 @@
       "claridad": 3,
       "recomendaciones": "Lee la guía de laboratorio antes de la práctica y aprovecha su buena disposición para consultarle dudas en el momento.",
       "curso": "Física I",
-      "profesor": "Huallpa",
+      "profesor": "Walter Huallpa",
       "ciclo_origen": 2
     },
     {
@@ -1668,7 +1655,7 @@
       "claridad": 4,
       "recomendaciones": "Haz la PC4 (proyecto, no se elimina) con tiempo — suele calificarla con 20 sin problema — y no llegues tarde a su exposición.",
       "curso": "Matemática Discreta",
-      "profesor": "José Benites",
+      "profesor": "José Benites Yarleque",
       "ciclo_origen": 3
     },
     {
@@ -1823,7 +1810,7 @@
       "claridad": 4,
       "recomendaciones": "Estudia del material de la plataforma de Caral University (de ahí salen las PCs) y coordina semanalmente tu trabajo final con él.",
       "curso": "Metodología de la Investigación",
-      "profesor": "Luis Alberto Lescano",
+      "profesor": "Luis Lescano",
       "ciclo_origen": 3
     },
     {
@@ -2227,7 +2214,7 @@
       "claridad": 5,
       "recomendaciones": "Ten siempre el Serway a la mano y presta atención en clase: casi te da las respuestas de la PC directamente.",
       "curso": "Física II",
-      "profesor": "Zegarra",
+      "profesor": "Antonio Zegarra",
       "ciclo_origen": 4
     },
     {
@@ -2386,7 +2373,7 @@
       "claridad": 2,
       "recomendaciones": "En los exámenes escritos responde lo más apegado posible al material dictado. Perfil a confirmar apenas haya opiniones reales de este curso.",
       "curso": "Metodología de Sistemas Blandos",
-      "profesor": "Rocío Salas",
+      "profesor": "Rocío Salas Cordero",
       "ciclo_origen": 4
     },
     {
@@ -2454,7 +2441,7 @@
       "claridad": 4,
       "recomendaciones": "Cuida los plazos de entrega de informes y no metas floro: valora más la calidad y precisión que la extensión.",
       "curso": "Físico Química y Operaciones Unitarias",
-      "profesor": "Rosario Reyes",
+      "profesor": "Rosario Reyes Acosta",
       "ciclo_origen": 4
     },
     {
@@ -2766,7 +2753,7 @@
       "claridad": 3,
       "recomendaciones": "Resuelve cada pregunta completa y ordenada (no da puntaje por avance) y no faltes a los laboratorios: los informes suman 3-4 puntos extra en una PC.",
       "curso": "Electricidad y Electrónica Industrial",
-      "profesor": "Jose Benites Yarleque",
+      "profesor": "José Benites Yarleque",
       "ciclo_origen": 5
     },
     {
@@ -2886,7 +2873,7 @@
       "claridad": 3,
       "recomendaciones": "Ve los videos que deja en Univirtual y lee los textos asignados (siempre cae una pregunta de ahí): con eso y sus ensayos, el curso se hace fácil.",
       "curso": "Sociología",
-      "profesor": "Carlos Sánchez",
+      "profesor": "Carlos Sánchez Huaringa",
       "ciclo_origen": 5
     },
     {
@@ -3036,37 +3023,37 @@
       "ciclo_origen": 6
     },
     {
-      "resumen": "Planchero también en IO II, pero exige llegar al resultado correcto y valora bastante la asistencia.",
-      "que_esperar": "Explica bien la teoría y complementa con bastantes ejercicios semanales (aunque no siempre alcanza a resolverlos todos en clase; conviene revisar los pendientes de las prácticas dirigidas). Sus prácticas y exámenes suelen usar ejercicios similares a los de planchas de ciclos anteriores, aunque ya ha empezado a incluir ejercicios de nivel intermedio, sobre todo en parcial y final, que pueden salir más difíciles de lo esperado. Su calificación es bastante estricta: prioriza llegar a la respuesta correcta y no siempre valora demasiado el procedimiento si el resultado final está mal. También toma en cuenta la asistencia y participación: si nota poca participación o muchas faltas durante el ciclo, las evaluaciones pueden volverse más exigentes.",
+      "resumen": "Planchero y justo calificando, pero exige llegar al resultado correcto y valora bastante la asistencia.",
+      "que_esperar": "Lee sus PPTs y complementa con bastantes ejercicios semanales resueltos en pizarra (aunque no siempre alcanza a terminarlos todos en clase; conviene revisar los pendientes de las prácticas dirigidas). Es justo y accesible si le haces preguntas, y las preguntas de examen suelen venir igual o parecidas a lo resuelto en clase o en planchas de ciclos anteriores, aunque ya ha empezado a incluir ejercicios de nivel intermedio en parcial y final. Su calificación es bastante estricta: prioriza llegar a la respuesta correcta y no siempre valora demasiado el procedimiento si el resultado final está mal. También toma en cuenta la asistencia y participación: si nota poca participación o muchas faltas durante el ciclo, las evaluaciones pueden volverse más exigentes.",
       "exigencia": 3,
       "carga_trabajo": 3,
       "ritmo": 3,
       "claridad": 3,
-      "recomendaciones": "Practica constantemente con sus planchas (hay bastante material de ciclos anteriores en Trickavengers) y resuelve semanalmente tanto los ejercicios de clase como los pendientes de las prácticas dirigidas. No te confíes solo con saber plantear el ejercicio: practica hasta poder resolverlo correctamente, con especial cuidado antes del parcial y el final. Ojo con su puntualidad: a veces llega tarde incluso a las evaluaciones, lo que puede reducir el tiempo real disponible (se han dado casos de menos de 2 horas efectivas para resolver).",
+      "recomendaciones": "Practica constantemente con sus planchas (hay bastante material de ciclos anteriores en Trickavengers) y resuelve semanalmente tanto los ejercicios de clase como los pendientes de las prácticas dirigidas. No te confíes solo con saber plantear el ejercicio: practica hasta poder resolverlo correctamente, con especial cuidado antes del parcial y el final. Repasa cómo resuelve él los ejercicios en pizarra (fotografíalos si no llegas a copiarlos) y ojo con su puntualidad: a veces llega tarde incluso a las evaluaciones, lo que puede reducir el tiempo real disponible (se han dado casos de menos de 2 horas efectivas para resolver).",
       "curso": "Investigación de Operaciones II",
       "profesor": "César Canelo",
       "ciclo_origen": 6
     },
     {
-      "resumen": "Clases cortas con WinQSB; explica bien tus soluciones o no hay puntaje completo.",
-      "que_esperar": "Clases cortas (a veces media hora) donde enseña a usar WinQSB (da la solución pero no el procedimiento). Resuelve problemas de exámenes pasados que suelen venir casi iguales, aunque el tiempo de PCs y exámenes es corto (1 hora).",
+      "resumen": "Clases cortas con WinQSB; exige términos exactos y buena sustentación al calificar.",
+      "que_esperar": "Llega puntual con clases cortas (a veces media hora basta para un tema) y usa el software WinQSB, que da la solución pero no el procedimiento. Suele resolver problemas de exámenes pasados que vienen casi iguales a los que pondrá, pero es más estricto en parcial y final, donde exige que emplees los términos exactos que mencionó en clase y que sustentes bien tu respuesta. El tiempo de PCs y exámenes es corto (1 hora), así que conviene ser rápido.",
       "exigencia": 3,
-      "carga_trabajo": 2,
-      "ritmo": 2,
+      "carga_trabajo": 3,
+      "ritmo": 3,
       "claridad": 3,
-      "recomendaciones": "Resuelve planchitas de exámenes pasados y explica bien tus soluciones al calificar: si no las sustentas, no te da el puntaje completo.",
+      "recomendaciones": "Resuelve planchitas de exámenes pasados (suelen repetirse) y anota bien las soluciones y los términos exactos que usa en clase: si no los replicas ni sustentas tu respuesta, no te da el puntaje completo. Aprovecha los trabajos extra que deja para subir puntos, y cuida el tiempo: los exámenes duran solo 1 hora y a veces no alcanza.",
       "curso": "Investigación de Operaciones II",
       "profesor": "Luis Luján",
       "ciclo_origen": 6
     },
     {
-      "resumen": "Exámenes letales; PC1 y las últimas PCs son las más ponderables.",
-      "que_esperar": "Presenta el material brevemente y pasa rápido a ejercicios, dando puntos por resolverlos. El parcial y final mezclan planchas de evaluaciones pasadas (le gusta mezclar), y espera un parcial muy exigente y un final decisivo.",
+      "resumen": "No enseña del todo lo que evalúa; exámenes duros donde PC1 y las últimas PCs pesan más.",
+      "que_esperar": "Presenta el material brevemente y pasa rápido a ejercicios, dando puntos por resolverlos. Su personalidad es algo cerrada y no enseña casi nada de lo que realmente viene en sus exámenes, así que hay que estudiar bastante por cuenta propia con planchas. El parcial y el final mezclan problemas de evaluaciones pasadas (le gusta mezclar) y son notablemente exigentes y decisivos — puede incluso complicar el examen o quitarte tiempo antes de la hora acordada. Si participas en clase, puede darte puntos adicionales.",
       "exigencia": 4,
       "carga_trabajo": 4,
       "ritmo": 4,
       "claridad": 2,
-      "recomendaciones": "Aprovecha al máximo la PC1 y las últimas PCs (son las más ponderables) y ten mucho cuidado con la PC2 y el parcial: ahí es donde más se complica.",
+      "recomendaciones": "Aprovecha al máximo la PC1 y las últimas PCs (son las más ponderables) y ten mucho cuidado con la PC2, el parcial y el final: ahí es donde más se complica. Resuelve exámenes pasados (pueden repetirse) y estudia en grupo, revisando internet y libros del curso: es difícil ponderar con él.",
       "curso": "Investigación de Operaciones II",
       "profesor": "Luis Medina",
       "ciclo_origen": 6
@@ -3129,42 +3116,6 @@
       "recomendaciones": "Consigue las planchas de ciclos anteriores con anticipación y practica hasta poder resolver los ejercicios con rapidez, sobre todo los que requieren varios cálculos. Coordina con el delegado para cumplir exactamente lo que pide en trabajos, exposiciones y monografías (ahí es más estricto calificando), y revisa tus notas apenas se publiquen: no dejes ningún reclamo para el último momento, ya que en el 26-1 hubo errores de registro considerables y demoras importantes en subirlas.",
       "curso": "Sistema y Gestión Financiera",
       "profesor": "John Valle",
-      "ciclo_origen": 6
-    },
-    {
-      "resumen": "Clases algo soporíferas pero justo calificando; exámenes suelen ser plancha.",
-      "que_esperar": "Solo lee las PPTs y luego resuelve ejercicios en pizarra; sus clases se resumen prácticamente en eso. Es justo y accesible si le haces preguntas, y las preguntas de examen suelen venir igual o parecidas a lo resuelto en clase.",
-      "exigencia": 2,
-      "carga_trabajo": 2,
-      "ritmo": 2,
-      "claridad": 3,
-      "recomendaciones": "Repasa las planchas y cómo resuelve él los ejercicios en pizarra (suele salir igual en el examen). Asistir a clase es casi opcional si consigues las fotos de la pizarra de algún compañero.",
-      "curso": "Investigación de Operaciones II",
-      "profesor": "César Canelo",
-      "ciclo_origen": 6
-    },
-    {
-      "resumen": "Clases cortas (usa WinQSB); exige términos exactos al calificar.",
-      "que_esperar": "Llega puntual con clases cortas (a veces media hora basta para un tema) y usa el software WinQSB, que da la solución pero no el procedimiento. Suele resolver problemas de exámenes pasados casi iguales a los que pondrá, pero es más estricto en parcial y final, donde exige que emplees los términos exactos que mencionó en clase.",
-      "exigencia": 3,
-      "carga_trabajo": 3,
-      "ritmo": 4,
-      "claridad": 3,
-      "recomendaciones": "Anota bien las soluciones y los términos exactos que usa en clase (si no los replicas, no te da puntaje completo) y aprovecha los trabajos extra que deja para subir puntos. Cuida el tiempo: los exámenes duran solo 1 hora y a veces no alcanza.",
-      "curso": "Investigación de Operaciones II",
-      "profesor": "Luis Luján",
-      "ciclo_origen": 6
-    },
-    {
-      "resumen": "No enseña lo que evalúa; exige estudiar mucho por planchas.",
-      "que_esperar": "Su personalidad es cerrada y no enseña casi nada de lo que realmente viene en sus exámenes. Puede complicar bastante el examen, e incluso quitarte tiempo antes de la hora acordada. Si participas en clase, puede darte puntos adicionales.",
-      "exigencia": 4,
-      "carga_trabajo": 4,
-      "ritmo": 3,
-      "claridad": 1,
-      "recomendaciones": "Resuelve exámenes pasados (pueden repetirse) y estudia en grupo, revisando internet y libros del curso: es difícil ponderar con él, sobre todo en parcial y final.",
-      "curso": "Investigación de Operaciones II",
-      "profesor": "Luis Medina",
       "ciclo_origen": 6
     },
     {
@@ -3296,7 +3247,7 @@
       "claridad": 3,
       "recomendaciones": "Estudia bien las planchas de Univirtual y de las PCs (suelen repetirse) y sigue su método exacto al resolver, no uno alternativo aunque llegues al mismo resultado. No es ponderable, así que apunta a asegurar cada evaluación: con un 10-11 en parcial y ~13 en final ya apruebas el curso.",
       "curso": "Procesos Industriales II",
-      "profesor": "Carlos Muñoz",
+      "profesor": "Carlos Muñoz Inga",
       "ciclo_origen": 6
     }
   ]
