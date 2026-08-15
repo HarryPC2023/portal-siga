@@ -7,7 +7,7 @@
 body {
   background: var(--paper);
   /* ahora */
-background-image: var(--siga-body-gradiente);
+  background-image: var(--siga-body-gradiente);
   background-size: 200% 200%;
   animation: moverInfo 14s ease-in-out infinite;
 }
@@ -675,18 +675,33 @@ background-image: var(--siga-body-gradiente);
   box-shadow: none;
   transform: none;
 }
+
 /* ---------- FIRMA "by Harry" ----------
    Nunca tuvo estilo propio en este archivo (a diferencia de Horarios,
    que sí lo tiene en style.css como sello fijo/position:fixed) — por
    eso se pintaba a tamaño natural, gigante. Acá va en flujo normal de
    la página, chica, al final del contenido. */
 .harry-stamp {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
-  padding: 24px 16px 32px;
-  opacity: 0.5;
+  z-index: 9999;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .harry-stamp {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    justify-content: flex-end;
+    padding: 20px 16px 32px 16px;
+    opacity: 0.5;
+  }
 }
 
 .harry-stamp-img {
