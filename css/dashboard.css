@@ -336,6 +336,10 @@ body {
   border: 2px solid var(--paper, #FFFDF9);
 }
 
+.acceso-badge[hidden] {
+  display: none;
+}
+
 .acceso-panel {
   position: absolute;
   top: calc(100% + 14px);
