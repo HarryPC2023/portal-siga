@@ -4,7 +4,8 @@
 const NOMBRES_CARRERAS = {
     sistemas: 'Ingeniería de Sistemas',
     industrial: 'Ingeniería Industrial',
-    software: 'Ingeniería de Software'
+    software: 'Ingeniería de Software',
+    ia: 'Ingeniería de Inteligencia Artificial'
 };
 
 const NOMBRES_CICLOS = {
