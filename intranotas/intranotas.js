@@ -4,8 +4,7 @@
 const NOMBRES_CARRERAS = {
     sistemas: 'Ingeniería de Sistemas',
     industrial: 'Ingeniería Industrial',
-    software: 'Ingeniería de Software',
-    ia: 'Ingeniería de Inteligencia Artificial'
+    software: 'Ingeniería de Software'
 };
 
 const NOMBRES_CICLOS = {
@@ -15,17 +14,11 @@ const NOMBRES_CICLOS = {
     10: 'DÉCIMO CICLO'
 };
 
-/* Ciclos verificados — todos los ciclos de todas las carreras (sin badge).
-   IA solo tiene 1 y 2 verificados por ahora: son los que Harry ya cursó
-   y confirmó que coinciden. Del 3 al 10 el badge de "criterio pendiente"
-   se sigue mostrando — mezclan cursos ya habilitados (compartidos con
-   otras carreras) con cursos bloqueados (ver disponible:false en
-   cursos_db.js), así que el aviso a nivel de ciclo sigue siendo honesto. */
+/* Ciclos verificados — todos los ciclos de todas las carreras (sin badge) */
 const CICLOS_VERIFICADOS = {
     sistemas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     industrial: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    software: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    ia: [1, 2]
+    software: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 };
 
 /* ============================================================
@@ -207,6 +200,18 @@ function mostrarSelectorCarrera(expandido) {
         grid.style.marginTop = expandido ? '12px' : '0px';
     }
     if (flecha) flecha.textContent = expandido ? '▴' : '▾';
+
+    // Mientras el selector está abierto, el texto no debe seguir
+    // mostrando la carrera anterior — confunde, parece que ya volvió
+    // a elegir la misma. Se muestra un texto neutral hasta que elija
+    // una carrera real en seleccionarCarrera(). Esto NO borra nada de
+    // lo ya guardado (periodo, cursos) — solo cambia el texto.
+    const texto = document.getElementById('carrera-resumen-texto');
+    if (texto) {
+        texto.textContent = expandido
+            ? 'Elige tu carrera'
+            : (carreraSeleccionada ? NOMBRES_CARRERAS[carreraSeleccionada] : 'Selecciona tu carrera');
+    }
 }
 
 function toggleSelectorCarrera() {
@@ -304,29 +309,24 @@ function generarListaCursos(cursos, ciclo) {
     if (!cursos || cursos.length === 0) {
         return `<p style="font-size:0.8rem; color:#9ca3af; padding: 8px 0;">No hay cursos registrados para este ciclo.</p>`;
     }
-    return [...cursos].sort((a, b) => a.name.localeCompare(b.name)).map(curso => {
-        const bloqueado = curso.disponible === false;
-        return `
-        <label class="curso-item ${bloqueado ? 'curso-bloqueado' : ''}" id="item-${curso.id}" onclick="event.stopPropagation()">
+    return [...cursos].sort((a, b) => a.name.localeCompare(b.name)).map(curso => `
+        <label class="curso-item" id="item-${curso.id}" onclick="event.stopPropagation()">
             <input
                 type="checkbox"
                 class="curso-checkbox"
                 data-curso-id="${curso.id}"
                 data-ciclo="${ciclo}"
                 onchange="toggleCurso('${curso.id}', '${ciclo}')"
-                ${bloqueado ? 'disabled' : ''}
             >
             <div class="curso-info">
                 <div class="curso-nombre">${curso.name}</div>
                 <div class="curso-detalles">
                     <span class="curso-codigo">${curso.code}</span>
                     <span class="curso-creditos">${curso.credits} créditos</span>
-                    ${bloqueado ? '<span class="curso-pendiente">🔒 Metodología pendiente</span>' : ''}
                 </div>
             </div>
         </label>
-    `;
-    }).join('');
+    `).join('');
 }
 
 function toggleAcordeon(ciclo) {
