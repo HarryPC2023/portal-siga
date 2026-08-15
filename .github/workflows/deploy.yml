@@ -1,0 +1,69 @@
+name: Deploy SIGA a GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  # Permite lanzarlo a mano desde la pestaña "Actions" de GitHub, sin
+  # necesidad de un push, útil para reintentar si algo falla.
+  workflow_dispatch:
+
+# Permisos mínimos necesarios para publicar en Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita que dos despliegues corran a la vez si haces varios push seguidos;
+# el más nuevo espera a que termine el anterior en vez de pisarlo.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      # Usa la misma acción oficial que GitHub emplea para Jekyll en Pages
+      # clásico — reproduce el mismo entorno (mismas versiones de Jekyll
+      # y plugins) para que el resultado sea idéntico al que ves hoy con
+      # "Deploy from a branch", sin sorpresas.
+      - name: Compilar el sitio con Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Aquí se inyecta ?v=<hash-del-commit> en todo el CSS/JS del sitio
+      # ya compilado — HTML, imports de módulos ES dentro de .js, y los
+      # imports inline dentro de <script type="module"> en el HTML.
+      - name: Inyectar versión de caché en CSS/JS
+        run: |
+          python3 scripts/inyectar_version.py ./_site "${GITHUB_SHA::7}"
+
+      - name: Subir el sitio compilado como artefacto
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
