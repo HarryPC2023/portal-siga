@@ -30,15 +30,27 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
-      # Usa la misma acción oficial que GitHub emplea para Jekyll en Pages
-      # clásico — reproduce el mismo entorno (mismas versiones de Jekyll
-      # y plugins) para que el resultado sea idéntico al que ves hoy con
-      # "Deploy from a branch", sin sorpresas.
-      - name: Compilar el sitio con Jekyll
-        uses: actions/jekyll-build-pages@v1
+      - name: Configurar Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          source: ./
-          destination: ./_site
+          ruby-version: "3.3"
+          bundler-cache: false
+
+      # Tu Gemfile pide Jekyll directo (no la gema "github-pages", que trae
+      # una versión vieja fija e incompatible con la 4.4 que usas). Por eso
+      # se instala con tu Gemfile.lock tal cual, reproduciendo exactamente
+      # tu build de hoy. El --add-platform es necesario porque tu
+      # Gemfile.lock se generó en Windows (x64-mingw-ucrt) y este runner
+      # es Linux — sin esto, bundler no encuentra binarios compatibles.
+      - name: Instalar dependencias de Ruby
+        run: |
+          bundle lock --add-platform x86_64-linux
+          bundle install
+
+      - name: Compilar el sitio con Jekyll
+        run: bundle exec jekyll build --destination ./_site
+        env:
+          JEKYLL_ENV: production
 
       - name: Configurar Python
         uses: actions/setup-python@v5
