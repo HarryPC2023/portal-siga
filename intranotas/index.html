@@ -10,10 +10,15 @@
 
     <meta name="description" content="Simulador de Promedio Académico - Universidad Nacional de Ingeniería">
     <meta name="theme-color" content="#FFFDF9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="INTRANOTAS">
 
     {% include tema-anti-flash.html %}
 
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +32,7 @@
     <link rel="stylesheet" href="../css/landing.css">
     <link rel="stylesheet" href="../css/dashboard.css">
 
-    <link rel="stylesheet" href="css/intranotas.css">
+    <link rel="stylesheet" href="css/intranotas.css?v=1">
     <link rel="stylesheet" href="css/siga-theme-intranotas.css">
     <link rel="stylesheet" href="../css/tema-siga.css?v=1">
     <link rel="stylesheet" href="../css/selector-personalizado.css?v=1">
@@ -65,13 +70,12 @@
                             <span class="btn-carrera-ciclos">10 ciclos</span>
                         </div>
                     </button>
-                    <button class="btn-carrera" style="opacity:0.6;"
-                        onclick="mostrarToast('🤖 Muy pronto vamos a sumar Inteligencia Artificial')">
+                    <button class="btn-carrera" onclick="seleccionarCarrera('ia')">
                         <span
                             style="font-size:2rem; display:flex; align-items:center; justify-content:center; height:100%;">🤖</span>
                         <div class="btn-carrera-texto">
                             <span class="btn-carrera-nombre">Ingeniería de Inteligencia Artificial</span>
-                            <span class="btn-carrera-ciclos">Próximamente</span>
+                            <span class="btn-carrera-ciclos">10 ciclos</span>
                         </div>
                     </button>
                     <button class="btn-carrera" onclick="seleccionarCarrera('sistemas')">
@@ -212,9 +216,9 @@
          a las dos: la ventana es la misma en ambos casos. -->
     <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
-    <script src="cursos_db.js"></script>
+    <script src="cursos_db.js?v=1"></script>
     <script src="../js/selector-personalizado.js?v=1"></script>
-    <script src="intranotas.js?v=6"></script>
+    <script src="intranotas.js?v=7"></script>
     <script src="../js/tema-siga.js?v=1"></script>
 
     <!-- Botón "volver arriba": aparece pasados ~400px de scroll de la

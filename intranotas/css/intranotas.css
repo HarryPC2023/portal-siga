@@ -510,6 +510,30 @@ body {
     font-weight: 600;
 }
 
+/* ---------- CURSOS BLOQUEADOS (metodología pendiente, ej. IA) ---------- */
+.curso-item.curso-bloqueado {
+    opacity: 0.55;
+    cursor: not-allowed;
+    background: #f3f4f6;
+}
+
+.curso-item.curso-bloqueado:hover {
+    border-color: #e5e7eb;
+    background-color: #f3f4f6;
+}
+
+.curso-item.curso-bloqueado .curso-checkbox {
+    cursor: not-allowed;
+}
+
+.curso-pendiente {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #9ca3af;
+}
+
 /* ============================================================
    MENSAJE DE VALIDACIÓN (PANTALLA 3)
    ============================================================ */
@@ -601,8 +625,7 @@ body {
    BANNER DE PONDERADO (PANTALLA 4)
    ============================================================ */
 .banner-ponderado {
-    background-color: #fff;
-    box-shadow: var(--sombra-tarjeta);
+    background-color: var(--color-azul-claro);
     border-radius: 10px;
     padding: 16px 20px;
     margin-bottom: 1.5rem;
