@@ -7,7 +7,7 @@
 body {
   background: var(--paper);
   /* ahora */
-  background-image: var(--siga-body-gradiente);
+background-image: var(--siga-body-gradiente);
   background-size: 200% 200%;
   animation: moverInfo 14s ease-in-out infinite;
 }
@@ -674,4 +674,31 @@ body {
   color: var(--brand-morado);
   box-shadow: none;
   transform: none;
+}
+/* ---------- FIRMA "by Harry" ----------
+   Nunca tuvo estilo propio en este archivo (a diferencia de Horarios,
+   que sí lo tiene en style.css como sello fijo/position:fixed) — por
+   eso se pintaba a tamaño natural, gigante. Acá va en flujo normal de
+   la página, chica, al final del contenido. */
+.harry-stamp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 24px 16px 32px;
+  opacity: 0.5;
+}
+
+.harry-stamp-img {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.harry-stamp-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-family: monospace;
 }
