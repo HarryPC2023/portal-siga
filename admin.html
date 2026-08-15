@@ -1,0 +1,66 @@
+---
+---
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - SIGA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    {% include tema-anti-flash.html %}
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/tema-siga.css?v=1">
+    <link rel="stylesheet" href="css/admin.css?v=1">
+</head>
+
+<body>
+
+    {% include nav.html activo="" %}
+
+    <section class="dash-hero">
+        <div class="dash-wrap">
+            <h1 class="dash-hero-titulo"><span class="titulo-pildora">ADMIN</span></h1>
+            <p>Panel privado — sugerencias y asesorías propuestas por la comunidad.</p>
+        </div>
+    </section>
+
+    <section class="dash-detalle" style="padding-top:30px;">
+        <div id="estadoAcceso" class="admin-estado">Verificando acceso…</div>
+
+        <div id="contenidoAdmin" style="display:none;">
+            <div class="admin-tabs">
+                <button type="button" class="admin-tab activo" data-tab="sugerencias">Sugerencias</button>
+                <button type="button" class="admin-tab" data-tab="asesorias">Asesorías propuestas</button>
+            </div>
+
+            <div id="panelSugerencias" class="admin-panel">
+                <div id="listaSugerencias">
+                    <p class="admin-vacio">Cargando…</p>
+                </div>
+            </div>
+
+            <div id="panelAsesorias" class="admin-panel" style="display:none;">
+                <div id="listaAsesorias">
+                    <p class="admin-vacio">Cargando…</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="harry-stamp">
+        <img src="assets/Harry.png" alt="Harry" class="harry-stamp-img">
+        <span class="harry-stamp-text">by Harry</span>
+    </div>
+
+    <script src="js/landing.js"></script>
+    <script src="js/tema-siga.js?v=1"></script>
+    <script type="module" src="js/admin.js?v=1"></script>
+</body>
+
+</html>

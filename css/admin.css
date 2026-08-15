@@ -1,0 +1,111 @@
+/* ============================================================
+   ADMIN — panel privado de sugerencias y asesorías propuestas
+   ============================================================ */
+.admin-estado {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-soft);
+    font-weight: 600;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.admin-tab {
+    border: none;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-tab.activo {
+    background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
+    color: #fff;
+}
+
+.admin-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.admin-vacio {
+    text-align: center;
+    color: var(--ink-soft);
+    padding: 40px 0;
+}
+
+.admin-item {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    padding: 18px 22px;
+}
+
+.admin-item-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+
+.admin-item-titulo {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--ink);
+}
+
+.admin-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    color: #4b5563;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.admin-badge-aprobado,
+.admin-badge-aprobada {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.admin-badge-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.admin-badge-rechazado,
+.admin-badge-rechazada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.admin-item-meta {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+}
+
+.admin-item-texto {
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
