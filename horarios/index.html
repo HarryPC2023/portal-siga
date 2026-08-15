@@ -197,6 +197,36 @@
         const LS_GEN_SECCIONES = 'horarioGen_seccionesGen';
         const LS_GEN_CRUCES = 'horarioGen_cruces';
 
+        // ── Salto directo a pantalla 2 si ya había un horario armado ──
+        // Si ya eligió cursos (pantalla 1) Y ya había configurado/generado
+        // horarios (pantalla 2), no tiene sentido mostrar esta pantalla de
+        // nuevo — se redirige directo a generador.html. El botón
+        // "← Elegir cursos" de esa pantalla sigue siendo la forma de
+        // volver aquí si quiere cambiar algo. Va primero que cualquier
+        // otra cosa, antes de pintar nada, para que sea instantáneo.
+        (function saltarAPantalla2SiYaHabiaAlgo() {
+            const cargaGuardada = localStorage.getItem(LS_CARGA);
+            const seleccionGuardada = localStorage.getItem(LS_SEL);
+            const huboGenerador = localStorage.getItem(LS_GEN_SECCIONES) || localStorage.getItem(LS_GEN_CRUCES);
+
+            if (!cargaGuardada || !seleccionGuardada || !huboGenerador) return;
+
+            let cursos;
+            try {
+                cursos = JSON.parse(seleccionGuardada);
+            } catch (e) {
+                return;
+            }
+            if (!Array.isArray(cursos) || !cursos.length) return;
+
+            const params = new URLSearchParams();
+            cursos.forEach(c => params.append('curso', c));
+            // replace(), no href: así esta redirección no queda en el
+            // historial — el botón "atrás" del navegador no se queda
+            // rebotando entre index.html y generador.html.
+            window.location.replace('generador.html?' + params.toString());
+        })();
+
         // ── Puente con Supabase (auth-siga.js) ──────────────────
         // Espera a que el módulo del <head> haya expuesto window.sigaSupabase.
         function esperarSupabaseListo() {
@@ -644,7 +674,7 @@
             try {
                 const { data, error } = await window.sigaSupabase
                     .from('horarios_alumno')
-                    .select('nombre_archivo, carga_horaria, cursos_seleccionados')
+                    .select('nombre_archivo, carga_horaria, cursos_seleccionados, secciones_generador, cruces')
                     .eq('user_id', userId)
                     .maybeSingle();
 
@@ -666,6 +696,30 @@
                 cursosSeleccionados = new Set(data.cursos_seleccionados || []);
                 sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
 
+                // Refresca el respaldo local para que la próxima vez pinte esto de inmediato.
+                try {
+                    localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
+                    localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
+                    localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
+                } catch (e) { /* no crítico: ya quedó sincronizado en Supabase */ }
+
+                // Si en la nube también hay evidencia de que ya se había
+                // generado un horario (pantalla 2), salta directo para allá
+                // en vez de quedarse mostrando pantalla 1 — mismo criterio
+                // que el salto local de arriba, pero para un dispositivo
+                // nuevo donde localStorage estaba vacío.
+                if (data.secciones_generador || data.cruces != null) {
+                    try { localStorage.setItem(LS_GEN_SECCIONES, JSON.stringify(data.secciones_generador || {})); } catch (e) { }
+                    try { if (data.cruces != null) localStorage.setItem(LS_GEN_CRUCES, String(data.cruces)); } catch (e) { }
+
+                    const params = new URLSearchParams();
+                    [...cursosSeleccionados].forEach(c => params.append('curso', c));
+                    if (cursosSeleccionados.size) {
+                        window.location.replace('generador.html?' + params.toString());
+                        return;
+                    }
+                }
+
                 if (nombreArchivoActual) {
                     fileInfo.style.display = 'flex';
                     fileInfo.innerHTML = '📄 ' + nombreArchivoActual + ' (sincronizado)';
@@ -679,13 +733,6 @@
                 cardCursos.style.display = 'block';
                 persistActions.style.display = 'flex';
                 actualizarSeleccion();
-
-                // Refresca el respaldo local para que la próxima vez pinte esto de inmediato.
-                try {
-                    localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
-                    localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
-                    localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
-                } catch (e) { /* no crítico: ya quedó sincronizado en Supabase */ }
             } catch (e) {
                 console.warn('Error sincronizando horario desde la nube:', e);
             }
