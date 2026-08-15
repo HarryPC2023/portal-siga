@@ -274,6 +274,168 @@ body {
   text-decoration: underline;
 }
 
+/* ---------- ACCESOS RÁPIDOS EN INICIO: Notificaciones + Sugerencias ---------- */
+.inicio-accesos {
+  padding: 24px 32px 0;
+}
+
+.inicio-accesos-wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.acceso-item {
+  position: relative;
+}
+
+.acceso-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.acceso-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.acceso-btn:hover,
+.acceso-btn[aria-expanded="true"] {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(102, 0, 204, 0.28);
+}
+
+.acceso-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--acento-ciruela, #E0447B);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--paper, #FFFDF9);
+}
+
+.acceso-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  width: min(340px, 90vw);
+  max-height: 400px;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+  padding: 8px;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 30;
+}
+
+.acceso-panel.abierto {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.acceso-panel-header {
+  padding: 10px 12px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 6px;
+}
+
+.acceso-panel-vacio {
+  padding: 20px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.notif-item {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.notif-item:hover {
+  background: var(--brand-azul-tinte);
+}
+
+.notif-item+.notif-item {
+  margin-top: 2px;
+}
+
+.notif-item.no-leida {
+  background: var(--brand-azul-tinte);
+}
+
+.notif-item-titulo {
+  display: block;
+  font-family: var(--font-nav);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.notif-item.no-leida .notif-item-titulo::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brand-morado);
+  margin-right: 6px;
+}
+
+.notif-item-mensaje {
+  display: block;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.notif-item-fecha {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-soft);
+  opacity: 0.75;
+}
+
+@media (max-width: 480px) {
+  .acceso-panel {
+    width: min(300px, 88vw);
+  }
+}
+
 /* ---------- GRID DE MODULOS ---------- */
 /* Sin background propio: deja ver el degradado del body detrás de las tarjetas. */
 .modulos-grid {
@@ -288,36 +450,20 @@ body {
   gap: 24px;
 }
 
-/* Sombra en dos capas: el anillo morado finito + la sombra cerrada son
-   el mismo tratamiento que .hero-icono-modulo (landing.css) usa en los
-   íconos del hero -- así el módulo se siente con relieve, como una
-   placa elevada, y no solo "flotando" con una sombra difusa. La sombra
-   grande y suave se mantiene para no perder la profundidad que ya tenía. */
-/* Doble sombra para dar sensación de relieve real:
-   1) un filo negro muy delgado (0 0 0 1px) que actúa como borde sutil,
-      separando la tarjeta del fondo con degradado sin necesitar un
-      border real.
-   2) una sombra cerrada y algo más oscura (0 4px 10px) que crea la
-      "elevación" inmediata, como si la tarjeta estuviera apenas
-      despegada de la superficie.
-   3) la sombra grande y difusa de siempre (0 14px 34px) para que no
-      se sienta recortada, sino flotando con profundidad de verdad. */
 .modulo-card {
   position: relative;
   display: flex;
   flex-direction: column;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 0 0 2px rgba(102, 0, 204, 0.35), 0 12px 28px rgba(0, 0, 0, 0.22), 0 30px 60px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 32px 28px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  -webkit-tap-highlight-color: transparent;
 }
 
-.modulo-card:hover,
-.modulo-card:active {
+.modulo-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 0 0 2px rgba(102, 0, 204, 0.45), 0 16px 34px rgba(0, 0, 0, 0.26), 0 36px 70px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
 }
 
 .modulo-icono {
@@ -366,7 +512,6 @@ body {
   padding: 11px 22px;
   border-radius: 999px;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .modulo-accion:hover {
@@ -505,35 +650,6 @@ body {
     flex-direction: column;
     align-items: flex-start;
   }
-}
-
-/* ---------- FIRMA "by Harry" ----------
-   A propósito NO es fixed: vive en el flujo normal de la página, al
-   final de todo el contenido -- así solo se descubre cuando alguien
-   llega hasta abajo del todo, en vez de flotar encima mientras se
-   hace scroll. Disponible en toda página que cargue dashboard.css. */
-.harry-stamp {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  padding: 24px 20px 32px;
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-.harry-stamp-img {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  object-fit: cover;
-}
-
-.harry-stamp-text {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--ink-soft);
-  font-family: 'JetBrains Mono', monospace;
 }
 
 /* ---------- NAV PROPIO DEL DASHBOARD ---------- */
