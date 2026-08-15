@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     cargarSugerencias();
     cargarAsesorias();
+    cargarOpiniones();
 
     document.querySelectorAll('.admin-tab').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tab = btn.dataset.tab;
             document.getElementById('panelSugerencias').style.display = tab === 'sugerencias' ? 'flex' : 'none';
             document.getElementById('panelAsesorias').style.display = tab === 'asesorias' ? 'flex' : 'none';
+            document.getElementById('panelOpiniones').style.display = tab === 'opiniones' ? 'flex' : 'none';
         });
     });
 });
@@ -75,6 +77,72 @@ async function cargarSugerencias() {
             <p class="admin-item-texto">${escapeHtml(s.descripcion)}</p>
         </div>
     `).join('');
+}
+
+async function cargarOpiniones() {
+    const cont = document.getElementById('listaOpiniones');
+    const { data, error } = await supabase
+        .from('opiniones')
+        .select(`
+            id, ciclo_estudiante, claridad, exigencia, carga_trabajo, evaluaciones,
+            destacado, a_tener_en_cuenta, estado, reportes, creado_en,
+            profesor_curso:profesor_curso_id (
+                profesores ( nombre ),
+                cursos ( nombre )
+            )
+        `)
+        .gt('reportes', 0)
+        .order('reportes', { ascending: false });
+
+    if (error) {
+        cont.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;
+        return;
+    }
+    if (!data.length) {
+        cont.innerHTML = '<p class="admin-vacio">No hay opiniones reportadas — todo tranquilo.</p>';
+        return;
+    }
+
+    cont.innerHTML = data.map((o) => {
+        const profesor = o.profesor_curso?.profesores?.nombre || 'Profesor desconocido';
+        const curso = o.profesor_curso?.cursos?.nombre || 'Curso desconocido';
+        const oculta = o.estado !== 'aprobado';
+        return `
+        <div class="admin-item">
+            <div class="admin-item-cabecera">
+                <span class="admin-item-titulo">${escapeHtml(profesor)} · ${escapeHtml(curso)}</span>
+                <span class="admin-badge admin-badge-reportes">${o.reportes} reporte${o.reportes === 1 ? '' : 's'}</span>
+            </div>
+            <p class="admin-item-meta">Ciclo del alumno: ${escapeHtml(String(o.ciclo_estudiante ?? ''))} · ${formatearFecha(o.creado_en)} · estado actual: <strong>${escapeHtml(o.estado)}</strong></p>
+            <p class="admin-item-meta">Claridad ${o.claridad} · Exigencia ${o.exigencia} · Carga ${o.carga_trabajo} · Evaluaciones ${o.evaluaciones}</p>
+            ${o.destacado ? `<p class="admin-item-texto"><strong>Destacó:</strong> ${escapeHtml(o.destacado)}</p>` : ''}
+            ${o.a_tener_en_cuenta ? `<p class="admin-item-texto"><strong>A tener en cuenta:</strong> ${escapeHtml(o.a_tener_en_cuenta)}</p>` : ''}
+            <button type="button" class="admin-btn-ocultar" data-op="${o.id}" ${oculta ? 'disabled' : ''}>
+                ${oculta ? 'Ya está oculta' : 'Ocultar esta opinión'}
+            </button>
+        </div>`;
+    }).join('');
+
+    cont.querySelectorAll('.admin-btn-ocultar').forEach((btn) => {
+        btn.addEventListener('click', () => ocultarOpinion(btn.dataset.op, btn));
+    });
+}
+
+async function ocultarOpinion(opinionId, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Ocultando…';
+    const { error } = await supabase
+        .from('opiniones')
+        .update({ estado: 'rechazado' })
+        .eq('id', opinionId);
+
+    if (error) {
+        btn.disabled = false;
+        btn.textContent = 'Ocultar esta opinión';
+        alert('No se pudo ocultar: ' + error.message);
+        return;
+    }
+    btn.textContent = 'Ya está oculta';
 }
 
 async function cargarAsesorias() {

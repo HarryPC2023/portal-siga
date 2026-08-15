@@ -97,6 +97,33 @@
     color: #991b1b;
 }
 
+.admin-badge-reportes {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.admin-btn-ocultar {
+    border: none;
+    background: #dc2626;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.admin-btn-ocultar:hover:not(:disabled) {
+    background: #b91c1c;
+}
+
+.admin-btn-ocultar:disabled {
+    background: #d1d5db;
+    color: #6b7280;
+    cursor: default;
+}
+
 .admin-item-meta {
     font-size: 12.5px;
     color: var(--ink-soft);
