@@ -23,14 +23,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  /* Antes overflow:hidden a secas -- se habilita overflow-y:auto para
-     que la página pueda hacer un pequeño scroll extra al final (donde
-     vive la firma "by Harry"). .gen-layout sigue calculando su propia
-     altura con vh, así que el calendario y el sidebar mantienen su
-     comportamiento de "app de una pantalla" -- lo único que cambia es
-     que ahora hay un poquito de scroll de sobra después de todo eso. */
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* En móvil el body necesita scroll libre */
@@ -334,7 +327,6 @@ body {
 .curso-nombre {
   flex: 1;
   font-weight: 500;
-  font-family: 'Poppins', sans-serif;
 }
 
 .curso-action {
@@ -400,7 +392,6 @@ body {
   padding: 4px 10px;
   font-size: 11px;
   font-weight: 600;
-  font-family: 'Poppins', sans-serif;
 }
 
 .chip button {
@@ -500,6 +491,8 @@ body {
   font-weight: 600;
   color: var(--text-dim);
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: color 0.15s;
 }
 
@@ -1468,20 +1461,30 @@ body.page-index-body {
 }
 
 /* ═══════════════════════════════════════════════
-   FIRMA "by Harry" — en el flujo normal de la página (no fixed), se
-   descubre al llegar al final del contenido. Ya no hace falta una
-   excepción para la pantalla 2: ahora que el body permite un pequeño
-   scroll extra (ver overflow-y arriba), las dos pantallas de Horarios
-   se comportan igual que el resto de SIGA.
+   FIRMA COMO SELLO FIJO
    ═══════════════════════════════════════════════ */
 .harry-stamp {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 6px;
-  padding: 24px 20px 32px;
-  opacity: 0.55;
+  z-index: 9999;
+  opacity: 0.6;
   pointer-events: none;
+}
+
+/* En móvil: fluye con el contenido, al final del todo */
+@media (max-width: 900px) {
+  .harry-stamp {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    justify-content: flex-end;
+    padding: 20px 16px 32px 16px;
+    opacity: 0.5;
+  }
 }
 
 .harry-stamp-img {
