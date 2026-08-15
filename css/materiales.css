@@ -1,0 +1,69 @@
+/* ============================================================
+   MATERIALES — acceso al repositorio de Núcleo
+   Hero a ancho completo (screenshot real de su web) + barra de
+   acceso debajo. Solo el botón "Ir a la web" es clickeable — el
+   resto es informativo, no toda la sección.
+   ============================================================ */
+.materiales-nucleo-wrap {
+    max-width: 1160px;
+    margin: 0 auto;
+}
+
+.materiales-nucleo-hero {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+    margin-bottom: 20px;
+}
+
+.materiales-nucleo-bar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 20px 24px;
+}
+
+.materiales-nucleo-logo {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.materiales-nucleo-texto {
+    flex: 1;
+}
+
+.materiales-nucleo-texto h3 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+
+.materiales-nucleo-texto p {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0;
+}
+
+@media (max-width: 640px) {
+    .materiales-nucleo-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .materiales-nucleo-bar .modulo-accion {
+        width: 100%;
+        justify-content: center;
+    }
+}
