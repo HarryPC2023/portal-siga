@@ -5,8 +5,10 @@
    botón "Ir a la web" es clickeable.
    ============================================================ */
 .materiales-nucleo-wrap {
-    max-width: 1160px;
-    margin: 0 auto;
+    /* Sin max-width propio: hereda el ancho real de .dash-detalle (820px),
+       que es el mismo espacio exacto que ocupaba el panel de "Próximamente"
+       antes de este cambio. */
+    width: 100%;
 }
 
 .materiales-nucleo-hero {
@@ -60,6 +62,7 @@
 
 .materiales-nucleo-fila .modulo-accion {
     flex-shrink: 0;
+    align-self: center;
 }
 
 @media (max-width: 640px) {
