@@ -1,83 +1,53 @@
 {
   "cursos": [
     {
-      "nombre": "TGS",
+      "nombre": "Administración y Organización",
       "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Álgebra Lineal",
+      "carrera": null,
       "ciclo_ref": 2
     },
     {
-      "nombre": "Contabilidad Financiera",
-      "carrera": "industrial",
-      "ciclo_ref": 5
+      "nombre": "Algoritmia Avanzada",
+      "carrera": "software",
+      "ciclo_ref": 3
     },
     {
-      "nombre": "Sociología",
-      "carrera": "industrial",
-      "ciclo_ref": 5
-    },
-    {
-      "nombre": "Química II",
-      "carrera": "industrial",
+      "nombre": "Algoritmia y Estructura de Datos",
+      "carrera": null,
       "ciclo_ref": 2
+    },
+    {
+      "nombre": "Análisis y Diseño de Sistemas",
+      "carrera": "sistemas",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Análisis y Modelamiento de Datos",
+      "carrera": "software",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Arquitectura Computacional y Redes",
+      "carrera": "sistemas",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Arquitectura de Computadoras I",
+      "carrera": "software",
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Arquitectura Empresarial",
+      "carrera": "sistemas",
+      "ciclo_ref": 6
     },
     {
       "nombre": "Cálculo Diferencial",
       "carrera": null,
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Geometría Analítica",
-      "carrera": null,
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Química I",
-      "carrera": null,
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Redacción",
-      "carrera": null,
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Introducción a la Computación",
-      "carrera": null,
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Ética y Filosofía Política",
-      "carrera": null,
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Dibujo en Ingeniería",
-      "carrera": null,
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Desarrollo Personal",
-      "carrera": null,
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Intro. Sistemas",
-      "carrera": "sistemas",
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Intro. Industrial",
-      "carrera": "industrial",
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Intro. Software",
-      "carrera": "software",
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Intro. IA",
-      "carrera": "ia",
       "ciclo_ref": 1
     },
     {
@@ -86,24 +56,354 @@
       "ciclo_ref": 2
     },
     {
-      "nombre": "Álgebra Lineal",
+      "nombre": "Cálculo Multivariable",
       "carrera": null,
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Cálculo Numérico",
+      "carrera": "sistemas",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Contabilidad Financiera",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Control Estadístico de Procesos",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Desarrollo Personal",
+      "carrera": "industrial",
       "ciclo_ref": 2
     },
     {
-      "nombre": "Algoritmia y Estructura de Datos",
-      "carrera": null,
+      "nombre": "Desarrollo Personal",
+      "carrera": "sistemas",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Desarrollo Personal",
+      "carrera": "software",
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Dibujo y Geometría Descriptiva",
+      "carrera": "industrial",
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Dibujo y Geometría Descriptiva",
+      "carrera": "software",
       "ciclo_ref": 2
     },
     {
-      "nombre": "Realidad Nacional",
+      "nombre": "Dinámica de Sistemas",
+      "carrera": "sistemas",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Diseño asistido por Computador",
+      "carrera": "industrial",
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Diseño de Base de Datos",
       "carrera": null,
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Economía General",
+      "carrera": "industrial",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Economía General",
+      "carrera": "sistemas",
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Ecuaciones Diferenciales",
+      "carrera": null,
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Electricidad y Electrónica Industrial",
+      "carrera": "industrial",
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Estadística Aplicada",
+      "carrera": "industrial",
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Estadística Aplicada",
+      "carrera": "sistemas",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Estadística Aplicada",
+      "carrera": "software",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Estadística y Probabilidades",
+      "carrera": "industrial",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Estadística y Probabilidades",
+      "carrera": null,
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Ética y Filosofía Política",
+      "carrera": "industrial",
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Ética y Filosofía Política",
+      "carrera": "sistemas",
       "ciclo_ref": 2
+    },
+    {
+      "nombre": "Ética y Filosofía Política",
+      "carrera": "software",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Física I",
+      "carrera": "industrial",
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Física I",
+      "carrera": "sistemas",
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Física I",
+      "carrera": "software",
+      "ciclo_ref": 2
+    },
+    {
+      "nombre": "Física II",
+      "carrera": "industrial",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Física II",
+      "carrera": "sistemas",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Física II",
+      "carrera": "software",
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Físico Química y Operaciones Unitarias",
+      "carrera": "industrial",
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Geometría Analítica",
+      "carrera": null,
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Ingeniería de Materiales",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Ingeniería de Procesos",
+      "carrera": "industrial",
+      "ciclo_ref": 7
+    },
+    {
+      "nombre": "Ingeniería de Procesos",
+      "carrera": "sistemas",
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Ingeniería de Requerimientos I",
+      "carrera": "software",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Ingeniería del trabajo",
+      "carrera": "industrial",
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Ingeniería del Trabajo II",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Intro. IA",
+      "carrera": "ia",
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Intro. Industrial",
+      "carrera": "industrial",
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Intro. Sistemas",
+      "carrera": "sistemas",
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Intro. Software",
+      "carrera": "software",
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Introducción a la Computación",
+      "carrera": "industrial",
+      "ciclo_ref": 2
+    },
+    {
+      "nombre": "Introducción a la Computación",
+      "carrera": null,
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Investigación de Operaciones I",
+      "carrera": "software",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Investigación de Operaciones I",
+      "carrera": null,
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Investigación de Operaciones II",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Investigación de Operaciones II",
+      "carrera": "sistemas",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Lenguaje de programación",
+      "carrera": "industrial",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Lenguaje de Programación II",
+      "carrera": "software",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Lenguajes de la Programación I",
+      "carrera": "software",
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Maquinaria e Instrumentación Industrial",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Matemática Aplicada",
+      "carrera": "sistemas",
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Matemática Discreta",
+      "carrera": "software",
+      "ciclo_ref": 2
+    },
+    {
+      "nombre": "Matemática Discreta",
+      "carrera": null,
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Metodología de la Investigación",
+      "carrera": null,
+      "ciclo_ref": 3
+    },
+    {
+      "nombre": "Metodología de Sistemas Blandos",
+      "carrera": "sistemas",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Modelado Conceptual de Datos",
+      "carrera": "sistemas",
+      "ciclo_ref": 4
+    },
+    {
+      "nombre": "Modelado de Procesos de Ciclo de Vida de Sistemas",
+      "carrera": "sistemas",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Procesos Industriales I",
+      "carrera": "industrial",
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Procesos Industriales II",
+      "carrera": "industrial",
+      "ciclo_ref": 6
+    },
+    {
+      "nombre": "Programación Orientada a Objetos",
+      "carrera": "sistemas",
+      "ciclo_ref": 3
     },
     {
       "nombre": "Psicología Sistémica",
       "carrera": "sistemas",
       "ciclo_ref": 2
+    },
+    {
+      "nombre": "Química I",
+      "carrera": null,
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Química II",
+      "carrera": "industrial",
+      "ciclo_ref": 2
+    },
+    {
+      "nombre": "Realidad Nacional",
+      "carrera": "industrial",
+      "ciclo_ref": 2
+    },
+    {
+      "nombre": "Realidad Nacional",
+      "carrera": "sistemas",
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Realidad Nacional",
+      "carrera": "software",
+      "ciclo_ref": 5
+    },
+    {
+      "nombre": "Redacción y Comunicación",
+      "carrera": null,
+      "ciclo_ref": 1
+    },
+    {
+      "nombre": "Sistema y Gestión Financiera",
+      "carrera": "sistemas",
+      "ciclo_ref": 6
     },
     {
       "nombre": "Sistemas Biológicos",
@@ -116,129 +416,9 @@
       "ciclo_ref": 4
     },
     {
-      "nombre": "Investigación de Operaciones I",
-      "carrera": null,
-      "ciclo_ref": 5
-    },
-    {
-      "nombre": "Diseño de Base de Datos",
-      "carrera": null,
-      "ciclo_ref": 5
-    },
-    {
-      "nombre": "Matemática Aplicada",
-      "carrera": null,
-      "ciclo_ref": 5
-    },
-    {
-      "nombre": "Teoría Organizacional",
-      "carrera": null,
-      "ciclo_ref": 5
-    },
-    {
-      "nombre": "Ingeniería de Procesos",
+      "nombre": "Sociología",
       "carrera": "industrial",
       "ciclo_ref": 5
-    },
-    {
-      "nombre": "Electricidad y Electrónica Industrial",
-      "carrera": "industrial",
-      "ciclo_ref": 5
-    },
-    {
-      "nombre": "Ingeniería de Materiales",
-      "carrera": "industrial",
-      "ciclo_ref": 5
-    },
-    {
-      "nombre": "Procesos Industriales I",
-      "carrera": "industrial",
-      "ciclo_ref": 5
-    },
-    {
-      "nombre": "Ingeniería del trabajo",
-      "carrera": "industrial",
-      "ciclo_ref": 5
-    },
-    {
-      "nombre": "Análisis y Diseño de Sistemas",
-      "carrera": "sistemas",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Arquitectura Computacional y Redes",
-      "carrera": "sistemas",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Arquitectura Empresarial",
-      "carrera": "sistemas",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Dinámica de Sistemas",
-      "carrera": "sistemas",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Investigación de Operaciones II",
-      "carrera": "sistemas",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Modelado de Procesos de Ciclo de Vida de Sistemas",
-      "carrera": "sistemas",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Sistema y Gestión Financiera",
-      "carrera": "sistemas",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Administración y Organización",
-      "carrera": "industrial",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Control Estadístico de Procesos",
-      "carrera": "industrial",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Ingeniería del Trabajo II",
-      "carrera": "industrial",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Maquinaria e Instrumentación Industrial",
-      "carrera": "industrial",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Procesos Industriales II",
-      "carrera": "industrial",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Investigación de Operaciones II",
-      "carrera": "industrial",
-      "ciclo_ref": 6
-    },
-    {
-      "nombre": "Algoritmia Avanzada",
-      "carrera": "software",
-      "ciclo_ref": 3
-    },
-    {
-      "nombre": "Arquitectura de Computadoras I",
-      "carrera": "software",
-      "ciclo_ref": 3
-    },
-    {
-      "nombre": "Diseño asistido por Computador",
-      "carrera": "industrial",
-      "ciclo_ref": 3
     },
     {
       "nombre": "TCS",
@@ -246,118 +426,23 @@
       "ciclo_ref": 2
     },
     {
-      "nombre": "Física I",
-      "carrera": null,
-      "ciclo_ref": 2
-    },
-    {
-      "nombre": "Matemática Discreta",
-      "carrera": null,
-      "ciclo_ref": 2
-    },
-    {
-      "nombre": "Cálculo Multivariable",
-      "carrera": null,
+      "nombre": "TCSA",
+      "carrera": "sistemas",
       "ciclo_ref": 3
     },
     {
-      "nombre": "Metodología de la Investigación",
-      "carrera": null,
-      "ciclo_ref": 3
-    },
-    {
-      "nombre": "Estadística y Probabilidades",
-      "carrera": null,
-      "ciclo_ref": 3
+      "nombre": "Teoría Organizacional",
+      "carrera": "sistemas",
+      "ciclo_ref": 5
     },
     {
       "nombre": "Termodinámica",
-      "carrera": null,
-      "ciclo_ref": 3
-    },
-    {
-      "nombre": "TCSA",
-      "carrera": null,
-      "ciclo_ref": 3
-    },
-    {
-      "nombre": "Programación Orientada a Objetos",
-      "carrera": null,
-      "ciclo_ref": 3
-    },
-    {
-      "nombre": "Lenguajes de la Programación I",
-      "carrera": null,
-      "ciclo_ref": 3
-    },
-    {
-      "nombre": "Física II",
-      "carrera": null,
-      "ciclo_ref": 3
-    },
-    {
-      "nombre": "Ecuaciones Diferenciales",
-      "carrera": null,
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Cálculo Numérico",
-      "carrera": "sistemas",
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Modelado Conceptual de Datos",
-      "carrera": null,
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Estadística Aplicada",
-      "carrera": "sistemas",
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Metodología de Sistemas Blandos",
-      "carrera": "sistemas",
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Lenguaje de programación",
       "carrera": "industrial",
       "ciclo_ref": 4
     },
     {
-      "nombre": "Físico Química y Operaciones Unitarias",
+      "nombre": "TGS",
       "carrera": "industrial",
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Economía General",
-      "carrera": "industrial",
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Análisis y Modelamiento de Datos",
-      "carrera": null,
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Ingeniería de Requerimientos I",
-      "carrera": "software",
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Lenguaje de Programación II",
-      "carrera": "software",
-      "ciclo_ref": 4
-    },
-    {
-      "nombre": "Dibujo y Geometría Descriptiva",
-      "carrera": "industrial",
-      "ciclo_ref": 1
-    },
-    {
-      "nombre": "Dibujo y Geometría Descriptiva",
-      "carrera": "software",
       "ciclo_ref": 2
     }
   ],
@@ -759,7 +844,7 @@
       "activo": true
     },
     {
-      "curso": "Redacción",
+      "curso": "Redacción y Comunicación",
       "profesor": "Raquel Chávarri",
       "resumen": "Muy estricta y puntual; aprendes de verdad pero no perdona nada.",
       "que_esperar": "Combina teoría, ejemplos y evaluación oral/escrita muy exigente en puntualidad y detalle. Prohibido faltar más de 4 clases, y llegar tarde te cierra la puerta salvo en PCs.",
@@ -771,7 +856,7 @@
       "activo": true
     },
     {
-      "curso": "Redacción",
+      "curso": "Redacción y Comunicación",
       "profesor": "Saul Acevedo",
       "resumen": "El profesor más generoso del ciclo; casi imposible jalar con él.",
       "que_esperar": "Clases entretenidas con cine, libros y buena onda constante. Deja una tarea semanal cuyo promedio se convierte directamente en tu cuarta PC.",
@@ -783,7 +868,7 @@
       "activo": true
     },
     {
-      "curso": "Redacción",
+      "curso": "Redacción y Comunicación",
       "profesor": "Maria Curotto",
       "resumen": "Todas las clases se expone; usa lenguaje académico complejo.",
       "que_esperar": "Cada clase hay exposiciones (todos exponen, no siempre los mismos) sobre temas variados. Permite usar cualquier medio de búsqueda de información, incluido ChatGPT.",
@@ -795,7 +880,7 @@
       "activo": true
     },
     {
-      "curso": "Redacción",
+      "curso": "Redacción y Comunicación",
       "profesor": "Rildo Campana",
       "resumen": "Fomenta pensamiento crítico pero se desvía mucho del tema.",
       "que_esperar": "Clase orientada a coyuntura nacional e internacional, con frecuentes desvíos del temario. Fomenta la investigación y el pensamiento crítico más que el contenido puramente técnico.",
@@ -927,7 +1012,7 @@
       "activo": true
     },
     {
-      "curso": "Dibujo en Ingeniería",
+      "curso": "Dibujo y Geometría Descriptiva",
       "profesor": "Víctor Moncada",
       "resumen": "Enseña teoría y luego solo problemas; conviene practicar planchas.",
       "que_esperar": "Primero enseña teoría y después dedica las clases casi enteramente a resolver problemas en pizarra. Llega unos 15 minutos tarde de forma habitual.",
@@ -939,7 +1024,7 @@
       "activo": true
     },
     {
-      "curso": "Dibujo en Ingeniería",
+      "curso": "Dibujo y Geometría Descriptiva",
       "profesor": "Luis Callo",
       "resumen": "Clases áridas y exigentes; hay que anotar y practicar todo.",
       "que_esperar": "Clases poco dinámicas donde explica sobre todo para sí mismo, conviene sentarse adelante y anotar o fotografiar todo. Es estricto con el método exacto y las herramientas de dibujo, y demora en subir notas.",
