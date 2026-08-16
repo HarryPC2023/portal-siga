@@ -1,5 +1,3 @@
----
----
 <!DOCTYPE html>
 <html lang="es">
 
@@ -42,17 +40,51 @@
 
     {% include nav.html activo="intranotas" %}
 
+    <!-- PANTALLA 0: ELEGIR MALLA (2018 / 2026).
+         Nueva, primera pantalla del flujo desde que la UNI implementó la
+         malla 2026. Se pregunta una sola vez, igual que la carrera —
+         seleccionarMalla() guarda la elección en localStorage
+         (intranotas_ultima_malla) y de ahí en adelante el flujo entra
+         directo a Pantalla 3 con esa malla ya fija, salvo que el alumno
+         toque "Cambiar malla" (botón en Pantalla 3, para los de 5°-6°
+         ciclo a quienes la UNI les da la opción de elegir). -->
+    <div id="pantalla-0" class="pantalla pantalla-configuracion activa">
+        <div class="contenedor-principal">
+            <div class="cabecera-pantalla">
+                <h1 class="titulo-intranotas" style="font-size: 2rem;">INTRANOTAS</h1>
+                <p class="subtitulo-pantalla-malla" style="text-align:center; color:var(--color-gris-texto); margin-top:8px;">
+                    ¿Con qué malla curricular llevas tus cursos?
+                </p>
+            </div>
+
+            <div class="grid-mallas" id="grid-mallas">
+                <button class="btn-malla" onclick="seleccionarMalla('2018')">
+                    <span class="btn-malla-nombre">Malla 2018</span>
+                    <span class="btn-malla-detalle">5° a 10° ciclo</span>
+                </button>
+                <button class="btn-malla" onclick="seleccionarMalla('2026')">
+                    <span class="btn-malla-nombre">Malla 2026</span>
+                    <span class="btn-malla-detalle">1° a 4° ciclo</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- PANTALLA 3: CARRERA (colapsable) + PERIODO + CURSOS.
          Fusiona lo que antes era pantalla-2 (elegir carrera) dentro de
          esta misma pantalla, como un bloque plegable arriba — la carrera
          casi nunca cambia, así que ya no merece una pantalla propia.
          (La pantalla-1 de bienvenida, propia del standalone, ya no existe
          tampoco: entrar a Intranotas desde SIGA y encima tener que apretar
-         "INGRESAR" adentro era redundante.) -->
-    <div id="pantalla-3" class="pantalla pantalla-configuracion activa">
+         "INGRESAR" adentro era redundante.)
+         Ya NO empieza "activa": ahora el flujo arranca en Pantalla 0
+         (elegir malla) y seleccionarMalla()/intentarRestaurarSesion() son
+         quienes deciden si se llega hasta acá. -->
+    <div id="pantalla-3" class="pantalla pantalla-configuracion">
         <div class="contenedor-principal">
             <div class="cabecera-pantalla">
                 <h1 class="titulo-intranotas" style="font-size: 2rem;">INTRANOTAS</h1>
+                <p id="malla-resumen-texto" style="text-align:center; font-size:0.85rem; color:var(--color-gris-texto); margin-top:-8px; margin-bottom:8px;"></p>
             </div>
 
             <div id="bloque-carrera" style="margin-bottom: 1.5rem;">
@@ -100,6 +132,8 @@
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1rem;">
                     <button class="btn-volver-carrera" onclick="cambiarCarrera()" style="flex:1; min-width:140px;">←
                         Cambiar carrera</button>
+                    <button class="btn-volver-carrera" onclick="cambiarMalla()" style="flex:1; min-width:140px;">📚
+                        Cambiar malla</button>
                     <button class="btn-volver-carrera" onclick="iniciarNuevoPeriodo()"
                         style="flex:1; min-width:140px;">🔄 Nuevo periodo</button>
                 </div>
@@ -217,8 +251,9 @@
     <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
     <script src="cursos_db.js?v=1"></script>
+    <script src="cursos_db_2026.js?v=1"></script>
     <script src="../js/selector-personalizado.js?v=1"></script>
-    <script src="intranotas.js?v=7"></script>
+    <script src="intranotas.js?v=8"></script>
     <script src="../js/tema-siga.js?v=1"></script>
 
     <!-- Botón "volver arriba": aparece pasados ~400px de scroll de la

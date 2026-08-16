@@ -520,12 +520,10 @@ const CURSOS_IA = {
 };
 
 /* ============================================================
-   Ensamblado final: misma forma que antes (CURSOS_POR_CICLO), así
-   que intranotas.js no necesita cambiar cómo lo consulta.
+   NOTA: el ensamblado de CURSOS_POR_CICLO ya NO va aquí.
+   Ahora vive en cursos_db_2026.js, namespaceado por malla:
+   CURSOS_POR_CICLO['2018'][carrera][ciclo] / ['2026'][carrera][ciclo].
+   Este archivo (cursos_db.js) solo define los objetos
+   CURSOS_SISTEMAS / CURSOS_INDUSTRIAL / CURSOS_SOFTWARE / CURSOS_IA
+   de malla 2018, tal como antes — no se toca su contenido.
    ============================================================ */
-const CURSOS_POR_CICLO = {
-    sistemas: CURSOS_SISTEMAS,
-    industrial: CURSOS_INDUSTRIAL,
-    software: CURSOS_SOFTWARE,
-    ia: CURSOS_IA,
-};
