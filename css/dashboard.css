@@ -365,6 +365,10 @@ body {
 }
 
 .acceso-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   padding: 10px 12px;
   font-family: var(--font-heading);
   font-weight: 600;
@@ -372,6 +376,21 @@ body {
   color: var(--ink);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   margin-bottom: 6px;
+}
+
+.acceso-panel-limpiar {
+  border: none;
+  background: transparent;
+  font-family: var(--font-nav);
+  font-weight: 600;
+  font-size: 11.5px;
+  color: var(--brand-morado);
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.acceso-panel-limpiar:hover {
+  text-decoration: underline;
 }
 
 .acceso-panel-vacio {
@@ -382,10 +401,37 @@ body {
 }
 
 .notif-item {
+  position: relative;
   display: block;
-  padding: 10px 12px;
+  padding: 10px 28px 10px 12px;
   border-radius: 10px;
   transition: background 0.15s ease;
+}
+
+.notif-item-borrar {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 11px;
+  line-height: 1;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.notif-item-borrar:hover {
+  opacity: 1;
+  background: rgba(224, 68, 123, 0.14);
+  color: var(--acento-ciruela, #E0447B);
 }
 
 .notif-item:hover {

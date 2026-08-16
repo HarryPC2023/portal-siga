@@ -273,14 +273,14 @@ function actualizarResumenCarrera() {
     if (texto) texto.textContent = carreraSeleccionada ? NOMBRES_CARRERAS[carreraSeleccionada] : 'Selecciona tu carrera';
 }
 
-/* Texto pequeño arriba de "INTRANOTAS" en Pantalla 3, ej. "Malla 2026
-   · 1° a 4° ciclo" — solo contexto, no es clickeable (para eso está
-   el botón "Cambiar malla"). */
+/* Texto pequeño arriba de "INTRANOTAS" en Pantalla 3, ej. "Malla 2026"
+   — solo contexto, no es clickeable (para eso está el botón "Cambiar
+   malla"). Antes incluía el rango de ciclos ("· 1° a 4° ciclo"); se
+   quitó a pedido de Harry para que quede más limpio. */
 function actualizarResumenMalla() {
     const texto = document.getElementById('malla-resumen-texto');
     if (!texto) return;
-    const detalle = mallaSeleccionada === '2026' ? '1° a 4° ciclo' : '5° a 10° ciclo';
-    texto.textContent = mallaSeleccionada ? `Malla ${mallaSeleccionada} · ${detalle}` : '';
+    texto.textContent = mallaSeleccionada ? `Malla ${mallaSeleccionada}` : '';
 }
 
 function mostrarSelectorCarrera(expandido) {
@@ -563,6 +563,67 @@ function leerDatosPeriodos() {
 
 function guardarDatosPeriodos(datos) {
     localStorage.setItem(claveDatosPeriodos(), JSON.stringify(datos));
+    sincronizarNube(datos);
+}
+
+/* ============================================================
+   SINCRONIZACIÓN EN LA NUBE (multi-dispositivo)
+   localStorage sigue siendo la fuente rápida de lectura/escritura —
+   nada de esto la reemplaza. La nube solo entra en dos momentos:
+     1) Al abrir la app (hidratarDesdeNube): si hay sesión, trae lo
+        último guardado en Supabase y pisa el caché local, por si
+        otro dispositivo guardó algo más reciente.
+     2) Cada vez que se guarda algo local (sincronizarNube): sube una
+        copia en segundo plano, sin bloquear la UI ni el toast.
+   Si el usuario no inició sesión (Intranotas no lo exige), todo
+   sigue funcionando exactamente igual que antes — 100% local.
+   Los datos viven en la tabla intranotas_datos_nube, una fila por
+   (user_id, malla) — ver SQL de creación en el mensaje del chat.
+   ============================================================ */
+const TABLA_NUBE = 'intranotas_datos_nube';
+let sesionNubePromesa = null;
+
+function obtenerSesionNube() {
+    if (!window.sigaObtenerSesion) return Promise.resolve(null);
+    if (!sesionNubePromesa) {
+        sesionNubePromesa = window.sigaObtenerSesion().catch(() => null);
+    }
+    return sesionNubePromesa;
+}
+
+async function hidratarDesdeNube() {
+    const sesion = await obtenerSesionNube();
+    if (!sesion || !window.sigaSupabase) return;
+
+    const { data, error } = await window.sigaSupabase
+        .from(TABLA_NUBE)
+        .select('datos_periodos, ultimo_periodo')
+        .eq('user_id', sesion.user.id)
+        .eq('malla', mallaSeleccionada)
+        .maybeSingle();
+
+    if (error) { console.warn('No se pudo traer Intranotas de la nube:', error); return; }
+    if (!data) return; // este dispositivo es el primero en tener datos de esta malla
+
+    if (data.datos_periodos) localStorage.setItem(claveDatosPeriodos(), JSON.stringify(data.datos_periodos));
+    if (data.ultimo_periodo) localStorage.setItem(claveUltimoPeriodo(), data.ultimo_periodo);
+}
+
+async function sincronizarNube(datos) {
+    const sesion = await obtenerSesionNube();
+    if (!sesion || !window.sigaSupabase) return;
+
+    const { error } = await window.sigaSupabase
+        .from(TABLA_NUBE)
+        .upsert({
+            user_id: sesion.user.id,
+            malla: mallaSeleccionada,
+            datos_periodos: datos,
+            ultimo_periodo: localStorage.getItem(claveUltimoPeriodo()),
+            updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,malla' });
+
+    if (error) console.warn('No se pudo sincronizar Intranotas con la nube:', error);
 }
 
 /* Se inicializa una sola vez (guardián selectorPeriodoInstancia): el
@@ -1575,8 +1636,8 @@ function guardarConfiguracion() {
         cursos: cursosSeleccionados,
         notas: notasFiltradas,
     };
-    guardarDatosPeriodos(datos);
     localStorage.setItem(claveUltimoPeriodo(), periodoSeleccionado);
+    guardarDatosPeriodos(datos);
     limpiarMetasCursosNoSeleccionados();
 }
 
@@ -1595,8 +1656,8 @@ function guardarNotas() {
     });
     datos[periodoSeleccionado].notas = notas;
     datos[periodoSeleccionado].cursos = cursosSeleccionados;
-    guardarDatosPeriodos(datos);
     localStorage.setItem(claveUltimoPeriodo(), periodoSeleccionado);
+    guardarDatosPeriodos(datos);
     mostrarToast('✅ Notas guardadas correctamente');
 }
 
@@ -1738,7 +1799,7 @@ function mostrarToast(msg) {
 /* ============================================================
    INICIALIZACIÓN
    ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     /* El tema (Claro/Oscuro/Ocean/Forest) ya no lo maneja este archivo:
        tema-siga.js (compartido con el resto de SIGA) lee data-tema del
        <html> y pinta el widget del nav — Intranotas solo necesita que
@@ -1756,19 +1817,24 @@ document.addEventListener('DOMContentLoaded', () => {
             regs.forEach(reg => reg.unregister());
         });
     }
-    intentarRestaurarSesion();
+    await intentarRestaurarSesion();
 });
 
 /* ============================================================
    RESTAURAR SESIÓN GUARDADA (saltar directo al simulador)
    ============================================================ */
-function intentarRestaurarSesion() {
+async function intentarRestaurarSesion() {
     try {
         const ultimaMalla = localStorage.getItem(LS_KEY_ULTIMA_MALLA);
         if (!ultimaMalla) return; // Sin malla guardada: se queda en Pantalla 0 (elegir malla)
         mallaSeleccionada = ultimaMalla;
         actualizarResumenMalla();
         filtrarCarrerasPorMalla();
+
+        // Antes de leer localStorage: si hay sesión, trae lo último
+        // guardado en la nube (por si otro dispositivo tiene algo más
+        // reciente) y pisa el caché local con eso.
+        await hidratarDesdeNube();
 
         const datos = leerDatosPeriodos();
         const ultimoPeriodo = localStorage.getItem(claveUltimoPeriodo());

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const panel = document.getElementById('panelNotificaciones');
     const lista = document.getElementById('listaNotificaciones');
     const badge = document.getElementById('notifBadge');
+    const btnLimpiar = document.getElementById('btnLimpiarNotifs');
     if (!item || !btn || !panel || !lista) return;
 
     const sesion = await requerirSesion('');
@@ -53,18 +54,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         lista.innerHTML = notificaciones.map((n) => `
-      <div class="notif-item ${idsLeidas.has(n.id) ? '' : 'no-leida'}">
+      <div class="notif-item ${idsLeidas.has(n.id) ? '' : 'no-leida'}" data-id="${n.id}">
+        <button type="button" class="notif-item-borrar" title="Borrar notificación" aria-label="Borrar notificación">✕</button>
         <span class="notif-item-titulo">${n.titulo}</span>
         <span class="notif-item-mensaje">${n.mensaje}</span>
         <span class="notif-item-fecha">${formatearFecha(n.creado_en)}</span>
       </div>
     `).join('');
+
+        lista.querySelectorAll('.notif-item-borrar').forEach((btnBorrar) => {
+            btnBorrar.addEventListener('click', (e) => {
+                e.stopPropagation(); // no abre/cierra el panel al tocar el ✕
+                const id = btnBorrar.closest('.notif-item')?.dataset.id;
+                if (id !== undefined) ocultarNotificacion(id);
+            });
+        });
+
+        if (btnLimpiar) btnLimpiar.hidden = notificaciones.length === 0;
     }
 
     async function cargar() {
-        const [{ data: notifs, error: errNotifs }, { data: leidas, error: errLeidas }] = await Promise.all([
+        const [{ data: notifs, error: errNotifs }, { data: leidas, error: errLeidas }, { data: ocultas, error: errOcultas }] = await Promise.all([
             supabase.from('notificaciones').select('id, titulo, mensaje, creado_en').order('creado_en', { ascending: false }).limit(20),
             supabase.from('notificaciones_leidas').select('notificacion_id').eq('user_id', sesion.user.id),
+            supabase.from('notificaciones_ocultas').select('notificacion_id').eq('user_id', sesion.user.id),
         ]);
 
         if (errNotifs) {
@@ -73,10 +86,49 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
         if (errLeidas) console.warn('Error cargando estado de lectura:', errLeidas);
+        if (errOcultas) console.warn('Error cargando notificaciones ocultadas:', errOcultas);
 
-        notificaciones = notifs || [];
+        // Las que el usuario ya borró de su lista no vuelven a aparecer,
+        // aunque sigan existiendo globalmente para los demás alumnos.
+        const idsOcultas = new Set((ocultas || []).map((o) => o.notificacion_id));
+        notificaciones = (notifs || []).filter((n) => !idsOcultas.has(n.id));
         idsLeidas = new Set((leidas || []).map((l) => l.notificacion_id));
         pintar();
+    }
+
+    /* Borra UNA notificación solo para este alumno — no la borra para
+       nadie más, solo la marca como "oculta" en su propia fila. */
+    async function ocultarNotificacion(id) {
+        const notif = notificaciones.find((n) => String(n.id) === String(id));
+        if (!notif) return;
+
+        notificaciones = notificaciones.filter((n) => n.id !== notif.id);
+        idsLeidas.delete(notif.id);
+        pintar(); // respuesta visual inmediata, sin esperar la red
+
+        const { error } = await supabase
+            .from('notificaciones_ocultas')
+            .upsert({ user_id: sesion.user.id, notificacion_id: notif.id }, { onConflict: 'user_id,notificacion_id', ignoreDuplicates: true });
+
+        if (error) console.warn('No se pudo ocultar la notificación:', error);
+    }
+
+    /* "Limpiar todas": oculta de una sola vez todo lo que se está
+       mostrando ahora mismo (mismo mecanismo, en lote). */
+    async function limpiarTodas() {
+        if (!notificaciones.length) return;
+        const idsAOcultar = notificaciones.map((n) => n.id);
+
+        notificaciones = [];
+        idsLeidas.clear();
+        pintar();
+
+        const filas = idsAOcultar.map((id) => ({ user_id: sesion.user.id, notificacion_id: id }));
+        const { error } = await supabase
+            .from('notificaciones_ocultas')
+            .upsert(filas, { onConflict: 'user_id,notificacion_id', ignoreDuplicates: true });
+
+        if (error) console.warn('No se pudieron limpiar las notificaciones:', error);
     }
 
     async function marcarTodasLeidas() {

@@ -275,10 +275,20 @@
          a las dos: la ventana es la misma en ambos casos. -->
     <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
+    <!-- Expone Supabase en window para el script clásico de abajo.
+         Intranotas NO exige login (a diferencia de Horarios), así que
+         no hay gate.js acá — si no hay sesión, sigaObtenerSesion()
+         simplemente devuelve null y todo sigue funcionando 100% local,
+         igual que antes. Mismo patrón que ya usa horarios/index.html. -->
+    <script type="module">
+        import { supabase, obtenerSesion } from '../js/auth-siga.js?v=9';
+        window.sigaSupabase = supabase;
+        window.sigaObtenerSesion = obtenerSesion;
+    </script>
     <script src="cursos_db_2018.js?v=1"></script>
     <script src="cursos_db_2026.js?v=2"></script>
     <script src="../js/selector-personalizado.js?v=1"></script>
-    <script src="intranotas.js?v=8"></script>
+    <script src="intranotas.js?v=9"></script>
     <script src="../js/tema-siga.js?v=1"></script>
 
     <!-- Botón "volver arriba": aparece pasados ~400px de scroll de la
