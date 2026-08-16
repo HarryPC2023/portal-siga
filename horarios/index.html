@@ -205,6 +205,10 @@
         // volver aquí si quiere cambiar algo. Va primero que cualquier
         // otra cosa, antes de pintar nada, para que sea instantáneo.
         (function saltarAPantalla2SiYaHabiaAlgo() {
+            // Si el usuario llegó a propósito con "← Elegir cursos", respeta su
+            // intención y no lo rebotes de vuelta a la pantalla 2.
+            if (new URLSearchParams(window.location.search).get('volver') === '1') return;
+
             const cargaGuardada = localStorage.getItem(LS_CARGA);
             const seleccionGuardada = localStorage.getItem(LS_SEL);
             const huboGenerador = localStorage.getItem(LS_GEN_SECCIONES) || localStorage.getItem(LS_GEN_CRUCES);
@@ -708,7 +712,8 @@
                 // en vez de quedarse mostrando pantalla 1 — mismo criterio
                 // que el salto local de arriba, pero para un dispositivo
                 // nuevo donde localStorage estaba vacío.
-                if (data.secciones_generador || data.cruces != null) {
+                const vinoDeElegirCursos = new URLSearchParams(window.location.search).get('volver') === '1';
+                if ((data.secciones_generador || data.cruces != null) && !vinoDeElegirCursos) {
                     try { localStorage.setItem(LS_GEN_SECCIONES, JSON.stringify(data.secciones_generador || {})); } catch (e) { }
                     try { if (data.cruces != null) localStorage.setItem(LS_GEN_CRUCES, String(data.cruces)); } catch (e) { }
 
