@@ -54,17 +54,18 @@
         <div class="contenedor-principal">
             <div class="cabecera-pantalla">
                 <h1 class="titulo-intranotas" style="font-size: 2rem;">INTRANOTAS</h1>
-                <p class="subtitulo-pantalla-malla" style="text-align:center; color:var(--color-gris-texto); margin-top:8px;">
+                <p class="subtitulo-pantalla-malla"
+                    style="text-align:center; color:var(--color-gris-texto); margin-top:8px;">
                     ¿Con qué malla curricular llevas tus cursos?
                 </p>
             </div>
 
             <div class="grid-mallas" id="grid-mallas">
-                <button class="btn-malla" onclick="seleccionarMalla('2018')">
+                <button class="btn-malla" data-malla="2018" onclick="seleccionarMalla('2018')">
                     <span class="btn-malla-nombre">Malla 2018</span>
                     <span class="btn-malla-detalle">5° a 10° ciclo</span>
                 </button>
-                <button class="btn-malla" onclick="seleccionarMalla('2026')">
+                <button class="btn-malla" data-malla="2026" onclick="seleccionarMalla('2026')">
                     <span class="btn-malla-nombre">Malla 2026</span>
                     <span class="btn-malla-detalle">1° a 4° ciclo</span>
                 </button>
@@ -86,7 +87,9 @@
         <div class="contenedor-principal">
             <div class="cabecera-pantalla">
                 <h1 class="titulo-intranotas" style="font-size: 2rem;">INTRANOTAS</h1>
-                <p id="malla-resumen-texto" style="text-align:center; font-size:0.85rem; color:var(--color-gris-texto); margin-top:-8px; margin-bottom:8px;"></p>
+                <p id="malla-resumen-texto"
+                    style="text-align:center; font-size:0.85rem; color:var(--color-gris-texto); margin-top:-8px; margin-bottom:8px;">
+                </p>
             </div>
 
             <div id="bloque-carrera" style="margin-bottom: 1.5rem;">
@@ -97,14 +100,14 @@
                 </div>
                 <div class="grid-carreras" id="grid-carreras-colapsable"
                     style="margin-top:24px; padding-top:6px; overflow:hidden; max-height:2000px; opacity:1; transition:max-height 0.25s ease, opacity 0.2s ease, margin-top 0.25s ease;">
-                    <button class="btn-carrera" onclick="seleccionarCarrera('industrial')">
+                    <button class="btn-carrera" data-carrera="industrial" onclick="seleccionarCarrera('industrial')">
                         <img src="industrial.png" alt="Industrial" class="btn-carrera-img">
                         <div class="btn-carrera-texto">
                             <span class="btn-carrera-nombre">Ingeniería Industrial</span>
                             <span class="btn-carrera-ciclos">10 ciclos</span>
                         </div>
                     </button>
-                    <button class="btn-carrera" onclick="seleccionarCarrera('ia')">
+                    <button class="btn-carrera" data-carrera="ia" onclick="seleccionarCarrera('ia')">
                         <span
                             style="font-size:2rem; display:flex; align-items:center; justify-content:center; height:100%;">🤖</span>
                         <div class="btn-carrera-texto">
@@ -112,14 +115,14 @@
                             <span class="btn-carrera-ciclos">10 ciclos</span>
                         </div>
                     </button>
-                    <button class="btn-carrera" onclick="seleccionarCarrera('sistemas')">
+                    <button class="btn-carrera" data-carrera="sistemas" onclick="seleccionarCarrera('sistemas')">
                         <img src="sistemas.png" alt="Sistemas" class="btn-carrera-img">
                         <div class="btn-carrera-texto">
                             <span class="btn-carrera-nombre">Ingeniería de Sistemas</span>
                             <span class="btn-carrera-ciclos">10 ciclos</span>
                         </div>
                     </button>
-                    <button class="btn-carrera" onclick="seleccionarCarrera('software')">
+                    <button class="btn-carrera" data-carrera="software" onclick="seleccionarCarrera('software')">
                         <img src="software.png" alt="Software" class="btn-carrera-img">
                         <div class="btn-carrera-texto">
                             <span class="btn-carrera-nombre">Ingeniería de Software</span>

@@ -4,8 +4,7 @@
 const NOMBRES_CARRERAS = {
     sistemas: 'Ingeniería de Sistemas',
     industrial: 'Ingeniería Industrial',
-    software: 'Ingeniería de Software',
-    ia: 'Ingeniería de Inteligencia Artificial'
+    software: 'Ingeniería de Software'
 };
 
 const NOMBRES_CICLOS = {
@@ -146,6 +145,7 @@ const FORMULAS_SOLO_EXAMENES = ['SOLO_EXAMENES'];
 /* ============================================================
    VARIABLES GLOBALES DE ESTADO
    ============================================================ */
+let mallaSeleccionada = null; // '2018' | '2026'
 let carreraSeleccionada = null;
 let cursosSeleccionados = [];
 let periodoSeleccionado = null;
@@ -164,9 +164,80 @@ function irAPantalla(num) {
 }
 
 /* ============================================================
+   SELECCIÓN DE MALLA (PANTALLA 0)
+   Se pregunta una sola vez, igual que la carrera: se guarda en
+   localStorage (LS_KEY_ULTIMA_MALLA) y de ahí en adelante el flujo
+   entra directo a Pantalla 3 con esa malla fija. Solo se vuelve a
+   preguntar si el alumno toca "Cambiar malla".
+   ============================================================ */
+const LS_KEY_ULTIMA_MALLA = 'intranotas_ultima_malla';
+
+function seleccionarMalla(malla) {
+    mallaSeleccionada = malla;
+    localStorage.setItem(LS_KEY_ULTIMA_MALLA, malla);
+
+    // Cambiar de malla implica que la carrera/periodo/cursos de la
+    // malla anterior ya no aplican en pantalla — cada malla guarda sus
+    // propios periodos por separado, así que esto no borra nada.
+    carreraSeleccionada = null;
+    periodoSeleccionado = null;
+    cursosSeleccionados = [];
+
+    actualizarResumenMalla();
+    filtrarCarrerasPorMalla();
+    actualizarResumenCarrera();
+    mostrarSelectorCarrera(true);
+    mostrarBloquePeriodoCursos(false);
+
+    irAPantalla(3);
+}
+
+/* Botón "📚 Cambiar malla" (Pantalla 3) — pensado sobre todo para
+   alumnos de 5°-6° ciclo, a quienes la UNI les da la opción de elegir
+   con qué malla llevar sus cursos. Vuelve a Pantalla 0 sin tocar
+   ningún dato guardado. */
+function cambiarMalla() {
+    document.querySelectorAll('.btn-malla').forEach(btn => {
+        btn.classList.toggle('actual', btn.dataset.malla === mallaSeleccionada);
+    });
+    irAPantalla(0);
+}
+
+/* Devuelve true si la malla activa ya tiene catálogo de cursos
+   cargado para esa carrera (hoy: solo Sistemas tiene malla 2026). */
+function estaDisponibleCarrera(carrera) {
+    return !!(CURSOS_POR_CICLO[mallaSeleccionada] && CURSOS_POR_CICLO[mallaSeleccionada][carrera]);
+}
+
+/* Recorre las tarjetas de carrera y deshabilita (con aviso
+   "Próximamente") las que todavía no tienen malla 2026 publicada.
+   Con malla 2018 todas están disponibles, así que no hay nada que
+   deshabilitar en ese caso. */
+function filtrarCarrerasPorMalla() {
+    document.querySelectorAll('.btn-carrera').forEach(btn => {
+        const carrera = btn.dataset.carrera;
+        const disponible = estaDisponibleCarrera(carrera);
+        btn.classList.toggle('btn-carrera-proximamente', !disponible);
+        btn.disabled = !disponible;
+
+        let aviso = btn.querySelector('.btn-carrera-proximamente-badge');
+        if (!disponible && !aviso) {
+            aviso = document.createElement('span');
+            aviso.className = 'btn-carrera-proximamente-badge';
+            aviso.textContent = 'Próximamente';
+            btn.querySelector('.btn-carrera-texto').appendChild(aviso);
+        } else if (disponible && aviso) {
+            aviso.remove();
+        }
+    });
+}
+
+/* ============================================================
    SELECCIÓN DE CARRERA (PANTALLA 2)
    ============================================================ */
 function seleccionarCarrera(carrera) {
+    if (!estaDisponibleCarrera(carrera)) return; // seguro extra, aunque el botón ya está deshabilitado
+
     carreraSeleccionada = carrera;
     periodoSeleccionado = null;
     cursosSeleccionados = [];
@@ -192,6 +263,16 @@ function actualizarResumenCarrera() {
     if (texto) texto.textContent = carreraSeleccionada ? NOMBRES_CARRERAS[carreraSeleccionada] : 'Selecciona tu carrera';
 }
 
+/* Texto pequeño arriba de "INTRANOTAS" en Pantalla 3, ej. "Malla 2026
+   · 1° a 4° ciclo" — solo contexto, no es clickeable (para eso está
+   el botón "Cambiar malla"). */
+function actualizarResumenMalla() {
+    const texto = document.getElementById('malla-resumen-texto');
+    if (!texto) return;
+    const detalle = mallaSeleccionada === '2026' ? '1° a 4° ciclo' : '5° a 10° ciclo';
+    texto.textContent = mallaSeleccionada ? `Malla ${mallaSeleccionada} · ${detalle}` : '';
+}
+
 function mostrarSelectorCarrera(expandido) {
     const grid = document.getElementById('grid-carreras-colapsable');
     const flecha = document.getElementById('carrera-resumen-flecha');
@@ -201,18 +282,6 @@ function mostrarSelectorCarrera(expandido) {
         grid.style.marginTop = expandido ? '12px' : '0px';
     }
     if (flecha) flecha.textContent = expandido ? '▴' : '▾';
-
-    // Mientras el selector está abierto, el texto no debe seguir
-    // mostrando la carrera anterior — confunde, parece que ya volvió
-    // a elegir la misma. Se muestra un texto neutral hasta que elija
-    // una carrera real en seleccionarCarrera(). Esto NO borra nada de
-    // lo ya guardado (periodo, cursos) — solo cambia el texto.
-    const texto = document.getElementById('carrera-resumen-texto');
-    if (texto) {
-        texto.textContent = expandido
-            ? 'Elige tu carrera'
-            : (carreraSeleccionada ? NOMBRES_CARRERAS[carreraSeleccionada] : 'Selecciona tu carrera');
-    }
 }
 
 function toggleSelectorCarrera() {
@@ -257,7 +326,7 @@ function desmarcarTodosLosCursos() {
    ============================================================ */
 function generarAcordeones() {
     const contenedor = document.getElementById('contenedor-acordeones');
-    const cursosCarrera = CURSOS_POR_CICLO[carreraSeleccionada];
+    const cursosCarrera = CURSOS_POR_CICLO[mallaSeleccionada][carreraSeleccionada];
     let html = '';
 
     for (let ciclo = 1; ciclo <= 10; ciclo++) {
@@ -353,10 +422,10 @@ function toggleCurso(cursoId, ciclo) {
     const item = document.getElementById(`item-${cursoId}`);
 
     /* Buscar el curso tanto en ciclos numéricos como en electivos */
-    const cursosList = CURSOS_POR_CICLO[carreraSeleccionada][parseInt(ciclo)] || CURSOS_POR_CICLO[carreraSeleccionada][ciclo] || [];
+    const cursosList = CURSOS_POR_CICLO[mallaSeleccionada][carreraSeleccionada][parseInt(ciclo)] || CURSOS_POR_CICLO[mallaSeleccionada][carreraSeleccionada][ciclo] || [];
     let curso = cursosList.find(c => c.id === cursoId);
     if (!curso) {
-        const electivos = CURSOS_POR_CICLO[carreraSeleccionada]['electivos'] || [];
+        const electivos = CURSOS_POR_CICLO[mallaSeleccionada][carreraSeleccionada]['electivos'] || [];
         curso = electivos.find(c => c.id === cursoId);
     }
 
@@ -465,17 +534,25 @@ function marcarCursosSeleccionadosEnUI() {
    Así, cambiar de periodo (o volver a uno anterior) nunca borra los
    datos de los demás.
    ============================================================ */
-const LS_KEY_DATOS_PERIODOS = 'intranotas_datos_periodos';
-const LS_KEY_ULTIMO_PERIODO = 'intranotas_ultimo_periodo';
+/* Namespaceadas por malla: intranotas_datos_periodos_2018 /
+   _2026, intranotas_ultimo_periodo_2018 / _2026. Así un "2026-1" de
+   un ingresante nunca choca con nada de la malla vieja, y cambiar de
+   malla es seguro para los datos — cada una vive en su propia clave. */
+function claveDatosPeriodos() {
+    return `intranotas_datos_periodos_${mallaSeleccionada}`;
+}
+function claveUltimoPeriodo() {
+    return `intranotas_ultimo_periodo_${mallaSeleccionada}`;
+}
 
 function leerDatosPeriodos() {
-    const raw = localStorage.getItem(LS_KEY_DATOS_PERIODOS);
+    const raw = localStorage.getItem(claveDatosPeriodos());
     if (!raw) return {};
     try { return JSON.parse(raw); } catch (e) { return {}; }
 }
 
 function guardarDatosPeriodos(datos) {
-    localStorage.setItem(LS_KEY_DATOS_PERIODOS, JSON.stringify(datos));
+    localStorage.setItem(claveDatosPeriodos(), JSON.stringify(datos));
 }
 
 /* Se inicializa una sola vez (guardián selectorPeriodoInstancia): el
@@ -1489,7 +1566,7 @@ function guardarConfiguracion() {
         notas: notasFiltradas,
     };
     guardarDatosPeriodos(datos);
-    localStorage.setItem(LS_KEY_ULTIMO_PERIODO, periodoSeleccionado);
+    localStorage.setItem(claveUltimoPeriodo(), periodoSeleccionado);
     limpiarMetasCursosNoSeleccionados();
 }
 
@@ -1509,7 +1586,7 @@ function guardarNotas() {
     datos[periodoSeleccionado].notas = notas;
     datos[periodoSeleccionado].cursos = cursosSeleccionados;
     guardarDatosPeriodos(datos);
-    localStorage.setItem(LS_KEY_ULTIMO_PERIODO, periodoSeleccionado);
+    localStorage.setItem(claveUltimoPeriodo(), periodoSeleccionado);
     mostrarToast('✅ Notas guardadas correctamente');
 }
 
@@ -1677,9 +1754,21 @@ document.addEventListener('DOMContentLoaded', () => {
    ============================================================ */
 function intentarRestaurarSesion() {
     try {
+        const ultimaMalla = localStorage.getItem(LS_KEY_ULTIMA_MALLA);
+        if (!ultimaMalla) return; // Sin malla guardada: se queda en Pantalla 0 (elegir malla)
+        mallaSeleccionada = ultimaMalla;
+        actualizarResumenMalla();
+        filtrarCarrerasPorMalla();
+
         const datos = leerDatosPeriodos();
-        const ultimoPeriodo = localStorage.getItem(LS_KEY_ULTIMO_PERIODO);
-        if (!ultimoPeriodo || !datos[ultimoPeriodo]) return; // Sin sesión previa: se queda en la bienvenida
+        const ultimoPeriodo = localStorage.getItem(claveUltimoPeriodo());
+        if (!ultimoPeriodo || !datos[ultimoPeriodo]) {
+            // Ya eligió malla antes pero no tiene periodo guardado en ESA
+            // malla: lo llevamos a Pantalla 3 a elegir carrera, no a la 0.
+            irAPantalla(3);
+            mostrarSelectorCarrera(true);
+            return;
+        }
 
         const entrada = datos[ultimoPeriodo];
         if (!entrada.cursos || !Array.isArray(entrada.cursos) || !entrada.cursos.length) return;

@@ -244,6 +244,103 @@ body {
     color: #9ca3af;
 }
 
+/* Carrera sin malla 2026 publicada todavía: se ve pero no se puede
+   elegir, en vez de desaparecer del todo (así el alumno entiende que
+   es cuestión de tiempo, no que la carrera no existe). */
+.btn-carrera.btn-carrera-proximamente {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.btn-carrera.btn-carrera-proximamente:hover {
+    border-color: #e5e7eb;
+    background-color: var(--color-fondo-tarjeta, white);
+    transform: none;
+    box-shadow: var(--sombra-tarjeta);
+}
+
+.btn-carrera-proximamente-badge {
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--color-cian);
+    background: var(--color-cian-light);
+    border-radius: 20px;
+    padding: 2px 9px;
+    margin-top: 4px;
+    width: fit-content;
+    letter-spacing: 0.2px;
+}
+
+/* ============================================================
+   TARJETAS DE MALLA (PANTALLA 0)
+   Mismo lenguaje visual que .btn-carrera (misma sombra, mismo
+   comportamiento al hover), pero en grilla de 2 columnas y con el
+   contenido centrado — son solo 2 opciones, no una lista larga.
+   ============================================================ */
+.grid-mallas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    max-width: 480px;
+    margin: 1.5rem auto 0;
+}
+
+.btn-malla {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--color-fondo-tarjeta, white);
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 28px 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: var(--sombra-tarjeta);
+    text-align: center;
+}
+
+.btn-malla:hover {
+    border-color: var(--color-cian);
+    background-color: var(--color-cian-light);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-elevada);
+}
+
+/* Marca la malla actual cuando se reabre esta pantalla desde
+   "Cambiar malla" (cambiarMalla() en intranotas.js) — mismo acento
+   cian que el hover, pero fijo, para que el alumno vea de una cuál
+   tenía elegida antes de cambiar. */
+.btn-malla.actual {
+    border-color: var(--color-cian);
+    background-color: var(--color-cian-light);
+}
+
+.btn-malla-nombre {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-verde-oscuro);
+    line-height: 1.3;
+}
+
+.btn-malla-detalle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #9ca3af;
+}
+
+@media (max-width: 480px) {
+    .grid-mallas {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+    }
+}
+
 /* ============================================================
    SELECTOR DE CICLO (PANTALLA 3)
    ============================================================ */
@@ -508,30 +605,6 @@ body {
     margin-left: 8px;
     color: var(--color-cian);
     font-weight: 600;
-}
-
-/* ---------- CURSOS BLOQUEADOS (metodología pendiente, ej. IA) ---------- */
-.curso-item.curso-bloqueado {
-    opacity: 0.55;
-    cursor: not-allowed;
-    background: #f3f4f6;
-}
-
-.curso-item.curso-bloqueado:hover {
-    border-color: #e5e7eb;
-    background-color: #f3f4f6;
-}
-
-.curso-item.curso-bloqueado .curso-checkbox {
-    cursor: not-allowed;
-}
-
-.curso-pendiente {
-    display: block;
-    margin-top: 2px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #9ca3af;
 }
 
 /* ============================================================
