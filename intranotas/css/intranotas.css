@@ -350,7 +350,34 @@ body {
     font-size: 0.78rem;
     color: #374151;
     line-height: 1.5;
-    text-align: left;
+    text-align: justify;
+}
+
+.malla-desc-titulo {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.malla-desc-fila {
+    display: block;
+}
+
+/* Filas tipo "Sistemas    1ro a 4to ciclo" — columna de nombre a
+   ancho fijo para que todas las filas alineen igual que un tab,
+   sin depender de espacios/tabs que HTML colapsa. */
+.malla-desc-tabla {
+    display: flex;
+    gap: 6px;
+}
+
+.malla-desc-col-label {
+    flex: 0 0 68px;
+    font-weight: 600;
+}
+
+.malla-desc-col-valor {
+    flex: 1;
 }
 
 .malla-flecha-chip {
