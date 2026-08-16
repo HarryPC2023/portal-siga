@@ -197,7 +197,7 @@ function seleccionarMalla(malla) {
    con qué malla llevar sus cursos. Vuelve a Pantalla 0 sin tocar
    ningún dato guardado. */
 function cambiarMalla() {
-    document.querySelectorAll('.btn-malla').forEach(btn => {
+    document.querySelectorAll('.opcion-malla').forEach(btn => {
         btn.classList.toggle('actual', btn.dataset.malla === mallaSeleccionada);
     });
     irAPantalla(0);
@@ -209,14 +209,24 @@ function estaDisponibleCarrera(carrera) {
     return !!(CURSOS_POR_CICLO[mallaSeleccionada] && CURSOS_POR_CICLO[mallaSeleccionada][carrera]);
 }
 
-/* Recorre las tarjetas de carrera y deshabilita (con aviso
-   "Próximamente") las que todavía no tienen malla 2026 publicada.
-   Con malla 2018 todas están disponibles, así que no hay nada que
-   deshabilitar en ese caso. */
+/* Recorre las tarjetas de carrera. Bajo malla 2018 (histórica y
+   cerrada — nada nuevo puede aparecer ahí) la carrera sin datos se
+   OCULTA por completo: es el caso de IA, que nunca tuvo malla 2018
+   porque la carrera no existía, así que un "Próximamente" ahí sería
+   engañoso. Bajo malla 2026 (todavía en construcción) sí se muestra
+   deshabilitada con el badge "Próximamente", porque ese catálogo
+   irá creciendo con el tiempo. */
 function filtrarCarrerasPorMalla() {
     document.querySelectorAll('.btn-carrera').forEach(btn => {
         const carrera = btn.dataset.carrera;
         const disponible = estaDisponibleCarrera(carrera);
+
+        if (!disponible && mallaSeleccionada === '2018') {
+            btn.style.display = 'none';
+            return;
+        }
+        btn.style.display = '';
+
         btn.classList.toggle('btn-carrera-proximamente', !disponible);
         btn.disabled = !disponible;
 

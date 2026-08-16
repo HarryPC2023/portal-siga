@@ -61,13 +61,22 @@
             </div>
 
             <div class="grid-mallas" id="grid-mallas">
-                <button class="btn-malla" data-malla="2018" onclick="seleccionarMalla('2018')">
-                    <span class="btn-malla-nombre">Malla 2018</span>
-                    <span class="btn-malla-detalle">5° a 10° ciclo</span>
+                <button class="opcion-malla" data-malla="2018" onclick="seleccionarMalla('2018')">
+                    <span class="malla-selector-chip">
+                        <span class="malla-selector-icono" aria-hidden="true">📄</span>
+                        <span class="malla-selector-texto">MALLA 2018</span>
+                    </span>
+                    <span class="malla-descripcion-caja">Vigente 5° a 10° ciclo, disponible en las 4 carreras.</span>
+                    <span class="malla-flecha-chip" aria-hidden="true">→</span>
                 </button>
-                <button class="btn-malla" data-malla="2026" onclick="seleccionarMalla('2026')">
-                    <span class="btn-malla-nombre">Malla 2026</span>
-                    <span class="btn-malla-detalle">1° a 4° ciclo</span>
+                <button class="opcion-malla" data-malla="2026" onclick="seleccionarMalla('2026')">
+                    <span class="malla-selector-chip">
+                        <span class="malla-selector-icono" aria-hidden="true">📄</span>
+                        <span class="malla-selector-texto">MALLA 2026</span>
+                    </span>
+                    <span class="malla-descripcion-caja">Vigente 1° a 4° ciclo, disponible en Sistemas e
+                        Industrial.</span>
+                    <span class="malla-flecha-chip" aria-hidden="true">→</span>
                 </button>
             </div>
         </div>
@@ -255,8 +264,8 @@
          a las dos: la ventana es la misma en ambos casos. -->
     <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
-    <script src="cursos_db.js?v=1"></script>
-    <script src="cursos_db_2026.js?v=1"></script>
+    <script src="cursos_db_2018.js?v=1"></script>
+    <script src="cursos_db_2026.js?v=2"></script>
     <script src="../js/selector-personalizado.js?v=1"></script>
     <script src="intranotas.js?v=8"></script>
     <script src="../js/tema-siga.js?v=1"></script>
