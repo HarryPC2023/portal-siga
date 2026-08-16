@@ -570,13 +570,15 @@ function guardarDatosPeriodos(datos) {
    SINCRONIZACIÓN EN LA NUBE (multi-dispositivo)
    localStorage sigue siendo la fuente rápida de lectura/escritura —
    nada de esto la reemplaza. La nube solo entra en dos momentos:
-     1) Al abrir la app (hidratarDesdeNube): si hay sesión, trae lo
-        último guardado en Supabase y pisa el caché local, por si
-        otro dispositivo guardó algo más reciente.
+     1) Al abrir la app (hidratarDesdeNube): trae lo último guardado
+        en Supabase y pisa el caché local, por si otro dispositivo
+        guardó algo más reciente.
      2) Cada vez que se guarda algo local (sincronizarNube): sube una
         copia en segundo plano, sin bloquear la UI ni el toast.
-   Si el usuario no inició sesión (Intranotas no lo exige), todo
-   sigue funcionando exactamente igual que antes — 100% local.
+   Desde que Intranotas usa gate.js (index.html) siempre hay una
+   sesión válida al llegar acá, así que en el uso normal esto SIEMPRE
+   sincroniza. Aun así se deja el chequeo de sesión como red de
+   seguridad por si gate.js algún día se quita o falla su redirect.
    Los datos viven en la tabla intranotas_datos_nube, una fila por
    (user_id, malla) — ver SQL de creación en el mensaje del chat.
    ============================================================ */
