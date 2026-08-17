@@ -60,6 +60,39 @@ export async function cerrarSesion() {
   await supabase.auth.signOut();
 }
 
+const BUCKET_AVATARS = 'avatars';
+
+/**
+ * Convierte lo que haya guardado en `foto_url` en una URL que el navegador
+ * pueda cargar de verdad. El bucket "avatars" es privado, así que no existe
+ * una URL pública fija — hay que pedirle a Supabase una URL firmada (con
+ * vencimiento) cada vez que se necesita mostrar la foto.
+ *
+ * Soporta 3 formatos posibles de `foto_url`, para no romper fotos ya
+ * guardadas antes de este cambio:
+ *  - Foto de Google (URL externa completa) -> se usa tal cual.
+ *  - URL pública vieja de Supabase (de antes de hacer el bucket privado)
+ *    -> se le extrae solo la ruta y se firma esa ruta.
+ *  - Ruta nueva guardada directamente (formato actual) -> se firma tal cual.
+ */
+export async function resolverUrlFoto(fotoUrl) {
+  if (!fotoUrl) return null;
+
+  if (fotoUrl.includes('/storage/v1/object/public/avatars/')) {
+    const ruta = fotoUrl.split('/avatars/')[1]?.split('?')[0];
+    if (!ruta) return null;
+    const { data, error } = await supabase.storage.from(BUCKET_AVATARS).createSignedUrl(ruta, 3600);
+    return error ? null : data.signedUrl;
+  }
+
+  if (fotoUrl.startsWith('http')) {
+    return fotoUrl; // foto externa (Google), no vive en nuestro Storage
+  }
+
+  const { data, error } = await supabase.storage.from(BUCKET_AVATARS).createSignedUrl(fotoUrl, 3600);
+  return error ? null : data.signedUrl;
+}
+
 /** Eventos que NO representan un cambio real de sesión — se ignoran para
  * evitar que la interfaz "parpadee"/recargue solo por volver a la pestaña. */
 const EVENTOS_SESION_IGNORADOS = new Set(['TOKEN_REFRESHED', 'INITIAL_SESSION']);
@@ -128,10 +161,11 @@ export function montarNavUsuario() {
         .maybeSingle();
 
       if (perfil?.foto_url) {
+        const urlFoto = await resolverUrlFoto(perfil.foto_url);
         const img = document.getElementById('avatarFotoReal');
         const iconoDefault = document.getElementById('avatarIconoDefault');
-        if (img && iconoDefault) {
-          img.src = perfil.foto_url;
+        if (img && iconoDefault && urlFoto) {
+          img.src = urlFoto;
           img.style.display = 'block';
           iconoDefault.style.display = 'none';
         }

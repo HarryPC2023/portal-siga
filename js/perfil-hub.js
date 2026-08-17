@@ -1,7 +1,7 @@
 // js/perfil-hub.js — Página "Mi cuenta": Información General, Cuenta,
 // Preferencias, Preguntas Frecuentes y Sugerencias, todo en una sola
 // página con pestañas (reemplaza a perfil.html + configuracion.html).
-import { supabase, requerirSesion, montarNavUsuario, establecerNuevaContrasena } from './auth-siga.js?v=9';
+import { supabase, requerirSesion, montarNavUsuario, establecerNuevaContrasena, resolverUrlFoto } from './auth-siga.js?v=9';
 
 const BUCKET_AVATARS = 'avatars';
 const TABS_VALIDAS = ['info', 'cuenta', 'preferencias', 'faq', 'sugerencias'];
@@ -117,7 +117,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         form.codigo_estudiante.value = perfil.codigo_estudiante ?? '';
         if (perfil.carrera) selectCarrera.establecer(perfil.carrera, CARRERA_LABELS[perfil.carrera] || perfil.carrera);
         if (perfil.periodo_actual) selectPeriodo.establecer(perfil.periodo_actual, perfil.periodo_actual);
-        mostrarFoto(perfil.foto_url || fotoGoogleSugerida);
+        const urlFotoActual = await resolverUrlFoto(perfil.foto_url);
+        mostrarFoto(urlFotoActual || fotoGoogleSugerida);
     } else if (fotoGoogleSugerida) {
         mostrarFoto(fotoGoogleSugerida);
     }
@@ -148,8 +149,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.error('Error subiendo foto:', errSubida);
                 avisoFoto = 'No se pudo subir la foto (revisa que el bucket "avatars" exista). Se guardó el resto de tus datos.';
             } else {
-                const { data: publica } = supabase.storage.from(BUCKET_AVATARS).getPublicUrl(ruta);
-                fotoUrl = `${publica.publicUrl}?t=${Date.now()}`;
+                // El bucket es privado: guardamos solo la ruta, no una URL pública.
+                // Cada vez que se muestre la foto, se firma una URL temporal con resolverUrlFoto().
+                fotoUrl = ruta;
             }
         }
 

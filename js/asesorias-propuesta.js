@@ -3,6 +3,7 @@
 // asesorias_propuestas con estado 'pendiente'; Harry la revisa y decide
 // si la sube a asesorias-datos.js (mismo flujo manual que ya usaba).
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
+import { ASESORIAS } from './asesorias-datos.js?v=1';
 
 const cont = document.getElementById('banner-proponer-asesoria');
 
@@ -12,75 +13,42 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function pintarBanner() {
-    // Hoja de estilo puntual para el botón nativo del <input type="file">:
-    // el navegador lo pinta con su propio pseudo-elemento (::file-selector-button),
-    // que no se puede tocar con un atributo style="" normal -- necesita una
-    // regla CSS real. Se inyecta una sola vez, la primera vez que se pinta el banner.
-    if (!document.getElementById('estiloArchivoAsesoria')) {
-        const estilo = document.createElement('style');
-        estilo.id = 'estiloArchivoAsesoria';
-        estilo.textContent = `
-            #fpArchivo::file-selector-button {
-                font-family: 'Poppins', sans-serif;
-                font-weight: 600;
-                font-size: 0.78rem;
-                color: #fff;
-                background: #6600CC;
-                border: none;
-                border-radius: 8px;
-                padding: 8px 14px;
-                margin-right: 10px;
-                cursor: pointer;
-                transition: background 0.15s ease;
-            }
-            #fpArchivo::file-selector-button:hover {
-                background: #4f0099;
-            }
-        `;
-        document.head.appendChild(estilo);
-    }
+    const cursosUnicos = [...new Set(ASESORIAS.map((a) => a.curso))].sort((a, b) => a.localeCompare(b, 'es'));
 
     cont.innerHTML = `
-        <div id="cajaProponerAsesoria" style="background:#fff; border-radius:12px; padding:16px 18px; text-align:center; max-width:460px; margin:28px auto; box-shadow:0 6px 14px rgba(0,0,0,0.05);">
+        <div id="cajaProponerAsesoria" style="background:#fff; border-radius:12px; padding:16px 18px; text-align:center; max-width:340px; margin:28px auto; box-shadow:0 6px 14px rgba(0,0,0,0.05); transition:max-width 0.2s ease;">
             <p style="font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:5px;">¿Tienes una asesoría, guía o resumen que le sirvió a otros?</p>
             <p style="font-family:'Poppins', sans-serif; font-weight:300; font-size:0.75rem; color:var(--ink-soft); margin:0 auto 12px; max-width:300px; line-height:1.45;">
                 Compártela en SIGA y ayuda al siguiente ciclo.
             </p>
             <button type="button" class="btn-primary" id="btnAbrirFormAsesoria"
-                style="display:inline-flex; align-items:center; gap:6px; padding:9px 22px; font-size:0.85rem;">
-                <span>Compartir asesoría</span>
+                style="display:inline-flex; align-items:center; gap:6px;">
+                <span>Proponer una asesoría</span>
                 <span id="flechaFormAsesoria" aria-hidden="true">▾</span>
             </button>
 
             <form id="formProponerAsesoria" style="display:none; margin-top:20px; flex-direction:column; gap:12px; text-align:left;">
-                <div style="text-align:center;">
-                    <button type="button" id="btnAvisoAutoria"
-                        style="font-family:'Poppins', sans-serif; font-size:0.66rem; font-weight:700; color:#92400e; background:linear-gradient(135deg, #fef3c7, #fde68a); border:1.5px solid #f59e0b; border-radius:20px; padding:3px 10px; cursor:pointer;">
-                        ⚠️ Importante
-                    </button>
-                    <p id="avisoAutoriaTexto" style="display:none; font-family:'Poppins', sans-serif; font-size:0.72rem; color:#92400e; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:8px 12px; margin-top:8px; line-height:1.5; text-align:left;">
-                        Comparte solo material de tu propia autoría (tus resúmenes, guías o apuntes). No subas documentos de terceros sin su permiso.
-                    </p>
-                </div>
-
                 <div>
                     <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Título</label>
                     <input type="text" id="fpTitulo" required maxlength="120"
                         placeholder="Ej. Resumen de Álgebra Lineal - Autovalores y autovectores"
-                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box;">
+                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box;">
                 </div>
 
                 <div style="display:flex; gap:10px;">
                     <div style="flex:2;">
                         <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Curso relacionado</label>
-                        <input type="text" id="fpCurso" required maxlength="80"
+                        <input type="text" id="fpCurso" required list="fpCursoLista" maxlength="80"
                             placeholder="Ej. Álgebra Lineal"
-                            style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box;">
+                            style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box;">
+                        <datalist id="fpCursoLista">
+                            ${cursosUnicos.map((c) => `<option value="${c}"></option>`).join('')}
+                        </datalist>
                     </div>
                     <div style="flex:1;">
                         <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Ciclo</label>
                         <select id="fpCiclo"
-                            style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box; background:#fff;">
+                            style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box; background:#fff;">
                             <option value="">—</option>
                             ${Array.from({ length: 10 }, (_, i) => i + 1).map((c) => `<option value="${c}">${c}</option>`).join('')}
                         </select>
@@ -88,8 +56,8 @@ function pintarBanner() {
                 </div>
 
                 <div>
-                    <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:8px;">Tipo de recurso</label>
-                    <div style="display:flex; gap:16px; font-family:'Poppins', sans-serif; font-weight:400; font-size:0.85rem; line-height:1.6;">
+                    <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Tipo de recurso</label>
+                    <div style="display:flex; gap:16px; font-size:0.85rem;">
                         <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
                             <input type="radio" name="fpTipo" value="pdf" checked> PDF
                         </label>
@@ -103,7 +71,7 @@ function pintarBanner() {
                     <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Enlace al recurso</label>
                     <input type="url" id="fpUrl"
                         placeholder="Link de Drive, Notion, YouTube, etc."
-                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box;">
+                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box;">
                 </div>
 
                 <div style="display:flex; align-items:center; gap:10px; margin:-4px 0;">
@@ -113,24 +81,24 @@ function pintarBanner() {
                 </div>
 
                 <div>
-                    <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:8px;">Sube el archivo desde tu computadora</label>
+                    <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Sube el archivo desde tu computadora</label>
                     <input type="file" id="fpArchivo" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-                        style="width:100%; font-family:'Poppins', sans-serif; font-size:0.8rem;">
-                    <p style="font-family:'Poppins', sans-serif; font-size:0.7rem; color:var(--ink-soft); margin:8px 0 0; line-height:1.6;">PDF, Word, PowerPoint o Excel — máx. 20 MB.</p>
+                        style="width:100%; font-size:0.8rem;">
+                    <p style="font-size:0.7rem; color:var(--ink-soft); margin:4px 0 0;">PDF, Word, PowerPoint o Excel — máx. 20 MB.</p>
                 </div>
 
                 <div>
                     <label style="display:block; font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px;">Descripción breve</label>
                     <textarea id="fpDescripcion" rows="3" maxlength="300"
                         placeholder="¿Qué encontrará quien la abra?"
-                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:'Poppins', sans-serif; font-size:0.85rem; box-sizing:border-box; resize:vertical;"></textarea>
+                        style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); font-family:inherit; font-size:0.85rem; box-sizing:border-box; resize:vertical;"></textarea>
                 </div>
 
-                <button type="submit" id="btnEnviarAsesoria" class="btn-primary" style="align-self:center; margin-top:4px; padding:9px 24px; font-size:0.85rem;">
+                <button type="submit" id="btnEnviarAsesoria" class="btn-primary" style="align-self:center; margin-top:4px;">
                     Enviar propuesta
                 </button>
 
-                <p style="font-family:'Poppins', sans-serif; font-size:0.75rem; color:var(--ink-soft); text-align:center; margin:0;">
+                <p style="font-size:0.75rem; color:var(--ink-soft); text-align:center; margin:0;">
                     La revisamos antes de publicarla — no aparece de inmediato en la lista.
                 </p>
             </form>
@@ -141,31 +109,28 @@ function pintarBanner() {
 
     document.getElementById('btnAbrirFormAsesoria').addEventListener('click', toggleFormulario);
     document.getElementById('formProponerAsesoria').addEventListener('submit', enviarPropuesta);
-    document.getElementById('btnAvisoAutoria').addEventListener('click', toggleAvisoAutoria);
-}
-
-function toggleAvisoAutoria() {
-    const texto = document.getElementById('avisoAutoriaTexto');
-    if (!texto) return;
-    texto.style.display = texto.style.display === 'none' ? 'block' : 'none';
 }
 
 function toggleFormulario() {
     const form = document.getElementById('formProponerAsesoria');
     const flecha = document.getElementById('flechaFormAsesoria');
+    const caja = document.getElementById('cajaProponerAsesoria');
     if (!form) return;
 
     const abierto = form.style.display !== 'none';
     form.style.display = abierto ? 'none' : 'flex';
     if (flecha) flecha.textContent = abierto ? '▾' : '▴';
+    if (caja) caja.style.maxWidth = abierto ? '340px' : '460px';
 }
 
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
 const TAMANO_MAXIMO_MB = 20;
 
 /** Sube el archivo a Storage dentro de la carpeta del propio usuario
- * (requisito de la política RLS: (storage.foldername(name))[1] = auth.uid()),
- * y devuelve la URL pública para guardarla como url_recurso. */
+ * (requisito de la política RLS: (storage.foldername(name))[1] = auth.uid()).
+ * El bucket es privado, así que no existe una URL pública fija — se guarda
+ * solo la ruta en `url_recurso`, y quien necesite verlo (el autor o el
+ * admin) pide una URL firmada temporal en el momento (ver admin.js). */
 async function subirArchivo(file, userId) {
     const nombreLimpio = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
     const ruta = `${userId}/${Date.now()}-${nombreLimpio}`;
@@ -173,8 +138,7 @@ async function subirArchivo(file, userId) {
     const { error } = await supabase.storage.from(BUCKET_ASESORIAS).upload(ruta, file);
     if (error) throw error;
 
-    const { data } = supabase.storage.from(BUCKET_ASESORIAS).getPublicUrl(ruta);
-    return data.publicUrl;
+    return ruta;
 }
 
 async function enviarPropuesta(e) {

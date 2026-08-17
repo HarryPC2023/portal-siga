@@ -1,13 +1,13 @@
 // js/admin.js — Panel privado de administración.
-// Muestra sugerencias y propuestas de asesorías completas (no solo
-// las del usuario actual). La seguridad real vive en las políticas
-// RLS de Supabase (solo el UID de Harry puede leer todo) — esta
-// verificación del lado del cliente es solo para no dejar la
-// pantalla mostrando "Cargando..." eternamente a alguien más y
-// redirigirlo de vuelta con claridad.
+// Muestra sugerencias, propuestas de asesorías y opiniones reportadas.
+// La seguridad real vive en las políticas RLS de Supabase (solo el UID
+// de Harry puede leer/borrar todo) — esta verificación del lado del
+// cliente es solo para no dejar la pantalla mostrando "Cargando..."
+// eternamente a alguien más y redirigirlo de vuelta con claridad.
 import { supabase, requerirSesion } from './auth-siga.js?v=9';
 
 const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
+const BUCKET_ASESORIAS = 'asesorias-adjuntos';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const sesion = await requerirSesion('');
@@ -51,6 +51,9 @@ function escapeHtml(valor) {
     return div.innerHTML;
 }
 
+/* ============================================================
+   SUGERENCIAS
+   ============================================================ */
 async function cargarSugerencias() {
     const cont = document.getElementById('listaSugerencias');
     const { data, error } = await supabase
@@ -68,17 +71,43 @@ async function cargarSugerencias() {
     }
 
     cont.innerHTML = data.map((s) => `
-        <div class="admin-item">
+        <div class="admin-item" data-id="${s.id}">
             <div class="admin-item-cabecera">
                 <span class="admin-item-titulo">${escapeHtml(s.titulo)}</span>
                 <span class="admin-badge admin-badge-${escapeHtml(s.estado)}">${escapeHtml(s.estado)}</span>
             </div>
             <p class="admin-item-meta">${escapeHtml(s.categoria)} · ${formatearFecha(s.creado_en)} · usuario ${escapeHtml((s.user_id || '').slice(0, 8))}…</p>
             <p class="admin-item-texto">${escapeHtml(s.descripcion)}</p>
+            <button type="button" class="admin-btn-eliminar" data-id="${s.id}">🗑 Eliminar</button>
         </div>
     `).join('');
+
+    cont.querySelectorAll('.admin-btn-eliminar').forEach((btn) => {
+        btn.addEventListener('click', () => eliminarSugerencia(btn.dataset.id, btn));
+    });
 }
 
+async function eliminarSugerencia(id, btn) {
+    if (!confirm('¿Eliminar esta sugerencia de forma permanente? No se puede deshacer.')) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Eliminando…';
+
+    const { error } = await supabase.from('sugerencias').delete().eq('id', id);
+
+    if (error) {
+        btn.disabled = false;
+        btn.textContent = '🗑 Eliminar';
+        alert('No se pudo eliminar: ' + error.message);
+        return;
+    }
+
+    btn.closest('.admin-item').remove();
+}
+
+/* ============================================================
+   OPINIONES REPORTADAS
+   ============================================================ */
 async function cargarOpiniones() {
     const cont = document.getElementById('listaOpiniones');
     const { data, error } = await supabase
@@ -108,7 +137,7 @@ async function cargarOpiniones() {
         const curso = o.profesor_curso?.cursos?.nombre || 'Curso desconocido';
         const oculta = o.estado !== 'aprobado';
         return `
-        <div class="admin-item">
+        <div class="admin-item" data-id="${o.id}">
             <div class="admin-item-cabecera">
                 <span class="admin-item-titulo">${escapeHtml(profesor)} · ${escapeHtml(curso)}</span>
                 <span class="admin-badge admin-badge-reportes">${o.reportes} reporte${o.reportes === 1 ? '' : 's'}</span>
@@ -117,23 +146,35 @@ async function cargarOpiniones() {
             <p class="admin-item-meta">Claridad ${o.claridad} · Exigencia ${o.exigencia} · Carga ${o.carga_trabajo} · Evaluaciones ${o.evaluaciones}</p>
             ${o.destacado ? `<p class="admin-item-texto"><strong>Destacó:</strong> ${escapeHtml(o.destacado)}</p>` : ''}
             ${o.a_tener_en_cuenta ? `<p class="admin-item-texto"><strong>A tener en cuenta:</strong> ${escapeHtml(o.a_tener_en_cuenta)}</p>` : ''}
-            <button type="button" class="admin-btn-ocultar" data-op="${o.id}" ${oculta ? 'disabled' : ''}>
-                ${oculta ? 'Ya está oculta' : 'Ocultar esta opinión'}
-            </button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button type="button" class="admin-btn-ocultar" data-op="${o.id}" ${oculta ? 'disabled' : ''}>
+                    ${oculta ? 'Ya está oculta' : 'Ocultar esta opinión'}
+                </button>
+                <button type="button" class="admin-btn-descartar" data-op="${o.id}">
+                    Descartar reporte
+                </button>
+            </div>
         </div>`;
     }).join('');
 
     cont.querySelectorAll('.admin-btn-ocultar').forEach((btn) => {
         btn.addEventListener('click', () => ocultarOpinion(btn.dataset.op, btn));
     });
+    cont.querySelectorAll('.admin-btn-descartar').forEach((btn) => {
+        btn.addEventListener('click', () => descartarReporte(btn.dataset.op, btn));
+    });
 }
 
+// Oculta la opinión de la sección pública de Opiniones Y, de paso, la
+// saca de esta lista de "reportadas" (ya la atendiste, no necesita
+// seguir apareciendo aquí).
 async function ocultarOpinion(opinionId, btn) {
     btn.disabled = true;
     btn.textContent = 'Ocultando…';
+
     const { error } = await supabase
         .from('opiniones')
-        .update({ estado: 'rechazado' })
+        .update({ estado: 'rechazado', reportes: 0 })
         .eq('id', opinionId);
 
     if (error) {
@@ -142,9 +183,35 @@ async function ocultarOpinion(opinionId, btn) {
         alert('No se pudo ocultar: ' + error.message);
         return;
     }
-    btn.textContent = 'Ya está oculta';
+
+    btn.closest('.admin-item').remove();
 }
 
+// La opinión se queda tal cual estaba (publicada) — solo se descarta el
+// reporte y desaparece de esta lista. Para cuando revisas y decides que
+// el reporte no tenía fundamento.
+async function descartarReporte(opinionId, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Descartando…';
+
+    const { error } = await supabase
+        .from('opiniones')
+        .update({ reportes: 0 })
+        .eq('id', opinionId);
+
+    if (error) {
+        btn.disabled = false;
+        btn.textContent = 'Descartar reporte';
+        alert('No se pudo descartar: ' + error.message);
+        return;
+    }
+
+    btn.closest('.admin-item').remove();
+}
+
+/* ============================================================
+   ASESORÍAS PROPUESTAS
+   ============================================================ */
 async function cargarAsesorias() {
     const cont = document.getElementById('listaAsesorias');
     const { data, error } = await supabase
@@ -162,7 +229,7 @@ async function cargarAsesorias() {
     }
 
     cont.innerHTML = data.map((a) => `
-        <div class="admin-item">
+        <div class="admin-item" data-id="${a.id}">
             <div class="admin-item-cabecera">
                 <span class="admin-item-titulo">${escapeHtml(a.titulo)}</span>
                 <span class="admin-badge admin-badge-${escapeHtml(a.estado)}">${escapeHtml(a.estado)}</span>
@@ -170,7 +237,81 @@ async function cargarAsesorias() {
             <p class="admin-item-meta">${escapeHtml(a.curso)} · Ciclo ${escapeHtml(String(a.ciclo ?? ''))} · ${escapeHtml(a.tipo_recurso)} · ${formatearFecha(a.created_at)}</p>
             <p class="admin-item-meta">Enviado por: ${escapeHtml(a.autor_email)}</p>
             ${a.descripcion ? `<p class="admin-item-texto">${escapeHtml(a.descripcion)}</p>` : ''}
-            ${a.url_recurso ? `<a href="${escapeHtml(a.url_recurso)}" target="_blank" rel="noopener" class="modulo-accion">Ver archivo →</a>` : ''}
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                ${a.url_recurso ? `<button type="button" class="modulo-accion admin-btn-ver-archivo" data-ruta="${escapeHtml(a.url_recurso)}">Ver archivo →</button>` : ''}
+                <button type="button" class="admin-btn-eliminar" data-id="${a.id}" data-ruta="${escapeHtml(a.url_recurso || '')}">🗑 Eliminar</button>
+            </div>
         </div>
     `).join('');
+
+    cont.querySelectorAll('.admin-btn-ver-archivo').forEach((btn) => {
+        btn.addEventListener('click', () => abrirAdjuntoAsesoria(btn.dataset.ruta, btn));
+    });
+    cont.querySelectorAll('.admin-btn-eliminar').forEach((btn) => {
+        btn.addEventListener('click', () => eliminarAsesoria(btn.dataset.id, btn.dataset.ruta, btn));
+    });
+}
+
+// El bucket "asesorias-adjuntos" es privado: si `urlRecurso` es un link
+// externo (Drive, YouTube, etc.) se abre tal cual. Si es un archivo
+// propio subido a Storage, se pide una URL firmada temporal (5 min,
+// suficiente para revisar/descargar) porque ya no existe una URL pública fija.
+async function abrirAdjuntoAsesoria(urlRecurso, btn) {
+    if (urlRecurso.startsWith('http')) {
+        window.open(urlRecurso, '_blank', 'noopener');
+        return;
+    }
+
+    const textoOriginal = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Abriendo…';
+
+    const { data, error } = await supabase.storage.from(BUCKET_ASESORIAS).createSignedUrl(urlRecurso, 300);
+
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+
+    if (error || !data) {
+        alert('No se pudo abrir el archivo: ' + (error?.message || 'error desconocido'));
+        return;
+    }
+
+    window.open(data.signedUrl, '_blank', 'noopener');
+}
+
+// Si la propuesta tenía un archivo propio (no un link externo), se borra
+// también del Storage al eliminar la fila — para no dejar basura ahí.
+// Recuerda: usa el botón "Ver archivo" para revisarlo/descargarlo ANTES
+// de eliminar, porque esta acción no se puede deshacer.
+async function eliminarAsesoria(id, urlRecurso, btn) {
+    const tieneArchivoPropio = urlRecurso && !urlRecurso.startsWith('http');
+    const aviso = tieneArchivoPropio
+        ? '¿Eliminar esta propuesta y su archivo adjunto de forma permanente? Si no lo has descargado, ya no podrás recuperarlo.'
+        : '¿Eliminar esta propuesta de forma permanente? No se puede deshacer.';
+
+    if (!confirm(aviso)) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Eliminando…';
+
+    if (tieneArchivoPropio) {
+        const { error: errStorage } = await supabase.storage.from(BUCKET_ASESORIAS).remove([urlRecurso]);
+        if (errStorage) {
+            // No detenemos el borrado de la fila por esto — solo avisamos
+            // en consola. Es mejor que quede un archivo huérfano a que la
+            // propuesta rechazada se quede pegada en el panel para siempre.
+            console.error('No se pudo borrar el archivo del Storage:', errStorage);
+        }
+    }
+
+    const { error } = await supabase.from('asesorias_propuestas').delete().eq('id', id);
+
+    if (error) {
+        btn.disabled = false;
+        btn.textContent = '🗑 Eliminar';
+        alert('No se pudo eliminar: ' + error.message);
+        return;
+    }
+
+    btn.closest('.admin-item').remove();
 }
