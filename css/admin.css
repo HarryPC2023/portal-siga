@@ -36,7 +36,7 @@
 .admin-panel {
     display: flex;
     flex-direction: column;
-    gap: 34px;
+    gap: 24px;
 }
 
 .admin-vacio {
