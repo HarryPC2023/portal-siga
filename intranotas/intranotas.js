@@ -209,36 +209,18 @@ function estaDisponibleCarrera(carrera) {
     return !!(CURSOS_POR_CICLO[mallaSeleccionada] && CURSOS_POR_CICLO[mallaSeleccionada][carrera]);
 }
 
-/* Recorre las tarjetas de carrera. Bajo malla 2018 (histórica y
-   cerrada — nada nuevo puede aparecer ahí) la carrera sin datos se
-   OCULTA por completo: es el caso de IA, que nunca tuvo malla 2018
-   porque la carrera no existía, así que un "Próximamente" ahí sería
-   engañoso. Bajo malla 2026 (todavía en construcción) sí se muestra
-   deshabilitada con el badge "Próximamente", porque ese catálogo
-   irá creciendo con el tiempo. */
+/* Recorre las tarjetas de carrera y oculta por completo las que no
+   tengan catálogo de cursos cargado para la malla activa (ver
+   estaDisponibleCarrera arriba). Antes esto solo ocultaba bajo malla
+   2018 y mostraba "Próximamente" bajo malla 2026 — pero Software
+   recién se implementó en 2023 y no se espera que cambie de malla en
+   el corto plazo, así que ya no tiene sentido mostrarlo como "por
+   llegar": se oculta igual que cualquier combinación sin datos. */
 function filtrarCarrerasPorMalla() {
     document.querySelectorAll('.btn-carrera').forEach(btn => {
         const carrera = btn.dataset.carrera;
         const disponible = estaDisponibleCarrera(carrera);
-
-        if (!disponible && mallaSeleccionada === '2018') {
-            btn.style.display = 'none';
-            return;
-        }
-        btn.style.display = '';
-
-        btn.classList.toggle('btn-carrera-proximamente', !disponible);
-        btn.disabled = !disponible;
-
-        let aviso = btn.querySelector('.btn-carrera-proximamente-badge');
-        if (!disponible && !aviso) {
-            aviso = document.createElement('span');
-            aviso.className = 'btn-carrera-proximamente-badge';
-            aviso.textContent = 'Próximamente';
-            btn.querySelector('.btn-carrera-texto').appendChild(aviso);
-        } else if (disponible && aviso) {
-            aviso.remove();
-        }
+        btn.style.display = disponible ? '' : 'none';
     });
 }
 

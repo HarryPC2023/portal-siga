@@ -8,12 +8,12 @@ const LS_MALLA = 'opiniones_ultima_malla';
 const LS_CARRERA = 'opiniones_ultima_carrera';
 
 /* Qué combinaciones malla+carrera tienen catálogo real hoy (según los
-   6 archivos consolidado_*.json que alimentan la base). Bajo malla
-   2018 (histórica y cerrada) la carrera sin datos se OCULTA del todo
-   — es el caso de IA, que nunca tuvo malla 2018 porque la carrera no
-   existía. Bajo malla 2026 (todavía en construcción, como Software)
-   se muestra deshabilitada con el badge "Próximamente", porque ese
-   catálogo irá creciendo con el tiempo. Mismo criterio que Intranotas. */
+   6 archivos consolidado_*.json que alimentan la base). Cualquier
+   combinación que NO esté en esta lista se OCULTA por completo de la
+   pantalla de carreras (no se muestra ni siquiera como "Próximamente")
+   — por ejemplo Software en malla 2026: la UNI recién implementó esa
+   carrera en 2023 y no se espera que cambie de malla en el corto
+   plazo, así que mostrarla como "próxima a llegar" sería engañoso. */
 const CARRERAS_POR_MALLA = {
   '2018': ['sistemas', 'industrial', 'software'],
   '2026': ['sistemas', 'industrial', 'ia'],
@@ -124,31 +124,13 @@ function actualizarResumenMalla() {
   if (elCarrera) elCarrera.textContent = texto;
 }
 
-/* Recorre las tarjetas de carrera y las habilita/oculta según la
-   malla activa (ver comentario de CARRERAS_POR_MALLA arriba). */
+/* Recorre las tarjetas de carrera y oculta por completo las que no
+   tengan catálogo para la malla activa (ver CARRERAS_POR_MALLA). */
 function filtrarCarrerasPorMalla() {
   document.querySelectorAll('.btn-carrera').forEach((btn) => {
     const carrera = btn.dataset.carrera;
     const disponible = estaDisponibleCarrera(mallaSeleccionada, carrera);
-
-    if (!disponible && mallaSeleccionada === '2018') {
-      btn.style.display = 'none';
-      return;
-    }
-    btn.style.display = '';
-
-    btn.classList.toggle('btn-carrera-proximamente', !disponible);
-    btn.disabled = !disponible;
-
-    let aviso = btn.querySelector('.btn-carrera-proximamente-badge');
-    if (!disponible && !aviso) {
-      aviso = document.createElement('span');
-      aviso.className = 'btn-carrera-proximamente-badge';
-      aviso.textContent = 'Próximamente';
-      btn.querySelector('.btn-carrera-texto').appendChild(aviso);
-    } else if (disponible && aviso) {
-      aviso.remove();
-    }
+    btn.style.display = disponible ? '' : 'none';
   });
 }
 

@@ -620,7 +620,8 @@
     font-family: 'Poppins', sans-serif;
     font-size: 0.85rem;
     color: var(--ink-soft);
-    margin-top: 4px !important;
+    margin-top: 10px !important;
+    line-height: 1.6;
 }
 
 /* ---------- Tarjetas de carrera (Pantalla carrera) ---------- */
