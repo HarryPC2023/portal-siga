@@ -1,142 +1,3 @@
-/* ============================================================
-   ADMIN — panel privado de sugerencias y asesorías propuestas
-   ============================================================ */
-.admin-estado {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--ink-soft);
-    font-weight: 600;
-}
-
-.admin-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-}
-
-.admin-tab {
-    border: none;
-    background: #fff;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-    padding: 10px 20px;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--ink-soft);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.admin-tab.activo {
-    background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
-    color: #fff;
-}
-
-.admin-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.admin-vacio {
-    text-align: center;
-    color: var(--ink-soft);
-    padding: 40px 0;
-}
-
-.admin-item {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-    padding: 18px 22px;
-}
-
-.admin-item-cabecera {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 6px;
-    flex-wrap: wrap;
-}
-
-.admin-item-titulo {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 16px;
-    color: var(--ink);
-}
-
-.admin-badge {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: #e5e7eb;
-    color: #4b5563;
-    flex-shrink: 0;
-    white-space: nowrap;
-}
-
-.admin-badge-aprobado,
-.admin-badge-aprobada {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.admin-badge-pendiente {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.admin-badge-rechazado,
-.admin-badge-rechazada {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.admin-badge-reportes {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.admin-btn-ocultar {
-    border: none;
-    background: #dc2626;
-    color: #fff;
-    font-weight: 600;
-    font-size: 13px;
-    padding: 9px 18px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.admin-btn-ocultar:hover:not(:disabled) {
-    background: #b91c1c;
-}
-
-.admin-btn-ocultar:disabled {
-    background: #d1d5db;
-    color: #6b7280;
-    cursor: default;
-}
-
-.admin-item-meta {
-    font-size: 12.5px;
-    color: var(--ink-soft);
-    margin-bottom: 6px;
-}
-
-.admin-item-texto {
-    font-size: 13.5px;
-    color: var(--ink);
-    line-height: 1.5;
-    margin-bottom: 10px;
-}
-
 /* ---------- BOTÓN ELIMINAR: ícono circular en la esquina ---------- */
 .admin-item {
     position: relative;
@@ -170,4 +31,73 @@
     opacity: 0.4;
     cursor: not-allowed;
     transform: none;
+}
+
+/* ---------- MODAL DE CONFIRMACIÓN (reemplaza al confirm() del navegador) ---------- */
+.modal-perfil {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+    padding: 20px;
+}
+
+.modal-perfil.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-perfil-caja {
+    background: #fff;
+    border-radius: 20px;
+    padding: 34px 30px;
+    width: min(400px, 100%);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.modal-perfil-caja h2 {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.modal-perfil-caja p.intro {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 22px;
+}
+
+.btn-secundario {
+    background: var(--brand-azul-tinte);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: 999px;
+}
+
+.btn-secundario:hover {
+    background: #dfeaff;
+}
+
+.btn-peligro {
+    background: #E23E3E;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-peligro:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(226, 62, 62, 0.3);
 }

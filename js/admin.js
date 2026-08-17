@@ -52,6 +52,62 @@ function escapeHtml(valor) {
 }
 
 /* ============================================================
+   MODAL DE CONFIRMACIÓN (reemplaza al confirm() feo del navegador)
+   Mismo look que el modal de "Eliminar tu cuenta" en Mi cuenta,
+   para que todo el sitio se sienta consistente.
+   ============================================================ */
+function obtenerModalConfirmacion() {
+    let modal = document.getElementById('modalConfirmarAdmin');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.className = 'modal-perfil';
+    modal.id = 'modalConfirmarAdmin';
+    modal.innerHTML = `
+        <div class="modal-perfil-caja">
+            <h2 id="modalConfirmarTitulo">¿Confirmar?</h2>
+            <p class="intro" id="modalConfirmarTexto"></p>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button type="button" class="btn-secundario" id="modalConfirmarCancelar">Cancelar</button>
+                <button type="button" class="btn-peligro" id="modalConfirmarAceptar">Sí, eliminar</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    return modal;
+}
+
+/** Reemplazo con el estilo de SIGA para window.confirm(). Devuelve una
+ * Promesa<boolean>: true si el usuario aceptó, false si canceló. */
+function confirmarAccion(mensaje, { titulo = '¿Eliminar esto?', textoBoton = 'Sí, eliminar' } = {}) {
+    const modal = obtenerModalConfirmacion();
+    modal.querySelector('#modalConfirmarTitulo').textContent = titulo;
+    modal.querySelector('#modalConfirmarTexto').textContent = mensaje;
+
+    const btnAceptar = modal.querySelector('#modalConfirmarAceptar');
+    const btnCancelar = modal.querySelector('#modalConfirmarCancelar');
+    btnAceptar.textContent = textoBoton;
+
+    modal.classList.add('visible');
+
+    return new Promise((resolve) => {
+        function cerrar(resultado) {
+            modal.classList.remove('visible');
+            btnAceptar.removeEventListener('click', alAceptar);
+            btnCancelar.removeEventListener('click', alCancelar);
+            modal.removeEventListener('click', alClicFuera);
+            resolve(resultado);
+        }
+        function alAceptar() { cerrar(true); }
+        function alCancelar() { cerrar(false); }
+        function alClicFuera(e) { if (e.target === modal) cerrar(false); }
+
+        btnAceptar.addEventListener('click', alAceptar);
+        btnCancelar.addEventListener('click', alCancelar);
+        modal.addEventListener('click', alClicFuera);
+    });
+}
+
+/* ============================================================
    SUGERENCIAS
    ============================================================ */
 async function cargarSugerencias() {
@@ -88,7 +144,10 @@ async function cargarSugerencias() {
 }
 
 async function eliminarSugerencia(id, btn) {
-    if (!confirm('¿Eliminar esta sugerencia de forma permanente? No se puede deshacer.')) return;
+    const ok = await confirmarAccion('Esta sugerencia se borrará de forma permanente y no podrás recuperarla.', {
+        titulo: '¿Eliminar esta sugerencia?',
+    });
+    if (!ok) return;
 
     btn.disabled = true;
 
@@ -283,11 +342,12 @@ async function abrirAdjuntoAsesoria(urlRecurso, btn) {
 // de eliminar, porque esta acción no se puede deshacer.
 async function eliminarAsesoria(id, urlRecurso, btn) {
     const tieneArchivoPropio = urlRecurso && !urlRecurso.startsWith('http');
-    const aviso = tieneArchivoPropio
-        ? '¿Eliminar esta propuesta y su archivo adjunto de forma permanente? Si no lo has descargado, ya no podrás recuperarlo.'
-        : '¿Eliminar esta propuesta de forma permanente? No se puede deshacer.';
+    const mensaje = tieneArchivoPropio
+        ? 'Se borrará esta propuesta junto con su archivo adjunto. Si no lo has descargado, ya no podrás recuperarlo.'
+        : 'Esta propuesta se borrará de forma permanente y no podrás recuperarla.';
 
-    if (!confirm(aviso)) return;
+    const ok = await confirmarAccion(mensaje, { titulo: '¿Eliminar esta propuesta?' });
+    if (!ok) return;
 
     btn.disabled = true;
 
