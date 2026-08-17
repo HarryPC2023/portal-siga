@@ -136,3 +136,38 @@
     line-height: 1.5;
     margin-bottom: 10px;
 }
+
+/* ---------- BOTÓN ELIMINAR: ícono circular en la esquina ---------- */
+.admin-item {
+    position: relative;
+}
+
+.admin-btn-eliminar {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--ink-soft);
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.admin-btn-eliminar:hover {
+    background: #E23E3E;
+    color: #fff;
+    transform: scale(1.08);
+}
+
+.admin-btn-eliminar:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}

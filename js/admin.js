@@ -78,7 +78,7 @@ async function cargarSugerencias() {
             </div>
             <p class="admin-item-meta">${escapeHtml(s.categoria)} · ${formatearFecha(s.creado_en)} · usuario ${escapeHtml((s.user_id || '').slice(0, 8))}…</p>
             <p class="admin-item-texto">${escapeHtml(s.descripcion)}</p>
-            <button type="button" class="admin-btn-eliminar" data-id="${s.id}">🗑 Eliminar</button>
+            <button type="button" class="admin-btn-eliminar" data-id="${s.id}" aria-label="Eliminar sugerencia" title="Eliminar">🗑</button>
         </div>
     `).join('');
 
@@ -91,13 +91,11 @@ async function eliminarSugerencia(id, btn) {
     if (!confirm('¿Eliminar esta sugerencia de forma permanente? No se puede deshacer.')) return;
 
     btn.disabled = true;
-    btn.textContent = 'Eliminando…';
 
     const { error } = await supabase.from('sugerencias').delete().eq('id', id);
 
     if (error) {
         btn.disabled = false;
-        btn.textContent = '🗑 Eliminar';
         alert('No se pudo eliminar: ' + error.message);
         return;
     }
@@ -239,7 +237,7 @@ async function cargarAsesorias() {
             ${a.descripcion ? `<p class="admin-item-texto">${escapeHtml(a.descripcion)}</p>` : ''}
             <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
                 ${a.url_recurso ? `<button type="button" class="modulo-accion admin-btn-ver-archivo" data-ruta="${escapeHtml(a.url_recurso)}">Ver archivo →</button>` : ''}
-                <button type="button" class="admin-btn-eliminar" data-id="${a.id}" data-ruta="${escapeHtml(a.url_recurso || '')}">🗑 Eliminar</button>
+                <button type="button" class="admin-btn-eliminar" data-id="${a.id}" data-ruta="${escapeHtml(a.url_recurso || '')}" aria-label="Eliminar propuesta" title="Eliminar">🗑</button>
             </div>
         </div>
     `).join('');
@@ -292,7 +290,6 @@ async function eliminarAsesoria(id, urlRecurso, btn) {
     if (!confirm(aviso)) return;
 
     btn.disabled = true;
-    btn.textContent = 'Eliminando…';
 
     if (tieneArchivoPropio) {
         const { error: errStorage } = await supabase.storage.from(BUCKET_ASESORIAS).remove([urlRecurso]);
@@ -308,7 +305,6 @@ async function eliminarAsesoria(id, urlRecurso, btn) {
 
     if (error) {
         btn.disabled = false;
-        btn.textContent = '🗑 Eliminar';
         alert('No se pudo eliminar: ' + error.message);
         return;
     }
