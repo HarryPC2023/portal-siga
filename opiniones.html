@@ -25,79 +25,158 @@
 
   {% include nav.html activo="opiniones" %}
 
-  <section class="dash-hero">
-    <div class="dash-wrap">
-      <h1 class="dash-hero-titulo"><span class="titulo-pildora">OPINIONES</span></h1>
-      <p>Conoce mejor a tus profesores a partir de las experiencias de otros estudiantes y obtén
-        referencias que te ayuden a elegir tus cursos con mayor criterio.</p>
-    </div>
-  </section>
-
-  <section class="dash-detalle" style="padding-top:30px; max-width:1160px;">
-
-    <div class="opiniones-filtros" id="opinionesFiltros">
-      <input type="search" id="buscadorOpiniones" class="opiniones-buscador" placeholder="Buscar profesor o curso…"
-        autocomplete="off">
-
-      <div class="campo-select-custom campo-select-opiniones">
-        <button type="button" class="select-custom-trigger" id="carreraTrigger" aria-haspopup="listbox"
-          aria-expanded="false">
-          <span id="carreraTriggerTexto">Todas las carreras</span>
-          <span class="select-custom-chevron" aria-hidden="true">▾</span>
-        </button>
-        <ul class="select-custom-lista" id="carreraLista" role="listbox" hidden>
-          <li role="option" data-value="" tabindex="0">
-            <span class="select-swatch" style="background:#C9C9D6;"></span>Todas las carreras
-          </li>
-          <li role="option" data-value="sistemas" tabindex="0">
-            <span class="select-swatch" style="background:#3C7CF8;"></span>Ingeniería de Sistemas
-          </li>
-          <li role="option" data-value="industrial" tabindex="0">
-            <span class="select-swatch" style="background:#00B8A9;"></span>Ingeniería Industrial
-          </li>
-          <li role="option" data-value="software" tabindex="0">
-            <span class="select-swatch" style="background:#F4A100;"></span>Ingeniería de Software
-          </li>
-        </ul>
-        <input type="hidden" id="carreraValor">
+  <!-- PANTALLA 0: ELEGIR MALLA (2018 / 2026).
+       Mismo patrón visual y de comportamiento que Intranotas: se
+       pregunta una sola vez, seleccionarMalla() guarda la elección en
+       localStorage (opiniones_ultima_malla) y de ahí en adelante se
+       entra directo a la pantalla principal, salvo que el alumno toque
+       "Cambiar malla". -->
+  <div id="pantalla-0" class="pantalla pantalla-configuracion activa">
+    <div class="contenedor-principal">
+      <div class="cabecera-pantalla">
+        <h1 class="dash-hero-titulo" style="font-size:1.8rem;"><span class="titulo-pildora">OPINIONES</span></h1>
+        <p class="subtitulo-pantalla-malla" style="text-align:center; color:var(--color-gris-texto); margin-top:8px;">
+          ¿Con qué malla curricular llevas tus cursos?
+        </p>
       </div>
 
-      <div class="campo-select-custom campo-select-opiniones">
-        <button type="button" class="select-custom-trigger" id="cicloTrigger" aria-haspopup="listbox"
-          aria-expanded="false">
-          <span id="cicloTriggerTexto">Todos los ciclos</span>
-          <span class="select-custom-chevron" aria-hidden="true">▾</span>
+      <div class="grid-mallas" id="grid-mallas">
+        <button class="opcion-malla" data-malla="2018">
+          <span class="malla-selector-chip">
+            <span class="malla-selector-icono" aria-hidden="true">📄</span>
+            <span class="malla-selector-texto">MALLA 2018</span>
+          </span>
+          <span class="malla-descripcion-caja">
+            <span class="malla-desc-titulo">Malla vigente hasta ciclo 26-1</span>
+            <span class="malla-desc-fila">Sistemas, Industrial y Software</span>
+          </span>
+          <span class="malla-flecha-chip" aria-hidden="true">→</span>
         </button>
-        <ul class="select-custom-lista" id="cicloLista" role="listbox" hidden></ul>
-        <input type="hidden" id="cicloValor">
-      </div>
-
-      <div class="opiniones-vista-toggle" role="group" aria-label="Tipo de vista">
-        <button type="button" class="vista-btn" data-vista="grid" aria-label="Vista en cuadrícula" title="Cuadrícula">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1.5" />
-            <rect x="14" y="3" width="7" height="7" rx="1.5" />
-            <rect x="3" y="14" width="7" height="7" rx="1.5" />
-            <rect x="14" y="14" width="7" height="7" rx="1.5" />
-          </svg>
-        </button>
-        <button type="button" class="vista-btn" data-vista="lista" aria-label="Vista en lista" title="Lista">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <line x1="4" y1="6" x2="20" y2="6" />
-            <line x1="4" y1="12" x2="20" y2="12" />
-            <line x1="4" y1="18" x2="20" y2="18" />
-          </svg>
+        <button class="opcion-malla" data-malla="2026">
+          <span class="malla-selector-chip">
+            <span class="malla-selector-icono" aria-hidden="true">📄</span>
+            <span class="malla-selector-texto">MALLA 2026</span>
+          </span>
+          <span class="malla-descripcion-caja">
+            <span class="malla-desc-titulo">Malla implementada ciclo 26-2</span>
+            <span class="malla-desc-fila">Sistemas, Industrial e IA</span>
+          </span>
+          <span class="malla-flecha-chip" aria-hidden="true">→</span>
         </button>
       </div>
     </div>
+  </div>
 
-    <div class="opiniones-grid" id="opinionesGrid"></div>
+  <!-- PANTALLA CARRERA: aparece justo después de elegir malla (o al
+       tocar "Cambiar carrera" desde la pantalla principal). Las
+       tarjetas sin catálogo todavía para esta malla se deshabilitan
+       con el badge "Próximamente" (o se ocultan del todo si es malla
+       2018, histórica) — misma lógica que Intranotas. -->
+  <div id="pantalla-carrera" class="pantalla pantalla-configuracion">
+    <div class="contenedor-principal">
+      <div class="cabecera-pantalla">
+        <h1 class="dash-hero-titulo" style="font-size:1.8rem;"><span class="titulo-pildora">OPINIONES</span></h1>
+        <p id="malla-resumen-texto-carrera"
+          style="text-align:center; font-size:0.85rem; color:var(--color-gris-texto); margin-top:-8px; margin-bottom:8px;">
+        </p>
+      </div>
 
-    <div class="opiniones-paginacion" id="opinionesPaginacion"></div>
+      <div class="grid-carreras" id="grid-carreras">
+        <button class="btn-carrera" data-carrera="industrial">
+          <img src="intranotas/industrial.png" alt="Industrial" class="btn-carrera-img">
+          <div class="btn-carrera-texto">
+            <span class="btn-carrera-nombre">Ingeniería Industrial</span>
+            <span class="btn-carrera-ciclos">10 ciclos</span>
+          </div>
+        </button>
+        <button class="btn-carrera" data-carrera="ia">
+          <span style="font-size:2rem; display:flex; align-items:center; justify-content:center; height:100%;">🤖</span>
+          <div class="btn-carrera-texto">
+            <span class="btn-carrera-nombre">Ingeniería de Inteligencia Artificial</span>
+            <span class="btn-carrera-ciclos">10 ciclos</span>
+          </div>
+        </button>
+        <button class="btn-carrera" data-carrera="sistemas">
+          <img src="intranotas/sistemas.png" alt="Sistemas" class="btn-carrera-img">
+          <div class="btn-carrera-texto">
+            <span class="btn-carrera-nombre">Ingeniería de Sistemas</span>
+            <span class="btn-carrera-ciclos">10 ciclos</span>
+          </div>
+        </button>
+        <button class="btn-carrera" data-carrera="software">
+          <img src="intranotas/software.png" alt="Software" class="btn-carrera-img">
+          <div class="btn-carrera-texto">
+            <span class="btn-carrera-nombre">Ingeniería de Software</span>
+            <span class="btn-carrera-ciclos">10 ciclos</span>
+          </div>
+        </button>
+      </div>
 
-  </section>
+      <button class="btn-volver-carrera" id="btnCambiarMallaDesdeCarrera" style="margin-top:1.5rem;">📚 Cambiar
+        malla</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA PRINCIPAL: el contenido de siempre (grilla de
+       opiniones), ahora ya filtrado por la malla+carrera elegidas. -->
+  <div id="pantalla-principal" class="pantalla">
+    <section class="dash-hero">
+      <div class="dash-wrap">
+        <h1 class="dash-hero-titulo"><span class="titulo-pildora">OPINIONES</span></h1>
+        <p>Conoce mejor a tus profesores a partir de las experiencias de otros estudiantes y obtén
+          referencias que te ayuden a elegir tus cursos con mayor criterio.</p>
+        <p id="malla-resumen-texto-principal" class="opiniones-malla-resumen"></p>
+      </div>
+    </section>
+
+    <section class="dash-detalle" style="padding-top:30px; max-width:1160px;">
+
+      <div class="opiniones-cambiar-barra">
+        <button class="btn-volver-carrera" id="btnCambiarMalla">📚 Cambiar malla</button>
+        <button class="btn-volver-carrera" id="btnCambiarCarrera">← Cambiar carrera</button>
+      </div>
+
+      <div class="opiniones-filtros" id="opinionesFiltros">
+        <input type="search" id="buscadorOpiniones" class="opiniones-buscador" placeholder="Buscar profesor o curso…"
+          autocomplete="off">
+
+        <div class="campo-select-custom campo-select-opiniones">
+          <button type="button" class="select-custom-trigger" id="cicloTrigger" aria-haspopup="listbox"
+            aria-expanded="false">
+            <span id="cicloTriggerTexto">Todos los ciclos</span>
+            <span class="select-custom-chevron" aria-hidden="true">▾</span>
+          </button>
+          <ul class="select-custom-lista" id="cicloLista" role="listbox" hidden></ul>
+          <input type="hidden" id="cicloValor">
+        </div>
+
+        <div class="opiniones-vista-toggle" role="group" aria-label="Tipo de vista">
+          <button type="button" class="vista-btn" data-vista="grid" aria-label="Vista en cuadrícula" title="Cuadrícula">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5" />
+              <rect x="14" y="3" width="7" height="7" rx="1.5" />
+              <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            </svg>
+          </button>
+          <button type="button" class="vista-btn" data-vista="lista" aria-label="Vista en lista" title="Lista">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="18" x2="20" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="opiniones-grid" id="opinionesGrid"></div>
+
+      <div class="opiniones-paginacion" id="opinionesPaginacion"></div>
+
+    </section>
+  </div>
 
   <aside class="detalle-profesor" id="detalleProfesor"></aside>
 
@@ -112,7 +191,7 @@
   <script src="js/landing.js"></script>
   <script src="js/tema-siga.js?v=1"></script>
   <script src="js/selector-personalizado.js?v=1"></script>
-  <script type="module" src="js/opiniones.js?v=2"></script>
+  <script type="module" src="js/opiniones.js?v=3"></script>
 </body>
 
 </html>

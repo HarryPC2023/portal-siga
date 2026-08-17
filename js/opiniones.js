@@ -4,15 +4,30 @@ import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=8';
 const CICLOS = Array.from({ length: 10 }, (_, i) => i + 1);
 const POR_PAGINA = 9;
 const LS_VISTA = 'opiniones_vista';
+const LS_MALLA = 'opiniones_ultima_malla';
+const LS_CARRERA = 'opiniones_ultima_carrera';
+
+/* Qué combinaciones malla+carrera tienen catálogo real hoy (según los
+   6 archivos consolidado_*.json que alimentan la base). Bajo malla
+   2018 (histórica y cerrada) la carrera sin datos se OCULTA del todo
+   — es el caso de IA, que nunca tuvo malla 2018 porque la carrera no
+   existía. Bajo malla 2026 (todavía en construcción, como Software)
+   se muestra deshabilitada con el badge "Próximamente", porque ese
+   catálogo irá creciendo con el tiempo. Mismo criterio que Intranotas. */
+const CARRERAS_POR_MALLA = {
+  '2018': ['sistemas', 'industrial', 'software'],
+  '2026': ['sistemas', 'industrial', 'ia'],
+};
 
 let sesionActual = null;
 let perfiles = [];
 let opinionesPorFicha = new Map();
 let reportadasPorMi = new Set();
 let paginaActual = 1;
-let selectCarrera = null;
 let selectCiclo = null;
 let vistaActual = localStorage.getItem(LS_VISTA) || 'grid';
+let mallaSeleccionada = null;
+let carreraSeleccionada = null;
 
 const grid = document.getElementById('opinionesGrid');
 const paginacionCont = document.getElementById('opinionesPaginacion');
@@ -23,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   montarNavUsuario();
   configurarFiltros();
   configurarVista();
+  configurarPantallasMallaCarrera();
 
   // requerirSesion ya redirige a index.html?login=1 si no hay cuenta,
   // así que si llegamos aquí, sesionActual siempre existe.
@@ -36,10 +52,132 @@ document.addEventListener('DOMContentLoaded', async () => {
   const busquedaInicial = parametros.get('buscar');
   if (busquedaInicial && buscador) buscador.value = busquedaInicial;
 
+  const mallaGuardada = localStorage.getItem(LS_MALLA);
+  const carreraGuardada = localStorage.getItem(LS_CARRERA);
+
+  if (mallaGuardada && carreraGuardada && estaDisponibleCarrera(mallaGuardada, carreraGuardada)) {
+    mallaSeleccionada = mallaGuardada;
+    carreraSeleccionada = carreraGuardada;
+    await entrarAPantallaPrincipal();
+  } else {
+    mostrarPantalla('pantalla-0');
+  }
+});
+
+/* ============================================================
+   FLUJO DE MALLA + CARRERA (Pantalla 0 / Pantalla carrera)
+   Mismo patrón que Intranotas: se elige una vez, se guarda en
+   localStorage, y de ahí en adelante se entra directo — salvo que el
+   alumno toque "Cambiar malla" / "Cambiar carrera".
+   ============================================================ */
+function estaDisponibleCarrera(malla, carrera) {
+  return (CARRERAS_POR_MALLA[malla] || []).includes(carrera);
+}
+
+/* Engancha los clicks de las tarjetas de malla/carrera y los botones
+   "Cambiar malla" / "Cambiar carrera" — opiniones.js es un módulo, así
+   que (a diferencia de Intranotas, que usa script clásico) no puede
+   usar onclick="" inline en el HTML. */
+function configurarPantallasMallaCarrera() {
+  document.querySelectorAll('.opcion-malla').forEach((btn) => {
+    btn.addEventListener('click', () => seleccionarMalla(btn.dataset.malla));
+  });
+
+  document.querySelectorAll('.btn-carrera').forEach((btn) => {
+    btn.addEventListener('click', () => seleccionarCarrera(btn.dataset.carrera));
+  });
+
+  document.getElementById('btnCambiarMallaDesdeCarrera')?.addEventListener('click', cambiarMalla);
+  document.getElementById('btnCambiarMalla')?.addEventListener('click', cambiarMalla);
+  document.getElementById('btnCambiarCarrera')?.addEventListener('click', cambiarCarrera);
+}
+
+function mostrarPantalla(id) {
+  document.querySelectorAll('.pantalla').forEach((p) => p.classList.remove('activa'));
+  document.getElementById(id)?.classList.add('activa');
+  window.scrollTo({ top: 0 });
+}
+
+function seleccionarMalla(malla) {
+  mallaSeleccionada = malla;
+  localStorage.setItem(LS_MALLA, malla);
+  actualizarResumenMalla();
+  filtrarCarrerasPorMalla();
+  mostrarPantalla('pantalla-carrera');
+}
+
+function cambiarMalla() {
+  document.querySelectorAll('.opcion-malla').forEach((btn) => {
+    btn.classList.toggle('actual', btn.dataset.malla === mallaSeleccionada);
+  });
+  mostrarPantalla('pantalla-0');
+}
+
+function cambiarCarrera() {
+  filtrarCarrerasPorMalla();
+  mostrarPantalla('pantalla-carrera');
+}
+
+function actualizarResumenMalla() {
+  const texto = mallaSeleccionada ? `Malla ${mallaSeleccionada}` : '';
+  const elCarrera = document.getElementById('malla-resumen-texto-carrera');
+  if (elCarrera) elCarrera.textContent = texto;
+}
+
+/* Recorre las tarjetas de carrera y las habilita/oculta según la
+   malla activa (ver comentario de CARRERAS_POR_MALLA arriba). */
+function filtrarCarrerasPorMalla() {
+  document.querySelectorAll('.btn-carrera').forEach((btn) => {
+    const carrera = btn.dataset.carrera;
+    const disponible = estaDisponibleCarrera(mallaSeleccionada, carrera);
+
+    if (!disponible && mallaSeleccionada === '2018') {
+      btn.style.display = 'none';
+      return;
+    }
+    btn.style.display = '';
+
+    btn.classList.toggle('btn-carrera-proximamente', !disponible);
+    btn.disabled = !disponible;
+
+    let aviso = btn.querySelector('.btn-carrera-proximamente-badge');
+    if (!disponible && !aviso) {
+      aviso = document.createElement('span');
+      aviso.className = 'btn-carrera-proximamente-badge';
+      aviso.textContent = 'Próximamente';
+      btn.querySelector('.btn-carrera-texto').appendChild(aviso);
+    } else if (disponible && aviso) {
+      aviso.remove();
+    }
+  });
+}
+
+async function seleccionarCarrera(carrera) {
+  if (!estaDisponibleCarrera(mallaSeleccionada, carrera)) return; // seguro extra, aunque el botón ya está deshabilitado
+  carreraSeleccionada = carrera;
+  localStorage.setItem(LS_CARRERA, carrera);
+  await entrarAPantallaPrincipal();
+}
+
+async function entrarAPantallaPrincipal() {
+  const resumen = document.getElementById('malla-resumen-texto-principal');
+  if (resumen) resumen.textContent = `Malla ${mallaSeleccionada} · ${etiquetaCarrera(carreraSeleccionada)}`;
+
+  mostrarPantalla('pantalla-principal');
+  paginaActual = 1;
   grid.innerHTML = '<p class="opiniones-vacio">Cargando perfiles…</p>';
   await cargarTodo();
   renderGrid();
-});
+}
+
+function etiquetaCarrera(carrera) {
+  return {
+    sistemas: 'Ingeniería de Sistemas',
+    industrial: 'Ingeniería Industrial',
+    software: 'Ingeniería de Software',
+    ia: 'Ingeniería de Inteligencia Artificial',
+  }[carrera] || carrera;
+}
 
 /** Quita tildes/diacríticos y pasa a minúsculas, para comparar sin exigir tildes exactas. */
 function normalizar(texto) {
@@ -54,12 +192,14 @@ async function cargarTodo() {
   const [perfilesResp, opinionesResp, reportesResp] = await Promise.all([
     supabase.from('perfiles_profesor').select(`
       id, profesor_curso_id, resumen, que_esperar, recomendaciones,
-      profesor_curso:profesor_curso_id (
+      profesor_curso:profesor_curso_id!inner (
         id,
         profesores ( nombre ),
-        cursos ( nombre, codigo, carrera, ciclo_ref )
+        cursos!inner ( nombre, codigo, carrera, ciclo_ref, malla )
       )
-    `),
+    `)
+      .eq('profesor_curso.cursos.carrera', carreraSeleccionada)
+      .eq('profesor_curso.cursos.malla', mallaSeleccionada),
     supabase.from('opiniones_publicas').select('*').order('creado_en', { ascending: false }),
     supabase.from('opinion_reportes').select('opinion_id').eq('autor_id', sesionActual.user.id),
   ]);
@@ -181,15 +321,12 @@ function renderPaginacion(totalVisibles, totalPaginas) {
 }
 
 function renderGrid() {
-  const carrera = selectCarrera ? selectCarrera.valor.value : '';
   const ciclo = selectCiclo ? selectCiclo.valor.value : '';
   const busqueda = normalizar(buscador ? buscador.value : '');
 
   const visibles = perfiles.filter((p) => {
     const curso = p.profesor_curso?.cursos;
     if (!curso) return false;
-    // curso.carrera === null -> curso común a las 3 carreras, siempre visible
-    if (carrera && curso.carrera && curso.carrera !== carrera) return false;
     if (ciclo && String(curso.ciclo_ref) !== ciclo) return false;
     if (busqueda) {
       const profesor = p.profesor_curso.profesores.nombre;
@@ -405,12 +542,6 @@ async function reportarOpinion(opinionId, btn) {
 }
 
 function configurarFiltros() {
-  selectCarrera = inicializarSelectPersonalizado({
-    triggerId: 'carreraTrigger', textoId: 'carreraTriggerTexto',
-    listaId: 'carreraLista', valorId: 'carreraValor',
-    alElegir: () => { paginaActual = 1; renderGrid(); },
-  });
-
   selectCiclo = inicializarSelectPersonalizado({
     triggerId: 'cicloTrigger', textoId: 'cicloTriggerTexto',
     listaId: 'cicloLista', valorId: 'cicloValor',
