@@ -36,7 +36,7 @@
 .admin-panel {
     display: flex;
     flex-direction: column;
-    gap: 34px;
+    gap: 24px;
 }
 
 .admin-vacio {
@@ -51,6 +51,7 @@
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     padding: 18px 22px;
+    margin-bottom: 20px;
 }
 
 .admin-item-cabecera {
