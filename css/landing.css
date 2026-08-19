@@ -229,6 +229,50 @@ nav {
   box-shadow: 0 8px 18px rgba(102, 0, 204, 0.28);
 }
 
+/* ===== NAV RESPONSIVE ===== */
+/* El nav nunca tuvo un breakpoint propio: en pantallas angostas, los
+   links de .nav-links (una sola fila sin flex-wrap) se salían del
+   contenedor en vez de acomodarse, cortando "Registrarse" fuera de
+   la pantalla. Con flex-wrap + centrado, los links pasan a ocupar
+   varias filas dentro de la misma barra en vez de desbordarse. Se
+   reduce paso a paso: primero se acomodan tamaños (768px), y en
+   pantallas muy angostas (480px) se achican letra/relleno un poco
+   más para que quepan más cómodos incluso en 2 filas. */
+@media (max-width: 768px) {
+  nav {
+    justify-content: center;
+    padding: 18px 20px;
+    gap: 14px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 0;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  .logo img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-siga {
+    font-size: 17px;
+  }
+
+  .logo-nombre {
+    font-size: 10.5px;
+  }
+
+  .nav-links>a {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+}
+
 /* ===== CONTENIDO HERO ===== */
 .hero-content {
   position: relative;
