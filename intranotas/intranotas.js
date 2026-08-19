@@ -606,24 +606,29 @@ async function ejecutarSyncIntralu() {
     btnCancelar.disabled = true;
     btnConfirmar.textContent = 'Sincronizando...';
     progresoEl.style.display = 'block';
+    progresoEl.textContent = '⏳ Conectando con Intralú...';
 
     try {
-        const resp = await fetch(INTRALU_SYNC_URL, {
+        // Paso 1: iniciar el job — responde al instante con un job_id,
+        // el scraping real corre en segundo plano en el backend.
+        const respInicio = await fetch(INTRALU_SYNC_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ codigo, password }),
         });
-
-        const data = await resp.json();
-
-        if (!resp.ok) {
-            throw new Error(data.detail || 'No se pudo conectar con Intralú.');
+        const dataInicio = await respInicio.json();
+        if (!respInicio.ok) {
+            throw new Error(dataInicio.detail || 'No se pudo conectar con Intralú.');
         }
 
-        // Limpiamos la contraseña del DOM antes de cerrar, por si acaso.
+        // Limpiamos la contraseña del DOM apenas se envió, por si acaso.
         passwordEl.value = '';
+
+        // Paso 2: preguntar cada pocos segundos si ya terminó.
+        const resultado = await esperarResultadoSyncIntralu(dataInicio.job_id, progresoEl);
+
         cerrarModalSyncIntralu();
-        procesarRespuestaSyncIntralu(data.periodos || {});
+        procesarRespuestaSyncIntralu(resultado.periodos || {});
     } catch (err) {
         errorEl.textContent = err.message || 'Ocurrió un error al sincronizar. Intenta de nuevo.';
         errorEl.style.display = 'block';
@@ -632,6 +637,38 @@ async function ejecutarSyncIntralu() {
         btnCancelar.disabled = false;
         btnConfirmar.textContent = 'Ingresar y sincronizar';
         progresoEl.style.display = 'none';
+    }
+}
+
+/* Pregunta cada 3 segundos al backend si el job ya terminó, mostrando
+   en vivo qué periodo está revisando ahora mismo. Corta con error si
+   pasan más de 15 minutos (red de seguridad, no debería llegar ahí). */
+async function esperarResultadoSyncIntralu(jobId, progresoEl) {
+    const inicio = Date.now();
+    const LIMITE_MS = 15 * 60 * 1000;
+
+    while (true) {
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        if (Date.now() - inicio > LIMITE_MS) {
+            throw new Error('La sincronización está tardando demasiado. Intenta de nuevo más tarde.');
+        }
+
+        const resp = await fetch(`${INTRALU_SYNC_URL}/${jobId}`);
+        const data = await resp.json();
+
+        if (!resp.ok) {
+            throw new Error(data.detail || 'Ocurrió un error al sincronizar.');
+        }
+
+        if (data.status === 'listo') return data;
+
+        if (progresoEl) {
+            const segundos = Math.floor((Date.now() - inicio) / 1000);
+            progresoEl.textContent = data.periodo_actual
+                ? `⏳ Revisando periodo ${data.periodo_actual}... (${segundos}s)`
+                : `⏳ Conectando con Intralú... (${segundos}s)`;
+        }
     }
 }
 
