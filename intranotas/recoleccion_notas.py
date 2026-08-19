@@ -14,15 +14,11 @@ logging.basicConfig(level=logging.INFO)
 
 # --------------------------------------------------------------
 # CORS: solo tu propio frontend puede llamar a este endpoint.
-# allow_credentials=False porque no dependemos de cookies de
-# navegador entre SIGA y este backend (mandamos JSON puro por
-# fetch), así que no hace falta la combinación peligrosa de
-# origin comodín + credenciales.
 # --------------------------------------------------------------
 ORIGENES_PERMITIDOS = [
-    "http://localhost:4000",   # Jekyll en local — ajusta el puerto si usas otro
+    "http://localhost:4000",   # Jekyll en local
     "http://127.0.0.1:4000",
-    "https://harrypc2023.github.io",  # TODO Harry: confirma que este es tu dominio real de producción
+    "https://harrypc2023.github.io",  # tu dominio real de producción (confirmado: sin CNAME propio)
 ]
 
 app.add_middleware(
@@ -34,11 +30,11 @@ app.add_middleware(
 )
 
 # --------------------------------------------------------------
-# Límite de sincronizaciones simultáneas: cada una abre un
-# Chromium headless completo, así que no queremos que 20 alumnos
-# lo disparen a la vez y tumben el servidor.
+# Ahora que volvemos a visitar el detalle de cada curso, cada sync es
+# pesada otra vez — bajamos el límite de simultáneas para proteger el
+# servidor (sobre todo en un plan gratuito de hosting).
 # --------------------------------------------------------------
-MAX_SYNCS_SIMULTANEOS = 3
+MAX_SYNCS_SIMULTANEOS = 2
 _semaforo_sync = threading.Semaphore(MAX_SYNCS_SIMULTANEOS)
 
 
@@ -51,28 +47,49 @@ def etiquetar_periodo(cod):
     """Convierte el código crudo de Intralú (ej. '20261') a la misma
     clave que usa Intranotas en localStorage (ej. '2026-1').
 
-    El verano (tipo '3') se etiqueta con el año académico que CIERRA,
-    no con el año calendario en el que cae dentro de Intralú:
-    '20263' (verano de enero-febrero 2026) se guarda como '2025-3',
-    igual que lo hace generarPeriodosDisponibles() en intranotas.js.
+    El verano (tipo '3') se etiqueta con el MISMO año que el segundo
+    semestre al que sigue cronológicamente (igual que hace tu propia
+    generarPeriodosDisponibles() en intranotas.js): '20233' es el
+    verano justo después de '2023-2', así que se guarda como '2023-3'
+    — NO se resta un año. (Confirmado con tu propio historial: química
+    y geometría analítica, jaladas en 2023-2, retomadas y aprobadas en
+    ese verano.)
     """
     cod = str(cod).strip()
     if len(cod) == 5:
-        anio, tipo = int(cod[:4]), cod[4]
+        anio, tipo = cod[:4], cod[4]
         if tipo == "1":
             return f"{anio}-1"
         if tipo == "2":
             return f"{anio}-2"
         if tipo == "3":
-            return f"{anio - 1}-3"
+            return f"{anio}-3"
     return cod
 
 
 def simplificar_etiqueta(texto):
+    """Normaliza el nombre de una evaluación de Intralú a la MISMA
+    clave exacta (mayúsculas/minúsculas incluidas) que usan los
+    `components` de cursos_db_2018.js: 'PC1', 'Monografia1', 'Lab1',
+    'EP', 'EF', 'ES'."""
     t = texto.upper().strip()
-    t = re.sub(r"PRACTICA CALIFICADA\s*(\d+)", r"PC\1", t)
-    t = re.sub(r"P\.C\.\s*(\d+)", r"PC\1", t)
-    t = re.sub(r"MONOGRAFIA\s*(\d+)", r"MONOGRAFIA\1", t)
+
+    m = re.search(r"PRACTICA CALIFICADA\s*(\d+)", t) or re.search(r"P\.?C\.?\s*(\d+)", t)
+    if m:
+        return f"PC{m.group(1)}"
+
+    m = re.search(r"MONOGRAF[IÍ]A\s*(\d+)", t)
+    if m:
+        return f"Monografia{m.group(1)}"
+
+    # OJO Harry: no tengo el texto real de Intralú para un curso con labs
+    # (Química/Física) todavía — este patrón cubre "LABORATORIO 1" y
+    # "LAB 1". Si al probar un curso real sale distinto, mándame el texto
+    # exacto y ajusto el regex.
+    m = re.search(r"LABORATORIO\s*(\d+)", t) or re.search(r"\bLAB\s*(\d+)", t)
+    if m:
+        return f"Lab{m.group(1)}"
+
     if "EXAMEN PARCIAL" in t:
         return "EP"
     if "EXAMEN FINAL" in t:
@@ -116,7 +133,7 @@ def sync_intralu(credentials: LoginRequest):
                     detail="Código o contraseña incorrectos en Intralú.",
                 )
 
-            # 2. Rango de periodos optimizado (Desde 2026 hasta 2019)
+            # 2. Rango de periodos (Desde 2026 hasta 2019)
             periodos = []
             for anio in range(2026, 2018, -1):
                 for tipo in ["2", "1", "3"]:
@@ -124,13 +141,14 @@ def sync_intralu(credentials: LoginRequest):
 
             # 3. Recorrer cada periodo del rango
             for periodo in periodos:
+                logger.info("Revisando periodo %s...", periodo)
                 url_periodo = f"https://alumnos.uni.edu.pe/informacion-academica/cursos/{periodo}"
                 page.goto(url_periodo, wait_until="domcontentloaded")
 
                 try:
                     page.wait_for_selector("table", timeout=3000)
                 except Exception:
-                    continue  # Si no hay cursos en este periodo, salta al siguiente de forma rápida
+                    continue  # Sin cursos en este periodo, salta rápido al siguiente
 
                 filas_cursos = (
                     page.locator("table").first.locator("tbody tr").all()
@@ -162,15 +180,25 @@ def sync_intralu(credentials: LoginRequest):
                                 }
                             )
 
-                # Ahora sí, visitamos el detalle de cada curso recolectado sin perdernos ninguno
+                # Ahora sí, visitamos el detalle de cada curso para sacar sus notas.
                 cursos_lista = []
                 for c_info in cursos_temp:
                     url_det = f"https://alumnos.uni.edu.pe/informacion-academica/cursos/{periodo}/{c_info['cod_curso']}/{c_info['seccion']}"
-                    page.goto(url_det, wait_until="domcontentloaded")
+
+                    # networkidle (no domcontentloaded): la tabla de notas de
+                    # esta página en particular parece cargar vía JS después
+                    # del render inicial — con domcontentloaded llegábamos
+                    # antes de que existieran las filas, por eso siempre
+                    # salía vacío. Esperamos a que la red se calme.
+                    try:
+                        page.goto(url_det, wait_until="networkidle", timeout=15000)
+                    except Exception:
+                        page.goto(url_det, wait_until="domcontentloaded")
 
                     evaluaciones = []
                     try:
-                        page.wait_for_selector("table", timeout=3000)
+                        # Esperamos FILAS reales, no solo el tag <table> vacío.
+                        page.wait_for_selector("table tbody tr", timeout=8000)
                         for t in page.locator("table").all():
                             for f in t.locator("tbody tr").all():
                                 c = f.locator("td").all()
@@ -191,7 +219,11 @@ def sync_intralu(credentials: LoginRequest):
                                             }
                                         )
                     except Exception:
-                        pass
+                        logger.info(
+                            "Sin tabla de notas en %s (%s)",
+                            c_info["cod_curso"],
+                            periodo,
+                        )
 
                     creditos_val = c_info["creditos"]
                     cursos_lista.append(
@@ -214,10 +246,6 @@ def sync_intralu(credentials: LoginRequest):
     except HTTPException:
         raise
     except Exception:
-        # El detalle completo del error queda SOLO en tu log de servidor
-        # (nunca incluye las credenciales, que no se tocan en este bloque).
-        # Al cliente le devolvemos un mensaje genérico para no filtrar
-        # detalles internos (rutas, selectores, stack trace, etc.).
         logger.exception("Error durante la sincronización con Intralú")
         raise HTTPException(
             status_code=500,

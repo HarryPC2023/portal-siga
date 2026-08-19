@@ -520,6 +520,237 @@ function marcarCursosSeleccionadosEnUI() {
 }
 
 /* ============================================================
+   SINCRONIZACIÓN AUTOMÁTICA CON INTRALÚ
+   Arma automáticamente tus periodos y cursos leyendo la lista de
+   cursos matriculados de cada ciclo desde la intranet de la UNI, vía
+   el backend recoleccion_notas.py (FastAPI + Playwright). Las notas
+   las sigues ingresando tú a mano, como siempre — el backend YA NO
+   trae notas ni visita el detalle de cada curso, solo la tabla
+   resumen de cada periodo (mucho más rápido y liviano).
+
+   Las credenciales de Intralú viajan directo a ese backend por HTTPS
+   y nunca se guardan aquí ni ahí: se usan solo para el login puntual
+   y se descartan al terminar.
+
+   El backend entrega cada periodo con la clave ya en el mismo formato
+   que usa Intranotas ("2026-1", "2025-3" para verano, etc. vía
+   etiquetar_periodo()), así que aquí solo hace falta mapear cada
+   curso por CÓDIGO contra el catálogo de la malla/carrera activas.
+   ============================================================ */
+const INTRALU_SYNC_URL = 'http://localhost:8000/api/sync-intralu'; // TODO Harry: cambia esto por la URL real de tu backend en producción (https://...)
+
+function abrirModalSyncIntralu() {
+    const existente = document.getElementById('modal-sync-intralu-overlay');
+    if (existente) {
+        existente.classList.add('visible');
+        return;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.id = 'modal-sync-intralu-overlay';
+    overlay.innerHTML = `
+        <div class="modal-caja" style="max-width:380px; text-align:left;">
+            <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Cargar notas desde Intralú</h3>
+            <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:16px;">
+                Ingresa tu código y contraseña de Intralú. Los usamos una sola vez para iniciar sesión y leer tus
+                cursos y notas de todos tus periodos — puede tardar varios minutos porque revisa cada curso uno por
+                uno. Tus credenciales nunca se guardan en nuestros servidores: viajan directo a la UNI y se
+                descartan al terminar.
+            </p>
+            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Código UNI</label>
+            <input id="sync-intralu-codigo" type="text" placeholder="2023XXXXX" autocomplete="off"
+                style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:12px; font-size:0.9rem; box-sizing:border-box;">
+            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Contraseña de Intralú</label>
+            <input id="sync-intralu-password" type="password" placeholder="••••••••" autocomplete="off"
+                style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:6px; font-size:0.9rem; box-sizing:border-box;">
+            <p id="sync-intralu-error" style="display:none; color:#dc2626; font-size:0.78rem; margin:4px 0 0;"></p>
+            <p id="sync-intralu-progreso" style="display:none; color:var(--color-cian); font-size:0.8rem; margin:12px 0 0; text-align:center; line-height:1.5;">
+                ⏳ Conectando con Intralú... esto puede tardar varios minutos, no cierres esta ventana.
+            </p>
+            <div style="display:flex; gap:8px; margin-top:18px;">
+                <button type="button" class="btn-volver" style="flex:1;" id="sync-intralu-btn-cancelar" onclick="cerrarModalSyncIntralu()">Cancelar</button>
+                <button type="button" class="btn-primary" style="flex:1;" id="sync-intralu-btn-confirmar" onclick="ejecutarSyncIntralu()">Ingresar y sincronizar</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('visible'));
+}
+
+function cerrarModalSyncIntralu() {
+    const overlay = document.getElementById('modal-sync-intralu-overlay');
+    if (overlay) overlay.classList.remove('visible');
+}
+
+async function ejecutarSyncIntralu() {
+    const codigoEl = document.getElementById('sync-intralu-codigo');
+    const passwordEl = document.getElementById('sync-intralu-password');
+    const errorEl = document.getElementById('sync-intralu-error');
+    const progresoEl = document.getElementById('sync-intralu-progreso');
+    const btnConfirmar = document.getElementById('sync-intralu-btn-confirmar');
+    const btnCancelar = document.getElementById('sync-intralu-btn-cancelar');
+
+    const codigo = codigoEl.value.trim();
+    const password = passwordEl.value;
+
+    errorEl.style.display = 'none';
+
+    if (!codigo || !password) {
+        errorEl.textContent = 'Ingresa tu código y tu contraseña.';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    btnConfirmar.disabled = true;
+    btnCancelar.disabled = true;
+    btnConfirmar.textContent = 'Sincronizando...';
+    progresoEl.style.display = 'block';
+
+    try {
+        const resp = await fetch(INTRALU_SYNC_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ codigo, password }),
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok) {
+            throw new Error(data.detail || 'No se pudo conectar con Intralú.');
+        }
+
+        // Limpiamos la contraseña del DOM antes de cerrar, por si acaso.
+        passwordEl.value = '';
+        cerrarModalSyncIntralu();
+        procesarRespuestaSyncIntralu(data.periodos || {});
+    } catch (err) {
+        errorEl.textContent = err.message || 'Ocurrió un error al sincronizar. Intenta de nuevo.';
+        errorEl.style.display = 'block';
+    } finally {
+        btnConfirmar.disabled = false;
+        btnCancelar.disabled = false;
+        btnConfirmar.textContent = 'Ingresar y sincronizar';
+        progresoEl.style.display = 'none';
+    }
+}
+
+/* Busca un curso del catálogo de la MALLA + CARRERA activas por su
+   código (recorre ciclos 1-10 + electivos). Devuelve el curso del
+   catálogo ya con su cicloOrigen, o null si el código no está
+   mapeado en esa malla/carrera. */
+function buscarCursoEnCatalogoPorCodigo(codigo) {
+    const catalogoCarrera = CURSOS_POR_CICLO[mallaSeleccionada]?.[carreraSeleccionada];
+    if (!catalogoCarrera) return null;
+    const codigoNorm = String(codigo).trim().toUpperCase();
+
+    for (let ciclo = 1; ciclo <= 10; ciclo++) {
+        const lista = catalogoCarrera[ciclo] || catalogoCarrera[String(ciclo)] || [];
+        const encontrado = lista.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
+        if (encontrado) return { ...encontrado, cicloOrigen: ciclo };
+    }
+    const electivos = catalogoCarrera['electivos'] || [];
+    const encontradoElectivo = electivos.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
+    if (encontradoElectivo) return { ...encontradoElectivo, cicloOrigen: 'electivos' };
+
+    return null;
+}
+
+/* Toma la respuesta del backend (agrupada por periodo, con la clave
+   ya en formato "2026-1" gracias a etiquetar_periodo en el backend) y
+   arma/reemplaza cada periodo completo dentro de
+   intranotas_datos_periodos: cursos Y notas, sobrescribiendo lo que
+   hubiera antes en ese periodo (decisión ya tomada con Harry). Los
+   periodos que Intralú no tocó se quedan tal cual estaban. */
+function procesarRespuestaSyncIntralu(periodosIntralu) {
+    const datos = leerDatosPeriodos();
+    const noReconocidos = [];
+    let periodosActualizados = 0;
+
+    Object.values(periodosIntralu).forEach(entradaPeriodo => {
+        const claveIntranotas = entradaPeriodo.etiqueta_periodo;
+        const cursosMapeados = [];
+        const notasPeriodo = {};
+
+        entradaPeriodo.cursos.forEach(cursoIntralu => {
+            const cursoCatalogo = buscarCursoEnCatalogoPorCodigo(cursoIntralu.codigo);
+            if (!cursoCatalogo) {
+                noReconocidos.push(`${cursoIntralu.codigo} - ${cursoIntralu.nombre} (${claveIntranotas})`);
+                return;
+            }
+
+            cursosMapeados.push(cursoCatalogo);
+
+            // Comparación insensible a mayúsculas como red de seguridad
+            // extra (el backend ya normaliza a la casing exacta del
+            // catálogo, pero por si algún texto de Intralú se cuela distinto).
+            const notasCurso = {};
+            (cursoIntralu.evaluaciones || []).forEach(ev => {
+                if (ev.nota === null || ev.nota === undefined) return;
+                const compReal = cursoCatalogo.components.find(
+                    c => c.toUpperCase() === String(ev.etiqueta).toUpperCase()
+                );
+                if (!compReal) return;
+                notasCurso[compReal] = ev.nota;
+            });
+            if (Object.keys(notasCurso).length) notasPeriodo[cursoCatalogo.id] = notasCurso;
+        });
+
+        if (!cursosMapeados.length) return; // Nada reconocido en este periodo: no se crea/toca entrada
+
+        datos[claveIntranotas] = {
+            carrera: carreraSeleccionada,
+            cursos: cursosMapeados,
+            notas: notasPeriodo,
+        };
+        periodosActualizados++;
+    });
+
+    guardarDatosPeriodos(datos); // esto ya sube a la nube automáticamente (sincronizarNube)
+
+    if (noReconocidos.length) {
+        reportarCursosNoReconocidos(noReconocidos);
+    }
+
+    mostrarToast(
+        periodosActualizados
+            ? `✅ Se sincronizaron ${periodosActualizados} periodo${periodosActualizados === 1 ? '' : 's'} desde Intralú`
+            : '⚠️ Intralú no trajo cursos que tu catálogo reconozca'
+    );
+
+    // Si el periodo que se está viendo ahora mismo fue actualizado, refresca la pantalla.
+    if (periodoSeleccionado && datos[periodoSeleccionado] && document.getElementById('pantalla-4')?.classList.contains('activa')) {
+        cursosSeleccionados = datos[periodoSeleccionado].cursos;
+        generarSimulador();
+        desmarcarTodosLosCursos();
+        marcarCursosSeleccionadosEnUI();
+    }
+}
+
+/* Envía a Supabase (tabla sugerencias) la lista de cursos que Intralú
+   trajo pero que el catálogo de Intranotas no reconoce, para que
+   Harry los revise y los mapee manualmente. Usa el cliente ya
+   expuesto en window.sigaSupabase/window.sigaObtenerSesion por el
+   <script type="module"> de intranotas/index.html (mismo patrón que
+   usa obtenerSesionNube() más abajo). */
+async function reportarCursosNoReconocidos(lista) {
+    try {
+        if (!window.sigaObtenerSesion || !window.sigaSupabase) return;
+        const sesion = await window.sigaObtenerSesion();
+        if (!sesion?.user) return;
+
+        await window.sigaSupabase.from('sugerencias').insert({
+            user_id: sesion.user.id,
+            categoria: 'intranotas',
+            titulo: 'Cursos no reconocidos al sincronizar con Intralú',
+            descripcion: lista.join('\n'),
+        });
+    } catch (e) {
+        console.log('No se pudo reportar cursos no reconocidos:', e);
+    }
+}
+
+/* ============================================================
    PERSISTENCIA MULTI-PERIODO EN LOCALSTORAGE
    Cada periodo académico guarda su propia carrera, cursos y notas,
    bajo una sola clave: { "2025-1": {carrera, cursos, notas}, ... }
@@ -697,6 +928,11 @@ function generarSimulador() {
                     <input type="hidden" id="periodoGuardadoValor">
                 </div>
             </div>
+            <button type="button" class="btn-volver"
+                style="width:100%; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:6px;"
+                onclick="abrirModalSyncIntralu()">
+                🔄 Cargar notas desde Intralú
+            </button>
         </div>
 
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;">
