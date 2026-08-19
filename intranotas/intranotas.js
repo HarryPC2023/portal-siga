@@ -145,6 +145,7 @@ const FORMULAS_SOLO_EXAMENES = ['SOLO_EXAMENES'];
 /* ============================================================
    VARIABLES GLOBALES DE ESTADO
    ============================================================ */
+let mallaSeleccionada = null; // '2018' | '2026'
 let carreraSeleccionada = null;
 let cursosSeleccionados = [];
 let periodoSeleccionado = null;
@@ -163,9 +164,72 @@ function irAPantalla(num) {
 }
 
 /* ============================================================
+   SELECCIÓN DE MALLA (PANTALLA 0)
+   Se pregunta una sola vez, igual que la carrera: se guarda en
+   localStorage (LS_KEY_ULTIMA_MALLA) y de ahí en adelante el flujo
+   entra directo a Pantalla 3 con esa malla fija. Solo se vuelve a
+   preguntar si el alumno toca "Cambiar malla".
+   ============================================================ */
+const LS_KEY_ULTIMA_MALLA = 'intranotas_ultima_malla';
+
+function seleccionarMalla(malla) {
+    mallaSeleccionada = malla;
+    localStorage.setItem(LS_KEY_ULTIMA_MALLA, malla);
+
+    // Cambiar de malla implica que la carrera/periodo/cursos de la
+    // malla anterior ya no aplican en pantalla — cada malla guarda sus
+    // propios periodos por separado, así que esto no borra nada.
+    carreraSeleccionada = null;
+    periodoSeleccionado = null;
+    cursosSeleccionados = [];
+
+    actualizarResumenMalla();
+    filtrarCarrerasPorMalla();
+    actualizarResumenCarrera();
+    mostrarSelectorCarrera(true);
+    mostrarBloquePeriodoCursos(false);
+
+    irAPantalla(3);
+}
+
+/* Botón "📚 Cambiar malla" (Pantalla 3) — pensado sobre todo para
+   alumnos de 5°-6° ciclo, a quienes la UNI les da la opción de elegir
+   con qué malla llevar sus cursos. Vuelve a Pantalla 0 sin tocar
+   ningún dato guardado. */
+function cambiarMalla() {
+    document.querySelectorAll('.opcion-malla').forEach(btn => {
+        btn.classList.toggle('actual', btn.dataset.malla === mallaSeleccionada);
+    });
+    irAPantalla(0);
+}
+
+/* Devuelve true si la malla activa ya tiene catálogo de cursos
+   cargado para esa carrera (hoy: solo Sistemas tiene malla 2026). */
+function estaDisponibleCarrera(carrera) {
+    return !!(CURSOS_POR_CICLO[mallaSeleccionada] && CURSOS_POR_CICLO[mallaSeleccionada][carrera]);
+}
+
+/* Recorre las tarjetas de carrera y oculta por completo las que no
+   tengan catálogo de cursos cargado para la malla activa (ver
+   estaDisponibleCarrera arriba). Antes esto solo ocultaba bajo malla
+   2018 y mostraba "Próximamente" bajo malla 2026 — pero Software
+   recién se implementó en 2023 y no se espera que cambie de malla en
+   el corto plazo, así que ya no tiene sentido mostrarlo como "por
+   llegar": se oculta igual que cualquier combinación sin datos. */
+function filtrarCarrerasPorMalla() {
+    document.querySelectorAll('.btn-carrera').forEach(btn => {
+        const carrera = btn.dataset.carrera;
+        const disponible = estaDisponibleCarrera(carrera);
+        btn.style.display = disponible ? '' : 'none';
+    });
+}
+
+/* ============================================================
    SELECCIÓN DE CARRERA (PANTALLA 2)
    ============================================================ */
 function seleccionarCarrera(carrera) {
+    if (!estaDisponibleCarrera(carrera)) return; // seguro extra, aunque el botón ya está deshabilitado
+
     carreraSeleccionada = carrera;
     periodoSeleccionado = null;
     cursosSeleccionados = [];
@@ -189,6 +253,16 @@ function seleccionarCarrera(carrera) {
 function actualizarResumenCarrera() {
     const texto = document.getElementById('carrera-resumen-texto');
     if (texto) texto.textContent = carreraSeleccionada ? NOMBRES_CARRERAS[carreraSeleccionada] : 'Selecciona tu carrera';
+}
+
+/* Texto pequeño arriba de "INTRANOTAS" en Pantalla 3, ej. "Malla 2026"
+   — solo contexto, no es clickeable (para eso está el botón "Cambiar
+   malla"). Antes incluía el rango de ciclos ("· 1° a 4° ciclo"); se
+   quitó a pedido de Harry para que quede más limpio. */
+function actualizarResumenMalla() {
+    const texto = document.getElementById('malla-resumen-texto');
+    if (!texto) return;
+    texto.textContent = mallaSeleccionada ? `Malla ${mallaSeleccionada}` : '';
 }
 
 function mostrarSelectorCarrera(expandido) {
@@ -244,7 +318,7 @@ function desmarcarTodosLosCursos() {
    ============================================================ */
 function generarAcordeones() {
     const contenedor = document.getElementById('contenedor-acordeones');
-    const cursosCarrera = CURSOS_POR_CICLO[carreraSeleccionada];
+    const cursosCarrera = CURSOS_POR_CICLO[mallaSeleccionada][carreraSeleccionada];
     let html = '';
 
     for (let ciclo = 1; ciclo <= 10; ciclo++) {
@@ -340,10 +414,10 @@ function toggleCurso(cursoId, ciclo) {
     const item = document.getElementById(`item-${cursoId}`);
 
     /* Buscar el curso tanto en ciclos numéricos como en electivos */
-    const cursosList = CURSOS_POR_CICLO[carreraSeleccionada][parseInt(ciclo)] || CURSOS_POR_CICLO[carreraSeleccionada][ciclo] || [];
+    const cursosList = CURSOS_POR_CICLO[mallaSeleccionada][carreraSeleccionada][parseInt(ciclo)] || CURSOS_POR_CICLO[mallaSeleccionada][carreraSeleccionada][ciclo] || [];
     let curso = cursosList.find(c => c.id === cursoId);
     if (!curso) {
-        const electivos = CURSOS_POR_CICLO[carreraSeleccionada]['electivos'] || [];
+        const electivos = CURSOS_POR_CICLO[mallaSeleccionada][carreraSeleccionada]['electivos'] || [];
         curso = electivos.find(c => c.id === cursoId);
     }
 
@@ -446,244 +520,94 @@ function marcarCursosSeleccionadosEnUI() {
 }
 
 /* ============================================================
-   SINCRONIZACIÓN AUTOMÁTICA CON INTRALÚ
-   Trae notas de TODOS los periodos del alumno desde la intranet de
-   la UNI vía el backend recoleccion_notas.py (FastAPI + Playwright).
-   Las credenciales viajan directo a ese backend por HTTPS y nunca
-   se guardan aquí ni ahí: solo se usan para el login puntual y se
-   descartan al terminar la sincronización.
-
-   El backend ya entrega cada periodo con la clave en el mismo
-   formato que usa Intranotas ("2026-1", "2025-3" para verano, etc.
-   vía etiquetar_periodo()), así que aquí solo hace falta mapear
-   cada curso por CÓDIGO contra el catálogo de la carrera activa y
-   volcar las notas dentro de intranotas_datos_periodos.
-   ============================================================ */
-const INTRALU_SYNC_URL = 'http://localhost:8000/api/sync-intralu'; // TODO Harry: cambia esto por la URL real de tu backend en producción (https://...)
-
-function abrirModalSyncIntralu() {
-    const existente = document.getElementById('modal-sync-intralu-overlay');
-    if (existente) {
-        existente.classList.add('visible');
-        return;
-    }
-
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.id = 'modal-sync-intralu-overlay';
-    overlay.innerHTML = `
-        <div class="modal-caja" style="max-width:380px; text-align:left;">
-            <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Cargar notas desde Intralú</h3>
-            <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:16px;">
-                Ingresa tu código y contraseña de Intralú. Los usamos una sola vez para iniciar sesión y leer tus notas
-                de todos tus periodos — nunca se guardan en nuestros servidores, solo viajan directo a la UNI y se
-                descartan al terminar.
-            </p>
-            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Código UNI</label>
-            <input id="sync-intralu-codigo" type="text" placeholder="2023XXXXX" autocomplete="off"
-                style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:12px; font-size:0.9rem; box-sizing:border-box;">
-            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Contraseña de Intralú</label>
-            <input id="sync-intralu-password" type="password" placeholder="••••••••" autocomplete="off"
-                style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:6px; font-size:0.9rem; box-sizing:border-box;">
-            <p id="sync-intralu-error" style="display:none; color:#dc2626; font-size:0.78rem; margin:4px 0 0;"></p>
-            <p id="sync-intralu-progreso" style="display:none; color:var(--color-cian); font-size:0.8rem; margin:12px 0 0; text-align:center; line-height:1.5;">
-                ⏳ Conectando con Intralú... esto puede tardar 1-2 minutos, no cierres esta ventana.
-            </p>
-            <div style="display:flex; gap:8px; margin-top:18px;">
-                <button type="button" class="btn-volver" style="flex:1;" id="sync-intralu-btn-cancelar" onclick="cerrarModalSyncIntralu()">Cancelar</button>
-                <button type="button" class="btn-primary" style="flex:1;" id="sync-intralu-btn-confirmar" onclick="ejecutarSyncIntralu()">Ingresar y sincronizar</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-    requestAnimationFrame(() => overlay.classList.add('visible'));
-}
-
-function cerrarModalSyncIntralu() {
-    const overlay = document.getElementById('modal-sync-intralu-overlay');
-    if (overlay) overlay.classList.remove('visible');
-}
-
-async function ejecutarSyncIntralu() {
-    const codigoEl = document.getElementById('sync-intralu-codigo');
-    const passwordEl = document.getElementById('sync-intralu-password');
-    const errorEl = document.getElementById('sync-intralu-error');
-    const progresoEl = document.getElementById('sync-intralu-progreso');
-    const btnConfirmar = document.getElementById('sync-intralu-btn-confirmar');
-    const btnCancelar = document.getElementById('sync-intralu-btn-cancelar');
-
-    const codigo = codigoEl.value.trim();
-    const password = passwordEl.value;
-
-    errorEl.style.display = 'none';
-
-    if (!codigo || !password) {
-        errorEl.textContent = 'Ingresa tu código y tu contraseña.';
-        errorEl.style.display = 'block';
-        return;
-    }
-
-    btnConfirmar.disabled = true;
-    btnCancelar.disabled = true;
-    btnConfirmar.textContent = 'Sincronizando...';
-    progresoEl.style.display = 'block';
-
-    try {
-        const resp = await fetch(INTRALU_SYNC_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ codigo, password }),
-        });
-
-        const data = await resp.json();
-
-        if (!resp.ok) {
-            throw new Error(data.detail || 'No se pudo conectar con Intralú.');
-        }
-
-        // Limpiamos la contraseña del DOM antes de cerrar, por si acaso.
-        passwordEl.value = '';
-        cerrarModalSyncIntralu();
-        procesarRespuestaSyncIntralu(data.periodos || {});
-    } catch (err) {
-        errorEl.textContent = err.message || 'Ocurrió un error al sincronizar. Intenta de nuevo.';
-        errorEl.style.display = 'block';
-    } finally {
-        btnConfirmar.disabled = false;
-        btnCancelar.disabled = false;
-        btnConfirmar.textContent = 'Ingresar y sincronizar';
-        progresoEl.style.display = 'none';
-    }
-}
-
-/* Busca un curso del catálogo de la carrera ACTIVA por su código
-   (recorre ciclos 1-10 + electivos). Devuelve el curso del catálogo
-   ya con su cicloOrigen, o null si el código no está mapeado. */
-function buscarCursoEnCatalogoPorCodigo(codigo) {
-    const catalogoCarrera = CURSOS_POR_CICLO[carreraSeleccionada];
-    if (!catalogoCarrera) return null;
-    const codigoNorm = String(codigo).trim().toUpperCase();
-
-    for (let ciclo = 1; ciclo <= 10; ciclo++) {
-        const lista = catalogoCarrera[ciclo] || [];
-        const encontrado = lista.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
-        if (encontrado) return { ...encontrado, cicloOrigen: ciclo };
-    }
-    const electivos = catalogoCarrera['electivos'] || [];
-    const encontradoElectivo = electivos.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
-    if (encontradoElectivo) return { ...encontradoElectivo, cicloOrigen: 'electivos' };
-
-    return null;
-}
-
-/* Toma la respuesta del backend (agrupada por periodo, con la clave
-   ya en formato "2026-1" gracias a etiquetar_periodo en el backend)
-   y la mezcla dentro de intranotas_datos_periodos, SOBRESCRIBIENDO
-   por completo cada periodo que Intralú trajo (decisión ya tomada).
-   Los periodos que Intralú no tocó se quedan tal cual estaban. */
-function procesarRespuestaSyncIntralu(periodosIntralu) {
-    const datos = leerDatosPeriodos();
-    const noReconocidos = [];
-    let periodosActualizados = 0;
-
-    Object.values(periodosIntralu).forEach(entradaPeriodo => {
-        const claveIntranotas = entradaPeriodo.etiqueta_periodo;
-        const cursosMapeados = [];
-        const notasPeriodo = {};
-
-        entradaPeriodo.cursos.forEach(cursoIntralu => {
-            const cursoCatalogo = buscarCursoEnCatalogoPorCodigo(cursoIntralu.codigo);
-            if (!cursoCatalogo) {
-                noReconocidos.push(`${cursoIntralu.codigo} - ${cursoIntralu.nombre} (${claveIntranotas})`);
-                return;
-            }
-
-            cursosMapeados.push(cursoCatalogo);
-
-            // Comparación insensible a mayúsculas: el backend normaliza a
-            // "MONOGRAFIA1" en mayúsculas, pero el catálogo usa "Monografia1".
-            const notasCurso = {};
-            (cursoIntralu.evaluaciones || []).forEach(ev => {
-                if (ev.nota === null || ev.nota === undefined) return;
-                const compReal = cursoCatalogo.components.find(
-                    c => c.toUpperCase() === String(ev.etiqueta).toUpperCase()
-                );
-                if (!compReal) return;
-                notasCurso[compReal] = ev.nota;
-            });
-            if (Object.keys(notasCurso).length) notasPeriodo[cursoCatalogo.id] = notasCurso;
-        });
-
-        if (!cursosMapeados.length) return; // Nada reconocido en este periodo: no se crea entrada vacía
-
-        datos[claveIntranotas] = {
-            carrera: carreraSeleccionada,
-            cursos: cursosMapeados,
-            notas: notasPeriodo,
-        };
-        periodosActualizados++;
-    });
-
-    guardarDatosPeriodos(datos);
-
-    if (noReconocidos.length) {
-        reportarCursosNoReconocidos(noReconocidos);
-    }
-
-    mostrarToast(
-        periodosActualizados
-            ? `✅ Se sincronizaron ${periodosActualizados} periodo${periodosActualizados === 1 ? '' : 's'} desde Intralú`
-            : '⚠️ Intralú no trajo cursos que tu catálogo reconozca'
-    );
-
-    // Si el periodo que se está viendo ahora mismo fue actualizado, refresca la pantalla.
-    if (periodoSeleccionado && datos[periodoSeleccionado] && document.getElementById('pantalla-4')?.classList.contains('activa')) {
-        cursosSeleccionados = datos[periodoSeleccionado].cursos;
-        generarSimulador();
-        desmarcarTodosLosCursos();
-        marcarCursosSeleccionadosEnUI();
-    }
-}
-
-/* Envía a Supabase (tabla sugerencias) la lista de cursos que Intralú
-   trajo pero que el catálogo de Intranotas no reconoce, para que
-   Harry los revise y los mapee manualmente. Import dinámico porque
-   intranotas.js no es un módulo ES (a diferencia de auth-siga.js). */
-async function reportarCursosNoReconocidos(lista) {
-    try {
-        const { supabase, obtenerSesion } = await import('../js/auth-siga.js');
-        const sesion = await obtenerSesion();
-        if (!sesion?.user) return;
-
-        await supabase.from('sugerencias').insert({
-            user_id: sesion.user.id,
-            categoria: 'intranotas',
-            titulo: 'Cursos no reconocidos al sincronizar con Intralú',
-            descripcion: lista.join('\n'),
-        });
-    } catch (e) {
-        console.log('No se pudo reportar cursos no reconocidos:', e);
-    }
-}
-
-/* ============================================================
    PERSISTENCIA MULTI-PERIODO EN LOCALSTORAGE
    Cada periodo académico guarda su propia carrera, cursos y notas,
    bajo una sola clave: { "2025-1": {carrera, cursos, notas}, ... }
    Así, cambiar de periodo (o volver a uno anterior) nunca borra los
    datos de los demás.
    ============================================================ */
-const LS_KEY_DATOS_PERIODOS = 'intranotas_datos_periodos';
-const LS_KEY_ULTIMO_PERIODO = 'intranotas_ultimo_periodo';
+/* Namespaceadas por malla: intranotas_datos_periodos_2018 /
+   _2026, intranotas_ultimo_periodo_2018 / _2026. Así un "2026-1" de
+   un ingresante nunca choca con nada de la malla vieja, y cambiar de
+   malla es seguro para los datos — cada una vive en su propia clave. */
+function claveDatosPeriodos() {
+    return `intranotas_datos_periodos_${mallaSeleccionada}`;
+}
+function claveUltimoPeriodo() {
+    return `intranotas_ultimo_periodo_${mallaSeleccionada}`;
+}
 
 function leerDatosPeriodos() {
-    const raw = localStorage.getItem(LS_KEY_DATOS_PERIODOS);
+    const raw = localStorage.getItem(claveDatosPeriodos());
     if (!raw) return {};
     try { return JSON.parse(raw); } catch (e) { return {}; }
 }
 
 function guardarDatosPeriodos(datos) {
-    localStorage.setItem(LS_KEY_DATOS_PERIODOS, JSON.stringify(datos));
+    localStorage.setItem(claveDatosPeriodos(), JSON.stringify(datos));
+    sincronizarNube(datos);
+}
+
+/* ============================================================
+   SINCRONIZACIÓN EN LA NUBE (multi-dispositivo)
+   localStorage sigue siendo la fuente rápida de lectura/escritura —
+   nada de esto la reemplaza. La nube solo entra en dos momentos:
+     1) Al abrir la app (hidratarDesdeNube): trae lo último guardado
+        en Supabase y pisa el caché local, por si otro dispositivo
+        guardó algo más reciente.
+     2) Cada vez que se guarda algo local (sincronizarNube): sube una
+        copia en segundo plano, sin bloquear la UI ni el toast.
+   Desde que Intranotas usa gate.js (index.html) siempre hay una
+   sesión válida al llegar acá, así que en el uso normal esto SIEMPRE
+   sincroniza. Aun así se deja el chequeo de sesión como red de
+   seguridad por si gate.js algún día se quita o falla su redirect.
+   Los datos viven en la tabla intranotas_datos_nube, una fila por
+   (user_id, malla) — ver SQL de creación en el mensaje del chat.
+   ============================================================ */
+const TABLA_NUBE = 'intranotas_datos_nube';
+let sesionNubePromesa = null;
+
+function obtenerSesionNube() {
+    if (!window.sigaObtenerSesion) return Promise.resolve(null);
+    if (!sesionNubePromesa) {
+        sesionNubePromesa = window.sigaObtenerSesion().catch(() => null);
+    }
+    return sesionNubePromesa;
+}
+
+async function hidratarDesdeNube() {
+    const sesion = await obtenerSesionNube();
+    if (!sesion || !window.sigaSupabase) return;
+
+    const { data, error } = await window.sigaSupabase
+        .from(TABLA_NUBE)
+        .select('datos_periodos, ultimo_periodo')
+        .eq('user_id', sesion.user.id)
+        .eq('malla', mallaSeleccionada)
+        .maybeSingle();
+
+    if (error) { console.warn('No se pudo traer Intranotas de la nube:', error); return; }
+    if (!data) return; // este dispositivo es el primero en tener datos de esta malla
+
+    if (data.datos_periodos) localStorage.setItem(claveDatosPeriodos(), JSON.stringify(data.datos_periodos));
+    if (data.ultimo_periodo) localStorage.setItem(claveUltimoPeriodo(), data.ultimo_periodo);
+}
+
+async function sincronizarNube(datos) {
+    const sesion = await obtenerSesionNube();
+    if (!sesion || !window.sigaSupabase) return;
+
+    const { error } = await window.sigaSupabase
+        .from(TABLA_NUBE)
+        .upsert({
+            user_id: sesion.user.id,
+            malla: mallaSeleccionada,
+            datos_periodos: datos,
+            ultimo_periodo: localStorage.getItem(claveUltimoPeriodo()),
+            updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,malla' });
+
+    if (error) console.warn('No se pudo sincronizar Intranotas con la nube:', error);
 }
 
 /* Se inicializa una sola vez (guardián selectorPeriodoInstancia): el
@@ -773,11 +697,6 @@ function generarSimulador() {
                     <input type="hidden" id="periodoGuardadoValor">
                 </div>
             </div>
-            <button type="button" class="btn-volver"
-                style="width:100%; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:6px;"
-                onclick="abrirModalSyncIntralu()">
-                🔄 Cargar notas desde Intralú
-            </button>
         </div>
 
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;">
@@ -1701,8 +1620,8 @@ function guardarConfiguracion() {
         cursos: cursosSeleccionados,
         notas: notasFiltradas,
     };
+    localStorage.setItem(claveUltimoPeriodo(), periodoSeleccionado);
     guardarDatosPeriodos(datos);
-    localStorage.setItem(LS_KEY_ULTIMO_PERIODO, periodoSeleccionado);
     limpiarMetasCursosNoSeleccionados();
 }
 
@@ -1721,8 +1640,8 @@ function guardarNotas() {
     });
     datos[periodoSeleccionado].notas = notas;
     datos[periodoSeleccionado].cursos = cursosSeleccionados;
+    localStorage.setItem(claveUltimoPeriodo(), periodoSeleccionado);
     guardarDatosPeriodos(datos);
-    localStorage.setItem(LS_KEY_ULTIMO_PERIODO, periodoSeleccionado);
     mostrarToast('✅ Notas guardadas correctamente');
 }
 
@@ -1864,7 +1783,7 @@ function mostrarToast(msg) {
 /* ============================================================
    INICIALIZACIÓN
    ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     /* El tema (Claro/Oscuro/Ocean/Forest) ya no lo maneja este archivo:
        tema-siga.js (compartido con el resto de SIGA) lee data-tema del
        <html> y pinta el widget del nav — Intranotas solo necesita que
@@ -1882,17 +1801,34 @@ document.addEventListener('DOMContentLoaded', () => {
             regs.forEach(reg => reg.unregister());
         });
     }
-    intentarRestaurarSesion();
+    await intentarRestaurarSesion();
 });
 
 /* ============================================================
    RESTAURAR SESIÓN GUARDADA (saltar directo al simulador)
    ============================================================ */
-function intentarRestaurarSesion() {
+async function intentarRestaurarSesion() {
     try {
+        const ultimaMalla = localStorage.getItem(LS_KEY_ULTIMA_MALLA);
+        if (!ultimaMalla) return; // Sin malla guardada: se queda en Pantalla 0 (elegir malla)
+        mallaSeleccionada = ultimaMalla;
+        actualizarResumenMalla();
+        filtrarCarrerasPorMalla();
+
+        // Antes de leer localStorage: si hay sesión, trae lo último
+        // guardado en la nube (por si otro dispositivo tiene algo más
+        // reciente) y pisa el caché local con eso.
+        await hidratarDesdeNube();
+
         const datos = leerDatosPeriodos();
-        const ultimoPeriodo = localStorage.getItem(LS_KEY_ULTIMO_PERIODO);
-        if (!ultimoPeriodo || !datos[ultimoPeriodo]) return; // Sin sesión previa: se queda en la bienvenida
+        const ultimoPeriodo = localStorage.getItem(claveUltimoPeriodo());
+        if (!ultimoPeriodo || !datos[ultimoPeriodo]) {
+            // Ya eligió malla antes pero no tiene periodo guardado en ESA
+            // malla: lo llevamos a Pantalla 3 a elegir carrera, no a la 0.
+            irAPantalla(3);
+            mostrarSelectorCarrera(true);
+            return;
+        }
 
         const entrada = datos[ultimoPeriodo];
         if (!entrada.cursos || !Array.isArray(entrada.cursos) || !entrada.cursos.length) return;
