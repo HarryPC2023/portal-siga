@@ -157,11 +157,22 @@ async function eliminarSugerencia(id, btn) {
 
     btn.disabled = true;
 
-    const { error } = await supabase.from('sugerencias').delete().eq('id', id);
+    // .select() al final hace que Supabase devuelva las filas realmente
+    // borradas. Sin esto, si una política RLS bloquea el DELETE, Supabase
+    // no da error — borra 0 filas en silencio y la UI se actualiza como si
+    // hubiera funcionado, pero al recargar la fila sigue ahí. Revisando
+    // data.length nos enteramos de inmediato si de verdad se borró algo.
+    const { data, error } = await supabase.from('sugerencias').delete().eq('id', id).select();
 
     if (error) {
         btn.disabled = false;
         alert('No se pudo eliminar: ' + error.message);
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        btn.disabled = false;
+        alert('No se pudo eliminar: no tienes permiso para esta acción. Revisa las políticas RLS de la tabla "sugerencias" en Supabase.');
         return;
     }
 

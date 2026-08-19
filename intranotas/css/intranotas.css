@@ -291,13 +291,18 @@ body {
    SIGA, rgba(255,253,249,.92)); descripción y flecha = variación de
    su azul de marca (--brand-azul #3C7CF8).
 
-   Ancho de .opcion-malla: 260px (antes 230px). Con 230px el título
-   "Malla implementada ciclo 26-2" no entraba en una línea y el
-   navegador partía "26-2" justo por el guion, dejando el "2" solo en
-   la segunda línea. 260px es el mismo ancho que ya usábamos en el
-   media query de móvil — ahora escritorio y móvil quedan parejos, y
-   de paso el bloque Sistemas/Industrial/IA respira un poco más.
-   ============================================================ */
+   Ancho de .opcion-malla: 240px. El título "Malla implementada ciclo
+   26-2" alguna vez se partió en dos líneas justo por ese guion —
+   ahora esa protección vive en el HTML (guion no separable U+2011
+   dentro de "26‑1"/"26‑2"), así que ya no hace falta ensanchar tanto
+   la tarjeta solo para evitar ese salto de línea. 240px es un punto
+   medio: algo más de aire que el ancho original (230px), sin la
+   tarjeta de más que dejaba el 260px que usamos como parche temporal.
+
+   .opcion-malla es un <div> (NO un botón): todo el conjunto ya no es
+   clickeable como bloque. Solo .malla-flecha-chip es un <button> real
+   con el onclick — así el título/descripción no reaccionan al clic,
+   solo la flecha. */
 .grid-mallas {
     display: flex;
     justify-content: center;
@@ -310,12 +315,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 260px;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    font: inherit;
+    width: 240px;
 }
 
 .malla-selector-chip {
@@ -387,6 +387,13 @@ body {
     flex: 1;
 }
 
+/* Ahora es un <button> real (antes era un <span> dentro del botón
+   grande .opcion-malla) — reset explícito de fuente/cursor porque los
+   botones traen sus propios estilos por defecto en cada navegador. El
+   hover pasó de ".opcion-malla:hover .malla-flecha-chip" a un hover
+   directo sobre el propio botón: ahora es el único elemento
+   interactivo de la tarjeta, así que la reacción visual debe ser
+   suya, no heredada de un padre que ya no es clickeable. */
 .malla-flecha-chip {
     display: flex;
     align-items: center;
@@ -400,11 +407,14 @@ body {
     color: #3C7CF8;
     font-size: 1rem;
     font-weight: 700;
-    transition: transform 0.2s ease;
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.opcion-malla:hover .malla-flecha-chip {
+.malla-flecha-chip:hover {
     transform: translateX(3px);
+    background: #dce9ff;
 }
 
 /* Marca la malla actual cuando se reabre esta pantalla desde

@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/landing.css">
     <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="css/intranotas.css?v=5">
+    <link rel="stylesheet" href="css/intranotas.css?v=6">
     <link rel="stylesheet" href="css/siga-theme-intranotas.css">
     <link rel="stylesheet" href="../css/tema-siga.css?v=1">
     <link rel="stylesheet" href="../css/selector-personalizado.css?v=1">
@@ -58,7 +58,7 @@
             </div>
 
             <div class="grid-mallas" id="grid-mallas">
-                <button class="opcion-malla" data-malla="2018" onclick="seleccionarMalla('2018')">
+                <div class="opcion-malla" data-malla="2018">
                     <span class="malla-selector-chip">
                         <span class="malla-selector-icono" aria-hidden="true">📄</span>
                         <span class="malla-selector-texto">MALLA 2018</span>
@@ -68,9 +68,10 @@
                         <span class="malla-desc-fila">Vigente 4to al 10mo ciclo</span>
                         <span class="malla-desc-fila">Visualizarás todos los ciclos</span>
                     </span>
-                    <span class="malla-flecha-chip" aria-hidden="true">→</span>
-                </button>
-                <button class="opcion-malla" data-malla="2026" onclick="seleccionarMalla('2026')">
+                    <button type="button" class="malla-flecha-chip" onclick="seleccionarMalla('2018')"
+                        aria-label="Elegir Malla 2018">→</button>
+                </div>
+                <div class="opcion-malla" data-malla="2026">
                     <span class="malla-selector-chip">
                         <span class="malla-selector-icono" aria-hidden="true">📄</span>
                         <span class="malla-selector-texto">MALLA 2026</span>
@@ -84,8 +85,9 @@
                         <span class="malla-desc-tabla"><span class="malla-desc-col-label">IA</span><span
                                 class="malla-desc-col-valor">1ro a 10mo ciclo</span></span>
                     </span>
-                    <span class="malla-flecha-chip" aria-hidden="true">→</span>
-                </button>
+                    <button type="button" class="malla-flecha-chip" onclick="seleccionarMalla('2026')"
+                        aria-label="Elegir Malla 2026">→</button>
+                </div>
             </div>
         </div>
     </div>
