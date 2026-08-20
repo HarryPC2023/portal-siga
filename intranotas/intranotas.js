@@ -614,9 +614,11 @@ function renderBotonOtraMalla() {
     }
     const otraMalla = mallaSeleccionada === '2018' ? '2026' : '2018';
     contenedor.innerHTML = `
-        <button type="button" class="btn-volver-carrera" onclick="abrirModalAgregarOtraMalla()">
-            + Agregar curso de Malla ${otraMalla}
-        </button>
+        <div style="text-align:center;">
+            <button type="button" class="btn-volver-carrera" onclick="abrirModalAgregarOtraMalla()">
+                + Agregar curso de Malla ${otraMalla}
+            </button>
+        </div>
     `;
 }
 
