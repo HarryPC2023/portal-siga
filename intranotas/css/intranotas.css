@@ -310,6 +310,15 @@ body {
     margin: 1.5rem auto 0;
 }
 
+/* .contenedor-principal trae max-width:600px por defecto (correcto
+   para el resto de las pantallas), pero acá dos tarjetas de malla
+   con la caja de nota ancha (320-340px) más el gap superan esos
+   600px, y el flex-wrap las apila verticalmente. Ensanchamos SOLO
+   el contenedor de Pantalla 0 para que quepan lado a lado. */
+#pantalla-0 .contenedor-principal {
+    max-width: 760px;
+}
+
 .opcion-malla {
     display: flex;
     flex-direction: column;
