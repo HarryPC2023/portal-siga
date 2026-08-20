@@ -17,7 +17,7 @@
    - BFI01            → FISICA_I
    - FB401 (Física II)→ FISICA_II
    - BEF01            → ETICA
-   - HS101 / HU301    → METODOLOGIA_INV
+   - HU301            → METODOLOGIA_INV
    - SI201 / S1201    → PSICOLOGIA
    - SI207            → BIOLOGICO
    - SI205 / S1205    → ALGORITMIA
@@ -69,7 +69,7 @@ const CURSOS_SISTEMAS = {
         { id: 'sis_rn', code: 'BRN01', name: 'Realidad Nacional. Constitución y DDHH', credits: 3, formula_type: 'SOLO_PC', components: ['PC1', 'PC2', 'PC3', 'PC4'] },
         { id: 'sis_io1', code: 'SI501', name: 'Investigación de Operaciones I', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_eco', code: 'BEG01', name: 'Economía General', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_to', code: 'GP501', name: 'Teoría Organizacional', credits: 3, formula_type: 'TEORIA_ORGANIZACIONAL', components: ['PC1', 'PC2', 'PC3', 'PC4', 'Monografia1', 'Monografia2', 'EP', 'EF', 'ES'] },
+        { id: 'sis_to', code: 'GE501', name: 'Teoría Organizacional', credits: 3, formula_type: 'TEORIA_ORGANIZACIONAL', components: ['PC1', 'PC2', 'PC3', 'PC4', 'Monografia1', 'Monografia2', 'EP', 'EF', 'ES'] },
         { id: 'sis_ip', code: 'SI503', name: 'Ingeniería de Procesos', credits: 3, formula_type: 'MODELADO_DATOS', components: ['PC1', 'PC2', 'PC3', 'PC4', 'Monografia1', 'EP', 'EF', 'ES'] },
     ],
     6: [
@@ -82,8 +82,8 @@ const CURSOS_SISTEMAS = {
         { id: 'sis_arqe6', code: 'SI605', name: 'Arquitectura Empresarial', credits: 3, formula_type: 'ARQ_EMPRESARIAL', components: ['PC1', 'PC2', 'PC3', 'Monografia1', 'EP', 'EF', 'ES'] },
     ],
     7: [
-        { id: 'sis_sc', code: 'GP709', name: 'Sistemas de Calidad', credits: 2, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_sie', code: 'SI703', name: 'Sistemas Integrados Empresariales', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_sc', code: 'GE709', name: 'Sistemas de Calidad', credits: 2, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_sie', code: 'GE703', name: 'Sistemas Integrados Empresariales', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_mss', code: 'SI701', name: 'Modelado Sistémico y Simulación', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_tds', code: 'SI702', name: 'Taller de Dinámica de Sistemas', credits: 2, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_gis', code: 'SI704', name: 'Gestión de la Ingeniería de Sistemas', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
@@ -92,10 +92,10 @@ const CURSOS_SISTEMAS = {
     ],
     8: [
         { id: 'sis_msv', code: 'SI801', name: 'Modelo del Sistema Viable', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_pge', code: 'GP801', name: 'Planeamiento y Gestión Estratégica', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_sa', code: 'GP803', name: 'Sistemas Analíticos', credits: 2, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_pge', code: 'GE801', name: 'Planeamiento y Gestión Estratégica', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_sa', code: 'GE803', name: 'Sistemas Analíticos', credits: 2, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_ints', code: 'SI805', name: 'Integración de Sistemas', credits: 2, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_sin', code: 'GP807', name: 'Sistemas de Inteligencia de Negocio', credits: 3, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_sin', code: 'SI807', name: 'Sistemas de Inteligencia de Negocio', credits: 3, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_daisw', code: 'SI806', name: 'Desarrollo Adaptativo e Integrado del SW', credits: 2, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
     ],
     9: [
@@ -103,8 +103,7 @@ const CURSOS_SISTEMAS = {
         { id: 'sis_iss', code: 'SI902', name: 'Ingeniería de Sistemas de Servicio', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_imps', code: 'SI903', name: 'Implementación de Sistemas', credits: 2, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_segs', code: 'SI904', name: 'Seguridad de Sistemas', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_arqe', code: 'SI905', name: 'Arquitectura Empresarial', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_dep', code: 'GP902', name: 'Diseño y Evaluación de Proyectos', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_dep', code: 'GE902', name: 'Diseño y Evaluación de Proyectos', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
     ],
     10: [
         { id: 'sis_tesi2', code: 'SI035', name: 'Proyecto de Tesis en Ing. Sistemas II', credits: 2, formula_type: 'SOLO_PC', components: ['PC1', 'PC2', 'PC3', 'PC4'] },
@@ -117,17 +116,16 @@ const CURSOS_SISTEMAS = {
         { id: 'sis_el_ie', code: 'GP702', name: 'Ingeniería Económica', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_el_td', code: 'SI111', name: 'Teoría de Decisiones', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_el_cc', code: 'GE704', name: 'Contabilidad de Costos', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_el_ci', code: 'GP124', name: 'Comercio Internacional', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_el_dib', code: 'TP101', name: 'Dibujo en Ingeniería', credits: 2, formula_type: 'SOLO_PC', components: ['PC1', 'PC2', 'PC3', 'PC4'] },
-        { id: 'sis_el_soc', code: 'HS115', name: 'Sociología', credits: 2, formula_type: 'SOLO_EXAMENES', components: ['EP', 'EF', 'ES'] },
+        { id: 'sis_el_ci', code: 'GE124', name: 'Comercio Internacional', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_el_dib', code: 'TE101', name: 'Dibujo en Ingeniería', credits: 2, formula_type: 'SOLO_PC', components: ['PC1', 'PC2', 'PC3', 'PC4'] },
+        { id: 'sis_el_soc', code: 'HU201', name: 'Sociología', credits: 2, formula_type: 'SOLO_EXAMENES', components: ['EP', 'EF', 'ES'] },
         { id: 'sis_el_fm', code: 'FB111', name: 'Física Moderna', credits: 3, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_el_let', code: 'HS111', name: 'Legislación Empresarial y Tributaria', credits: 2, formula_type: 'SOLO_EXAMENES', components: ['EP', 'EF', 'ES'] },
+        { id: 'sis_el_let', code: 'HU111', name: 'Legislación Empresarial y Tributaria', credits: 2, formula_type: 'SOLO_EXAMENES', components: ['EP', 'EF', 'ES'] },
         { id: 'sis_el_gi', code: 'SI130', name: 'Gestión de la Información', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_el_gne', code: 'GP128', name: 'Gestión de Negocios y Estrategia Empresarial', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_el_mpd', code: 'GP805', name: 'Modelo de Datos', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_el_co', code: 'HS112', name: 'Comportamiento Organizacional', credits: 2, formula_type: 'SOLO_PC', components: ['PC1', 'PC2', 'PC3', 'PC4'] },
-        { id: 'sis_el_gch', code: 'GP903', name: 'Gestión de Competencias Humanas', credits: 3, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sis_el_tjn', code: 'GP112', name: 'Teoría de Juegos y la Negociación', credits: 3, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_el_gne', code: 'GE130', name: 'Gestión de Negocios y Estrategia Empresarial', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_el_mpd', code: 'GP805', name: 'Mercadotecnia', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_el_co', code: 'HU112', name: 'Comportamiento Organizacional', credits: 2, formula_type: 'SOLO_PC', components: ['PC1', 'PC2', 'PC3', 'PC4'] },
+        { id: 'sis_el_tjn', code: 'GE112', name: 'Teoría de Juegos y la Negociación', credits: 3, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_el_igt', code: 'TP111', name: 'Innovación y Gestión Tecnológica', credits: 3, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_el_gsi', code: 'SI116', name: 'Gestión de la Configuración de Sistemas de Información', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_el_tc', code: 'SI118', name: 'Teoría de la Complejidad', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },

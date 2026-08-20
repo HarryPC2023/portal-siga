@@ -232,11 +232,7 @@ const CURSOS_IA = {
         buscarCurso(CURSOS_SISTEMAS, 'FB401'),
         buscarCurso(CURSOS_SISTEMAS, 'FB403'),
         { id: 'ia_aa1', code: 'IA005', name: 'Aprendizaje Automático I', credits: 4, formula_type: 'PENDIENTE', components: [], disponible: false },
-        buscarCurso(CURSOS_SISTEMAS, 'SI405'),
-        // OJO: tu malla de IA marca este curso con 3 créditos, pero en
-        // Software está cargado con 4. Mismo código y nombre — quedó
-        // igual a la definición de Software por ahora; confírmame cuál
-        // es el valor correcto para corregirlo.
+        buscarCurso(CURSOS_SISTEMAS, 'SI405'), // Modelado Conceptual de Datos — 3 créditos, confirmado contra la malla oficial de IA (código SI405, ciclo 4)
         buscarCurso(CURSOS_SOFTWARE, 'SW403'),
         buscarCurso(CURSOS_SOFTWARE, 'SW405'),
     ],
