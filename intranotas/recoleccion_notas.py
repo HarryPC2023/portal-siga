@@ -324,8 +324,13 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico=None):
                             for f in t.locator("tbody tr").all():
                                 c = f.locator("td").all()
                                 if len(c) >= 2:
-                                    nom_e = c[0].inner_text().strip()
-                                    not_e = c[1].inner_text().strip()
+                                    # text_content() en vez de inner_text(): este
+                                    # último devuelve "" si el elemento está oculto
+                                    # (ej. dentro de una pestaña no activa), que es
+                                    # nuestra sospecha principal de por qué las
+                                    # Prácticas Calificadas no estaban llegando.
+                                    nom_e = (c[0].text_content() or "").strip()
+                                    not_e = (c[1].text_content() or "").strip()
                                     if nom_e and not nom_e.isdigit():
                                         try:
                                             val_n = float(not_e)
