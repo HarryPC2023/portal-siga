@@ -545,12 +545,31 @@ function marcarCursosSeleccionadosEnUI() {
    curso por CÓDIGO contra el catálogo de la malla/carrera activas.
    ============================================================ */
 /* Oculto por defecto para todos los usuarios mientras terminas de
-   probarlo. Para verlo tú en cualquier entorno (local o producción),
-   corre UNA vez en la consola del navegador:
-     localStorage.setItem('intralu_beta_habilitado', '1')
-   y recarga. Para volver a ocultarlo: localStorage.removeItem(...). */
+   probarlo — solo se muestra si el correo de la sesión activa coincide
+   con el tuyo. _intraluBetaHabilitado se resuelve UNA vez al cargar la
+   página (inicializarFlagIntralu(), llamado desde el DOMContentLoaded
+   de más abajo) porque generarSimulador() es síncrono y no puede
+   esperar la respuesta de Supabase en cada render. */
+const CORREO_BETA_INTRALU = 'harrypc2021@hotmail.com'; // correo de sesión confirmado por Harry
+
+let _intraluBetaHabilitado = false;
+
+async function inicializarFlagIntralu() {
+    try {
+        if (!window.sigaObtenerSesion) {
+            _intraluBetaHabilitado = false;
+            return;
+        }
+        const sesion = await window.sigaObtenerSesion();
+        const correoSesion = (sesion?.user?.email || '').toLowerCase();
+        _intraluBetaHabilitado = correoSesion === CORREO_BETA_INTRALU.toLowerCase();
+    } catch (e) {
+        _intraluBetaHabilitado = false;
+    }
+}
+
 function syncIntraluHabilitado() {
-    return localStorage.getItem('intralu_beta_habilitado') === '1';
+    return _intraluBetaHabilitado;
 }
 
 const INTRALU_SYNC_URL = 'http://localhost:8000/api/sync-intralu'; // TODO Harry: cambia esto por la URL real de tu backend en producción (https://...)
@@ -2103,6 +2122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             regs.forEach(reg => reg.unregister());
         });
     }
+    await inicializarFlagIntralu();
     await intentarRestaurarSesion();
 });
 

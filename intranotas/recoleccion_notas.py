@@ -8,7 +8,7 @@ import uuid
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from playwright.sync_api import sync_playwright
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
@@ -42,9 +42,34 @@ _semaforo_sync = threading.Semaphore(MAX_SYNCS_SIMULTANEOS)
 
 
 class LoginRequest(BaseModel):
-    codigo: str
-    password: str
-    periodo: str | None = None  # ej. "20262" — si viene, se sincroniza SOLO ese periodo
+    codigo: str = Field(..., examples=["20231059E"], description="Tu código de estudiante UNI (el mismo de Intralú).")
+    password: str = Field(..., examples=["tu_contraseña_de_intralu"], description="Tu contraseña de Intralú. Nunca se guarda.")
+    periodo: str | None = Field(
+        default=None,
+        examples=["20262"],
+        description=(
+            "OPCIONAL. Déjalo vacío/null para sincronizar TODOS tus periodos "
+            "desde tu año de ingreso. Para uno solo, usa el formato crudo "
+            "AÑO+TIPO ('20262' = 2026-2, '20263' = verano 2026-3) — también "
+            "acepta el formato con guion ('2026-2')."
+        ),
+    )
+
+
+def normalizar_periodo(periodo):
+    """Acepta tanto el formato crudo ('20262') como el formato con guion
+    ('2026-2', el que usa Intranotas) y devuelve siempre el crudo, que es
+    el que necesitan las URLs de Intralú."""
+    if not periodo:
+        return None
+    p = str(periodo).strip()
+    if "-" in p:
+        anio, tipo = p.split("-", 1)
+        anio, tipo = anio.strip(), tipo.strip()
+        if len(anio) == 2:  # por si alguien escribe "23-2" en vez de "2023-2"
+            anio = f"20{anio}"
+        return f"{anio}{tipo}"
+    return p
 
 
 def etiquetar_periodo(cod):
@@ -179,6 +204,7 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico=None):
     """Corre en un hilo aparte (no bloquea ningún request HTTP). Guarda
     el progreso y el resultado final en _jobs[job_id] para que el
     frontend los recoja haciendo polling contra GET /api/sync-intralu/{job_id}."""
+    periodo_especifico = normalizar_periodo(periodo_especifico)
     adquirido = _semaforo_sync.acquire(blocking=False)
     if not adquirido:
         with _jobs_lock:
