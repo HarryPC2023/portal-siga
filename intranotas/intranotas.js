@@ -576,9 +576,12 @@ function renderBotonOtraMalla() {
     `;
 }
 
-/* Lista los cursos del catálogo de la OTRA malla (misma carrera) para
-   que el alumno elija manualmente cuál agregar — en vez de que el
-   sistema intente adivinar combinando catálogos automáticamente. */
+/* Lista los cursos del catálogo de la OTRA malla (misma carrera),
+   agrupados por ciclo, con checkboxes — el alumno marca varios de
+   una sola vez (normalmente agrega el ciclo completo) y confirma con
+   un solo botón al final, sin tener que reabrir el modal por cada
+   curso. Header y footer quedan fijos (no hace falta bajar hasta el
+   fondo para cancelar o confirmar). */
 function abrirModalAgregarOtraMalla() {
     const otraMalla = mallaSeleccionada === '2018' ? '2026' : '2018';
     const catalogoCarrera = CURSOS_POR_CICLO[otraMalla]?.[carreraSeleccionada];
@@ -587,12 +590,13 @@ function abrirModalAgregarOtraMalla() {
         return;
     }
 
-    const opciones = [];
+    const grupos = [];
     for (let ciclo = 1; ciclo <= 10; ciclo++) {
         const lista = catalogoCarrera[ciclo] || catalogoCarrera[String(ciclo)] || [];
-        lista.forEach(c => opciones.push({ ...c, cicloOrigen: ciclo }));
+        if (lista.length) grupos.push({ etiqueta: `Ciclo ${ciclo}`, cursos: lista });
     }
-    (catalogoCarrera['electivos'] || []).forEach(c => opciones.push({ ...c, cicloOrigen: 'electivos' }));
+    const electivos = catalogoCarrera['electivos'] || [];
+    if (electivos.length) grupos.push({ etiqueta: 'Electivos', cursos: electivos });
 
     document.getElementById('modal-otra-malla-overlay')?.remove();
 
@@ -600,57 +604,86 @@ function abrirModalAgregarOtraMalla() {
     overlay.className = 'modal-overlay visible';
     overlay.id = 'modal-otra-malla-overlay';
     overlay.innerHTML = `
-        <div class="modal-caja" style="max-width:380px; text-align:left; max-height:80vh; overflow-y:auto;">
-            <h3 style="margin:0 0 12px; font-size:1rem; color:var(--color-verde-oscuro); text-align:center;">
-                Agregar curso de Malla ${otraMalla}
-            </h3>
-            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
-                ${opciones.map(c => `
-                    <button type="button" class="curso-item" style="text-align:left; width:100%; cursor:pointer;"
-                        onclick="agregarCursoDeOtraMalla('${c.id}', '${otraMalla}')">
-                        <div class="curso-info">
-                            <div class="curso-nombre">${c.name}</div>
-                            <div class="curso-detalles"><span class="curso-codigo">${c.code}</span>
-                                <span class="curso-creditos">${c.credits} créditos</span> · Ciclo ${c.cicloOrigen}</div>
-                        </div>
-                    </button>
+        <div class="modal-caja" style="max-width:400px; max-height:80vh; padding:0; text-align:left; display:flex; flex-direction:column;">
+            <div style="padding:18px 22px 12px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
+                <h3 style="margin:0; font-size:1rem; color:var(--color-verde-oscuro);">Agregar cursos de Malla ${otraMalla}</h3>
+                <button type="button" onclick="document.getElementById('modal-otra-malla-overlay').remove()"
+                    aria-label="Cerrar"
+                    style="background:none; border:none; font-size:1.2rem; line-height:1; cursor:pointer; color:#9ca3af; padding:4px;">✕</button>
+            </div>
+            <div id="lista-otra-malla-body" style="overflow-y:auto; padding:12px 22px; flex:1;">
+                ${grupos.map(grupo => `
+                    <p style="font-family:'Poppins', sans-serif; font-size:0.7rem; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.4px; margin:14px 0 8px;">
+                        ${grupo.etiqueta}
+                    </p>
+                    ${grupo.cursos.map(c => `
+                        <label class="curso-item" style="cursor:pointer;">
+                            <input type="checkbox" class="curso-checkbox" data-otra-malla-curso-id="${c.id}">
+                            <div class="curso-info">
+                                <div class="curso-nombre">${c.name}</div>
+                                <div class="curso-detalles"><span class="curso-codigo">${c.code}</span>
+                                    <span class="curso-creditos">${c.credits} créditos</span></div>
+                            </div>
+                        </label>
+                    `).join('')}
                 `).join('')}
             </div>
-            <button type="button" class="btn-volver" style="width:100%;"
-                onclick="document.getElementById('modal-otra-malla-overlay').remove()">Cancelar</button>
+            <div style="padding:14px 22px; border-top:1px solid #e5e7eb; display:flex; gap:8px; flex-shrink:0;">
+                <button type="button" class="btn-volver" style="flex:1;"
+                    onclick="document.getElementById('modal-otra-malla-overlay').remove()">Cancelar</button>
+                <button type="button" class="btn-ingresar-principal" style="flex:1; padding:10px 16px; font-size:0.8rem;"
+                    onclick="confirmarAgregarCursosOtraMalla('${otraMalla}')">Añadir cursos</button>
+            </div>
         </div>
     `;
     document.body.appendChild(overlay);
 }
 
-function agregarCursoDeOtraMalla(cursoId, otraMalla) {
+function confirmarAgregarCursosOtraMalla(otraMalla) {
     const catalogoCarrera = CURSOS_POR_CICLO[otraMalla]?.[carreraSeleccionada];
     if (!catalogoCarrera) return;
 
-    let curso = null;
-    let cicloEncontrado = null;
-    for (let ciclo = 1; ciclo <= 10; ciclo++) {
-        const lista = catalogoCarrera[ciclo] || catalogoCarrera[String(ciclo)] || [];
-        const hit = lista.find(c => c.id === cursoId);
-        if (hit) { curso = hit; cicloEncontrado = ciclo; break; }
-    }
-    if (!curso) {
-        const hit = (catalogoCarrera['electivos'] || []).find(c => c.id === cursoId);
-        if (hit) { curso = hit; cicloEncontrado = 'electivos'; }
-    }
-    if (!curso) return;
-
-    if (cursosSeleccionados.find(c => c.id === curso.id)) {
-        mostrarToast('Ese curso ya estaba agregado');
-    } else {
-        // malla_origen queda fijo en el curso desde este momento — no se
-        // vuelve a recalcular después aunque cambie la malla_principal.
-        cursosSeleccionados.push({ ...curso, cicloOrigen: cicloEncontrado, malla_origen: otraMalla });
-        mostrarToast(`✅ ${curso.name} agregado (Malla ${otraMalla})`);
-        actualizarContadores();
+    const marcados = document.querySelectorAll('#lista-otra-malla-body input[data-otra-malla-curso-id]:checked');
+    if (!marcados.length) {
+        mostrarToast('Selecciona al menos un curso');
+        return;
     }
 
+    let agregados = 0;
+    let yaExistian = 0;
+
+    marcados.forEach(chk => {
+        const cursoId = chk.dataset.otraMallaCursoId;
+        let curso = null;
+        let cicloEncontrado = null;
+        for (let ciclo = 1; ciclo <= 10; ciclo++) {
+            const lista = catalogoCarrera[ciclo] || catalogoCarrera[String(ciclo)] || [];
+            const hit = lista.find(c => c.id === cursoId);
+            if (hit) { curso = hit; cicloEncontrado = ciclo; break; }
+        }
+        if (!curso) {
+            const hit = (catalogoCarrera['electivos'] || []).find(c => c.id === cursoId);
+            if (hit) { curso = hit; cicloEncontrado = 'electivos'; }
+        }
+        if (!curso) return;
+
+        if (cursosSeleccionados.find(c => c.id === curso.id)) {
+            yaExistian++;
+        } else {
+            // malla_origen queda fijo en el curso desde este momento — no
+            // se vuelve a recalcular después aunque cambie la malla_principal.
+            cursosSeleccionados.push({ ...curso, cicloOrigen: cicloEncontrado, malla_origen: otraMalla });
+            agregados++;
+        }
+    });
+
+    actualizarContadores();
     document.getElementById('modal-otra-malla-overlay')?.remove();
+
+    const partes = [];
+    if (agregados) partes.push(`✅ ${agregados} curso${agregados === 1 ? '' : 's'} agregado${agregados === 1 ? '' : 's'} (Malla ${otraMalla})`);
+    if (yaExistian) partes.push(`${yaExistian} ya estaba${yaExistian === 1 ? '' : 'n'} agregado${yaExistian === 1 ? '' : 's'}`);
+    mostrarToast(partes.join(' — ') || 'No se agregó nada nuevo');
 }
 
 /* Modal de última instancia: solo aparece cuando un código de curso
