@@ -243,6 +243,7 @@ function seleccionarCarrera(carrera) {
         generarOpcionesPeriodo();
         marcarCursosSeleccionadosEnUI();
         inicializarModoTransicion();
+        renderCursosOtraMallaResumen();
     }, 50);
 }
 
@@ -539,6 +540,49 @@ function marcarCursosSeleccionadosEnUI() {
    falta; la confirmación real es que el alumno de verdad tenga
    cursos de los dos planes.
    ============================================================ */
+/* En vez de mezclar los cursos de la otra malla dentro del acordeón
+   de su ciclo (con 14 cursos ahí se vuelve ilegible, mezclando "lo
+   que exploro" con "lo que ya agregué"), viven en su propio resumen
+   compacto, siempre visible mientras el modo transición esté activo. */
+function renderCursosOtraMallaResumen() {
+    const contenedor = document.getElementById('resumen-cursos-otra-malla');
+    if (!contenedor) return;
+
+    const extras = cursosSeleccionados.filter(c => c.malla_origen && c.malla_origen !== mallaSeleccionada);
+    if (!extras.length) {
+        contenedor.innerHTML = '';
+        return;
+    }
+
+    contenedor.innerHTML = `
+        <div style="background:#EAF2FF; border:1px solid #3C7CF8; border-radius:10px; padding:12px 16px;">
+            <p style="font-family:'Poppins', sans-serif; font-size:0.78rem; font-weight:700; color:#374151; margin:0 0 8px;">
+                Cursos agregados de tu otra malla (${extras.length})
+            </p>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                ${extras.map(c => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; border-radius:8px; padding:8px 10px;">
+                        <div style="font-size:0.78rem; color:#1f2937;">
+                            <strong>${c.name}</strong>
+                            <span style="color:#9ca3af;"> · ${c.code} · Ciclo ${c.cicloOrigen}
+                                <span style="font-weight:700; color:#3C7CF8;">· Malla ${c.malla_origen}</span>
+                            </span>
+                        </div>
+                        <button type="button" onclick="removerCursoOtraMalla('${c.id}')" aria-label="Quitar"
+                            style="background:none; border:none; color:#9ca3af; font-size:1rem; cursor:pointer; padding:2px 6px; flex-shrink:0;">✕</button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function removerCursoOtraMalla(cursoId) {
+    cursosSeleccionados = cursosSeleccionados.filter(c => c.id !== cursoId);
+    actualizarContadores();
+    renderCursosOtraMallaResumen();
+}
+
 function modoTransicionActivo() {
     return localStorage.getItem('intranotas_modo_transicion') === '1';
 }
@@ -616,16 +660,19 @@ function abrirModalAgregarOtraMalla() {
                     <p style="font-family:'Poppins', sans-serif; font-size:0.7rem; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.4px; margin:14px 0 8px;">
                         ${grupo.etiqueta}
                     </p>
-                    ${grupo.cursos.map(c => `
+                    ${grupo.cursos.map(c => {
+        const yaSeleccionado = cursosSeleccionados.some(sel => sel.id === c.id);
+        return `
                         <label class="curso-item" style="cursor:pointer;">
-                            <input type="checkbox" class="curso-checkbox" data-otra-malla-curso-id="${c.id}">
+                            <input type="checkbox" class="curso-checkbox" data-otra-malla-curso-id="${c.id}"${yaSeleccionado ? ' checked' : ''}>
                             <div class="curso-info">
                                 <div class="curso-nombre">${c.name}</div>
                                 <div class="curso-detalles"><span class="curso-codigo">${c.code}</span>
                                     <span class="curso-creditos">${c.credits} créditos</span></div>
                             </div>
                         </label>
-                    `).join('')}
+                    `;
+    }).join('')}
                 `).join('')}
             </div>
             <div style="padding:14px 22px; border-top:1px solid #e5e7eb; display:flex; gap:8px; flex-shrink:0;">
@@ -678,6 +725,7 @@ function confirmarAgregarCursosOtraMalla(otraMalla) {
     });
 
     actualizarContadores();
+    renderCursosOtraMallaResumen();
     document.getElementById('modal-otra-malla-overlay')?.remove();
 
     const partes = [];
