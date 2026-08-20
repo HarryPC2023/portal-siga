@@ -577,6 +577,12 @@ const INTRALU_SYNC_URL = 'http://localhost:8000/api/sync-intralu'; // TODO Harry
 function abrirModalSyncIntralu() {
     const existente = document.getElementById('modal-sync-intralu-overlay');
     if (existente) {
+        // Limpiar los campos SIEMPRE al reabrir — antes el modal se
+        // reutilizaba tal cual y por eso el código (y la contraseña)
+        // de la vez anterior se quedaba pegado en pantalla.
+        document.getElementById('sync-intralu-codigo').value = '';
+        document.getElementById('sync-intralu-password').value = '';
+        document.getElementById('sync-intralu-error').style.display = 'none';
         existente.classList.add('visible');
         return;
     }
@@ -586,12 +592,13 @@ function abrirModalSyncIntralu() {
     overlay.id = 'modal-sync-intralu-overlay';
     overlay.innerHTML = `
         <div class="modal-caja" style="max-width:380px; text-align:left;">
-            <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Cargar notas desde Intralú</h3>
+            <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Cargar notas de Intralú</h3>
             <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:16px;">
-                Ingresa tu código y contraseña de Intralú. Los usamos una sola vez para iniciar sesión y leer tus
-                cursos y notas de todos tus periodos — puede tardar varios minutos porque revisa cada curso uno por
-                uno. Tus credenciales nunca se guardan en nuestros servidores: viajan directo a la UNI y se
-                descartan al terminar.
+                Ingresa tu código y contraseña de Intralú. Se usa una sola vez para iniciar sesión y leer tus cursos
+                y notas de todos tus periodos — puede tardar varios minutos si decides cargar todos los ciclos que
+                has cursado (elegir un solo periodo es rápido). Tus credenciales nunca se guardan en nuestros
+                servidores: viajan directo a la UNI y se descartan al terminar. Además, no necesitas tener abierta
+                Intralú para hacerlo.
             </p>
             <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué quieres cargar?</label>
             <select id="sync-intralu-alcance"
@@ -601,10 +608,17 @@ function abrirModalSyncIntralu() {
             </select>
             <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Código UNI</label>
             <input id="sync-intralu-codigo" type="text" placeholder="2023XXXXX" autocomplete="off"
+                oninput="this.value = this.value.toUpperCase()"
                 style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:12px; font-size:0.9rem; box-sizing:border-box;">
             <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Contraseña de Intralú</label>
-            <input id="sync-intralu-password" type="password" placeholder="••••••••" autocomplete="off"
-                style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:6px; font-size:0.9rem; box-sizing:border-box;">
+            <div style="position:relative;">
+                <input id="sync-intralu-password" type="password" placeholder="Contraseña" autocomplete="off"
+                    style="width:100%; padding:10px 40px 10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:6px; font-size:0.9rem; box-sizing:border-box;">
+                <button type="button" onclick="alternarVisibilidadPasswordIntralu()" aria-label="Mostrar u ocultar contraseña"
+                    style="position:absolute; right:10px; top:9px; background:none; border:none; cursor:pointer; font-size:1rem; padding:2px 4px; line-height:1;">
+                    <span id="sync-intralu-password-icono">👁️</span>
+                </button>
+            </div>
             <p id="sync-intralu-error" style="display:none; color:#dc2626; font-size:0.78rem; margin:4px 0 0;"></p>
             <p id="sync-intralu-progreso" style="display:none; color:var(--color-cian); font-size:0.8rem; margin:12px 0 0; text-align:center; line-height:1.5;">
                 ⏳ Conectando con Intralú... esto puede tardar varios minutos, no cierres esta ventana.
@@ -617,6 +631,14 @@ function abrirModalSyncIntralu() {
     `;
     document.body.appendChild(overlay);
     requestAnimationFrame(() => overlay.classList.add('visible'));
+}
+
+function alternarVisibilidadPasswordIntralu() {
+    const input = document.getElementById('sync-intralu-password');
+    const icono = document.getElementById('sync-intralu-password-icono');
+    const oculto = input.type === 'password';
+    input.type = oculto ? 'text' : 'password';
+    icono.textContent = oculto ? '🙈' : '👁️';
 }
 
 function cerrarModalSyncIntralu() {
@@ -1008,17 +1030,14 @@ function generarSimulador() {
                     <input type="hidden" id="periodoGuardadoValor">
                 </div>
             </div>
-        </div>
-
-        ${syncIntraluHabilitado() ? `
-        <div style="display:flex; justify-content:center; margin:10px 0;">
+            ${syncIntraluHabilitado() ? `
             <button type="button" class="btn-volver"
-                style="display:inline-flex; align-items:center; gap:6px; padding:8px 20px; white-space:nowrap;"
+                style="flex-shrink:0; display:inline-flex; align-items:center; gap:6px; padding:8px 16px; white-space:nowrap; align-self:center;"
                 onclick="abrirModalSyncIntralu()">
-                🔄 Cargar notas desde Intralú
+                🔄 Cargar notas de Intralú
             </button>
+            ` : ''}
         </div>
-        ` : ''}
 
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;">
             <button class="btn-volver" onclick="irAPantalla(3)" style="flex:1; min-width:140px;">← Cambiar cursos</button>
