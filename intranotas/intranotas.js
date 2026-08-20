@@ -741,19 +741,30 @@ async function esperarResultadoSyncIntralu(jobId, progresoEl) {
    código (recorre ciclos 1-10 + electivos). Devuelve el curso del
    catálogo ya con su cicloOrigen, o null si el código no está
    mapeado en esa malla/carrera. */
+/* Busca un curso por código, primero en la malla ACTIVA y, si no
+   aparece ahí, en la OTRA malla — sin fusionar catálogos (evita el
+   riesgo de que un mismo código signifique cursos distintos en cada
+   malla y se pise uno con otro). El resultado trae `_mallaOrigen`
+   para que quien llama sepa en qué cajón de localStorage/nube debe
+   guardarse esta nota, sin importar cuál malla esté activa ahora
+   mismo en pantalla. */
 function buscarCursoEnCatalogoPorCodigo(codigo) {
-    const catalogoCarrera = CURSOS_POR_CICLO[mallaSeleccionada]?.[carreraSeleccionada];
-    if (!catalogoCarrera) return null;
     const codigoNorm = String(codigo).trim().toUpperCase();
+    const mallasAProbar = [mallaSeleccionada, mallaSeleccionada === '2018' ? '2026' : '2018'];
 
-    for (let ciclo = 1; ciclo <= 10; ciclo++) {
-        const lista = catalogoCarrera[ciclo] || catalogoCarrera[String(ciclo)] || [];
-        const encontrado = lista.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
-        if (encontrado) return { ...encontrado, cicloOrigen: ciclo };
+    for (const malla of mallasAProbar) {
+        const catalogoCarrera = CURSOS_POR_CICLO[malla]?.[carreraSeleccionada];
+        if (!catalogoCarrera) continue;
+
+        for (let ciclo = 1; ciclo <= 10; ciclo++) {
+            const lista = catalogoCarrera[ciclo] || catalogoCarrera[String(ciclo)] || [];
+            const encontrado = lista.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
+            if (encontrado) return { ...encontrado, cicloOrigen: ciclo, _mallaOrigen: malla };
+        }
+        const electivos = catalogoCarrera['electivos'] || [];
+        const encontradoElectivo = electivos.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
+        if (encontradoElectivo) return { ...encontradoElectivo, cicloOrigen: 'electivos', _mallaOrigen: malla };
     }
-    const electivos = catalogoCarrera['electivos'] || [];
-    const encontradoElectivo = electivos.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
-    if (encontradoElectivo) return { ...encontradoElectivo, cicloOrigen: 'electivos' };
 
     return null;
 }
@@ -765,14 +776,22 @@ function buscarCursoEnCatalogoPorCodigo(codigo) {
    hubiera antes en ese periodo (decisión ya tomada con Harry). Los
    periodos que Intralú no tocó se quedan tal cual estaban. */
 function procesarRespuestaSyncIntralu(periodosIntralu) {
-    const datos = leerDatosPeriodos();
+    // Un balde de cambios por malla — un periodo puede terminar en el
+    // balde de la malla activa o en el de la otra, según de dónde haya
+    // salido el match de sus cursos (ver buscarCursoEnCatalogoPorCodigo).
+    const cambiosPorMalla = {
+        2018: leerDatosPeriodosDeMalla('2018'),
+        2026: leerDatosPeriodosDeMalla('2026'),
+    };
     const noReconocidos = [];
     let periodosActualizados = 0;
+    let periodosEnOtraMalla = 0;
 
     Object.values(periodosIntralu).forEach(entradaPeriodo => {
         const claveIntranotas = entradaPeriodo.etiqueta_periodo;
         const cursosMapeados = [];
         const notasPeriodo = {};
+        const mallasEncontradas = {}; // cuenta cuántos cursos de este periodo vinieron de cada malla
 
         entradaPeriodo.cursos.forEach(cursoIntralu => {
             const cursoCatalogo = buscarCursoEnCatalogoPorCodigo(cursoIntralu.codigo);
@@ -782,6 +801,7 @@ function procesarRespuestaSyncIntralu(periodosIntralu) {
             }
 
             cursosMapeados.push(cursoCatalogo);
+            mallasEncontradas[cursoCatalogo._mallaOrigen] = (mallasEncontradas[cursoCatalogo._mallaOrigen] || 0) + 1;
 
             // Comparación insensible a mayúsculas como red de seguridad
             // extra (el backend ya normaliza a la casing exacta del
@@ -800,29 +820,46 @@ function procesarRespuestaSyncIntralu(periodosIntralu) {
 
         if (!cursosMapeados.length) return; // Nada reconocido en este periodo: no se crea/toca entrada
 
-        datos[claveIntranotas] = {
+        // Si los cursos de este periodo salieron de mallas distintas
+        // (raro, pero posible), nos quedamos con la malla mayoritaria.
+        const mallaDelPeriodo = Object.entries(mallasEncontradas)
+            .sort((a, b) => b[1] - a[1])[0][0];
+
+        cambiosPorMalla[mallaDelPeriodo][claveIntranotas] = {
             carrera: carreraSeleccionada,
             cursos: cursosMapeados,
             notas: notasPeriodo,
         };
         periodosActualizados++;
+        if (mallaDelPeriodo !== mallaSeleccionada) periodosEnOtraMalla++;
     });
 
-    guardarDatosPeriodos(datos); // esto ya sube a la nube automáticamente (sincronizarNube)
+    // Solo escribimos (y subimos a la nube) los cajones que de verdad
+    // cambiaron, cada uno con su propia malla explícita — así nunca se
+    // sube a Supabase con la etiqueta de malla equivocada.
+    ['2018', '2026'].forEach(malla => {
+        if (Object.keys(cambiosPorMalla[malla]).length) {
+            guardarDatosPeriodosDeMalla(malla, cambiosPorMalla[malla]);
+        }
+    });
 
     if (noReconocidos.length) {
         reportarCursosNoReconocidos(noReconocidos);
     }
 
-    mostrarToast(
-        periodosActualizados
-            ? `✅ Se sincronizaron ${periodosActualizados} periodo${periodosActualizados === 1 ? '' : 's'} desde Intralú`
-            : '⚠️ Intralú no trajo cursos que tu catálogo reconozca'
-    );
+    let mensaje = periodosActualizados
+        ? `✅ Se sincronizaron ${periodosActualizados} periodo${periodosActualizados === 1 ? '' : 's'} desde Intralú`
+        : '⚠️ Intralú no trajo cursos que tu catálogo reconozca';
+    if (periodosEnOtraMalla) {
+        mensaje += ` (${periodosEnOtraMalla} en tu otra malla — cámbiala para verlos)`;
+    }
+    mostrarToast(mensaje);
 
-    // Si el periodo que se está viendo ahora mismo fue actualizado, refresca la pantalla.
-    if (periodoSeleccionado && datos[periodoSeleccionado] && document.getElementById('pantalla-4')?.classList.contains('activa')) {
-        cursosSeleccionados = datos[periodoSeleccionado].cursos;
+    // Si el periodo que se está viendo ahora mismo fue actualizado (en TU
+    // malla activa), refresca la pantalla. Si se guardó en la otra malla,
+    // no hay nada que refrescar aquí — el toast de arriba ya avisó.
+    if (periodoSeleccionado && cambiosPorMalla[mallaSeleccionada][periodoSeleccionado] && document.getElementById('pantalla-4')?.classList.contains('activa')) {
+        cursosSeleccionados = cambiosPorMalla[mallaSeleccionada][periodoSeleccionado].cursos;
         generarSimulador();
         desmarcarTodosLosCursos();
         marcarCursosSeleccionadosEnUI();
@@ -868,6 +905,21 @@ function claveDatosPeriodos() {
 }
 function claveUltimoPeriodo() {
     return `intranotas_ultimo_periodo_${mallaSeleccionada}`;
+}
+
+/* Variantes explícitas (no dependen de la malla activa) — las usa
+   procesarRespuestaSyncIntralu() para guardar un periodo en el cajón
+   de SU malla real, aunque el usuario tenga la otra malla activa en
+   pantalla en ese momento. */
+function leerDatosPeriodosDeMalla(malla) {
+    const raw = localStorage.getItem(`intranotas_datos_periodos_${malla}`);
+    if (!raw) return {};
+    try { return JSON.parse(raw); } catch (e) { return {}; }
+}
+
+function guardarDatosPeriodosDeMalla(malla, datos) {
+    localStorage.setItem(`intranotas_datos_periodos_${malla}`, JSON.stringify(datos));
+    sincronizarNube(datos, malla);
 }
 
 function leerDatosPeriodos() {
@@ -926,7 +978,12 @@ async function hidratarDesdeNube() {
     if (data.ultimo_periodo) localStorage.setItem(claveUltimoPeriodo(), data.ultimo_periodo);
 }
 
-async function sincronizarNube(datos) {
+/* malla es opcional (default = la activa) — así ningún llamado existente
+   cambia de comportamiento. Solo se pasa explícito cuando guardamos un
+   periodo que resultó pertenecer a la OTRA malla (ver
+   guardarDatosPeriodosDeMalla), para no subirlo a la nube con la
+   etiqueta de malla equivocada. */
+async function sincronizarNube(datos, malla = mallaSeleccionada) {
     const sesion = await obtenerSesionNube();
     if (!sesion || !window.sigaSupabase) return;
 
@@ -934,9 +991,9 @@ async function sincronizarNube(datos) {
         .from(TABLA_NUBE)
         .upsert({
             user_id: sesion.user.id,
-            malla: mallaSeleccionada,
+            malla: malla,
             datos_periodos: datos,
-            ultimo_periodo: localStorage.getItem(claveUltimoPeriodo()),
+            ultimo_periodo: localStorage.getItem(`intranotas_ultimo_periodo_${malla}`),
             updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id,malla' });
 
