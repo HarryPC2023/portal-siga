@@ -44,6 +44,7 @@ _semaforo_sync = threading.Semaphore(MAX_SYNCS_SIMULTANEOS)
 class LoginRequest(BaseModel):
     codigo: str
     password: str
+    periodo: str | None = None  # ej. "20262" — si viene, se sincroniza SOLO ese periodo
 
 
 def etiquetar_periodo(cod):
@@ -174,7 +175,7 @@ def simplificar_etiqueta(texto):
     return t
 
 
-def _ejecutar_sync(job_id, codigo, password):
+def _ejecutar_sync(job_id, codigo, password, periodo_especifico=None):
     """Corre en un hilo aparte (no bloquea ningún request HTTP). Guarda
     el progreso y el resultado final en _jobs[job_id] para que el
     frontend los recoja haciendo polling contra GET /api/sync-intralu/{job_id}."""
@@ -184,7 +185,10 @@ def _ejecutar_sync(job_id, codigo, password):
             _jobs[job_id]["status"] = "error"
             _jobs[job_id]["status_code"] = 429
             _jobs[job_id]["detail"] = "Hay muchas sincronizaciones en curso ahora mismo. Intenta de nuevo en un minuto."
+        logger.info("Job %s: ❌ RECHAZADO (ya hay %d syncs en curso)", job_id, MAX_SYNCS_SIMULTANEOS)
         return
+
+    inicio = time.time()
 
     data_por_periodo = {}
     browser = None
@@ -207,16 +211,22 @@ def _ejecutar_sync(job_id, codigo, password):
                     _jobs[job_id]["status"] = "error"
                     _jobs[job_id]["status_code"] = 401
                     _jobs[job_id]["detail"] = "Código o contraseña incorrectos en Intralú."
+                logger.info("Job %s: ❌ LOGIN FALLIDO tras %.1fs", job_id, time.time() - inicio)
                 return
 
-            # 2. Rango de periodos acotado por el año de ingreso (del código)
-            # y por el periodo real más reciente según la fecha de hoy.
-            anio_ingreso = extraer_anio_ingreso(codigo)
-            periodos = construir_rango_periodos(anio_ingreso)
-            logger.info(
-                "Job %s: revisando %d periodos (desde el ingreso %d)",
-                job_id, len(periodos), anio_ingreso,
-            )
+            # 2. Rango de periodos: uno solo si el usuario pidió un ciclo
+            # específico, o acotado por el año de ingreso (del código) y el
+            # periodo real más reciente si pidió "todos".
+            if periodo_especifico:
+                periodos = [periodo_especifico]
+                logger.info("Job %s: revisando solo el periodo %s", job_id, periodo_especifico)
+            else:
+                anio_ingreso = extraer_anio_ingreso(codigo)
+                periodos = construir_rango_periodos(anio_ingreso)
+                logger.info(
+                    "Job %s: revisando %d periodos (desde el ingreso %d)",
+                    job_id, len(periodos), anio_ingreso,
+                )
 
             # 3. Recorrer cada periodo del rango
             for periodo in periodos:
@@ -265,6 +275,9 @@ def _ejecutar_sync(job_id, codigo, password):
                 # Ahora sí, visitamos el detalle de cada curso para sacar sus notas.
                 cursos_lista = []
                 for c_info in cursos_temp:
+                    logger.info(
+                        "Job %s:   -> %s (%s)", job_id, c_info["cod_curso"], periodo,
+                    )
                     url_det = f"https://alumnos.uni.edu.pe/informacion-academica/cursos/{periodo}/{c_info['cod_curso']}/{c_info['seccion']}"
 
                     # networkidle (no domcontentloaded): la tabla de notas de
@@ -326,12 +339,19 @@ def _ejecutar_sync(job_id, codigo, password):
                 _jobs[job_id]["status"] = "listo"
                 _jobs[job_id]["periodos"] = data_por_periodo
 
+            duracion = time.time() - inicio
+            logger.info(
+                "Job %s: ✅ SINCRONIZACIÓN COMPLETA en %.1fs — %d periodos con cursos encontrados",
+                job_id, duracion, len(data_por_periodo),
+            )
+
     except Exception:
         logger.exception("Job %s: error durante la sincronización con Intralú", job_id)
         with _jobs_lock:
             _jobs[job_id]["status"] = "error"
             _jobs[job_id]["status_code"] = 500
             _jobs[job_id]["detail"] = "No se pudo completar la sincronización con Intralú. Intenta de nuevo más tarde."
+        logger.info("Job %s: ❌ TERMINÓ CON ERROR tras %.1fs", job_id, time.time() - inicio)
     finally:
         if browser:
             try:
@@ -357,7 +377,7 @@ def iniciar_sync(credentials: LoginRequest):
 
     hilo = threading.Thread(
         target=_ejecutar_sync,
-        args=(job_id, credentials.codigo, credentials.password),
+        args=(job_id, credentials.codigo, credentials.password, credentials.periodo),
         daemon=True,
     )
     hilo.start()

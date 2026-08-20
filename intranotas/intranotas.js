@@ -504,6 +504,13 @@ function formatoPeriodoCorto(periodo) {
     return `${anio.slice(-2)}-${num}`;
 }
 
+/* "2026-2" -> "20262" — formato crudo que espera recoleccion_notas.py
+   (el mismo que usa Intralú en sus URLs de periodo). */
+function periodoIntranotasARaw(periodo) {
+    const [anio, tipo] = periodo.split('-');
+    return `${anio}${tipo}`;
+}
+
 /* Marca en la UI (checkboxes + contadores) los cursos que YA están en
    cursosSeleccionados en memoria — nunca lee de localStorage acá, para
    no reintroducir selecciones de sesiones anteriores por error. */
@@ -537,6 +544,15 @@ function marcarCursosSeleccionadosEnUI() {
    etiquetar_periodo()), así que aquí solo hace falta mapear cada
    curso por CÓDIGO contra el catálogo de la malla/carrera activas.
    ============================================================ */
+/* Oculto por defecto para todos los usuarios mientras terminas de
+   probarlo. Para verlo tú en cualquier entorno (local o producción),
+   corre UNA vez en la consola del navegador:
+     localStorage.setItem('intralu_beta_habilitado', '1')
+   y recarga. Para volver a ocultarlo: localStorage.removeItem(...). */
+function syncIntraluHabilitado() {
+    return localStorage.getItem('intralu_beta_habilitado') === '1';
+}
+
 const INTRALU_SYNC_URL = 'http://localhost:8000/api/sync-intralu'; // TODO Harry: cambia esto por la URL real de tu backend en producción (https://...)
 
 function abrirModalSyncIntralu() {
@@ -558,6 +574,12 @@ function abrirModalSyncIntralu() {
                 uno. Tus credenciales nunca se guardan en nuestros servidores: viajan directo a la UNI y se
                 descartan al terminar.
             </p>
+            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué quieres cargar?</label>
+            <select id="sync-intralu-alcance"
+                style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:12px; font-size:0.9rem; box-sizing:border-box;">
+                <option value="todos">Todos mis periodos (tarda varios minutos)</option>
+                ${generarPeriodosDisponibles(12).map(p => `<option value="${p}">Solo ${formatoPeriodoCorto(p)}</option>`).join('')}
+            </select>
             <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Código UNI</label>
             <input id="sync-intralu-codigo" type="text" placeholder="2023XXXXX" autocomplete="off"
                 style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:12px; font-size:0.9rem; box-sizing:border-box;">
@@ -593,6 +615,8 @@ async function ejecutarSyncIntralu() {
 
     const codigo = codigoEl.value.trim();
     const password = passwordEl.value;
+    const alcance = document.getElementById('sync-intralu-alcance').value;
+    const periodo = alcance === 'todos' ? null : periodoIntranotasARaw(alcance);
 
     errorEl.style.display = 'none';
 
@@ -614,7 +638,7 @@ async function ejecutarSyncIntralu() {
         const respInicio = await fetch(INTRALU_SYNC_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ codigo, password }),
+            body: JSON.stringify({ codigo, password, periodo }),
         });
         const dataInicio = await respInicio.json();
         if (!respInicio.ok) {
@@ -965,12 +989,17 @@ function generarSimulador() {
                     <input type="hidden" id="periodoGuardadoValor">
                 </div>
             </div>
+        </div>
+
+        ${syncIntraluHabilitado() ? `
+        <div style="display:flex; justify-content:center; margin:10px 0;">
             <button type="button" class="btn-volver"
-                style="width:100%; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:6px;"
+                style="display:inline-flex; align-items:center; gap:6px; padding:8px 20px; white-space:nowrap;"
                 onclick="abrirModalSyncIntralu()">
                 🔄 Cargar notas desde Intralú
             </button>
         </div>
+        ` : ''}
 
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;">
             <button class="btn-volver" onclick="irAPantalla(3)" style="flex:1; min-width:140px;">← Cambiar cursos</button>
