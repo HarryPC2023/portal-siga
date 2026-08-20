@@ -242,6 +242,7 @@ function seleccionarCarrera(carrera) {
         generarAcordeones();
         generarOpcionesPeriodo();
         marcarCursosSeleccionadosEnUI();
+        inicializarModoTransicion();
     }, 50);
 }
 
@@ -423,7 +424,11 @@ function toggleCurso(cursoId, ciclo) {
 
     if (checkbox.checked) {
         if (!cursosSeleccionados.find(c => c.id === cursoId)) {
-            cursosSeleccionados.push({ ...curso, cicloOrigen: ciclo });
+            // malla_origen: de qué plan es ESTE curso en concreto — se fija
+            // aquí y ya no cambia, aunque el estudiante después cambie su
+            // malla_principal. Es la fuente de verdad por curso, separada
+            // de qué malla tenga activa la sesión.
+            cursosSeleccionados.push({ ...curso, cicloOrigen: ciclo, malla_origen: mallaSeleccionada });
         }
         item.classList.add('seleccionado');
     } else {
@@ -524,6 +529,171 @@ function marcarCursosSeleccionadosEnUI() {
         }
     });
     actualizarContadores();
+}
+
+/* ============================================================
+   MODO TRANSICIÓN (alumnos con cursos de ambas mallas)
+   Flag GLOBAL por estudiante (no por malla) — se activa manualmente,
+   NUNCA se infiere solo del ciclo. El ciclo (5°-6° Sistemas, 4°
+   Industrial) es apenas una sugerencia visual de cuándo podría hacer
+   falta; la confirmación real es que el alumno de verdad tenga
+   cursos de los dos planes.
+   ============================================================ */
+function modoTransicionActivo() {
+    return localStorage.getItem('intranotas_modo_transicion') === '1';
+}
+
+function toggleModoTransicion() {
+    const checkbox = document.getElementById('checkbox-modo-transicion');
+    const activo = checkbox.checked;
+    localStorage.setItem('intranotas_modo_transicion', activo ? '1' : '0');
+    const aviso = document.getElementById('aviso-modo-transicion');
+    if (aviso) aviso.style.display = activo ? 'block' : 'none';
+    renderBotonOtraMalla();
+}
+
+function inicializarModoTransicion() {
+    const activo = modoTransicionActivo();
+    const checkbox = document.getElementById('checkbox-modo-transicion');
+    if (checkbox) checkbox.checked = activo;
+    const aviso = document.getElementById('aviso-modo-transicion');
+    if (aviso) aviso.style.display = activo ? 'block' : 'none';
+    renderBotonOtraMalla();
+}
+
+function renderBotonOtraMalla() {
+    const contenedor = document.getElementById('contenedor-btn-otra-malla');
+    if (!contenedor) return;
+    if (!modoTransicionActivo()) {
+        contenedor.innerHTML = '';
+        return;
+    }
+    const otraMalla = mallaSeleccionada === '2018' ? '2026' : '2018';
+    contenedor.innerHTML = `
+        <button type="button" class="btn-volver-carrera" onclick="abrirModalAgregarOtraMalla()">
+            + Agregar curso de Malla ${otraMalla}
+        </button>
+    `;
+}
+
+/* Lista los cursos del catálogo de la OTRA malla (misma carrera) para
+   que el alumno elija manualmente cuál agregar — en vez de que el
+   sistema intente adivinar combinando catálogos automáticamente. */
+function abrirModalAgregarOtraMalla() {
+    const otraMalla = mallaSeleccionada === '2018' ? '2026' : '2018';
+    const catalogoCarrera = CURSOS_POR_CICLO[otraMalla]?.[carreraSeleccionada];
+    if (!catalogoCarrera) {
+        mostrarToast(`⚠️ Malla ${otraMalla} todavía no tiene catálogo para esta carrera`);
+        return;
+    }
+
+    const opciones = [];
+    for (let ciclo = 1; ciclo <= 10; ciclo++) {
+        const lista = catalogoCarrera[ciclo] || catalogoCarrera[String(ciclo)] || [];
+        lista.forEach(c => opciones.push({ ...c, cicloOrigen: ciclo }));
+    }
+    (catalogoCarrera['electivos'] || []).forEach(c => opciones.push({ ...c, cicloOrigen: 'electivos' }));
+
+    document.getElementById('modal-otra-malla-overlay')?.remove();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay visible';
+    overlay.id = 'modal-otra-malla-overlay';
+    overlay.innerHTML = `
+        <div class="modal-caja" style="max-width:380px; text-align:left; max-height:80vh; overflow-y:auto;">
+            <h3 style="margin:0 0 12px; font-size:1rem; color:var(--color-verde-oscuro); text-align:center;">
+                Agregar curso de Malla ${otraMalla}
+            </h3>
+            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:16px;">
+                ${opciones.map(c => `
+                    <button type="button" class="curso-item" style="text-align:left; width:100%; cursor:pointer;"
+                        onclick="agregarCursoDeOtraMalla('${c.id}', '${otraMalla}')">
+                        <div class="curso-info">
+                            <div class="curso-nombre">${c.name}</div>
+                            <div class="curso-detalles"><span class="curso-codigo">${c.code}</span>
+                                <span class="curso-creditos">${c.credits} créditos</span> · Ciclo ${c.cicloOrigen}</div>
+                        </div>
+                    </button>
+                `).join('')}
+            </div>
+            <button type="button" class="btn-volver" style="width:100%;"
+                onclick="document.getElementById('modal-otra-malla-overlay').remove()">Cancelar</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function agregarCursoDeOtraMalla(cursoId, otraMalla) {
+    const catalogoCarrera = CURSOS_POR_CICLO[otraMalla]?.[carreraSeleccionada];
+    if (!catalogoCarrera) return;
+
+    let curso = null;
+    let cicloEncontrado = null;
+    for (let ciclo = 1; ciclo <= 10; ciclo++) {
+        const lista = catalogoCarrera[ciclo] || catalogoCarrera[String(ciclo)] || [];
+        const hit = lista.find(c => c.id === cursoId);
+        if (hit) { curso = hit; cicloEncontrado = ciclo; break; }
+    }
+    if (!curso) {
+        const hit = (catalogoCarrera['electivos'] || []).find(c => c.id === cursoId);
+        if (hit) { curso = hit; cicloEncontrado = 'electivos'; }
+    }
+    if (!curso) return;
+
+    if (cursosSeleccionados.find(c => c.id === curso.id)) {
+        mostrarToast('Ese curso ya estaba agregado');
+    } else {
+        // malla_origen queda fijo en el curso desde este momento — no se
+        // vuelve a recalcular después aunque cambie la malla_principal.
+        cursosSeleccionados.push({ ...curso, cicloOrigen: cicloEncontrado, malla_origen: otraMalla });
+        mostrarToast(`✅ ${curso.name} agregado (Malla ${otraMalla})`);
+        actualizarContadores();
+    }
+
+    document.getElementById('modal-otra-malla-overlay')?.remove();
+}
+
+/* Modal de última instancia: solo aparece cuando un código de curso
+   existe en AMBAS mallas con nombres distintos (colisión real) y no
+   se pudo resolver comparando nombre/créditos. Devuelve una Promise
+   para poder usarse con await dentro del loop de sincronización. */
+function resolverColisionMallaCurso(cursoIntralu, opcionA, opcionB) {
+    return new Promise(resolve => {
+        document.getElementById('modal-colision-overlay')?.remove();
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay visible';
+        overlay.id = 'modal-colision-overlay';
+        overlay.innerHTML = `
+            <div class="modal-caja">
+                <div class="modal-icono">🤔</div>
+                <h2 class="modal-titulo">¿A qué plan pertenece este curso?</h2>
+                <p class="modal-mensaje">
+                    El código <strong>${cursoIntralu.codigo}</strong> existe en tus dos mallas y no pudimos
+                    distinguir cuál es. Elige el plan correcto:
+                </p>
+                <div class="modal-botones" style="flex-direction:column;">
+                    <button class="modal-btn modal-btn-cancelar" id="btn-colision-a" style="margin-bottom:8px;">
+                        Malla ${opcionA.malla_origen}: ${opcionA.name}
+                    </button>
+                    <button class="modal-btn modal-btn-confirmar" id="btn-colision-b" style="margin-bottom:8px;">
+                        Malla ${opcionB.malla_origen}: ${opcionB.name}
+                    </button>
+                    <button class="modal-btn modal-btn-cancelar" id="btn-colision-omitir"
+                        style="background:none; color:#9ca3af; font-weight:500;">
+                        Omitir este curso
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        // Siempre resuelve (nunca queda colgada la Promise, aunque el
+        // alumno cierre la pestaña a mitad de camino): omitir devuelve
+        // null, que procesarRespuestaSyncIntralu ya trata igual que un
+        // curso "no reconocido".
+        overlay.querySelector('#btn-colision-a').onclick = () => { overlay.remove(); resolve(opcionA); };
+        overlay.querySelector('#btn-colision-b').onclick = () => { overlay.remove(); resolve(opcionB); };
+        overlay.querySelector('#btn-colision-omitir').onclick = () => { overlay.remove(); resolve(null); };
+    });
 }
 
 /* ============================================================
@@ -693,7 +863,7 @@ async function ejecutarSyncIntralu() {
         const resultado = await esperarResultadoSyncIntralu(dataInicio.job_id, progresoEl);
 
         cerrarModalSyncIntralu();
-        procesarRespuestaSyncIntralu(resultado.periodos || {});
+        await procesarRespuestaSyncIntralu(resultado.periodos || {});
     } catch (err) {
         errorEl.textContent = err.message || 'Ocurrió un error al sincronizar. Intenta de nuevo.';
         errorEl.style.display = 'block';
@@ -748,60 +918,96 @@ async function esperarResultadoSyncIntralu(jobId, progresoEl) {
    para que quien llama sepa en qué cajón de localStorage/nube debe
    guardarse esta nota, sin importar cuál malla esté activa ahora
    mismo en pantalla. */
-function buscarCursoEnCatalogoPorCodigo(codigo) {
+/* Busca un curso por código, siempre primero en la malla ACTIVA. Solo
+   prueba también la OTRA malla si el modo transición está encendido
+   (nunca por defecto — evita falsos positivos para el resto de
+   usuarios). Si el código existe en ambas, intenta resolverlo por
+   nombre y luego por créditos antes de darlo por ambiguo; si sigue
+   empatado pero es el MISMO nombre en las dos (curso que no cambió de
+   código entre mallas), usa la malla activa sin preguntar. Solo en una
+   colisión real (nombres distintos) devuelve _colision para que quien
+   llama le pregunte al usuario. */
+function buscarCursoEnCatalogoPorCodigo(codigo, nombreIntralu, creditosIntralu) {
     const codigoNorm = String(codigo).trim().toUpperCase();
-    const mallasAProbar = [mallaSeleccionada, mallaSeleccionada === '2018' ? '2026' : '2018'];
 
-    for (const malla of mallasAProbar) {
+    function buscarEnMalla(malla) {
         const catalogoCarrera = CURSOS_POR_CICLO[malla]?.[carreraSeleccionada];
-        if (!catalogoCarrera) continue;
-
+        if (!catalogoCarrera) return null;
         for (let ciclo = 1; ciclo <= 10; ciclo++) {
             const lista = catalogoCarrera[ciclo] || catalogoCarrera[String(ciclo)] || [];
             const encontrado = lista.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
-            if (encontrado) return { ...encontrado, cicloOrigen: ciclo, _mallaOrigen: malla };
+            if (encontrado) return { ...encontrado, cicloOrigen: ciclo, malla_origen: malla };
         }
         const electivos = catalogoCarrera['electivos'] || [];
         const encontradoElectivo = electivos.find(c => String(c.code).trim().toUpperCase() === codigoNorm);
-        if (encontradoElectivo) return { ...encontradoElectivo, cicloOrigen: 'electivos', _mallaOrigen: malla };
+        if (encontradoElectivo) return { ...encontradoElectivo, cicloOrigen: 'electivos', malla_origen: malla };
+        return null;
     }
 
-    return null;
+    const enPrincipal = buscarEnMalla(mallaSeleccionada);
+    if (!modoTransicionActivo()) return enPrincipal;
+
+    const otraMalla = mallaSeleccionada === '2018' ? '2026' : '2018';
+    const enOtra = buscarEnMalla(otraMalla);
+
+    if (enPrincipal && !enOtra) return enPrincipal;
+    if (enOtra && !enPrincipal) return enOtra;
+    if (!enPrincipal && !enOtra) return null;
+
+    // Encontrado en AMBAS mallas — desambiguar antes de preguntar.
+    const nombreNorm = (nombreIntralu || '').trim().toUpperCase();
+    const nomA = enPrincipal.name.trim().toUpperCase();
+    const nomB = enOtra.name.trim().toUpperCase();
+
+    if (nombreNorm) {
+        if (nomA === nombreNorm && nomB !== nombreNorm) return enPrincipal;
+        if (nomB === nombreNorm && nomA !== nombreNorm) return enOtra;
+    }
+    if (creditosIntralu != null) {
+        const credA = Number(enPrincipal.credits) === Number(creditosIntralu);
+        const credB = Number(enOtra.credits) === Number(creditosIntralu);
+        if (credA && !credB) return enPrincipal;
+        if (credB && !credA) return enOtra;
+    }
+    if (nomA === nomB) return enPrincipal; // mismo curso, no cambió de código: default silencioso
+
+    // Colisión real: mismo código, cursos distintos. Que decida el usuario.
+    return { ...enPrincipal, _colision: enOtra };
 }
 
-/* Toma la respuesta del backend (agrupada por periodo, con la clave
-   ya en formato "2026-1" gracias a etiquetar_periodo en el backend) y
-   arma/reemplaza cada periodo completo dentro de
-   intranotas_datos_periodos: cursos Y notas, sobrescribiendo lo que
-   hubiera antes en ese periodo (decisión ya tomada con Harry). Los
-   periodos que Intralú no tocó se quedan tal cual estaban. */
-function procesarRespuestaSyncIntralu(periodosIntralu) {
-    // Un balde de cambios por malla — un periodo puede terminar en el
-    // balde de la malla activa o en el de la otra, según de dónde haya
-    // salido el match de sus cursos (ver buscarCursoEnCatalogoPorCodigo).
-    const cambiosPorMalla = {
-        2018: leerDatosPeriodosDeMalla('2018'),
-        2026: leerDatosPeriodosDeMalla('2026'),
-    };
+/* Toma la respuesta del backend (agrupada por periodo, con la clave ya
+   en formato "2026-1" gracias a etiquetar_periodo en el backend) y
+   arma/reemplaza cada periodo dentro del cajón de la malla ACTIVA
+   (igual que siempre) — cada curso individual lleva su propio
+   malla_origen, así que un periodo puede tener cursos de ambas mallas
+   sin ambigüedad, sin necesidad de un cajón especial para eso. */
+async function procesarRespuestaSyncIntralu(periodosIntralu) {
+    const datos = leerDatosPeriodos();
     const noReconocidos = [];
     let periodosActualizados = 0;
-    let periodosEnOtraMalla = 0;
 
-    Object.values(periodosIntralu).forEach(entradaPeriodo => {
+    for (const entradaPeriodo of Object.values(periodosIntralu)) {
         const claveIntranotas = entradaPeriodo.etiqueta_periodo;
         const cursosMapeados = [];
         const notasPeriodo = {};
-        const mallasEncontradas = {}; // cuenta cuántos cursos de este periodo vinieron de cada malla
 
-        entradaPeriodo.cursos.forEach(cursoIntralu => {
-            const cursoCatalogo = buscarCursoEnCatalogoPorCodigo(cursoIntralu.codigo);
+        for (const cursoIntralu of entradaPeriodo.cursos) {
+            let cursoCatalogo = buscarCursoEnCatalogoPorCodigo(
+                cursoIntralu.codigo, cursoIntralu.nombre, cursoIntralu.creditos
+            );
+
+            if (cursoCatalogo && cursoCatalogo._colision) {
+                cursoCatalogo = await resolverColisionMallaCurso(
+                    cursoIntralu, cursoCatalogo, cursoCatalogo._colision
+                );
+            }
+
             if (!cursoCatalogo) {
                 noReconocidos.push(`${cursoIntralu.codigo} - ${cursoIntralu.nombre} (${claveIntranotas})`);
-                return;
+                continue;
             }
 
             cursosMapeados.push(cursoCatalogo);
-            mallasEncontradas[cursoCatalogo._mallaOrigen] = (mallasEncontradas[cursoCatalogo._mallaOrigen] || 0) + 1;
 
             // Comparación insensible a mayúsculas como red de seguridad
             // extra (el backend ya normaliza a la casing exacta del
@@ -816,50 +1022,33 @@ function procesarRespuestaSyncIntralu(periodosIntralu) {
                 notasCurso[compReal] = ev.nota;
             });
             if (Object.keys(notasCurso).length) notasPeriodo[cursoCatalogo.id] = notasCurso;
-        });
+        }
 
-        if (!cursosMapeados.length) return; // Nada reconocido en este periodo: no se crea/toca entrada
+        if (!cursosMapeados.length) continue; // Nada reconocido en este periodo: no se crea/toca entrada
 
-        // Si los cursos de este periodo salieron de mallas distintas
-        // (raro, pero posible), nos quedamos con la malla mayoritaria.
-        const mallaDelPeriodo = Object.entries(mallasEncontradas)
-            .sort((a, b) => b[1] - a[1])[0][0];
-
-        cambiosPorMalla[mallaDelPeriodo][claveIntranotas] = {
+        datos[claveIntranotas] = {
             carrera: carreraSeleccionada,
             cursos: cursosMapeados,
             notas: notasPeriodo,
         };
         periodosActualizados++;
-        if (mallaDelPeriodo !== mallaSeleccionada) periodosEnOtraMalla++;
-    });
+    }
 
-    // Solo escribimos (y subimos a la nube) los cajones que de verdad
-    // cambiaron, cada uno con su propia malla explícita — así nunca se
-    // sube a Supabase con la etiqueta de malla equivocada.
-    ['2018', '2026'].forEach(malla => {
-        if (Object.keys(cambiosPorMalla[malla]).length) {
-            guardarDatosPeriodosDeMalla(malla, cambiosPorMalla[malla]);
-        }
-    });
+    guardarDatosPeriodos(datos); // esto ya sube a la nube automáticamente (sincronizarNube)
 
     if (noReconocidos.length) {
         reportarCursosNoReconocidos(noReconocidos);
     }
 
-    let mensaje = periodosActualizados
-        ? `✅ Se sincronizaron ${periodosActualizados} periodo${periodosActualizados === 1 ? '' : 's'} desde Intralú`
-        : '⚠️ Intralú no trajo cursos que tu catálogo reconozca';
-    if (periodosEnOtraMalla) {
-        mensaje += ` (${periodosEnOtraMalla} en tu otra malla — cámbiala para verlos)`;
-    }
-    mostrarToast(mensaje);
+    mostrarToast(
+        periodosActualizados
+            ? `✅ Se sincronizaron ${periodosActualizados} periodo${periodosActualizados === 1 ? '' : 's'} desde Intralú`
+            : '⚠️ Intralú no trajo cursos que tu catálogo reconozca'
+    );
 
-    // Si el periodo que se está viendo ahora mismo fue actualizado (en TU
-    // malla activa), refresca la pantalla. Si se guardó en la otra malla,
-    // no hay nada que refrescar aquí — el toast de arriba ya avisó.
-    if (periodoSeleccionado && cambiosPorMalla[mallaSeleccionada][periodoSeleccionado] && document.getElementById('pantalla-4')?.classList.contains('activa')) {
-        cursosSeleccionados = cambiosPorMalla[mallaSeleccionada][periodoSeleccionado].cursos;
+    // Si el periodo que se está viendo ahora mismo fue actualizado, refresca la pantalla.
+    if (periodoSeleccionado && datos[periodoSeleccionado] && document.getElementById('pantalla-4')?.classList.contains('activa')) {
+        cursosSeleccionados = datos[periodoSeleccionado].cursos;
         generarSimulador();
         desmarcarTodosLosCursos();
         marcarCursosSeleccionadosEnUI();
@@ -905,21 +1094,6 @@ function claveDatosPeriodos() {
 }
 function claveUltimoPeriodo() {
     return `intranotas_ultimo_periodo_${mallaSeleccionada}`;
-}
-
-/* Variantes explícitas (no dependen de la malla activa) — las usa
-   procesarRespuestaSyncIntralu() para guardar un periodo en el cajón
-   de SU malla real, aunque el usuario tenga la otra malla activa en
-   pantalla en ese momento. */
-function leerDatosPeriodosDeMalla(malla) {
-    const raw = localStorage.getItem(`intranotas_datos_periodos_${malla}`);
-    if (!raw) return {};
-    try { return JSON.parse(raw); } catch (e) { return {}; }
-}
-
-function guardarDatosPeriodosDeMalla(malla, datos) {
-    localStorage.setItem(`intranotas_datos_periodos_${malla}`, JSON.stringify(datos));
-    sincronizarNube(datos, malla);
 }
 
 function leerDatosPeriodos() {
@@ -978,12 +1152,7 @@ async function hidratarDesdeNube() {
     if (data.ultimo_periodo) localStorage.setItem(claveUltimoPeriodo(), data.ultimo_periodo);
 }
 
-/* malla es opcional (default = la activa) — así ningún llamado existente
-   cambia de comportamiento. Solo se pasa explícito cuando guardamos un
-   periodo que resultó pertenecer a la OTRA malla (ver
-   guardarDatosPeriodosDeMalla), para no subirlo a la nube con la
-   etiqueta de malla equivocada. */
-async function sincronizarNube(datos, malla = mallaSeleccionada) {
+async function sincronizarNube(datos) {
     const sesion = await obtenerSesionNube();
     if (!sesion || !window.sigaSupabase) return;
 
@@ -991,9 +1160,9 @@ async function sincronizarNube(datos, malla = mallaSeleccionada) {
         .from(TABLA_NUBE)
         .upsert({
             user_id: sesion.user.id,
-            malla: malla,
+            malla: mallaSeleccionada,
             datos_periodos: datos,
-            ultimo_periodo: localStorage.getItem(`intranotas_ultimo_periodo_${malla}`),
+            ultimo_periodo: localStorage.getItem(claveUltimoPeriodo()),
             updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id,malla' });
 

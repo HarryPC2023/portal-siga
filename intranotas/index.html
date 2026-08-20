@@ -199,12 +199,37 @@
                     ⚠️ Debes seleccionar tu periodo académico y al menos un curso
                 </div>
 
+                <!-- Modo transición: para alumnos en la franja de cambio de
+                     plan (5°-6° Sistemas, 4° Industrial) que de verdad tienen
+                     cursos aprobados de AMBAS mallas. No se activa solo por
+                     el ciclo — ese dato solo sirve para sugerirlo, la
+                     confirmación real es que el alumno tenga cursos reales
+                     de las dos. Ver toggleModoTransicion() en intranotas.js. -->
+                <div id="bloque-modo-transicion"
+                    style="background:#fff; border-radius:10px; padding:12px 16px; margin-bottom:1rem; box-shadow:var(--sombra-tarjeta); display:flex; align-items:center; gap:12px;">
+                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer; flex:1;">
+                        <input type="checkbox" id="checkbox-modo-transicion" onchange="toggleModoTransicion()"
+                            style="width:18px; height:18px; accent-color:var(--color-cian); cursor:pointer;">
+                        <span
+                            style="font-family:'Poppins', sans-serif; font-size:0.82rem; font-weight:600; color:var(--color-gris-texto);">
+                            Tengo cursos aprobados de ambos planes de estudio
+                        </span>
+                    </label>
+                </div>
+                <p id="aviso-modo-transicion"
+                    style="display:none; font-size:0.75rem; color:#92400e; background:#fef3c7; border:1px solid #f59e0b; border-radius:8px; padding:10px 14px; margin:-0.5rem 0 1rem; line-height:1.5;">
+                    ⚠️ Actívalo SOLO si estás en 5°-6° ciclo (Sistemas) o 4° ciclo (Industrial) Y de verdad llevaste
+                    cursos bajo los dos planes. Si no estás seguro, déjalo apagado — tu malla principal sigue
+                    aplicando para todo lo demás.
+                </p>
+
                 <div class="seccion-acordeones">
                     <div class="titulo-acordeones-fila">
                         <p class="titulo-acordeones">SELECCIONA TUS CURSOS ACTUALES:</p>
                         <button class="btn-info-importante" onclick="abrirModalInfo()">⚠️ Importante</button>
                     </div>
                     <div id="contenedor-acordeones"></div>
+                    <div id="contenedor-btn-otra-malla" style="text-align:center; margin-top:12px;"></div>
                 </div>
 
                 <div style="text-align: center; margin-top: 1rem; margin-bottom: 1rem;">
