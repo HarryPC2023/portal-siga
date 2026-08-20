@@ -288,16 +288,14 @@ body {
    chip de flecha separado abajo, en su propio contenedor.
    Colores decididos a mano por Harry, no son tokens del tema:
    selector = paleta ámbar/champagne (combina con el header real de
-   SIGA, rgba(255,253,249,.92)); descripción y flecha = variación de
-   su azul de marca (--brand-azul #3C7CF8).
+   SIGA, rgba(255,253,249,.92)); descripción, nota y flecha = variación
+   de su azul de marca (--brand-azul #3C7CF8).
 
-   Ancho de .opcion-malla: 240px. El título "Malla implementada ciclo
-   26-2" alguna vez se partió en dos líneas justo por ese guion —
-   ahora esa protección vive en el HTML (guion no separable U+2011
-   dentro de "26‑1"/"26‑2"), así que ya no hace falta ensanchar tanto
-   la tarjeta solo para evitar ese salto de línea. 240px es un punto
-   medio: algo más de aire que el ancho original (230px), sin la
-   tarjeta de más que dejaba el 260px que usamos como parche temporal.
+   .opcion-malla ya NO tiene ancho fijo: cada malla puede necesitar
+   anchos distintos entre su caja de info y su caja de nota (la nota
+   es más ancha a propósito, para que la pregunta quepa en una sola
+   línea), así que el contenedor se ajusta al hijo más ancho
+   (fit-content) y centra todo lo demás con align-items.
 
    .opcion-malla es un <div> (NO un botón): todo el conjunto ya no es
    clickeable como bloque. Solo .malla-flecha-chip es un <button> real
@@ -306,6 +304,7 @@ body {
 .grid-mallas {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 26px;
     flex-wrap: wrap;
     margin: 1.5rem auto 0;
@@ -315,7 +314,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 240px;
+    width: fit-content;
 }
 
 .malla-selector-chip {
@@ -344,9 +343,13 @@ body {
     white-space: nowrap;
 }
 
+/* Caja de info dura (créditos por carrera). Ancho fijo, más angosta
+   que la caja de nota — el título va centrado, y las filas de
+   carrera+ciclo (malla-desc-filas) se agrupan y centran como bloque,
+   pero cada fila se alinea internamente en columna (tipo tab). */
 .malla-descripcion-caja {
     display: block;
-    width: 100%;
+    width: 260px;
     box-sizing: border-box;
     background: #F0FAFE;
     border: 1px solid #3C7CF8;
@@ -357,13 +360,23 @@ body {
     font-size: 0.78rem;
     color: #374151;
     line-height: 1.5;
-    text-align: justify;
 }
 
 .malla-desc-titulo {
     display: block;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Envuelve las filas para poder centrarlas como grupo (width:fit-content
+   + margin:auto) mientras cada fila interna sigue alineada en columna
+   entre sí (ver .malla-desc-tabla). */
+.malla-desc-filas {
+    display: table;
+    width: fit-content;
+    margin: 0 auto;
+    text-align: left;
 }
 
 .malla-desc-fila {
@@ -375,7 +388,7 @@ body {
    sin depender de espacios/tabs que HTML colapsa. */
 .malla-desc-tabla {
     display: flex;
-    gap: 6px;
+    gap: 10px;
 }
 
 .malla-desc-col-label {
@@ -387,34 +400,72 @@ body {
     flex: 1;
 }
 
+/* Caja de nota condicional (zona gris 5°-6°/4° por créditos). A
+   propósito MÁS ANCHA que la caja de info de arriba, para que la
+   pregunta quepa en una sola línea sin partirse — por eso NO comparte
+   el ancho fijo de .malla-descripcion-caja. malla-nota-2026 es un
+   poco más ancha todavía porque su texto es más largo. */
+.malla-nota-caja {
+    display: block;
+    box-sizing: border-box;
+    width: 320px;
+    background: #EAF2FF;
+    border: 1px solid #3C7CF8;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.malla-nota-2026 {
+    width: 340px;
+}
+
+.malla-nota-pregunta {
+    display: block;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 8px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.malla-nota-texto {
+    display: block;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: #374151;
+    text-align: justify;
+}
+
 /* Ahora es un <button> real (antes era un <span> dentro del botón
    grande .opcion-malla) — reset explícito de fuente/cursor porque los
-   botones traen sus propios estilos por defecto en cada navegador. El
-   hover pasó de ".opcion-malla:hover .malla-flecha-chip" a un hover
-   directo sobre el propio botón: ahora es el único elemento
-   interactivo de la tarjeta, así que la reacción visual debe ser
-   suya, no heredada de un padre que ya no es clickeable. */
+   botones traen sus propios estilos por defecto en cada navegador.
+   Relleno con el azul de marca (antes era solo contorno delgado sobre
+   fondo también celeste, por eso pasaba desapercibido). */
 .malla-flecha-chip {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 30px;
-    margin-top: 10px;
-    background: var(--brand-azul-tinte, #EAF2FF);
-    border: 1px solid #3C7CF8;
-    border-radius: 8px;
-    color: #3C7CF8;
+    width: 40px;
+    height: 40px;
+    margin-top: 12px;
+    background: var(--brand-azul, #3C7CF8);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
     font-size: 1rem;
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
+    box-shadow: 0 2px 6px rgba(60, 124, 248, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .malla-flecha-chip:hover {
     transform: translateX(3px);
-    background: #dce9ff;
+    box-shadow: 0 4px 10px rgba(60, 124, 248, 0.45);
 }
 
 /* Marca la malla actual cuando se reabre esta pantalla desde
@@ -428,6 +479,13 @@ body {
 @media (max-width: 480px) {
     .grid-mallas {
         gap: 18px;
+    }
+
+    .malla-descripcion-caja,
+    .malla-nota-caja,
+    .malla-nota-2026 {
+        width: 100%;
+        max-width: 320px;
     }
 }
 
