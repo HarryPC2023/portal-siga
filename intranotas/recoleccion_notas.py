@@ -175,21 +175,22 @@ def simplificar_etiqueta(texto):
     'EP', 'EF', 'ES'."""
     t = texto.upper().strip()
 
-    m = re.search(r"PRACTICA CALIFICADA\s*(\d+)", t) or re.search(r"P\.?C\.?\s*(\d+)", t)
-    if m:
-        return f"PC{m.group(1)}"
-
     m = re.search(r"MONOGRAF[IÍ]A\s*(\d+)", t)
     if m:
         return f"Monografia{m.group(1)}"
 
-    # OJO Harry: no tengo el texto real de Intralú para un curso con labs
-    # (Química/Física) todavía — este patrón cubre "LABORATORIO 1" y
-    # "LAB 1". Si al probar un curso real sale distinto, mándame el texto
-    # exacto y ajusto el regex.
+    # Se revisa ANTES que el patrón genérico de "PRACTICA" de abajo,
+    # para que un laboratorio no se confunda con una práctica calificada.
     m = re.search(r"LABORATORIO\s*(\d+)", t) or re.search(r"\bLAB\s*(\d+)", t)
     if m:
         return f"Lab{m.group(1)}"
+
+    # Formato REAL confirmado en Intralú: "PRACTICA 1 (N1)" — NO dice
+    # "PRACTICA CALIFICADA 1" como asumíamos antes. Este era el bug: el
+    # regex viejo nunca hacía match, por eso las 4 PC siempre salían vacías.
+    m = re.search(r"PRACTICA\s*(\d+)", t) or re.search(r"P\.?C\.?\s*(\d+)", t)
+    if m:
+        return f"PC{m.group(1)}"
 
     if "EXAMEN PARCIAL" in t:
         return "EP"
