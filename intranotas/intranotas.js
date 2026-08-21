@@ -1390,10 +1390,9 @@ function generarSimulador() {
     html += `</div>`;
     contenedor.innerHTML = html;
     cargarNotasGuardadas();
-    cargarMetasGuardadas();
     cargarSelectorPeriodosGuardados();
-    cursosSeleccionados.forEach(c => calcularMetaCurso(c.id));
     generarBannerReferencias();
+    inicializarAnalisisAcademico();
 }
 
 /* ============================================================
@@ -1526,229 +1525,17 @@ function generarInputsNotas(curso, layout) {
             <div class="simulador-titulo">🎯 ¿QUÉ NOTA NECESITO PARA APROBAR?</div>
             <div class="simulador-contenido" id="simulador-contenido-${curso.id}"></div>
         </div>
-        ${generarSeccionMetaCurso(curso)}
     `;
     return html;
 }
 
 /* ============================================================
-   META DEL CURSO — Calculadora independiente del registro real
+   NOTA: la vieja calculadora "Meta del curso" que vivía aquí
+   (generarSeccionMetaCurso, generarSlidersMeta, calcularMetaCurso,
+   etc.) se retiró de la tarjeta de curso. Su reemplazo ahora vive
+   como herramienta independiente dentro del hub "📊 Análisis
+   académico" — ver sección ANÁLISIS ACADÉMICO más abajo.
    ============================================================ */
-function generarSeccionMetaCurso(curso) {
-    const soloPC = FORMULAS_SOLO_PC.includes(curso.formula_type);
-
-    let contenidoHTML = `
-        <div class="meta-input-group">
-            <label>Promedio final que quiero</label>
-            <input type="number" class="meta-input-final" id="meta-final-${curso.id}"
-                min="0" max="20" step="0.1" value="14"
-                oninput="calcularMetaCurso('${curso.id}')">
-        </div>
-    `;
-
-    if (soloPC) {
-        contenidoHTML += `
-            <div class="meta-nota-ayuda" style="margin-left:0;">
-                Este curso se evalúa solo con prácticas, así que tu meta ES directamente
-                el Prom. PC que necesitas alcanzar (no hay examen parcial ni final que calcular).
-            </div>
-        `;
-    } else {
-        contenidoHTML += `
-            <div class="meta-modo-toggle" id="meta-toggle-${curso.id}" data-modo="EP">
-                <button type="button" class="meta-modo-btn activo" id="meta-modo-ep-${curso.id}"
-                    onclick="cambiarModoMeta('${curso.id}', 'EP')">Calcular EP</button>
-                <button type="button" class="meta-modo-btn" id="meta-modo-ef-${curso.id}"
-                    onclick="cambiarModoMeta('${curso.id}', 'EF')">Calcular EF</button>
-            </div>
-            <div id="meta-sliders-${curso.id}">
-                ${generarSlidersMeta(curso, 'EP')}
-            </div>
-        `;
-    }
-
-    return `
-        <div class="meta-curso-toggle" onclick="toggleMetaCurso('${curso.id}')">
-            <span>🎯 META DEL CURSO</span>
-            <span class="meta-curso-flecha" id="meta-flecha-${curso.id}">▼</span>
-        </div>
-        <div class="meta-curso-contenido" id="meta-curso-${curso.id}" style="display:none;">
-            ${contenidoHTML}
-        </div>
-    `;
-}
-
-function generarSlidersMeta(curso, modo) {
-    const soloExam = FORMULAS_SOLO_EXAMENES.includes(curso.formula_type);
-    // Si modo='EP', el EF es el valor conocido/supuesto y se calcula el EP (y viceversa).
-    const varConocida = modo === 'EP' ? 'EF' : 'EP';
-    const nombreCalcular = modo === 'EP' ? 'examen parcial (EP)' : 'examen final (EF)';
-
-    let html = '';
-
-    if (!soloExam) {
-        html += `
-            <div class="meta-slider-group">
-                <span class="meta-slider-label">Si en Prom. PC saco</span>
-                <input type="range" class="meta-slider" id="meta-pp-${curso.id}"
-                    min="0" max="20" step="0.1" value="14"
-                    oninput="calcularMetaCurso('${curso.id}')">
-                <span class="meta-slider-valor" id="meta-pp-valor-${curso.id}">14.0</span>
-            </div>
-            <div class="meta-nota-ayuda">
-                Representa tu Promedio de Prácticas (PP) ya calculado —el promedio de tus
-                3 mejores notas de 4— tal como entra en la fórmula del curso.
-            </div>
-        `;
-    }
-
-    html += `
-        <div class="meta-slider-group">
-            <span class="meta-slider-label">Y en ${varConocida} saco</span>
-            <input type="range" class="meta-slider" id="meta-conocida-${curso.id}"
-                min="0" max="20" step="0.1" value="14"
-                oninput="calcularMetaCurso('${curso.id}')">
-            <span class="meta-slider-valor" id="meta-conocida-valor-${curso.id}">14.0</span>
-        </div>
-        <div class="meta-resultado">
-            <div class="meta-resultado-label">Necesitas al menos esto en tu ${nombreCalcular}</div>
-            <div class="meta-resultado-valor" id="meta-resultado-${curso.id}">--</div>
-        </div>
-    `;
-
-    return html;
-}
-
-function cambiarModoMeta(cursoId, modo) {
-    const curso = cursosSeleccionados.find(c => c.id === cursoId);
-    if (!curso) return;
-
-    const toggle = document.getElementById(`meta-toggle-${cursoId}`);
-    if (toggle) toggle.dataset.modo = modo;
-
-    const btnEP = document.getElementById(`meta-modo-ep-${cursoId}`);
-    const btnEF = document.getElementById(`meta-modo-ef-${cursoId}`);
-    if (btnEP) btnEP.classList.toggle('activo', modo === 'EP');
-    if (btnEF) btnEF.classList.toggle('activo', modo === 'EF');
-
-    const contenedor = document.getElementById(`meta-sliders-${cursoId}`);
-    if (contenedor) contenedor.innerHTML = generarSlidersMeta(curso, modo);
-
-    calcularMetaCurso(cursoId);
-}
-
-function toggleMetaCurso(cursoId) {
-    const contenido = document.getElementById(`meta-curso-${cursoId}`);
-    const flecha = document.getElementById(`meta-flecha-${cursoId}`);
-    if (!contenido) return;
-    const abrir = contenido.style.display !== 'block';
-    contenido.style.display = abrir ? 'block' : 'none';
-    if (flecha) flecha.textContent = abrir ? '▲' : '▼';
-}
-
-function calcularMetaCurso(cursoId) {
-    const curso = cursosSeleccionados.find(c => c.id === cursoId);
-    if (!curso) return;
-
-    const metaEl = document.getElementById(`meta-final-${cursoId}`);
-    if (!metaEl) return;
-    const metaFinal = parseFloat(metaEl.value);
-
-    const soloPC = FORMULAS_SOLO_PC.includes(curso.formula_type);
-    if (soloPC) {
-        guardarMetaCurso(cursoId, { metaFinal });
-        return;
-    }
-
-    const resultadoEl = document.getElementById(`meta-resultado-${cursoId}`);
-    if (isNaN(metaFinal) || !resultadoEl) return;
-
-    const esDobleEF = FORMULAS_DOBLE_EF.includes(curso.formula_type);
-    const soloExam = FORMULAS_SOLO_EXAMENES.includes(curso.formula_type);
-
-    const toggle = document.getElementById(`meta-toggle-${cursoId}`);
-    const modo = toggle ? toggle.dataset.modo : 'EP';
-
-    const conocidaSlider = document.getElementById(`meta-conocida-${cursoId}`);
-    const conocidaValorEl = document.getElementById(`meta-conocida-valor-${cursoId}`);
-    if (!conocidaSlider) return;
-    const valorConocida = parseFloat(conocidaSlider.value);
-    if (conocidaValorEl) conocidaValorEl.textContent = valorConocida.toFixed(1);
-
-    let pp = null;
-    if (!soloExam) {
-        const ppSlider = document.getElementById(`meta-pp-${cursoId}`);
-        const ppValorEl = document.getElementById(`meta-pp-valor-${cursoId}`);
-        pp = parseFloat(ppSlider.value);
-        if (ppValorEl) ppValorEl.textContent = pp.toFixed(1);
-    }
-
-    let necesario;
-    if (soloExam) {
-        // NF = (EP + 2·EF) / 3
-        necesario = modo === 'EP'
-            ? (3 * metaFinal) - (2 * valorConocida)      // EF conocido -> calcular EP
-            : ((3 * metaFinal) - valorConocida) / 2;     // EP conocido -> calcular EF
-    } else if (esDobleEF) {
-        // NF = (PP + EP + 2·EF) / 4
-        necesario = modo === 'EP'
-            ? (4 * metaFinal) - pp - (2 * valorConocida)     // EF conocido -> calcular EP
-            : ((4 * metaFinal) - pp - valorConocida) / 2;    // EP conocido -> calcular EF
-    } else {
-        // NF = (PP + EP + EF) / 3 (simétrico, misma fórmula para ambos modos)
-        necesario = (3 * metaFinal) - pp - valorConocida;
-    }
-
-    if (necesario > 20) {
-        resultadoEl.textContent = '⚠️ Meta no alcanzable con estos supuestos';
-        resultadoEl.classList.add('meta-no-alcanzable');
-    } else {
-        resultadoEl.textContent = Math.max(0, necesario).toFixed(1);
-        resultadoEl.classList.remove('meta-no-alcanzable');
-    }
-
-    guardarMetaCurso(cursoId, { metaFinal, modo, pp, conocida: valorConocida });
-}
-
-function guardarMetaCurso(cursoId, datos) {
-    const guardadas = localStorage.getItem('intranotas_metas');
-    const metas = guardadas ? JSON.parse(guardadas) : {};
-    metas[cursoId] = datos;
-    localStorage.setItem('intranotas_metas', JSON.stringify(metas));
-}
-
-function cargarMetasGuardadas() {
-    const guardadas = localStorage.getItem('intranotas_metas');
-    if (!guardadas) return;
-    const metas = JSON.parse(guardadas);
-    cursosSeleccionados.forEach(curso => {
-        const datos = metas[curso.id];
-        if (!datos) return;
-
-        const metaEl = document.getElementById(`meta-final-${curso.id}`);
-        if (metaEl && datos.metaFinal != null) metaEl.value = datos.metaFinal;
-
-        if (datos.modo === 'EF') {
-            cambiarModoMeta(curso.id, 'EF'); // regenera los sliders en modo EF antes de restaurar valores
-        }
-
-        const ppEl = document.getElementById(`meta-pp-${curso.id}`);
-        if (ppEl && datos.pp != null) ppEl.value = datos.pp;
-
-        const conocidaEl = document.getElementById(`meta-conocida-${curso.id}`);
-        if (conocidaEl && datos.conocida != null) conocidaEl.value = datos.conocida;
-    });
-}
-
-function limpiarMetasCursosNoSeleccionados() {
-    const guardadas = localStorage.getItem('intranotas_metas');
-    if (!guardadas) return;
-    const metas = JSON.parse(guardadas);
-    const ids = cursosSeleccionados.map(c => c.id);
-    const filtradas = {};
-    Object.keys(metas).forEach(id => { if (ids.includes(id)) filtradas[id] = metas[id]; });
-    localStorage.setItem('intranotas_metas', JSON.stringify(filtradas));
-}
 
 function togglePanelNotas(cursoId) {
     const panel = document.getElementById(`panel-${cursoId}`);
@@ -1913,7 +1700,118 @@ function calcularNotaFinalSoloPC(prom_pc) {
 function calcularNotaFinalSoloExamenes(ep, ef, es) {
     const { ep_final, ef_final } = aplicarSustitutorio(ep, ef, es);
     return truncar((ep_final + 2 * ef_final) / 3, 1);
-}/* ============================================================
+}
+
+/* ============================================================
+   MOTOR DE CÁLCULO PURO (sin DOM) — usado por Meta del curso
+   Replica exactamente el switch de calcularTodo() pero recibe los
+   valores como parámetros y no lee/escribe inputs. Así el motor de
+   escenarios puede "probar" combinaciones hipotéticas de notas sin
+   tocar la pantalla, reusando siempre la misma fórmula real de cada
+   curso — nunca se reinventa el álgebra acá. El sustitutorio (ES)
+   queda fuera a propósito: Meta del curso es una proyección previa,
+   no el simulador de "ya desaprobé, ¿qué necesito en el ES?".
+   ============================================================ */
+function calcularPFCompleto(curso, valores) {
+    const pc = n => valores[`PC${n}`] ?? null;
+    const mon = n => valores[`Monografia${n}`] ?? null;
+    const lab = n => valores[`Lab${n}`] ?? null;
+    const ep = valores.EP ?? null;
+    const ef = valores.EF ?? null;
+
+    let prom_pc = null, nota_final = null;
+
+    switch (curso.formula_type) {
+        case 'REDACCION_BASE':
+        case 'REALIDAD_NACIONAL':
+            prom_pc = calcularPromPCRedaccion(pc(1), pc(2), pc(3), pc(4), mon(1), mon(2));
+            nota_final = calcularNotaFinalSoloPC(prom_pc); break;
+
+        case 'ETICA':
+        case 'METODOLOGIA_INV':
+            prom_pc = calcularPromPC4PC1Mon(pc(1), pc(2), pc(3), pc(4), mon(1));
+            nota_final = calcularNotaFinalSoloPC(prom_pc); break;
+
+        case 'SOLO_PC':
+        case 'REALIDAD_NACIONAL_4PC':
+            prom_pc = calcularPromPCComun(pc(1), pc(2), pc(3), pc(4));
+            nota_final = calcularNotaFinalSoloPC(prom_pc); break;
+
+        case 'SOLO_PC_6':
+            prom_pc = calcularPromPCSolo6(pc(1), pc(2), pc(3), pc(4), pc(5), pc(6));
+            nota_final = calcularNotaFinalSoloPC(prom_pc); break;
+
+        case 'SOLO_EXAMENES':
+            prom_pc = null;
+            nota_final = calcularNotaFinalSoloExamenes(ep, ef, null); break;
+
+        case 'QUIMICA':
+            prom_pc = calcularPromPCQuimica(
+                [pc(1), pc(2), pc(3), pc(4)],
+                [lab(1), lab(2), lab(3), lab(4), lab(5), lab(6), lab(7), lab(8)]
+            );
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+
+        case 'COMPUTACION_1_1_2':
+        case 'ALGORITMIA':
+            prom_pc = calcularPromPCComun(pc(1), pc(2), pc(3), pc(4));
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+
+        case 'FISICA_I':
+            prom_pc = calcularPromPCFisica([pc(1), pc(2), pc(3), pc(4), pc(5)], [lab(1), lab(2), lab(3), lab(4), lab(5)]);
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+
+        case 'FISICA_II':
+            prom_pc = calcularPromPCFisica([pc(1), pc(2), pc(3), pc(4), pc(5)], [lab(1), lab(2), lab(3), lab(4), lab(5)]);
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+
+        case 'ESTANDAR_1_1_1':
+        case 'ALGEBRA':
+            prom_pc = calcularPromPCComun(pc(1), pc(2), pc(3), pc(4));
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+
+        case 'PSICOLOGIA':
+            prom_pc = calcularPromPCPsicologia(pc(1), pc(2), pc(3), pc(4), mon(1));
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+
+        case 'BIOLOGICO':
+            prom_pc = calcularPromPCBiologico([pc(1), pc(2), pc(3), pc(4), pc(5)], mon(1));
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+
+        case 'MODELADO_DATOS':
+        case 'INGENIERIA_DATOS':
+            prom_pc = calcularPromPC4PC1Mon(pc(1), pc(2), pc(3), pc(4), mon(1));
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+
+        case 'TEORIA_ORGANIZACIONAL':
+            prom_pc = calcularPromPCTeoriaOrganizacional(pc(1), pc(2), pc(3), pc(4), mon(1), mon(2));
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+
+        case 'TCS':
+            prom_pc = calcularPromPCRedaccion(pc(1), pc(2), pc(3), pc(4), mon(1), mon(2));
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+
+        case 'TCS_APLICADA':
+            prom_pc = calcularPromPCTCSEspecial(pc(1), pc(2), mon(1), mon(2));
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+
+        case 'SISTEMAS_BLANDOS':
+            prom_pc = calcularPromPCSistemasBlandos(pc(1), mon(1), mon(2));
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+
+        case 'ARQ_EMPRESARIAL':
+            prom_pc = calcularPromPCArqEmpresarial(pc(1), pc(2), pc(3), mon(1));
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+
+        default:
+            prom_pc = calcularPromPCComun(pc(1), pc(2), pc(3), pc(4));
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null);
+    }
+
+    return { prom_pc, nota_final };
+}
+
+/* ============================================================
    SIMULADOR "¿QUÉ NOTA NECESITO?"
    ============================================================ */
 function calcularNotaNecesaria(curso, prom_pc, ep, ef, es, notaFinalReal) {
@@ -2252,6 +2150,10 @@ function calcularTodo() {
 
     actualizarBannerAlertas(cursosEnRiesgo, cursosDesaprobados);
 
+    // Si el panel de "Meta del curso" está abierto, se refresca solo —
+    // así respeta en vivo cualquier nota que el usuario acabe de ingresar.
+    if (document.getElementById('meta-aa-resultado')) refrescarVistaMeta();
+
     const ponderadoEl = document.getElementById('ponderado-ciclo');
     if (ponderadoEl) {
         if (sumaCreditos > 0) {
@@ -2282,7 +2184,6 @@ function guardarConfiguracion() {
     };
     localStorage.setItem(claveUltimoPeriodo(), periodoSeleccionado);
     guardarDatosPeriodos(datos);
-    limpiarMetasCursosNoSeleccionados();
 }
 
 function guardarNotas() {
@@ -2559,4 +2460,385 @@ async function intentarRestaurarSesion() {
     } catch (e) {
         console.log('No se pudo restaurar la sesión:', e);
     }
+}
+
+/* ============================================================
+   ============================================================
+   ANÁLISIS ACADÉMICO — hub de herramientas (Pantalla 4)
+
+   Punto de entrada independiente de las tarjetas de curso: un
+   botón flotante (dentro de #botones-flotantes, que ya solo se
+   muestra en Pantalla 4) abre un panel — docked a la derecha en
+   escritorio, hoja inferior en celular (ver CSS en
+   analisis-academico.css). Dentro viven 4 herramientas:
+
+     🎯 Meta del curso     — funcional
+     🔮 Predicción         — placeholder "Próximamente"
+     🏆 Rendimiento/curso  — placeholder "Próximamente"
+     📈 Evolución general  — placeholder "Próximamente"
+
+   Predicción y Rendimiento se activan con 1+ ciclo cargado;
+   Evolución necesita 2+ ciclos — la detección ya funciona hoy
+   (contarCiclosConDatos), aunque el contenido esté pendiente.
+   Como leerDatosPeriodos() ya está namespaceada por malla, la
+   detección de "cuántos ciclos tienen datos" corre sobre la malla
+   activa en cada momento (misma malla que ve Intranotas).
+   ============================================================
+   ============================================================ */
+
+/* ---------- Inicialización del hub (se llama una vez desde
+   generarSimulador; el guard de abajo evita duplicar el DOM si
+   el usuario reentra a Pantalla 4 varias veces) ---------- */
+function inicializarAnalisisAcademico() {
+    if (document.getElementById('aa-panel')) return;
+
+    const contenedorBotones = document.getElementById('botones-flotantes');
+
+    const fab = document.createElement('button');
+    fab.type = 'button';
+    fab.id = 'aa-fab';
+    fab.className = 'aa-fab';
+    fab.setAttribute('aria-label', 'Análisis académico');
+    fab.innerHTML = '📊';
+    fab.onclick = () => toggleAnalisisAcademico();
+    (contenedorBotones || document.body).appendChild(fab);
+
+    const overlay = document.createElement('div');
+    overlay.id = 'aa-overlay';
+    overlay.className = 'aa-overlay';
+    overlay.onclick = () => toggleAnalisisAcademico(false);
+    document.body.appendChild(overlay);
+
+    const panel = document.createElement('div');
+    panel.id = 'aa-panel';
+    panel.className = 'aa-panel';
+    panel.innerHTML = `
+        <div class="aa-panel-header">
+            <span>📊 Análisis académico</span>
+            <button type="button" class="aa-cerrar" aria-label="Cerrar" onclick="toggleAnalisisAcademico(false)">✕</button>
+        </div>
+        <div class="aa-panel-body" id="aa-panel-body"></div>
+    `;
+    document.body.appendChild(panel);
+}
+
+function toggleAnalisisAcademico(forzar) {
+    const panel = document.getElementById('aa-panel');
+    const overlay = document.getElementById('aa-overlay');
+    const fab = document.getElementById('aa-fab');
+    if (!panel) return;
+
+    const abrir = typeof forzar === 'boolean' ? forzar : !panel.classList.contains('abierto');
+    panel.classList.toggle('abierto', abrir);
+    if (overlay) overlay.classList.toggle('visible', abrir);
+    if (fab) fab.classList.toggle('activo', abrir);
+
+    if (abrir) abrirHerramienta('grid');
+}
+
+/* ---------- Detección de cuántos ciclos tienen datos cargados
+   (reutiliza leerDatosPeriodos(), namespaceada por malla — ver
+   claveDatosPeriodos) ---------- */
+function contarCiclosConDatos() {
+    const datos = leerDatosPeriodos();
+    return Object.values(datos).filter(periodo => {
+        if (!periodo || !periodo.notas) return false;
+        return Object.values(periodo.notas).some(notasCurso =>
+            notasCurso && Object.values(notasCurso).some(v => v !== null && v !== '' && v !== undefined)
+        );
+    }).length;
+}
+
+/* ---------- Grilla principal del hub ---------- */
+function generarGridHerramientas() {
+    const ciclosConDatos = contarCiclosConDatos();
+    const unCiclo = ciclosConDatos >= 1;
+    const multiCiclo = ciclosConDatos >= 2;
+
+    const tile = (id, icono, nombre, activa, notaBloqueo) => `
+        <button type="button" class="aa-tile ${activa ? '' : 'aa-tile-bloqueada'}" onclick="abrirHerramienta('${id}')">
+            <span class="aa-tile-icono">${icono}</span>
+            <span class="aa-tile-nombre">${nombre}</span>
+            ${activa ? '' : `<span class="aa-tile-nota">${notaBloqueo}</span>`}
+        </button>
+    `;
+
+    return `
+        <div class="aa-grid">
+            ${tile('meta', '🎯', 'Meta del curso', true, '')}
+            ${tile('prediccion', '🔮', 'Predicción', unCiclo, 'Ingresa notas primero')}
+            ${tile('rendimiento', '🏆', 'Rendimiento por curso', unCiclo, 'Carga un ciclo primero')}
+            ${tile('evolucion', '📈', 'Evolución del promedio', multiCiclo, 'Disponible con 2+ ciclos')}
+        </div>
+    `;
+}
+
+/* ---------- Router simple entre vistas dentro del panel ---------- */
+function abrirHerramienta(id) {
+    const body = document.getElementById('aa-panel-body');
+    if (!body) return;
+
+    if (id === 'grid') { body.innerHTML = generarGridHerramientas(); return; }
+    if (id === 'meta') { body.innerHTML = generarVistaMeta(); inicializarVistaMeta(); return; }
+
+    const INFO_PROXIMAMENTE = {
+        prediccion: {
+            nombre: '🔮 Predicción',
+            desc: 'Con al menos 2 notas cargadas en un curso, va a estimar tu próxima nota y si el curso quedaría aprobado o desaprobado manteniendo tu ritmo actual — siempre aclarando que es una proyección, no una garantía.'
+        },
+        rendimiento: {
+            nombre: '🏆 Rendimiento por curso',
+            desc: 'Va a mostrar el PF de todos los cursos de tu ciclo actual, ordenados, resaltando tus cursos fuertes y los críticos.'
+        },
+        evolucion: {
+            nombre: '📈 Evolución del promedio',
+            desc: 'Va a mostrar tu promedio ponderado ciclo a ciclo a través del tiempo, resaltando automáticamente tu mejor y tu peor ciclo.'
+        }
+    }[id];
+    if (!INFO_PROXIMAMENTE) return;
+
+    body.innerHTML = `
+        <button type="button" class="aa-volver" onclick="abrirHerramienta('grid')">← Volver</button>
+        <div class="aa-proximamente">
+            <div class="aa-proximamente-titulo">${INFO_PROXIMAMENTE.nombre}</div>
+            <p class="aa-proximamente-desc">${INFO_PROXIMAMENTE.desc}</p>
+            <span class="aa-proximamente-badge">🚧 Próximamente</span>
+        </div>
+    `;
+}
+
+/* ============================================================
+   🎯 META DEL CURSO — motor de escenarios
+
+   Reutiliza calcularPFCompleto() como caja negra: nunca reescribe
+   el álgebra de ningún curso. Para cada componente pendiente
+   (que el usuario aún no ingresó en su tarjeta) genera hasta 3
+   escenarios de estudio ("arquetipos"), no todas las combinaciones
+   matemáticamente posibles. Los componentes ya ingresados por el
+   usuario se respetan siempre como fijos — y como este panel se
+   recalcula desde calcularTodo(), se actualiza solo apenas el
+   usuario escribe una nota nueva.
+   ============================================================ */
+const META_BANDA_COMODA = 16;     // valor "cómodo" para una banda que se fija a propósito
+const META_BANDA_APROBADO = 11;   // valor "de pase" para una banda que se fija a propósito
+const META_PASO_BUSQUEDA = 0.1;   // resolución de la búsqueda del valor mínimo necesario
+
+let metaCursoSeleccionadoId = null;
+
+/* Qué componentes tiene el curso (vía COMPONENT_LAYOUT, sin ES) y
+   cómo se agrupan: grupo de prácticas (todo lo que no es EP/EF) y
+   grupo de exámenes (EP/EF) — la misma separación conceptual que ya
+   usa el resto de Intranotas (Prom. PC vs. EP/EF). */
+function obtenerComponentesCurso(curso) {
+    const layout = COMPONENT_LAYOUT[curso.formula_type] || COMPONENT_LAYOUT['ESTANDAR_1_1_1'];
+    const todos = layout.flatMap(fila => fila.comps).filter(c => c !== 'ES');
+    const grupoPC = todos.filter(c => c !== 'EP' && c !== 'EF');
+    const grupoExamen = todos.filter(c => c === 'EP' || c === 'EF');
+    return { todos, grupoPC, grupoExamen };
+}
+
+/* Lee del DOM las notas que el usuario YA ingresó para ese curso en
+   su tarjeta (panel-notas), componente por componente. */
+function leerValoresActualesCurso(curso) {
+    const { todos } = obtenerComponentesCurso(curso);
+    const valores = {};
+    todos.forEach(comp => {
+        const el = document.getElementById(`input-${curso.id}-${comp}`);
+        const val = el && el.value !== '' ? parseFloat(el.value) : NaN;
+        valores[comp] = isNaN(val) ? null : val;
+    });
+    return valores;
+}
+
+/* Busca el menor valor en [0,20] (paso 0.1) que, asignado por igual
+   a todos los `comps` indicados (junto con lo ya fijo en `base`),
+   alcanza metaFinal. Se usa escaneo lineal en vez de búsqueda
+   binaria a propósito: como el PF se trunca a 1 decimal, puede haber
+   "mesetas" donde subir la nota no cambia el resultado, y un
+   escaneo simple es inmune a eso — 201 evaluaciones es trivial para
+   el navegador. */
+function resolverValorMinimo(curso, base, comps, metaFinal) {
+    for (let i = 0; i <= 200; i++) {
+        const x = Math.round(i * META_PASO_BUSQUEDA * 10) / 10;
+        const prueba = { ...base };
+        comps.forEach(c => { prueba[c] = x; });
+        const { nota_final } = calcularPFCompleto(curso, prueba);
+        if (nota_final !== null && nota_final >= metaFinal) return { valor: x, notaFinal: nota_final };
+    }
+    return null;
+}
+
+function generarEscenariosMeta(curso, metaFinal) {
+    const { grupoPC, grupoExamen } = obtenerComponentesCurso(curso);
+    const actuales = leerValoresActualesCurso(curso);
+
+    const fijos = {};
+    const pendientesPC = [];
+    const pendientesExamen = [];
+    grupoPC.forEach(c => { if (actuales[c] !== null) fijos[c] = actuales[c]; else pendientesPC.push(c); });
+    grupoExamen.forEach(c => { if (actuales[c] !== null) fijos[c] = actuales[c]; else pendientesExamen.push(c); });
+    const pendientesTodos = [...pendientesPC, ...pendientesExamen];
+
+    // Ya tiene TODAS sus notas: no hay nada que proyectar, solo mostrar el PF real.
+    if (pendientesTodos.length === 0) {
+        const { nota_final } = calcularPFCompleto(curso, fijos);
+        return { sinPendientes: true, notaFinal: nota_final, alcanzaMeta: nota_final !== null && nota_final >= metaFinal };
+    }
+
+    const escenarios = [];
+
+    // 1) Parejo — todo lo pendiente sube por igual
+    const parejo = resolverValorMinimo(curso, fijos, pendientesTodos, metaFinal);
+    if (parejo) {
+        escenarios.push({
+            nombre: '⚖️ Parejo',
+            descripcion: 'Subes todo lo que falta por igual, sin cargar más un lado que otro.',
+            valores: Object.fromEntries(pendientesTodos.map(c => [c, parejo.valor])),
+            notaFinal: parejo.notaFinal
+        });
+    }
+
+    // 2) Fuerte en prácticas — prácticas en banda cómoda, se resuelve el examen
+    if (pendientesPC.length && pendientesExamen.length) {
+        const base = { ...fijos };
+        pendientesPC.forEach(c => { base[c] = META_BANDA_COMODA; });
+        const res = resolverValorMinimo(curso, base, pendientesExamen, metaFinal);
+        if (res) {
+            const valores = Object.fromEntries(pendientesPC.map(c => [c, META_BANDA_COMODA]));
+            pendientesExamen.forEach(c => { valores[c] = res.valor; });
+            escenarios.push({
+                nombre: '📚 Fuerte en prácticas',
+                descripcion: `Mantienes tus prácticas alrededor de ${META_BANDA_COMODA} y el examen hace el resto.`,
+                valores, notaFinal: res.notaFinal
+            });
+        }
+    }
+
+    // 3) Todo al examen final — prácticas + EP en banda de aprobado, se resuelve el EF
+    if (pendientesExamen.includes('EF')) {
+        const base = { ...fijos };
+        pendientesPC.forEach(c => { base[c] = META_BANDA_APROBADO; });
+        if (pendientesExamen.includes('EP')) base['EP'] = META_BANDA_APROBADO;
+        const res = resolverValorMinimo(curso, base, ['EF'], metaFinal);
+        if (res) {
+            const valores = {};
+            pendientesPC.forEach(c => { valores[c] = META_BANDA_APROBADO; });
+            if (pendientesExamen.includes('EP')) valores['EP'] = META_BANDA_APROBADO;
+            valores['EF'] = res.valor;
+            escenarios.push({
+                nombre: '🎯 Todo al examen final',
+                descripcion: 'Prácticas y parcial se quedan en nivel de aprobado; el final carga el peso.',
+                valores, notaFinal: res.notaFinal
+            });
+        }
+    }
+
+    // 4) Recupera con la última PC — solo cursos SOLO_PC con 2+ PC pendientes
+    if (FORMULAS_SOLO_PC.includes(curso.formula_type) && pendientesPC.length >= 2) {
+        const ultima = pendientesPC[pendientesPC.length - 1];
+        const previas = pendientesPC.slice(0, -1);
+        const base = { ...fijos };
+        previas.forEach(c => { base[c] = META_BANDA_APROBADO; });
+        const res = resolverValorMinimo(curso, base, [ultima], metaFinal);
+        if (res) {
+            const valores = {};
+            previas.forEach(c => { valores[c] = META_BANDA_APROBADO; });
+            valores[ultima] = res.valor;
+            escenarios.push({
+                nombre: '🔁 Recupera con la última',
+                descripcion: `Tus demás PC quedan alrededor de ${META_BANDA_APROBADO} y todo se decide en tu última práctica.`,
+                valores, notaFinal: res.notaFinal
+            });
+        }
+    }
+
+    // Deduplicar (misma combinación de valores ya cubierta por otro arquetipo)
+    const vistos = new Set();
+    const unicos = escenarios.filter(e => {
+        const firma = pendientesTodos.map(c => e.valores[c] ?? '').join('|');
+        if (vistos.has(firma)) return false;
+        vistos.add(firma);
+        return true;
+    });
+
+    return { sinPendientes: false, escenarios: unicos.slice(0, 3) };
+}
+
+/* ---------- Vista de Meta del curso dentro del panel ---------- */
+function generarVistaMeta() {
+    if (!cursosSeleccionados.length) {
+        return `
+            <button type="button" class="aa-volver" onclick="abrirHerramienta('grid')">← Volver</button>
+            <p class="aa-vacio">Selecciona tus cursos en Intranotas para poder usar Meta del curso.</p>
+        `;
+    }
+
+    const cursosOrdenados = [...cursosSeleccionados].sort((a, b) => a.name.localeCompare(b.name));
+    if (!metaCursoSeleccionadoId || !cursosOrdenados.some(c => c.id === metaCursoSeleccionadoId)) {
+        metaCursoSeleccionadoId = cursosOrdenados[0].id;
+    }
+
+    return `
+        <button type="button" class="aa-volver" onclick="abrirHerramienta('grid')">← Volver</button>
+        <div class="meta-aa-selector">
+            <label for="meta-aa-curso-select">Curso</label>
+            <select id="meta-aa-curso-select" onchange="cambiarCursoMeta(this.value)">
+                ${cursosOrdenados.map(c => `<option value="${c.id}" ${c.id === metaCursoSeleccionadoId ? 'selected' : ''}>${c.name}</option>`).join('')}
+            </select>
+        </div>
+        <div class="meta-aa-input-group">
+            <label for="meta-aa-final">¿Cuál es tu meta y cómo podrías alcanzarla?</label>
+            <input type="number" id="meta-aa-final" min="0" max="20" step="0.1" value="14" oninput="refrescarVistaMeta()">
+        </div>
+        <div id="meta-aa-resultado"></div>
+    `;
+}
+
+function inicializarVistaMeta() { refrescarVistaMeta(); }
+
+function cambiarCursoMeta(cursoId) {
+    metaCursoSeleccionadoId = cursoId;
+    refrescarVistaMeta();
+}
+
+function refrescarVistaMeta() {
+    const cont = document.getElementById('meta-aa-resultado');
+    if (!cont) return;
+
+    const curso = cursosSeleccionados.find(c => c.id === metaCursoSeleccionadoId);
+    const metaEl = document.getElementById('meta-aa-final');
+    if (!curso || !metaEl) return;
+
+    const metaFinal = parseFloat(metaEl.value);
+    if (isNaN(metaFinal)) { cont.innerHTML = ''; return; }
+
+    const resultado = generarEscenariosMeta(curso, metaFinal);
+
+    if (resultado.sinPendientes) {
+        cont.innerHTML = resultado.notaFinal === null ? '' : `
+            <div class="meta-aa-completo ${resultado.alcanzaMeta ? 'ok' : 'no'}">
+                Ya tienes todas tus notas: tu PF es <strong>${resultado.notaFinal.toFixed(1)}</strong>.
+                ${resultado.alcanzaMeta ? ' ✅ ¡Alcanzaste tu meta!' : ' ❌ No llegaste a la meta con estas notas.'}
+            </div>
+        `;
+        return;
+    }
+
+    if (!resultado.escenarios.length) {
+        cont.innerHTML = `<div class="meta-aa-inalcanzable">⚠️ Con lo que ya tienes ingresado, esta meta no es alcanzable (necesitarías más de 20 en algún componente).</div>`;
+        return;
+    }
+
+    cont.innerHTML = resultado.escenarios.map(e => `
+        <div class="meta-aa-tarjeta">
+            <div class="meta-aa-tarjeta-nombre">${e.nombre}</div>
+            <p class="meta-aa-tarjeta-desc">${e.descripcion}</p>
+            <div class="meta-aa-tarjeta-valores">
+                ${Object.entries(e.valores).map(([comp, val]) => `
+                    <div class="meta-aa-valor"><span>${comp}</span><strong>${val.toFixed(1)}</strong></div>
+                `).join('')}
+            </div>
+            <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${e.notaFinal.toFixed(1)}</strong></div>
+        </div>
+    `).join('');
 }
