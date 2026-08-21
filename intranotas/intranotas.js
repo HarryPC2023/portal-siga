@@ -663,8 +663,8 @@ function abrirModalAgregarOtraMalla() {
                         ${grupo.etiqueta}
                     </p>
                     ${grupo.cursos.map(c => {
-        const yaSeleccionado = cursosSeleccionados.some(sel => sel.id === c.id);
-        return `
+                        const yaSeleccionado = cursosSeleccionados.some(sel => sel.id === c.id);
+                        return `
                         <label class="curso-item" style="cursor:pointer;">
                             <input type="checkbox" class="curso-checkbox" data-otra-malla-curso-id="${c.id}"${yaSeleccionado ? ' checked' : ''}>
                             <div class="curso-info">
@@ -674,7 +674,7 @@ function abrirModalAgregarOtraMalla() {
                             </div>
                         </label>
                     `;
-    }).join('')}
+                    }).join('')}
                 `).join('')}
             </div>
             <div style="padding:14px 22px; border-top:1px solid #e5e7eb; display:flex; gap:8px; flex-shrink:0;">
@@ -825,7 +825,13 @@ function syncIntraluHabilitado() {
     return _intraluBetaHabilitado;
 }
 
-const INTRALU_SYNC_URL = 'http://localhost:8000/api/sync-intralu'; // TODO Harry: cambia esto por la URL real de tu backend en producción (https://...)
+// Detecta solo si estás corriendo tu Jekyll local (localhost/127.0.0.1) para
+// usar tu backend local automáticamente — en cualquier otro caso (producción,
+// GitHub Pages) usa la URL real de Render. Así no hay que ir cambiando esta
+// línea a mano cada vez que alternas entre probar local y producción.
+const INTRALU_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+    ? 'http://localhost:8000/api/sync-intralu'
+    : 'https://siga-conexion-intralu.onrender.com/api/sync-intralu';
 
 function abrirModalSyncIntralu() {
     const existente = document.getElementById('modal-sync-intralu-overlay');
