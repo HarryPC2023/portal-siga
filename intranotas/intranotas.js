@@ -854,10 +854,10 @@ function abrirModalSyncIntralu() {
             <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Cargar notas de Intralú</h3>
             <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:16px;">
                 Ingresa tu código y contraseña de Intralú. Se usa una sola vez para iniciar sesión y leer tus cursos
-                y notas de todos tus periodos — puede tardar varios minutos si decides cargar todos los ciclos que
-                has cursado (elegir un solo periodo es rápido). Tus credenciales nunca se guardan en nuestros
-                servidores: viajan directo a la UNI y se descartan al terminar. Además, no necesitas tener abierta
-                Intralú para hacerlo.
+                y notas de todos tus periodos — puede tardar diez minutos o más si decides cargar todos los ciclos
+                que has cursado, dependiendo de la cantidad de cursos que llevaste por ciclo (elegir un solo periodo
+                es más rápido). Tus credenciales nunca se guardan en nuestros servidores: se descartan al terminar.
+                Además, no necesitas tener abierta Intralú para hacerlo.
             </p>
             <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué quieres cargar?</label>
             <select id="sync-intralu-alcance"
