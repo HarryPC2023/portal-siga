@@ -37,7 +37,11 @@ app.add_middleware(
 # pesada otra vez — bajamos el límite de simultáneas para proteger el
 # servidor (sobre todo en un plan gratuito de hosting).
 # --------------------------------------------------------------
-MAX_SYNCS_SIMULTANEOS = 2
+# Render (plan gratuito) da solo 512 MB de RAM — un solo Chromium ya usa
+# varios cientos de MB, así que con 2 simultáneas correríamos riesgo real
+# de quedarnos sin memoria. Si más adelante subes a un plan con más RAM,
+# puedes volver a subir este número.
+MAX_SYNCS_SIMULTANEOS = 1
 _semaforo_sync = threading.Semaphore(MAX_SYNCS_SIMULTANEOS)
 
 
@@ -441,6 +445,12 @@ def consultar_sync(job_id: str):
 
 
 if __name__ == "__main__":
+    import os
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    # Railway asigna el puerto dinámicamente vía la variable de entorno
+    # PORT. En tu máquina (sin esa variable) sigue usando 8000, como
+    # hasta ahora. host="0.0.0.0" (no 127.0.0.1) porque Railway necesita
+    # que el servidor escuche en todas las interfaces, no solo localhost.
+    puerto = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=puerto)
