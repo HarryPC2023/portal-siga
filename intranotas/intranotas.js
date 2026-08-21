@@ -1336,7 +1336,7 @@ function generarSimulador() {
             <div class="titulo-ciclo-simulador">
                 <span class="carrera-label">${NOMBRES_CARRERAS[carreraSeleccionada]}</span>
                 <div style="display:flex; align-items:center;">
-                    <div class="campo-select-custom" style="max-width:160px;">
+                    <div class="campo-select-custom" style="flex:1; max-width:220px;">
                         <button type="button" class="select-custom-trigger" id="periodoGuardadoTrigger"
                             aria-haspopup="listbox" aria-expanded="false">
                             <span id="periodoGuardadoTriggerTexto">${formatoPeriodoCorto(periodoSeleccionado)}</span>
