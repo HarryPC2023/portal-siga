@@ -663,8 +663,8 @@ function abrirModalAgregarOtraMalla() {
                         ${grupo.etiqueta}
                     </p>
                     ${grupo.cursos.map(c => {
-                        const yaSeleccionado = cursosSeleccionados.some(sel => sel.id === c.id);
-                        return `
+        const yaSeleccionado = cursosSeleccionados.some(sel => sel.id === c.id);
+        return `
                         <label class="curso-item" style="cursor:pointer;">
                             <input type="checkbox" class="curso-checkbox" data-otra-malla-curso-id="${c.id}"${yaSeleccionado ? ' checked' : ''}>
                             <div class="curso-info">
@@ -674,7 +674,7 @@ function abrirModalAgregarOtraMalla() {
                             </div>
                         </label>
                     `;
-                    }).join('')}
+    }).join('')}
                 `).join('')}
             </div>
             <div style="padding:14px 22px; border-top:1px solid #e5e7eb; display:flex; gap:8px; flex-shrink:0;">
@@ -1335,14 +1335,19 @@ function generarSimulador() {
         <div class="cabecera-simulador">
             <div class="titulo-ciclo-simulador">
                 <span class="carrera-label">${NOMBRES_CARRERAS[carreraSeleccionada]}</span>
-                <div class="campo-select-custom" style="max-width:160px;">
-                    <button type="button" class="select-custom-trigger" id="periodoGuardadoTrigger"
-                        aria-haspopup="listbox" aria-expanded="false">
-                        <span id="periodoGuardadoTriggerTexto">${formatoPeriodoCorto(periodoSeleccionado)}</span>
-                        <span class="select-custom-chevron" aria-hidden="true">▾</span>
-                    </button>
-                    <ul class="select-custom-lista" id="periodoGuardadoLista" role="listbox" hidden></ul>
-                    <input type="hidden" id="periodoGuardadoValor">
+                <div style="display:flex; align-items:center;">
+                    <div class="campo-select-custom" style="max-width:160px;">
+                        <button type="button" class="select-custom-trigger" id="periodoGuardadoTrigger"
+                            aria-haspopup="listbox" aria-expanded="false">
+                            <span id="periodoGuardadoTriggerTexto">${formatoPeriodoCorto(periodoSeleccionado)}</span>
+                            <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <ul class="select-custom-lista" id="periodoGuardadoLista" role="listbox" hidden></ul>
+                        <input type="hidden" id="periodoGuardadoValor">
+                    </div>
+                    <button type="button" class="btn-volver" onclick="iniciarEliminarPeriodo()"
+                        aria-label="Eliminar este periodo"
+                        style="flex-shrink:0; padding:8px 10px; margin-left:6px;">🗑️</button>
                 </div>
             </div>
             ${syncIntraluHabilitado() ? `
@@ -2423,6 +2428,53 @@ function confirmarNuevoPeriodo() {
     generarOpcionesPeriodo();
 
     mostrarToast('🔄 Elige el periodo y los cursos que quieres guardar');
+}
+
+/* ============================================================
+   ELIMINAR UN PERIODO GUARDADO ESPECÍFICO
+   Distinto de "Nuevo periodo" (solo limpia la pantalla actual, sin
+   tocar lo guardado) y de "Limpiar todo" (solo borra notas dentro
+   del periodo activo, pero el periodo y los cursos se quedan). Esto
+   sí saca el periodo entero — cursos y notas — de
+   intranotas_datos_periodos.
+   ============================================================ */
+function iniciarEliminarPeriodo() {
+    if (!periodoSeleccionado) return;
+    document.getElementById('modal-eliminar-periodo-texto').textContent =
+        `Se eliminará por completo el periodo ${formatoPeriodoCorto(periodoSeleccionado)}, con todos sus cursos y notas. No se puede deshacer.`;
+    document.getElementById('modal-eliminar-periodo-overlay').classList.add('visible');
+}
+
+function cerrarModalEliminarPeriodo() {
+    document.getElementById('modal-eliminar-periodo-overlay').classList.remove('visible');
+}
+
+function confirmarEliminarPeriodo() {
+    cerrarModalEliminarPeriodo();
+    if (!periodoSeleccionado) return;
+
+    const datos = leerDatosPeriodos();
+    const periodoEliminado = periodoSeleccionado;
+    delete datos[periodoEliminado];
+    guardarDatosPeriodos(datos);
+
+    const periodosRestantes = Object.keys(datos).sort().reverse();
+
+    if (periodosRestantes.length) {
+        // Cambia al periodo más reciente que quede.
+        cambiarPeriodoGuardado(periodosRestantes[0]);
+    } else {
+        // No queda ningún periodo guardado: vuelve a Pantalla 3 desde cero.
+        cursosSeleccionados = [];
+        periodoSeleccionado = null;
+        irAPantalla(3);
+        mostrarBloquePeriodoCursos(true);
+        mostrarSelectorCarrera(false);
+        desmarcarTodosLosCursos();
+        generarOpcionesPeriodo();
+    }
+
+    mostrarToast(`🗑️ Periodo ${formatoPeriodoCorto(periodoEliminado)} eliminado`);
 }
 
 /* ============================================================

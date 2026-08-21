@@ -282,6 +282,24 @@
         </div>
     </div>
 
+    <!-- Modal: eliminar un periodo guardado específico (no todos, solo el
+         que está seleccionado ahora mismo). Distinto de "Nuevo periodo"
+         (que solo limpia la pantalla actual) y de "Limpiar todo" (que solo
+         borra notas dentro del periodo activo) — este SÍ quita el periodo
+         entero de la lista guardada. -->
+    <div id="modal-eliminar-periodo-overlay" class="modal-overlay">
+        <div class="modal-caja">
+            <div class="modal-icono">🗑️</div>
+            <h2 class="modal-titulo">¿Eliminar este periodo?</h2>
+            <p class="modal-mensaje" id="modal-eliminar-periodo-texto">Se borrará por completo, con todos sus
+                cursos y notas. No se puede deshacer.</p>
+            <div class="modal-botones">
+                <button class="modal-btn modal-btn-cancelar" onclick="cerrarModalEliminarPeriodo()">Cancelar</button>
+                <button class="modal-btn modal-btn-confirmar" onclick="confirmarEliminarPeriodo()">Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: información importante -->
     <div id="modal-info-overlay" class="modal-overlay" onclick="cerrarModalInfo()">
         <div class="modal-caja modal-info-caja" onclick="event.stopPropagation()">
