@@ -508,6 +508,74 @@
 }
 
 /* ============================================================
+   HERRAMIENTA: 🚨 Alertas inteligentes
+   ============================================================ */
+.ah-alertas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ah-alerta-card {
+    display: flex;
+    gap: 10px;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+}
+
+.ah-alerta-icono {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.ah-alerta-texto {
+    flex: 1;
+    min-width: 0;
+}
+
+.ah-alerta-titulo {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: var(--text);
+    margin: 0 0 4px;
+}
+
+.ah-alerta-detalle {
+    font-size: 0.74rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.ah-alerta-accion {
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: none;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.72rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.ah-alerta-accion:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+.ah-alerta-ok {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 20px 10px;
+}
+
+/* ============================================================
    AVISO: instrucciones para importar el .ics
    Sin temporizador a propósito — se queda hasta que el usuario
    lo cierra, para que le dé tiempo de leerlo cuando vuelva de

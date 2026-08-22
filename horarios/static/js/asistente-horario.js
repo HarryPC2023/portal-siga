@@ -59,7 +59,7 @@ const AH_HOUR_END = 22;
 const AH_HERRAMIENTAS = [
     { id: 'huecos', icono: '📘', nombre: 'Huecos entre clases', activa: true },
     { id: 'mejor-horario', icono: '🧠', nombre: 'Mejor horario', activa: true },
-    { id: 'alertas', icono: '🚨', nombre: 'Alertas inteligentes', activa: false },
+    { id: 'alertas', icono: '🚨', nombre: 'Alertas inteligentes', activa: true },
     { id: 'comparador', icono: '⚖️', nombre: 'Comparador', activa: true },
     { id: 'exportar-calendario', icono: '📅', nombre: 'Exportar a calendario', activa: true },
 ];
@@ -145,8 +145,7 @@ function abrirHerramientaAsistente(id) {
     if (id === 'exportar-calendario') { exportarComboICS(); return; }
     if (id === 'mejor-horario') { aplicarMejorHorario(); return; }
     if (id === 'comparador') { renderVistaComparador(); return; }
-    // Las demás herramientas todavía no están activas — sus tiles ya
-    // están deshabilitados en AH_HERRAMIENTAS, esto es solo por si acaso.
+    if (id === 'alertas') { ah_vistaActual = 'alertas'; renderVistaAlertas(); return; }
 }
 
 function volverAGridAsistente() {
@@ -342,6 +341,117 @@ function irAVerFavorito(idx) {
 }
 
 /* ============================================================
+   HERRAMIENTA: 🚨 Alertas inteligentes
+   Solo detecta y explica — nada de auto-arreglo (eso queda para
+   más adelante si de verdad hace falta). Reusa el mismo motor de
+   métricas de "Huecos entre clases" y la misma puntuación por
+   profesor prioritario de "Mejor horario" — nada nuevo que
+   calcular acá.
+   ============================================================ */
+const AH_VENTANA_ALMUERZO_INICIO = 12 * 60;   // 12:00
+const AH_VENTANA_ALMUERZO_FIN = 14 * 60 + 30; // 14:30
+const AH_HUECO_LARGO_MIN = 120;               // 2h
+const AH_DIA_LARGO_MIN = 600;                 // 10h
+const AH_ENTRADA_TEMPRANA_MIN = 480;          // 8:00
+
+function detectarAlertas(combo) {
+    const m = calcularMetricasHorario(combo);
+    const alertas = [];
+
+    Object.entries(m.dias).forEach(([dia, info]) => {
+        info.huecos.forEach(h => {
+            if (h.minutos >= AH_HUECO_LARGO_MIN) {
+                alertas.push({
+                    icono: '🕳️',
+                    titulo: `Hueco largo el ${AH_DIAS_LABEL[dia]}`,
+                    detalle: `${formatearMinutos(h.minutos)} libres entre ${formatearHora(h.inicio)} y ${formatearHora(h.fin)} — revisa si te conviene otra sección con menos espera.`,
+                });
+            }
+        });
+
+        const cruzaAlmuerzo = info.horaEntrada < AH_VENTANA_ALMUERZO_FIN && info.horaSalida > AH_VENTANA_ALMUERZO_INICIO;
+        const hayHuecoParaAlmorzar = info.huecos.some(h =>
+            h.minutos >= 30 && h.inicio < AH_VENTANA_ALMUERZO_FIN && h.fin > AH_VENTANA_ALMUERZO_INICIO
+        );
+        if (cruzaAlmuerzo && !hayHuecoParaAlmorzar) {
+            alertas.push({
+                icono: '🍽️',
+                titulo: `Sin tiempo para almorzar el ${AH_DIAS_LABEL[dia]}`,
+                detalle: `Tus clases cubren todo el mediodía sin un hueco de al menos 30 min entre ${formatearHora(AH_VENTANA_ALMUERZO_INICIO)} y ${formatearHora(AH_VENTANA_ALMUERZO_FIN)}.`,
+            });
+        }
+
+        const duracionDia = info.horaSalida - info.horaEntrada;
+        if (duracionDia >= AH_DIA_LARGO_MIN) {
+            alertas.push({
+                icono: '⏳',
+                titulo: `${AH_DIAS_LABEL[dia]} muy largo`,
+                detalle: `De ${formatearHora(info.horaEntrada)} a ${formatearHora(info.horaSalida)} — ${formatearMinutos(duracionDia)} de corrido con la universidad, contando huecos.`,
+            });
+        }
+
+        if (info.horaEntrada < AH_ENTRADA_TEMPRANA_MIN) {
+            alertas.push({
+                icono: '🌅',
+                titulo: `Entrada temprana el ${AH_DIAS_LABEL[dia]}`,
+                detalle: `Tu primera clase empieza a las ${formatearHora(info.horaEntrada)}.`,
+            });
+        }
+    });
+
+    const prioridades = typeof window.obtenerPrioridadesProfesor === 'function' ? window.obtenerPrioridadesProfesor() : {};
+    Object.entries(prioridades).forEach(([curso, porDocente]) => {
+        const docenteFija = Object.keys(porDocente).find(d => porDocente[d] === '1');
+        if (!docenteFija) return;
+        const seccionDelCurso = combo.find(sec => sec.nombre === curso);
+        if (seccionDelCurso && seccionDelCurso.docente !== docenteFija) {
+            alertas.push({
+                icono: '⭐',
+                titulo: `Sin tu profesor fija en ${curso}`,
+                detalle: `Esta opción tiene a ${seccionDelCurso.docente}, no a ${docenteFija} (tu 1.ª opción).`,
+                accionTexto: 'Buscar mejor opción →',
+                accion: 'aplicarMejorHorario()',
+            });
+        }
+    });
+
+    return alertas;
+}
+
+function renderVistaAlertas() {
+    const cont = document.getElementById('ah-panel-body');
+    if (!cont) return;
+
+    const combo = typeof window.obtenerComboActual === 'function' ? window.obtenerComboActual() : null;
+    if (!combo) {
+        cont.innerHTML = `
+            <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
+            <div class="ah-vacio">Genera un horario primero para revisar sus alertas.</div>
+        `;
+        return;
+    }
+
+    const alertas = detectarAlertas(combo);
+    const alertasHtml = alertas.length
+        ? alertas.map(a => `
+            <div class="ah-alerta-card">
+                <span class="ah-alerta-icono">${a.icono}</span>
+                <div class="ah-alerta-texto">
+                    <p class="ah-alerta-titulo">${a.titulo}</p>
+                    <p class="ah-alerta-detalle">${a.detalle}</p>
+                    ${a.accion ? `<button type="button" class="ah-alerta-accion" onclick="${a.accion}">${a.accionTexto}</button>` : ''}
+                </div>
+            </div>
+        `).join('')
+        : `<div class="ah-alerta-ok">✅ Sin problemas detectados en esta combinación.</div>`;
+
+    cont.innerHTML = `
+        <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
+        <div class="ah-alertas-lista">${alertasHtml}</div>
+    `;
+}
+
+/* ============================================================
    HERRAMIENTA: 📘 Huecos entre clases
    ============================================================ */
 function renderVistaHuecos() {
@@ -511,6 +621,7 @@ function pintarHuecosEnCalendario(combo) {
 function onDibujarHorarioAsistente(combo) {
     pintarHuecosEnCalendario(combo);
     if (ah_vistaActual === 'huecos') renderVistaHuecos();
+    if (ah_vistaActual === 'alertas') renderVistaAlertas();
 }
 
 /* ---------- Arranque: revisa el gate y, si corresponde, muestra
@@ -529,6 +640,7 @@ function onDibujarHorarioAsistente(combo) {
     window.abrirHerramientaAsistente = abrirHerramientaAsistente;
     window.volverAGridAsistente = volverAGridAsistente;
     window.ocultarBannerMejorHorario = ocultarBannerMejorHorario;
+    window.aplicarMejorHorario = aplicarMejorHorario;
     window.toggleComparadorSeleccion = toggleComparadorSeleccion;
     window.irAVerFavorito = irAVerFavorito;
     window.onDibujarHorarioAsistente = onDibujarHorarioAsistente;
