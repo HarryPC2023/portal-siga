@@ -696,15 +696,24 @@ body {
   white-space: nowrap;
 }
 
-.docente-prioridad-select {
-  font-size: 10px;
-  padding: 3px 5px;
-  border-radius: 5px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-dim);
+.docente-prioridad-custom {
   flex-shrink: 0;
-  max-width: 100px;
+  width: 106px;
+}
+
+.docente-prioridad-custom .select-custom-trigger {
+  padding: 4px 8px;
+  font-size: 10px;
+  border-radius: 6px;
+}
+
+.docente-prioridad-custom .select-custom-lista {
+  min-width: 106px;
+}
+
+.docente-prioridad-custom .select-custom-lista li {
+  padding: 7px 8px;
+  font-size: 10.5px;
 }
 
 .docente-group-secciones {

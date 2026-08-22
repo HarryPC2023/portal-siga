@@ -222,10 +222,16 @@ function resumenHorarioSeccion(clases) {
 // Agrupa las secciones de cada curso por profesor — así el alumno ve
 // primero A QUIÉN le va a tocar, no una lista suelta de secciones sin
 // contexto (que es como realmente decide con quién llevar el curso).
+let _prioridadContador = 0;
+
 function renderSidebar(data) {
     const container = document.getElementById('listaCursos');
     if (!container) return;
     container.innerHTML = '';
+    _prioridadContador = 0;
+
+    const prioridadesGuardadas = leerPrioridadesGuardadas();
+    const pendientesInit = [];
 
     Object.entries(data).forEach(([curso, secMap]) => {
         const color = courseColors[curso] || '#06b6d4';
@@ -254,6 +260,14 @@ function renderSidebar(data) {
         });
 
         Object.entries(porDocente).forEach(([docente, secsDelDocente]) => {
+            // IDs únicos por grupo docente — inicializarSelectPersonalizado
+            // los necesita para engancharse a los elementos correctos.
+            const idx = _prioridadContador++;
+            const triggerId = `prioridad-trigger-${idx}`;
+            const textoId = `prioridad-texto-${idx}`;
+            const listaId = `prioridad-lista-${idx}`;
+            const valorId = `prioridad-valor-${idx}`;
+
             const grupo = document.createElement('div');
             grupo.className = 'docente-group';
             grupo.dataset.curso = curso;
@@ -263,23 +277,15 @@ function renderSidebar(data) {
             grupoHeader.className = 'docente-group-header';
             grupoHeader.innerHTML = `
         <span class="docente-fija-icono" style="display:none">⭐</span>
-        <span class="docente-nombre" title="${docente}">${docente}</span>`;
-
-            const select = document.createElement('select');
-            select.className = 'docente-prioridad-select';
-            select.dataset.curso = curso;
-            select.dataset.docente = docente;
-            select.innerHTML = `
-        <option value="">Sin preferencia</option>
-        <option value="1">1.ª opción</option>
-        <option value="2">2.ª opción</option>
-        <option value="3">3.ª opción</option>`;
-            select.addEventListener('click', e => e.stopPropagation());
-            select.addEventListener('change', () => {
-                aplicarEstiloPrioridad(select);
-                guardarPrioridadesProfesor();
-            });
-            grupoHeader.appendChild(select);
+        <span class="docente-nombre" title="${docente}">${docente}</span>
+        <div class="campo-select-custom docente-prioridad-custom">
+          <button type="button" class="select-custom-trigger" id="${triggerId}" aria-haspopup="listbox" aria-expanded="false">
+            <span id="${textoId}">Sin preferencia</span>
+            <span class="select-custom-chevron" aria-hidden="true">▾</span>
+          </button>
+          <ul class="select-custom-lista" id="${listaId}" role="listbox" hidden></ul>
+          <input type="hidden" id="${valorId}" class="docente-prioridad-valor" data-curso="${curso}" data-docente="${docente}">
+        </div>`;
 
             const seccionesDiv = document.createElement('div');
             seccionesDiv.className = 'docente-group-secciones';
@@ -305,6 +311,31 @@ function renderSidebar(data) {
             grupo.appendChild(grupoHeader);
             grupo.appendChild(seccionesDiv);
             profsDiv.appendChild(grupo);
+
+            // inicializarSelectPersonalizado usa getElementById, así que
+            // recién puede correr cuando este grupo ya esté en el DOM
+            // real — se guarda para ejecutarse al final de renderSidebar.
+            pendientesInit.push(() => {
+                const guardado = (prioridadesGuardadas[curso] && prioridadesGuardadas[curso][docente]) || '';
+                const etiquetas = { '': 'Sin preferencia', '1': '1.ª opción', '2': '2.ª opción', '3': '3.ª opción' };
+
+                const instancia = inicializarSelectPersonalizado({
+                    triggerId, textoId, listaId, valorId,
+                    opciones: [
+                        { value: '', label: 'Sin preferencia' },
+                        { value: '1', label: '1.ª opción' },
+                        { value: '2', label: '2.ª opción' },
+                        { value: '3', label: '3.ª opción' },
+                    ],
+                    alElegir: (valor) => {
+                        aplicarEstiloPrioridadGrupo(grupo, valor);
+                        guardarPrioridadesProfesor();
+                    },
+                });
+                if (!instancia) return;
+                instancia.establecer(guardado, etiquetas[guardado] || etiquetas['']);
+                aplicarEstiloPrioridadGrupo(grupo, guardado);
+            });
         });
 
         header.addEventListener('click', () => {
@@ -317,18 +348,18 @@ function renderSidebar(data) {
         container.appendChild(block);
     });
 
-    restaurarPrioridadesProfesor();
+    pendientesInit.forEach(fn => fn());
 }
 
 // ── AUTOGUARDADO: prioridad de profesor (fija / 2.ª / 3.ª opción) ──
 function leerPrioridadesActuales() {
     const prioridades = {};
-    document.querySelectorAll('.docente-prioridad-select').forEach(sel => {
-        if (!sel.value) return;
-        const curso = sel.dataset.curso;
-        const docente = sel.dataset.docente;
+    document.querySelectorAll('.docente-prioridad-valor').forEach(inp => {
+        if (!inp.value) return;
+        const curso = inp.dataset.curso;
+        const docente = inp.dataset.docente;
         if (!prioridades[curso]) prioridades[curso] = {};
-        prioridades[curso][docente] = sel.value;
+        prioridades[curso][docente] = inp.value;
     });
     return prioridades;
 }
@@ -341,35 +372,22 @@ function guardarPrioridadesProfesor() {
     }
 }
 
-function restaurarPrioridadesProfesor() {
-    let prioridades = null;
+function leerPrioridadesGuardadas() {
     try {
         const guardado = localStorage.getItem(LS_GEN_PRIORIDADES);
-        if (guardado) prioridades = JSON.parse(guardado);
+        if (guardado) return JSON.parse(guardado);
     } catch (e) {
         console.warn('No se pudo restaurar las prioridades de profesor:', e);
     }
-    if (!prioridades) return;
-
-    document.querySelectorAll('.docente-prioridad-select').forEach(sel => {
-        const curso = sel.dataset.curso;
-        const docente = sel.dataset.docente;
-        const valor = prioridades[curso] && prioridades[curso][docente];
-        if (valor) {
-            sel.value = valor;
-            aplicarEstiloPrioridad(sel);
-        }
-    });
+    return {};
 }
 
 // Resalta el grupo del profesor marcado como 1.ª opción (fija) con
 // borde de acento y ⭐ — igual criterio visual en todo el sidebar.
-function aplicarEstiloPrioridad(select) {
-    const grupo = select.closest('.docente-group');
-    if (!grupo) return;
-    grupo.classList.toggle('docente-group-fija', select.value === '1');
-    const estrella = grupo.querySelector('.docente-fija-icono');
-    if (estrella) estrella.style.display = select.value === '1' ? '' : 'none';
+function aplicarEstiloPrioridadGrupo(grupoEl, valor) {
+    grupoEl.classList.toggle('docente-group-fija', valor === '1');
+    const estrella = grupoEl.querySelector('.docente-fija-icono');
+    if (estrella) estrella.style.display = valor === '1' ? '' : 'none';
 }
 
 // Expuesto para que "🧠 Mejor horario" (Asistente de Horario) pueda
