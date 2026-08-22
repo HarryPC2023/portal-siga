@@ -16,7 +16,12 @@
 // para todos los usuarios — sin tocar nada más de este archivo.
 //
 // Es un módulo aparte (import propio de auth-siga.js) para no
-// depender del orden de carga de otros scripts de la página.
+// depender del orden de carga de otros scripts de la página. Por
+// ser módulo, NO comparte el scope de generador.js (sus `let/const`
+// no llegan aquí) — por eso este archivo duplica un puñado de
+// constantes del calendario (DIAS/ROW_H/HOUR_START/HOUR_END) y lee
+// el combo actual a través de window.obtenerComboActual(), expuesto
+// a propósito desde generador.js.
 // ============================================================
 import { obtenerSesion } from '../../../js/auth-siga.js?v=9';
 
@@ -38,18 +43,47 @@ async function asistenteHorarioHabilitado() {
     }
 }
 
+/* ---------- Constantes del calendario, duplicadas a propósito de
+   generador.js (ver nota de scope arriba) — deben coincidir con las
+   de ahí si algún día cambian. ---------- */
+const AH_DIAS = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
+const AH_DIAS_LABEL = { LUNES: 'Lunes', MARTES: 'Martes', MIERCOLES: 'Miércoles', JUEVES: 'Jueves', VIERNES: 'Viernes', SABADO: 'Sábado' };
+const AH_ROW_H = 38;
+const AH_HOUR_START = 7;
+const AH_HOUR_END = 22;
+
 /* ---------- Las 6 herramientas del hub.
    `activa: false` = todavía en construcción (se muestra el tile
    pero no hace nada). Se van pasando a `true` una por una a medida
    que cada una queda lista, sin tocar el resto del archivo. ---------- */
 const AH_HERRAMIENTAS = [
-    { id: 'huecos', icono: '📘', nombre: 'Huecos y métricas', activa: false },
+    { id: 'huecos', icono: '📘', nombre: 'Huecos y métricas', activa: true },
     { id: 'preferencias', icono: '🎛️', nombre: 'Preferencias', activa: false },
     { id: 'mejor-horario', icono: '🧠', nombre: 'Mejor horario', activa: false },
     { id: 'alertas', icono: '🚨', nombre: 'Alertas inteligentes', activa: false },
     { id: 'comparador', icono: '⚖️', nombre: 'Comparador', activa: false },
     { id: 'exportar-calendario', icono: '📅', nombre: 'Exportar a calendario', activa: false },
 ];
+
+// Recuerda qué vista está abierta ('grid' o el id de una herramienta)
+// para poder refrescarla sola cuando el usuario cambia de combinación
+// con las flechitas ◀▶ sin cerrar el panel.
+let ah_vistaActual = 'grid';
+
+/* ---------- Helpers de formato ---------- */
+function formatearMinutos(min) {
+    const h = Math.floor(min / 60);
+    const m = Math.round(min % 60);
+    if (h === 0) return `${m} min`;
+    if (m === 0) return `${h}h`;
+    return `${h}h ${m}min`;
+}
+
+function formatearHora(min) {
+    const h = Math.floor(min / 60);
+    const m = Math.round(min % 60);
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
 
 /* ---------- Panel lateral (se crea una sola vez) ---------- */
 function inicializarAsistenteHorario() {
@@ -80,6 +114,7 @@ function inicializarAsistenteHorario() {
 }
 
 function renderGridAsistente() {
+    ah_vistaActual = 'grid';
     const cont = document.getElementById('ah-panel-body');
     if (!cont) return;
 
@@ -107,17 +142,127 @@ function toggleAsistenteHorario(forzar) {
 }
 
 function abrirHerramientaAsistente(id) {
-    // Placeholder — cada herramienta se conecta acá cuando esté lista.
-    console.log('Abrir herramienta del Asistente:', id);
+    ah_vistaActual = id;
+    if (id === 'huecos') { renderVistaHuecos(); return; }
+    // Las demás herramientas todavía no están activas — sus tiles ya
+    // están deshabilitados en AH_HERRAMIENTAS, esto es solo por si acaso.
 }
 
-// Expuestas en window porque se llaman desde onclick="" en el HTML
-window.toggleAsistenteHorario = toggleAsistenteHorario;
-window.abrirHerramientaAsistente = abrirHerramientaAsistente;
+function volverAGridAsistente() {
+    renderGridAsistente();
+}
+
+/* ============================================================
+   HERRAMIENTA: 📘 Huecos y métricas
+   ============================================================ */
+function renderVistaHuecos() {
+    const cont = document.getElementById('ah-panel-body');
+    if (!cont) return;
+
+    const combo = typeof window.obtenerComboActual === 'function' ? window.obtenerComboActual() : null;
+    if (!combo) {
+        cont.innerHTML = `
+            <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
+            <div class="ah-vacio">Genera un horario primero para ver sus huecos y métricas.</div>
+        `;
+        return;
+    }
+
+    const m = calcularMetricasHorario(combo);
+
+    const diasHtml = m.diasOcupados
+        .slice()
+        .sort((a, b) => AH_DIAS.indexOf(a) - AH_DIAS.indexOf(b))
+        .map(dia => {
+            const info = m.dias[dia];
+            const huecosHtml = info.huecos.length
+                ? info.huecos.map(h =>
+                    `<span class="ah-hueco-chip">${formatearMinutos(h.minutos)} · ${formatearHora(h.inicio)}–${formatearHora(h.fin)}</span>`
+                ).join('')
+                : `<span class="ah-hueco-chip ah-hueco-chip-ok">Sin huecos</span>`;
+
+            return `
+                <div class="ah-dia-card">
+                    <div class="ah-dia-header">
+                        <span class="ah-dia-nombre">${AH_DIAS_LABEL[dia]}</span>
+                        <span class="ah-dia-horario">${formatearHora(info.horaEntrada)} – ${formatearHora(info.horaSalida)}</span>
+                    </div>
+                    <div class="ah-dia-fila"><span>Horas de clase</span><strong>${formatearMinutos(info.horasClaseMin)}</strong></div>
+                    <div class="ah-dia-fila"><span>Huecos</span><strong>${formatearMinutos(info.huecosDiaMin)}</strong></div>
+                    <div class="ah-dia-huecos">${huecosHtml}</div>
+                </div>
+            `;
+        }).join('');
+
+    cont.innerHTML = `
+        <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
+
+        <div class="ah-resumen">
+            <div class="ah-resumen-item">
+                <span>Huecos / semana</span>
+                <strong>${formatearMinutos(m.huecosTotalMin)}</strong>
+            </div>
+            <div class="ah-resumen-item">
+                <span>Día más cargado</span>
+                <strong>${m.diaMasCargado ? AH_DIAS_LABEL[m.diaMasCargado] : '—'}</strong>
+            </div>
+            <div class="ah-resumen-item">
+                <span>Bloque seguido más largo</span>
+                <strong>${formatearMinutos(m.bloqueMaxContinuoMin)}</strong>
+            </div>
+        </div>
+
+        <div class="ah-dias-lista">${diasHtml || '<div class="ah-vacio">Sin clases en esta combinación.</div>'}</div>
+    `;
+}
+
+/* ---------- Sombrea los huecos directamente sobre el calendario ya
+   dibujado por generador.js — misma técnica de posicionamiento
+   (anclar a la celda de la hora de inicio, top/height en px) que
+   usa dibujar() para los bloques de clase, para que calcen pixel a
+   pixel. ---------- */
+function pintarHuecosEnCalendario(combo) {
+    document.querySelectorAll('.hueco-block').forEach(el => el.remove());
+
+    const m = calcularMetricasHorario(combo);
+    Object.entries(m.dias).forEach(([dia, info]) => {
+        const dIdx = AH_DIAS.indexOf(dia);
+        if (dIdx === -1) return;
+
+        info.huecos.forEach(h => {
+            if (h.minutos < 15) return; // ignora huecos casi imperceptibles (< 15 min)
+
+            const startH = Math.floor(h.inicio / 60);
+            const startM = h.inicio % 60;
+            if (startH < AH_HOUR_START || startH >= AH_HOUR_END) return;
+
+            const anchor = document.getElementById(`c-${startH}-${dIdx}`);
+            if (!anchor) return;
+
+            const topPx = (startM / 60) * AH_ROW_H;
+            const heightPx = Math.max((h.minutos / 60) * AH_ROW_H - 2, 10);
+
+            const bloque = document.createElement('div');
+            bloque.className = 'hueco-block';
+            bloque.style.cssText = `top:${topPx}px; height:${heightPx}px;`;
+            bloque.innerHTML = `<span class="hueco-block-label">${formatearMinutos(h.minutos)} libres</span>`;
+            anchor.appendChild(bloque);
+        });
+    });
+}
+
+/* ---------- Gancho llamado por generador.js cada vez que se dibuja
+   una combinación (al generar o al navegar con ◀▶) ---------- */
+function onDibujarHorarioAsistente(combo) {
+    pintarHuecosEnCalendario(combo);
+    if (ah_vistaActual === 'huecos') renderVistaHuecos();
+}
 
 /* ---------- Arranque: revisa el gate y, si corresponde, muestra
    el botón de entrada + arma el panel (queda oculto hasta que el
-   usuario lo abra) ---------- */
+   usuario lo abra). Las funciones que llaman onclick="" y el gancho
+   de generador.js solo se exponen en window si el gate pasa —
+   para un usuario sin permiso, ni siquiera existen. ---------- */
 (async function iniciarGateAsistenteHorario() {
     const wrap = document.getElementById('asistente-horario-wrap');
     if (!wrap) return;
@@ -125,6 +270,16 @@ window.abrirHerramientaAsistente = abrirHerramientaAsistente;
     const habilitado = await asistenteHorarioHabilitado();
     if (!habilitado) return;
 
+    window.toggleAsistenteHorario = toggleAsistenteHorario;
+    window.abrirHerramientaAsistente = abrirHerramientaAsistente;
+    window.volverAGridAsistente = volverAGridAsistente;
+    window.onDibujarHorarioAsistente = onDibujarHorarioAsistente;
+
     wrap.style.display = '';
     inicializarAsistenteHorario();
+
+    // Si ya había una combinación dibujada (por ejemplo, si el
+    // usuario reabre el panel), pinta sus huecos de una vez.
+    const comboActual = typeof window.obtenerComboActual === 'function' ? window.obtenerComboActual() : null;
+    if (comboActual) pintarHuecosEnCalendario(comboActual);
 })();

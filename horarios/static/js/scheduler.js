@@ -116,6 +116,82 @@ function prepararOpciones(seleccion, cargaGlobal) {
 
 
 // ============================================================
+// calcularMetricasHorario — motor base del módulo "Huecos y
+// métricas" del Asistente de Horario. Recibe un combo ya armado
+// (mismo formato que arma prepararOpciones/generarCombos: array
+// de secciones, cada una con .nombre y .clases) y devuelve
+// SOLO números — sin tocar el DOM — para que puedan reusarlo
+// después las demás herramientas (preferencias, algoritmo de
+// mejor horario, alertas, comparador) sin recalcular nada.
+//
+// Las horas en `clases` vienen como enteros HHMM (ej. 800, 1430),
+// por eso primero se convierten a minutos desde medianoche.
+// ------------------------------------------------------------
+function horaAMinutos(hhmm) {
+    return Math.floor(hhmm / 100) * 60 + (hhmm % 100);
+}
+
+function calcularMetricasHorario(combo) {
+    // Agrupa todas las clases del combo por día
+    const porDia = {};
+    combo.forEach(sec => {
+        sec.clases.forEach(cl => {
+            if (!porDia[cl.dia]) porDia[cl.dia] = [];
+            porDia[cl.dia].push({ ini: horaAMinutos(cl.ini), fin: horaAMinutos(cl.fin) });
+        });
+    });
+
+    const dias = {};
+    let huecosTotalMin = 0;
+    let horasTotalMin = 0;
+    let bloqueMaxContinuoMin = 0;
+
+    Object.entries(porDia).forEach(([dia, clases]) => {
+        // Ordena y fusiona clases que se pisan entre sí (cruces
+        // permitidos por el usuario) para no contar el mismo tramo
+        // dos veces ni generar un "hueco negativo" ahí.
+        const ordenadas = clases.slice().sort((a, b) => a.ini - b.ini);
+        const bloques = [];
+        ordenadas.forEach(cl => {
+            const ultimo = bloques[bloques.length - 1];
+            if (ultimo && cl.ini <= ultimo.fin) {
+                ultimo.fin = Math.max(ultimo.fin, cl.fin);
+            } else {
+                bloques.push({ ini: cl.ini, fin: cl.fin });
+            }
+        });
+
+        const huecos = [];
+        for (let i = 0; i < bloques.length - 1; i++) {
+            const gap = bloques[i + 1].ini - bloques[i].fin;
+            if (gap > 0) huecos.push({ inicio: bloques[i].fin, fin: bloques[i + 1].ini, minutos: gap });
+        }
+
+        const horaEntrada = bloques[0].ini;
+        const horaSalida = bloques[bloques.length - 1].fin;
+        const horasClaseMin = bloques.reduce((s, b) => s + (b.fin - b.ini), 0);
+        const huecosDiaMin = huecos.reduce((s, h) => s + h.minutos, 0);
+        const bloqueMaxDia = bloques.reduce((max, b) => Math.max(max, b.fin - b.ini), 0);
+
+        dias[dia] = { horaEntrada, horaSalida, horasClaseMin, huecos, huecosDiaMin, bloqueMaxDia };
+
+        huecosTotalMin += huecosDiaMin;
+        horasTotalMin += horasClaseMin;
+        bloqueMaxContinuoMin = Math.max(bloqueMaxContinuoMin, bloqueMaxDia);
+    });
+
+    const diasOcupados = Object.keys(dias);
+    let diaMasCargado = null, diaMasLibre = null;
+    diasOcupados.forEach(d => {
+        if (!diaMasCargado || dias[d].horasClaseMin > dias[diaMasCargado].horasClaseMin) diaMasCargado = d;
+        if (!diaMasLibre || dias[d].horasClaseMin < dias[diaMasLibre].horasClaseMin) diaMasLibre = d;
+    });
+
+    return { dias, diasOcupados, diaMasCargado, diaMasLibre, huecosTotalMin, horasTotalMin, bloqueMaxContinuoMin };
+}
+
+
+// ============================================================
 // FAVORITOS — equivale a /favoritos en app.py
 // En vez del servidor, se guardan en memoria del navegador
 // mientras la sesión esté abierta (se pierden al recargar,

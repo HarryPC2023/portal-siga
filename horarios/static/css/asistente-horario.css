@@ -211,3 +211,159 @@
         transform: translateY(0);
     }
 }
+
+/* ============================================================
+   HERRAMIENTA: 📘 Huecos y métricas
+   ============================================================ */
+
+.ah-volver {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0 0 14px;
+    font-family: inherit;
+}
+
+.ah-vacio {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+}
+
+/* ---------- Resumen global (3 chips arriba) ---------- */
+.ah-resumen {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.ah-resumen-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 10px 6px;
+}
+
+.ah-resumen-item span {
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.ah-resumen-item strong {
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ---------- Tarjetas por día ---------- */
+.ah-dias-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ah-dia-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+}
+
+.ah-dia-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.ah-dia-nombre {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--text);
+}
+
+.ah-dia-horario {
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+}
+
+.ah-dia-fila {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    padding: 2px 0;
+}
+
+.ah-dia-fila strong {
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.ah-dia-huecos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.ah-hueco-chip {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--accent-dark, var(--accent));
+    background: var(--accent-dim, rgba(102, 0, 204, 0.1));
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.ah-hueco-chip-ok {
+    color: #16a34a;
+    background: rgba(16, 163, 74, 0.12);
+}
+
+/* ---------- Sombreado de huecos sobre el calendario (dibujar()
+   en generador.js) — misma técnica de posicionamiento que
+   .class-block, pero con relleno rayado en vez de color sólido
+   para no confundirse con un curso real. z-index más bajo para
+   quedar siempre detrás de cualquier bloque de clase. ---------- */
+.hueco-block {
+    position: absolute;
+    top: 0;
+    left: 2px;
+    right: 2px;
+    z-index: 1;
+    border-radius: 5px;
+    border: 1px dashed var(--text-faint);
+    background: repeating-linear-gradient(135deg,
+            rgba(148, 163, 184, 0.16),
+            rgba(148, 163, 184, 0.16) 6px,
+            rgba(148, 163, 184, 0.28) 6px,
+            rgba(148, 163, 184, 0.28) 12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.hueco-block-label {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 0 2px;
+    white-space: nowrap;
+}
