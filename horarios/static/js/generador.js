@@ -30,6 +30,13 @@ window.obtenerComboActual = () => combosValidos[currentIndex] || null;
 // Mismo mecanismo (localStorage) que ya usa index.html para el Excel.
 const LS_GEN_SECCIONES = 'horarioGen_seccionesGen';
 const LS_GEN_CRUCES = 'horarioGen_cruces';
+// Caché de las combinaciones ya generadas: antes esto "sobrevivía" a
+// volver a la página solo por casualidad (bfcache del navegador). Se
+// guarda explícito para que funcione siempre, en cualquier cuenta o
+// navegador — mismo mecanismo (localStorage) que ya usan las líneas
+// de arriba para secciones/cruces.
+const LS_GEN_COMBOS = 'horarioGen_combosCache';
+const LS_GEN_COMBOS_IDX = 'horarioGen_combosIdx';
 
 // ── TOOLTIP ───────────────────────────────────────────────────
 let tooltipEl = null;
@@ -74,6 +81,7 @@ function inicializar(cursos) {
     // por defecto (todas las secciones marcadas, 0 cruces).
     restaurarSeleccionSecciones();
     restaurarCruces();
+    restaurarCombosCache();
 }
 
 // ── AUTOGUARDADO: secciones/profesores marcados ────────────────
@@ -126,6 +134,69 @@ function restaurarCruces() {
     if (guardado === null) return;
     const v = parseInt(guardado, 10);
     if (!isNaN(v)) setCruces(v);
+}
+
+// ── AUTOGUARDADO: combinaciones ya generadas ────────────────────
+// Lee del DOM qué secciones están marcadas ahora mismo (mismo criterio
+// que usa generar() para armar la selección a partir de los checkbox).
+function leerSeleccionActual() {
+    const seleccion = {};
+    document.querySelectorAll('.p-check').forEach(cb => {
+        if (!seleccion[cb.dataset.curso]) seleccion[cb.dataset.curso] = [];
+        if (cb.checked) seleccion[cb.dataset.curso].push(cb.dataset.seccion);
+    });
+    return seleccion;
+}
+
+// Firma determinística de una selección + cantidad de cruces: si esto
+// coincide con lo que se usó para generar el caché guardado, el caché
+// sigue siendo válido. Si el usuario marcó/desmarcó algo distinto o
+// cambió los cruces, ya no coincide y se descarta (para no mostrarle
+// un horario que no corresponde a su selección actual).
+function firmaSeleccion(seleccion) {
+    const cursos = Object.keys(seleccion).sort();
+    const partes = cursos.map(c => `${c}:${seleccion[c].slice().sort().join(',')}`);
+    return `${partes.join('|')}#cruces=${maxCruces}`;
+}
+
+function guardarCombosCache(seleccion) {
+    try {
+        localStorage.setItem(LS_GEN_COMBOS, JSON.stringify({
+            firma: firmaSeleccion(seleccion),
+            combos: combosValidos,
+        }));
+        localStorage.setItem(LS_GEN_COMBOS_IDX, '0');
+    } catch (e) {
+        // Guardado silencioso: si el horario generado es muy grande y no
+        // entra en localStorage, simplemente no se cachea — el usuario
+        // solo tendrá que volver a presionar "Generar Horarios" al volver.
+        console.warn('No se pudo cachear las combinaciones generadas:', e);
+    }
+}
+
+// Se llama al iniciar la página: si hay un caché válido para la
+// selección actual, restaura combosValidos y dibuja directo, sin que
+// el usuario tenga que tocar "Generar Horarios" de nuevo.
+function restaurarCombosCache() {
+    let cache = null;
+    try {
+        const guardado = localStorage.getItem(LS_GEN_COMBOS);
+        if (guardado) cache = JSON.parse(guardado);
+    } catch (e) {
+        console.warn('No se pudo restaurar las combinaciones cacheadas:', e);
+    }
+    if (!cache || !Array.isArray(cache.combos) || !cache.combos.length) return false;
+
+    const seleccionActual = leerSeleccionActual();
+    if (cache.firma !== firmaSeleccion(seleccionActual)) return false;
+
+    combosValidos = cache.combos;
+    const idxGuardado = parseInt(localStorage.getItem(LS_GEN_COMBOS_IDX), 10);
+    currentIndex = (!isNaN(idxGuardado) && idxGuardado >= 0 && idxGuardado < combosValidos.length) ? idxGuardado : 0;
+
+    _setBotonesVisibles(true);
+    dibujar(currentIndex);
+    return true;
 }
 
 // ── SIDEBAR ───────────────────────────────────────────────────
@@ -194,11 +265,7 @@ function setCruces(v) {
 
 // ── GENERAR ───────────────────────────────────────────────────
 function generar() {
-    const seleccion = {};
-    document.querySelectorAll('.p-check').forEach(cb => {
-        if (!seleccion[cb.dataset.curso]) seleccion[cb.dataset.curso] = [];
-        if (cb.checked) seleccion[cb.dataset.curso].push(cb.dataset.seccion);
-    });
+    const seleccion = leerSeleccionActual();
 
     if (!Object.keys(seleccion).length) {
         showToast('Selecciona al menos una sección', 'error');
@@ -231,6 +298,7 @@ function generar() {
             currentIndex = 0;
             _setBotonesVisibles(true);
             dibujar(0);
+            guardarCombosCache(seleccion);
 
             // En móvil, scroll suave hasta el calendario
             if (window.innerWidth < 900) {
@@ -271,6 +339,8 @@ function dibujar(idx) {
     if (counterEl) counterEl.textContent = `${idx + 1} / ${combosValidos.length}`;
     if (topbarTitleEl) topbarTitleEl.innerHTML =
         `Opción <span>${idx + 1}</span> de <span>${combosValidos.length}</span> combinaciones`;
+
+    try { localStorage.setItem(LS_GEN_COMBOS_IDX, String(idx)); } catch (e) { /* no crítico */ }
 
     const HOURS = [];
     for (let h = HOUR_START; h <= HOUR_END; h++) HOURS.push(h);

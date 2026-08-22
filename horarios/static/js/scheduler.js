@@ -131,6 +131,15 @@ function horaAMinutos(hhmm) {
     return Math.floor(hhmm / 100) * 60 + (hhmm % 100);
 }
 
+// Ventana horaria razonable para contar "tiempo libre para estudiar"
+// antes de la primera clase o después de la última del día (mismo
+// rango que ve el calendario: HOUR_START/HOUR_END en generador.js).
+// Fuera de este rango no tiene sentido reportar horas "libres"
+// (nadie va a estudiar a las 3am) — se duplica el valor acá porque
+// scheduler.js no comparte scope con generador.js.
+const VENTANA_ESTUDIO_INICIO_MIN = 7 * 60;  // 7:00
+const VENTANA_ESTUDIO_FIN_MIN = 22 * 60;    // 22:00
+
 function calcularMetricasHorario(combo) {
     // Agrupa todas las clases del combo por día
     const porDia = {};
@@ -144,6 +153,7 @@ function calcularMetricasHorario(combo) {
     const dias = {};
     let huecosTotalMin = 0;
     let horasTotalMin = 0;
+    let estudioTotalMin = 0;
     let bloqueMaxContinuoMin = 0;
 
     Object.entries(porDia).forEach(([dia, clases]) => {
@@ -173,10 +183,19 @@ function calcularMetricasHorario(combo) {
         const huecosDiaMin = huecos.reduce((s, h) => s + h.minutos, 0);
         const bloqueMaxDia = bloques.reduce((max, b) => Math.max(max, b.fin - b.ini), 0);
 
-        dias[dia] = { horaEntrada, horaSalida, horasClaseMin, huecos, huecosDiaMin, bloqueMaxDia };
+        // "Horas libres para estudiar" — antes de la primera clase y
+        // después de la última, acotado a la ventana de estudio.
+        const horasLibresAntesMin = Math.max(0, horaEntrada - VENTANA_ESTUDIO_INICIO_MIN);
+        const horasLibresDespuesMin = Math.max(0, VENTANA_ESTUDIO_FIN_MIN - horaSalida);
+
+        dias[dia] = {
+            horaEntrada, horaSalida, horasClaseMin, huecos, huecosDiaMin, bloqueMaxDia,
+            horasLibresAntesMin, horasLibresDespuesMin,
+        };
 
         huecosTotalMin += huecosDiaMin;
         horasTotalMin += horasClaseMin;
+        estudioTotalMin += huecosDiaMin + horasLibresAntesMin + horasLibresDespuesMin;
         bloqueMaxContinuoMin = Math.max(bloqueMaxContinuoMin, bloqueMaxDia);
     });
 
@@ -187,7 +206,7 @@ function calcularMetricasHorario(combo) {
         if (!diaMasLibre || dias[d].horasClaseMin < dias[diaMasLibre].horasClaseMin) diaMasLibre = d;
     });
 
-    return { dias, diasOcupados, diaMasCargado, diaMasLibre, huecosTotalMin, horasTotalMin, bloqueMaxContinuoMin };
+    return { dias, diasOcupados, diaMasCargado, diaMasLibre, huecosTotalMin, horasTotalMin, estudioTotalMin, bloqueMaxContinuoMin };
 }
 
 

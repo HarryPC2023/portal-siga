@@ -233,10 +233,10 @@
     line-height: 1.6;
 }
 
-/* ---------- Resumen global (3 chips arriba) ---------- */
+/* ---------- Resumen global (4 chips arriba, grilla 2x2) ---------- */
 .ah-resumen {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     margin-bottom: 16px;
 }

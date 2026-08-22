@@ -4,6 +4,7 @@
 <html lang="es">
 
 <head>
+    <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Horarios - Inicio</title>
@@ -13,10 +14,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
         rel="stylesheet">
-    <!-- Poppins: se usa solo en los nombres de curso (lista y chips
-         seleccionados) para que contrasten con el resto de la UI en
-         Plus Jakarta Sans — pedido de Harry. -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
     <!-- Tipografía de marca SIGA: Orbitron para todo el texto, Black Ops
          One solo para el wordmark (ver .logo-title en siga-theme-horarios.css) -->
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
@@ -25,13 +22,8 @@
     <link rel="stylesheet" href="../css/landing.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/tema-siga.css?v=1">
-    <link rel="stylesheet" href="static/css/style.css?v=1">
-    <link rel="stylesheet" href="static/css/siga-theme-horarios.css?v=1">
-    <link rel="icon" href="../icons/siga_web.ico" sizes="any">
-    <link rel="icon" type="image/png" sizes="96x96" href="../icons/siga_escritorio.png">
-    <link rel="apple-touch-icon" href="../icons/siga_apple.png">
-    <link rel="manifest" href="../manifest.json">
-    <meta name="theme-color" content="#000000">
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/siga-theme-horarios.css">
 
     <!-- SheetJS: equivale a openpyxl, lee el Excel en el navegador -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -40,14 +32,9 @@
          listo para abrirse. Antes faltaba en este módulo. Mismo patrón
          que ya usa Intranotas. -->
     <script type="module">
-        import { supabase, obtenerSesion } from '../js/auth-siga.js?v=9';
+        import { supabase, obtenerSesion } from '../js/auth-siga.js?v=8';
         window.sigaSupabase = supabase;
         window.sigaObtenerSesion = obtenerSesion;
-        // Avisa al script clásico de abajo que ya puede usar window.sigaSupabase.
-        // Necesario porque los módulos se ejecutan DESPUÉS que los scripts
-        // clásicos del body durante el parseo — sin este aviso, el bloque de
-        // abajo podría intentar usar sigaSupabase antes de que exista.
-        window.dispatchEvent(new Event('siga:supabase-listo'));
     </script>
     <script type="module" src="../js/gate.js"></script>
 </head>
@@ -138,44 +125,11 @@
 
     <div class="toast" id="toast"></div>
 
-    <!-- Botón flotante "volver arriba" — mismo componente que usan
-         Asesorías/Materiales (estilo ya definido en landing.css como
-         .volver-arriba). Aparece pasados 400px de scroll de la ventana
-         (acá no hay scroll interno propio, a diferencia de generador.html). -->
-    <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
-
-    <!-- Firma fija — mismo componente que ya usa generador.html (pantalla 2) -->
-    <div class="harry-stamp">
-        <img src="static/img/harry.png" alt="Harry" class="harry-stamp-img">
-        <span class="harry-stamp-text">by Harry</span>
-    </div>
-
     <!-- ── Scripts ── -->
     <!-- parser.js debe cargarse antes que este script -->
-    <script src="static/js/parser.js?v=1"></script>
+    <script src="static/js/parser.js"></script>
     <!-- Motor de temas SIGA (Claro/Oscuro/Ocean/Forest), compartido con generador.html -->
     <script src="../js/tema-siga.js?v=1"></script>
-
-    <!-- Botón "volver arriba": aparece pasados ~400px de scroll de la
-         ventana, sube suave al hacer clic. -->
-    <script>
-        (function () {
-            const boton = document.getElementById('volverArriba');
-            if (!boton) return;
-
-            function actualizarVisibilidad() {
-                boton.classList.toggle('visible', window.scrollY > 400);
-            }
-
-            window.addEventListener('scroll', actualizarVisibilidad, { passive: true });
-            actualizarVisibilidad();
-
-            boton.addEventListener('click', (ev) => {
-                ev.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        })();
-    </script>
 
     <script>
         // ── Referencias al DOM ──────────────────────────────────
@@ -206,139 +160,6 @@
         const LS_GEN_SECCIONES = 'horarioGen_seccionesGen';
         const LS_GEN_CRUCES = 'horarioGen_cruces';
 
-        // ── Salto directo a pantalla 2 si ya había un horario armado ──
-        // Si ya eligió cursos (pantalla 1) Y ya había configurado/generado
-        // horarios (pantalla 2), no tiene sentido mostrar esta pantalla de
-        // nuevo — se redirige directo a generador.html. El botón
-        // "← Elegir cursos" de esa pantalla sigue siendo la forma de
-        // volver aquí si quiere cambiar algo. Va primero que cualquier
-        // otra cosa, antes de pintar nada, para que sea instantáneo.
-        (function saltarAPantalla2SiYaHabiaAlgo() {
-            // Si el usuario llegó a propósito con "← Elegir cursos", respeta su
-            // intención y no lo rebotes de vuelta a la pantalla 2.
-            if (new URLSearchParams(window.location.search).get('volver') === '1') return;
-
-            const cargaGuardada = localStorage.getItem(LS_CARGA);
-            const seleccionGuardada = localStorage.getItem(LS_SEL);
-            const huboGenerador = localStorage.getItem(LS_GEN_SECCIONES) || localStorage.getItem(LS_GEN_CRUCES);
-
-            if (!cargaGuardada || !seleccionGuardada || !huboGenerador) return;
-
-            let cursos;
-            try {
-                cursos = JSON.parse(seleccionGuardada);
-            } catch (e) {
-                return;
-            }
-            if (!Array.isArray(cursos) || !cursos.length) return;
-
-            const params = new URLSearchParams();
-            cursos.forEach(c => params.append('curso', c));
-            // replace(), no href: así esta redirección no queda en el
-            // historial — el botón "atrás" del navegador no se queda
-            // rebotando entre index.html y generador.html.
-            window.location.replace('generador.html?' + params.toString());
-        })();
-
-        // ── Puente con Supabase (auth-siga.js) ──────────────────
-        // Espera a que el módulo del <head> haya expuesto window.sigaSupabase.
-        function esperarSupabaseListo() {
-            if (window.sigaSupabase) return Promise.resolve();
-            return new Promise(resolve => window.addEventListener('siga:supabase-listo', resolve, { once: true }));
-        }
-
-        async function obtenerUserIdActual() {
-            await esperarSupabaseListo();
-            try {
-                const sesion = await window.sigaObtenerSesion();
-                return sesion?.user?.id || null;
-            } catch (e) {
-                console.warn('No se pudo obtener la sesión actual:', e);
-                return null;
-            }
-        }
-
-        // ── Autoguardado en la nube (Supabase) ──────────────────
-        // Con debounce: si el usuario está marcando varios cursos seguidos,
-        // no queremos disparar un upsert por cada clic.
-        let _debounceNube = null;
-        function guardarProgresoNube() {
-            clearTimeout(_debounceNube);
-            _debounceNube = setTimeout(async () => {
-                const userId = await obtenerUserIdActual();
-                if (!userId || !cargaGlobal) return;
-                try {
-                    const { error } = await window.sigaSupabase
-                        .from('horarios_alumno')
-                        .upsert({
-                            user_id: userId,
-                            nombre_archivo: nombreArchivoActual,
-                            carga_horaria: cargaGlobal,
-                            cursos_seleccionados: [...cursosSeleccionados],
-                            actualizado_en: new Date().toISOString(),
-                        });
-                    if (error) console.warn('No se pudo sincronizar el horario con la nube:', error);
-                } catch (e) {
-                    console.warn('Error sincronizando horario con la nube:', e);
-                }
-            }, 800);
-        }
-
-        // ── Modal de confirmación (mismo patrón visual que "Guardar horario"
-        //    en generador.js: .modal-overlay / .modal-card de style.css) ──
-        function pedirConfirmacion(titulo, descripcion, textoBoton = 'Confirmar') {
-            return new Promise(resolve => {
-                const overlay = document.createElement('div');
-                overlay.className = 'modal-overlay';
-                overlay.innerHTML = `
-          <div class="modal-card">
-            <div class="modal-icon">⚠️</div>
-            <div class="modal-title">${titulo}</div>
-            <div class="modal-desc">${descripcion}</div>
-            <div class="modal-actions">
-              <button class="modal-btn-cancel" id="modalCancelar">Cancelar</button>
-              <button class="modal-btn-primary" id="modalAceptar">${textoBoton}</button>
-            </div>
-          </div>`;
-                document.body.appendChild(overlay);
-                requestAnimationFrame(() => overlay.classList.add('show'));
-
-                function cerrar(valor) {
-                    overlay.classList.remove('show');
-                    setTimeout(() => overlay.remove(), 150);
-                    resolve(valor);
-                }
-
-                overlay.querySelector('#modalAceptar').onclick = () => cerrar(true);
-                overlay.querySelector('#modalCancelar').onclick = () => cerrar(false);
-                overlay.addEventListener('click', e => { if (e.target === overlay) cerrar(false); });
-                document.addEventListener('keydown', function escListener(e) {
-                    if (e.key === 'Escape') { cerrar(false); document.removeEventListener('keydown', escListener); }
-                });
-            });
-        }
-
-        // Revisa si ya hay un horario distinto guardado en la nube, para
-        // avisar antes de reemplazarlo (ej. Excel preliminar cargado ayer
-        // desde el celular, y hoy se sube uno nuevo desde la PC).
-        async function hayConflictoEnNube(nombreNuevo) {
-            const userId = await obtenerUserIdActual();
-            if (!userId) return null;
-            try {
-                const { data, error } = await window.sigaSupabase
-                    .from('horarios_alumno')
-                    .select('nombre_archivo')
-                    .eq('user_id', userId)
-                    .maybeSingle();
-                if (error) { console.warn('No se pudo revisar el horario guardado en la nube:', error); return null; }
-                if (data && data.nombre_archivo && data.nombre_archivo !== nombreNuevo) return data.nombre_archivo;
-                return null;
-            } catch (e) {
-                console.warn('Error revisando conflicto en la nube:', e);
-                return null;
-            }
-        }
-
         // ── Autoguardado: se llama en cada cambio, no en un clic ──
         // Reemplaza al antiguo botón "Guardar" manual.
         function guardarProgreso() {
@@ -352,7 +173,6 @@
                 // Ej: archivo muy grande para el límite de localStorage del navegador
                 showToast('No se pudo guardar automáticamente (archivo muy grande para el navegador)', 'error');
             }
-            guardarProgresoNube();
         }
 
         // Avisa una sola vez por sesión de pestaña que el guardado es automático,
@@ -382,28 +202,11 @@
         };
 
         // ── 2. Cargar archivo: llama a parsearExcel() de parser.js ──
-        btnUpload.onclick = async () => {
+        btnUpload.onclick = () => {
             if (!fileInput.files.length) return;
 
             const file = fileInput.files[0];
             btnUpload.disabled = true;
-
-            // Si hay otro horario guardado en la nube con un archivo distinto,
-            // confirmar antes de reemplazarlo (evita perder sin avisar un Excel
-            // cargado desde otro dispositivo, como el preliminar del celular).
-            const nombreEnNube = await hayConflictoEnNube(file.name);
-            if (nombreEnNube) {
-                const confirma = await pedirConfirmacion(
-                    'Ya tienes un horario guardado',
-                    `Tienes guardado "${nombreEnNube}" desde otro dispositivo. Si continúas, se reemplazará por "${file.name}".`,
-                    'Reemplazar'
-                );
-                if (!confirma) {
-                    btnUpload.disabled = false;
-                    return;
-                }
-            }
-
             fileInfo.style.display = 'flex';
             fileInfo.innerHTML = '⏳ Cargando: ' + file.name;
             uploadStatus.innerHTML = '<span class="spinner"></span> Procesando archivo...';
@@ -605,24 +408,18 @@
         };
 
         // ── 7. Limpiar progreso (el guardado ahora es automático, en cada cambio) ──
-        document.getElementById('btnLimpiarTodo').onclick = async () => {
+        document.getElementById('btnLimpiarTodo').onclick = () => {
             localStorage.removeItem(LS_CARGA);
             localStorage.removeItem(LS_NOMBRE);
             localStorage.removeItem(LS_SEL);
             localStorage.removeItem(LS_GEN_SECCIONES);
             localStorage.removeItem(LS_GEN_CRUCES);
+            // Caché de combinaciones generadas (ver generador.js) — si no se
+            // limpia acá, queda un horario "fantasma" cacheado después de
+            // que el usuario pidió borrar todo.
+            localStorage.removeItem('horarioGen_combosCache');
+            localStorage.removeItem('horarioGen_combosIdx');
             sessionStorage.removeItem('cargaHoraria');
-
-            // También se borra en la nube: si no, reaparecería al entrar
-            // desde otro dispositivo aunque aquí ya se haya "limpiado todo".
-            const userId = await obtenerUserIdActual();
-            if (userId) {
-                try {
-                    await window.sigaSupabase.from('horarios_alumno').delete().eq('user_id', userId);
-                } catch (e) {
-                    console.warn('No se pudo limpiar el horario guardado en la nube:', e);
-                }
-            }
 
             cargaGlobal = null;
             cursosSeleccionados = new Set();
@@ -643,9 +440,7 @@
         };
 
         // ── Restaurar progreso guardado al abrir la app ──────────
-        // 1) Pinta de inmediato lo que haya en localStorage — respuesta
-        //    instantánea, y funciona incluso sin internet (Service Worker).
-        (function restaurarProgresoLocal() {
+        (function restaurarProgreso() {
             const cargaGuardada = localStorage.getItem(LS_CARGA);
             if (!cargaGuardada) return;
 
@@ -672,83 +467,7 @@
                 persistActions.style.display = 'flex';
                 actualizarSeleccion();
             } catch (e) {
-                console.warn('No se pudo restaurar el progreso guardado localmente:', e);
-            }
-        })();
-
-        // 2) En paralelo, si hay sesión, revisa Supabase — que es la fuente
-        //    de verdad entre dispositivos — y si encuentra algo distinto a
-        //    lo local (ej. el Excel preliminar cargado ayer desde el
-        //    celular), reemplaza lo pintado y refresca el respaldo local.
-        (async function sincronizarDesdeNube() {
-            const userId = await obtenerUserIdActual();
-            if (!userId) return; // sin sesión: nos quedamos con lo local
-
-            try {
-                const { data, error } = await window.sigaSupabase
-                    .from('horarios_alumno')
-                    .select('nombre_archivo, carga_horaria, cursos_seleccionados, secciones_generador, cruces')
-                    .eq('user_id', userId)
-                    .maybeSingle();
-
-                if (error) { console.warn('No se pudo traer el horario desde la nube:', error); return; }
-
-                if (!data || !data.carga_horaria) {
-                    // No hay nada en la nube todavía: si sí hay algo local
-                    // (ej. usuario de antes de esta actualización), lo subimos
-                    // una sola vez para que desde ahora sincronice entre dispositivos.
-                    if (cargaGlobal) guardarProgresoNube();
-                    return;
-                }
-
-                // Si ya es lo mismo que se pintó localmente, no hay nada que repintar.
-                if (data.nombre_archivo === nombreArchivoActual) return;
-
-                cargaGlobal = data.carga_horaria;
-                nombreArchivoActual = data.nombre_archivo || '';
-                cursosSeleccionados = new Set(data.cursos_seleccionados || []);
-                sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
-
-                // Refresca el respaldo local para que la próxima vez pinte esto de inmediato.
-                try {
-                    localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
-                    localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
-                    localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
-                } catch (e) { /* no crítico: ya quedó sincronizado en Supabase */ }
-
-                // Si en la nube también hay evidencia de que ya se había
-                // generado un horario (pantalla 2), salta directo para allá
-                // en vez de quedarse mostrando pantalla 1 — mismo criterio
-                // que el salto local de arriba, pero para un dispositivo
-                // nuevo donde localStorage estaba vacío.
-                const vinoDeElegirCursos = new URLSearchParams(window.location.search).get('volver') === '1';
-                if ((data.secciones_generador || data.cruces != null) && !vinoDeElegirCursos) {
-                    try { localStorage.setItem(LS_GEN_SECCIONES, JSON.stringify(data.secciones_generador || {})); } catch (e) { }
-                    try { if (data.cruces != null) localStorage.setItem(LS_GEN_CRUCES, String(data.cruces)); } catch (e) { }
-
-                    const params = new URLSearchParams();
-                    [...cursosSeleccionados].forEach(c => params.append('curso', c));
-                    if (cursosSeleccionados.size) {
-                        window.location.replace('generador.html?' + params.toString());
-                        return;
-                    }
-                }
-
-                if (nombreArchivoActual) {
-                    fileInfo.style.display = 'flex';
-                    fileInfo.innerHTML = '📄 ' + nombreArchivoActual + ' (sincronizado)';
-                }
-
-                const cursos = Object.keys(cargaGlobal).sort();
-                uploadStatus.innerHTML =
-                    `<span style="color:#10b981">☁️ ${cursos.length} cursos sincronizados desde otro dispositivo.</span>`;
-
-                construirListaCursos(cursos);
-                cardCursos.style.display = 'block';
-                persistActions.style.display = 'flex';
-                actualizarSeleccion();
-            } catch (e) {
-                console.warn('Error sincronizando horario desde la nube:', e);
+                console.warn('No se pudo restaurar el progreso guardado:', e);
             }
         })();
 
@@ -762,19 +481,58 @@
         }
     </script>
 
-    <!-- ── Ya no se registra Service Worker: Horarios se actualiza igual
-         que el resto de SIGA (recarga normal, sin caché propio ni aviso
-         de "nueva versión disponible"). Se pierde la función offline a
-         cambio de un comportamiento consistente con el resto del portal
-         — mismo tratamiento que ya se hizo en Intranotas. Esta línea
-         limpia el Service Worker viejo que haya quedado instalado de
-         antes (si no se desregistra activamente, se queda corriendo
-         indefinidamente aunque el código ya no lo registre). ── -->
+    <!-- ── Registro PWA + aviso de actualización ── -->
     <script>
+        let swRegistro = null;
+
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(regs => {
-                regs.forEach(reg => reg.unregister());
+            navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
+                .then(reg => {
+                    console.log('SW registrado');
+                    swRegistro = reg;
+                    if (reg.waiting) mostrarAvisoActualizacion(reg.waiting);
+                    reg.addEventListener('updatefound', () => {
+                        const nuevoSW = reg.installing;
+                        if (!nuevoSW) return;
+                        nuevoSW.addEventListener('statechange', () => {
+                            if (nuevoSW.state === 'installed' && navigator.serviceWorker.controller) {
+                                mostrarAvisoActualizacion(nuevoSW);
+                            }
+                        });
+                    });
+
+                    // Revisa activamente si hay versión nueva: al volver a la pestaña
+                    // y cada 60s mientras la app está abierta. Así el aviso aparece
+                    // sin depender de que el navegador decida chequear por su cuenta.
+                    // Revisión inmediata al cargar, además de las periódicas de abajo
+                    reg.update().catch(() => { });
+                    setInterval(() => reg.update().catch(() => { }), 60 * 1000);
+                    document.addEventListener('visibilitychange', () => {
+                        if (document.visibilityState === 'visible') {
+                            reg.update().catch(() => { });
+                        }
+                    });
+                })
+                .catch(err => console.warn('SW error:', err));
+
+            let recargando = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (recargando) return;
+                recargando = true;
+                window.location.reload();
             });
+        }
+
+        function mostrarAvisoActualizacion(sw) {
+            if (document.querySelector('.update-banner')) return;
+            const banner = document.createElement('div');
+            banner.className = 'update-banner';
+            banner.innerHTML = `🔄 ¡Hay una actualización disponible! <button type="button">Actualizar ahora</button>`;
+            document.body.appendChild(banner);
+            banner.querySelector('button').onclick = () => {
+                sw.postMessage('SKIP_WAITING');
+                banner.remove();
+            };
         }
     </script>
 </body>

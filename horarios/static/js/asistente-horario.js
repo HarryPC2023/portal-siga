@@ -57,7 +57,7 @@ const AH_HOUR_END = 22;
    pero no hace nada). Se van pasando a `true` una por una a medida
    que cada una queda lista, sin tocar el resto del archivo. ---------- */
 const AH_HERRAMIENTAS = [
-    { id: 'huecos', icono: '📘', nombre: 'Huecos y métricas', activa: true },
+    { id: 'huecos', icono: '📘', nombre: 'Huecos entre clases', activa: true },
     { id: 'preferencias', icono: '🎛️', nombre: 'Preferencias', activa: false },
     { id: 'mejor-horario', icono: '🧠', nombre: 'Mejor horario', activa: false },
     { id: 'alertas', icono: '🚨', nombre: 'Alertas inteligentes', activa: false },
@@ -153,7 +153,7 @@ function volverAGridAsistente() {
 }
 
 /* ============================================================
-   HERRAMIENTA: 📘 Huecos y métricas
+   HERRAMIENTA: 📘 Huecos entre clases
    ============================================================ */
 function renderVistaHuecos() {
     const cont = document.getElementById('ah-panel-body');
@@ -177,9 +177,16 @@ function renderVistaHuecos() {
             const info = m.dias[dia];
             const huecosHtml = info.huecos.length
                 ? info.huecos.map(h =>
-                    `<span class="ah-hueco-chip">${formatearMinutos(h.minutos)} · ${formatearHora(h.inicio)}–${formatearHora(h.fin)}</span>`
+                    `<span class="ah-hueco-chip">🕐 ${formatearMinutos(h.minutos)} libres para estudiar · ${formatearHora(h.inicio)}–${formatearHora(h.fin)}</span>`
                 ).join('')
                 : `<span class="ah-hueco-chip ah-hueco-chip-ok">Sin huecos</span>`;
+
+            const filaAntes = info.horasLibresAntesMin > 0
+                ? `<div class="ah-dia-fila"><span>🕐 Libre antes de tu primera clase</span><strong>${formatearMinutos(info.horasLibresAntesMin)}</strong></div>`
+                : '';
+            const filaDespues = info.horasLibresDespuesMin > 0
+                ? `<div class="ah-dia-fila"><span>🕐 Libre después de tu última clase</span><strong>${formatearMinutos(info.horasLibresDespuesMin)}</strong></div>`
+                : '';
 
             return `
                 <div class="ah-dia-card">
@@ -188,7 +195,9 @@ function renderVistaHuecos() {
                         <span class="ah-dia-horario">${formatearHora(info.horaEntrada)} – ${formatearHora(info.horaSalida)}</span>
                     </div>
                     <div class="ah-dia-fila"><span>Horas de clase</span><strong>${formatearMinutos(info.horasClaseMin)}</strong></div>
-                    <div class="ah-dia-fila"><span>Huecos</span><strong>${formatearMinutos(info.huecosDiaMin)}</strong></div>
+                    <div class="ah-dia-fila"><span>Huecos entre clases</span><strong>${formatearMinutos(info.huecosDiaMin)}</strong></div>
+                    ${filaAntes}
+                    ${filaDespues}
                     <div class="ah-dia-huecos">${huecosHtml}</div>
                 </div>
             `;
@@ -199,16 +208,20 @@ function renderVistaHuecos() {
 
         <div class="ah-resumen">
             <div class="ah-resumen-item">
-                <span>Huecos / semana</span>
+                <span>Huecos entre clases</span>
                 <strong>${formatearMinutos(m.huecosTotalMin)}</strong>
+            </div>
+            <div class="ah-resumen-item">
+                <span>🕐 Libres para estudiar</span>
+                <strong>${formatearMinutos(m.estudioTotalMin)}</strong>
             </div>
             <div class="ah-resumen-item">
                 <span>Día más cargado</span>
                 <strong>${m.diaMasCargado ? AH_DIAS_LABEL[m.diaMasCargado] : '—'}</strong>
             </div>
             <div class="ah-resumen-item">
-                <span>Bloque seguido más largo</span>
-                <strong>${formatearMinutos(m.bloqueMaxContinuoMin)}</strong>
+                <span>Día con menos carga</span>
+                <strong>${m.diaMasLibre ? AH_DIAS_LABEL[m.diaMasLibre] : '—'}</strong>
             </div>
         </div>
 
@@ -245,7 +258,7 @@ function pintarHuecosEnCalendario(combo) {
             const bloque = document.createElement('div');
             bloque.className = 'hueco-block';
             bloque.style.cssText = `top:${topPx}px; height:${heightPx}px;`;
-            bloque.innerHTML = `<span class="hueco-block-label">${formatearMinutos(h.minutos)} libres</span>`;
+            bloque.innerHTML = `<span class="hueco-block-label">🕐 ${formatearMinutos(h.minutos)} para estudiar</span>`;
             anchor.appendChild(bloque);
         });
     });
