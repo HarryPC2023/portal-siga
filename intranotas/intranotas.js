@@ -596,11 +596,28 @@ function toggleModoTransicion() {
     renderBotonOtraMalla();
 }
 
+/* Los alumnos de malla 2018 NUNCA llevan cursos 2026 (el reglamento
+   los migra automáticamente apenas corresponde, así que si siguen en
+   2018 es porque aún no les toca el cambio). Modo transición solo
+   tiene sentido para quienes YA están en malla 2026 pero arrastran
+   cursos aprobados bajo el plan 2018 — por eso el bloque entero se
+   oculta cuando la malla activa es 2018, en vez de solo deshabilitar
+   el checkbox. */
 function inicializarModoTransicion() {
+    const bloque = document.getElementById('bloque-modo-transicion');
+    const aviso = document.getElementById('aviso-modo-transicion');
+
+    if (mallaSeleccionada === '2018') {
+        if (bloque) bloque.style.display = 'none';
+        if (aviso) aviso.style.display = 'none';
+        renderBotonOtraMalla();
+        return;
+    }
+
+    if (bloque) bloque.style.display = 'flex';
     const activo = modoTransicionActivo();
     const checkbox = document.getElementById('checkbox-modo-transicion');
     if (checkbox) checkbox.checked = activo;
-    const aviso = document.getElementById('aviso-modo-transicion');
     if (aviso) aviso.style.display = activo ? 'block' : 'none';
     renderBotonOtraMalla();
 }
@@ -608,7 +625,7 @@ function inicializarModoTransicion() {
 function renderBotonOtraMalla() {
     const contenedor = document.getElementById('contenedor-btn-otra-malla');
     if (!contenedor) return;
-    if (!modoTransicionActivo()) {
+    if (mallaSeleccionada === '2018' || !modoTransicionActivo()) {
         contenedor.innerHTML = '';
         return;
     }
@@ -1340,6 +1357,10 @@ function generarSimulador() {
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;">
             <button class="btn-volver" onclick="irAPantalla(3)" style="flex:1; min-width:140px;">← Cambiar cursos</button>
             <button class="btn-volver" onclick="iniciarNuevoPeriodo()" style="flex:1; min-width:140px;">🔄 Nuevo periodo</button>
+        </div>
+
+        <div class="malla-badge-simulador">
+            📚 Malla ${mallaSeleccionada}
         </div>
 
         <div class="aa-entrada-wrap">
