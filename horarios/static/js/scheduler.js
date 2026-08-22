@@ -211,6 +211,87 @@ function calcularMetricasHorario(combo) {
 
 
 // ============================================================
+// generarICS — arma un archivo .ics (formato iCalendar estándar)
+// para importar el horario en Google Calendar, Outlook o Apple
+// Calendar de una sola vez, sin depender de ninguna API externa.
+//
+// No tenemos la fecha real de inicio/fin del ciclo en los datos
+// del Excel, así que cada clase se repite semanalmente por
+// SEMANAS_ICS semanas a partir de la próxima vez que caiga ese
+// día — una aproximación razonable de un semestre. El usuario
+// puede editar o borrar el rango después desde su propio
+// calendario si su ciclo dura menos o más semanas.
+// ------------------------------------------------------------
+const ICS_DIA_A_INDICE = { LUNES: 1, MARTES: 2, MIERCOLES: 3, JUEVES: 4, VIERNES: 5, SABADO: 6 };
+const SEMANAS_ICS = 16;
+
+function icsEscapar(texto) {
+    return String(texto || '')
+        .replace(/\\/g, '\\\\')
+        .replace(/;/g, '\\;')
+        .replace(/,/g, '\\,')
+        .replace(/\n/g, '\\n');
+}
+
+function icsProximaFecha(diaSemana, desde) {
+    const objetivo = ICS_DIA_A_INDICE[diaSemana];
+    if (objetivo === undefined) return null;
+    const fecha = new Date(desde.getFullYear(), desde.getMonth(), desde.getDate());
+    let diff = objetivo - fecha.getDay();
+    if (diff < 0) diff += 7;
+    fecha.setDate(fecha.getDate() + diff);
+    return fecha;
+}
+
+function icsFormatoFecha(fecha, hhmm) {
+    const h = Math.floor(hhmm / 100);
+    const m = hhmm % 100;
+    const pad = n => String(n).padStart(2, '0');
+    return `${fecha.getFullYear()}${pad(fecha.getMonth() + 1)}${pad(fecha.getDate())}T${pad(h)}${pad(m)}00`;
+}
+
+function generarICS(combo) {
+    const ahora = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const dtstamp = `${ahora.getUTCFullYear()}${pad(ahora.getUTCMonth() + 1)}${pad(ahora.getUTCDate())}T${pad(ahora.getUTCHours())}${pad(ahora.getUTCMinutes())}${pad(ahora.getUTCSeconds())}Z`;
+
+    const eventos = [];
+    combo.forEach(sec => {
+        sec.clases.forEach(cl => {
+            const fechaInicio = icsProximaFecha(cl.dia, ahora);
+            if (!fechaInicio) return;
+
+            const esTeoria = cl.tipo === 'T' || /TEOR/i.test(cl.tipo);
+            const tipoLabel = esTeoria ? 'Teoría' : 'Práctica';
+            const uid = `${sec.nombre}-${sec.seccion}-${cl.dia}-${cl.ini}-${Date.now()}@siga-horarios`.replace(/\s+/g, '');
+
+            eventos.push([
+                'BEGIN:VEVENT',
+                `UID:${icsEscapar(uid)}`,
+                `DTSTAMP:${dtstamp}`,
+                `DTSTART:${icsFormatoFecha(fechaInicio, cl.ini)}`,
+                `DTEND:${icsFormatoFecha(fechaInicio, cl.fin)}`,
+                `RRULE:FREQ=WEEKLY;COUNT=${SEMANAS_ICS}`,
+                `SUMMARY:${icsEscapar(sec.nombre + ' (' + tipoLabel + ')')}`,
+                `LOCATION:${icsEscapar(cl.aula || '')}`,
+                `DESCRIPTION:${icsEscapar('Sección ' + sec.seccion + (sec.docente ? ' · ' + sec.docente : ''))}`,
+                'END:VEVENT',
+            ].join('\r\n'));
+        });
+    });
+
+    return [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//SIGA//Generador de Horarios//ES',
+        'CALSCALE:GREGORIAN',
+        ...eventos,
+        'END:VCALENDAR',
+    ].join('\r\n');
+}
+
+
+// ============================================================
 // FAVORITOS — equivale a /favoritos en app.py
 // En vez del servidor, se guardan en memoria del navegador
 // mientras la sesión esté abierta (se pierden al recargar,

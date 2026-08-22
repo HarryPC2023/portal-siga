@@ -62,7 +62,7 @@ const AH_HERRAMIENTAS = [
     { id: 'mejor-horario', icono: '🧠', nombre: 'Mejor horario', activa: false },
     { id: 'alertas', icono: '🚨', nombre: 'Alertas inteligentes', activa: false },
     { id: 'comparador', icono: '⚖️', nombre: 'Comparador', activa: false },
-    { id: 'exportar-calendario', icono: '📅', nombre: 'Exportar a calendario', activa: false },
+    { id: 'exportar-calendario', icono: '📅', nombre: 'Exportar a calendario', activa: true },
 ];
 
 // Recuerda qué vista está abierta ('grid' o el id de una herramienta)
@@ -142,8 +142,8 @@ function toggleAsistenteHorario(forzar) {
 }
 
 function abrirHerramientaAsistente(id) {
-    ah_vistaActual = id;
-    if (id === 'huecos') { renderVistaHuecos(); return; }
+    if (id === 'huecos') { ah_vistaActual = 'huecos'; renderVistaHuecos(); return; }
+    if (id === 'exportar-calendario') { exportarComboICS(); return; }
     // Las demás herramientas todavía no están activas — sus tiles ya
     // están deshabilitados en AH_HERRAMIENTAS, esto es solo por si acaso.
 }
@@ -227,6 +227,34 @@ function renderVistaHuecos() {
 
         <div class="ah-dias-lista">${diasHtml || '<div class="ah-vacio">Sin clases en esta combinación.</div>'}</div>
     `;
+}
+
+/* ============================================================
+   HERRAMIENTA: 📅 Exportar a calendario
+   Acción instantánea (no abre una vista) — genera el .ics del
+   combo que se está viendo ahora mismo y lo descarga de una.
+   ============================================================ */
+function exportarComboICS() {
+    const combo = typeof window.obtenerComboActual === 'function' ? window.obtenerComboActual() : null;
+    if (!combo) {
+        if (typeof window.showToast === 'function') window.showToast('Genera un horario primero', 'error');
+        return;
+    }
+
+    const ics = generarICS(combo);
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'horario-siga.ics';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    if (typeof window.showToast === 'function') {
+        window.showToast('Horario descargado — impórtalo en Google Calendar, Outlook o Apple Calendar', 'success');
+    }
 }
 
 /* ---------- Sombrea los huecos directamente sobre el calendario ya
