@@ -369,6 +369,54 @@
 }
 
 /* ============================================================
+   AVISO: "🧠 Mejor horario" (vive sobre el calendario, no en el
+   panel — se muestra al saltar a la combinación recomendada).
+   ============================================================ */
+.ah-banner-mejor-horario {
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--accent-dim, rgba(102, 0, 204, 0.08));
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin: 0 0 14px;
+}
+
+.ah-banner-icono {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.ah-banner-texto {
+    flex: 1;
+    min-width: 0;
+}
+
+.ah-banner-titulo {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--text);
+    margin: 0 0 2px;
+}
+
+.ah-banner-detalle {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin: 0;
+}
+
+.ah-banner-cerrar {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 2px;
+}
+
+/* ============================================================
    AVISO: instrucciones para importar el .ics
    Sin temporizador a propósito — se queda hasta que el usuario
    lo cierra, para que le dé tiempo de leerlo cuando vuelva de

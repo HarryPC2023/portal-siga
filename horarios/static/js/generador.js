@@ -24,6 +24,16 @@ if (typeof cargaGlobal === 'undefined') var cargaGlobal = null;
 // mostrando ahora mismo, sin depender del scope interno de este
 // archivo (combosValidos/currentIndex son `let`, no quedan en window).
 window.obtenerComboActual = () => combosValidos[currentIndex] || null;
+window.obtenerTodosLosCombos = () => combosValidos.slice();
+
+// Salta directo a una combinación ya generada (usado por "🧠 Mejor
+// horario" del Asistente). Devuelve false si no hay nada generado.
+window.irACombo = (idx) => {
+    if (!combosValidos.length) return false;
+    currentIndex = Math.max(0, Math.min(idx, combosValidos.length - 1));
+    dibujar(currentIndex);
+    return true;
+};
 
 // ── AUTOGUARDADO (pantalla 2) ────────────────────────────────
 // Guarda qué secciones/profesores quedaron marcados y la cantidad
@@ -439,6 +449,9 @@ function generar() {
             _setBotonesVisibles(true);
             dibujar(0);
             guardarCombosCache(seleccion);
+            // Nueva tanda de combinaciones — cualquier recomendación
+            // anterior de "Mejor horario" ya no aplica.
+            if (typeof window.ocultarBannerMejorHorario === 'function') window.ocultarBannerMejorHorario();
 
             // En móvil, scroll suave hasta el calendario
             if (window.innerWidth < 900) {
@@ -628,6 +641,9 @@ function dibujar(idx) {
 function cambiar(n) {
     currentIndex = (currentIndex + n + combosValidos.length) % combosValidos.length;
     dibujar(currentIndex);
+    // Si el usuario navega a mano, la recomendación de "Mejor horario"
+    // ya no aplica a lo que está viendo — se oculta el aviso.
+    if (typeof window.ocultarBannerMejorHorario === 'function') window.ocultarBannerMejorHorario();
 }
 
 // ── TOOLTIP ───────────────────────────────────────────────────

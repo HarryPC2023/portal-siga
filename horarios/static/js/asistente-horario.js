@@ -58,7 +58,7 @@ const AH_HOUR_END = 22;
    que cada una queda lista, sin tocar el resto del archivo. ---------- */
 const AH_HERRAMIENTAS = [
     { id: 'huecos', icono: '📘', nombre: 'Huecos entre clases', activa: true },
-    { id: 'mejor-horario', icono: '🧠', nombre: 'Mejor horario', activa: false },
+    { id: 'mejor-horario', icono: '🧠', nombre: 'Mejor horario', activa: true },
     { id: 'alertas', icono: '🚨', nombre: 'Alertas inteligentes', activa: false },
     { id: 'comparador', icono: '⚖️', nombre: 'Comparador', activa: false },
     { id: 'exportar-calendario', icono: '📅', nombre: 'Exportar a calendario', activa: true },
@@ -143,12 +143,98 @@ function toggleAsistenteHorario(forzar) {
 function abrirHerramientaAsistente(id) {
     if (id === 'huecos') { ah_vistaActual = 'huecos'; renderVistaHuecos(); return; }
     if (id === 'exportar-calendario') { exportarComboICS(); return; }
+    if (id === 'mejor-horario') { aplicarMejorHorario(); return; }
     // Las demás herramientas todavía no están activas — sus tiles ya
     // están deshabilitados en AH_HERRAMIENTAS, esto es solo por si acaso.
 }
 
 function volverAGridAsistente() {
     renderGridAsistente();
+}
+
+/* ============================================================
+   HERRAMIENTA: 🧠 Mejor horario
+   Acción instantánea (no abre una vista) — puntúa las
+   combinaciones ya generadas según cuántos profesores
+   prioritarios (⭐ del sidebar) logra mantener cada una, salta a
+   la que mejor puntúa y lo explica en un aviso sobre el calendario.
+   ============================================================ */
+
+// 3 puntos por 1.ª opción, 2 por 2.ª, 1 por 3.ª — así una combinación
+// con el profesor fija de un curso siempre gana a una que solo tiene
+// alternativas, sin importar cuántas alternativas junte.
+const AH_PUNTOS_PRIORIDAD = { '1': 3, '2': 2, '3': 1 };
+
+function puntuarComboPorPrioridad(combo, prioridades) {
+    let puntaje = 0;
+    const fijaLogrados = [];
+    combo.forEach(sec => {
+        const p = prioridades[sec.nombre] && prioridades[sec.nombre][sec.docente];
+        if (!p) return;
+        puntaje += AH_PUNTOS_PRIORIDAD[p] || 0;
+        if (p === '1') fijaLogrados.push(sec.nombre);
+    });
+    return { puntaje, fijaLogrados };
+}
+
+function aplicarMejorHorario() {
+    const combos = typeof window.obtenerTodosLosCombos === 'function' ? window.obtenerTodosLosCombos() : [];
+    if (!combos.length) {
+        if (typeof window.showToast === 'function') window.showToast('Genera un horario primero', 'error');
+        return;
+    }
+
+    const prioridades = typeof window.obtenerPrioridadesProfesor === 'function' ? window.obtenerPrioridadesProfesor() : {};
+    if (!Object.keys(prioridades).length) {
+        if (typeof window.showToast === 'function') {
+            window.showToast('Marca a tu profesor fija en el sidebar primero (1.ª opción)', 'info');
+        }
+        return;
+    }
+
+    // Desempate: si dos combinaciones puntúan igual, gana la que
+    // tiene menos huecos entre clases — reusa el motor de la
+    // herramienta "Huecos entre clases", nada nuevo que calcular.
+    let mejorIdx = 0, mejorPuntaje = -1, mejorFijaLogrados = [], mejorHuecos = Infinity;
+    combos.forEach((combo, idx) => {
+        const { puntaje, fijaLogrados } = puntuarComboPorPrioridad(combo, prioridades);
+        const huecos = calcularMetricasHorario(combo).huecosTotalMin;
+        const esMejor = puntaje > mejorPuntaje || (puntaje === mejorPuntaje && huecos < mejorHuecos);
+        if (esMejor) {
+            mejorPuntaje = puntaje;
+            mejorIdx = idx;
+            mejorFijaLogrados = fijaLogrados;
+            mejorHuecos = huecos;
+        }
+    });
+
+    if (typeof window.irACombo === 'function') window.irACombo(mejorIdx);
+    mostrarBannerMejorHorario(mejorIdx, combos.length, mejorFijaLogrados);
+    toggleAsistenteHorario(false);
+}
+
+function mostrarBannerMejorHorario(idx, total, fijaLogrados) {
+    const banner = document.getElementById('ah-banner-mejor-horario');
+    if (!banner) return;
+
+    const detalle = fijaLogrados.length
+        ? `Incluye a tu${fijaLogrados.length > 1 ? 's' : ''} profesor${fijaLogrados.length > 1 ? 'es' : ''} fija: ${fijaLogrados.join(', ')}`
+        : 'Ninguna combinación logró mantener a tu profesor fija con la selección actual';
+
+    banner.innerHTML = `
+        <span class="ah-banner-icono">🎯</span>
+        <div class="ah-banner-texto">
+            <p class="ah-banner-titulo">Opción ${idx + 1} de ${total} — la que mejor respeta tu estrategia de matrícula</p>
+            <p class="ah-banner-detalle">${detalle}</p>
+        </div>
+        <button type="button" class="ah-banner-cerrar" aria-label="Cerrar" onclick="ocultarBannerMejorHorario()">✕</button>
+    `;
+    banner.style.display = 'flex';
+}
+
+function ocultarBannerMejorHorario() {
+    const banner = document.getElementById('ah-banner-mejor-horario');
+    if (banner) banner.style.display = 'none';
 }
 
 /* ============================================================
@@ -338,6 +424,7 @@ function onDibujarHorarioAsistente(combo) {
     window.toggleAsistenteHorario = toggleAsistenteHorario;
     window.abrirHerramientaAsistente = abrirHerramientaAsistente;
     window.volverAGridAsistente = volverAGridAsistente;
+    window.ocultarBannerMejorHorario = ocultarBannerMejorHorario;
     window.onDibujarHorarioAsistente = onDibujarHorarioAsistente;
 
     wrap.style.display = '';
