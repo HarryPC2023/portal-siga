@@ -855,11 +855,15 @@ function abrirModalSyncIntralu() {
                 Además, no necesitas tener abierta Intralú para hacerlo.
             </p>
             <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué quieres cargar?</label>
-            <select id="sync-intralu-alcance"
-                style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:12px; font-size:0.9rem; box-sizing:border-box;">
-                <option value="todos">Todos mis periodos (tarda varios minutos)</option>
-                ${generarPeriodosDisponibles(12).map(p => `<option value="${p}">Solo ${formatoPeriodoCorto(p)}</option>`).join('')}
-            </select>
+            <div class="campo-select-custom" style="width:100%; margin-bottom:12px;">
+                <button type="button" class="select-custom-trigger" id="syncIntraluAlcanceTrigger"
+                    aria-haspopup="listbox" aria-expanded="false">
+                    <span id="syncIntraluAlcanceTriggerTexto"></span>
+                    <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                </button>
+                <ul class="select-custom-lista" id="syncIntraluAlcanceLista" role="listbox" hidden></ul>
+                <input type="hidden" id="syncIntraluAlcanceValor">
+            </div>
             <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Código UNI</label>
             <input id="sync-intralu-codigo" type="text" placeholder="2023XXXXX" autocomplete="off"
                 oninput="this.value = this.value.toUpperCase()"
@@ -885,6 +889,20 @@ function abrirModalSyncIntralu() {
     `;
     document.body.appendChild(overlay);
     requestAnimationFrame(() => overlay.classList.add('visible'));
+
+    // 'Todos mis periodos' va al final de la lista (a pedido de Harry),
+    // pero se mantiene como valor por defecto seleccionado: es la
+    // opción más completa y la más segura si el usuario no elige nada.
+    const opcionesAlcance = [
+        ...generarPeriodosDisponibles(12).map(p => ({ value: p, label: `Solo ${formatoPeriodoCorto(p)}` })),
+        { value: 'todos', label: 'Todos mis periodos (tarda varios minutos)' },
+    ];
+    inicializarSelectPersonalizado({
+        triggerId: 'syncIntraluAlcanceTrigger', textoId: 'syncIntraluAlcanceTriggerTexto',
+        listaId: 'syncIntraluAlcanceLista', valorId: 'syncIntraluAlcanceValor',
+        opciones: opcionesAlcance,
+        alElegir: () => { },
+    })?.establecer('todos', 'Todos mis periodos (tarda varios minutos)');
 }
 
 function alternarVisibilidadPasswordIntralu() {
@@ -910,7 +928,7 @@ async function ejecutarSyncIntralu() {
 
     const codigo = codigoEl.value.trim();
     const password = passwordEl.value;
-    const alcance = document.getElementById('sync-intralu-alcance').value;
+    const alcance = document.getElementById('syncIntraluAlcanceValor').value || 'todos';
     const periodo = alcance === 'todos' ? null : periodoIntranotasARaw(alcance);
 
     errorEl.style.display = 'none';
