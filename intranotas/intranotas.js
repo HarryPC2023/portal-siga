@@ -1364,6 +1364,16 @@ function generarSimulador() {
             <button class="btn-volver" onclick="iniciarNuevoPeriodo()" style="flex:1; min-width:140px;">🔄 Nuevo periodo</button>
         </div>
 
+        <div class="aa-entrada-wrap">
+            <button type="button" class="aa-entrada-btn" id="aa-entrada-btn" onclick="toggleAnalisisAcademico()">
+                <span>📊 Análisis académico</span>
+                <span class="aa-entrada-flecha" id="aa-entrada-flecha">▾</span>
+            </button>
+            <div class="aa-inline" id="aa-inline">
+                <div class="aa-panel-body" id="aa-panel-body"></div>
+            </div>
+        </div>
+
         <details style="margin:12px 0; background:var(--color-fondo-input); border-radius:10px; padding:10px 14px;">
             <summary style="cursor:pointer; font-weight:600; font-size:0.85rem; color:var(--color-cian);">💾 ¿Sabías que puedes guardar varios periodos?</summary>
             <p style="font-size:0.82rem; color:var(--color-gris-texto); margin:8px 0 0; line-height:1.6;">
@@ -1392,7 +1402,6 @@ function generarSimulador() {
     cargarNotasGuardadas();
     cargarSelectorPeriodosGuardados();
     generarBannerReferencias();
-    inicializarAnalisisAcademico();
 }
 
 /* ============================================================
@@ -2466,10 +2475,10 @@ async function intentarRestaurarSesion() {
    ============================================================
    ANÁLISIS ACADÉMICO — hub de herramientas (Pantalla 4)
 
-   Punto de entrada independiente de las tarjetas de curso: un
-   botón flotante (dentro de #botones-flotantes, que ya solo se
-   muestra en Pantalla 4) abre un panel — docked a la derecha en
-   escritorio, hoja inferior en celular (ver CSS en
+   Bloque dentro del flujo normal de la pantalla, justo debajo de
+   "Cambiar cursos" / "Nuevo periodo": un botón rectangular y
+   centrado que despliega su contenido hacia abajo, con el mismo
+   lenguaje visual que los .acordeon de Intranotas (ver
    analisis-academico.css). Dentro viven 4 herramientas:
 
      🎯 Meta del curso     — funcional
@@ -2486,52 +2495,15 @@ async function intentarRestaurarSesion() {
    ============================================================
    ============================================================ */
 
-/* ---------- Inicialización del hub (se llama una vez desde
-   generarSimulador; el guard de abajo evita duplicar el DOM si
-   el usuario reentra a Pantalla 4 varias veces) ---------- */
-function inicializarAnalisisAcademico() {
-    if (document.getElementById('aa-panel')) return;
-
-    const contenedorBotones = document.getElementById('botones-flotantes');
-
-    const fab = document.createElement('button');
-    fab.type = 'button';
-    fab.id = 'aa-fab';
-    fab.className = 'aa-fab';
-    fab.setAttribute('aria-label', 'Análisis académico');
-    fab.innerHTML = '📊';
-    fab.onclick = () => toggleAnalisisAcademico();
-    (contenedorBotones || document.body).appendChild(fab);
-
-    const overlay = document.createElement('div');
-    overlay.id = 'aa-overlay';
-    overlay.className = 'aa-overlay';
-    overlay.onclick = () => toggleAnalisisAcademico(false);
-    document.body.appendChild(overlay);
-
-    const panel = document.createElement('div');
-    panel.id = 'aa-panel';
-    panel.className = 'aa-panel';
-    panel.innerHTML = `
-        <div class="aa-panel-header">
-            <span>📊 Análisis académico</span>
-            <button type="button" class="aa-cerrar" aria-label="Cerrar" onclick="toggleAnalisisAcademico(false)">✕</button>
-        </div>
-        <div class="aa-panel-body" id="aa-panel-body"></div>
-    `;
-    document.body.appendChild(panel);
-}
-
+/* ---------- Toggle del bloque inline (estilo acordeón) ---------- */
 function toggleAnalisisAcademico(forzar) {
-    const panel = document.getElementById('aa-panel');
-    const overlay = document.getElementById('aa-overlay');
-    const fab = document.getElementById('aa-fab');
-    if (!panel) return;
+    const btn = document.getElementById('aa-entrada-btn');
+    const inline = document.getElementById('aa-inline');
+    if (!btn || !inline) return;
 
-    const abrir = typeof forzar === 'boolean' ? forzar : !panel.classList.contains('abierto');
-    panel.classList.toggle('abierto', abrir);
-    if (overlay) overlay.classList.toggle('visible', abrir);
-    if (fab) fab.classList.toggle('activo', abrir);
+    const abrir = typeof forzar === 'boolean' ? forzar : !inline.classList.contains('abierto');
+    inline.classList.toggle('abierto', abrir);
+    btn.classList.toggle('abierto', abrir);
 
     if (abrir) abrirHerramienta('grid');
 }
@@ -2621,7 +2593,6 @@ function abrirHerramienta(id) {
    ============================================================ */
 const META_BANDA_COMODA = 16;     // valor "cómodo" para una banda que se fija a propósito
 const META_BANDA_APROBADO = 11;   // valor "de pase" para una banda que se fija a propósito
-const META_PASO_BUSQUEDA = 0.1;   // resolución de la búsqueda del valor mínimo necesario
 
 let metaCursoSeleccionadoId = null;
 
@@ -2650,16 +2621,13 @@ function leerValoresActualesCurso(curso) {
     return valores;
 }
 
-/* Busca el menor valor en [0,20] (paso 0.1) que, asignado por igual
-   a todos los `comps` indicados (junto con lo ya fijo en `base`),
-   alcanza metaFinal. Se usa escaneo lineal en vez de búsqueda
-   binaria a propósito: como el PF se trunca a 1 decimal, puede haber
-   "mesetas" donde subir la nota no cambia el resultado, y un
-   escaneo simple es inmune a eso — 201 evaluaciones es trivial para
-   el navegador. */
+/* Busca el menor valor ENTERO en [0,20] que, asignado por igual a
+   todos los `comps` indicados (junto con lo ya fijo en `base`),
+   alcanza metaFinal. Las notas que Meta del curso propone por
+   componente son siempre enteras (más realista que pedir "16.4 en
+   tu PC2") — solo 21 valores a evaluar, trivial para el navegador. */
 function resolverValorMinimo(curso, base, comps, metaFinal) {
-    for (let i = 0; i <= 200; i++) {
-        const x = Math.round(i * META_PASO_BUSQUEDA * 10) / 10;
+    for (let x = 0; x <= 20; x++) {
         const prueba = { ...base };
         comps.forEach(c => { prueba[c] = x; });
         const { nota_final } = calcularPFCompleto(curso, prueba);
@@ -2788,7 +2756,7 @@ function generarVistaMeta() {
         </div>
         <div class="meta-aa-input-group">
             <label for="meta-aa-final">¿Cuál es tu meta y cómo podrías alcanzarla?</label>
-            <input type="number" id="meta-aa-final" min="0" max="20" step="0.1" value="14" oninput="refrescarVistaMeta()">
+            <input type="number" id="meta-aa-final" min="0" max="20" step="1" value="14" oninput="refrescarVistaMeta()">
         </div>
         <div id="meta-aa-resultado"></div>
     `;
@@ -2835,7 +2803,7 @@ function refrescarVistaMeta() {
             <p class="meta-aa-tarjeta-desc">${e.descripcion}</p>
             <div class="meta-aa-tarjeta-valores">
                 ${Object.entries(e.valores).map(([comp, val]) => `
-                    <div class="meta-aa-valor"><span>${comp}</span><strong>${val.toFixed(1)}</strong></div>
+                    <div class="meta-aa-valor"><span>${comp}</span><strong>${val}</strong></div>
                 `).join('')}
             </div>
             <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${e.notaFinal.toFixed(1)}</strong></div>

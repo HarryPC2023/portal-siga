@@ -4,99 +4,71 @@
    (usa las mismas variables de tema: --color-cian, --color-fondo-
    tarjeta, --color-gris-texto, etc., así que responde solo a
    Claro/Oscuro/Ocean/Forest sin código adicional).
+
+   v2: ya no es un botón flotante (FAB) con panel lateral/hoja
+   inferior — ahora es un bloque más dentro del flujo normal de
+   Pantalla 4, justo debajo de "Cambiar cursos" / "Nuevo periodo".
+   El botón de entrada es rectangular y centrado; al desplegarse,
+   el contenido usa el mismo lenguaje visual que .acordeon (fondo
+   blanco, esquinas redondeadas, sombra de tarjeta) para sentirse
+   consistente con el resto de Intranotas.
    ============================================================ */
 
-/* ---------- Botón flotante (FAB) ---------- */
-.aa-fab {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    border: none;
-    background: linear-gradient(135deg, var(--color-cian), var(--color-azul));
-    color: #fff;
-    font-size: 1.3rem;
+/* ---------- Botón de entrada (rectangular, centrado) ---------- */
+.aa-entrada-wrap {
+    margin: 10px 0;
+}
+
+.aa-entrada-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-    transition: transform 0.15s ease, filter 0.15s ease;
-}
-
-.aa-fab:hover {
-    filter: brightness(1.05);
-    transform: translateY(-1px);
-}
-
-.aa-fab.activo {
-    filter: brightness(0.95);
-}
-
-/* ---------- Overlay de fondo ---------- */
-.aa-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 998;
-}
-
-.aa-overlay.visible {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* ---------- Panel — por defecto (escritorio): docked a la derecha ---------- */
-.aa-panel {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: 380px;
-    max-width: 92vw;
-    background: var(--color-fondo-tarjeta, #fff);
-    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.14);
-    transform: translateX(100%);
-    transition: transform 0.25s ease;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.aa-panel.abierto {
-    transform: translateX(0);
-}
-
-.aa-panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 18px;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--color-fondo-input);
+    border: none;
+    border-radius: 10px;
+    color: var(--color-cian);
     font-family: var(--font-heading);
     font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--color-texto-principal);
-    border-bottom: 1px solid var(--color-gris-claro);
-    flex-shrink: 0;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: filter 0.15s ease;
 }
 
-.aa-cerrar {
-    background: none;
-    border: none;
-    font-size: 1.1rem;
-    color: var(--color-gris-texto);
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px;
+.aa-entrada-btn:hover {
+    filter: brightness(0.97);
+}
+
+.aa-entrada-flecha {
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.aa-entrada-btn.abierto .aa-entrada-flecha {
+    transform: rotate(180deg);
+}
+
+/* ---------- Contenido desplegable — mismo lenguaje visual que
+   .acordeon (tarjeta blanca, radio 8px, sombra) para sentirse
+   consistente con el resto de Intranotas ---------- */
+.aa-inline {
+    background: var(--color-fondo-tarjeta, #fff);
+    border-radius: 8px;
+    box-shadow: var(--sombra-tarjeta);
+    margin-top: 8px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+
+.aa-inline.abierto {
+    max-height: 3000px;
 }
 
 .aa-panel-body {
-    padding: 16px 18px 24px;
-    overflow-y: auto;
-    flex: 1;
+    padding: 16px 18px 20px;
 }
 
 /* ---------- Grilla de herramientas ---------- */
@@ -307,29 +279,4 @@
 
 .meta-aa-tarjeta-pf strong {
     color: var(--color-cian);
-}
-
-/* ---------- Celular: la misma pieza se convierte en hoja inferior ---------- */
-@media (max-width: 768px) {
-    .aa-panel {
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-        max-height: 82vh;
-        border-radius: 18px 18px 0 0;
-        transform: translateY(100%);
-        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
-    }
-
-    .aa-panel.abierto {
-        transform: translateY(0);
-    }
-
-    .aa-grid {
-        grid-template-columns: 1fr 1fr;
-    }
 }
