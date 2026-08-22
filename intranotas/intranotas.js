@@ -854,7 +854,7 @@ function abrirModalSyncIntralu() {
                 es más rápido). Tus credenciales nunca se guardan en nuestros servidores: se descartan al terminar.
                 Además, no necesitas tener abierta Intralú para hacerlo.
             </p>
-            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué quieres cargar?</label>
+            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué ciclo deseas cargar?</label>
             <div class="campo-select-custom" style="width:100%; margin-bottom:12px;">
                 <button type="button" class="select-custom-trigger" id="syncIntraluAlcanceTrigger"
                     aria-haspopup="listbox" aria-expanded="false">
@@ -897,12 +897,15 @@ function abrirModalSyncIntralu() {
         ...generarPeriodosDisponibles(12).map(p => ({ value: p, label: `Solo ${formatoPeriodoCorto(p)}` })),
         { value: 'todos', label: 'Todos mis periodos (tarda varios minutos)' },
     ];
+    // Arranca sin preseleccionar nada ("Selecciona una opción"); si el
+    // usuario confirma sin elegir, ejecutarSyncIntralu() ya cae por
+    // defecto a 'todos' (ver `|| 'todos'` más abajo).
     inicializarSelectPersonalizado({
         triggerId: 'syncIntraluAlcanceTrigger', textoId: 'syncIntraluAlcanceTriggerTexto',
         listaId: 'syncIntraluAlcanceLista', valorId: 'syncIntraluAlcanceValor',
         opciones: opcionesAlcance,
         alElegir: () => { },
-    })?.establecer('todos', 'Todos mis periodos (tarda varios minutos)');
+    })?.establecer('', 'Selecciona una opción');
 }
 
 function alternarVisibilidadPasswordIntralu() {
