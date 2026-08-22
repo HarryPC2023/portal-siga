@@ -326,7 +326,6 @@ body {
 
 .curso-nombre {
   flex: 1;
-  font-family: 'Poppins', sans-serif;
   font-weight: 500;
 }
 
@@ -391,7 +390,6 @@ body {
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 4px 10px;
-  font-family: 'Poppins', sans-serif;
   font-size: 11px;
   font-weight: 600;
 }
@@ -493,8 +491,6 @@ body {
   font-weight: 600;
   color: var(--text-dim);
   text-decoration: none;
-  white-space: nowrap;
-  flex-shrink: 0;
   transition: color 0.15s;
 }
 
@@ -661,6 +657,58 @@ body {
 
 .prof-option span strong {
   color: var(--text);
+}
+
+/* Grupo por profesor (dentro de .course-profs) */
+.docente-group {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 6px 0;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.docente-group-fija {
+  border-color: var(--accent);
+  border-width: 1.5px;
+  background: rgba(102, 0, 204, 0.04);
+}
+
+.docente-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.docente-fija-icono {
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.docente-nombre {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docente-prioridad-select {
+  font-size: 10px;
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  flex-shrink: 0;
+  max-width: 100px;
+}
+
+.docente-group-secciones {
+  padding-left: 2px;
 }
 
 /* Crossings */
