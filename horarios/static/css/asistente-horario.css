@@ -1,0 +1,213 @@
+/* ============================================================
+   ASISTENTE DE HORARIO — hub de herramientas de Generador de Horarios
+   Cargar DESPUÉS de style.css y siga-theme-horarios.css (usa
+   var(--accent), var(--surface), var(--border), var(--radius)...
+   que ya define ese archivo, así que responde solo a los 4 tonos
+   sin código adicional).
+
+   Mismo patrón que analisis-academico.css de Intranotas: botón de
+   entrada rectangular que vive en el flujo normal (sidebar), cuyo
+   contenido se despliega como panel LATERAL — docked a la derecha
+   en escritorio, hoja inferior en celular.
+   ============================================================ */
+
+/* ---------- Botón de entrada (rectangular, esquinas curvas) ---------- */
+.ah-entrada-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.ah-entrada-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 14px;
+    background: var(--surface2);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    color: var(--accent);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 11px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.ah-entrada-btn:hover {
+    filter: brightness(0.97);
+    transform: translateY(-1px);
+}
+
+.ah-entrada-icono {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.ah-entrada-flecha {
+    font-size: 9px;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.ah-entrada-btn.abierto .ah-entrada-flecha {
+    transform: rotate(180deg);
+}
+
+/* ---------- Overlay de fondo ---------- */
+.ah-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 998;
+}
+
+.ah-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ---------- Panel — docked a la derecha en escritorio ---------- */
+.ah-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 380px;
+    max-width: 92vw;
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.14);
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ah-panel.abierto {
+    transform: translateX(0);
+}
+
+.ah-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.ah-panel-header-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ah-header-icono {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+}
+
+.ah-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+}
+
+.ah-panel-body {
+    padding: 16px 18px 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* ---------- Grilla de herramientas ---------- */
+.ah-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.ah-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 14px 12px;
+    background: var(--surface2);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    text-align: left;
+    transition: filter 0.15s ease, transform 0.1s ease;
+    font-family: inherit;
+}
+
+.ah-tile:hover {
+    filter: brightness(0.97);
+    transform: translateY(-1px);
+}
+
+.ah-tile-icono {
+    font-size: 1.4rem;
+}
+
+.ah-tile-nombre {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.25;
+}
+
+.ah-tile-construccion {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.ah-tile-nota {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+/* ---------- Celular: hoja inferior ---------- */
+@media (max-width: 768px) {
+    .ah-panel {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 82vh;
+        border-radius: 14px 14px 0 0;
+        border-left: none;
+        border-top: 4px solid var(--accent);
+        transform: translateY(100%);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .ah-panel.abierto {
+        transform: translateY(0);
+    }
+}
