@@ -575,6 +575,58 @@
     padding: 20px 10px;
 }
 
+/* Dato positivo (no es una alerta) — tiempo libre antes de la
+   primera clase. Verde agua MUY diluido, casi imperceptible, para
+   que no compita visualmente con las tarjetas de alerta de arriba. */
+.ah-seccion-titulo {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: 0.74rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 18px 0 10px;
+}
+
+.ah-positivos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ah-positivo-card {
+    display: flex;
+    gap: 10px;
+    background: rgba(16, 185, 129, 0.045);
+    border: 1px solid rgba(16, 185, 129, 0.18);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+}
+
+.ah-positivo-icono {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.ah-positivo-texto {
+    flex: 1;
+    min-width: 0;
+}
+
+.ah-positivo-titulo {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 2px;
+}
+
+.ah-positivo-detalle {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin: 0;
+}
+
 /* ============================================================
    AVISO: instrucciones para importar el .ics
    Sin temporizador a propósito — se queda hasta que el usuario

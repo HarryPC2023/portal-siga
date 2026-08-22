@@ -348,11 +348,50 @@ function irAVerFavorito(idx) {
    profesor prioritario de "Mejor horario" — nada nuevo que
    calcular acá.
    ============================================================ */
-const AH_VENTANA_ALMUERZO_INICIO = 12 * 60;   // 12:00
-const AH_VENTANA_ALMUERZO_FIN = 14 * 60 + 30; // 14:30
 const AH_HUECO_LARGO_MIN = 120;               // 2h
 const AH_DIA_LARGO_MIN = 600;                 // 10h
 const AH_ENTRADA_TEMPRANA_MIN = 480;          // 8:00
+const AH_ALMUERZO_INICIO = 12 * 60;           // 12:00
+const AH_ALMUERZO_FIN = 14 * 60 + 30;         // 14:30
+const AH_ALMUERZO_MIN_NECESARIO = 30;         // mínimo para contar como "sí alcanza"
+const AH_LIBRE_ANTES_INICIO_DIA = 7 * 60;     // 7:00 — mismo criterio que el calendario
+const AH_LIBRE_ANTES_UMBRAL = 120;            // solo se muestra si son 2h o más
+
+// Cuánto se solapan dos intervalos de tiempo (en minutos). 0 si no
+// se tocan — usado para saber si un tramo libre realmente cae
+// dentro de la ventana de almuerzo, no solo "hay un hueco por ahí".
+function solapeMin(iniA, finA, iniB, finB) {
+    return Math.max(0, Math.min(finA, finB) - Math.max(iniA, iniB));
+}
+
+// ¿Alcanza el tiempo para almorzar? Revisa las TRES fuentes de tiempo
+// libre del día — antes de la primera clase, los huecos entre clases,
+// y después de la última — no solo los huecos internos (ese era el
+// bug: un alumno con su primera clase a la 1pm sí tiene tiempo antes,
+// aunque no tenga ningún "hueco" registrado ese día).
+function alcanzaParaAlmorzar(info) {
+    const intervalosLibres = [
+        { ini: 0, fin: info.horaEntrada },
+        ...info.huecos.map(h => ({ ini: h.inicio, fin: h.fin })),
+        { ini: info.horaSalida, fin: 24 * 60 },
+    ];
+    return intervalosLibres.some(iv =>
+        solapeMin(iv.ini, iv.fin, AH_ALMUERZO_INICIO, AH_ALMUERZO_FIN) >= AH_ALMUERZO_MIN_NECESARIO
+    );
+}
+
+function contarPracticasPorDia(combo) {
+    const porDia = {};
+    combo.forEach(sec => {
+        sec.clases.forEach(cl => {
+            const esTeoria = cl.tipo === 'T' || /TEOR/i.test(cl.tipo);
+            if (esTeoria) return;
+            if (!porDia[cl.dia]) porDia[cl.dia] = [];
+            porDia[cl.dia].push(sec.nombre);
+        });
+    });
+    return porDia;
+}
 
 function detectarAlertas(combo) {
     const m = calcularMetricasHorario(combo);
@@ -369,15 +408,11 @@ function detectarAlertas(combo) {
             }
         });
 
-        const cruzaAlmuerzo = info.horaEntrada < AH_VENTANA_ALMUERZO_FIN && info.horaSalida > AH_VENTANA_ALMUERZO_INICIO;
-        const hayHuecoParaAlmorzar = info.huecos.some(h =>
-            h.minutos >= 30 && h.inicio < AH_VENTANA_ALMUERZO_FIN && h.fin > AH_VENTANA_ALMUERZO_INICIO
-        );
-        if (cruzaAlmuerzo && !hayHuecoParaAlmorzar) {
+        if (!alcanzaParaAlmorzar(info)) {
             alertas.push({
                 icono: '🍽️',
                 titulo: `Sin tiempo para almorzar el ${AH_DIAS_LABEL[dia]}`,
-                detalle: `Tus clases cubren todo el mediodía sin un hueco de al menos 30 min entre ${formatearHora(AH_VENTANA_ALMUERZO_INICIO)} y ${formatearHora(AH_VENTANA_ALMUERZO_FIN)}.`,
+                detalle: `No hay ningún tramo de al menos 30 min libre entre ${formatearHora(AH_ALMUERZO_INICIO)} y ${formatearHora(AH_ALMUERZO_FIN)} — ni antes, ni entre, ni después de tus clases.`,
             });
         }
 
@@ -399,6 +434,16 @@ function detectarAlertas(combo) {
         }
     });
 
+    Object.entries(contarPracticasPorDia(combo)).forEach(([dia, cursos]) => {
+        if (cursos.length >= 2) {
+            alertas.push({
+                icono: '📝',
+                titulo: `${cursos.length} prácticas el ${AH_DIAS_LABEL[dia]}`,
+                detalle: `${cursos.join(', ')} — las prácticas suelen ser también evaluaciones. Organiza bien tu semana de estudio para no llegar justo a ese día.`,
+            });
+        }
+    });
+
     const prioridades = typeof window.obtenerPrioridadesProfesor === 'function' ? window.obtenerPrioridadesProfesor() : {};
     Object.entries(prioridades).forEach(([curso, porDocente]) => {
         const docenteFija = Object.keys(porDocente).find(d => porDocente[d] === '1');
@@ -416,6 +461,28 @@ function detectarAlertas(combo) {
     });
 
     return alertas;
+}
+
+// Dato positivo (no es un problema) — tiempo libre antes de la
+// primera clase del día, cuando es lo bastante largo para servir de
+// algo real (estudiar, descansar, hacer otras cosas).
+function detectarTiempoLibrePositivo(combo) {
+    const m = calcularMetricasHorario(combo);
+    const positivos = [];
+
+    m.diasOcupados.forEach(dia => {
+        const info = m.dias[dia];
+        const libreAntes = Math.max(0, info.horaEntrada - AH_LIBRE_ANTES_INICIO_DIA);
+        if (libreAntes >= AH_LIBRE_ANTES_UMBRAL) {
+            positivos.push({
+                dia,
+                minutos: libreAntes,
+                detalle: `De ${formatearHora(AH_LIBRE_ANTES_INICIO_DIA)} a ${formatearHora(info.horaEntrada)}, antes de tu primera clase — para estudiar u otras actividades.`,
+            });
+        }
+    });
+
+    return positivos;
 }
 
 function renderVistaAlertas() {
@@ -445,9 +512,28 @@ function renderVistaAlertas() {
         `).join('')
         : `<div class="ah-alerta-ok">✅ Sin problemas detectados en esta combinación.</div>`;
 
+    const positivos = detectarTiempoLibrePositivo(combo);
+    const positivosHtml = positivos.length
+        ? `
+            <p class="ah-seccion-titulo">Tiempo libre</p>
+            <div class="ah-positivos-lista">
+                ${positivos.map(p => `
+                    <div class="ah-positivo-card">
+                        <span class="ah-positivo-icono">🕐</span>
+                        <div class="ah-positivo-texto">
+                            <p class="ah-positivo-titulo">${formatearMinutos(p.minutos)} libres el ${AH_DIAS_LABEL[p.dia]}</p>
+                            <p class="ah-positivo-detalle">${p.detalle}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `
+        : '';
+
     cont.innerHTML = `
         <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
         <div class="ah-alertas-lista">${alertasHtml}</div>
+        ${positivosHtml}
     `;
 }
 
