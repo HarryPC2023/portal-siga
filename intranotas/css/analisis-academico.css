@@ -137,9 +137,10 @@
     align-items: flex-start;
     gap: 6px;
     padding: 14px 12px;
-    background: var(--color-fondo-input);
-    border: 1px solid transparent;
+    background: var(--color-fondo-tarjeta, #fff);
+    border: 1.5px solid var(--color-cian);
     border-radius: 12px;
+    box-shadow: var(--sombra-tarjeta);
     cursor: pointer;
     text-align: left;
     transition: filter 0.15s ease, transform 0.1s ease;
