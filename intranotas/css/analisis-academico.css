@@ -137,7 +137,7 @@
     align-items: flex-start;
     gap: 6px;
     padding: 14px 12px;
-    background: var(--color-fondo-tarjeta, #fff);
+    background: var(--color-fondo-tarjeta, #DEFDFA);
     border: 1.5px solid var(--color-cian);
     border-radius: 12px;
     box-shadow: var(--sombra-tarjeta);
