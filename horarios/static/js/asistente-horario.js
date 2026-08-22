@@ -58,7 +58,7 @@ const AH_HOUR_END = 22;
    que cada una queda lista, sin tocar el resto del archivo. ---------- */
 const AH_HERRAMIENTAS = [
     { id: 'huecos', icono: '📘', nombre: 'Huecos entre clases', activa: true },
-    { id: 'preferencias', icono: '🎛️', nombre: 'Preferencias', activa: false },
+    { id: 'preferencias', icono: '🎛️', nombre: 'Preferencias', activa: true },
     { id: 'mejor-horario', icono: '🧠', nombre: 'Mejor horario', activa: false },
     { id: 'alertas', icono: '🚨', nombre: 'Alertas inteligentes', activa: false },
     { id: 'comparador', icono: '⚖️', nombre: 'Comparador', activa: false },
@@ -143,6 +143,7 @@ function toggleAsistenteHorario(forzar) {
 
 function abrirHerramientaAsistente(id) {
     if (id === 'huecos') { ah_vistaActual = 'huecos'; renderVistaHuecos(); return; }
+    if (id === 'preferencias') { ah_vistaActual = 'preferencias'; renderVistaPreferencias(); return; }
     if (id === 'exportar-calendario') { exportarComboICS(); return; }
     // Las demás herramientas todavía no están activas — sus tiles ya
     // están deshabilitados en AH_HERRAMIENTAS, esto es solo por si acaso.
@@ -150,6 +151,119 @@ function abrirHerramientaAsistente(id) {
 
 function volverAGridAsistente() {
     renderGridAsistente();
+}
+
+/* ============================================================
+   HERRAMIENTA: 🎛️ Preferencias
+   Solo guarda la configuración por ahora (localStorage) — no hay
+   nada todavía que la consuma. Se conecta cuando construyamos
+   "🧠 Mejor horario", que puntúa cada combinación según esto.
+   ============================================================ */
+const LS_AH_PREFERENCIAS = 'horarioGen_preferencias';
+
+const AH_PREFERENCIAS_DEFECTO = {
+    evitarTemprano: false,
+    horaTemprano: 480,   // 8:00 — "evitar clases antes de esta hora"
+    evitarTarde: false,
+    horaTarde: 1200,     // 20:00 — "evitar clases después de esta hora"
+    maxDias: 0,          // 0 = sin límite
+    diaLibre: '',        // '' = ninguno
+};
+
+function leerPreferencias() {
+    try {
+        const guardado = localStorage.getItem(LS_AH_PREFERENCIAS);
+        if (guardado) return { ...AH_PREFERENCIAS_DEFECTO, ...JSON.parse(guardado) };
+    } catch (e) {
+        console.warn('No se pudo leer las preferencias del Asistente:', e);
+    }
+    return { ...AH_PREFERENCIAS_DEFECTO };
+}
+
+function guardarPreferencias(prefs) {
+    try {
+        localStorage.setItem(LS_AH_PREFERENCIAS, JSON.stringify(prefs));
+    } catch (e) {
+        console.warn('No se pudo guardar las preferencias del Asistente:', e);
+    }
+}
+
+function renderVistaPreferencias() {
+    const cont = document.getElementById('ah-panel-body');
+    if (!cont) return;
+
+    const p = leerPreferencias();
+    const opcionesTemprano = [420, 480, 540, 600];
+    const opcionesTarde = [1080, 1140, 1200, 1260];
+
+    cont.innerHTML = `
+        <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
+
+        <div class="ah-pref-grupo">
+            <label class="ah-pref-check">
+                <input type="checkbox" id="ah-pref-evitarTemprano" ${p.evitarTemprano ? 'checked' : ''}>
+                <span>Evitar clases muy temprano</span>
+            </label>
+            <select id="ah-pref-horaTemprano" class="ah-pref-select">
+                ${opcionesTemprano.map(min =>
+        `<option value="${min}" ${p.horaTemprano === min ? 'selected' : ''}>antes de las ${formatearHora(min)}</option>`
+    ).join('')}
+            </select>
+        </div>
+
+        <div class="ah-pref-grupo">
+            <label class="ah-pref-check">
+                <input type="checkbox" id="ah-pref-evitarTarde" ${p.evitarTarde ? 'checked' : ''}>
+                <span>Evitar clases muy tarde</span>
+            </label>
+            <select id="ah-pref-horaTarde" class="ah-pref-select">
+                ${opcionesTarde.map(min =>
+        `<option value="${min}" ${p.horaTarde === min ? 'selected' : ''}>después de las ${formatearHora(min)}</option>`
+    ).join('')}
+            </select>
+        </div>
+
+        <div class="ah-pref-grupo">
+            <label class="ah-pref-label">Máximo de días de asistencia</label>
+            <select id="ah-pref-maxDias" class="ah-pref-select">
+                <option value="0" ${p.maxDias === 0 ? 'selected' : ''}>Sin límite</option>
+                <option value="3" ${p.maxDias === 3 ? 'selected' : ''}>3 días</option>
+                <option value="4" ${p.maxDias === 4 ? 'selected' : ''}>4 días</option>
+                <option value="5" ${p.maxDias === 5 ? 'selected' : ''}>5 días</option>
+            </select>
+        </div>
+
+        <div class="ah-pref-grupo">
+            <label class="ah-pref-label">Día libre preferido</label>
+            <select id="ah-pref-diaLibre" class="ah-pref-select">
+                <option value="" ${!p.diaLibre ? 'selected' : ''}>Ninguno</option>
+                ${AH_DIAS.map(d =>
+        `<option value="${d}" ${p.diaLibre === d ? 'selected' : ''}>${AH_DIAS_LABEL[d]}</option>`
+    ).join('')}
+            </select>
+        </div>
+
+        <button type="button" class="ah-pref-guardar" onclick="guardarPreferenciasUI()">Guardar preferencias</button>
+
+        <div class="ah-pref-nota">
+            Estas preferencias se van a usar en "🧠 Mejor horario" para elegir tu
+            combinación ideal automáticamente — esa es la siguiente herramienta
+            que construimos.
+        </div>
+    `;
+}
+
+function guardarPreferenciasUI() {
+    const prefs = {
+        evitarTemprano: document.getElementById('ah-pref-evitarTemprano').checked,
+        horaTemprano: parseInt(document.getElementById('ah-pref-horaTemprano').value, 10),
+        evitarTarde: document.getElementById('ah-pref-evitarTarde').checked,
+        horaTarde: parseInt(document.getElementById('ah-pref-horaTarde').value, 10),
+        maxDias: parseInt(document.getElementById('ah-pref-maxDias').value, 10),
+        diaLibre: document.getElementById('ah-pref-diaLibre').value,
+    };
+    guardarPreferencias(prefs);
+    if (typeof window.showToast === 'function') window.showToast('Preferencias guardadas', 'success');
 }
 
 /* ============================================================
@@ -339,6 +453,7 @@ function onDibujarHorarioAsistente(combo) {
     window.toggleAsistenteHorario = toggleAsistenteHorario;
     window.abrirHerramientaAsistente = abrirHerramientaAsistente;
     window.volverAGridAsistente = volverAGridAsistente;
+    window.guardarPreferenciasUI = guardarPreferenciasUI;
     window.onDibujarHorarioAsistente = onDibujarHorarioAsistente;
 
     wrap.style.display = '';

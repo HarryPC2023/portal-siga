@@ -425,3 +425,74 @@
 .ah-aviso-texto strong {
     color: var(--text);
 }
+
+/* ============================================================
+   HERRAMIENTA: 🎛️ Preferencias
+   ============================================================ */
+.ah-pref-grupo {
+    margin-bottom: 16px;
+}
+
+.ah-pref-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.ah-pref-check input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.ah-pref-label {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.ah-pref-select {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.ah-pref-guardar {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    margin-top: 4px;
+    margin-bottom: 14px;
+    font-family: inherit;
+}
+
+.ah-pref-guardar:hover {
+    filter: brightness(0.95);
+}
+
+.ah-pref-nota {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+}
