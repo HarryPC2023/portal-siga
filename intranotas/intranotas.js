@@ -2754,10 +2754,16 @@ function generarVistaMeta() {
     return `
         <button type="button" class="aa-volver" onclick="abrirHerramienta('grid')">← Volver</button>
         <div class="meta-aa-selector">
-            <label for="meta-aa-curso-select">Curso</label>
-            <select id="meta-aa-curso-select" onchange="cambiarCursoMeta(this.value)">
-                ${cursosOrdenados.map(c => `<option value="${c.id}" ${c.id === metaCursoSeleccionadoId ? 'selected' : ''}>${c.name}</option>`).join('')}
-            </select>
+            <label for="metaAACursoTrigger">Curso</label>
+            <div class="campo-select-custom meta-curso-select-custom" style="width:100%;">
+                <button type="button" class="select-custom-trigger" id="metaAACursoTrigger"
+                    aria-haspopup="listbox" aria-expanded="false">
+                    <span id="metaAACursoTriggerTexto"></span>
+                    <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                </button>
+                <ul class="select-custom-lista meta-curso-select-lista" id="metaAACursoLista" role="listbox" hidden></ul>
+                <input type="hidden" id="metaAACursoValor">
+            </div>
         </div>
         <div class="meta-aa-input-group">
             <label for="meta-aa-final">¿Cuál es tu meta y cómo podrías alcanzarla?</label>
@@ -2767,7 +2773,24 @@ function generarVistaMeta() {
     `;
 }
 
-function inicializarVistaMeta() { refrescarVistaMeta(); }
+/* El trigger/lista se recrean cada vez que se abre esta vista (el
+   panel reemplaza su innerHTML por completo), así que se puede
+   inicializar el selector de una vez sin necesidad de un guardián
+   de instancia — a diferencia de selectorPeriodoInstancia, que vive
+   en un DOM fijo que nunca se destruye. */
+function inicializarVistaMeta() {
+    const cursosOrdenados = [...cursosSeleccionados].sort((a, b) => a.name.localeCompare(b.name));
+    const cursoActual = cursosOrdenados.find(c => c.id === metaCursoSeleccionadoId);
+
+    inicializarSelectPersonalizado({
+        triggerId: 'metaAACursoTrigger', textoId: 'metaAACursoTriggerTexto',
+        listaId: 'metaAACursoLista', valorId: 'metaAACursoValor',
+        opciones: cursosOrdenados.map(c => ({ value: c.id, label: c.name })),
+        alElegir: (valor) => cambiarCursoMeta(valor),
+    })?.establecer(metaCursoSeleccionadoId, cursoActual ? cursoActual.name : '');
+
+    refrescarVistaMeta();
+}
 
 function cambiarCursoMeta(cursoId) {
     metaCursoSeleccionadoId = cursoId;

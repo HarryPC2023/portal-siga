@@ -244,6 +244,14 @@
     font-size: 0.88rem;
 }
 
+/* El selector de curso reutiliza el mismo componente que el
+   selector de periodos (para heredar su diseño de filas alternadas),
+   pero acá los nombres de curso van en Poppins específicamente. */
+#metaAACursoTriggerTexto,
+.meta-curso-select-lista li {
+    font-family: 'Poppins', sans-serif;
+}
+
 .meta-aa-completo {
     padding: 12px 14px;
     border-radius: 10px;
