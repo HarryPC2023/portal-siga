@@ -30,17 +30,6 @@
   <!-- JSZip: para inyectar orientación/ajuste de página en el .xlsx exportado,
        ya que xlsx-js-style no soporta escribir esa configuración -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
-  <!-- Gate de sesión: sin cuenta, redirige a index.html con el login
-       listo para abrirse. Esta pantalla no lo tenía todavía (a
-       diferencia del resto de SIGA) — se agrega ahora de paso, ya que
-       el Asistente de Horario también depende de conocer al usuario. -->
-  <script type="module">
-    import { supabase, obtenerSesion } from '../js/auth-siga.js?v=9';
-    window.sigaSupabase = supabase;
-    window.sigaObtenerSesion = obtenerSesion;
-  </script>
-  <script type="module" src="../js/gate.js"></script>
 </head>
 
 <body>
@@ -61,7 +50,7 @@
              comportamiento) para que no se confunda con la nueva barra
              "← Volver a SIGA" de arriba — ambas empezaban con la misma
              palabra y quedaban una encima de la otra en la lectura. -->
-        <a href="index.html" class="back-btn">← Elegir cursos</a>
+        <a href="index.html?editar=1" class="back-btn">← Elegir cursos</a>
       </div>
 
       <div class="sidebar-scroll">

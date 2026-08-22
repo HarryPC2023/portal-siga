@@ -462,6 +462,22 @@
 
                 seleccionGuardada.forEach(c => cursosSeleccionados.add(c));
 
+                // ── Saltar directo a la pantalla 2 ──────────────────
+                // Si ya había una selección de cursos guardada, no tiene
+                // sentido pasar por acá de nuevo — se salta directo al
+                // generador (que a su vez restaura las combinaciones ya
+                // generadas, si siguen siendo válidas para esa selección).
+                // Excepción: si el usuario vino a propósito con "←
+                // Elegir cursos" (generador.html le agrega ?editar=1),
+                // se queda acá para poder cambiar su selección.
+                const vieneAEditar = new URLSearchParams(window.location.search).has('editar');
+                if (!vieneAEditar && cursosSeleccionados.size > 0) {
+                    const params = new URLSearchParams();
+                    cursosSeleccionados.forEach(c => params.append('curso', c));
+                    window.location.href = 'generador.html?' + params.toString();
+                    return;
+                }
+
                 construirListaCursos(cursos);
                 cardCursos.style.display = 'block';
                 persistActions.style.display = 'flex';
