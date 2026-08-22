@@ -421,6 +421,93 @@
 }
 
 /* ============================================================
+   HERRAMIENTA: ⚖️ Comparador
+   ============================================================ */
+.ah-comparador-intro {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin: 0 0 10px;
+}
+
+.ah-comparador-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.ah-comparador-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text);
+    padding: 6px 4px;
+    cursor: pointer;
+}
+
+.ah-comparador-check input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.ah-comparador-tarjetas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ah-comp-tarjeta {
+    background: var(--surface2);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+}
+
+.ah-comp-nombre {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.ah-comp-fila {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    padding: 2px 0;
+}
+
+.ah-comp-fila strong {
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.ah-comp-ver-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 7px;
+    background: none;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.74rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.ah-comp-ver-btn:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* ============================================================
    AVISO: instrucciones para importar el .ics
    Sin temporizador a propósito — se queda hasta que el usuario
    lo cierra, para que le dé tiempo de leerlo cuando vuelva de

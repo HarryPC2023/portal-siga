@@ -60,7 +60,7 @@ const AH_HERRAMIENTAS = [
     { id: 'huecos', icono: '📘', nombre: 'Huecos entre clases', activa: true },
     { id: 'mejor-horario', icono: '🧠', nombre: 'Mejor horario', activa: true },
     { id: 'alertas', icono: '🚨', nombre: 'Alertas inteligentes', activa: false },
-    { id: 'comparador', icono: '⚖️', nombre: 'Comparador', activa: false },
+    { id: 'comparador', icono: '⚖️', nombre: 'Comparador', activa: true },
     { id: 'exportar-calendario', icono: '📅', nombre: 'Exportar a calendario', activa: true },
 ];
 
@@ -144,6 +144,7 @@ function abrirHerramientaAsistente(id) {
     if (id === 'huecos') { ah_vistaActual = 'huecos'; renderVistaHuecos(); return; }
     if (id === 'exportar-calendario') { exportarComboICS(); return; }
     if (id === 'mejor-horario') { aplicarMejorHorario(); return; }
+    if (id === 'comparador') { renderVistaComparador(); return; }
     // Las demás herramientas todavía no están activas — sus tiles ya
     // están deshabilitados en AH_HERRAMIENTAS, esto es solo por si acaso.
 }
@@ -235,6 +236,109 @@ function mostrarBannerMejorHorario(idx, total, fijaLogrados) {
 function ocultarBannerMejorHorario() {
     const banner = document.getElementById('ah-banner-mejor-horario');
     if (banner) banner.style.display = 'none';
+}
+
+/* ============================================================
+   HERRAMIENTA: ⚖️ Comparador
+   Compara 2-3 horarios que ya guardaste como ★ Favoritos (no
+   compara combinaciones nuevas — para eso está "Mejor horario").
+   Reusa el mismo motor de métricas y de puntuación por profesor
+   prioritario que ya construimos, así que no hay nada nuevo que
+   calcular acá, solo una vista que junta lo que ya existe.
+   ============================================================ */
+let ah_comparadorSeleccion = new Set();
+
+function renderVistaComparador() {
+    ah_vistaActual = 'comparador';
+    const favoritos = typeof window.obtenerFavoritos === 'function' ? window.obtenerFavoritos() : [];
+
+    if (favoritos.length < 2) {
+        const cont = document.getElementById('ah-panel-body');
+        if (!cont) return;
+        cont.innerHTML = `
+            <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
+            <div class="ah-vacio">
+                Guarda al menos 2 horarios con "★ Guardar" para poder compararlos.
+                Ojo: los favoritos se guardan solo mientras tengas esta pestaña
+                abierta — si recargas la página, se pierden.
+            </div>
+        `;
+        return;
+    }
+
+    // Conserva la selección anterior si sigue siendo válida; si no hay
+    // ninguna (primera vez que se abre), arranca comparando las dos
+    // primeras.
+    ah_comparadorSeleccion = new Set(
+        [...ah_comparadorSeleccion].filter(i => i < favoritos.length)
+    );
+    if (ah_comparadorSeleccion.size === 0) {
+        ah_comparadorSeleccion.add(0);
+        ah_comparadorSeleccion.add(1);
+    }
+
+    renderComparadorCompleto(favoritos);
+}
+
+function renderComparadorCompleto(favoritos) {
+    const cont = document.getElementById('ah-panel-body');
+    if (!cont) return;
+
+    const listaHtml = favoritos.map((fav, i) => `
+        <label class="ah-comparador-check">
+            <input type="checkbox" value="${i}" ${ah_comparadorSeleccion.has(i) ? 'checked' : ''}
+                onchange="toggleComparadorSeleccion(${i}, this.checked)">
+            <span>★ ${fav.nombre}</span>
+        </label>
+    `).join('');
+
+    const seleccionados = [...ah_comparadorSeleccion].sort((a, b) => a - b);
+    const tarjetasHtml = seleccionados.length >= 2
+        ? seleccionados.map(i => renderTarjetaComparador(favoritos[i], i)).join('')
+        : '<div class="ah-vacio">Elige al menos 2 para ver la comparación.</div>';
+
+    cont.innerHTML = `
+        <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
+        <p class="ah-comparador-intro">Elige hasta 3 horarios guardados para comparar</p>
+        <div class="ah-comparador-lista">${listaHtml}</div>
+        <div class="ah-comparador-tarjetas">${tarjetasHtml}</div>
+    `;
+}
+
+function toggleComparadorSeleccion(idx, marcado) {
+    if (marcado && ah_comparadorSeleccion.size >= 3) {
+        if (typeof window.showToast === 'function') window.showToast('Máximo 3 horarios a la vez', 'info');
+        renderVistaComparador();
+        return;
+    }
+    if (marcado) ah_comparadorSeleccion.add(idx);
+    else ah_comparadorSeleccion.delete(idx);
+
+    const favoritos = typeof window.obtenerFavoritos === 'function' ? window.obtenerFavoritos() : [];
+    renderComparadorCompleto(favoritos);
+}
+
+function renderTarjetaComparador(fav, idx) {
+    const combo = fav.combo;
+    const m = calcularMetricasHorario(combo);
+    const prioridades = typeof window.obtenerPrioridadesProfesor === 'function' ? window.obtenerPrioridadesProfesor() : {};
+    const { fijaLogrados } = puntuarComboPorPrioridad(combo, prioridades);
+
+    return `
+        <div class="ah-comp-tarjeta">
+            <div class="ah-comp-nombre">★ ${fav.nombre}</div>
+            <div class="ah-comp-fila"><span>Huecos entre clases</span><strong>${formatearMinutos(m.huecosTotalMin)}</strong></div>
+            <div class="ah-comp-fila"><span>Profesores fija</span><strong>${fijaLogrados.length || '—'}</strong></div>
+            <div class="ah-comp-fila"><span>Día más cargado</span><strong>${m.diaMasCargado ? AH_DIAS_LABEL[m.diaMasCargado] : '—'}</strong></div>
+            <div class="ah-comp-fila"><span>Día con menos carga</span><strong>${m.diaMasLibre ? AH_DIAS_LABEL[m.diaMasLibre] : '—'}</strong></div>
+            <button type="button" class="ah-comp-ver-btn" onclick="irAVerFavorito(${idx})">Ver este horario →</button>
+        </div>
+    `;
+}
+
+function irAVerFavorito(idx) {
+    if (typeof window.verFavorito === 'function') window.verFavorito(idx);
+    toggleAsistenteHorario(false);
 }
 
 /* ============================================================
@@ -425,6 +529,8 @@ function onDibujarHorarioAsistente(combo) {
     window.abrirHerramientaAsistente = abrirHerramientaAsistente;
     window.volverAGridAsistente = volverAGridAsistente;
     window.ocultarBannerMejorHorario = ocultarBannerMejorHorario;
+    window.toggleComparadorSeleccion = toggleComparadorSeleccion;
+    window.irAVerFavorito = irAVerFavorito;
     window.onDibujarHorarioAsistente = onDibujarHorarioAsistente;
 
     wrap.style.display = '';

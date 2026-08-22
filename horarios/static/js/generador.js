@@ -35,6 +35,10 @@ window.irACombo = (idx) => {
     return true;
 };
 
+// Expuesto para que "⚖️ Comparador" (Asistente de Horario) pueda leer
+// los horarios guardados como favoritos.
+window.obtenerFavoritos = () => Favoritos.obtener();
+
 // ── AUTOGUARDADO (pantalla 2) ────────────────────────────────
 // Guarda qué secciones/profesores quedaron marcados y la cantidad
 // de cruces elegida, para que no se pierdan al volver a esta pantalla.
