@@ -1327,6 +1327,10 @@ function generarSimulador() {
     const cursosOrdenados = [...cursosSeleccionados].sort((a, b) => a.name.localeCompare(b.name));
 
     let html = `
+        <div class="malla-badge-simulador">
+            📚 Malla ${mallaSeleccionada}
+        </div>
+
         <div class="cabecera-simulador">
             <div class="titulo-ciclo-simulador">
                 <span class="carrera-label">${NOMBRES_CARRERAS[carreraSeleccionada]}</span>
@@ -1357,10 +1361,6 @@ function generarSimulador() {
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;">
             <button class="btn-volver" onclick="irAPantalla(3)" style="flex:1; min-width:140px;">← Cambiar cursos</button>
             <button class="btn-volver" onclick="iniciarNuevoPeriodo()" style="flex:1; min-width:140px;">🔄 Nuevo periodo</button>
-        </div>
-
-        <div class="malla-badge-simulador">
-            📚 Malla ${mallaSeleccionada}
         </div>
 
         <div class="aa-entrada-wrap">

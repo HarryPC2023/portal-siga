@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!notificaciones.length) {
             lista.innerHTML = '<p class="acceso-panel-vacio">No hay notificaciones todavía.</p>';
+            if (btnLimpiar) btnLimpiar.hidden = true;
             return;
         }
 
@@ -154,6 +155,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.setAttribute('aria-expanded', String(abierto));
         if (abierto) marcarTodasLeidas();
     });
+
+    // BUG encontrado: este listener nunca existía — "Limpiar todas" se
+    // mostraba y ocultaba correctamente (eso lo maneja pintar()), pero
+    // nadie llamaba a limpiarTodas() al hacer clic. Por eso funcionaba
+    // borrar una por una (cada .notif-item-borrar sí tiene su propio
+    // listener) pero "Limpiar todas" no hacía nada.
+    if (btnLimpiar) {
+        btnLimpiar.addEventListener('click', (e) => {
+            e.stopPropagation(); // no debe cerrar el panel al tocarlo
+            limpiarTodas();
+        });
+    }
 
     document.addEventListener('click', (e) => {
         if (!item.contains(e.target)) {
