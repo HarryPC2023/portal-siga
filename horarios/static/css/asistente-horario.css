@@ -367,3 +367,61 @@
     padding: 0 2px;
     white-space: nowrap;
 }
+
+/* ============================================================
+   AVISO: instrucciones para importar el .ics
+   Sin temporizador a propósito — se queda hasta que el usuario
+   lo cierra, para que le dé tiempo de leerlo cuando vuelva de
+   su calendario.
+   ============================================================ */
+.ah-aviso-ics {
+    position: relative;
+    background: var(--surface2);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 34px 16px 16px;
+}
+
+.ah-aviso-cerrar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 4px;
+}
+
+.ah-aviso-titulo {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+
+.ah-aviso-titulo code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    background: var(--surface);
+    border-radius: 4px;
+    padding: 1px 5px;
+}
+
+.ah-aviso-texto {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.ah-aviso-texto:last-child {
+    margin-bottom: 0;
+}
+
+.ah-aviso-texto strong {
+    color: var(--text);
+}

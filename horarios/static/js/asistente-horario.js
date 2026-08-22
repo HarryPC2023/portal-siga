@@ -252,9 +252,34 @@ function exportarComboICS() {
     a.remove();
     URL.revokeObjectURL(url);
 
-    if (typeof window.showToast === 'function') {
-        window.showToast('Horario descargado — impórtalo en Google Calendar, Outlook o Apple Calendar', 'success');
-    }
+    mostrarAvisoICS();
+}
+
+// Aviso fijo (sin temporizador) con los pasos para importar el .ics.
+// A propósito NO usa showToast(): el alumno se va a otra pestaña a
+// abrir su calendario y vuelve varios segundos después — un toast
+// que se autodestruye en unos segundos ya no estaría ahí cuando
+// regrese a leer el paso a paso. Se queda visible hasta que el
+// usuario mismo lo cierra con la ✕.
+function mostrarAvisoICS() {
+    const cont = document.getElementById('ah-panel-body');
+    if (!cont) return;
+
+    cont.innerHTML = `
+        <div class="ah-aviso-ics">
+            <button type="button" class="ah-aviso-cerrar" aria-label="Cerrar" onclick="volverAGridAsistente()">✕</button>
+            <div class="ah-aviso-titulo">✅ Se descargó <code>horario-siga.ics</code></div>
+            <div class="ah-aviso-texto">
+                Para verlo en <strong>Google Calendar</strong>: entra a
+                <strong>Configuración ⚙️ → Importar y exportar → Importar</strong>,
+                y sube este archivo.
+            </div>
+            <div class="ah-aviso-texto">
+                También funciona con <strong>Outlook</strong> y <strong>Apple Calendar</strong> —
+                solo ábrelo directamente.
+            </div>
+        </div>
+    `;
 }
 
 /* ---------- Sombrea los huecos directamente sobre el calendario ya
