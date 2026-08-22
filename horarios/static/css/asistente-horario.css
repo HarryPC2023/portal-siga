@@ -375,11 +375,12 @@
 .ah-banner-mejor-horario {
     align-items: flex-start;
     gap: 10px;
-    background: var(--accent-dim, rgba(102, 0, 204, 0.08));
-    border: 1.5px solid var(--accent);
+    background: linear-gradient(120deg, #FDFCF7 0%, #F5EFDE 50%, #FDFCF7 100%);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: var(--radius);
     padding: 12px 14px;
     margin: 0 0 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
 }
 
 .ah-banner-icono {
@@ -396,13 +397,16 @@
     font-family: 'Orbitron', sans-serif;
     font-weight: 600;
     font-size: 0.82rem;
-    color: var(--text);
+    /* Color fijo (no var(--text)) — el fondo champagne es siempre
+       claro sin importar el tema activo, así que el texto necesita
+       quedar oscuro siempre para no perder contraste en Oscuro/Ocean. */
+    color: #2b2b2b;
     margin: 0 0 2px;
 }
 
 .ah-banner-detalle {
     font-size: 0.75rem;
-    color: var(--text-dim);
+    color: #6b6b63;
     margin: 0;
 }
 
@@ -410,7 +414,7 @@
     flex-shrink: 0;
     background: none;
     border: none;
-    color: var(--text-dim);
+    color: #6b6b63;
     font-size: 0.95rem;
     cursor: pointer;
     padding: 2px;
