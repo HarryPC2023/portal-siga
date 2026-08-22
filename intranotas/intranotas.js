@@ -797,32 +797,10 @@ function resolverColisionMallaCurso(cursoIntralu, opcionA, opcionB) {
    etiquetar_periodo()), así que aquí solo hace falta mapear cada
    curso por CÓDIGO contra el catálogo de la malla/carrera activas.
    ============================================================ */
-/* Oculto por defecto para todos los usuarios mientras terminas de
-   probarlo — solo se muestra si el correo de la sesión activa coincide
-   con el tuyo. _intraluBetaHabilitado se resuelve UNA vez al cargar la
-   página (inicializarFlagIntralu(), llamado desde el DOMContentLoaded
-   de más abajo) porque generarSimulador() es síncrono y no puede
-   esperar la respuesta de Supabase en cada render. */
-const CORREO_BETA_INTRALU = 'harrypc2021@hotmail.com'; // correo de sesión confirmado por Harry
-
-let _intraluBetaHabilitado = false;
-
-async function inicializarFlagIntralu() {
-    try {
-        if (!window.sigaObtenerSesion) {
-            _intraluBetaHabilitado = false;
-            return;
-        }
-        const sesion = await window.sigaObtenerSesion();
-        const correoSesion = (sesion?.user?.email || '').toLowerCase();
-        _intraluBetaHabilitado = correoSesion === CORREO_BETA_INTRALU.toLowerCase();
-    } catch (e) {
-        _intraluBetaHabilitado = false;
-    }
-}
-
+/* Ya no está oculto tras un correo de beta: la sincronización con
+   Intralú quedó validada y se habilita para todos los usuarios. */
 function syncIntraluHabilitado() {
-    return _intraluBetaHabilitado;
+    return true;
 }
 
 // Detecta solo si estás corriendo tu Jekyll local (localhost/127.0.0.1) para
@@ -1369,9 +1347,6 @@ function generarSimulador() {
                 <span>📊 Análisis académico</span>
                 <span class="aa-entrada-flecha" id="aa-entrada-flecha">▾</span>
             </button>
-            <div class="aa-inline" id="aa-inline">
-                <div class="aa-panel-body" id="aa-panel-body"></div>
-            </div>
         </div>
 
         <details style="margin:12px 0; background:var(--color-fondo-input); border-radius:10px; padding:10px 14px;">
@@ -1402,6 +1377,7 @@ function generarSimulador() {
     cargarNotasGuardadas();
     cargarSelectorPeriodosGuardados();
     generarBannerReferencias();
+    inicializarAnalisisAcademico();
 }
 
 /* ============================================================
@@ -2418,7 +2394,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             regs.forEach(reg => reg.unregister());
         });
     }
-    await inicializarFlagIntralu();
     await intentarRestaurarSesion();
 });
 
@@ -2475,11 +2450,13 @@ async function intentarRestaurarSesion() {
    ============================================================
    ANÁLISIS ACADÉMICO — hub de herramientas (Pantalla 4)
 
-   Bloque dentro del flujo normal de la pantalla, justo debajo de
-   "Cambiar cursos" / "Nuevo periodo": un botón rectangular y
-   centrado que despliega su contenido hacia abajo, con el mismo
-   lenguaje visual que los .acordeon de Intranotas (ver
-   analisis-academico.css). Dentro viven 4 herramientas:
+   El botón de entrada es rectangular y vive en el flujo normal de
+   la pantalla (debajo de "Cambiar cursos" / "Nuevo periodo"), pero
+   su contenido se despliega como panel LATERAL — docked a la
+   derecha en escritorio, hoja inferior en celular (ver CSS en
+   analisis-academico.css) — con el mismo lenguaje visual que
+   .cabecera-simulador (fondo blanco, borde de acento, sombra de
+   tarjeta). Dentro viven 4 herramientas:
 
      🎯 Meta del curso     — funcional
      🔮 Predicción         — placeholder "Próximamente"
@@ -2495,15 +2472,43 @@ async function intentarRestaurarSesion() {
    ============================================================
    ============================================================ */
 
-/* ---------- Toggle del bloque inline (estilo acordeón) ---------- */
-function toggleAnalisisAcademico(forzar) {
-    const btn = document.getElementById('aa-entrada-btn');
-    const inline = document.getElementById('aa-inline');
-    if (!btn || !inline) return;
+/* ---------- Panel lateral (se crea una sola vez; el guard evita
+   duplicar el DOM si el usuario reentra a Pantalla 4 varias veces).
+   El botón de entrada vive en el flujo (ver generarSimulador), pero
+   el panel en sí se ancla a <body> para poder posicionarse fijo por
+   encima de todo el contenido. ---------- */
+function inicializarAnalisisAcademico() {
+    if (document.getElementById('aa-panel')) return;
 
-    const abrir = typeof forzar === 'boolean' ? forzar : !inline.classList.contains('abierto');
-    inline.classList.toggle('abierto', abrir);
-    btn.classList.toggle('abierto', abrir);
+    const overlay = document.createElement('div');
+    overlay.id = 'aa-overlay';
+    overlay.className = 'aa-overlay';
+    overlay.onclick = () => toggleAnalisisAcademico(false);
+    document.body.appendChild(overlay);
+
+    const panel = document.createElement('div');
+    panel.id = 'aa-panel';
+    panel.className = 'aa-panel';
+    panel.innerHTML = `
+        <div class="aa-panel-header">
+            <span>📊 Análisis académico</span>
+            <button type="button" class="aa-cerrar" aria-label="Cerrar" onclick="toggleAnalisisAcademico(false)">✕</button>
+        </div>
+        <div class="aa-panel-body" id="aa-panel-body"></div>
+    `;
+    document.body.appendChild(panel);
+}
+
+function toggleAnalisisAcademico(forzar) {
+    const panel = document.getElementById('aa-panel');
+    const overlay = document.getElementById('aa-overlay');
+    const btn = document.getElementById('aa-entrada-btn');
+    if (!panel) return;
+
+    const abrir = typeof forzar === 'boolean' ? forzar : !panel.classList.contains('abierto');
+    panel.classList.toggle('abierto', abrir);
+    if (overlay) overlay.classList.toggle('visible', abrir);
+    if (btn) btn.classList.toggle('abierto', abrir);
 
     if (abrir) abrirHerramienta('grid');
 }

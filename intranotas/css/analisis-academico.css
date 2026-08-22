@@ -5,16 +5,16 @@
    tarjeta, --color-gris-texto, etc., así que responde solo a
    Claro/Oscuro/Ocean/Forest sin código adicional).
 
-   v2: ya no es un botón flotante (FAB) con panel lateral/hoja
-   inferior — ahora es un bloque más dentro del flujo normal de
-   Pantalla 4, justo debajo de "Cambiar cursos" / "Nuevo periodo".
-   El botón de entrada es rectangular y centrado; al desplegarse,
-   el contenido usa el mismo lenguaje visual que .acordeon (fondo
-   blanco, esquinas redondeadas, sombra de tarjeta) para sentirse
-   consistente con el resto de Intranotas.
+   v3: el botón de entrada es rectangular y vive en el flujo normal
+   de Pantalla 4 (debajo de "Cambiar cursos" / "Nuevo periodo"), pero
+   su contenido se despliega como panel LATERAL — docked a la derecha
+   en escritorio, hoja inferior en celular — igual que la primera
+   versión. El panel usa el mismo lenguaje visual que .cabecera-
+   simulador (fondo blanco, borde izquierdo de acento, sombra de
+   tarjeta) para sentirse consistente con el resto de Intranotas.
    ============================================================ */
 
-/* ---------- Botón de entrada (rectangular, centrado) ---------- */
+/* ---------- Botón de entrada (rectangular, en el flujo) ---------- */
 .aa-entrada-wrap {
     margin: 10px 0;
 }
@@ -50,25 +50,74 @@
     transform: rotate(180deg);
 }
 
-/* ---------- Contenido desplegable — mismo lenguaje visual que
-   .acordeon (tarjeta blanca, radio 8px, sombra) para sentirse
-   consistente con el resto de Intranotas ---------- */
-.aa-inline {
-    background: var(--color-fondo-tarjeta, #fff);
-    border-radius: 8px;
-    box-shadow: var(--sombra-tarjeta);
-    margin-top: 8px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out;
+/* ---------- Overlay de fondo ---------- */
+.aa-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 998;
 }
 
-.aa-inline.abierto {
-    max-height: 3000px;
+.aa-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ---------- Panel — docked a la derecha en escritorio, con el
+   mismo estilo que .cabecera-simulador: fondo blanco, borde
+   izquierdo de acento y sombra de tarjeta ---------- */
+.aa-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 380px;
+    max-width: 92vw;
+    background: var(--color-fondo-tarjeta, #fff);
+    border-left: 4px solid var(--color-cian);
+    box-shadow: var(--sombra-tarjeta), -8px 0 24px rgba(0, 0, 0, 0.14);
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.aa-panel.abierto {
+    transform: translateX(0);
+}
+
+.aa-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-texto-principal);
+    border-bottom: 1px solid var(--color-gris-claro);
+    flex-shrink: 0;
+}
+
+.aa-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--color-gris-texto);
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
 }
 
 .aa-panel-body {
-    padding: 16px 18px 20px;
+    padding: 16px 18px 24px;
+    overflow-y: auto;
+    flex: 1;
 }
 
 /* ---------- Grilla de herramientas ---------- */
@@ -279,4 +328,32 @@
 
 .meta-aa-tarjeta-pf strong {
     color: var(--color-cian);
+}
+
+/* ---------- Celular: el mismo panel se convierte en hoja inferior;
+   el acento pasa de borde izquierdo a borde superior ---------- */
+@media (max-width: 768px) {
+    .aa-panel {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 82vh;
+        border-radius: 14px 14px 0 0;
+        border-left: none;
+        border-top: 4px solid var(--color-cian);
+        transform: translateY(100%);
+        box-shadow: var(--sombra-tarjeta), 0 -8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .aa-panel.abierto {
+        transform: translateY(0);
+    }
+
+    .aa-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
