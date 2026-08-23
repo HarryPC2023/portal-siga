@@ -692,6 +692,7 @@ body {
 .docente-nombre {
   font-size: 11px;
   font-weight: 600;
+  font-family: 'Poppins', sans-serif;
   color: var(--text);
   flex: 1;
   overflow: hidden;
