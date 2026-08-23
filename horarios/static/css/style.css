@@ -11,7 +11,7 @@
   --text-dim: #64748b;
   --text-faint: #cbd5e1;
   --radius: 10px;
-  --sidebar-w: 290px;
+  --sidebar-w: 305px;
   --row-h: 38px;
 
   /* NUEVA VARIABLE: Dorado Brillante */
@@ -327,6 +327,7 @@ body {
 .curso-nombre {
   flex: 1;
   font-weight: 500;
+  font-family: 'Poppins', sans-serif;
 }
 
 .curso-action {
@@ -491,6 +492,7 @@ body {
   font-weight: 600;
   color: var(--text-dim);
   text-decoration: none;
+  white-space: nowrap;
   transition: color 0.15s;
 }
 
@@ -657,67 +659,6 @@ body {
 
 .prof-option span strong {
   color: var(--text);
-}
-
-/* Grupo por profesor (dentro de .course-profs) */
-.docente-group {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  margin: 6px 0;
-  padding: 6px 8px;
-  background: rgba(0, 0, 0, 0.015);
-}
-
-.docente-group-fija {
-  border-color: var(--accent);
-  border-width: 1.5px;
-  background: rgba(102, 0, 204, 0.04);
-}
-
-.docente-group-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.docente-fija-icono {
-  font-size: 11px;
-  flex-shrink: 0;
-}
-
-.docente-nombre {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text);
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.docente-prioridad-custom {
-  flex-shrink: 0;
-  width: 106px;
-}
-
-.docente-prioridad-custom .select-custom-trigger {
-  padding: 4px 8px;
-  font-size: 10px;
-  border-radius: 6px;
-}
-
-.docente-prioridad-custom .select-custom-lista {
-  min-width: 106px;
-}
-
-.docente-prioridad-custom .select-custom-lista li {
-  padding: 7px 8px;
-  font-size: 10.5px;
-}
-
-.docente-group-secciones {
-  padding-left: 2px;
 }
 
 /* Crossings */
