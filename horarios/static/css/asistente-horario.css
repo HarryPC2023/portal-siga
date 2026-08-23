@@ -303,6 +303,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.76rem;
+    font-family: 'Poppins', sans-serif;
     color: var(--text-dim);
     padding: 2px 0;
 }
@@ -406,6 +407,7 @@
 
 .ah-banner-detalle {
     font-size: 0.75rem;
+    font-family: 'Poppins', sans-serif;
     color: #6b6b63;
     margin: 0;
 }
@@ -554,6 +556,7 @@
 
 .ah-alerta-detalle {
     font-size: 0.74rem;
+    font-family: 'Poppins', sans-serif;
     color: var(--text-dim);
     line-height: 1.5;
     margin: 0;
@@ -681,6 +684,7 @@
 
 .ah-aviso-texto {
     font-size: 0.78rem;
+    font-family: 'Poppins', sans-serif;
     color: var(--text-dim);
     line-height: 1.6;
     margin-bottom: 8px;
