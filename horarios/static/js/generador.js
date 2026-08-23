@@ -1265,13 +1265,14 @@ function toggleSelectorReferenciaHorario() {
     const COLOR_AZUL = 'rgba(60, 124, 248, 0.08)';
 
     lista.innerHTML = `
-        <p style="font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:2px;">¿De qué profesor quieres dejar tu referencia?</p>
+        <p style="font-size:0.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:2px; font-family:'Poppins', sans-serif;">¿De qué profesor quieres dejar tu referencia?</p>
         ${profesoresComboActual.map((p, i) => {
         const color = i % 2 === 0 ? COLOR_MORADO : COLOR_AZUL;
         return `
             <a href="../opiniones.html?buscar=${encodeURIComponent(p.docente)}"
-                style="display:block; padding:10px 14px; background:${color}; border-radius:8px; font-size:0.85rem; font-weight:500; color:var(--ink); text-decoration:none;">
-                ${p.docente} <span style="opacity:0.65; font-weight:400;">· ${p.curso}</span>
+                style="display:block; padding:10px 14px; background:${color}; border-radius:8px; font-family:'Poppins', sans-serif; text-decoration:none; color:var(--ink);">
+                <div style="font-size:0.85rem; font-weight:600;">${p.docente}</div>
+                <div style="font-size:0.78rem; font-weight:400; opacity:0.65; margin-top:2px;">${p.curso}</div>
             </a>`;
     }).join('')}
     `;
