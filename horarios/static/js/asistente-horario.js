@@ -30,7 +30,7 @@ const ADMIN_UID_SIGA = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 // 🔒 Flag maestro — cambiar a `true` cuando el Asistente esté
 // terminado y probado al 100% (mismo mecanismo que
 // syncIntraluHabilitado() en Intranotas).
-const ASISTENTE_HABILITADO_PARA_TODOS = false;
+const ASISTENTE_HABILITADO_PARA_TODOS = true;
 
 async function asistenteHorarioHabilitado() {
     if (ASISTENTE_HABILITADO_PARA_TODOS) return true;
