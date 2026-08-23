@@ -4,7 +4,6 @@
 <html lang="es">
 
 <head>
-  <link rel="manifest" href="manifest.json">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador de Horarios - Generador</title>
@@ -19,22 +18,32 @@
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/selector-personalizado.css">
   <link rel="stylesheet" href="../css/landing.css">
   <link rel="stylesheet" href="../css/dashboard.css">
   <link rel="stylesheet" href="../css/tema-siga.css?v=1">
 
   <link rel="stylesheet" href="static/css/style.css">
   <link rel="stylesheet" href="static/css/siga-theme-horarios.css">
+  <link rel="stylesheet" href="static/css/asistente-horario.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <!-- JSZip: para inyectar orientación/ajuste de página en el .xlsx exportado,
        ya que xlsx-js-style no soporta escribir esa configuración -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-  <!-- Gate de sesión: sin cuenta, redirige a index.html con el login
-       listo para abrirse. También pinta el ícono real de cuenta en el
-       nav (foto/menú/cerrar sesión) — antes faltaba en esta página, por
-       eso se veía el ícono genérico sin importar si había sesión o no.
-       Mismo patrón que ya usa horarios/index.html y el resto de SIGA. -->
+  <!-- Gate de sesión + puente a Supabase: antes esta pantalla no tenía
+       NADA de esto (ni gate, ni sincronización), así que se podía entrar
+       sin cuenta y el ícono quedaba genérico. Mismo patrón que index.html:
+       expone window.sigaSupabase / window.sigaObtenerSesion para que
+       generador.js (script clásico, no módulo) los use, y dispara el
+       evento 'siga:supabase-listo' para que generador.js sepa cuándo ya
+       puede usarlos (puede cargar antes de que termine este import). -->
+  <script type="module">
+    import { supabase, obtenerSesion } from '../js/auth-siga.js?v=9';
+    window.sigaSupabase = supabase;
+    window.sigaObtenerSesion = obtenerSesion;
+    window.dispatchEvent(new Event('siga:supabase-listo'));
+  </script>
   <script type="module" src="../js/gate.js"></script>
 </head>
 
@@ -56,7 +65,7 @@
              comportamiento) para que no se confunda con la nueva barra
              "← Volver a SIGA" de arriba — ambas empezaban con la misma
              palabra y quedaban una encima de la otra en la lectura. -->
-        <a href="index.html" class="back-btn">← Elegir cursos</a>
+        <a href="index.html?editar=1" class="back-btn">← Elegir cursos</a>
       </div>
 
       <div class="sidebar-scroll">
@@ -82,6 +91,18 @@
                 <button class="spinner-btn" onclick="setCruces(maxCruces+1)">+</button>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Asistente de Horario: oculto por defecto, asistente-horario.js
+             lo muestra solo si el gate de admin (UID) lo permite. -->
+        <div class="sb-section" id="asistente-horario-wrap" style="display:none">
+          <div class="ah-entrada-wrap">
+            <button type="button" class="ah-entrada-btn" id="ah-entrada-btn" onclick="toggleAsistenteHorario()">
+              <img src="static/img/bot-asistente-siga-icono.png" alt="" class="ah-entrada-icono">
+              <span>Asistente de Horario</span>
+              <span class="ah-entrada-flecha">▾</span>
+            </button>
           </div>
         </div>
       </div>
@@ -113,6 +134,10 @@
           <button class="btn-action btn-favs" onclick="toggleFavoritos()" title="Ver favoritos">☆ Favoritos</button>
         </div>
       </div>
+
+      <!-- Aviso de "🧠 Mejor horario" — oculto hasta que el Asistente
+           lo llene y lo muestre al saltar a la combinación recomendada. -->
+      <div class="ah-banner-mejor-horario" id="ah-banner-mejor-horario" style="display:none"></div>
 
       <div class="calendar-wrap" id="calendarWrap">
         <div class="empty-state">
@@ -173,9 +198,11 @@
       console.warn('⚠️ XLSX se cargó pero no se pudo confirmar la versión.');
     }
   </script>
+  <script src="../js/selector-personalizado.js"></script>
   <script src="static/js/parser.js"></script>
   <script src="static/js/scheduler.js"></script>
   <script src="static/js/generador.js"></script>
+  <script type="module" src="static/js/asistente-horario.js"></script>
   <script src="../js/tema-siga.js?v=1"></script>
   <script>
     // Recupera los cursos seleccionados de la URL
@@ -192,52 +219,18 @@
 
     inicializar(cursosSeleccionados);
   </script>
-  <!-- ── Registro PWA + aviso de actualización ── -->
+
+  <!-- ── Ya no se registra Service Worker: Horarios se actualiza igual
+       que el resto de SIGA (recarga normal, sin caché propio ni aviso
+       de "nueva versión disponible"). Limpia cualquier Service Worker
+       viejo que haya quedado instalado de antes (si no se desregistra
+       activamente, se queda corriendo indefinidamente aunque el código
+       ya no lo registre). ── -->
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
-        .then(reg => {
-          console.log('SW registrado');
-          if (reg.waiting) mostrarAvisoActualizacion(reg.waiting);
-          reg.addEventListener('updatefound', () => {
-            const nuevoSW = reg.installing;
-            if (!nuevoSW) return;
-            nuevoSW.addEventListener('statechange', () => {
-              if (nuevoSW.state === 'installed' && navigator.serviceWorker.controller) {
-                mostrarAvisoActualizacion(nuevoSW);
-              }
-            });
-          });
-
-          // Revisión inmediata al cargar, además de las periódicas de abajo
-          reg.update().catch(() => { });
-          setInterval(() => reg.update().catch(() => { }), 60 * 1000);
-          document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-              reg.update().catch(() => { });
-            }
-          });
-        })
-        .catch(err => console.warn('SW error:', err));
-
-      let recargando = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (recargando) return;
-        recargando = true;
-        window.location.reload();
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister());
       });
-    }
-
-    function mostrarAvisoActualizacion(sw) {
-      if (document.querySelector('.update-banner')) return;
-      const banner = document.createElement('div');
-      banner.className = 'update-banner';
-      banner.innerHTML = `🔄 ¡Hay una actualización disponible! <button type="button">Actualizar ahora</button>`;
-      document.body.appendChild(banner);
-      banner.querySelector('button').onclick = () => {
-        sw.postMessage('SKIP_WAITING');
-        banner.remove();
-      };
     }
   </script>
 </body>

@@ -56,6 +56,41 @@ const LS_GEN_COMBOS_IDX = 'horarioGen_combosIdx';
 // "Estrategia de matrícula" del Asistente de Horario.
 const LS_GEN_PRIORIDADES = 'horarioGen_prioridadesProfesor';
 
+// ── Puente con Supabase (auth-siga.js) ──────────────────────────
+function esperarSupabaseListo() {
+    if (window.sigaSupabase) return Promise.resolve();
+    return new Promise(resolve => window.addEventListener('siga:supabase-listo', resolve, { once: true }));
+}
+
+async function obtenerUserIdActual() {
+    await esperarSupabaseListo();
+    try {
+        const sesion = await window.sigaObtenerSesion();
+        return sesion?.user?.id || null;
+    } catch (e) {
+        console.warn('No se pudo obtener la sesión actual:', e);
+        return null;
+    }
+}
+
+// Autoguardado en la nube con debounce (evita un upsert por cada checkbox).
+let _debounceNubeGen = null;
+function guardarEnNube(campos) {
+    clearTimeout(_debounceNubeGen);
+    _debounceNubeGen = setTimeout(async () => {
+        const userId = await obtenerUserIdActual();
+        if (!userId) return;
+        try {
+            const { error } = await window.sigaSupabase
+                .from('horarios_alumno')
+                .upsert({ user_id: userId, actualizado_en: new Date().toISOString(), ...campos });
+            if (error) console.warn('No se pudo sincronizar con la nube:', error);
+        } catch (e) {
+            console.warn('Error sincronizando con la nube:', e);
+        }
+    }, 800);
+}
+
 // ── TOOLTIP ───────────────────────────────────────────────────
 let tooltipEl = null;
 document.addEventListener('DOMContentLoaded', () => {
@@ -100,6 +135,66 @@ function inicializar(cursos) {
     restaurarSeleccionSecciones();
     restaurarCruces();
     restaurarCombosCache();
+
+    // Reconciliación con la nube: por si desde otro dispositivo hay una
+    // selección/cruces más reciente. Si difiere de lo que ya se restauró
+    // localmente arriba, se aplica y se regenera; si es igual, no se toca
+    // nada (el caché local de arriba ya dibujó bien).
+    sincronizarSeleccionDesdeNube();
+}
+
+// ── Reconciliación con la nube (no reemplaza el caché local, solo
+//    corrige si hay algo distinto guardado desde otro dispositivo) ──
+async function sincronizarSeleccionDesdeNube() {
+    const userId = await obtenerUserIdActual();
+    if (!userId) return;
+
+    try {
+        const { data, error } = await window.sigaSupabase
+            .from('horarios_alumno')
+            .select('secciones_generador, cruces')
+            .eq('user_id', userId)
+            .maybeSingle();
+
+        if (error) { console.warn('No se pudo sincronizar la selección del generador desde la nube:', error); return; }
+
+        if (!data || (!data.secciones_generador && data.cruces == null)) {
+            // No hay nada en la nube todavía: si sí hay algo local (usuario
+            // de antes de esta actualización), lo subimos una sola vez.
+            const seleccionLocal = localStorage.getItem(LS_GEN_SECCIONES);
+            const crucesLocal = localStorage.getItem(LS_GEN_CRUCES);
+            if (seleccionLocal) { try { guardarEnNube({ secciones_generador: JSON.parse(seleccionLocal) }); } catch (e) { } }
+            if (crucesLocal !== null) guardarEnNube({ cruces: parseInt(crucesLocal, 10) || 0 });
+            return;
+        }
+
+        let cambioAlgo = false;
+
+        if (data.secciones_generador) {
+            const nubeStr = JSON.stringify(data.secciones_generador);
+            if (localStorage.getItem(LS_GEN_SECCIONES) !== nubeStr) {
+                document.querySelectorAll('.p-check').forEach(cb => {
+                    const curso = cb.dataset.curso;
+                    if (curso in data.secciones_generador) {
+                        cb.checked = data.secciones_generador[curso].includes(cb.dataset.seccion);
+                    }
+                });
+                try { localStorage.setItem(LS_GEN_SECCIONES, nubeStr); } catch (e) { /* no crítico */ }
+                cambioAlgo = true;
+            }
+        }
+
+        if (data.cruces != null && String(data.cruces) !== localStorage.getItem(LS_GEN_CRUCES)) {
+            setCruces(data.cruces); // ya guarda en LS_GEN_CRUCES vía guardarCruces()
+            cambioAlgo = true;
+        }
+
+        // Solo regenera si la nube trajo algo distinto a lo que ya se
+        // había dibujado con el caché local — evita un regenerado doble.
+        if (cambioAlgo) generar();
+    } catch (e) {
+        console.warn('Error sincronizando la selección del generador desde la nube:', e);
+    }
 }
 
 // ── AUTOGUARDADO: secciones/profesores marcados ────────────────
@@ -116,6 +211,7 @@ function guardarSeleccionSecciones() {
         // no interrumpe el uso normal del generador.
         console.warn('No se pudo guardar la selección de secciones:', e);
     }
+    guardarEnNube({ secciones_generador: seleccion });
 }
 
 function restaurarSeleccionSecciones() {
@@ -145,6 +241,7 @@ function guardarCruces(v) {
     } catch (e) {
         console.warn('No se pudo guardar la cantidad de cruces:', e);
     }
+    guardarEnNube({ cruces: v });
 }
 
 function restaurarCruces() {
