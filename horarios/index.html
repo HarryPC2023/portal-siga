@@ -51,6 +51,24 @@
              que ya muestra "Horarios" como sección activa. -->
         <div class="idx-body">
 
+            <!-- ── CARD 0: CONECTAR A MATRÍCULA UNI ── -->
+            <!-- Trae cursos, vacantes y horarios automáticamente desde la
+                 intranet, vía el backend recolectar_horario.py (mismo patrón
+                 que la sincronización de Intralú en Intranotas). Es un
+                 camino alternativo al de subir el Excel a mano — ambos
+                 conviven, ninguno reemplaza al otro. -->
+            <div class="idx-card" id="cardConectarMatricula" style="display:none">
+                <div class="card-title">🔗 Conectar a Matrícula UNI</div>
+                <div class="card-desc">Trae tus cursos, vacantes y horarios automáticamente desde la intranet</div>
+
+                <button id="btnConectarMatricula" class="btn-primary" onclick="abrirModalSyncMatricula()">
+                    Conectar a Matrícula UNI
+                </button>
+
+                <div id="matriculaStatus" class="upload-status"></div>
+                <div id="matriculaSinHorario" style="display:none"></div>
+            </div>
+
             <!-- ── CARD 1: SUBIR CARGA HORARIA ── -->
             <div class="idx-card">
                 <div class="card-title">📁 Subir carga horaria</div>
@@ -151,10 +169,21 @@
         let cursosSeleccionados = new Set();
         let nombreArchivoActual = '';
 
+        // Metadata extra (solo existe cuando la carga vino de "Conectar a
+        // Matrícula UNI"): tipo de curso, vacantes, veces repetido, etc.
+        // Con Excel esto queda vacío y construirListaCursos() no muestra
+        // ningún badge — comportamiento idéntico al de siempre.
+        let cursosMetadata = {};
+        // 'excel' | 'matricula' — el Asistente de Horario (asistente-horario.js)
+        // lee esto de localStorage para decidir si mostrarse o no.
+        let origenDatos = 'excel';
+
         // Claves de guardado persistente (sobreviven a cerrar la app/pestaña)
         const LS_CARGA = 'horarioGen_carga';
         const LS_NOMBRE = 'horarioGen_archivo';
         const LS_SEL = 'horarioGen_seleccion';
+        const LS_METADATA = 'horarioGen_metadata';
+        const LS_ORIGEN = 'horarioGen_origen';
         // Estas dos las usa generador.js (pantalla 2), pero se limpian desde
         // acá cuando cambia el archivo o el usuario pulsa "Limpiar todo"
         const LS_GEN_SECCIONES = 'horarioGen_seccionesGen';
@@ -168,6 +197,8 @@
                 localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
                 localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
                 localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
+                localStorage.setItem(LS_METADATA, JSON.stringify(cursosMetadata));
+                localStorage.setItem(LS_ORIGEN, origenDatos);
                 avisarAutoguardadoUnaVez();
             } catch (e) {
                 // Ej: archivo muy grande para el límite de localStorage del navegador
@@ -230,6 +261,11 @@
 
                     cargaGlobal = carga;
                     nombreArchivoActual = file.name;
+                    // El Excel no trae tipo/vacantes/vacantes ni garantiza
+                    // que los docentes sean del ciclo actual, así que el
+                    // origen vuelve a 'excel' (apaga badges y Asistente).
+                    cursosMetadata = {};
+                    origenDatos = 'excel';
 
                     // Guarda la carga en sessionStorage para que generador.html la use
                     sessionStorage.setItem('cargaHoraria', JSON.stringify(carga));
@@ -252,17 +288,42 @@
         };
 
         // ── 3. Construir lista de cursos dinámicamente ──────────
+        // Los badges (tipo/vacantes/repetido) SOLO aparecen si cursosMetadata
+        // trae algo para ese curso — es decir, solo tras "Conectar a Matrícula
+        // UNI". Con Excel, cursosMetadata está vacío y esto se comporta
+        // exactamente igual que antes.
+        const TIPO_BADGE = {
+            O: { label: 'Obligatorio', clase: 'curso-badge-o' },
+            E: { label: 'Electivo', clase: 'curso-badge-e' },
+            C: { label: 'Complementario', clase: 'curso-badge-c' },
+        };
+
         function construirListaCursos(cursos) {
             cursosLista.innerHTML = '';
             cursos.forEach(nombre => {
                 const codigo = getCodigoCurso(nombre);
+                const meta = cursosMetadata[nombre];
                 const div = document.createElement('div');
                 div.className = 'curso-item';
                 div.dataset.nombre = nombre;
                 div.dataset.codigo = codigo;
+
+                let badgesHtml = '';
+                if (meta) {
+                    const tipo = TIPO_BADGE[meta.tipo];
+                    if (tipo) badgesHtml += `<span class="curso-badge ${tipo.clase}">${tipo.label}</span>`;
+                    if (meta.vecesRepetido > 0) badgesHtml += `<span class="curso-badge curso-badge-n">N · repetido</span>`;
+                    if (typeof meta.vacantesDisponibles === 'number') {
+                        badgesHtml += `<span class="curso-badge curso-badge-vacantes">${meta.vacantesDisponibles}/${meta.vacantesMaximas} vacantes</span>`;
+                    }
+                }
+
                 div.innerHTML = `
-        <span class="curso-nombre">${codigo ? `<span class="curso-codigo">${codigo}</span> ` : ''}${nombre}</span>
-        <span class="curso-check">✔</span>
+        <div class="curso-item-row">
+          <span class="curso-nombre">${codigo ? `<span class="curso-codigo">${codigo}</span> ` : ''}${nombre}</span>
+          <span class="curso-check">✔</span>
+        </div>
+        ${badgesHtml ? `<div class="curso-badges-wrap">${badgesHtml}</div>` : ''}
       `;
                 div.onclick = () => toggleCursoSeleccionado(div, nombre);
                 if (cursosSeleccionados.has(nombre)) {
@@ -414,6 +475,8 @@
             localStorage.removeItem(LS_SEL);
             localStorage.removeItem(LS_GEN_SECCIONES);
             localStorage.removeItem(LS_GEN_CRUCES);
+            localStorage.removeItem(LS_METADATA);
+            localStorage.removeItem(LS_ORIGEN);
             // Caché de combinaciones generadas (ver generador.js) — si no se
             // limpia acá, queda un horario "fantasma" cacheado después de
             // que el usuario pidió borrar todo.
@@ -424,6 +487,8 @@
             cargaGlobal = null;
             cursosSeleccionados = new Set();
             nombreArchivoActual = '';
+            cursosMetadata = {};
+            origenDatos = 'excel';
 
             fileInput.value = '';
             fileInfo.style.display = 'none';
@@ -435,6 +500,8 @@
             courseSearch.value = '';
             clearSearch.style.display = 'none';
             persistActions.style.display = 'none';
+            document.getElementById('matriculaStatus').innerHTML = '';
+            document.getElementById('matriculaSinHorario').style.display = 'none';
 
             showToast('Todo limpio — listo para cargar un nuevo archivo', 'success');
         };
@@ -448,6 +515,8 @@
                 cargaGlobal = JSON.parse(cargaGuardada);
                 nombreArchivoActual = localStorage.getItem(LS_NOMBRE) || '';
                 const seleccionGuardada = JSON.parse(localStorage.getItem(LS_SEL) || '[]');
+                cursosMetadata = JSON.parse(localStorage.getItem(LS_METADATA) || '{}');
+                origenDatos = localStorage.getItem(LS_ORIGEN) || 'excel';
 
                 sessionStorage.setItem('cargaHoraria', cargaGuardada);
 
@@ -486,6 +555,247 @@
                 console.warn('No se pudo restaurar el progreso guardado:', e);
             }
         })();
+
+        /* ============================================================
+           CONEXIÓN A MATRÍCULA UNI
+           Trae cursos + vacantes + horarios directo desde la API de la
+           intranet, vía el backend recolectar_horario.py (mismo patrón
+           de seguridad que la sincronización de Intralú en Intranotas:
+           las credenciales viajan una sola vez por HTTPS al backend y
+           se descartan al terminar, nunca se guardan).
+
+           GATE DE VISIBILIDAD (temporal): igual criterio que se usó con
+           la sincronización de Intralú y con el Asistente de Horario —
+           mientras se termina de probar a fondo, la card SOLO aparece
+           para Harry. Cuando esté 100% óptimo y funcional, cambiar
+           MATRICULA_HABILITADA_PARA_TODOS a `true` acá abajo y se
+           habilita para todos los usuarios, sin tocar nada más.
+           ============================================================ */
+        const ADMIN_UID_SIGA_MATRICULA = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
+        const MATRICULA_HABILITADA_PARA_TODOS = false;
+
+        // index.html no dispara 'siga:supabase-listo' (solo generador.html
+        // lo hace), así que esperamos con un polling corto a que el script
+        // module del <head> haya terminado de exponer window.sigaObtenerSesion.
+        function esperarSigaObtenerSesion() {
+            return new Promise(resolve => {
+                if (window.sigaObtenerSesion) return resolve();
+                const intervalo = setInterval(() => {
+                    if (window.sigaObtenerSesion) {
+                        clearInterval(intervalo);
+                        resolve();
+                    }
+                }, 100);
+                setTimeout(() => { clearInterval(intervalo); resolve(); }, 5000);
+            });
+        }
+
+        async function matriculaConexionHabilitada() {
+            if (MATRICULA_HABILITADA_PARA_TODOS) return true;
+            await esperarSigaObtenerSesion();
+            try {
+                const sesion = await window.sigaObtenerSesion();
+                return !!(sesion && sesion.user && sesion.user.id === ADMIN_UID_SIGA_MATRICULA);
+            } catch (e) {
+                console.warn('No se pudo verificar sesión para Conectar a Matrícula UNI:', e);
+                return false;
+            }
+        }
+
+        (async function iniciarGateMatricula() {
+            const card = document.getElementById('cardConectarMatricula');
+            if (!card) return;
+            const habilitado = await matriculaConexionHabilitada();
+            if (habilitado) card.style.display = 'block';
+        })();
+
+        const MATRICULA_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+            ? 'http://localhost:8000/api/sync-horarios'
+            : 'https://siga-conexion-intralu.onrender.com/api/sync-horarios';
+
+        function abrirModalSyncMatricula() {
+            const existente = document.getElementById('modal-sync-matricula-overlay');
+            if (existente) {
+                document.getElementById('sync-matricula-codigo').value = '';
+                document.getElementById('sync-matricula-password').value = '';
+                document.getElementById('sync-matricula-error').style.display = 'none';
+                requestAnimationFrame(() => existente.classList.add('show'));
+                return;
+            }
+
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.id = 'modal-sync-matricula-overlay';
+            overlay.innerHTML = `
+        <div class="modal-card" style="text-align:left; width:340px;">
+          <div class="modal-icon">🔗</div>
+          <div class="modal-title" style="text-align:center;">Conectar a Matrícula UNI</div>
+          <div class="modal-desc" style="text-align:center;">
+            Ingresa tu código y contraseña. Se usan una sola vez para traer tus cursos,
+            vacantes y horarios — nunca se guardan en nuestros servidores.
+          </div>
+          <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Código UNI</label>
+          <input id="sync-matricula-codigo" type="text" class="modal-input" placeholder="2023XXXXX"
+            autocomplete="off" oninput="this.value = this.value.toUpperCase()" style="margin-bottom:12px;">
+          <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Contraseña</label>
+          <div style="position:relative;">
+            <input id="sync-matricula-password" type="password" class="modal-input" placeholder="Contraseña" autocomplete="off">
+            <button type="button" onclick="alternarVisibilidadPasswordMatricula()" aria-label="Mostrar u ocultar contraseña"
+              style="position:absolute; right:10px; top:9px; background:none; border:none; cursor:pointer; font-size:1rem; padding:2px 4px; line-height:1;">
+              <span id="sync-matricula-password-icono">👁️</span>
+            </button>
+          </div>
+          <p id="sync-matricula-error" style="display:none; color:#dc2626; font-size:0.78rem; margin:4px 0 0;"></p>
+          <p id="sync-matricula-progreso" style="display:none; color:var(--accent); font-size:0.8rem; margin:12px 0 0; text-align:center;">
+            <span class="spinner"></span> Conectando con Matrícula...
+          </p>
+          <div class="modal-actions" style="margin-top:18px;">
+            <button type="button" class="modal-btn-cancel" id="sync-matricula-btn-cancelar" onclick="cerrarModalSyncMatricula()">Cancelar</button>
+            <button type="button" class="modal-btn-primary" id="sync-matricula-btn-confirmar" onclick="ejecutarSyncMatricula()">Ingresar y conectar</button>
+          </div>
+        </div>`;
+            document.body.appendChild(overlay);
+            requestAnimationFrame(() => overlay.classList.add('show'));
+            overlay.addEventListener('click', e => { if (e.target === overlay) cerrarModalSyncMatricula(); });
+        }
+
+        function alternarVisibilidadPasswordMatricula() {
+            const input = document.getElementById('sync-matricula-password');
+            const icono = document.getElementById('sync-matricula-password-icono');
+            const oculto = input.type === 'password';
+            input.type = oculto ? 'text' : 'password';
+            icono.textContent = oculto ? '🙈' : '👁️';
+        }
+
+        function cerrarModalSyncMatricula() {
+            const overlay = document.getElementById('modal-sync-matricula-overlay');
+            if (overlay) overlay.classList.remove('show');
+        }
+
+        // Convierte la respuesta del backend (cursos + carga) en el
+        // cursosMetadata que lee construirListaCursos() para los badges.
+        // Se indexa por NOMBRE porque cargaGlobal usa el nombre como
+        // clave (igual que parsearExcel en parser.js), no el código.
+        function construirMetadataDesdeCursos(cursos) {
+            const metadata = {};
+            cursos.forEach(c => {
+                const nombre = (c.nombre || '').replace(/-+$/, '').trim();
+                metadata[nombre] = {
+                    tipo: c.tipo,
+                    vecesRepetido: c.vecesRepetido,
+                    ciclo: c.ciclo,
+                    creditos: c.creditos,
+                };
+            });
+            return metadata;
+        }
+
+        // Completa vacantesMaximas/Ocupadas/Disponibles en cursosMetadata
+        // usando la sección con más vacantes disponibles de cada curso en
+        // `carga` (si un curso tiene varias secciones, cada una puede tener
+        // distintas vacantes — mostramos la más favorable como resumen).
+        function completarVacantesEnMetadata(metadata, carga) {
+            Object.keys(carga).forEach(nombre => {
+                const secciones = Object.values(carga[nombre]);
+                if (!secciones.length) return;
+                const mejor = secciones.reduce((a, b) =>
+                    (b.vacantesDisponibles || 0) > (a.vacantesDisponibles || 0) ? b : a
+                );
+                if (!metadata[nombre]) metadata[nombre] = {};
+                metadata[nombre].vacantesMaximas = mejor.vacantesMaximas;
+                metadata[nombre].vacantesOcupadas = mejor.vacantesOcupadas;
+                metadata[nombre].vacantesDisponibles = mejor.vacantesDisponibles;
+            });
+        }
+
+        function renderCursosSinHorario(lista) {
+            const wrap = document.getElementById('matriculaSinHorario');
+            if (!lista || !lista.length) {
+                wrap.style.display = 'none';
+                return;
+            }
+            wrap.style.display = 'block';
+            wrap.style.cssText = 'display:block; margin-top:10px; font-size:11px; color:var(--text-faint); line-height:1.5;';
+            wrap.innerHTML = `⚠️ ${lista.length} curso(s) sin horario aperturado aún (no aparecerán en la lista): ` +
+                lista.map(c => c.nombre).join(', ');
+        }
+
+        async function ejecutarSyncMatricula() {
+            const codigoEl = document.getElementById('sync-matricula-codigo');
+            const passwordEl = document.getElementById('sync-matricula-password');
+            const errorEl = document.getElementById('sync-matricula-error');
+            const progresoEl = document.getElementById('sync-matricula-progreso');
+            const btnConfirmar = document.getElementById('sync-matricula-btn-confirmar');
+            const btnCancelar = document.getElementById('sync-matricula-btn-cancelar');
+
+            const codigo = codigoEl.value.trim();
+            const password = passwordEl.value;
+
+            errorEl.style.display = 'none';
+            if (!codigo || !password) {
+                errorEl.textContent = 'Ingresa tu código y tu contraseña.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            btnConfirmar.disabled = true;
+            btnCancelar.disabled = true;
+            btnConfirmar.textContent = 'Conectando...';
+            progresoEl.style.display = 'block';
+
+            try {
+                const resp = await fetch(MATRICULA_SYNC_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ codigo, password }),
+                });
+                const data = await resp.json();
+                passwordEl.value = '';
+                if (!resp.ok) throw new Error(data.detail || 'No se pudo conectar con Matrícula.');
+
+                if (!data.carga || !Object.keys(data.carga).length) {
+                    throw new Error('No se encontraron cursos con horario disponible en tu Matrícula.');
+                }
+
+                // Si ya había un Excel/conexión anterior con otra selección
+                // de secciones/cruces en generador.html, esa selección queda
+                // desactualizada (igual criterio que al subir un Excel nuevo).
+                if (localStorage.getItem(LS_GEN_SECCIONES) || localStorage.getItem(LS_GEN_CRUCES)) {
+                    localStorage.removeItem(LS_GEN_SECCIONES);
+                    localStorage.removeItem(LS_GEN_CRUCES);
+                }
+
+                cargaGlobal = data.carga;
+                nombreArchivoActual = `Matrícula UNI · periodo ${data.periodo || ''}`;
+                cursosSeleccionados = new Set();
+                cursosMetadata = construirMetadataDesdeCursos(data.cursos || []);
+                completarVacantesEnMetadata(cursosMetadata, data.carga);
+                origenDatos = 'matricula';
+
+                sessionStorage.setItem('cargaHoraria', JSON.stringify(data.carga));
+
+                const cursos = Object.keys(data.carga).sort();
+                document.getElementById('matriculaStatus').innerHTML =
+                    `<span style="color:#10b981">✅ ${data.cursos_con_horario} cursos con horario conectados.</span>`;
+                renderCursosSinHorario(data.cursos_sin_horario);
+
+                construirListaCursos(cursos);
+                cardCursos.style.display = 'block';
+                persistActions.style.display = 'flex';
+                actualizarSeleccion();
+                guardarProgreso();
+                cerrarModalSyncMatricula();
+                showToast('Conectado a Matrícula UNI ✓', 'success');
+            } catch (err) {
+                errorEl.textContent = err.message || 'Ocurrió un error al conectar. Intenta de nuevo.';
+                errorEl.style.display = 'block';
+            } finally {
+                btnConfirmar.disabled = false;
+                btnCancelar.disabled = false;
+                btnConfirmar.textContent = 'Ingresar y conectar';
+                progresoEl.style.display = 'none';
+            }
+        }
 
         // ── Toast ─────────────────────────────────────────────────
         function showToast(msg, type = 'info') {
