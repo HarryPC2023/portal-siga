@@ -18,6 +18,20 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
             .join('');
     }
 
+    // La lista se posiciona con position:fixed calculado en JS (en vez de
+    // absolute respecto al padre) para que pueda "escapar" de cualquier
+    // contenedor con su propio scroll (ej. el sidebar de Horarios) sin
+    // que el navegador la recorte. Se recalcula cada vez que se abre,
+    // por si el contenedor se desplazó desde la última vez.
+    function posicionar() {
+        const r = trigger.getBoundingClientRect();
+        lista.style.position = 'fixed';
+        lista.style.top = (r.bottom + 4) + 'px';
+        lista.style.left = r.left + 'px';
+        lista.style.width = r.width + 'px';
+        lista.style.right = 'auto';
+    }
+
     function cerrar() {
         lista.hidden = true;
         trigger.setAttribute('aria-expanded', 'false');
@@ -30,6 +44,7 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
 
     trigger.addEventListener('click', () => {
         if (!lista.hidden) { cerrar(); return; }
+        posicionar();
         lista.hidden = false;
         trigger.setAttribute('aria-expanded', 'true');
     });
@@ -49,6 +64,13 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
     document.addEventListener('click', (e) => {
         if (!trigger.contains(e.target) && !lista.contains(e.target)) cerrar();
     });
+
+    // Scroll en CUALQUIER contenedor (el sidebar, la página, etc.) mientras
+    // la lista está abierta invalida la posición calculada — más simple y
+    // confiable cerrarla que intentar perseguir el scroll en tiempo real.
+    // useCapture:true para detectar scroll de contenedores anidados, ya
+    // que el evento "scroll" no hace bubbling normal.
+    window.addEventListener('scroll', () => { if (!lista.hidden) cerrar(); }, true);
 
     return { trigger, texto, lista, valor, establecer };
 }
