@@ -65,12 +65,15 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
         if (!trigger.contains(e.target) && !lista.contains(e.target)) cerrar();
     });
 
-    // Scroll en CUALQUIER contenedor (el sidebar, la página, etc.) mientras
-    // la lista está abierta invalida la posición calculada — más simple y
-    // confiable cerrarla que intentar perseguir el scroll en tiempo real.
-    // useCapture:true para detectar scroll de contenedores anidados, ya
-    // que el evento "scroll" no hace bubbling normal.
-    window.addEventListener('scroll', () => { if (!lista.hidden) cerrar(); }, true);
+    // Scroll fuera de la lista (el sidebar, la página, etc.) mientras está
+    // abierta invalida la posición calculada — más simple y confiable
+    // cerrarla que perseguir el scroll en tiempo real. Pero el scroll
+    // DENTRO de la propia lista (cuando tiene más opciones de las que
+    // caben) no debe cerrarla — si no, se cierra sola apenas intentas
+    // desplazarte para ver las demás opciones.
+    window.addEventListener('scroll', (e) => {
+        if (!lista.hidden && !lista.contains(e.target)) cerrar();
+    }, true);
 
     return { trigger, texto, lista, valor, establecer };
 }
