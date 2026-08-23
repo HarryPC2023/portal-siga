@@ -563,123 +563,96 @@
         };
 
         // ── Restaurar progreso guardado al abrir la app ──────────
-        (function restaurarProgreso() {
+        // Todo en una sola secuencia async: primero se pinta lo local
+        // (rápido, funciona incluso sin sesión), pero la DECISIÓN de saltar
+        // a pantalla 2 se pospone hasta saber qué dice la nube — si no, el
+        // salto local (síncrono) siempre le gana la carrera a la respuesta
+        // de Supabase (asíncrona) y la nube nunca alcanza a corregir nada.
+        (async function restaurarYSincronizar() {
+            const vieneAEditar = new URLSearchParams(window.location.search).has('editar');
+
+            // 1) Pinta de inmediato lo que haya en localStorage — funciona
+            //    incluso sin internet/sesión, y sirve de resultado final si
+            //    la nube no tiene nada nuevo que aportar.
             const cargaGuardada = localStorage.getItem(LS_CARGA);
-            if (!cargaGuardada) return;
-
-            try {
-                cargaGlobal = JSON.parse(cargaGuardada);
-                nombreArchivoActual = localStorage.getItem(LS_NOMBRE) || '';
-                const seleccionGuardada = JSON.parse(localStorage.getItem(LS_SEL) || '[]');
-
-                sessionStorage.setItem('cargaHoraria', cargaGuardada);
-
-                if (nombreArchivoActual) {
-                    fileInfo.style.display = 'flex';
-                    fileInfo.innerHTML = '📄 ' + nombreArchivoActual + ' (guardado)';
-                }
-
-                const cursos = Object.keys(cargaGlobal).sort();
-                uploadStatus.innerHTML =
-                    `<span style="color:#10b981">✅ ${cursos.length} cursos restaurados de tu última sesión.</span>`;
-
-                seleccionGuardada.forEach(c => cursosSeleccionados.add(c));
-
-                // ── Saltar directo a la pantalla 2 ──────────────────
-                // Si ya había una selección de cursos guardada, no tiene
-                // sentido pasar por acá de nuevo — se salta directo al
-                // generador (que a su vez restaura las combinaciones ya
-                // generadas, si siguen siendo válidas para esa selección).
-                // Excepción: si el usuario vino a propósito con "←
-                // Elegir cursos" (generador.html le agrega ?editar=1),
-                // se queda acá para poder cambiar su selección.
-                const vieneAEditar = new URLSearchParams(window.location.search).has('editar');
-                if (!vieneAEditar && cursosSeleccionados.size > 0) {
-                    const params = new URLSearchParams();
-                    cursosSeleccionados.forEach(c => params.append('curso', c));
-                    window.location.href = 'generador.html?' + params.toString();
-                    return;
-                }
-
-                construirListaCursos(cursos);
-                cardCursos.style.display = 'block';
-                persistActions.style.display = 'flex';
-                actualizarSeleccion();
-            } catch (e) {
-                console.warn('No se pudo restaurar el progreso guardado:', e);
-            }
-        })();
-
-        // ── Sincronización con la nube (Supabase) ────────────────
-        // En paralelo a lo de arriba, si hay sesión, revisa Supabase — que
-        // es la fuente de verdad entre dispositivos — y si encuentra algo
-        // distinto a lo local (ej. el Excel cargado desde otro dispositivo),
-        // reemplaza lo pintado, refresca el respaldo local, y respeta el
-        // mismo criterio de arriba para saltar a pantalla 2 o quedarse
-        // (si el usuario vino a propósito con "← Elegir cursos").
-        (async function sincronizarDesdeNube() {
-            const userId = await obtenerUserIdActual();
-            if (!userId) return; // sin sesión: nos quedamos con lo local
-
-            try {
-                const { data, error } = await window.sigaSupabase
-                    .from('horarios_alumno')
-                    .select('nombre_archivo, carga_horaria, cursos_seleccionados, secciones_generador, cruces')
-                    .eq('user_id', userId)
-                    .maybeSingle();
-
-                if (error) { console.warn('No se pudo traer el horario desde la nube:', error); return; }
-
-                if (!data || !data.carga_horaria) {
-                    // No hay nada en la nube todavía: si sí hay algo local
-                    // (usuario de antes de esta actualización), lo subimos
-                    // una sola vez para que desde ahora sincronice entre dispositivos.
-                    if (cargaGlobal) guardarProgresoNube();
-                    return;
-                }
-
-                // Si ya es lo mismo que se pintó localmente, no hay nada que repintar.
-                if (data.nombre_archivo === nombreArchivoActual) return;
-
-                cargaGlobal = data.carga_horaria;
-                nombreArchivoActual = data.nombre_archivo || '';
-                cursosSeleccionados = new Set(data.cursos_seleccionados || []);
-                sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
-
-                // Refresca el respaldo local para que la próxima vez pinte esto de inmediato.
+            if (cargaGuardada) {
                 try {
-                    localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
-                    localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
-                    localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
-                    if (data.secciones_generador) localStorage.setItem(LS_GEN_SECCIONES, JSON.stringify(data.secciones_generador));
-                    if (data.cruces != null) localStorage.setItem(LS_GEN_CRUCES, String(data.cruces));
-                } catch (e) { /* no crítico: ya quedó sincronizado en Supabase */ }
-
-                // Mismo criterio que la restauración local: si el usuario no
-                // vino a propósito a "← Elegir cursos" (?editar=1), salta
-                // directo al generador con lo que acaba de llegar de la nube.
-                const vieneAEditar = new URLSearchParams(window.location.search).has('editar');
-                if (!vieneAEditar && cursosSeleccionados.size > 0) {
-                    const params = new URLSearchParams();
-                    cursosSeleccionados.forEach(c => params.append('curso', c));
-                    window.location.href = 'generador.html?' + params.toString();
-                    return;
+                    cargaGlobal = JSON.parse(cargaGuardada);
+                    nombreArchivoActual = localStorage.getItem(LS_NOMBRE) || '';
+                    const seleccionGuardada = JSON.parse(localStorage.getItem(LS_SEL) || '[]');
+                    sessionStorage.setItem('cargaHoraria', cargaGuardada);
+                    seleccionGuardada.forEach(c => cursosSeleccionados.add(c));
+                } catch (e) {
+                    console.warn('No se pudo restaurar el progreso guardado localmente:', e);
                 }
-
-                fileInfo.style.display = 'flex';
-                fileInfo.innerHTML = '📄 ' + nombreArchivoActual + ' (sincronizado)';
-
-                const cursos = Object.keys(cargaGlobal).sort();
-                uploadStatus.innerHTML =
-                    `<span style="color:#10b981">☁️ ${cursos.length} cursos sincronizados desde otro dispositivo.</span>`;
-
-                construirListaCursos(cursos);
-                cardCursos.style.display = 'block';
-                persistActions.style.display = 'flex';
-                actualizarSeleccion();
-            } catch (e) {
-                console.warn('Error sincronizando horario desde la nube:', e);
             }
+
+            // 2) Si hay sesión, la nube manda: se espera su respuesta ANTES
+            //    de decidir el salto, para no saltar con datos viejos
+            //    mientras la respuesta de Supabase todavía viene en camino.
+            const userId = await obtenerUserIdActual();
+            if (userId) {
+                try {
+                    const { data, error } = await window.sigaSupabase
+                        .from('horarios_alumno')
+                        .select('nombre_archivo, carga_horaria, cursos_seleccionados, secciones_generador, cruces')
+                        .eq('user_id', userId)
+                        .maybeSingle();
+
+                    if (error) {
+                        console.warn('No se pudo traer el horario desde la nube:', error);
+                    } else if (!data || !data.carga_horaria) {
+                        // No hay nada en la nube todavía: si sí hay algo local
+                        // (usuario de antes de esta actualización), lo subimos
+                        // una sola vez para que desde ahora sincronice entre dispositivos.
+                        if (cargaGlobal) guardarProgresoNube();
+                    } else if (data.nombre_archivo !== nombreArchivoActual) {
+                        // La nube trae algo distinto a lo local: la nube gana.
+                        cargaGlobal = data.carga_horaria;
+                        nombreArchivoActual = data.nombre_archivo || '';
+                        cursosSeleccionados = new Set(data.cursos_seleccionados || []);
+                        sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
+
+                        try {
+                            localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
+                            localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
+                            localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
+                            if (data.secciones_generador) localStorage.setItem(LS_GEN_SECCIONES, JSON.stringify(data.secciones_generador));
+                            if (data.cruces != null) localStorage.setItem(LS_GEN_CRUCES, String(data.cruces));
+                        } catch (e) { /* no crítico: ya quedó sincronizado en Supabase */ }
+                    }
+                    // Si data.nombre_archivo === nombreArchivoActual, la nube
+                    // ya coincide con lo local — no hay nada que corregir.
+                } catch (e) {
+                    console.warn('Error sincronizando horario desde la nube:', e);
+                }
+            }
+
+            // 3) Recién ahora, con el dato ya definitivo (nube si había algo
+            //    nuevo, local si no), se decide: saltar a pantalla 2, o
+            //    pintar acá (si vino a editar o no hay nada que mostrar).
+            if (!cargaGlobal) return;
+
+            if (!vieneAEditar && cursosSeleccionados.size > 0) {
+                const params = new URLSearchParams();
+                cursosSeleccionados.forEach(c => params.append('curso', c));
+                window.location.replace('generador.html?' + params.toString());
+                return;
+            }
+
+            if (nombreArchivoActual) {
+                fileInfo.style.display = 'flex';
+                fileInfo.innerHTML = '📄 ' + nombreArchivoActual + ' (guardado)';
+            }
+
+            const cursos = Object.keys(cargaGlobal).sort();
+            uploadStatus.innerHTML =
+                `<span style="color:#10b981">✅ ${cursos.length} cursos restaurados.</span>`;
+
+            construirListaCursos(cursos);
+            cardCursos.style.display = 'block';
+            persistActions.style.display = 'flex';
+            actualizarSeleccion();
         })();
 
         // ── Toast ─────────────────────────────────────────────────
