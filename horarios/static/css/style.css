@@ -657,8 +657,15 @@ body {
   flex-shrink: 0;
 }
 
+.prof-option span {
+  font-family: 'Poppins', sans-serif;
+}
+
 .prof-option span strong {
   color: var(--text);
+  /* "Sección X" mantiene la fuente original — el span de arriba solo
+     debe afectar al resumen de horario ("— Ma 20:00, Ma 18:00"). */
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 /* Grupo por profesor (dentro de .course-profs) — recuperado, se había
@@ -712,8 +719,10 @@ body {
 }
 
 .docente-prioridad-custom .select-custom-trigger {
-  padding: 4px 8px;
-  font-size: 10px;
+  padding: 4px 6px;
+  font-size: 9px;
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
   border-radius: 6px;
 }
 
