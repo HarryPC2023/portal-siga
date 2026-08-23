@@ -601,28 +601,43 @@
 
                     if (error) {
                         console.warn('No se pudo traer el horario desde la nube:', error);
+                    } else if (error) {
+                        console.warn('No se pudo traer el horario desde la nube:', error);
                     } else if (!data || !data.carga_horaria) {
                         // No hay nada en la nube todavía: si sí hay algo local
                         // (usuario de antes de esta actualización), lo subimos
                         // una sola vez para que desde ahora sincronice entre dispositivos.
                         if (cargaGlobal) guardarProgresoNube();
-                    } else if (data.nombre_archivo !== nombreArchivoActual) {
-                        // La nube trae algo distinto a lo local: la nube gana.
-                        cargaGlobal = data.carga_horaria;
-                        nombreArchivoActual = data.nombre_archivo || '';
-                        cursosSeleccionados = new Set(data.cursos_seleccionados || []);
-                        sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
+                    } else {
+                        // Compara por CURSOS SELECCIONADOS, no solo por nombre
+                        // de archivo — dos dispositivos pueden tener el MISMO
+                        // Excel cargado pero haber elegido cursos distintos de
+                        // adentro de ese archivo, y eso también cuenta como
+                        // "diferente" (antes solo se comparaba nombre_archivo,
+                        // y por eso nunca se detectaba este caso).
+                        const cursosNube = [...(data.cursos_seleccionados || [])].sort();
+                        const cursosLocales = [...cursosSeleccionados].sort();
+                        const esIgual = data.nombre_archivo === nombreArchivoActual
+                            && JSON.stringify(cursosNube) === JSON.stringify(cursosLocales);
 
-                        try {
-                            localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
-                            localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
-                            localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
-                            if (data.secciones_generador) localStorage.setItem(LS_GEN_SECCIONES, JSON.stringify(data.secciones_generador));
-                            if (data.cruces != null) localStorage.setItem(LS_GEN_CRUCES, String(data.cruces));
-                        } catch (e) { /* no crítico: ya quedó sincronizado en Supabase */ }
+                        if (!esIgual) {
+                            // La nube trae algo distinto a lo local: la nube gana.
+                            cargaGlobal = data.carga_horaria;
+                            nombreArchivoActual = data.nombre_archivo || '';
+                            cursosSeleccionados = new Set(data.cursos_seleccionados || []);
+                            sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
+
+                            try {
+                                localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
+                                localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
+                                localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
+                                if (data.secciones_generador) localStorage.setItem(LS_GEN_SECCIONES, JSON.stringify(data.secciones_generador));
+                                else localStorage.removeItem(LS_GEN_SECCIONES);
+                                if (data.cruces != null) localStorage.setItem(LS_GEN_CRUCES, String(data.cruces));
+                                else localStorage.removeItem(LS_GEN_CRUCES);
+                            } catch (e) { /* no crítico: ya quedó sincronizado en Supabase */ }
+                        }
                     }
-                    // Si data.nombre_archivo === nombreArchivoActual, la nube
-                    // ya coincide con lo local — no hay nada que corregir.
                 } catch (e) {
                     console.warn('Error sincronizando horario desde la nube:', e);
                 }
