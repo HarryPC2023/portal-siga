@@ -525,6 +525,15 @@
     padding: 12px 14px;
 }
 
+/* Alerta "roja" (semáforo) — reservada para riesgos reales, como
+   prácticas dobles el mismo día. Borde sólido y nítido; el relleno
+   se inclina hacia el lado cálido/naranja del rojo (no hacia el
+   magenta) para que se lea como "rojo clarito", no como rosado. */
+.ah-alerta-card-roja {
+    background: rgba(220, 38, 38, 0.055);
+    border: 1.5px solid #dc2626;
+}
+
 .ah-alerta-icono {
     font-size: 1.1rem;
     flex-shrink: 0;

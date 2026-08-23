@@ -437,6 +437,7 @@ function detectarAlertas(combo) {
     Object.entries(contarPracticasPorDia(combo)).forEach(([dia, cursos]) => {
         if (cursos.length >= 2) {
             alertas.push({
+                tipo: 'roja',
                 icono: '📝',
                 titulo: `${cursos.length} prácticas el ${AH_DIAS_LABEL[dia]}`,
                 detalle: `${cursos.join(', ')} — las prácticas suelen ser también evaluaciones. Organiza bien tu semana de estudio para no llegar justo a ese día.`,
@@ -501,7 +502,7 @@ function renderVistaAlertas() {
     const alertas = detectarAlertas(combo);
     const alertasHtml = alertas.length
         ? alertas.map(a => `
-            <div class="ah-alerta-card">
+            <div class="ah-alerta-card ${a.tipo === 'roja' ? 'ah-alerta-card-roja' : ''}">
                 <span class="ah-alerta-icono">${a.icono}</span>
                 <div class="ah-alerta-texto">
                     <p class="ah-alerta-titulo">${a.titulo}</p>
