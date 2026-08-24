@@ -1949,7 +1949,6 @@ body {
   background: var(--surface) !important;
   border: 1px solid var(--border) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
-  padding: 22px 22px !important;
 }
 
 .modal-card-suave .modal-icon {
@@ -2019,4 +2018,13 @@ body {
   100% {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
   }
+}
+
+/* ── Botón "Conectar a Matrícula UNI": del tamaño de su texto,
+   NO ancho completo como "Cargar archivo" (que sí debe ser full-width
+   porque acompaña a una zona de carga de archivo). ── */
+.btn-primary-compacto {
+  width: auto;
+  display: inline-block;
+  padding: 10px 22px;
 }
