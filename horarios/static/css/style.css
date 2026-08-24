@@ -2030,3 +2030,29 @@ body {
   padding: 8px 18px;
   font-size: 12px;
 }
+
+/* ── Descripción de la card "Conectar a Matrícula UNI": Poppins +
+   más interlineado para que respire, sin afectar a .card-desc del
+   resto de cards (Excel sigue con su tipografía normal). ── */
+.card-desc-matricula {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.7;
+}
+
+/* ── Aviso: si la intranet está caída, la conexión no depende de
+   SIGA. Deja claro de quién es la falla antes de que el usuario
+   intente conectar. ── */
+.matricula-aviso-caida {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #92400e;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+}
