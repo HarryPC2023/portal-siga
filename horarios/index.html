@@ -52,35 +52,88 @@
              que ya muestra "Horarios" como sección activa. -->
         <div class="idx-body">
 
-            <!-- ── CARD 0: CONECTAR A MATRÍCULA UNI ── -->
-            <!-- Trae cursos, vacantes y horarios automáticamente desde la
+            <!-- ── FILA: CONECTAR A MATRÍCULA UNI + SUBIR CARGA HORARIA ──
+                 Antes eran cards independientes apiladas; ahora van lado a
+                 lado (una sola fila) porque ambas alimentan el MISMO
+                 contenedor de "Seleccionar cursos" de abajo — ponerlas al
+                 mismo nivel visual refleja eso. En pantallas angostas
+                 (.idx-fila-inicio, ver CSS) se apilan solas. -->
+            <div class="idx-fila-inicio">
+
+                <!-- ── CARD 0: CONECTAR A MATRÍCULA UNI ── -->
+                <!-- Trae cursos, vacantes y horarios automáticamente desde la
                  intranet, vía el backend recolectar_horario.py (mismo patrón
                  que la sincronización de Intralú en Intranotas). Es un
                  camino alternativo al de subir el Excel a mano — ambos
-                 conviven, ninguno reemplaza al otro. -->
-            <div class="idx-card" id="cardConectarMatricula" style="display:none">
-                <div class="card-title">🔗 Conectar a Matrícula UNI</div>
-                <div class="card-desc card-desc-matricula">Trae tus cursos, vacantes y horarios automáticamente desde la
-                    intranet</div>
-                <div class="matricula-aviso-caida">
-                    ⚠️ Si la página de la intranet no está activa, no será posible realizar la conexión ni cargar los
-                    horarios en la web.
+                 conviven, ninguno reemplaza al otro.
+                 Ya NO se oculta por completo para no-admins: siempre visible
+                 con badge "Próximamente", pero el botón solo funciona para
+                 el UID admin (ver matriculaConexionHabilitada() más abajo). -->
+                <div class="idx-card" id="cardConectarMatricula">
+                    <div class="card-title">
+                        🔗 Conectar a Matrícula UNI
+                        <span class="badge-proximamente" id="badgeProximamenteMatricula"
+                            style="display:none">Próximamente</span>
+                    </div>
+                    <div class="card-desc card-desc-matricula">Trae tus cursos, vacantes y horarios automáticamente
+                        desde la intranet</div>
+                    <div class="matricula-aviso-caida">
+                        ⚠️ Si la página de la intranet no está activa, no será posible realizar la conexión ni cargar
+                        los horarios en la web.
+                    </div>
+
+                    <button id="btnConectarMatricula" class="btn-primary btn-primary-compacto"
+                        onclick="abrirModalSyncMatricula()">
+                        Conectar a Matrícula UNI
+                    </button>
+
+                    <div id="matriculaStatus" class="upload-status"></div>
+                    <div id="matriculaSinHorario" style="display:none"></div>
                 </div>
 
-                <button id="btnConectarMatricula" class="btn-primary btn-primary-compacto"
-                    onclick="abrirModalSyncMatricula()">
-                    Conectar a Matrícula UNI
-                </button>
+                <!-- ── CARD 1: SUBIR CARGA HORARIA ── -->
+                <div class="idx-card">
+                    <div class="card-title">📁 Subir carga horaria</div>
+                    <div class="card-desc">Sube el archivo .xlsx con los horarios disponibles</div>
 
-                <div id="matriculaStatus" class="upload-status"></div>
-                <div id="matriculaSinHorario" style="display:none"></div>
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="fileInput" accept=".xlsx,.xls">
+                        <div class="upload-icon">📄</div>
+                        <div class="upload-label">
+                            <strong>Click para seleccionar archivo</strong>
+                            Formatos: .xlsx, .xls
+                        </div>
+                    </div>
+
+                    <div id="fileInfo" class="file-badge" style="display:none"></div>
+
+                    <button id="btnUpload" class="btn-primary" disabled>
+                        Cargar archivo
+                    </button>
+
+                    <div id="uploadStatus" class="upload-status"></div>
+
+                    <!-- Progreso: se guarda solo en cada cambio, ya no depende de un clic -->
+                    <div id="persistActions" style="display:none; flex-direction:column; gap:6px; margin-top:10px;">
+                        <div class="autosave-hint" style="font-size:11px; opacity:.6; text-align:center;">
+                            💾 Tu progreso se guarda automáticamente
+                        </div>
+                        <button id="btnLimpiarTodo" class="btn-action" style="width:100%; color:#ef4444;"
+                            title="Borrar archivo y selección guardados">
+                            🗑 Limpiar todo
+                        </button>
+                    </div>
+                </div>
+
             </div>
+            <!-- ── FIN FILA: CONECTAR A MATRÍCULA UNI + SUBIR CARGA HORARIA ── -->
 
             <!-- ── CARD 2: SELECCIONAR CURSOS ── -->
-            <!-- Movida arriba de "Subir carga horaria" a pedido de Harry:
-                 con Matrícula conectada, el usuario debe verla de inmediato,
-                 no tener que pasar por la card de Excel para llegar a ella.
-                 Empieza oculta, JS la muestra tras cargar Excel o conectar. -->
+            <!-- Debajo de AMBAS opciones de la fila (no de una sola): es un
+                 único contenedor compartido, alimentado tanto por Excel como
+                 por Matrícula, así que no debe favorecer visualmente a
+                 ninguna. Empieza oculta, JS la muestra tras cargar Excel o
+                 conectar a Matrícula. -->
             <div class="idx-card" id="cardCursos" style="display:none">
                 <div class="card-title">📚 Seleccionar cursos</div>
                 <div class="card-desc">Busca y elige los cursos que deseas incluir</div>
@@ -110,40 +163,6 @@
 
                     <button id="btnNext" class="btn-primary btn-next" disabled>
                         Generar horarios →
-                    </button>
-                </div>
-            </div>
-
-            <!-- ── CARD 1: SUBIR CARGA HORARIA ── -->
-            <div class="idx-card">
-                <div class="card-title">📁 Subir carga horaria</div>
-                <div class="card-desc">Sube el archivo .xlsx con los horarios disponibles</div>
-
-                <div class="upload-zone" id="uploadZone">
-                    <input type="file" id="fileInput" accept=".xlsx,.xls">
-                    <div class="upload-icon">📄</div>
-                    <div class="upload-label">
-                        <strong>Click para seleccionar archivo</strong>
-                        Formatos: .xlsx, .xls
-                    </div>
-                </div>
-
-                <div id="fileInfo" class="file-badge" style="display:none"></div>
-
-                <button id="btnUpload" class="btn-primary" disabled>
-                    Cargar archivo
-                </button>
-
-                <div id="uploadStatus" class="upload-status"></div>
-
-                <!-- Progreso: se guarda solo en cada cambio, ya no depende de un clic -->
-                <div id="persistActions" style="display:none; flex-direction:column; gap:6px; margin-top:10px;">
-                    <div class="autosave-hint" style="font-size:11px; opacity:.6; text-align:center;">
-                        💾 Tu progreso se guarda automáticamente
-                    </div>
-                    <button id="btnLimpiarTodo" class="btn-action" style="width:100%; color:#ef4444;"
-                        title="Borrar archivo y selección guardados">
-                        🗑 Limpiar todo
                     </button>
                 </div>
             </div>
@@ -614,9 +633,20 @@
 
         (async function iniciarGateMatricula() {
             const card = document.getElementById('cardConectarMatricula');
-            if (!card) return;
+            const boton = document.getElementById('btnConectarMatricula');
+            const badge = document.getElementById('badgeProximamenteMatricula');
+            if (!card || !boton || !badge) return;
+
             const habilitado = await matriculaConexionHabilitada();
-            if (habilitado) card.style.display = 'block';
+            if (habilitado) return; // Admin: card queda tal cual, activa y funcional.
+
+            // No-admin: la card se ve (nuevo diseño incluido), pero apagada
+            // y con badge — comunica que la función existe y viene en
+            // camino, sin dejar que la usen todavía.
+            card.classList.add('matricula-proximamente');
+            badge.style.display = 'inline-block';
+            boton.disabled = true;
+            boton.onclick = null;
         })();
 
         const MATRICULA_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)

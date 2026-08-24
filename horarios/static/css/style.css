@@ -2056,3 +2056,51 @@ body {
   padding: 8px 12px;
   margin-bottom: 16px;
 }
+
+/* ── Fila de entrada: Matrícula + Excel lado a lado en pantallas
+   anchas, apiladas en celular (mismo breakpoint que usa el resto
+   del sitio para su layout de una sola columna). ── */
+.idx-fila-inicio {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .idx-fila-inicio {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dentro de la fila, las cards no deben tener el margin-bottom que
+   sí necesitan cuando están apiladas sueltas en .idx-body. */
+.idx-fila-inicio .idx-card {
+  margin-bottom: 0;
+}
+
+/* Más aire entre el título y la descripción, solo en la card de
+   Matrícula (el resto de cards se queda con su spacing original). */
+#cardConectarMatricula .card-title {
+  margin-bottom: 14px;
+}
+
+.badge-proximamente {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--surface2);
+  color: var(--text-faint);
+  padding: 2px 9px;
+  border-radius: 20px;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+/* Estado "Próximamente" (no-admin): card visible pero apagada. */
+#cardConectarMatricula.matricula-proximamente {
+  opacity: 0.6;
+}
+
+#cardConectarMatricula.matricula-proximamente #btnConectarMatricula {
+  cursor: not-allowed;
+}
