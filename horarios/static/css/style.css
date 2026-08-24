@@ -141,7 +141,7 @@ body {
 
 .idx-body {
   flex: 1;
-  max-width: 680px;
+  max-width: 920px;
   margin: 16px auto;
   padding: 0 20px 20px 20px;
   display: flex;
@@ -2064,6 +2064,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  align-items: start;
 }
 
 @media (max-width: 640px) {
