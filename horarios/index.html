@@ -5,6 +5,7 @@
 
 <head>
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="../icons/siga_web.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Horarios - Inicio</title>
@@ -627,7 +628,7 @@
             overlay.className = 'modal-overlay';
             overlay.id = 'modal-sync-matricula-overlay';
             overlay.innerHTML = `
-        <div class="modal-card" style="text-align:left; width:340px;">
+        <div class="modal-card modal-card-suave" style="text-align:left; width:340px;">
           <div class="modal-icon">🔗</div>
           <div class="modal-title" style="text-align:center;">Conectar a Matrícula UNI</div>
           <div class="modal-desc" style="text-align:center;">
@@ -712,12 +713,17 @@
             const wrap = document.getElementById('matriculaSinHorario');
             if (!lista || !lista.length) {
                 wrap.style.display = 'none';
+                wrap.innerHTML = '';
                 return;
             }
             wrap.style.display = 'block';
-            wrap.style.cssText = 'display:block; margin-top:10px; font-size:11px; color:var(--text-faint); line-height:1.5;';
-            wrap.innerHTML = `⚠️ ${lista.length} curso(s) sin horario aperturado aún (no aparecerán en la lista): ` +
-                lista.map(c => c.nombre).join(', ');
+            wrap.className = 'matricula-sin-horario-box';
+            wrap.innerHTML = `
+        <details>
+          <summary>⚠️ ${lista.length} curso(s) sin horario aperturado aún</summary>
+          <div class="matricula-sin-horario-lista">${lista.map(c => c.nombre).join(', ')}</div>
+        </details>
+      `;
         }
 
         async function ejecutarSyncMatricula() {
@@ -786,6 +792,15 @@
                 guardarProgreso();
                 cerrarModalSyncMatricula();
                 showToast('Conectado a Matrícula UNI ✓', 'success');
+
+                // La Card 2 queda debajo de la Card 1 (Excel) — sin este
+                // scroll, con la Card 1 llena de texto (archivo restaurado,
+                // etc.) el usuario no la ve y parece que "no pasó nada".
+                setTimeout(() => {
+                    cardCursos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    cardCursos.classList.add('card-resaltada');
+                    setTimeout(() => cardCursos.classList.remove('card-resaltada'), 1600);
+                }, 200);
             } catch (err) {
                 errorEl.textContent = err.message || 'Ocurrió un error al conectar. Intenta de nuevo.';
                 errorEl.style.display = 'block';
