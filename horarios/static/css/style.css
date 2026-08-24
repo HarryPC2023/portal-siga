@@ -141,7 +141,7 @@ body {
 
 .idx-body {
   flex: 1;
-  max-width: 920px;
+  max-width: 680px;
   margin: 16px auto;
   padding: 0 20px 20px 20px;
   display: flex;
@@ -2058,13 +2058,22 @@ body {
 }
 
 /* ── Fila de entrada: Matrícula + Excel lado a lado en pantallas
-   anchas, apiladas en celular (mismo breakpoint que usa el resto
-   del sitio para su layout de una sola columna). ── */
+   anchas, apiladas en celular. Ancho INDEPENDIENTE de .idx-body
+   (que se queda en 680px para "Seleccionar cursos" y todo lo demás):
+   "rompe" el max-width del padre y se centra sola, más ancha.
+
+   Para ajustar el ancho en DevTools (F12): edita el valor de
+   --fila-inicio-ancho abajo (en px) y listo, se recalcula solo. ── */
 .idx-fila-inicio {
+  --fila-inicio-ancho: 920px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   align-items: start;
+  width: var(--fila-inicio-ancho);
+  max-width: calc(100vw - 40px);
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 
 @media (max-width: 640px) {
