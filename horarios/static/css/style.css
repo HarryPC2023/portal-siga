@@ -1662,11 +1662,13 @@ body.page-index-body {
   justify-content: center;
   z-index: 1000;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.15s ease;
 }
 
 .modal-overlay.show {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .modal-card {
@@ -1939,4 +1941,81 @@ body {
 .curso-badge-vacantes {
   background: var(--accent-dim);
   color: var(--accent-dark);
+}
+
+/* ── Variante suave del modal, para formularios (vs. el degradado
+   morado de .modal-card, reservado para "Guardar favorito" ★) ── */
+.modal-card-suave {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+.modal-card-suave .modal-icon {
+  background: var(--accent-dim) !important;
+  color: var(--accent-dark) !important;
+}
+
+.modal-card-suave .modal-title {
+  color: var(--text) !important;
+}
+
+.modal-card-suave .modal-desc {
+  color: var(--text-faint) !important;
+}
+
+.modal-card-suave .modal-btn-primary {
+  background: var(--accent) !important;
+}
+
+.modal-card-suave .modal-btn-primary:hover {
+  background: var(--accent-dark) !important;
+}
+
+.modal-card-suave .modal-btn-cancel {
+  background: var(--surface2) !important;
+  color: var(--text-faint) !important;
+}
+
+/* ── Caja "cursos sin horario" (Conectar a Matrícula UNI) ──
+   Colapsable con <details>, compacta, tipografía Poppins para
+   contrastar con el título Orbitron/Black Ops One de la card. ── */
+.matricula-sin-horario-box {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.matricula-sin-horario-box summary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-faint);
+  cursor: pointer;
+}
+
+.matricula-sin-horario-box .matricula-sin-horario-lista {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-faint);
+  line-height: 1.6;
+  max-height: 90px;
+  overflow-y: auto;
+}
+
+/* ── Resalte breve de la Card 2 al llegar por scroll automático ── */
+.card-resaltada {
+  animation: pulso-card-resaltada 1.6s ease-out;
+}
+
+@keyframes pulso-card-resaltada {
+  0% {
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+
+  100% {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  }
 }
