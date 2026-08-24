@@ -70,6 +70,44 @@
                 <div id="matriculaSinHorario" style="display:none"></div>
             </div>
 
+            <!-- ── CARD 2: SELECCIONAR CURSOS ── -->
+            <!-- Movida arriba de "Subir carga horaria" a pedido de Harry:
+                 con Matrícula conectada, el usuario debe verla de inmediato,
+                 no tener que pasar por la card de Excel para llegar a ella.
+                 Empieza oculta, JS la muestra tras cargar Excel o conectar. -->
+            <div class="idx-card" id="cardCursos" style="display:none">
+                <div class="card-title">📚 Seleccionar cursos</div>
+                <div class="card-desc">Busca y elige los cursos que deseas incluir</div>
+
+                <div class="search-wrap">
+                    <input type="text" id="courseSearch" class="search-input"
+                        placeholder="Buscar por nombre o código de curso...">
+                    <button id="clearSearch" class="clear-search-btn">✕</button>
+                </div>
+
+                <!-- JS llenará esta lista con los cursos del Excel o de Matrícula -->
+                <div class="cursos-lista" id="cursosLista"></div>
+
+                <div class="seleccionados-wrap">
+                    <div class="sel-header">
+                        <span class="sel-label">Seleccionados</span>
+                        <span class="sel-count" id="selCount">0</span>
+                    </div>
+
+                    <!-- Chips de cursos seleccionados, cada uno se puede quitar individualmente -->
+                    <div class="sel-chips" id="selChips"></div>
+
+                    <button id="btnClearSel" class="btn-action"
+                        style="width:100%; margin-bottom:10px; display:none; color:#ef4444;">
+                        ✕ Limpiar selección
+                    </button>
+
+                    <button id="btnNext" class="btn-primary btn-next" disabled>
+                        Generar horarios →
+                    </button>
+                </div>
+            </div>
+
             <!-- ── CARD 1: SUBIR CARGA HORARIA ── -->
             <div class="idx-card">
                 <div class="card-title">📁 Subir carga horaria</div>
@@ -100,41 +138,6 @@
                     <button id="btnLimpiarTodo" class="btn-action" style="width:100%; color:#ef4444;"
                         title="Borrar archivo y selección guardados">
                         🗑 Limpiar todo
-                    </button>
-                </div>
-            </div>
-
-            <!-- ── CARD 2: SELECCIONAR CURSOS ── -->
-            <!-- Empieza oculta, JS la muestra después de cargar el Excel -->
-            <div class="idx-card" id="cardCursos" style="display:none">
-                <div class="card-title">📚 Seleccionar cursos</div>
-                <div class="card-desc">Busca y elige los cursos que deseas incluir</div>
-
-                <div class="search-wrap">
-                    <input type="text" id="courseSearch" class="search-input"
-                        placeholder="Buscar por nombre o código de curso...">
-                    <button id="clearSearch" class="clear-search-btn">✕</button>
-                </div>
-
-                <!-- JS llenará esta lista con los cursos del Excel -->
-                <div class="cursos-lista" id="cursosLista"></div>
-
-                <div class="seleccionados-wrap">
-                    <div class="sel-header">
-                        <span class="sel-label">Seleccionados</span>
-                        <span class="sel-count" id="selCount">0</span>
-                    </div>
-
-                    <!-- Chips de cursos seleccionados, cada uno se puede quitar individualmente -->
-                    <div class="sel-chips" id="selChips"></div>
-
-                    <button id="btnClearSel" class="btn-action"
-                        style="width:100%; margin-bottom:10px; display:none; color:#ef4444;">
-                        ✕ Limpiar selección
-                    </button>
-
-                    <button id="btnNext" class="btn-primary btn-next" disabled>
-                        Generar horarios →
                     </button>
                 </div>
             </div>
@@ -315,7 +318,7 @@
                     if (tipo) badgesHtml += `<span class="curso-badge ${tipo.clase}">${tipo.label}</span>`;
                     if (meta.vecesRepetido > 0) badgesHtml += `<span class="curso-badge curso-badge-n">N · repetido</span>`;
                     if (typeof meta.vacantesDisponibles === 'number') {
-                        badgesHtml += `<span class="curso-badge curso-badge-vacantes">${meta.vacantesDisponibles}/${meta.vacantesMaximas} vacantes</span>`;
+                        badgesHtml += `<span class="curso-badge curso-badge-vacantes">${meta.vacantesDisponibles} vacantes libres</span>`;
                     }
                 }
 
@@ -628,7 +631,7 @@
             overlay.className = 'modal-overlay';
             overlay.id = 'modal-sync-matricula-overlay';
             overlay.innerHTML = `
-        <div class="modal-card modal-card-suave" style="text-align:left; width:340px;">
+        <div class="modal-card modal-card-suave" style="text-align:left; width:300px;">
           <div class="modal-icon">🔗</div>
           <div class="modal-title" style="text-align:center;">Conectar a Matrícula UNI</div>
           <div class="modal-desc" style="text-align:center;">

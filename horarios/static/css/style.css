@@ -1949,6 +1949,7 @@ body {
   background: var(--surface) !important;
   border: 1px solid var(--border) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+  padding: 22px 22px !important;
 }
 
 .modal-card-suave .modal-icon {
