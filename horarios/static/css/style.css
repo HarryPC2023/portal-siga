@@ -2025,6 +2025,8 @@ body {
    porque acompaña a una zona de carga de archivo). ── */
 .btn-primary-compacto {
   width: auto;
-  display: inline-block;
-  padding: 10px 22px;
+  display: block;
+  margin: 0 auto;
+  padding: 8px 18px;
+  font-size: 12px;
 }
