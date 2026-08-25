@@ -139,7 +139,12 @@ function pm_inferirPorPrerequisitos(progreso) {
         curso.prereq.forEach(p => {
             if (p.tipo !== 'curso' || visitados.has(p.code)) return;
             visitados.add(p.code);
-            if (!progreso[p.code]) {
+            const existente = progreso[p.code];
+            // Un registro aislado "jalado" no pesa más que la prueba de
+            // que ahora llevas/aprobaste algo que lo exige — se sube a
+            // aprobado (inferido). Lo que SÍ se respeta tal cual es un
+            // aprobado o en_curso explícito, que ya es información buena.
+            if (!existente || existente.estado === 'jalado') {
                 const req = porCodigo[p.code];
                 progreso[p.code] = { estado: 'aprobado', notaFinal: null, credits: req ? req.credits : 0, inferido: true };
             }
