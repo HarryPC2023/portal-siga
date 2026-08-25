@@ -1,0 +1,378 @@
+/* ============================================================
+   🗺️ PROGRESO DE TU CARRERA — mapa de malla interactivo
+   Cargar DESPUÉS de siga-theme-intranotas.css (usa las mismas
+   variables de tema). A diferencia de analisis-academico.css, esto
+   NO es un panel lateral — es una ventana emergente grande sobre
+   toda la web, porque 380px se queda corto para 10 ciclos legibles.
+   ============================================================ */
+
+.pm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+}
+
+.pm-overlay.pm-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.pm-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -48%);
+    width: min(920px, 94vw);
+    max-height: 88vh;
+    background: var(--color-fondo-tarjeta, #fff);
+    border-radius: 16px;
+    box-shadow: var(--sombra-tarjeta), 0 16px 48px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.pm-modal.pm-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+}
+
+.pm-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--color-gris-claro);
+    flex-shrink: 0;
+}
+
+.pm-modal-titulo {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--color-texto-principal);
+}
+
+.pm-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--color-gris-texto);
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+}
+
+.pm-modal-body {
+    padding: 18px 22px 26px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* ---------- Estadísticas superiores ---------- */
+.pm-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.pm-stat {
+    flex: 1;
+    background: var(--color-fondo-input);
+    border-radius: 12px;
+    padding: 12px 16px;
+}
+
+.pm-stat-label {
+    font-size: 0.72rem;
+    color: var(--color-gris-texto);
+    margin: 0 0 4px;
+}
+
+.pm-stat-valor {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--color-cian);
+    margin: 0;
+}
+
+.pm-stat-de {
+    font-size: 0.85rem;
+    color: var(--color-gris-texto);
+    font-weight: 500;
+}
+
+/* ---------- Leyenda ---------- */
+.pm-leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.74rem;
+    color: var(--color-gris-texto);
+    margin-bottom: 16px;
+}
+
+.pm-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 3px;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+/* ---------- Mapa: ciclos apilados verticalmente, todos abiertos ---------- */
+.pm-mapa-wrap {
+    position: relative;
+}
+
+.pm-svg-conexiones {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.pm-linea {
+    stroke: var(--color-cian);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+}
+
+.pm-mapa {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.pm-ciclo {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.pm-ciclo-label {
+    flex-shrink: 0;
+    width: 44px;
+    padding-top: 8px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--color-gris-texto);
+    text-align: right;
+}
+
+.pm-ciclo-cursos {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.pm-chip {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+    background: var(--color-fondo-input);
+    color: var(--color-texto-principal);
+}
+
+.pm-chip:hover {
+    transform: translateY(-1px);
+}
+
+.pm-chip.pm-atenuado {
+    opacity: 0.28;
+}
+
+.pm-chip.pm-seleccionado {
+    border-color: var(--color-cian);
+    box-shadow: 0 0 0 2px var(--color-cian-light);
+}
+
+.pm-chip-candado {
+    font-size: 0.62rem;
+    margin-right: 2px;
+}
+
+/* Estados — colores + el bloqueado también con borde punteado, para
+   no depender solo del color (accesibilidad). */
+.pm-estado-aprobado {
+    background: rgba(16, 185, 129, 0.16);
+    color: #0b6e4f;
+}
+
+.pm-estado-en_curso {
+    background: var(--brand-azul-tinte, #EAF2FF);
+    color: var(--brand-azul, #3C7CF8);
+}
+
+.pm-estado-proximo {
+    background: var(--brand-morado-tinte, #F3EAFB);
+    color: var(--brand-morado, #6600CC);
+}
+
+.pm-estado-disponible {
+    background: var(--color-fondo-input);
+    color: var(--color-texto-principal);
+}
+
+.pm-estado-bloqueado {
+    background: transparent;
+    color: var(--color-gris-texto);
+    border: 1.5px dashed var(--color-gris-claro);
+}
+
+/* Modo oscuro / otros temas: el verde/rojo fijo de "aprobado" no
+   siempre contrasta bien — se ajusta con la misma variable que ya
+   usa el resto de Intranotas para success. */
+[data-tema="oscuro"] .pm-estado-aprobado,
+[data-tema="ocean"] .pm-estado-aprobado,
+[data-tema="forest"] .pm-estado-aprobado {
+    background: rgba(52, 211, 153, 0.18);
+    color: var(--color-verde-btn);
+}
+
+.pm-dot.pm-estado-aprobado {
+    background: #0b6e4f;
+}
+
+.pm-dot.pm-estado-en_curso {
+    background: var(--brand-azul, #3C7CF8);
+}
+
+.pm-dot.pm-estado-proximo {
+    background: var(--brand-morado, #6600CC);
+}
+
+.pm-dot.pm-estado-disponible {
+    background: var(--color-gris-texto);
+}
+
+/* ---------- Panel de detalle ---------- */
+.pm-detalle {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-gris-claro);
+    min-height: 24px;
+}
+
+.pm-detalle-vacio {
+    font-size: 0.82rem;
+    color: var(--color-gris-texto);
+    margin: 0;
+}
+
+.pm-detalle-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--color-texto-principal);
+    margin-bottom: 4px;
+}
+
+.pm-detalle-codigo {
+    color: var(--color-cian);
+}
+
+.pm-detalle-estado {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+}
+
+.pm-detalle-creditos {
+    font-size: 0.78rem;
+    color: var(--color-gris-texto);
+    margin: 0 0 12px;
+}
+
+.pm-detalle-seccion {
+    margin-bottom: 14px;
+}
+
+.pm-detalle-seccion-titulo {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--color-gris-texto);
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.pm-req-item {
+    font-size: 0.82rem;
+    color: var(--color-texto-principal);
+    padding: 4px 0;
+}
+
+.pm-desbloquea-item {
+    background: var(--color-fondo-input);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    color: var(--color-texto-principal);
+}
+
+.pm-desbloquea-nivel2 {
+    margin: 8px 0 0 14px;
+    padding-left: 10px;
+    border-left: 2px solid var(--color-gris-claro);
+}
+
+.pm-desbloquea-nivel2 .pm-desbloquea-item {
+    background: transparent;
+    padding: 4px 0;
+    margin-bottom: 4px;
+}
+
+/* ---------- Celular: pantalla completa ---------- */
+@media (max-width: 768px) {
+    .pm-modal {
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+
+    .pm-modal.pm-visible {
+        transform: none;
+    }
+
+    .pm-ciclo-label {
+        width: 34px;
+        font-size: 0.68rem;
+    }
+
+    .pm-chip {
+        font-size: 0.68rem;
+        padding: 7px 8px;
+    }
+}

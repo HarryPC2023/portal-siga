@@ -1391,6 +1391,15 @@ function generarSimulador() {
             </button>
         </div>
 
+        <!-- Botón de "Progreso de tu carrera" — oculto por defecto,
+             lo revela progreso-malla.js solo si pasa el gate de admin
+             (mismo patrón que Asistente de Horario). -->
+        <div class="aa-entrada-wrap" id="progreso-malla-entrada-wrap" style="display:none;">
+            <button type="button" class="aa-entrada-btn" onclick="window.__pmAbrir && window.__pmAbrir()">
+                <span>🗺️ Progreso de tu carrera</span>
+            </button>
+        </div>
+
         <details style="margin:12px 0; background:var(--color-fondo-input); border-radius:10px; padding:10px 14px;">
             <summary style="cursor:pointer; font-weight:600; font-size:0.85rem; color:var(--color-cian);">💾 ¿Sabías que puedes guardar varios periodos?</summary>
             <p style="font-size:0.82rem; color:var(--color-gris-texto); margin:8px 0 0; line-height:1.6;">
