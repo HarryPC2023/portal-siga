@@ -60,15 +60,19 @@ const LS_GEN_PRIORIDADES = 'horarioGen_prioridadesProfesor';
 // para que ambas pantallas queden consistentes.
 const LS_SEL_INDEX = 'horarioGen_seleccion';
 
-// ── ELIMINAR CURSO: gate de admin (temporal) ────────────────────
-// Mismo criterio y mismo UID que usa el Asistente de Horario: mientras
-// se prueba esta función, el botón 🗑 de cada curso SOLO aparece para
-// Harry. Cuando esté probada, borrar este bloque y las líneas que
-// dependen de `eliminarCursoHabilitado()` para que quede activo para
-// todos — no hace falta tocar nada más.
+// ── ELIMINAR CURSO: gate de admin (mismo patrón que
+//    ASISTENTE_HABILITADO_PARA_TODOS en asistente-horario.js) ────
+// Ya probado y funcionando bien — 25/08/2026, Harry dio el OK para
+// abrirlo a todos los usuarios. Si algún día hiciera falta volver a
+// restringirlo, basta con poner esta bandera en `false` de nuevo.
+const ELIMINAR_CURSO_HABILITADO_PARA_TODOS = true;
 const ADMIN_UID_SIGA = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 
 async function iniciarGateEliminarCurso() {
+    if (ELIMINAR_CURSO_HABILITADO_PARA_TODOS) {
+        document.body.classList.add('eliminar-curso-habilitado');
+        return;
+    }
     try {
         const userId = await obtenerUserIdActual();
         if (userId === ADMIN_UID_SIGA) {
