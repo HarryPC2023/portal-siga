@@ -32,21 +32,7 @@ const ADMIN_UID_SIGA = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 // syncIntraluHabilitado() en Intranotas).
 const ASISTENTE_HABILITADO_PARA_TODOS = true;
 
-// El Asistente necesita docentes garantizados del ciclo actual (vacantes,
-// secciones reales), algo que solo "Conectar a Matrícula UNI" asegura —
-// un Excel podría estar desactualizado o ser de otro ciclo. Por eso, además
-// del gate de admin, exige que la carga actual venga de Matrícula (flag que
-// deja index.html en localStorage al conectar).
-function cargaVieneDeMatricula() {
-    try {
-        return localStorage.getItem('horarioGen_origen') === 'matricula';
-    } catch (e) {
-        return false;
-    }
-}
-
 async function asistenteHorarioHabilitado() {
-    if (!cargaVieneDeMatricula()) return false;
     if (ASISTENTE_HABILITADO_PARA_TODOS) return true;
     try {
         const sesion = await obtenerSesion();
