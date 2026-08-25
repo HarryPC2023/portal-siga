@@ -78,15 +78,15 @@
     flex: 1;
 }
 
-/* ---------- Estadísticas superiores ---------- */
+/* ---------- Estadísticas superiores — ahora solo créditos, ya no
+   se estira a lo ancho como cuando eran 2 tarjetas lado a lado. ---------- */
 .pm-stats {
     display: flex;
-    gap: 12px;
     margin-bottom: 14px;
 }
 
 .pm-stat {
-    flex: 1;
+    width: fit-content;
     background: var(--color-fondo-input);
     border-radius: 12px;
     padding: 12px 16px;
@@ -123,12 +123,15 @@
 }
 
 .pm-toque-aviso {
+    display: table;
+    width: fit-content;
+    margin: 0 auto 16px;
     font-size: 0.76rem;
     color: var(--color-cian);
     background: var(--color-cian-light);
     border-radius: 8px;
-    padding: 8px 12px;
-    margin: 0 0 16px;
+    padding: 8px 14px;
+    text-align: center;
 }
 
 .pm-dot {
@@ -281,12 +284,6 @@
     padding-top: 16px;
     border-top: 1px solid var(--color-gris-claro);
     min-height: 24px;
-}
-
-.pm-detalle-vacio {
-    font-size: 0.82rem;
-    color: var(--color-gris-texto);
-    margin: 0;
 }
 
 .pm-detalle-header {

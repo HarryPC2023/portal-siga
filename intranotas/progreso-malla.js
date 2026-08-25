@@ -207,12 +207,6 @@ function pm_renderMapa() {
     const creditosAprobados = pm_creditosAprobadosTotal(progreso);
     const totalCreditos = pm_todosLosCursos().reduce((s, c) => s + c.credits, 0);
 
-    let sumaPonderada = 0, sumaCreditos = 0;
-    Object.values(progreso).forEach(p => {
-        if (p.notaFinal !== null && p.notaFinal !== undefined) { sumaPonderada += p.notaFinal * (p.credits || 0); sumaCreditos += (p.credits || 0); }
-    });
-    const pa = sumaCreditos > 0 ? Math.trunc((sumaPonderada / sumaCreditos) * 1000) / 1000 : null;
-
     const ciclosHtml = malla.map(({ ciclo, cursos }) => `
         <div class="pm-ciclo">
             <div class="pm-ciclo-label">Ciclo ${PM_ROMANOS[ciclo - 1]}</div>
@@ -234,10 +228,6 @@ function pm_renderMapa() {
     document.getElementById('pm-body').innerHTML = `
         <div class="pm-stats">
             <div class="pm-stat">
-                <p class="pm-stat-label">PA acumulado ${sumaCreditos ? '(de tus ciclos cargados en SIGA)' : ''}</p>
-                <p class="pm-stat-valor">${pa !== null ? pa.toFixed(3) : '—'}</p>
-            </div>
-            <div class="pm-stat">
                 <p class="pm-stat-label">Créditos obligatorios</p>
                 <p class="pm-stat-valor">${creditosAprobados} <span class="pm-stat-de">/ ${totalCreditos}</span></p>
             </div>
@@ -254,9 +244,7 @@ function pm_renderMapa() {
             <svg id="pm-svg-conexiones" class="pm-svg-conexiones"></svg>
             <div class="pm-mapa" id="pm-mapa">${ciclosHtml}</div>
         </div>
-        <div class="pm-detalle" id="pm-detalle">
-            <p class="pm-detalle-vacio">Toca cualquier curso del mapa para ver su detalle.</p>
-        </div>
+        <div class="pm-detalle" id="pm-detalle"></div>
     `;
 }
 
@@ -286,7 +274,7 @@ function pm_deseleccionar() {
     const svg = document.getElementById('pm-svg-conexiones');
     if (svg) svg.innerHTML = '';
     const detalle = document.getElementById('pm-detalle');
-    if (detalle) detalle.innerHTML = '<p class="pm-detalle-vacio">Toca cualquier curso del mapa para ver su detalle.</p>';
+    if (detalle) detalle.innerHTML = '';
 }
 
 window.pmSeleccionarCurso = function (code) {
