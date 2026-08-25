@@ -643,7 +643,7 @@ function renderVistaHuecos() {
                     onchange="toggleHuecosVisiblesCalendario(this.checked)">
                 <span class="ah-toggle-slider"></span>
             </label>
-            <span class="ah-huecos-toggle-label">👁 Mostrar huecos sombreados en el calendario</span>
+            <span class="ah-huecos-toggle-label">Mostrar huecos sombreados en el calendario</span>
         </div>
 
         <div class="ah-resumen">

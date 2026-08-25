@@ -2036,6 +2036,38 @@ body {
   color: var(--text-faint) !important;
 }
 
+/* ── Variante de peligro del modal, para acciones destructivas
+   (eliminar curso, y cualquier otra eliminación futura): mismo fondo
+   neutro que .modal-card-suave, pero el ícono y el botón primario van
+   en rojo para comunicar que la acción es irreversible. ── */
+.modal-card-peligro {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+.modal-card-peligro .modal-icon {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  color: #fff !important;
+}
+
+.modal-card-peligro .modal-title {
+  color: var(--text) !important;
+}
+
+.modal-card-peligro .modal-desc {
+  color: var(--text-faint) !important;
+}
+
+.modal-card-peligro .modal-btn-primary {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+}
+
+.modal-card-peligro .modal-btn-cancel {
+  background: var(--surface2) !important;
+  color: var(--text-faint) !important;
+}
+
 /* ── Caja "cursos sin horario" (Conectar a Matrícula UNI) ──
    Colapsable con <details>, compacta, tipografía Poppins para
    contrastar con el título Orbitron/Black Ops One de la card. ── */

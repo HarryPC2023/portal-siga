@@ -278,6 +278,44 @@ function restaurarSeleccionSecciones() {
 }
 
 // ── ELIMINAR CURSO (🔒 solo admin mientras se prueba) ────────────
+// Modal de confirmación con la estética de SIGA (mismo patrón
+// .modal-overlay/.modal-card que usa "Conectar a Matrícula UNI" en
+// index.html) en vez del confirm() nativo del navegador, que se ve
+// genérico y no encaja con el resto de la web.
+function mostrarModalEliminarCurso(curso, nombreMostrado, blockEl) {
+    const existente = document.getElementById('modal-eliminar-curso-overlay');
+    if (existente) existente.remove();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.id = 'modal-eliminar-curso-overlay';
+    overlay.innerHTML = `
+        <div class="modal-card modal-card-peligro" style="text-align:left; width:320px;">
+            <div class="modal-icon">🗑️</div>
+            <div class="modal-title" style="text-align:center;">¿Quitar este curso?</div>
+            <div class="modal-desc" style="text-align:center;">
+                <strong>${nombreMostrado}</strong> se quitará de este horario.
+                Podrás volver a añadirlo desde "← Elegir cursos".
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn-cancel" onclick="cerrarModalEliminarCurso()">Cancelar</button>
+                <button type="button" class="modal-btn-primary" id="modal-eliminar-curso-confirmar">Sí, quitar</button>
+            </div>
+        </div>`;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('show'));
+    overlay.addEventListener('click', e => { if (e.target === overlay) cerrarModalEliminarCurso(); });
+    document.getElementById('modal-eliminar-curso-confirmar').addEventListener('click', () => {
+        cerrarModalEliminarCurso();
+        eliminarCursoDelGenerador(curso, blockEl);
+    });
+}
+
+function cerrarModalEliminarCurso() {
+    const overlay = document.getElementById('modal-eliminar-curso-overlay');
+    if (overlay) overlay.classList.remove('show');
+}
+
 // Quita un curso completo de esta pantalla del Generador: de la
 // memoria (seccionesData/cargaGlobal), del DOM, de la selección que
 // vive en index.html (para que "← Elegir cursos" no lo siga mostrando
@@ -465,8 +503,7 @@ function renderSidebar(data) {
         const btnEliminar = header.querySelector('.course-eliminar-btn');
         btnEliminar.addEventListener('click', (e) => {
             e.stopPropagation(); // no abrir/cerrar el acordeón del curso
-            if (!confirm(`¿Quitar "${nombreMostrado}" de este horario?\n\nPodrás volver a añadirlo desde "← Elegir cursos".`)) return;
-            eliminarCursoDelGenerador(curso, block);
+            mostrarModalEliminarCurso(curso, nombreMostrado, block);
         });
 
         const profsDiv = document.createElement('div');

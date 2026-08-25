@@ -127,6 +127,27 @@
     flex-shrink: 0;
 }
 
+/* Fila icono + bloque de textos — mismo patrón que
+   .ah-panel-header-titulo del Asistente de Horario, para que ambos
+   paneles se vean consistentes (icono a la izquierda, título y
+   subtítulo apilados y alineados al lado). */
+.aa-panel-header-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aa-header-icono {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
 /* Título + subtítulo apilados. El título conserva la fuente heredada
    (Orbitron vía --font-heading); el subtítulo usa Poppins a propósito
    para leerse como información secundaria, no como parte del título —

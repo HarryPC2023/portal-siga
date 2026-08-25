@@ -2543,9 +2543,12 @@ function inicializarAnalisisAcademico() {
     panel.className = 'aa-panel';
     panel.innerHTML = `
         <div class="aa-panel-header">
-            <span class="aa-panel-header-textos">
-                <span class="aa-panel-header-titulo-texto">📊 Análisis académico</span>
-                <span class="aa-panel-header-subtitulo" id="aa-panel-subtitulo">Elige una herramienta</span>
+            <span class="aa-panel-header-titulo">
+                <span class="aa-header-icono" aria-hidden="true">📊</span>
+                <span class="aa-panel-header-textos">
+                    <span class="aa-panel-header-titulo-texto">Análisis académico</span>
+                    <span class="aa-panel-header-subtitulo" id="aa-panel-subtitulo">Elige una herramienta</span>
+                </span>
             </span>
             <button type="button" class="aa-cerrar" aria-label="Cerrar" onclick="toggleAnalisisAcademico(false)">✕</button>
         </div>
