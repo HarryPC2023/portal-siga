@@ -103,8 +103,13 @@ function prepararOpciones(seleccion, cargaGlobal) {
         const opts = Object.entries(cargaGlobal[curso])
             .filter(([sec]) => secsElegidas.includes(sec))
             .map(([sec, info]) => ({
-                ...info,        // docente y clases
-                nombre: curso,  // agrega el nombre del curso
+                ...info,        // docente, código y clases
+                // "curso" es la llave interna, que a veces trae " (CÓDIGO)"
+                // pegado al final para no mezclar dos cursos de carreras
+                // distintas que comparten nombre oficial (ver generar_carga_horario.py).
+                // Para calendario/tooltip/Excel/favoritos se usa el nombre
+                // limpio — igual al que aparece en la carga horaria oficial.
+                nombre: (typeof nombreVisible === 'function') ? nombreVisible(curso, info.codigo) : curso,
                 seccion: sec    // agrega la sección
             }));
 
@@ -112,182 +117,6 @@ function prepararOpciones(seleccion, cargaGlobal) {
     }
 
     return opcionesPorCurso;
-}
-
-
-// ============================================================
-// calcularMetricasHorario — motor base del módulo "Huecos y
-// métricas" del Asistente de Horario. Recibe un combo ya armado
-// (mismo formato que arma prepararOpciones/generarCombos: array
-// de secciones, cada una con .nombre y .clases) y devuelve
-// SOLO números — sin tocar el DOM — para que puedan reusarlo
-// después las demás herramientas (preferencias, algoritmo de
-// mejor horario, alertas, comparador) sin recalcular nada.
-//
-// Las horas en `clases` vienen como enteros HHMM (ej. 800, 1430),
-// por eso primero se convierten a minutos desde medianoche.
-// ------------------------------------------------------------
-function horaAMinutos(hhmm) {
-    return Math.floor(hhmm / 100) * 60 + (hhmm % 100);
-}
-
-// Ventana horaria razonable para contar "tiempo libre para estudiar"
-// antes de la primera clase o después de la última del día (mismo
-// rango que ve el calendario: HOUR_START/HOUR_END en generador.js).
-// Fuera de este rango no tiene sentido reportar horas "libres"
-// (nadie va a estudiar a las 3am) — se duplica el valor acá porque
-// scheduler.js no comparte scope con generador.js.
-const VENTANA_ESTUDIO_INICIO_MIN = 7 * 60;  // 7:00
-const VENTANA_ESTUDIO_FIN_MIN = 22 * 60;    // 22:00
-
-function calcularMetricasHorario(combo) {
-    // Agrupa todas las clases del combo por día
-    const porDia = {};
-    combo.forEach(sec => {
-        sec.clases.forEach(cl => {
-            if (!porDia[cl.dia]) porDia[cl.dia] = [];
-            porDia[cl.dia].push({ ini: horaAMinutos(cl.ini), fin: horaAMinutos(cl.fin) });
-        });
-    });
-
-    const dias = {};
-    let huecosTotalMin = 0;
-    let horasTotalMin = 0;
-    let estudioTotalMin = 0;
-    let bloqueMaxContinuoMin = 0;
-
-    Object.entries(porDia).forEach(([dia, clases]) => {
-        // Ordena y fusiona clases que se pisan entre sí (cruces
-        // permitidos por el usuario) para no contar el mismo tramo
-        // dos veces ni generar un "hueco negativo" ahí.
-        const ordenadas = clases.slice().sort((a, b) => a.ini - b.ini);
-        const bloques = [];
-        ordenadas.forEach(cl => {
-            const ultimo = bloques[bloques.length - 1];
-            if (ultimo && cl.ini <= ultimo.fin) {
-                ultimo.fin = Math.max(ultimo.fin, cl.fin);
-            } else {
-                bloques.push({ ini: cl.ini, fin: cl.fin });
-            }
-        });
-
-        const huecos = [];
-        for (let i = 0; i < bloques.length - 1; i++) {
-            const gap = bloques[i + 1].ini - bloques[i].fin;
-            if (gap > 0) huecos.push({ inicio: bloques[i].fin, fin: bloques[i + 1].ini, minutos: gap });
-        }
-
-        const horaEntrada = bloques[0].ini;
-        const horaSalida = bloques[bloques.length - 1].fin;
-        const horasClaseMin = bloques.reduce((s, b) => s + (b.fin - b.ini), 0);
-        const huecosDiaMin = huecos.reduce((s, h) => s + h.minutos, 0);
-        const bloqueMaxDia = bloques.reduce((max, b) => Math.max(max, b.fin - b.ini), 0);
-
-        // "Horas libres para estudiar" — antes de la primera clase y
-        // después de la última, acotado a la ventana de estudio.
-        const horasLibresAntesMin = Math.max(0, horaEntrada - VENTANA_ESTUDIO_INICIO_MIN);
-        const horasLibresDespuesMin = Math.max(0, VENTANA_ESTUDIO_FIN_MIN - horaSalida);
-
-        dias[dia] = {
-            horaEntrada, horaSalida, horasClaseMin, huecos, huecosDiaMin, bloqueMaxDia,
-            horasLibresAntesMin, horasLibresDespuesMin,
-        };
-
-        huecosTotalMin += huecosDiaMin;
-        horasTotalMin += horasClaseMin;
-        estudioTotalMin += huecosDiaMin + horasLibresAntesMin + horasLibresDespuesMin;
-        bloqueMaxContinuoMin = Math.max(bloqueMaxContinuoMin, bloqueMaxDia);
-    });
-
-    const diasOcupados = Object.keys(dias);
-    let diaMasCargado = null, diaMasLibre = null;
-    diasOcupados.forEach(d => {
-        if (!diaMasCargado || dias[d].horasClaseMin > dias[diaMasCargado].horasClaseMin) diaMasCargado = d;
-        if (!diaMasLibre || dias[d].horasClaseMin < dias[diaMasLibre].horasClaseMin) diaMasLibre = d;
-    });
-
-    return { dias, diasOcupados, diaMasCargado, diaMasLibre, huecosTotalMin, horasTotalMin, estudioTotalMin, bloqueMaxContinuoMin };
-}
-
-
-// ============================================================
-// generarICS — arma un archivo .ics (formato iCalendar estándar)
-// para importar el horario en Google Calendar, Outlook o Apple
-// Calendar de una sola vez, sin depender de ninguna API externa.
-//
-// No tenemos la fecha real de inicio/fin del ciclo en los datos
-// del Excel, así que cada clase se repite semanalmente por
-// SEMANAS_ICS semanas a partir de la próxima vez que caiga ese
-// día — una aproximación razonable de un semestre. El usuario
-// puede editar o borrar el rango después desde su propio
-// calendario si su ciclo dura menos o más semanas.
-// ------------------------------------------------------------
-const ICS_DIA_A_INDICE = { LUNES: 1, MARTES: 2, MIERCOLES: 3, JUEVES: 4, VIERNES: 5, SABADO: 6 };
-const SEMANAS_ICS = 16;
-
-function icsEscapar(texto) {
-    return String(texto || '')
-        .replace(/\\/g, '\\\\')
-        .replace(/;/g, '\\;')
-        .replace(/,/g, '\\,')
-        .replace(/\n/g, '\\n');
-}
-
-function icsProximaFecha(diaSemana, desde) {
-    const objetivo = ICS_DIA_A_INDICE[diaSemana];
-    if (objetivo === undefined) return null;
-    const fecha = new Date(desde.getFullYear(), desde.getMonth(), desde.getDate());
-    let diff = objetivo - fecha.getDay();
-    if (diff < 0) diff += 7;
-    fecha.setDate(fecha.getDate() + diff);
-    return fecha;
-}
-
-function icsFormatoFecha(fecha, hhmm) {
-    const h = Math.floor(hhmm / 100);
-    const m = hhmm % 100;
-    const pad = n => String(n).padStart(2, '0');
-    return `${fecha.getFullYear()}${pad(fecha.getMonth() + 1)}${pad(fecha.getDate())}T${pad(h)}${pad(m)}00`;
-}
-
-function generarICS(combo) {
-    const ahora = new Date();
-    const pad = n => String(n).padStart(2, '0');
-    const dtstamp = `${ahora.getUTCFullYear()}${pad(ahora.getUTCMonth() + 1)}${pad(ahora.getUTCDate())}T${pad(ahora.getUTCHours())}${pad(ahora.getUTCMinutes())}${pad(ahora.getUTCSeconds())}Z`;
-
-    const eventos = [];
-    combo.forEach(sec => {
-        sec.clases.forEach(cl => {
-            const fechaInicio = icsProximaFecha(cl.dia, ahora);
-            if (!fechaInicio) return;
-
-            const esTeoria = cl.tipo === 'T' || /TEOR/i.test(cl.tipo);
-            const tipoLabel = esTeoria ? 'Teoría' : 'Práctica';
-            const uid = `${sec.nombre}-${sec.seccion}-${cl.dia}-${cl.ini}-${Date.now()}@siga-horarios`.replace(/\s+/g, '');
-
-            eventos.push([
-                'BEGIN:VEVENT',
-                `UID:${icsEscapar(uid)}`,
-                `DTSTAMP:${dtstamp}`,
-                `DTSTART:${icsFormatoFecha(fechaInicio, cl.ini)}`,
-                `DTEND:${icsFormatoFecha(fechaInicio, cl.fin)}`,
-                `RRULE:FREQ=WEEKLY;COUNT=${SEMANAS_ICS}`,
-                `SUMMARY:${icsEscapar(sec.nombre + ' (' + tipoLabel + ')')}`,
-                `LOCATION:${icsEscapar(cl.aula || '')}`,
-                `DESCRIPTION:${icsEscapar('Sección ' + sec.seccion + (sec.docente ? ' · ' + sec.docente : ''))}`,
-                'END:VEVENT',
-            ].join('\r\n'));
-        });
-    });
-
-    return [
-        'BEGIN:VCALENDAR',
-        'VERSION:2.0',
-        'PRODID:-//SIGA//Generador de Horarios//ES',
-        'CALSCALE:GREGORIAN',
-        ...eventos,
-        'END:VCALENDAR',
-    ].join('\r\n');
 }
 
 

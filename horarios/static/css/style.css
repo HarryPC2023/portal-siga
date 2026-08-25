@@ -11,7 +11,7 @@
   --text-dim: #64748b;
   --text-faint: #cbd5e1;
   --radius: 10px;
-  --sidebar-w: 305px;
+  --sidebar-w: 290px;
   --row-h: 38px;
 
   /* NUEVA VARIABLE: Dorado Brillante */
@@ -176,17 +176,13 @@ body {
 .upload-zone {
   border: 1.5px dashed var(--text-faint);
   border-radius: var(--radius);
-  padding: 14px 16px;
-  text-align: left;
+  padding: 16px;
+  text-align: center;
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
   background: var(--surface2);
   margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
 }
 
 .upload-zone:hover,
@@ -204,15 +200,14 @@ body {
 }
 
 .upload-icon {
-  font-size: 24px;
-  margin-bottom: 0;
-  flex-shrink: 0;
+  font-size: 28px;
+  margin-bottom: 8px;
 }
 
 .upload-label {
   font-size: 13px;
   color: var(--text-dim);
-  line-height: 1.4;
+  line-height: 1.6;
 }
 
 .upload-label strong {
@@ -332,7 +327,6 @@ body {
 .curso-nombre {
   flex: 1;
   font-weight: 500;
-  font-family: 'Poppins', sans-serif;
 }
 
 .curso-action {
@@ -497,7 +491,6 @@ body {
   font-weight: 600;
   color: var(--text-dim);
   text-decoration: none;
-  white-space: nowrap;
   transition: color 0.15s;
 }
 
@@ -563,6 +556,8 @@ body {
   padding-bottom: max(14px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--border);
 }
+
+.sb-section {}
 
 .sb-loading {
   font-size: 12px;
@@ -660,82 +655,8 @@ body {
   flex-shrink: 0;
 }
 
-.prof-option span {
-  font-family: 'Poppins', sans-serif;
-}
-
 .prof-option span strong {
   color: var(--text);
-  /* "Sección X" mantiene la fuente original — el span de arriba solo
-     debe afectar al resumen de horario ("— Ma 20:00, Ma 18:00"). */
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-/* Grupo por profesor (dentro de .course-profs) — recuperado, se había
-   construido y estilizado en otra sesión pero nunca llegó a este archivo. */
-.docente-group {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  margin: 6px 0;
-  padding: 6px 8px;
-  background: rgba(0, 0, 0, 0.015);
-}
-
-.docente-group-fija {
-  border-color: var(--accent);
-  border-width: 1.5px;
-  background: rgba(102, 0, 204, 0.04);
-}
-
-.docente-group-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.docente-fija-icono {
-  font-size: 11px;
-  flex-shrink: 0;
-}
-
-.docente-nombre {
-  font-size: 11px;
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
-  color: var(--text);
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.docente-group-secciones {
-  padding-left: 2px;
-}
-
-/* Selector de prioridad por profesor — el mismo componente que usa
-   Intranotas (selector-personalizado.js/css), no un <select> nativo. */
-.docente-prioridad-custom {
-  flex-shrink: 0;
-  width: 106px;
-}
-
-.docente-prioridad-custom .select-custom-trigger {
-  padding: 4px 6px;
-  font-size: 9px;
-  font-family: 'Poppins', sans-serif;
-  white-space: nowrap;
-  border-radius: 6px;
-}
-
-.docente-prioridad-custom .select-custom-lista {
-  min-width: 106px;
-}
-
-.docente-prioridad-custom .select-custom-lista li {
-  padding: 7px 8px;
-  font-size: 10.5px;
 }
 
 /* Crossings */
@@ -1072,7 +993,6 @@ body {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
-  line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
@@ -1351,7 +1271,6 @@ body {
   .cb-name {
     font-size: 8px;
     -webkit-line-clamp: 2;
-    line-clamp: 2;
   }
 
   .cb-meta {
@@ -1451,7 +1370,6 @@ body {
   .cb-name {
     font-size: 9px;
     -webkit-line-clamp: unset;
-    line-clamp: unset;
     overflow: visible;
     display: block;
     white-space: normal;
@@ -1646,6 +1564,20 @@ body.page-index-body {
   vertical-align: middle;
 }
 
+/* ── CUPOS (vacantes oficiales de la sección) ──────────────── */
+.badge-cupos {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-dim);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 0px 5px;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
 /* ── T (azul) vs P (rojo) ──────────────────────────────────── */
 .cb-badge.teoria-badge {
   background: #2563eb;
@@ -1668,13 +1600,11 @@ body.page-index-body {
   justify-content: center;
   z-index: 1000;
   opacity: 0;
-  pointer-events: none;
   transition: opacity 0.15s ease;
 }
 
 .modal-overlay.show {
   opacity: 1;
-  pointer-events: auto;
 }
 
 .modal-card {
@@ -1888,235 +1818,4 @@ body {
   #temaLabelActivo {
     display: none;
   }
-}
-
-/* ============================================================
-   BADGES DE CURSO — solo aparecen cuando la carga vino de
-   "Conectar a Matrícula UNI" (cursosMetadata en index.html).
-   Reestructura .curso-item a columna para dar espacio a una fila
-   de badges debajo del nombre; con Excel (sin badges) el resultado
-   visual es idéntico al de antes, solo cambia un nivel de anidado.
-   ============================================================ */
-.curso-item {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 6px;
-}
-
-.curso-item-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.curso-badges-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.curso-badge {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 6px;
-  white-space: nowrap;
-}
-
-.curso-badge-o {
-  background: rgba(239, 68, 68, 0.15);
-  color: #dc2626;
-}
-
-.curso-badge-e {
-  background: var(--surface2);
-  color: var(--text-faint);
-}
-
-.curso-badge-c {
-  background: rgba(245, 158, 11, 0.18);
-  color: #b45309;
-}
-
-.curso-badge-n {
-  background: rgba(239, 68, 68, 0.18);
-  color: #dc2626;
-}
-
-.curso-badge-vacantes {
-  background: var(--accent-dim);
-  color: var(--accent-dark);
-}
-
-/* ── Variante suave del modal, para formularios (vs. el degradado
-   morado de .modal-card, reservado para "Guardar favorito" ★) ── */
-.modal-card-suave {
-  background: var(--surface) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
-}
-
-.modal-card-suave .modal-icon {
-  background: var(--accent-dim) !important;
-  color: var(--accent-dark) !important;
-}
-
-.modal-card-suave .modal-title {
-  color: var(--text) !important;
-}
-
-.modal-card-suave .modal-desc {
-  color: var(--text-faint) !important;
-}
-
-.modal-card-suave .modal-btn-primary {
-  background: var(--accent) !important;
-}
-
-.modal-card-suave .modal-btn-primary:hover {
-  background: var(--accent-dark) !important;
-}
-
-.modal-card-suave .modal-btn-cancel {
-  background: var(--surface2) !important;
-  color: var(--text-faint) !important;
-}
-
-/* ── Caja "cursos sin horario" (Conectar a Matrícula UNI) ──
-   Colapsable con <details>, compacta, tipografía Poppins para
-   contrastar con el título Orbitron/Black Ops One de la card. ── */
-.matricula-sin-horario-box {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-family: 'Poppins', sans-serif;
-}
-
-.matricula-sin-horario-box summary {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-faint);
-  cursor: pointer;
-}
-
-.matricula-sin-horario-box .matricula-sin-horario-lista {
-  margin-top: 6px;
-  font-size: 11px;
-  color: var(--text-faint);
-  line-height: 1.6;
-  max-height: 90px;
-  overflow-y: auto;
-}
-
-/* ── Resalte breve de la Card 2 al llegar por scroll automático ── */
-.card-resaltada {
-  animation: pulso-card-resaltada 1.6s ease-out;
-}
-
-@keyframes pulso-card-resaltada {
-  0% {
-    box-shadow: 0 0 0 3px var(--accent);
-  }
-
-  100% {
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
-  }
-}
-
-/* ── Botón "Conectar a Matrícula UNI": del tamaño de su texto,
-   NO ancho completo como "Cargar archivo" (que sí debe ser full-width
-   porque acompaña a una zona de carga de archivo). ── */
-.btn-primary-compacto {
-  width: auto;
-  display: block;
-  margin: 0 auto;
-  padding: 8px 18px;
-  font-size: 12px;
-}
-
-/* ── Descripción de la card "Conectar a Matrícula UNI": Poppins +
-   más interlineado para que respire, sin afectar a .card-desc del
-   resto de cards (Excel sigue con su tipografía normal). ── */
-.card-desc-matricula {
-  font-family: 'Poppins', sans-serif;
-  line-height: 1.7;
-}
-
-/* ── Aviso: si la intranet está caída, la conexión no depende de
-   SIGA. Deja claro de quién es la falla antes de que el usuario
-   intente conectar. ── */
-.matricula-aviso-caida {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #92400e;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-bottom: 16px;
-}
-
-/* ── Fila de entrada: Matrícula + Excel lado a lado en pantallas
-   anchas, apiladas en celular. Ancho INDEPENDIENTE de .idx-body
-   (que se queda en 680px para "Seleccionar cursos" y todo lo demás):
-   "rompe" el max-width del padre y se centra sola, más ancha.
-
-   Para ajustar el ancho en DevTools (F12): edita el valor de
-   --fila-inicio-ancho abajo (en px) y listo, se recalcula solo. ── */
-.idx-fila-inicio {
-  --fila-inicio-ancho: 1250px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  align-items: start;
-  width: var(--fila-inicio-ancho);
-  max-width: calc(100vw - 40px);
-  margin-left: 50%;
-  transform: translateX(-50%);
-}
-
-@media (max-width: 640px) {
-  .idx-fila-inicio {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Dentro de la fila, las cards no deben tener el margin-bottom que
-   sí necesitan cuando están apiladas sueltas en .idx-body. */
-.idx-fila-inicio .idx-card {
-  margin-bottom: 0;
-}
-
-/* Más aire entre el título y la descripción, solo en la card de
-   Matrícula (el resto de cards se queda con su spacing original). */
-#cardConectarMatricula .card-title {
-  margin-bottom: 14px;
-}
-
-.badge-proximamente {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  background: var(--surface2);
-  color: var(--text-faint);
-  padding: 2px 9px;
-  border-radius: 20px;
-  vertical-align: middle;
-  margin-left: 6px;
-}
-
-/* Estado "Próximamente" (no-admin): card visible pero apagada. */
-#cardConectarMatricula.matricula-proximamente {
-  opacity: 0.6;
-}
-
-#cardConectarMatricula.matricula-proximamente #btnConectarMatricula {
-  cursor: not-allowed;
 }
