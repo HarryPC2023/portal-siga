@@ -1391,15 +1391,6 @@ function generarSimulador() {
             </button>
         </div>
 
-        <!-- Botón de "Progreso de tu carrera" — oculto por defecto,
-             lo revela progreso-malla.js solo si pasa el gate de admin
-             (mismo patrón que Asistente de Horario). -->
-        <div class="aa-entrada-wrap" id="progreso-malla-entrada-wrap" style="display:none;">
-            <button type="button" class="aa-entrada-btn" onclick="window.__pmAbrir && window.__pmAbrir()">
-                <span>🗺️ Progreso de tu carrera</span>
-            </button>
-        </div>
-
         <details style="margin:12px 0; background:var(--color-fondo-input); border-radius:10px; padding:10px 14px;">
             <summary style="cursor:pointer; font-weight:600; font-size:0.85rem; color:var(--color-cian);">💾 ¿Sabías que puedes guardar varios periodos?</summary>
             <p style="font-size:0.82rem; color:var(--color-gris-texto); margin:8px 0 0; line-height:1.6;">
@@ -2601,9 +2592,23 @@ function generarGridHerramientas() {
         </button>
     `;
 
+    // "Progreso de tu carrera" no rutea adentro del panel angosto como
+    // las demás — abre una ventana emergente grande aparte, así que
+    // primero cierra este panel y luego abre esa ventana. Solo se
+    // agrega si progreso-malla.js ya confirmó el gate de admin
+    // (window.__pmHabilitado) — para cualquier otro usuario, la
+    // tarjeta simplemente no existe todavía.
+    const tileProgresoMalla = window.__pmHabilitado ? `
+        <button type="button" class="aa-tile" onclick="toggleAnalisisAcademico(false); window.__pmAbrir && window.__pmAbrir();">
+            <span class="aa-tile-icono">🗺️</span>
+            <span class="aa-tile-nombre">Progreso de tu carrera</span>
+        </button>
+    ` : '';
+
     return `
         <div class="aa-grid">
             ${tile('meta', '🎯', 'Meta del curso', true, '')}
+            ${tileProgresoMalla}
         </div>
     `;
 }

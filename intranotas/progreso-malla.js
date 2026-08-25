@@ -330,12 +330,11 @@ window.addEventListener('resize', () => {
     }
 });
 
-/* ---------- Arranque: revisa el gate y, si corresponde, muestra el
-   botón de entrada + arma el modal (oculto hasta que se abra). ---------- */
+/* ---------- Arranque: revisa el gate y, si corresponde, arma el
+   modal (oculto hasta que se abra) y expone window.__pmHabilitado
+   para que generarGridHerramientas() (en intranotas.js) sepa si debe
+   mostrar la tarjeta "Progreso de tu carrera" dentro del grid. ---------- */
 (async function iniciarGateProgresoMalla() {
-    const wrap = document.getElementById('progreso-malla-entrada-wrap');
-    if (!wrap) return;
-
     const habilitado = await progresoMallaHabilitado();
     if (!habilitado) return;
 
@@ -357,6 +356,5 @@ window.addEventListener('resize', () => {
 
     window.__pmAbrir = pm_abrir;
     window.__pmCerrar = pm_cerrar;
-
-    wrap.style.display = '';
+    window.__pmHabilitado = true;
 })();
