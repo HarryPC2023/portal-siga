@@ -436,7 +436,7 @@
                     .sort((a, b) => a[0].localeCompare(b[0], 'es'));
                 if (!meta && conVacantes.length) {
                     vacantesHtml = `<div class="curso-vacantes-wrap">${conVacantes.map(([sec, info]) =>
-                        `<span class="curso-vacante-item">Sección ${sec} — ${info.vacantes} vacantes</span>`
+                        `<span class="curso-vacante-item" title="Sección ${sec} — ${info.vacantes} vacantes">${sec} · ${info.vacantes}</span>`
                     ).join('')}</div>`;
                 }
 

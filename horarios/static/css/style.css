@@ -1949,18 +1949,28 @@ body {
   color: var(--accent-dark);
 }
 
-/* ── Vacantes por sección (solo pantalla 1, carga horaria oficial) ── */
+/* ── Vacantes por sección (solo pantalla 1, carga horaria oficial) ──
+   Chips compactos en una sola fila (con wrap si no caben todos) —
+   una lista vertical alargaba demasiado los cursos con varias
+   secciones y hacía lento el scroll para buscar otros cursos. */
 .curso-vacantes-wrap {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-wrap: wrap;
+  gap: 4px;
   margin-top: 2px;
 }
 
 .curso-vacante-item {
+  display: inline-block;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 9px;
+  font-weight: 600;
   color: var(--text-dim);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 /* ── Variante suave del modal, para formularios (vs. el degradado
