@@ -127,6 +127,29 @@
     flex-shrink: 0;
 }
 
+/* Título + subtítulo apilados. El título conserva la fuente heredada
+   (Orbitron vía --font-heading); el subtítulo usa Poppins a propósito
+   para leerse como información secundaria, no como parte del título —
+   mismo criterio de contraste que ya usa este archivo para los
+   nombres de curso (ver #metaAACursoTriggerTexto más abajo). */
+.aa-panel-header-textos {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.aa-panel-header-titulo-texto {
+    line-height: 1.2;
+}
+
+.aa-panel-header-subtitulo {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    color: var(--color-gris-texto);
+}
+
 .aa-cerrar {
     background: none;
     border: none;

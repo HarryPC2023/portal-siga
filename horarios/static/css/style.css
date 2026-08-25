@@ -619,6 +619,35 @@ body {
   white-space: nowrap;
 }
 
+/* 🔒 Botón "Eliminar curso": oculto por defecto. Solo aparece cuando
+   iniciarGateEliminarCurso() (generador.js) confirma que el usuario es
+   admin y agrega .eliminar-curso-habilitado a <body> — mismo patrón de
+   gate que el resto de SIGA, para probarlo antes de abrirlo a todos. */
+.course-eliminar-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.course-eliminar-btn:hover {
+  opacity: 1;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+body.eliminar-curso-habilitado .course-eliminar-btn {
+  display: inline-flex;
+}
+
 .course-chevron {
   font-size: 9px;
   color: var(--text-dim);

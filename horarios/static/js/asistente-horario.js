@@ -69,6 +69,35 @@ const AH_HERRAMIENTAS = [
 // con las flechitas ◀▶ sin cerrar el panel.
 let ah_vistaActual = 'grid';
 
+// Recuerda si el usuario apagó el sombreado de huecos sobre el
+// calendario (el panel de "Huecos entre clases" en sí NUNCA se apaga,
+// solo el overlay visual sobre las celdas). Por defecto está visible.
+const LS_AH_HUECOS_VISIBLES = 'horarioGen_huecosVisiblesCalendario';
+
+function obtenerHuecosVisibles() {
+    const guardado = localStorage.getItem(LS_AH_HUECOS_VISIBLES);
+    return guardado === null ? true : guardado === 'true';
+}
+
+function guardarHuecosVisibles(v) {
+    try {
+        localStorage.setItem(LS_AH_HUECOS_VISIBLES, String(v));
+    } catch (e) {
+        console.warn('No se pudo guardar la preferencia de huecos visibles:', e);
+    }
+}
+
+// Enganchado al interruptor de la vista de Huecos.
+function toggleHuecosVisiblesCalendario(visible) {
+    guardarHuecosVisibles(visible);
+    if (visible) {
+        const combo = typeof window.obtenerComboActual === 'function' ? window.obtenerComboActual() : null;
+        if (combo) pintarHuecosEnCalendario(combo);
+    } else {
+        document.querySelectorAll('.hueco-block').forEach(el => el.remove());
+    }
+}
+
 /* ---------- Helpers de formato ---------- */
 function formatearMinutos(min) {
     const h = Math.floor(min / 60);
@@ -101,7 +130,10 @@ function inicializarAsistenteHorario() {
         <div class="ah-panel-header">
             <span class="ah-panel-header-titulo">
                 <img src="static/img/bot-asistente-siga-header.png" alt="" class="ah-header-icono">
-                Asistente de Horario
+                <span class="ah-panel-header-textos">
+                    <span class="ah-panel-header-titulo-texto">Asistente de Horario</span>
+                    <span class="ah-panel-header-subtitulo" id="ah-panel-subtitulo">Elige una herramienta</span>
+                </span>
             </span>
             <button type="button" class="ah-cerrar" aria-label="Cerrar" onclick="toggleAsistenteHorario(false)">✕</button>
         </div>
@@ -112,8 +144,16 @@ function inicializarAsistenteHorario() {
     renderGridAsistente();
 }
 
+// Actualiza el subtítulo del header con el nombre de la herramienta
+// activa — así siempre se sabe qué vista está abierta dentro del panel.
+function actualizarSubtituloAsistente(texto) {
+    const sub = document.getElementById('ah-panel-subtitulo');
+    if (sub) sub.textContent = texto;
+}
+
 function renderGridAsistente() {
     ah_vistaActual = 'grid';
+    actualizarSubtituloAsistente('Elige una herramienta');
     const cont = document.getElementById('ah-panel-body');
     if (!cont) return;
 
@@ -249,6 +289,7 @@ let ah_comparadorSeleccion = new Set();
 
 function renderVistaComparador() {
     ah_vistaActual = 'comparador';
+    actualizarSubtituloAsistente('⚖️ Comparador');
     const favoritos = typeof window.obtenerFavoritos === 'function' ? window.obtenerFavoritos() : [];
 
     if (favoritos.length < 2) {
@@ -487,6 +528,7 @@ function detectarTiempoLibrePositivo(combo) {
 }
 
 function renderVistaAlertas() {
+    actualizarSubtituloAsistente('🚨 Alertas inteligentes');
     const cont = document.getElementById('ah-panel-body');
     if (!cont) return;
 
@@ -542,6 +584,7 @@ function renderVistaAlertas() {
    HERRAMIENTA: 📘 Huecos entre clases
    ============================================================ */
 function renderVistaHuecos() {
+    actualizarSubtituloAsistente('📘 Huecos entre clases');
     const cont = document.getElementById('ah-panel-body');
     if (!cont) return;
 
@@ -589,8 +632,19 @@ function renderVistaHuecos() {
             `;
         }).join('');
 
+    const huecosVisibles = obtenerHuecosVisibles();
+
     cont.innerHTML = `
         <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
+
+        <div class="ah-huecos-toggle-row">
+            <label class="ah-toggle">
+                <input type="checkbox" id="ah-huecos-toggle" ${huecosVisibles ? 'checked' : ''}
+                    onchange="toggleHuecosVisiblesCalendario(this.checked)">
+                <span class="ah-toggle-slider"></span>
+            </label>
+            <span class="ah-huecos-toggle-label">👁 Mostrar huecos sombreados en el calendario</span>
+        </div>
 
         <div class="ah-resumen">
             <div class="ah-resumen-item">
@@ -648,6 +702,7 @@ function exportarComboICS() {
 // regrese a leer el paso a paso. Se queda visible hasta que el
 // usuario mismo lo cierra con la ✕.
 function mostrarAvisoICS() {
+    actualizarSubtituloAsistente('📅 Exportar a calendario');
     const cont = document.getElementById('ah-panel-body');
     if (!cont) return;
 
@@ -675,6 +730,11 @@ function mostrarAvisoICS() {
    pixel. ---------- */
 function pintarHuecosEnCalendario(combo) {
     document.querySelectorAll('.hueco-block').forEach(el => el.remove());
+
+    // El usuario apagó el interruptor "Mostrar en el calendario" — se
+    // limpia el overlay (arriba) y no se vuelve a dibujar nada, pero
+    // el panel de Huecos sigue funcionando normal si lo vuelve a abrir.
+    if (!obtenerHuecosVisibles()) return;
 
     const m = calcularMetricasHorario(combo);
     Object.entries(m.dias).forEach(([dia, info]) => {
@@ -731,6 +791,7 @@ function onDibujarHorarioAsistente(combo) {
     window.toggleComparadorSeleccion = toggleComparadorSeleccion;
     window.irAVerFavorito = irAVerFavorito;
     window.onDibujarHorarioAsistente = onDibujarHorarioAsistente;
+    window.toggleHuecosVisiblesCalendario = toggleHuecosVisiblesCalendario;
 
     wrap.style.display = '';
     inicializarAsistenteHorario();

@@ -55,6 +55,29 @@ const LS_GEN_COMBOS_IDX = 'horarioGen_combosIdx';
 // Prioridad de profesor por curso (1.ª/2.ª/3.ª opción) — parte de la
 // "Estrategia de matrícula" del Asistente de Horario.
 const LS_GEN_PRIORIDADES = 'horarioGen_prioridadesProfesor';
+// Misma clave que usa index.html (LS_SEL) para la lista de cursos
+// marcados en "Elegir cursos" — se actualiza al eliminar un curso acá,
+// para que ambas pantallas queden consistentes.
+const LS_SEL_INDEX = 'horarioGen_seleccion';
+
+// ── ELIMINAR CURSO: gate de admin (temporal) ────────────────────
+// Mismo criterio y mismo UID que usa el Asistente de Horario: mientras
+// se prueba esta función, el botón 🗑 de cada curso SOLO aparece para
+// Harry. Cuando esté probada, borrar este bloque y las líneas que
+// dependen de `eliminarCursoHabilitado()` para que quede activo para
+// todos — no hace falta tocar nada más.
+const ADMIN_UID_SIGA = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
+
+async function iniciarGateEliminarCurso() {
+    try {
+        const userId = await obtenerUserIdActual();
+        if (userId === ADMIN_UID_SIGA) {
+            document.body.classList.add('eliminar-curso-habilitado');
+        }
+    } catch (e) {
+        console.warn('No se pudo verificar el gate de "Eliminar curso":', e);
+    }
+}
 
 // ── NOMBRE A MOSTRAR (mismo helper que index.html y scheduler.js) ──
 // La llave interna de un curso a veces trae " (CÓDIGO)" pegado al final
@@ -146,6 +169,7 @@ function inicializar(cursos) {
     });
 
     renderSidebar(seccionesData);
+    iniciarGateEliminarCurso();
 
     // Restaura lo que el usuario había marcado/elegido la última vez.
     // Si no hay nada guardado (o pertenece a un archivo distinto ya
@@ -251,6 +275,58 @@ function restaurarSeleccionSecciones() {
             cb.checked = seleccion[curso].includes(cb.dataset.seccion);
         }
     });
+}
+
+// ── ELIMINAR CURSO (🔒 solo admin mientras se prueba) ────────────
+// Quita un curso completo de esta pantalla del Generador: de la
+// memoria (seccionesData/cargaGlobal), del DOM, de la selección que
+// vive en index.html (para que "← Elegir cursos" no lo siga mostrando
+// marcado) y de la URL (para que un F5 no lo vuelva a traer). Si ya
+// había una combinación generada, la recalcula de una vez.
+function eliminarCursoDelGenerador(curso, blockEl) {
+    delete seccionesData[curso];
+    if (cargaGlobal) delete cargaGlobal[curso];
+    if (blockEl) blockEl.remove();
+
+    // Sincroniza con la lista de "Elegir cursos" (index.html) — misma
+    // clave que usa esa pantalla (LS_SEL ahí, LS_SEL_INDEX acá).
+    try {
+        const guardado = localStorage.getItem(LS_SEL_INDEX);
+        if (guardado) {
+            const lista = JSON.parse(guardado).filter(c => c !== curso);
+            localStorage.setItem(LS_SEL_INDEX, JSON.stringify(lista));
+        }
+    } catch (e) {
+        console.warn('No se pudo actualizar la selección de "Elegir cursos":', e);
+    }
+
+    // Limpia la selección de secciones guardada (lee de los checkbox
+    // que quedan en el DOM, ya sin el curso eliminado) y sube el cambio
+    // a la nube igual que cualquier otro cambio de selección.
+    guardarSeleccionSecciones();
+
+    // Actualiza la URL sin recargar, para que un F5 no vuelva a traer
+    // el curso eliminado (llegó acá como ?curso=... desde index.html).
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const restantes = params.getAll('curso').filter(c => c !== curso);
+        params.delete('curso');
+        restantes.forEach(c => params.append('curso', c));
+        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    } catch (e) { /* no crítico */ }
+
+    if (typeof showToast === 'function') showToast('Curso quitado de este horario', 'info');
+
+    // Sin cursos restantes, no tiene sentido seguir en esta pantalla —
+    // mismo destino que cuando se entra sin ninguno seleccionado.
+    if (!Object.keys(seccionesData).length) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Si ya había una combinación generada, la recalcula de una vez
+    // para que el calendario deje de mostrar el curso eliminado.
+    if (combosValidos.length) generar();
 }
 
 // ── AUTOGUARDADO: cantidad de cruces ────────────────────────────
@@ -378,7 +454,20 @@ function renderSidebar(data) {
         header.innerHTML = `
       <div class="course-dot" style="background:${color}"></div>
       <div class="course-name" title="${nombreMostrado}">${codigo ? `<span class="curso-codigo">${codigo}</span> ` : ''}${nombreMostrado}</div>
+      <button type="button" class="course-eliminar-btn" title="Quitar curso de este horario" aria-label="Quitar curso de este horario">🗑</button>
       <div class="course-chevron">▶</div>`;
+
+        // 🔒 Botón "Eliminar curso": SOLO visible si el gate de admin lo
+        // habilitó (ver iniciarGateEliminarCurso / body.eliminar-curso-habilitado
+        // en style.css). Se engancha aquí por addEventListener (no en el
+        // string de arriba) para poder capturar `block` en el closure sin
+        // tener que buscarlo de nuevo en el DOM.
+        const btnEliminar = header.querySelector('.course-eliminar-btn');
+        btnEliminar.addEventListener('click', (e) => {
+            e.stopPropagation(); // no abrir/cerrar el acordeón del curso
+            if (!confirm(`¿Quitar "${nombreMostrado}" de este horario?\n\nPodrás volver a añadirlo desde "← Elegir cursos".`)) return;
+            eliminarCursoDelGenerador(curso, block);
+        });
 
         const profsDiv = document.createElement('div');
         profsDiv.className = 'course-profs';

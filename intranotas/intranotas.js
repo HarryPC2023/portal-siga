@@ -2543,12 +2543,22 @@ function inicializarAnalisisAcademico() {
     panel.className = 'aa-panel';
     panel.innerHTML = `
         <div class="aa-panel-header">
-            <span>📊 Análisis académico</span>
+            <span class="aa-panel-header-textos">
+                <span class="aa-panel-header-titulo-texto">📊 Análisis académico</span>
+                <span class="aa-panel-header-subtitulo" id="aa-panel-subtitulo">Elige una herramienta</span>
+            </span>
             <button type="button" class="aa-cerrar" aria-label="Cerrar" onclick="toggleAnalisisAcademico(false)">✕</button>
         </div>
         <div class="aa-panel-body" id="aa-panel-body"></div>
     `;
     document.body.appendChild(panel);
+}
+
+// Actualiza el subtítulo del header con el nombre de la herramienta
+// activa — mismo patrón que "Asistente de Horario" en el Generador.
+function actualizarSubtituloAnalisis(texto) {
+    const sub = document.getElementById('aa-panel-subtitulo');
+    if (sub) sub.textContent = texto;
 }
 
 function toggleAnalisisAcademico(forzar) {
@@ -2607,11 +2617,11 @@ function abrirHerramienta(id) {
     const body = document.getElementById('aa-panel-body');
     if (!body) return;
 
-    if (id === 'grid') { body.innerHTML = generarGridHerramientas(); return; }
-    if (id === 'meta') { body.innerHTML = generarVistaMeta(); inicializarVistaMeta(); return; }
-    if (id === 'prediccion') { body.innerHTML = generarVistaPrediccion(); inicializarVistaPrediccion(); return; }
-    if (id === 'rendimiento') { body.innerHTML = generarVistaRendimiento(); inicializarVistaRendimiento(); return; }
-    if (id === 'evolucion') { body.innerHTML = generarVistaEvolucion(); inicializarVistaEvolucion(); return; }
+    if (id === 'grid') { actualizarSubtituloAnalisis('Elige una herramienta'); body.innerHTML = generarGridHerramientas(); return; }
+    if (id === 'meta') { actualizarSubtituloAnalisis('🎯 Meta del curso'); body.innerHTML = generarVistaMeta(); inicializarVistaMeta(); return; }
+    if (id === 'prediccion') { actualizarSubtituloAnalisis('🔮 Predicción'); body.innerHTML = generarVistaPrediccion(); inicializarVistaPrediccion(); return; }
+    if (id === 'rendimiento') { actualizarSubtituloAnalisis('🏆 Rendimiento por curso'); body.innerHTML = generarVistaRendimiento(); inicializarVistaRendimiento(); return; }
+    if (id === 'evolucion') { actualizarSubtituloAnalisis('📈 Evolución del promedio'); body.innerHTML = generarVistaEvolucion(); inicializarVistaEvolucion(); return; }
 }
 
 /* ============================================================

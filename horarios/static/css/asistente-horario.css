@@ -122,6 +122,29 @@
     object-fit: contain;
 }
 
+/* Título + subtítulo apilados junto al ícono del bot. El título
+   conserva Orbitron (heredado de .ah-panel-header); el subtítulo usa
+   Poppins a propósito para que se lea como información secundaria y
+   no como parte del wordmark — mismo criterio que el resto de SIGA
+   usa para contrastar nombres de curso, etc. */
+.ah-panel-header-textos {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.ah-panel-header-titulo-texto {
+    line-height: 1.2;
+}
+
+.ah-panel-header-subtitulo {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    color: var(--text-dim);
+}
+
 .ah-cerrar {
     background: none;
     border: none;
@@ -231,6 +254,70 @@
     font-size: 0.85rem;
     color: var(--text-dim);
     line-height: 1.6;
+}
+
+/* ---------- Interruptor: apaga/enciende el sombreado de huecos
+   sobre el calendario (la vista en sí, con sus métricas, nunca se
+   apaga — solo el overlay visual sobre las celdas). ---------- */
+.ah-huecos-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.ah-huecos-toggle-label {
+    font-size: 0.78rem;
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+}
+
+.ah-toggle {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.ah-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ah-toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ah-toggle-slider::before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 2px;
+    top: 2px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s;
+}
+
+.ah-toggle input:checked+.ah-toggle-slider {
+    background: var(--accent);
+}
+
+.ah-toggle input:checked+.ah-toggle-slider::before {
+    transform: translateX(16px);
 }
 
 /* ---------- Resumen global (4 chips arriba, grilla 2x2) ---------- */
