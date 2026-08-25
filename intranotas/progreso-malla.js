@@ -435,4 +435,6 @@ window.addEventListener('resize', () => {
     window.__pmAbrir = pm_abrir;
     window.__pmCerrar = pm_cerrar;
     window.__pmHabilitado = true;
+    // 🔍 Temporal, para diagnóstico — quitar cuando ya no haga falta.
+    window.__pmDebug = pm_progresoCompleto;
 })();
