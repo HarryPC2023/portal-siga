@@ -119,7 +119,16 @@
     gap: 12px;
     font-size: 0.74rem;
     color: var(--color-gris-texto);
-    margin-bottom: 16px;
+    margin-bottom: 8px;
+}
+
+.pm-toque-aviso {
+    font-size: 0.76rem;
+    color: var(--color-cian);
+    background: var(--color-cian-light);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 0 0 16px;
 }
 
 .pm-dot {
@@ -306,6 +315,16 @@
 .pm-detalle-creditos {
     font-size: 0.78rem;
     color: var(--color-gris-texto);
+    margin: 0 0 12px;
+}
+
+.pm-detalle-inferido {
+    font-size: 0.74rem;
+    color: var(--color-gris-texto);
+    font-style: italic;
+    background: var(--color-fondo-input);
+    border-radius: 8px;
+    padding: 8px 12px;
     margin: 0 0 12px;
 }
 

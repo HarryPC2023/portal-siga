@@ -46,6 +46,20 @@ const PM_ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
 
 let pm_codigoSeleccionado = null;
 
+/* Respaldo por si un periodo guardado (de una versión vieja) no
+   trae `.code` en sus cursos — cruza por `.id` contra la base de
+   cursos real para no perder ese registro. */
+function pm_mapaIdACode() {
+    const mapa = {};
+    const fuentes = [window.CURSOS_SISTEMAS, window.CURSOS_SISTEMAS_2026];
+    fuentes.forEach(fuente => {
+        Object.values(fuente || {}).forEach(lista => (lista || []).forEach(c => {
+            if (c && c.id && c.code) mapa[c.id] = c.code;
+        }));
+    });
+    return mapa;
+}
+
 /* ---------- Cálculo de estados: cruza la malla fija contra el
    historial real del usuario (leerDatosPeriodos), priorizando el
    DOM en vivo para el ciclo que está abierto ahora mismo — mismo
@@ -53,6 +67,8 @@ let pm_codigoSeleccionado = null;
 function pm_construirProgreso() {
     const progreso = {}; // code -> { estado: 'aprobado'|'jalado'|'en_curso', notaFinal, credits }
     const rank = { jalado: 1, en_curso: 2, aprobado: 3 };
+    const idACode = pm_mapaIdACode();
+    const codigosMalla = new Set(pm_todosLosCursos().map(c => c.code));
 
     const datos = typeof window.leerDatosPeriodos === 'function' ? window.leerDatosPeriodos() : {};
     Object.keys(datos || {}).forEach(periodo => {
@@ -61,7 +77,13 @@ function pm_construirProgreso() {
         const esActual = periodo === window.periodoSeleccionado;
 
         entrada.cursos.forEach(curso => {
-            if (!curso || !curso.code) return;
+            if (!curso) return;
+            const code = curso.code || idACode[curso.id];
+            // Solo cursos OBLIGATORIOS de la malla — un electivo aprobado
+            // no debe inflar "créditos obligatorios" ni el PA acumulado.
+            // (Los electivos en sí quedan fuera del mapa por ahora, como
+            // ya habíamos acordado.)
+            if (!code || !codigosMalla.has(code)) return;
 
             let valores;
             const enPantalla = esActual && Array.isArray(window.cursosSeleccionados) &&
@@ -87,14 +109,48 @@ function pm_construirProgreso() {
             else if (notaFinal !== null && completo) estado = 'jalado';
             else estado = 'en_curso';
 
-            const previo = progreso[curso.code];
+            const previo = progreso[code];
             if (!previo || rank[estado] > rank[previo.estado]) {
-                progreso[curso.code] = { estado, notaFinal, credits: curso.credits };
+                progreso[code] = { estado, notaFinal, credits: curso.credits };
             }
         });
     });
 
     return progreso;
+}
+
+/* Si un curso está aprobado o en curso, sus prerrequisitos TUVIERON
+   que estar aprobados — la universidad no deja matricular sin
+   cumplirlos. Esto rellena los huecos de cuando el usuario solo
+   cargó su ciclo más reciente sin backfillear el historial completo:
+   recorre hacia atrás desde todo lo aprobado/en curso y marca como
+   aprobado (inferido, sin nota) a cualquier prerrequisito que no
+   tuviera ya un registro explícito. */
+function pm_inferirPorPrerequisitos(progreso) {
+    const porCodigo = {};
+    pm_todosLosCursos().forEach(c => { porCodigo[c.code] = c; });
+
+    const pila = Object.keys(progreso).filter(code => progreso[code].estado === 'aprobado' || progreso[code].estado === 'en_curso');
+    const visitados = new Set(pila);
+
+    while (pila.length) {
+        const curso = porCodigo[pila.pop()];
+        if (!curso) continue;
+        curso.prereq.forEach(p => {
+            if (p.tipo !== 'curso' || visitados.has(p.code)) return;
+            visitados.add(p.code);
+            if (!progreso[p.code]) {
+                const req = porCodigo[p.code];
+                progreso[p.code] = { estado: 'aprobado', notaFinal: null, credits: req ? req.credits : 0, inferido: true };
+            }
+            pila.push(p.code);
+        });
+    }
+    return progreso;
+}
+
+function pm_progresoCompleto() {
+    return pm_inferirPorPrerequisitos(pm_construirProgreso());
 }
 
 function pm_todosLosCursos() {
@@ -140,7 +196,7 @@ const PM_ESTADO_LABEL = {
 
 /* ---------- Render del mapa ---------- */
 function pm_renderMapa() {
-    const progreso = pm_construirProgreso();
+    const progreso = pm_progresoCompleto();
     const malla = window.MALLA_SISTEMAS_2018 || [];
 
     const creditosAprobados = pm_creditosAprobadosTotal(progreso);
@@ -156,12 +212,16 @@ function pm_renderMapa() {
         <div class="pm-ciclo">
             <div class="pm-ciclo-label">Ciclo ${PM_ROMANOS[ciclo - 1]}</div>
             <div class="pm-ciclo-cursos">
-                ${cursos.map(c => `
-                    <button type="button" class="pm-chip pm-estado-${pm_estadoCurso(c, progreso)}" data-code="${c.code}" onclick="window.pmSeleccionarCurso('${c.code}')">
-                        ${pm_estadoCurso(c, progreso) === 'bloqueado' ? '<span class="pm-chip-candado" aria-hidden="true">🔒</span>' : ''}
-                        ${c.code}
+                ${cursos.map(c => {
+        const estado = pm_estadoCurso(c, progreso);
+        const inferido = progreso[c.code] && progreso[c.code].inferido;
+        return `
+                    <button type="button" class="pm-chip pm-estado-${estado}" data-code="${c.code}" onclick="window.pmSeleccionarCurso('${c.code}')">
+                        ${estado === 'bloqueado' ? '<span class="pm-chip-candado" aria-hidden="true">🔒</span>' : ''}
+                        ${inferido ? '~' : ''}${c.code}
                     </button>
-                `).join('')}
+                `;
+    }).join('')}
             </div>
         </div>
     `).join('');
@@ -184,6 +244,7 @@ function pm_renderMapa() {
             <span><i class="pm-dot pm-estado-disponible"></i> Disponible</span>
             <span>🔒 Bloqueado</span>
         </div>
+        <p class="pm-toque-aviso">👆 Toca cualquier curso del mapa para ver sus prerrequisitos y lo que desbloquea. Tócalo de nuevo para cerrar.</p>
         <div class="pm-mapa-wrap" id="pm-mapa-wrap">
             <svg id="pm-svg-conexiones" class="pm-svg-conexiones"></svg>
             <div class="pm-mapa" id="pm-mapa">${ciclosHtml}</div>
@@ -212,11 +273,26 @@ function pm_otrosFaltantes(curso, excluirCode, progreso) {
     });
 }
 
+function pm_deseleccionar() {
+    pm_codigoSeleccionado = null;
+    document.querySelectorAll('#pm-mapa .pm-chip').forEach(chip => {
+        chip.classList.remove('pm-atenuado', 'pm-seleccionado');
+    });
+    const svg = document.getElementById('pm-svg-conexiones');
+    if (svg) svg.innerHTML = '';
+    const detalle = document.getElementById('pm-detalle');
+    if (detalle) detalle.innerHTML = '<p class="pm-detalle-vacio">Toca cualquier curso del mapa para ver su detalle.</p>';
+}
+
 window.pmSeleccionarCurso = function (code) {
+    if (pm_codigoSeleccionado === code) {
+        pm_deseleccionar();
+        return;
+    }
     pm_codigoSeleccionado = code;
     const curso = pm_obtenerCurso(code);
     if (!curso) return;
-    const progreso = pm_construirProgreso();
+    const progreso = pm_progresoCompleto();
     const estado = pm_estadoCurso(curso, progreso);
 
     // Modo enfoque: atenúa todo salvo el seleccionado y sus relacionados.
@@ -265,12 +341,14 @@ window.pmSeleccionarCurso = function (code) {
         }).join('');
     }
 
+    const inferido = progreso[code] && progreso[code].inferido;
     document.getElementById('pm-detalle').innerHTML = `
         <div class="pm-detalle-header">
             <span class="pm-detalle-codigo">${curso.code}</span> · ${curso.name}
             <span class="pm-detalle-estado pm-estado-${estado}">${PM_ESTADO_LABEL[estado]}</span>
         </div>
         <p class="pm-detalle-creditos">${curso.credits} créditos</p>
+        ${inferido ? '<p class="pm-detalle-inferido">Sin nota registrada en SIGA — se infiere aprobado porque es prerrequisito de algo que sí llevas.</p>' : ''}
         ${necesitaHtml}
         <div class="pm-detalle-seccion">
             <p class="pm-detalle-seccion-titulo">Se abre al aprobarlo</p>
