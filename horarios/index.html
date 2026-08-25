@@ -91,27 +91,39 @@
                     <div id="matriculaSinHorario" style="display:none"></div>
                 </div>
 
-                <!-- ── CARD 1: SUBIR CARGA HORARIA ── -->
+                <!-- ── CARD 1: CARGA HORARIA OFICIAL ── -->
+                <!-- Antes lideraba "Subir carga horaria" con la zona de
+                     arrastrar archivo bien visible, aunque ya no hace falta
+                     subir nada. Ahora lidera la confirmación (fileInfo +
+                     uploadStatus, mismos IDs, misma lógica JS de siempre) y
+                     la subida manual queda colapsada — sigue ahí para quien
+                     de verdad la necesite (corrección puntual, o si en el
+                     futuro esta automatización deja de mantenerse), pero
+                     ya no compite visualmente con lo que la mayoría necesita. -->
                 <div class="idx-card">
-                    <div class="card-title">📁 Subir carga horaria</div>
-                    <div class="card-desc">Sube el archivo .xlsx con los horarios disponibles</div>
-
-                    <div class="upload-zone" id="uploadZone">
-                        <input type="file" id="fileInput" accept=".xlsx,.xls">
-                        <div class="upload-icon">📄</div>
-                        <div class="upload-label">
-                            <strong>Click para seleccionar archivo</strong>
-                            Formatos: .xlsx, .xls
-                        </div>
-                    </div>
+                    <div class="card-title">📅 Carga horaria oficial</div>
+                    <div class="card-desc">Ya está lista, no necesitas subir nada</div>
 
                     <div id="fileInfo" class="file-badge" style="display:none"></div>
-
-                    <button id="btnUpload" class="btn-primary" disabled>
-                        Cargar archivo
-                    </button>
-
                     <div id="uploadStatus" class="upload-status"></div>
+
+                    <details class="carga-manual-detalle">
+                        <summary>¿Necesitas subir tu propio Excel?</summary>
+                        <div class="carga-manual-contenido">
+                            <div class="upload-zone" id="uploadZone">
+                                <input type="file" id="fileInput" accept=".xlsx,.xls">
+                                <div class="upload-icon">📄</div>
+                                <div class="upload-label">
+                                    <strong>Click para seleccionar archivo</strong>
+                                    Formatos: .xlsx, .xls
+                                </div>
+                            </div>
+
+                            <button id="btnUpload" class="btn-primary" disabled>
+                                Cargar archivo
+                            </button>
+                        </div>
+                    </details>
 
                     <!-- Progreso: se guarda solo en cada cambio, ya no depende de un clic -->
                     <div id="persistActions" style="display:none; flex-direction:column; gap:6px; margin-top:10px;">

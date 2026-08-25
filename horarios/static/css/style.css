@@ -2035,6 +2035,27 @@ body {
   overflow-y: auto;
 }
 
+/* ── "¿Necesitas subir tu propio Excel?" (Carga horaria oficial) ──
+   Mismo patrón que matricula-sin-horario-box: colapsado por defecto,
+   discreto — la subida manual sigue existiendo pero ya no compite
+   visualmente con la confirmación de que la carga oficial ya está lista. ── */
+.carga-manual-detalle {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.carga-manual-detalle summary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-faint);
+  cursor: pointer;
+}
+
+.carga-manual-contenido {
+  margin-top: 10px;
+}
+
 /* ── Resalte breve de la Card 2 al llegar por scroll automático ── */
 .card-resaltada {
   animation: pulso-card-resaltada 1.6s ease-out;
