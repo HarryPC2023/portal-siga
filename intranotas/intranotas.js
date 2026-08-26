@@ -151,6 +151,16 @@ let cursosSeleccionados = [];
 let periodoSeleccionado = null;
 let selectorPeriodoInstancia = null; // instancia del select-custom de Pantalla 3 (se crea una sola vez)
 
+// `let` NO crea propiedades en `window` (a diferencia de `var`), así
+// que sin esto, cualquier módulo aparte (progreso-malla.js) que lea
+// `window.cursosSeleccionados` o `window.periodoSeleccionado` siempre
+// recibiría `undefined`, aunque estas variables sí tengan datos reales
+// acá adentro. Estos getters las exponen de verdad, siempre con el
+// valor actual (no una copia vieja), sin cambiar en nada cómo se usan
+// dentro de este mismo archivo.
+Object.defineProperty(window, 'cursosSeleccionados', { get: () => cursosSeleccionados, configurable: true });
+Object.defineProperty(window, 'periodoSeleccionado', { get: () => periodoSeleccionado, configurable: true });
+
 /* ============================================================
    NAVEGACIÓN ENTRE PANTALLAS
    ============================================================ */
