@@ -2605,10 +2605,23 @@ function generarGridHerramientas() {
         </button>
     ` : '';
 
+    // "Ruta del Curso" sí rutea adentro del panel angosto (como Meta
+    // del curso) — a diferencia del mapa, un selector + un detalle
+    // caben perfecto en 380px. Usa el mismo gate que el mapa
+    // (window.__pmHabilitado), porque depende de las mismas funciones
+    // que expone progreso-malla.js.
+    const tileRutaCurso = window.__pmHabilitado ? `
+        <button type="button" class="aa-tile" onclick="abrirHerramienta('ruta-curso')">
+            <span class="aa-tile-icono">🔗</span>
+            <span class="aa-tile-nombre">Ruta del Curso</span>
+        </button>
+    ` : '';
+
     return `
         <div class="aa-grid">
             ${tile('meta', '🎯', 'Meta del curso', true, '')}
             ${tileProgresoMalla}
+            ${tileRutaCurso}
         </div>
     `;
 }
@@ -2620,6 +2633,7 @@ function abrirHerramienta(id) {
 
     if (id === 'grid') { actualizarSubtituloAnalisis('Elige una herramienta'); body.innerHTML = generarGridHerramientas(); return; }
     if (id === 'meta') { actualizarSubtituloAnalisis('🎯 Meta del curso'); body.innerHTML = generarVistaMeta(); inicializarVistaMeta(); return; }
+    if (id === 'ruta-curso') { actualizarSubtituloAnalisis('🔗 Ruta del Curso'); body.innerHTML = generarVistaRutaCurso(); inicializarVistaRutaCurso(); return; }
 }
 
 /* ============================================================
@@ -2875,4 +2889,107 @@ function refrescarVistaMeta() {
             <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${e.notaFinal.toFixed(1)}</strong></div>
         </div>
     `).join('');
+}
+
+/* ============================================================
+   🔗 RUTA DEL CURSO — selector directo por nombre, reusa el motor
+   de progreso-malla.js (window.__pmRutaCurso / window.__pmListaCursos)
+   en vez de duplicar la lógica de prerrequisitos. Vive dentro del
+   panel angosto de 380px, como Meta del curso — a diferencia del
+   mapa, un selector + un detalle sí caben cómodos ahí.
+   ============================================================ */
+let rutaCursoSeleccionado = null;
+
+function generarVistaRutaCurso() {
+    if (typeof window.__pmListaCursos !== 'function') {
+        return `
+            <button type="button" class="aa-volver" onclick="abrirHerramienta('grid')">← Volver</button>
+            <p class="aa-vacio">Abre primero "Progreso de tu carrera" una vez para que cargue la malla, y vuelve a intentarlo.</p>
+        `;
+    }
+
+    return `
+        <button type="button" class="aa-volver" onclick="abrirHerramienta('grid')">← Volver</button>
+        <div class="meta-aa-selector">
+            <label for="rutaCursoTrigger">Curso</label>
+            <div class="campo-select-custom meta-curso-select-custom" style="width:100%;">
+                <button type="button" class="select-custom-trigger" id="rutaCursoTrigger"
+                    aria-haspopup="listbox" aria-expanded="false">
+                    <span id="rutaCursoTriggerTexto"></span>
+                    <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                </button>
+                <ul class="select-custom-lista meta-curso-select-lista" id="rutaCursoLista" role="listbox" hidden></ul>
+                <input type="hidden" id="rutaCursoValor">
+            </div>
+        </div>
+        <div id="ruta-curso-resultado"></div>
+    `;
+}
+
+function inicializarVistaRutaCurso() {
+    if (typeof window.__pmListaCursos !== 'function') return;
+
+    const cursos = [...window.__pmListaCursos()].sort((a, b) => a.name.localeCompare(b.name));
+    if (!cursos.length) return;
+    if (!rutaCursoSeleccionado || !cursos.some(c => c.code === rutaCursoSeleccionado)) {
+        rutaCursoSeleccionado = cursos[0].code;
+    }
+    const actual = cursos.find(c => c.code === rutaCursoSeleccionado);
+
+    inicializarSelectPersonalizado({
+        triggerId: 'rutaCursoTrigger', textoId: 'rutaCursoTriggerTexto',
+        listaId: 'rutaCursoLista', valorId: 'rutaCursoValor',
+        opciones: cursos.map(c => ({ value: c.code, label: `${c.code} · ${c.name}` })),
+        alElegir: (valor) => cambiarRutaCurso(valor),
+    })?.establecer(rutaCursoSeleccionado, actual ? `${actual.code} · ${actual.name}` : '');
+
+    refrescarVistaRutaCurso();
+}
+
+function cambiarRutaCurso(code) {
+    rutaCursoSeleccionado = code;
+    refrescarVistaRutaCurso();
+}
+
+function refrescarVistaRutaCurso() {
+    const cont = document.getElementById('ruta-curso-resultado');
+    if (!cont || typeof window.__pmRutaCurso !== 'function') return;
+
+    const d = window.__pmRutaCurso(rutaCursoSeleccionado);
+    if (!d) { cont.innerHTML = ''; return; }
+
+    const necesitaHtml = d.necesita.length ? `
+        <div class="meta-aa-tarjeta">
+            <div class="meta-aa-tarjeta-nombre">Necesitas</div>
+            ${d.necesita.map(n => `
+                <p class="meta-aa-tarjeta-desc">
+                    ${n.cumplido ? '✓' : '○'} ${n.tipo === 'creditos' ? n.valor + ' créditos acumulados' : n.code + ' · ' + n.name}
+                </p>
+            `).join('')}
+        </div>
+    ` : '';
+
+    function renderDesbloquea(lista) {
+        if (!lista.length) return '<p class="meta-aa-tarjeta-desc">Es el último de su línea por ahora.</p>';
+        return lista.map(c => `
+            <div class="meta-aa-tarjeta">
+                <div class="meta-aa-tarjeta-nombre">${c.code} · ${c.name}</div>
+                <p class="meta-aa-tarjeta-desc">
+                    ${c.credits} créditos${c.faltan.length ? ' · te falta también ' + c.faltan.join(', ') : ''}
+                </p>
+                ${c.nietos.length ? `<div style="margin-left:12px; padding-left:10px; border-left:2px solid var(--color-gris-claro);">${renderDesbloquea(c.nietos)}</div>` : ''}
+            </div>
+        `).join('');
+    }
+
+    cont.innerHTML = `
+        <div class="meta-aa-tarjeta">
+            <div class="meta-aa-tarjeta-nombre">${d.code} · ${d.name}</div>
+            <p class="meta-aa-tarjeta-desc">${d.credits} créditos</p>
+            <span class="pm-detalle-estado pm-estado-${d.estado}" style="display:inline-block;">${d.estadoLabel}</span>
+        </div>
+        ${necesitaHtml}
+        <div class="meta-aa-tarjeta-nombre" style="margin:14px 0 8px;">Se abre al aprobarlo</div>
+        ${renderDesbloquea(d.desbloquea)}
+    `;
 }

@@ -382,6 +382,46 @@ function pm_dibujarConexiones(codigoSeleccionado, relacionados) {
     });
 }
 
+/* ---------- Datos de un curso para "Ruta del Curso" — misma lógica
+   que usa el panel de detalle del mapa (Necesitas / Se abre al
+   aprobarlo, con el nivel extra por rama corta), pero devuelta como
+   datos puros en vez de HTML, para que intranotas.js la renderice
+   con su propio estilo dentro del panel angosto. ---------- */
+function pm_datosRutaCurso(code) {
+    const curso = pm_obtenerCurso(code);
+    if (!curso) return null;
+    const progreso = pm_progresoCompleto();
+    const estado = pm_estadoCurso(curso, progreso);
+
+    const mostrarNecesita = estado !== 'aprobado' && estado !== 'en_curso';
+    const necesita = mostrarNecesita ? curso.prereq.map(p => {
+        if (p.tipo === 'creditos') {
+            return { tipo: 'creditos', valor: p.valor, cumplido: pm_creditosAprobadosTotal(progreso) >= p.valor };
+        }
+        const req = pm_obtenerCurso(p.code);
+        return { tipo: 'curso', code: p.code, name: req ? req.name : '', cumplido: !!(progreso[p.code] && progreso[p.code].estado === 'aprobado') };
+    }) : [];
+
+    function nivel(lista, esRaiz) {
+        return lista.map(c => {
+            const faltan = pm_otrosFaltantes(c, esRaiz ? code : null, progreso);
+            const nietos = pm_obtenerDesbloquea(c.code);
+            const expandir = esRaiz && lista.length <= 1 && nietos.length;
+            return {
+                code: c.code, name: c.name, credits: c.credits,
+                faltan: faltan.map(f => f.tipo === 'creditos' ? `${f.valor} créditos` : f.code),
+                nietos: expandir ? nivel(nietos, false) : [],
+            };
+        });
+    }
+
+    return {
+        code: curso.code, name: curso.name, credits: curso.credits,
+        estado, estadoLabel: PM_ESTADO_LABEL[estado],
+        necesita, desbloquea: nivel(pm_obtenerDesbloquea(code), true),
+    };
+}
+
 /* ---------- Apertura / cierre del modal ---------- */
 function pm_abrir() {
     document.getElementById('pm-overlay').classList.add('pm-visible');
@@ -428,6 +468,8 @@ window.addEventListener('resize', () => {
     window.__pmAbrir = pm_abrir;
     window.__pmCerrar = pm_cerrar;
     window.__pmHabilitado = true;
+    window.__pmRutaCurso = pm_datosRutaCurso;
+    window.__pmListaCursos = pm_todosLosCursos;
     // 🔍 Temporal, para diagnóstico — quitar cuando ya no haga falta.
     window.__pmDebug = pm_progresoCompleto;
 })();
