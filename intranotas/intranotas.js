@@ -2900,11 +2900,34 @@ function refrescarVistaMeta() {
    ============================================================ */
 let rutaCursoSeleccionado = null;
 
+/* Cursos del periodo ACTIVO (los que están en pantalla en el
+   simulador ahora mismo), cruzados contra la malla — en vez de
+   listar los 64 obligatorios completos, que es demasiado para
+   alguien que solo quiere ver qué le espera con lo que ya tiene
+   cargado. Si un curso seleccionado no está en la malla de
+   obligatorios (p.ej. un electivo), se omite sin romper nada. */
+function cursosRutaDisponibles() {
+    if (typeof window.__pmListaCursos !== 'function') return [];
+    const todosMalla = window.__pmListaCursos();
+    const seleccionados = Array.isArray(window.cursosSeleccionados) ? window.cursosSeleccionados : [];
+    return seleccionados
+        .map(cs => todosMalla.find(c => c.code === cs.code))
+        .filter(Boolean)
+        .sort((a, b) => a.name.localeCompare(b.name));
+}
+
 function generarVistaRutaCurso() {
     if (typeof window.__pmListaCursos !== 'function') {
         return `
             <button type="button" class="aa-volver" onclick="abrirHerramienta('grid')">← Volver</button>
             <p class="aa-vacio">Abre primero "Progreso de tu carrera" una vez para que cargue la malla, y vuelve a intentarlo.</p>
+        `;
+    }
+
+    if (!cursosRutaDisponibles().length) {
+        return `
+            <button type="button" class="aa-volver" onclick="abrirHerramienta('grid')">← Volver</button>
+            <p class="aa-vacio">Selecciona tus cursos en Intranotas para ver su ruta de prerrequisitos.</p>
         `;
     }
 
@@ -2927,9 +2950,7 @@ function generarVistaRutaCurso() {
 }
 
 function inicializarVistaRutaCurso() {
-    if (typeof window.__pmListaCursos !== 'function') return;
-
-    const cursos = [...window.__pmListaCursos()].sort((a, b) => a.name.localeCompare(b.name));
+    const cursos = cursosRutaDisponibles();
     if (!cursos.length) return;
     if (!rutaCursoSeleccionado || !cursos.some(c => c.code === rutaCursoSeleccionado)) {
         rutaCursoSeleccionado = cursos[0].code;
