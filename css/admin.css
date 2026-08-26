@@ -170,39 +170,6 @@
     transform: none;
 }
 
-/* ---------- BOTÓN OCULTAR PARA MÍ (solo Notificaciones): mismo círculo,
-   pero a la izquierda del de eliminar y en tono neutro — para que no se
-   confunda con el borrado real. ---------- */
-.admin-btn-ocultar-notif {
-    position: absolute;
-    bottom: 18px;
-    right: 60px;
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    border: none;
-    background: rgba(0, 0, 0, 0.05);
-    color: var(--ink-soft);
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
-}
-
-.admin-btn-ocultar-notif:hover {
-    background: var(--brand-azul);
-    color: #fff;
-    transform: scale(1.08);
-}
-
-.admin-btn-ocultar-notif:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: none;
-}
-
 /* ---------- MODAL DE CONFIRMACIÓN (reemplaza al confirm() del navegador) ---------- */
 .modal-perfil {
     position: fixed;
@@ -325,71 +292,12 @@
     border-color: var(--brand-azul);
 }
 
-/* Switch "Enviar también por correo" — autocontenido (no depende de
-   perfil-hub.css, que no está cargado en esta página). Título arriba,
-   descripción en Poppins debajo, y el switch fijo a la derecha en su
-   propia columna para que no se mueva sin importar cuánto crezca el
-   texto de la izquierda. */
-.admin-toggle {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 18px;
-    cursor: pointer;
-    padding: 6px 2px;
-}
-
-.admin-toggle-texto {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.admin-toggle-texto strong {
-    font-size: 14px;
-    color: var(--ink);
-}
-
-.admin-toggle-texto small {
-    font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    color: var(--ink-soft);
-    line-height: 1.5;
-}
-
-.admin-toggle input {
-    display: none;
-}
-
-.admin-toggle-visual {
-    flex: 0 0 auto;
-    margin-top: 2px;
-    width: 44px;
-    height: 26px;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.15);
-    position: relative;
-    transition: background 0.2s ease;
-}
-
-.admin-toggle-visual::after {
-    content: "";
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #fff;
-    transition: transform 0.2s ease;
-}
-
-.admin-toggle input:checked+.admin-toggle-visual {
-    background: var(--brand-morado);
-}
-
-.admin-toggle input:checked+.admin-toggle-visual::after {
-    transform: translateX(18px);
+/* Reusa el switch de Preferencias (perfil-hub.css) pero sin el max-width
+   pensado para esa pantalla, y con un poco de aire alrededor para que no
+   se sienta pegado al textarea de arriba. */
+.admin-form-toggle {
+    max-width: none;
+    padding: 4px 2px;
 }
 
 .admin-form-submit {

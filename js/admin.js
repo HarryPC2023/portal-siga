@@ -401,33 +401,22 @@ async function eliminarAsesoria(id, urlRecurso, btn) {
    ============================================================ */
 async function cargarNotificaciones() {
     const cont = document.getElementById('listaNotificaciones');
-    const [{ data, error }, { data: ocultas, error: errOcultas }] = await Promise.all([
-        supabase
-            .from('notificaciones')
-            .select('id, titulo, mensaje, canal, creado_en')
-            .order('creado_en', { ascending: false })
-            .limit(20),
-        // Reutiliza la misma tabla que usa la campanita de los alumnos
-        // para "ocultar solo para mí" — acá con tu propio UID de admin,
-        // en vez de crear una tabla o política nueva para esto.
-        supabase.from('notificaciones_ocultas').select('notificacion_id').eq('user_id', ADMIN_UID),
-    ]);
+    const { data, error } = await supabase
+        .from('notificaciones')
+        .select('id, titulo, mensaje, canal, creado_en')
+        .order('creado_en', { ascending: false })
+        .limit(20);
 
     if (error) {
         cont.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;
         return;
     }
-    if (errOcultas) console.warn('No se pudo cargar tus notificaciones ocultas:', errOcultas);
-
-    const idsOcultasParaMi = new Set((ocultas || []).map((o) => o.notificacion_id));
-    const visibles = (data || []).filter((n) => !idsOcultasParaMi.has(n.id));
-
-    if (!visibles.length) {
+    if (!data.length) {
         cont.innerHTML = '<p class="admin-vacio">Todavía no has publicado ninguna notificación.</p>';
         return;
     }
 
-    cont.innerHTML = visibles.map((n) => {
+    cont.innerHTML = data.map((n) => {
         const esCorreo = n.canal === 'web_y_correo';
         return `
         <div class="admin-item" data-id="${n.id}">
@@ -437,22 +426,18 @@ async function cargarNotificaciones() {
             </div>
             <p class="admin-item-meta">${formatearFecha(n.creado_en)}</p>
             <p class="admin-item-texto">${escapeHtml(n.mensaje)}</p>
-            <button type="button" class="admin-btn-ocultar-notif" data-id="${n.id}" aria-label="Ocultar solo para mí" title="Ocultar solo para mí (sigue visible para los alumnos)">🙈</button>
-            <button type="button" class="admin-btn-eliminar" data-id="${n.id}" aria-label="Eliminar para todos" title="Eliminar para todos">🗑</button>
+            <button type="button" class="admin-btn-eliminar" data-id="${n.id}" aria-label="Eliminar notificación" title="Eliminar">🗑</button>
         </div>`;
     }).join('');
 
     cont.querySelectorAll('.admin-btn-eliminar').forEach((btn) => {
         btn.addEventListener('click', () => eliminarNotificacion(btn.dataset.id, btn));
     });
-    cont.querySelectorAll('.admin-btn-ocultar-notif').forEach((btn) => {
-        btn.addEventListener('click', () => ocultarNotificacionParaMi(btn.dataset.id, btn));
-    });
 }
 
 async function eliminarNotificacion(id, btn) {
-    const ok = await confirmarAccion('Esta notificación se borrará para TODOS los alumnos — incluso quienes aún no la habían visto — y no podrás recuperarla. Si solo quieres quitarla de tu panel sin afectar a nadie más, usa el botón 🙈 "Ocultar solo para mí" en su lugar.', {
-        titulo: '¿Eliminar esta notificación para todos?',
+    const ok = await confirmarAccion('Esta notificación se borrará para todos los alumnos y no podrás recuperarla.', {
+        titulo: '¿Eliminar esta notificación?',
     });
     if (!ok) return;
 
@@ -471,27 +456,6 @@ async function eliminarNotificacion(id, btn) {
     if (!data || data.length === 0) {
         btn.disabled = false;
         alert('No se pudo eliminar: no tienes permiso para esta acción. Revisa la política RLS de DELETE en "notificaciones".');
-        return;
-    }
-
-    btn.closest('.admin-item').remove();
-}
-
-/* No borra nada de la tabla "notificaciones" — solo agrega tu UID a
-   notificaciones_ocultas para esa notificación, igual que cuando un
-   alumno borra una de su propia campanita. Sigue existiendo para
-   todos los demás, tal cual. No hay (todavía) una pantalla para
-   "deshacer" esto — si más adelante la necesitas, se puede agregar. */
-async function ocultarNotificacionParaMi(id, btn) {
-    btn.disabled = true;
-
-    const { error } = await supabase
-        .from('notificaciones_ocultas')
-        .upsert({ user_id: ADMIN_UID, notificacion_id: id }, { onConflict: 'user_id,notificacion_id', ignoreDuplicates: true });
-
-    if (error) {
-        btn.disabled = false;
-        alert('No se pudo ocultar: ' + error.message);
         return;
     }
 
