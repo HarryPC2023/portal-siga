@@ -29,7 +29,7 @@ import { obtenerSesion } from '../js/auth-siga.js?v=9';
 const ADMIN_UID_SIGA = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 
 // 🔒 Flag maestro.
-const PROGRESO_MALLA_HABILITADO_PARA_TODOS = false;
+const PROGRESO_MALLA_HABILITADO_PARA_TODOS = true;
 
 async function progresoMallaHabilitado() {
     if (PROGRESO_MALLA_HABILITADO_PARA_TODOS) return true;
