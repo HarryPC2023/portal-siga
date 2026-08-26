@@ -1,0 +1,11 @@
+# Build output de Jekyll — se regenera en cada deploy vía GitHub Actions
+_site/
+
+# Caché de Jekyll al compilar en local
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+
+# Basura de Windows
+desktop.ini
+Thumbs.db
