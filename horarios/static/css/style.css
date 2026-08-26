@@ -172,6 +172,51 @@ body {
   margin-bottom: 20px;
 }
 
+/* ── Header de "Carga horaria oficial": ícono en caja aparte a la
+   izquierda + título y subtítulo apilados a la derecha, ambos
+   arrancando en la misma línea — mismo patrón visual que
+   .aa-header-icono (Análisis académico, Intranotas) y
+   .ah-header-icono (Asistente de Horario), pero scoped solo a esta
+   card para no tocar .card-title/.card-desc que otras cards siguen
+   usando tal cual. ── */
+.co-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.co-header-icono {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.co-header-textos {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.co-header-titulo-texto {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.co-header-subtitulo {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--text-dim);
+}
+
 /* ── UPLOAD ZONE ── */
 .upload-zone {
   border: 1.5px dashed var(--text-faint);

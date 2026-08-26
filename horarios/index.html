@@ -76,7 +76,8 @@
                             style="display:none">Próximamente</span>
                     </div>
                     <div class="card-desc card-desc-matricula">Trae tus cursos, vacantes y horarios automáticamente
-                        desde la intranet</div>
+                        de Intralu, pero solo aquellos que te corresponden al actual periodo académico y no toda la
+                        carga horaria completa. El proceso tarda menos de un minuto</div>
                     <div class="matricula-aviso-caida">
                         ⚠️ Si la página de la intranet no está activa, no será posible realizar la conexión ni cargar
                         los horarios en la web.
@@ -101,14 +102,20 @@
                      futuro esta automatización deja de mantenerse), pero
                      ya no compite visualmente con lo que la mayoría necesita. -->
                 <div class="idx-card">
-                    <div class="card-title">📅 Carga horaria oficial</div>
-                    <div class="card-desc">Ya está lista, no necesitas subir nada</div>
+                    <div class="co-header">
+                        <span class="co-header-icono">📅</span>
+                        <span class="co-header-textos">
+                            <span class="co-header-titulo-texto">Carga horaria oficial</span>
+                            <span class="co-header-subtitulo">Ya está lista y cargada toda la carga horaria oficial
+                                completa</span>
+                        </span>
+                    </div>
 
                     <div id="fileInfo" class="file-badge" style="display:none"></div>
                     <div id="uploadStatus" class="upload-status"></div>
 
                     <details class="carga-manual-detalle">
-                        <summary>¿Necesitas subir tu propio Excel?</summary>
+                        <summary>Si deseas puedes subir tú mismo la carga horaria</summary>
                         <div class="carga-manual-contenido">
                             <div class="upload-zone" id="uploadZone">
                                 <input type="file" id="fileInput" accept=".xlsx,.xls">
@@ -174,7 +181,7 @@
                     </button>
 
                     <button id="btnNext" class="btn-primary btn-next" disabled>
-                        Generar horarios →
+                        Ir al Simulador →
                     </button>
                 </div>
             </div>
