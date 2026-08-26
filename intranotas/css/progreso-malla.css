@@ -325,6 +325,61 @@
     margin: 0 0 12px;
 }
 
+/* ============================================================
+   🔗 RUTA DEL CURSO — cadena curso actual → se abre → se abre después
+   Cada nivel tiene su propio color y contenedor, para que quede
+   claro que son pasos distintos, no todo abriéndose a la vez.
+   ============================================================ */
+.ruta-nodo {
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 4px;
+}
+
+.ruta-nodo-nombre {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.86rem;
+    color: var(--color-texto-principal);
+    margin-bottom: 4px;
+}
+
+.ruta-nodo-creditos {
+    font-size: 0.76rem;
+    color: var(--color-gris-texto);
+    margin: 0;
+}
+
+.ruta-nodo-actual {
+    background: var(--color-cian-light);
+    border: 1.5px solid var(--color-cian);
+}
+
+.ruta-nodo-directo {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1.5px solid var(--color-verde-btn);
+}
+
+.ruta-nodo-siguiente {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1.5px solid #f59e0b;
+}
+
+.ruta-flecha {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-gris-texto);
+    margin: 8px 0;
+}
+
+.ruta-nota {
+    font-size: 0.74rem;
+    color: var(--color-gris-texto);
+    font-style: italic;
+    margin: 4px 0 0;
+}
+
 .pm-detalle-seccion {
     margin-bottom: 14px;
 }

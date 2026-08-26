@@ -23,11 +23,35 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
     // contenedor con su propio scroll (ej. el sidebar de Horarios) sin
     // que el navegador la recorte. Se recalcula cada vez que se abre,
     // por si el contenedor se desplazó desde la última vez.
+    //
+    // Ojo: si algún ancestro tiene `transform` (ej. .aa-panel, que lo
+    // usa para deslizarse al abrir/cerrar), ese ancestro se convierte
+    // en el "contenedor" real de cualquier position:fixed adentro —
+    // ya no es la pantalla completa, aunque getBoundingClientRect()
+    // siga devolviendo coordenadas relativas a la pantalla. Por eso se
+    // resta la posición de ese ancestro antes de aplicar top/left.
+    function ancestroConTransform(el) {
+        let nodo = el.parentElement;
+        while (nodo) {
+            const estilo = getComputedStyle(nodo);
+            if (estilo.transform && estilo.transform !== 'none') return nodo;
+            nodo = nodo.parentElement;
+        }
+        return null;
+    }
+
     function posicionar() {
         const r = trigger.getBoundingClientRect();
+        let top = r.bottom + 4, left = r.left;
+        const ancestro = ancestroConTransform(trigger);
+        if (ancestro) {
+            const ra = ancestro.getBoundingClientRect();
+            top -= ra.top;
+            left -= ra.left;
+        }
         lista.style.position = 'fixed';
-        lista.style.top = (r.bottom + 4) + 'px';
-        lista.style.left = r.left + 'px';
+        lista.style.top = top + 'px';
+        lista.style.left = left + 'px';
         lista.style.width = r.width + 'px';
         lista.style.right = 'auto';
     }

@@ -2969,27 +2969,33 @@ function refrescarVistaRutaCurso() {
         </div>
     ` : '';
 
-    function renderDesbloquea(lista) {
+    // Cada nivel de la cadena tiene su propio contenedor Y su propio
+    // color — nivel 1 (lo que se abre directo) vs. nivel 2+ (lo que
+    // eso, a su vez, abre después) — conectados con una flecha entre
+    // cada uno, para que no parezca que todo se abre al mismo tiempo.
+    function renderDesbloquea(lista, nivel) {
         if (!lista.length) return '<p class="meta-aa-tarjeta-desc">Es el último de su línea por ahora.</p>';
+        const clase = nivel === 1 ? 'ruta-nodo-directo' : 'ruta-nodo-siguiente';
         return lista.map(c => `
-            <div class="meta-aa-tarjeta">
-                <div class="meta-aa-tarjeta-nombre">${c.code} · ${c.name}</div>
-                <p class="meta-aa-tarjeta-desc">
-                    ${c.credits} créditos${c.faltan.length ? ' · te falta también ' + c.faltan.join(', ') : ''}
-                </p>
-                ${c.nietos.length ? `<div style="margin-left:12px; padding-left:10px; border-left:2px solid var(--color-gris-claro);">${renderDesbloquea(c.nietos)}</div>` : ''}
+            <div class="ruta-flecha">↓ se abre al aprobarlo</div>
+            <div class="ruta-nodo ${clase}">
+                <div class="ruta-nodo-nombre">${c.code} · ${c.name}</div>
+                <p class="ruta-nodo-creditos">${c.credits} créditos${c.faltan.length ? ' · te falta también ' + c.faltan.join(', ') : ''}</p>
             </div>
+            ${c.nietos.length ? `
+                <p class="ruta-nota">Si apruebas ${c.code}, se abre el curso de abajo:</p>
+                ${renderDesbloquea(c.nietos, nivel + 1)}
+            ` : ''}
         `).join('');
     }
 
     cont.innerHTML = `
-        <div class="meta-aa-tarjeta">
-            <div class="meta-aa-tarjeta-nombre">${d.code} · ${d.name}</div>
-            <p class="meta-aa-tarjeta-desc">${d.credits} créditos</p>
-            <span class="pm-detalle-estado pm-estado-${d.estado}" style="display:inline-block;">${d.estadoLabel}</span>
+        <div class="ruta-nodo ruta-nodo-actual">
+            <div class="ruta-nodo-nombre">${d.code} · ${d.name}</div>
+            <p class="ruta-nodo-creditos">${d.credits} créditos</p>
+            <span class="pm-detalle-estado pm-estado-${d.estado}" style="display:inline-block; margin-top:6px;">${d.estadoLabel}</span>
         </div>
         ${necesitaHtml}
-        <div class="meta-aa-tarjeta-nombre" style="margin:14px 0 8px;">Se abre al aprobarlo</div>
-        ${renderDesbloquea(d.desbloquea)}
+        ${renderDesbloquea(d.desbloquea, 1)}
     `;
 }
