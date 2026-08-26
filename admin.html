@@ -18,10 +18,10 @@
     <link rel="stylesheet" href="css/tema-siga.css?v=1">
     <link rel="stylesheet" href="css/admin.css?v=1">
     <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
-<link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
-<link rel="manifest" href="/portal-siga/manifest.json">
-<meta name="theme-color" content="#000000">
+    <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
+    <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
+    <link rel="manifest" href="/portal-siga/manifest.json">
+    <meta name="theme-color" content="#000000">
 </head>
 
 <body>
@@ -43,6 +43,7 @@
                 <button type="button" class="admin-tab activo" data-tab="sugerencias">Sugerencias</button>
                 <button type="button" class="admin-tab" data-tab="asesorias">Asesorías propuestas</button>
                 <button type="button" class="admin-tab" data-tab="opiniones">Opiniones reportadas</button>
+                <button type="button" class="admin-tab" data-tab="notificaciones">Notificaciones</button>
             </div>
 
             <div id="panelSugerencias" class="admin-panel">
@@ -59,6 +60,44 @@
 
             <div id="panelOpiniones" class="admin-panel" style="display:none;">
                 <div id="listaOpiniones">
+                    <p class="admin-vacio">Cargando…</p>
+                </div>
+            </div>
+
+            <div id="panelNotificaciones" class="admin-panel" style="display:none;">
+                <div class="admin-form-caja">
+                    <h2 class="admin-form-titulo">Nueva notificación</h2>
+                    <form id="formNotificacion">
+                        <label class="admin-form-campo">
+                            <span>Título</span>
+                            <input type="text" id="notifTitulo" maxlength="80" required
+                                placeholder="Ej. Nueva sección: Materiales">
+                        </label>
+
+                        <label class="admin-form-campo">
+                            <span>Mensaje</span>
+                            <textarea id="notifMensaje" rows="3" maxlength="300" required
+                                placeholder="Describe brevemente el aviso…"></textarea>
+                        </label>
+
+                        <label class="perfil-toggle admin-form-toggle">
+                            <span>
+                                <strong>Enviar también por correo</strong>
+                                <small>Además de aparecer en SIGA, le llega un correo a todos los alumnos con
+                                    notificaciones activas. Úsalo solo para avisos importantes — la cuota gratuita de
+                                    Brevo es de 300 correos/día.</small>
+                            </span>
+                            <input type="checkbox" id="notifPorCorreo">
+                            <span class="perfil-toggle-visual"></span>
+                        </label>
+
+                        <button type="submit" class="admin-form-submit" id="btnPublicarNotif">Publicar
+                            notificación</button>
+                        <p class="admin-msg" id="notifMsg"></p>
+                    </form>
+                </div>
+
+                <div id="listaNotificaciones">
                     <p class="admin-vacio">Cargando…</p>
                 </div>
             </div>

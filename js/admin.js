@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     cargarSugerencias();
     cargarAsesorias();
     cargarOpiniones();
+    cargarNotificaciones();
+    inicializarFormNotificacion();
 
     document.querySelectorAll('.admin-tab').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -39,6 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('panelSugerencias').style.display = tab === 'sugerencias' ? 'flex' : 'none';
             document.getElementById('panelAsesorias').style.display = tab === 'asesorias' ? 'flex' : 'none';
             document.getElementById('panelOpiniones').style.display = tab === 'opiniones' ? 'flex' : 'none';
+            document.getElementById('panelNotificaciones').style.display = tab === 'notificaciones' ? 'flex' : 'none';
         });
     });
 });
@@ -387,4 +390,119 @@ async function eliminarAsesoria(id, urlRecurso, btn) {
     }
 
     btn.closest('.admin-item').remove();
+}
+
+/* ============================================================
+   NOTIFICACIONES
+   Reemplaza el flujo manual por Table Editor: se crea y se borra
+   directo desde este panel. El canal ('solo_web' / 'web_y_correo')
+   nunca se escribe a mano — lo decide el switch de "Enviar también
+   por correo" para que no dependa de acordarse del valor exacto.
+   ============================================================ */
+async function cargarNotificaciones() {
+    const cont = document.getElementById('listaNotificaciones');
+    const { data, error } = await supabase
+        .from('notificaciones')
+        .select('id, titulo, mensaje, canal, creado_en')
+        .order('creado_en', { ascending: false })
+        .limit(20);
+
+    if (error) {
+        cont.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;
+        return;
+    }
+    if (!data.length) {
+        cont.innerHTML = '<p class="admin-vacio">Todavía no has publicado ninguna notificación.</p>';
+        return;
+    }
+
+    cont.innerHTML = data.map((n) => {
+        const esCorreo = n.canal === 'web_y_correo';
+        return `
+        <div class="admin-item" data-id="${n.id}">
+            <div class="admin-item-cabecera">
+                <span class="admin-item-titulo">${escapeHtml(n.titulo)}</span>
+                <span class="admin-badge admin-badge-${escapeHtml(n.canal)}">${esCorreo ? '📧 Web + correo' : '🌐 Solo web'}</span>
+            </div>
+            <p class="admin-item-meta">${formatearFecha(n.creado_en)}</p>
+            <p class="admin-item-texto">${escapeHtml(n.mensaje)}</p>
+            <button type="button" class="admin-btn-eliminar" data-id="${n.id}" aria-label="Eliminar notificación" title="Eliminar">🗑</button>
+        </div>`;
+    }).join('');
+
+    cont.querySelectorAll('.admin-btn-eliminar').forEach((btn) => {
+        btn.addEventListener('click', () => eliminarNotificacion(btn.dataset.id, btn));
+    });
+}
+
+async function eliminarNotificacion(id, btn) {
+    const ok = await confirmarAccion('Esta notificación se borrará para todos los alumnos y no podrás recuperarla.', {
+        titulo: '¿Eliminar esta notificación?',
+    });
+    if (!ok) return;
+
+    btn.disabled = true;
+
+    // .select() al final para detectar en el acto si la política RLS de
+    // borrado bloqueó la operación (mismo patrón que en Sugerencias).
+    const { data, error } = await supabase.from('notificaciones').delete().eq('id', id).select();
+
+    if (error) {
+        btn.disabled = false;
+        alert('No se pudo eliminar: ' + error.message);
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        btn.disabled = false;
+        alert('No se pudo eliminar: no tienes permiso para esta acción. Revisa la política RLS de DELETE en "notificaciones".');
+        return;
+    }
+
+    btn.closest('.admin-item').remove();
+}
+
+function inicializarFormNotificacion() {
+    const form = document.getElementById('formNotificacion');
+    if (!form) return;
+
+    const inputTitulo = document.getElementById('notifTitulo');
+    const inputMensaje = document.getElementById('notifMensaje');
+    const inputCorreo = document.getElementById('notifPorCorreo');
+    const btnPublicar = document.getElementById('btnPublicarNotif');
+    const msg = document.getElementById('notifMsg');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const titulo = inputTitulo.value.trim();
+        const mensaje = inputMensaje.value.trim();
+        if (!titulo || !mensaje) return;
+
+        const canal = inputCorreo.checked ? 'web_y_correo' : 'solo_web';
+
+        btnPublicar.disabled = true;
+        btnPublicar.textContent = 'Publicando…';
+        msg.textContent = '';
+        msg.className = 'admin-msg';
+
+        const { error } = await supabase.from('notificaciones').insert({ titulo, mensaje, canal });
+
+        btnPublicar.disabled = false;
+        btnPublicar.textContent = 'Publicar notificación';
+
+        if (error) {
+            msg.textContent = 'No se pudo publicar: ' + error.message;
+            msg.className = 'admin-msg error';
+            return;
+        }
+
+        msg.textContent = canal === 'web_y_correo'
+            ? '✅ Publicada — se está enviando el correo a los alumnos activos.'
+            : '✅ Publicada — visible en la campanita de SIGA.';
+        msg.className = 'admin-msg exito';
+
+        form.reset();
+        cargarNotificaciones();
+    });
 }
