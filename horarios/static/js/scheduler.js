@@ -8,9 +8,22 @@
 // Equivale a calcular_cruces() dentro de /generar en app.py
 //
 // Reglas (igual que Horext):
-//   P vs P → infinito (combinación bloqueada)
-//   T vs T o T vs P → +1 cruce
+//   P vs P → infinito (combinación bloqueada) — JAMÁS permitido,
+//            sin importar el número de cruces que elija el usuario
+//   T vs T o T vs P → +1 cruce (sí se puede permitir)
+//
+// "P" no es un único valor literal en la carga horaria: según el
+// curso, el Excel oficial trae "P", "PRA", "PC", "LAB" o "PC / LAB"
+// para referirse a una práctica. esPractica() usa el mismo criterio
+// que ya usan generador.js y asistente-horario.js para pintar los
+// badges T/P (esTeoria = tipo T o que empiece con "TEOR"): todo lo
+// que NO sea teoría se trata como práctica para efectos del bloqueo.
 // ------------------------------------------------------------
+function esPractica(tipo) {
+    const esTeoria = tipo === 'T' || /TEOR/i.test(tipo);
+    return !esTeoria;
+}
+
 function calcularCruces(combo) {
     let cruces = 0;
 
@@ -29,10 +42,13 @@ function calcularCruces(combo) {
             const overlap = Math.max(0, Math.min(a.fin, b.fin) - Math.max(a.ini, b.ini));
             if (overlap <= 0) continue;
 
-            // P vs P → bloqueado, retorna infinito inmediatamente
-            if (a.tipo === 'P' && b.tipo === 'P') return Infinity;
+            // P vs P (en cualquiera de sus variantes) → bloqueado,
+            // retorna infinito inmediatamente. Como generarCombos()
+            // descarta con "<= maxCruces", Infinity nunca pasa ese
+            // filtro sin importar el valor de maxCruces (0 a 6).
+            if (esPractica(a.tipo) && esPractica(b.tipo)) return Infinity;
 
-            // Cualquier otro solapamiento → +1 cruce
+            // T vs T o T vs P → +1 cruce, sí puede permitirse
             cruces += 1;
         }
     }
