@@ -373,7 +373,6 @@ const Favoritos = {
 
     async cargarDesdeNube() {
         try {
-            if (!window.sigaSupabase) { console.log('[Favoritos-debug] window.sigaSupabase no existe todavía'); return; }
             const userId = await this._obtenerUserIdConfiable();
             console.log('[Favoritos-debug] cargarDesdeNube() → userId final =', userId);
             if (!userId) return;
@@ -416,20 +415,18 @@ const Favoritos = {
         const item = { nombre: n, combo };
         let sincronizado = false;
         try {
-            if (window.sigaSupabase) {
-                const userId = await this._obtenerUserIdConfiable();
-                console.log('[Favoritos-debug] agregar() → userId =', userId);
-                if (userId) {
-                    const { data, error } = await window.sigaSupabase
-                        .from('horarios_favoritos')
-                        .insert({ user_id: userId, nombre: n, combo })
-                        .select('id')
-                        .single();
-                    console.log('[Favoritos-debug] agregar() → insert data =', data, ' error =', error);
-                    if (error) throw error;
-                    item.id = data.id;
-                    sincronizado = true;
-                }
+            const userId = await this._obtenerUserIdConfiable();
+            console.log('[Favoritos-debug] agregar() → userId =', userId);
+            if (userId) {
+                const { data, error } = await window.sigaSupabase
+                    .from('horarios_favoritos')
+                    .insert({ user_id: userId, nombre: n, combo })
+                    .select('id')
+                    .single();
+                console.log('[Favoritos-debug] agregar() → insert data =', data, ' error =', error);
+                if (error) throw error;
+                item.id = data.id;
+                sincronizado = true;
             }
         } catch (e) {
             console.warn('No se pudo guardar el favorito en la nube (queda guardado solo en esta sesión):', e);
