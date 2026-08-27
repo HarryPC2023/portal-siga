@@ -1547,7 +1547,7 @@ function construirBannerReferenciasHorario() {
     if (!profesoresComboActual.length) return '';
 
     return `
-        <div style="background:#fff; border-radius:14px; padding:20px; text-align:center; margin:24px auto 8px; max-width:420px; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
+        <div class="referencia-horario-banner" style="background:#fff; border-radius:14px; padding:20px; text-align:center; margin:24px auto 8px; max-width:420px; box-shadow:0 8px 20px rgba(0,0,0,0.06);">
             <p style="font-size:0.95rem; font-weight:700; color:var(--ink); margin-bottom:6px;">¿Qué sabes de tus profesores de este ciclo?</p>
             <p style="font-size:0.8rem; color:var(--ink-soft); margin:0 auto 14px; line-height:1.5;">
                 Por experiencia propia o por lo que escuchaste de ellos — tu aporte ayuda a que otros elijan con más criterio.
