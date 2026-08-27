@@ -299,8 +299,6 @@ function renderVistaComparador() {
             <button type="button" class="ah-volver" onclick="volverAGridAsistente()">← Volver</button>
             <div class="ah-vacio">
                 Guarda al menos 2 horarios con "★ Guardar" para poder compararlos.
-                Ojo: los favoritos se guardan solo mientras tengas esta pestaña
-                abierta — si recargas la página, se pierden.
             </div>
         `;
         return;

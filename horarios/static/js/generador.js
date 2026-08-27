@@ -188,6 +188,12 @@ function inicializar(cursos) {
     // localmente arriba, se aplica y se regenera; si es igual, no se toca
     // nada (el caché local de arriba ya dibujó bien).
     sincronizarSeleccionDesdeNube();
+
+    // Trae los favoritos guardados en la nube. No se espera (no
+    // bloqueante) — para cuando el usuario abra el panel de
+    // Favoritos, en la enorme mayoría de los casos ya habrá terminado;
+    // toggleFavoritos() espera de todos modos si aún no acabó.
+    Favoritos.cargarDesdeNube();
 }
 
 // ── Reconciliación con la nube (no reemplaza el caché local, solo
@@ -967,11 +973,15 @@ async function guardarFavorito() {
     const combo = combosValidos[currentIndex];
     const nombre = await pedirNombreHorario(`Opción ${currentIndex + 1}`);
     if (!nombre) return;
-    Favoritos.agregar(combo, nombre);
+    await Favoritos.agregar(combo, nombre);
     showToast('Horario guardado en favoritos ★', 'success');
+    // Si el panel de favoritos está abierto en este momento, refresca
+    // la lista para que aparezca el que se acaba de guardar.
+    const panel = document.getElementById('favsPanel');
+    if (panel && panel.style.display !== 'none') renderFavoritos();
 }
 
-function toggleFavoritos() {
+async function toggleFavoritos() {
     const panel = document.getElementById('favsPanel');
     const overlay = document.getElementById('favsOverlay');
     if (!panel || !overlay) return;
@@ -979,11 +989,21 @@ function toggleFavoritos() {
     if (visible) {
         panel.style.display = 'none';
         overlay.style.display = 'none';
-    } else {
-        panel.style.display = 'flex';
-        overlay.style.display = 'block';
-        renderFavoritos();
+        return;
     }
+
+    panel.style.display = 'flex';
+    overlay.style.display = 'block';
+
+    // Red de seguridad: si la carga inicial (disparada en inicializar())
+    // todavía no terminó —por ejemplo, red lenta— se espera acá antes
+    // de dibujar, para no mostrar "no tienes favoritos" en falso.
+    if (!Favoritos._cargado) {
+        const lista = document.getElementById('favsList');
+        if (lista) lista.innerHTML = '<div class="favs-empty">Cargando tus favoritos…</div>';
+        await Favoritos.cargarDesdeNube();
+    }
+    renderFavoritos();
 }
 
 function renderFavoritos() {
@@ -1025,8 +1045,8 @@ function verFavorito(idx) {
     }
 }
 
-function eliminarFavorito(idx) {
-    Favoritos.eliminar(idx);
+async function eliminarFavorito(idx) {
+    await Favoritos.eliminar(idx);
     renderFavoritos();
     showToast('Favorito eliminado', 'error');
 }

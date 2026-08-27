@@ -313,31 +313,94 @@ function generarICS(combo) {
 
 
 // ============================================================
-// FAVORITOS — equivale a /favoritos en app.py
-// En vez del servidor, se guardan en memoria del navegador
-// mientras la sesión esté abierta (se pierden al recargar,
-// igual que la lista favoritos = [] en app.py)
+// FAVORITOS — sincronizados en Supabase (tabla horarios_favoritos),
+// uno por fila por usuario. Antes se guardaban en un array en
+// memoria (se perdían al recargar); ahora _lista es una CACHÉ local
+// que se llena una vez desde la nube (cargarDesdeNube) y se mantiene
+// al día en cada agregar/eliminar.
+//
+// obtener()/total() siguen siendo síncronos a propósito: el
+// Comparador del Asistente de Horario y el panel de favoritos ya
+// los llaman así, y para cuando el usuario alcanza a interactuar
+// la carga inicial ya terminó en la enorme mayoría de los casos.
+// Como red de seguridad, toggleFavoritos() en generador.js espera
+// a cargarDesdeNube() si todavía no terminó.
 // ============================================================
 
 const Favoritos = {
-    _lista: [], // equivale a favoritos = [] en app.py
+    _lista: [],
+    _cargado: false,
 
-    // Agrega un combo con nombre → equivale a POST /favoritos
-    agregar(combo, nombre) {
+    // Trae los favoritos del usuario actual desde Supabase y llena
+    // la caché local. Se llama una vez al iniciar el generador; si no
+    // hay sesión o falla la red, se queda vacía sin romper la pantalla.
+    async cargarDesdeNube() {
+        try {
+            if (typeof obtenerUserIdActual !== 'function' || !window.sigaSupabase) return;
+            const userId = await obtenerUserIdActual();
+            if (!userId) return;
+
+            const { data, error } = await window.sigaSupabase
+                .from('horarios_favoritos')
+                .select('id, nombre, combo, created_at')
+                .eq('user_id', userId)
+                .order('created_at', { ascending: true });
+
+            if (error) { console.warn('No se pudieron cargar los favoritos desde la nube:', error); return; }
+            if (data) this._lista = data.map(f => ({ id: f.id, nombre: f.nombre, combo: f.combo }));
+        } catch (e) {
+            console.warn('Error cargando favoritos desde la nube:', e);
+        } finally {
+            this._cargado = true;
+        }
+    },
+
+    // Agrega un combo con nombre → inserta en Supabase y en la caché.
+    // Si falla la nube (sin sesión, sin red), igual queda guardado en
+    // la caché local para esta sesión, para no bloquear al usuario.
+    async agregar(combo, nombre) {
         const n = nombre || `Favorito ${this._lista.length + 1}`;
-        this._lista.push({ nombre: n, combo });
+        const item = { nombre: n, combo };
+        try {
+            if (typeof obtenerUserIdActual === 'function' && window.sigaSupabase) {
+                const userId = await obtenerUserIdActual();
+                if (userId) {
+                    const { data, error } = await window.sigaSupabase
+                        .from('horarios_favoritos')
+                        .insert({ user_id: userId, nombre: n, combo })
+                        .select('id')
+                        .single();
+                    if (error) throw error;
+                    item.id = data.id;
+                }
+            }
+        } catch (e) {
+            console.warn('No se pudo guardar el favorito en la nube (queda guardado solo en esta sesión):', e);
+        }
+        this._lista.push(item);
         return this._lista.length;
     },
 
-    // Devuelve todos los favoritos → equivale a GET /favoritos
+    // Devuelve todos los favoritos (síncrono, desde la caché ya cargada)
     obtener() {
         return this._lista;
     },
 
-    // Elimina por índice → equivale a DELETE /favoritos/<idx>
-    eliminar(idx) {
-        if (idx >= 0 && idx < this._lista.length) {
-            this._lista.splice(idx, 1);
+    // Elimina por índice de la caché local → borra en Supabase por id.
+    async eliminar(idx) {
+        const item = this._lista[idx];
+        if (!item) return;
+        this._lista.splice(idx, 1);
+        if (item.id && window.sigaSupabase) {
+            try {
+                const { error } = await window.sigaSupabase
+                    .from('horarios_favoritos')
+                    .delete()
+                    .eq('id', item.id);
+                if (error) console.warn('No se pudo eliminar el favorito en la nube:', error);
+            } catch (e) {
+                console.warn('Error eliminando favorito en la nube:', e);
+            }
         }
     },
 
