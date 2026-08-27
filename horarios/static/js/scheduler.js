@@ -334,10 +334,29 @@ const Favoritos = {
     // Trae los favoritos del usuario actual desde Supabase y llena
     // la caché local. Se llama una vez al iniciar el generador; si no
     // hay sesión o falla la red, se queda vacía sin romper la pantalla.
+    // Consigue el user_id actual con un par de reintentos cortos.
+    // esperarSupabaseListo() (dentro de obtenerUserIdActual) solo
+    // garantiza que el CLIENTE de Supabase ya existe — no que la
+    // sesión ya terminó de restaurarse desde el almacenamiento local.
+    // Justo después de navegar entre páginas (Asesorías → Horarios →
+    // Generador, todo son recargas completas) puede tardar unos
+    // cientos de ms; sin este reintento, obtenerUserIdActual() devuelve
+    // null "limpio" (sin error) en ese instante y el resto del código
+    // lo interpreta como "no hay sesión" para siempre.
+    async _obtenerUserIdConReintento(intentos = 3, esperaMs = 300) {
+        if (typeof obtenerUserIdActual !== 'function') return null;
+        for (let i = 0; i < intentos; i++) {
+            const userId = await obtenerUserIdActual();
+            if (userId) return userId;
+            if (i < intentos - 1) await new Promise(r => setTimeout(r, esperaMs));
+        }
+        return null;
+    },
+
     async cargarDesdeNube() {
         try {
-            if (typeof obtenerUserIdActual !== 'function' || !window.sigaSupabase) return;
-            const userId = await obtenerUserIdActual();
+            if (!window.sigaSupabase) return;
+            const userId = await this._obtenerUserIdConReintento();
             if (!userId) return;
 
             const { data, error } = await window.sigaSupabase
@@ -356,14 +375,19 @@ const Favoritos = {
     },
 
     // Agrega un combo con nombre → inserta en Supabase y en la caché.
-    // Si falla la nube (sin sesión, sin red), igual queda guardado en
-    // la caché local para esta sesión, para no bloquear al usuario.
+    // Si falla la nube (sin sesión, sin red, error de RLS, etc.), igual
+    // queda guardado en la caché local para esta sesión (para no
+    // bloquear al usuario), pero avisa con `sincronizado: false` para
+    // que quien llama pueda avisarle a la persona que NO va a sobrevivir
+    // a un refresh — antes esto fallaba en silencio (solo console.warn)
+    // y el toast decía "guardado" igual, aunque en realidad se perdía.
     async agregar(combo, nombre) {
         const n = nombre || `Favorito ${this._lista.length + 1}`;
         const item = { nombre: n, combo };
+        let sincronizado = false;
         try {
-            if (typeof obtenerUserIdActual === 'function' && window.sigaSupabase) {
-                const userId = await obtenerUserIdActual();
+            if (window.sigaSupabase) {
+                const userId = await this._obtenerUserIdConReintento();
                 if (userId) {
                     const { data, error } = await window.sigaSupabase
                         .from('horarios_favoritos')
@@ -372,13 +396,23 @@ const Favoritos = {
                         .single();
                     if (error) throw error;
                     item.id = data.id;
+                    sincronizado = true;
                 }
             }
         } catch (e) {
             console.warn('No se pudo guardar el favorito en la nube (queda guardado solo en esta sesión):', e);
         }
         this._lista.push(item);
-        return this._lista.length;
+        return { total: this._lista.length, sincronizado };
+    },
+
+    // Busca si un combo (mismo contenido exacto) ya está guardado.
+    // Devuelve el favorito existente o null. Comparación por contenido
+    // (JSON), no por referencia — dos combos "iguales" generados en
+    // momentos distintos son objetos distintos en memoria.
+    existeCombo(combo) {
+        const clave = JSON.stringify(combo);
+        return this._lista.find(f => JSON.stringify(f.combo) === clave) || null;
     },
 
     // Devuelve todos los favoritos (síncrono, desde la caché ya cargada)
