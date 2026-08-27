@@ -296,10 +296,9 @@
                 // Dispositivo nuevo (sin nada en localStorage): antes de
                 // mostrar la lista de cursos vacía, revisa si ya elegiste
                 // cursos desde otro dispositivo (quedan guardados en
-                // horarios_alumno al generar un horario) y los pre-marca,
-                // para no obligarte a repetir la selección desde cero.
+                // horarios_alumno al generar un horario).
                 try {
-                    await preseleccionarCursosDesdeNube();
+                    await sincronizarSeleccionCursosDesdeNube();
                 } catch (e) {
                     console.warn('No se pudo revisar cursos guardados en la nube:', e);
                 }
@@ -324,17 +323,23 @@
         }
 
         /* Consulta horarios_alumno (misma tabla que usa el Generador para
-           reconciliar profesores/secciones entre dispositivos) y agrega a
-           cursosSeleccionados los cursos que sigan existiendo en la carga
-           horaria actual. Usa esperarSigaObtenerSesion(), definida más
-           abajo en este mismo bloque — function hoisting hace que esté
-           disponible igual, sin importar el orden en el archivo. */
-        async function preseleccionarCursosDesdeNube() {
+           reconciliar profesores/secciones entre dispositivos) y hace que
+           cursosSeleccionados quede IGUAL a lo que hay en la nube — no solo
+           agrega, reemplaza — así, sin importar si este dispositivo tenía
+           una selección local vieja/vacía, gana lo último guardado desde
+           cualquier dispositivo (mismo criterio que ya usa la reconciliación
+           de secciones/profesores en generador.js). Se llama tanto desde un
+           dispositivo 100% nuevo como desde uno con caché local existente.
+           Devuelve true si cambió algo respecto a lo que había localmente.
+           Usa esperarSigaObtenerSesion(), definida más abajo en este mismo
+           bloque — function hoisting hace que esté disponible igual, sin
+           importar el orden en el archivo. */
+        async function sincronizarSeleccionCursosDesdeNube() {
             await esperarSigaObtenerSesion();
-            if (!window.sigaObtenerSesion || !window.sigaSupabase) return;
+            if (!window.sigaObtenerSesion || !window.sigaSupabase) return false;
 
             const sesion = await window.sigaObtenerSesion();
-            if (!sesion) return;
+            if (!sesion) return false;
 
             const { data, error } = await window.sigaSupabase
                 .from('horarios_alumno')
@@ -342,11 +347,20 @@
                 .eq('user_id', sesion.user.id)
                 .maybeSingle();
 
-            if (error || !data || !data.secciones_generador) return;
+            if (error || !data || !data.secciones_generador) return false;
 
-            Object.keys(data.secciones_generador).forEach(curso => {
-                if (curso in cargaGlobal) cursosSeleccionados.add(curso);
-            });
+            // Solo cursos que sigan existiendo en la carga horaria actual
+            // (por si algún curso ya no se dicta este ciclo).
+            const cursosNube = Object.keys(data.secciones_generador).filter(c => c in cargaGlobal);
+            if (!cursosNube.length) return false;
+
+            const nubeSet = new Set(cursosNube);
+            const igualQueLocal = nubeSet.size === cursosSeleccionados.size &&
+                [...nubeSet].every(c => cursosSeleccionados.has(c));
+            if (igualQueLocal) return false;
+
+            cursosSeleccionados = nubeSet;
+            return true;
         }
 
         // ── Autoguardado: se llama en cada cambio, no en un clic ──
@@ -685,7 +699,7 @@
         };
 
         // ── Restaurar progreso guardado al abrir la app ──────────
-        (function restaurarProgreso() {
+        (async function restaurarProgreso() {
             const cargaGuardada = localStorage.getItem(LS_CARGA);
             if (!cargaGuardada) {
                 cargarCargaOficial();
@@ -712,11 +726,30 @@
 
                 seleccionGuardada.forEach(c => cursosSeleccionados.add(c));
 
+                // Antes vivía solo en cargarCargaOficial() (dispositivo sin
+                // NADA en localStorage). El bug real: un dispositivo que sí
+                // tiene caché local (como el celular, con la carga horaria
+                // ya guardada) entraba por ESTE camino y nunca revisaba la
+                // nube — así que si desde otro dispositivo cambiaste tu
+                // selección de cursos después, este dispositivo se quedaba
+                // con la versión vieja (o vacía) sin enterarse nunca. Ahora
+                // se revisa siempre, tenga o no caché local.
+                try {
+                    const huboCambioDesdeNube = await sincronizarSeleccionCursosDesdeNube();
+                    if (huboCambioDesdeNube) {
+                        uploadStatus.innerHTML =
+                            `<span style="color:#10b981">✅ ${cursos.length} cursos disponibles — actualizamos tu selección con la de otro dispositivo.</span>`;
+                        guardarProgreso();
+                    }
+                } catch (e) {
+                    console.warn('No se pudo reconciliar la selección de cursos con la nube:', e);
+                }
+
                 // ── Saltar directo a la pantalla 2 ──────────────────
-                // Si ya había una selección de cursos guardada, no tiene
-                // sentido pasar por acá de nuevo — se salta directo al
-                // generador (que a su vez restaura las combinaciones ya
-                // generadas, si siguen siendo válidas para esa selección).
+                // Si ya hay una selección de cursos (local o recién traída
+                // de la nube), no tiene sentido pasar por acá de nuevo — se
+                // salta directo al generador (que a su vez restaura las
+                // combinaciones ya generadas, si siguen siendo válidas).
                 // Excepción: si el usuario vino a propósito con "←
                 // Elegir cursos" (generador.html le agrega ?editar=1),
                 // se queda acá para poder cambiar su selección.
