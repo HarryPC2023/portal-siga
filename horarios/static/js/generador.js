@@ -809,13 +809,32 @@ function irACombinacionInput() {
     }
 }
 
-// Imprime el horario actual (o lo guarda como PDF: el diálogo de
-// impresión del navegador ya trae esa opción, así que no hace falta
-// generar un PDF aparte con una librería). El @media print de
-// style.css oculta todo menos el calendario.
-function imprimirHorario() {
+// Genera la imagen del calendario y recién ahí abre el diálogo de
+// impresión (o "Guardar como PDF") — imprimir la imagen en vez de la
+// tabla HTML en vivo evita que el navegador la corte en 2 hojas.
+async function imprimirHorario() {
     if (!combosValidos.length) { showToast('Genera un horario primero', 'error'); return; }
-    window.print();
+    const printImg = document.getElementById('printImg');
+    if (!printImg) { window.print(); return; }
+
+    try {
+        const canvas = await capturarCalendarioComoImagen();
+        if (!canvas) { showToast('Genera un horario primero', 'error'); return; }
+        printImg.src = canvas.toDataURL('image/png');
+
+        // Espera a que el navegador termine de pintar la imagen antes
+        // de abrir el diálogo — si no, a veces sale la hoja en blanco
+        // porque el <img> todavía no tenía nada dibujado.
+        await new Promise(resolve => {
+            if (printImg.complete) return resolve();
+            printImg.onload = resolve;
+        });
+
+        window.print();
+    } catch (e) {
+        console.error('Error al preparar la impresión:', e);
+        showToast('No se pudo preparar la impresión', 'error');
+    }
 }
 
 // ── DIBUJAR CALENDARIO ────────────────────────────────────────
@@ -1197,19 +1216,28 @@ async function eliminarFavorito(idx) {
 }
 
 // ── EXPORTAR IMAGEN ───────────────────────────────────────────
-async function exportarImagen() {
+// Captura el calendario actual como imagen (misma lógica que usa el
+// botón PNG) — la reutiliza también Imprimir, para que lo impreso sea
+// un calco exacto del PNG descargable en vez de depender de cómo el
+// navegador paginaría la tabla HTML.
+async function capturarCalendarioComoImagen() {
     const tabla = document.querySelector('.sched-table');
-    if (!tabla) { showToast('Genera un horario primero', 'error'); return; }
+    if (!tabla) return null;
+    return html2canvas(tabla, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        scrollX: 0, scrollY: 0,
+        width: tabla.scrollWidth,
+        height: tabla.scrollHeight
+    });
+}
+
+async function exportarImagen() {
     showToast('Generando imagen...', 'info');
     try {
-        const canvas = await html2canvas(tabla, {
-            backgroundColor: '#ffffff',
-            scale: 2,
-            useCORS: true,
-            scrollX: 0, scrollY: 0,
-            width: tabla.scrollWidth,
-            height: tabla.scrollHeight
-        });
+        const canvas = await capturarCalendarioComoImagen();
+        if (!canvas) { showToast('Genera un horario primero', 'error'); return; }
         const link = document.createElement('a');
         link.download = `horario_opcion_${currentIndex + 1}.png`;
         link.href = canvas.toDataURL('image/png');

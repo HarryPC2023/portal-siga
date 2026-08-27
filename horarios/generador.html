@@ -155,13 +155,18 @@
            lo llene y lo muestre al saltar a la combinación recomendada. -->
       <div class="ah-banner-mejor-horario" id="ah-banner-mejor-horario" style="display:none"></div>
 
-      <!-- Encabezado que SOLO aparece al imprimir/guardar como PDF —
-           en pantalla el título de arriba ya no muestra "Opción X de Y"
-           (quedó solo en el contador), pero en una hoja impresa, sin
-           sidebar ni contador visibles, hace falta algo que diga qué
-           horario es. Ver dibujar() (generador.js) y @media print
-           (style.css). -->
-      <div class="print-heading" id="printHeading"></div>
+      <!-- Contenido SOLO para imprimir/guardar como PDF — invisible en
+           pantalla (display:none por defecto, ver style.css). En vez de
+           dejar que el navegador pagine la tabla HTML del calendario
+           (eso era lo que causaba el salto a una 2.ª hoja), imprimirHorario()
+           en generador.js genera una imagen con html2canvas (el mismo
+           mecanismo que ya usa el botón PNG) y la mete en #printImg —
+           así lo impreso es un calco exacto de esa imagen, en una sola
+           hoja, sin sorpresas de paginado. -->
+      <div class="print-page" id="printPage">
+        <div class="print-heading" id="printHeading"></div>
+        <img class="print-img" id="printImg" alt="Horario">
+      </div>
 
       <div class="calendar-wrap" id="calendarWrap">
         <div class="empty-state">
