@@ -334,21 +334,34 @@ const Favoritos = {
     // Trae los favoritos del usuario actual desde Supabase y llena
     // la caché local. Se llama una vez al iniciar el generador; si no
     // hay sesión o falla la red, se queda vacía sin romper la pantalla.
-    // Consigue el user_id actual con un par de reintentos cortos.
-    // esperarSupabaseListo() (dentro de obtenerUserIdActual) solo
-    // garantiza que el CLIENTE de Supabase ya existe — no que la
-    // sesión ya terminó de restaurarse desde el almacenamiento local.
-    // Justo después de navegar entre páginas (Asesorías → Horarios →
-    // Generador, todo son recargas completas) puede tardar unos
-    // cientos de ms; sin este reintento, obtenerUserIdActual() devuelve
-    // null "limpio" (sin error) en ese instante y el resto del código
-    // lo interpreta como "no hay sesión" para siempre.
-    async _obtenerUserIdConReintento(intentos = 3, esperaMs = 300) {
+    // Consigue el user_id actual de forma confiable. Horarios recarga la
+    // página completa en cada navegación (no es una SPA), así que cada
+    // vez hay que volver a levantar el cliente de Supabase desde el CDN
+    // y recién ahí restaurar la sesión — eso puede tardar más de lo que
+    // un par de reintentos con tiempo fijo alcanzan a cubrir.
+    //
+    // Camino rápido: si la sesión ya estaba lista (caso normal, ya
+    // pasó un rato desde que cargó la página), obtenerUserIdActual()
+    // resuelve casi al instante.
+    //
+    // Camino de respaldo: en vez de adivinar cuánto esperar, se
+    // escucha el evento REAL de Supabase que confirma cuándo terminó
+    // de determinar el estado de sesión (window.sigaEsperarSesionLista,
+    // expuesto en generador.html) — espera lo que haga falta, sin
+    // inventar un número.
+    async _obtenerUserIdConfiable() {
         if (typeof obtenerUserIdActual !== 'function') return null;
-        for (let i = 0; i < intentos; i++) {
-            const userId = await obtenerUserIdActual();
-            if (userId) return userId;
-            if (i < intentos - 1) await new Promise(r => setTimeout(r, esperaMs));
+
+        const userId = await obtenerUserIdActual();
+        if (userId) return userId;
+
+        if (typeof window.sigaEsperarSesionLista === 'function') {
+            try {
+                const sesion = await window.sigaEsperarSesionLista();
+                if (sesion?.user?.id) return sesion.user.id;
+            } catch (e) {
+                console.warn('No se pudo confirmar el estado de sesión:', e);
+            }
         }
         return null;
     },
@@ -356,7 +369,7 @@ const Favoritos = {
     async cargarDesdeNube() {
         try {
             if (!window.sigaSupabase) return;
-            const userId = await this._obtenerUserIdConReintento();
+            const userId = await this._obtenerUserIdConfiable();
             if (!userId) return;
 
             const { data, error } = await window.sigaSupabase
@@ -387,7 +400,7 @@ const Favoritos = {
         let sincronizado = false;
         try {
             if (window.sigaSupabase) {
-                const userId = await this._obtenerUserIdConReintento();
+                const userId = await this._obtenerUserIdConfiable();
                 if (userId) {
                     const { data, error } = await window.sigaSupabase
                         .from('horarios_favoritos')

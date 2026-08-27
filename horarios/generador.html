@@ -40,9 +40,13 @@
        evento 'siga:supabase-listo' para que generador.js sepa cuándo ya
        puede usarlos (puede cargar antes de que termine este import). -->
   <script type="module">
-    import { supabase, obtenerSesion } from '../js/auth-siga.js?v=9';
+    import { supabase, obtenerSesion, esperarSesionLista } from '../js/auth-siga.js?v=9';
     window.sigaSupabase = supabase;
     window.sigaObtenerSesion = obtenerSesion;
+    // Usado por Favoritos (scheduler.js) para saber con certeza cuándo
+    // terminó de determinarse la sesión, en vez de reintentar a ciegas
+    // con tiempos de espera inventados — ver auth-siga.js.
+    window.sigaEsperarSesionLista = esperarSesionLista;
     window.dispatchEvent(new Event('siga:supabase-listo'));
   </script>
   <script type="module" src="../js/gate.js"></script>
