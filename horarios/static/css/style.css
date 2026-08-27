@@ -989,21 +989,34 @@ body.eliminar-curso-habilitado .course-eliminar-btn {
 
 /* Input editable dentro del contador — reemplaza el "1 / 16" fijo de
    antes por un campo donde se puede escribir directo el número de
-   combinación al que se quiere saltar. */
+   combinación al que se quiere saltar. Encerrado en su propia cajita
+   (borde + fondo propios, distinto del "/16" a un lado) para que se
+   note de inmediato que es editable y no solo texto plano. */
 .combo-input {
-  width: 26px;
-  border: none;
-  background: transparent;
-  color: inherit;
+  width: 28px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--accent-dark);
   font: inherit;
+  font-weight: 700;
   text-align: center;
-  padding: 0;
+  padding: 1px 0;
+  cursor: text;
+  transition: all 0.15s;
   -moz-appearance: textfield;
+}
+
+.combo-input:hover {
+  border-color: var(--accent-dark);
+  background: var(--accent-dim);
 }
 
 .combo-input:focus {
   outline: none;
-  color: var(--accent-dark);
+  border-color: var(--accent-dark);
+  background: var(--surface);
+  box-shadow: 0 0 0 2px var(--accent-dim);
 }
 
 .combo-input::-webkit-outer-spin-button,
@@ -1037,6 +1050,16 @@ body.eliminar-curso-habilitado .course-eliminar-btn {
 
 .btn-action.btn-favs {
   color: var(--text-dim);
+}
+
+/* Botón solo-ícono (Imprimir): mismo trato que btn-action pero sin
+   texto al lado — el tooltip (title="...") explica que también sirve
+   para guardar como PDF, sin necesitar la etiqueta escrita siempre
+   visible. */
+.btn-icon-only {
+  padding: 6px 10px;
+  font-size: 15px;
+  line-height: 1;
 }
 
 /* Calendar */
@@ -2316,12 +2339,15 @@ body {
 
 @media print {
 
-  /* El resto de SIGA (nav superior, sidebar, botones, banner del
-     Asistente, panel de favoritos, toasts, firma) no tiene nada que
-     hacer en una hoja impresa — solo el calendario importa. */
+  /* El resto de SIGA (nav superior, sidebar, botones, panel del
+     Asistente de Horario con su overlay, banner del Asistente, panel
+     de favoritos, toasts, firma) no tiene nada que hacer en una hoja
+     impresa — solo el calendario importa. */
   .app-nav,
   .sidebar,
   .topbar,
+  .ah-overlay,
+  .ah-panel,
   .ah-banner-mejor-horario,
   .favs-panel,
   .favs-overlay,
