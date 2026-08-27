@@ -17,6 +17,14 @@ let currentIndex = 0;
 let maxCruces = 0;
 let seccionesData = {};
 
+// Estado de "viendo un favorito": cuando no es null, la pantalla está
+// mostrando un único horario guardado (no una combinación generada).
+// combosValidosAntesDeFavorito guarda la lista completa de vuelta,
+// para poder restaurarla con "Salir del favorito" sin tener que
+// regenerar de nuevo.
+let viendoFavoritoNombre = null;
+let combosValidosAntesDeFavorito = null;
+
 if (typeof cargaGlobal === 'undefined') var cargaGlobal = null;
 
 // Expuesto para que el Asistente de Horario (módulo aparte, cargado
@@ -679,6 +687,13 @@ function generar() {
         return;
     }
 
+    // Una regeneración manual siempre vuelve a la vista normal de
+    // combinaciones, aunque se hubiera estado viendo un favorito.
+    viendoFavoritoNombre = null;
+    combosValidosAntesDeFavorito = null;
+    const btnSalir = document.getElementById('btnSalirFavorito');
+    if (btnSalir) btnSalir.style.display = 'none';
+
     const titleEl = document.getElementById('topbarTitle');
     if (titleEl) titleEl.innerHTML = '<span class="spinner"></span> Generando combinaciones...';
 
@@ -745,10 +760,24 @@ function dibujar(idx) {
     const counterEl = document.getElementById('counter');
     const topbarTitleEl = document.getElementById('topbarTitle');
     const calWrap = document.getElementById('calendarWrap');
+    const navC = document.getElementById('navControls');
+    const btnSalir = document.getElementById('btnSalirFavorito');
 
-    if (counterEl) counterEl.textContent = `${idx + 1} / ${combosValidos.length}`;
-    if (topbarTitleEl) topbarTitleEl.innerHTML =
-        `Opción <span>${idx + 1}</span> de <span>${combosValidos.length}</span> combinaciones`;
+    if (viendoFavoritoNombre) {
+        // Vista de un favorito: nada de "1 / 1" (se confunde con
+        // "combinación número 1") — el título deja clarísimo que esto
+        // NO es una combinación recién generada, y aparece la forma
+        // de volver a la lista completa.
+        if (topbarTitleEl) topbarTitleEl.innerHTML = `★ Viendo favorito: <span>${viendoFavoritoNombre}</span>`;
+        if (counterEl) counterEl.textContent = '★';
+        if (navC) navC.style.display = 'none';
+        if (btnSalir) btnSalir.style.display = 'inline-flex';
+    } else {
+        if (counterEl) counterEl.textContent = `${idx + 1} / ${combosValidos.length}`;
+        if (topbarTitleEl) topbarTitleEl.innerHTML =
+            `Opción <span>${idx + 1}</span> de <span>${combosValidos.length}</span> combinaciones`;
+        if (btnSalir) btnSalir.style.display = 'none';
+    }
 
     try { localStorage.setItem(LS_GEN_COMBOS_IDX, String(idx)); } catch (e) { /* no crítico */ }
 
@@ -1039,9 +1068,7 @@ function renderFavoritos() {
         return;
     }
 
-    lista.innerHTML = favs.map((fav, i) => {
-        const cursos = [...new Set(fav.combo.map(s => s.nombre))].join(', ');
-        return `<div class="fav-item">
+    lista.innerHTML = favs.map((fav, i) => `<div class="fav-item">
       <div class="fav-item-header">
         <div class="fav-name">★ ${fav.nombre}</div>
         <div class="fav-actions">
@@ -1049,23 +1076,49 @@ function renderFavoritos() {
           <button class="fav-btn del" onclick="eliminarFavorito(${i})">Eliminar</button>
         </div>
       </div>
-      <div class="fav-courses">${cursos}</div>
-    </div>`;
-    }).join('');
+    </div>`).join('');
 }
 
 function verFavorito(idx) {
-    const favs = Favoritos.obtener();
-    if (!favs[idx]) return;
-    combosValidos = [favs[idx].combo];
-    currentIndex = 0;
-    toggleFavoritos();
-    _setBotonesVisibles(true);
-    dibujar(0);
-    if (window.innerWidth < 900) {
-        const calWrap = document.getElementById('calendarWrap');
-        if (calWrap) calWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    try {
+        const favs = Favoritos.obtener();
+        const fav = favs[idx];
+        if (!fav || !fav.combo) {
+            console.warn('[Favoritos-debug] verFavorito: no se encontró el favorito en el índice', idx, 'favs =', favs);
+            showToast('No se pudo abrir ese horario', 'error');
+            return;
+        }
+
+        // Guarda la lista de combinaciones que había antes (solo la
+        // primera vez — si ya se estaba viendo otro favorito, no la
+        // vuelve a pisar), para poder restaurarla con "Salir".
+        if (!viendoFavoritoNombre) combosValidosAntesDeFavorito = combosValidos;
+
+        viendoFavoritoNombre = fav.nombre;
+        combosValidos = [fav.combo];
+        currentIndex = 0;
+        toggleFavoritos();
+        _setBotonesVisibles(true);
+        dibujar(0);
+        if (window.innerWidth < 900) {
+            const calWrap = document.getElementById('calendarWrap');
+            if (calWrap) calWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    } catch (e) {
+        console.error('[Favoritos-debug] Error al mostrar el favorito:', e);
+        showToast('Ocurrió un error al abrir ese horario', 'error');
     }
+}
+
+// Vuelve de la vista de un favorito a la lista completa de
+// combinaciones que había antes de entrar a verlo.
+function salirDeFavorito() {
+    if (!combosValidosAntesDeFavorito) { viendoFavoritoNombre = null; return; }
+    combosValidos = combosValidosAntesDeFavorito;
+    combosValidosAntesDeFavorito = null;
+    viendoFavoritoNombre = null;
+    currentIndex = Math.max(0, Math.min(currentIndex, combosValidos.length - 1));
+    dibujar(currentIndex);
 }
 
 async function eliminarFavorito(idx) {
