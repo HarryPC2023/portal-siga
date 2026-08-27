@@ -971,10 +971,33 @@ function pedirNombreHorario(valorInicial = '') {
 async function guardarFavorito() {
     if (!combosValidos.length) return;
     const combo = combosValidos[currentIndex];
+
+    // Asegura tener la lista completa de favoritos ya cargada antes de
+    // revisar duplicados — si el panel nunca se abrió en esta sesión,
+    // _cargado podría seguir en false.
+    if (!Favoritos._cargado) await Favoritos.cargarDesdeNube();
+
+    const existente = Favoritos.existeCombo(combo);
+    if (existente) {
+        showToast(`Ya tienes este horario guardado como "${existente.nombre}"`, 'info');
+        return;
+    }
+
     const nombre = await pedirNombreHorario(`Opción ${currentIndex + 1}`);
     if (!nombre) return;
-    await Favoritos.agregar(combo, nombre);
-    showToast('Horario guardado en favoritos ★', 'success');
+
+    const resultado = await Favoritos.agregar(combo, nombre);
+    if (resultado.duplicado) {
+        // Carrera rara: se volvió duplicado entre el chequeo de arriba
+        // y este guardado (ej. se guardó desde otro dispositivo justo
+        // en el medio) — agregar() ya lo bloqueó por su cuenta.
+        showToast(`Ya tienes este horario guardado como "${resultado.item.nombre}"`, 'info');
+    } else if (resultado.sincronizado) {
+        showToast('Horario guardado en favoritos ★', 'success');
+    } else {
+        showToast('Guardado solo en este dispositivo — no se sincronizó con la nube (revisa tu conexión e inténtalo de nuevo)', 'error');
+    }
+
     // Si el panel de favoritos está abierto en este momento, refresca
     // la lista para que aparezca el que se acaba de guardar.
     const panel = document.getElementById('favsPanel');

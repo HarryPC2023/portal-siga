@@ -402,6 +402,16 @@ const Favoritos = {
     // a un refresh — antes esto fallaba en silencio (solo console.warn)
     // y el toast decía "guardado" igual, aunque en realidad se perdía.
     async agregar(combo, nombre) {
+        // Protección de duplicados CENTRALIZADA acá — así cualquier
+        // parte de la web que llegue a guardar un horario (el botón
+        // ★ Guardar de hoy, o a futuro un guardado automático del
+        // "Mejor horario") queda protegida sin depender de que quien
+        // llama se acuerde de revisarlo antes por su cuenta.
+        const existente = this.existeCombo(combo);
+        if (existente) {
+            return { total: this._lista.length, sincronizado: existente.id != null, duplicado: true, item: existente };
+        }
+
         const n = nombre || `Favorito ${this._lista.length + 1}`;
         const item = { nombre: n, combo };
         let sincronizado = false;
@@ -425,7 +435,7 @@ const Favoritos = {
             console.warn('No se pudo guardar el favorito en la nube (queda guardado solo en esta sesión):', e);
         }
         this._lista.push(item);
-        return { total: this._lista.length, sincronizado };
+        return { total: this._lista.length, sincronizado, duplicado: false };
     },
 
     // Busca si un combo (mismo contenido exacto) ya está guardado.
