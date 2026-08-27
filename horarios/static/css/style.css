@@ -978,10 +978,42 @@ body.eliminar-curso-habilitado .course-eliminar-btn {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 3px 12px;
+  padding: 3px 10px;
   font-size: 12px;
   font-weight: 600;
   font-family: 'JetBrains Mono', monospace;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Input editable dentro del contador — reemplaza el "1 / 16" fijo de
+   antes por un campo donde se puede escribir directo el número de
+   combinación al que se quiere saltar. */
+.combo-input {
+  width: 26px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  padding: 0;
+  -moz-appearance: textfield;
+}
+
+.combo-input:focus {
+  outline: none;
+  color: var(--accent-dark);
+}
+
+.combo-input::-webkit-outer-spin-button,
+.combo-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.counter-sep {
+  color: var(--text-faint);
 }
 
 .btn-action {
@@ -2270,4 +2302,70 @@ body {
 
 #cardConectarMatricula.matricula-proximamente #btnConectarMatricula {
   cursor: not-allowed;
+}
+
+/* ── IMPRIMIR / GUARDAR COMO PDF ──────────────────────────────
+   Encabezado que SOLO se ve en la hoja impresa (dibujar(), en
+   generador.js, le pone el texto). En pantalla el título de arriba
+   ya no repite "Opción X de Y" (ver dibujar()), pero en el papel,
+   sin sidebar ni contador visibles, hace falta decir qué horario es.
+*/
+.print-heading {
+  display: none;
+}
+
+@media print {
+
+  /* El resto de SIGA (nav superior, sidebar, botones, banner del
+     Asistente, panel de favoritos, toasts, firma) no tiene nada que
+     hacer en una hoja impresa — solo el calendario importa. */
+  .app-nav,
+  .sidebar,
+  .topbar,
+  .ah-banner-mejor-horario,
+  .favs-panel,
+  .favs-overlay,
+  .toast,
+  .harry-stamp,
+  .gen-footer {
+    display: none !important;
+  }
+
+  /* El layout de la app es un "app-shell" de altura fija (100vh,
+     overflow hidden) para que solo el calendario tenga scroll propio
+     en pantalla — al imprimir hay que soltar esas restricciones para
+     que el contenido fluya en hojas normales en vez de recortarse. */
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .gen-layout,
+  .main {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .calendar-wrap {
+    overflow: visible !important;
+    padding: 0 !important;
+    flex: none !important;
+  }
+
+  .print-heading {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  /* Un horario semanal es más ancho que alto — orientación horizontal
+     aprovecha mejor la hoja y evita que las columnas de días se
+     corten entre página y página. */
+  @page {
+    size: landscape;
+    margin: 12mm;
+  }
 }

@@ -784,20 +784,50 @@ function _setBotonesVisibles(visible) {
     const favB = document.getElementById('btnFav');
     const expI = document.getElementById('btnExportImg');
     const expX = document.getElementById('btnExportXls');
+    const imp = document.getElementById('btnImprimir');
     if (navC) navC.style.display = display;
     if (favB) favB.style.display = displayInline;
     if (expI) expI.style.display = displayInline;
     if (expX) expX.style.display = displayInline;
+    if (imp) imp.style.display = displayInline;
+}
+
+// Salta a la combinación que se escribió en el input del contador
+// (o corrige el valor si está fuera de rango / no es un número).
+function irACombinacionInput() {
+    const input = document.getElementById('comboInput');
+    if (!input || !combosValidos.length) return;
+
+    let n = parseInt(input.value, 10);
+    if (isNaN(n)) { input.value = currentIndex + 1; return; }
+    n = Math.max(1, Math.min(n, combosValidos.length));
+    input.value = n;
+
+    if (n - 1 !== currentIndex) {
+        currentIndex = n - 1;
+        dibujar(currentIndex);
+    }
+}
+
+// Imprime el horario actual (o lo guarda como PDF: el diálogo de
+// impresión del navegador ya trae esa opción, así que no hace falta
+// generar un PDF aparte con una librería). El @media print de
+// style.css oculta todo menos el calendario.
+function imprimirHorario() {
+    if (!combosValidos.length) { showToast('Genera un horario primero', 'error'); return; }
+    window.print();
 }
 
 // ── DIBUJAR CALENDARIO ────────────────────────────────────────
 function dibujar(idx) {
     const combo = combosValidos[idx];
-    const counterEl = document.getElementById('counter');
     const topbarTitleEl = document.getElementById('topbarTitle');
     const calWrap = document.getElementById('calendarWrap');
     const navC = document.getElementById('navControls');
     const btnSalir = document.getElementById('btnSalirFavorito');
+    const comboInput = document.getElementById('comboInput');
+    const comboTotal = document.getElementById('comboTotal');
+    const printHeading = document.getElementById('printHeading');
 
     if (viendoFavoritoNombre) {
         // Vista de un favorito: nada de "1 / 1" (se confunde con
@@ -805,15 +835,17 @@ function dibujar(idx) {
         // NO es una combinación recién generada, y aparece la forma
         // de volver a la lista completa.
         if (topbarTitleEl) topbarTitleEl.innerHTML = `★ Viendo favorito: <span>${viendoFavoritoNombre}</span>`;
-        if (counterEl) counterEl.textContent = '★';
         if (navC) navC.style.display = 'none';
         if (btnSalir) btnSalir.style.display = 'inline-flex';
+        if (printHeading) printHeading.textContent = `Horario — ★ ${viendoFavoritoNombre}`;
     } else {
-        if (counterEl) counterEl.textContent = `${idx + 1} / ${combosValidos.length}`;
+        if (comboInput) comboInput.value = idx + 1;
+        if (comboTotal) comboTotal.textContent = combosValidos.length;
         // Antes decía "Opción X de Y combinaciones" acá — redundante
         // con el contador "X / Y" de al lado, así que se deja vacío.
         if (topbarTitleEl) topbarTitleEl.textContent = '';
         if (btnSalir) btnSalir.style.display = 'none';
+        if (printHeading) printHeading.textContent = `Horario — Opción ${idx + 1} de ${combosValidos.length}`;
     }
 
     try { localStorage.setItem(LS_GEN_COMBOS_IDX, String(idx)); } catch (e) { /* no crítico */ }

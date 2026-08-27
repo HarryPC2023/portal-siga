@@ -127,7 +127,14 @@
         <div class="topbar-actions">
           <div class="nav-controls" id="navControls" style="display:none">
             <button class="btn-nav" onclick="cambiar(-1)">◀</button>
-            <div class="counter-pill" id="counter">1 / 1</div>
+            <div class="counter-pill" id="counter">
+              <input type="number" id="comboInput" class="combo-input" min="1" step="1" value="1"
+                aria-label="Ir a la combinación número"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+                onchange="irACombinacionInput()">
+              <span class="counter-sep">/</span>
+              <span id="comboTotal">1</span>
+            </div>
             <button class="btn-nav" onclick="cambiar(1)">▶</button>
           </div>
           <button class="btn-action" id="btnSalirFavorito" onclick="salirDeFavorito()" style="display:none"
@@ -138,6 +145,8 @@
             title="Exportar como imagen">⬇ PNG</button>
           <button class="btn-action btn-export" id="btnExportXls" onclick="exportarExcel()" style="display:none"
             title="Exportar como Excel">⬇ Excel</button>
+          <button class="btn-action btn-export" id="btnImprimir" onclick="imprimirHorario()" style="display:none"
+            title="Imprimir o guardar como PDF">🖨 Imprimir</button>
           <button class="btn-action btn-favs" onclick="toggleFavoritos()" title="Ver favoritos">☆ Favoritos</button>
         </div>
       </div>
@@ -145,6 +154,14 @@
       <!-- Aviso de "🧠 Mejor horario" — oculto hasta que el Asistente
            lo llene y lo muestre al saltar a la combinación recomendada. -->
       <div class="ah-banner-mejor-horario" id="ah-banner-mejor-horario" style="display:none"></div>
+
+      <!-- Encabezado que SOLO aparece al imprimir/guardar como PDF —
+           en pantalla el título de arriba ya no muestra "Opción X de Y"
+           (quedó solo en el contador), pero en una hoja impresa, sin
+           sidebar ni contador visibles, hace falta algo que diga qué
+           horario es. Ver dibujar() (generador.js) y @media print
+           (style.css). -->
+      <div class="print-heading" id="printHeading"></div>
 
       <div class="calendar-wrap" id="calendarWrap">
         <div class="empty-state">
