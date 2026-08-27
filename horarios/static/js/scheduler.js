@@ -350,26 +350,32 @@ const Favoritos = {
     // expuesto en generador.html) — espera lo que haga falta, sin
     // inventar un número.
     async _obtenerUserIdConfiable() {
-        if (typeof obtenerUserIdActual !== 'function') return null;
+        if (typeof obtenerUserIdActual !== 'function') { console.log('[Favoritos-debug] obtenerUserIdActual no existe'); return null; }
 
         const userId = await obtenerUserIdActual();
+        console.log('[Favoritos-debug] intento rápido → userId =', userId);
         if (userId) return userId;
 
         if (typeof window.sigaEsperarSesionLista === 'function') {
+            console.log('[Favoritos-debug] esperando evento de sesión (window.sigaEsperarSesionLista)...');
             try {
                 const sesion = await window.sigaEsperarSesionLista();
+                console.log('[Favoritos-debug] evento de sesión resuelto → sesion =', sesion);
                 if (sesion?.user?.id) return sesion.user.id;
             } catch (e) {
-                console.warn('No se pudo confirmar el estado de sesión:', e);
+                console.warn('[Favoritos-debug] error esperando sesión:', e);
             }
+        } else {
+            console.log('[Favoritos-debug] window.sigaEsperarSesionLista NO está definida en este momento');
         }
         return null;
     },
 
     async cargarDesdeNube() {
         try {
-            if (!window.sigaSupabase) return;
+            if (!window.sigaSupabase) { console.log('[Favoritos-debug] window.sigaSupabase no existe todavía'); return; }
             const userId = await this._obtenerUserIdConfiable();
+            console.log('[Favoritos-debug] cargarDesdeNube() → userId final =', userId);
             if (!userId) return;
 
             const { data, error } = await window.sigaSupabase
@@ -378,6 +384,7 @@ const Favoritos = {
                 .eq('user_id', userId)
                 .order('created_at', { ascending: true });
 
+            console.log('[Favoritos-debug] respuesta de Supabase → data =', data, ' error =', error);
             if (error) { console.warn('No se pudieron cargar los favoritos desde la nube:', error); return; }
             if (data) this._lista = data.map(f => ({ id: f.id, nombre: f.nombre, combo: f.combo }));
         } catch (e) {
@@ -401,12 +408,14 @@ const Favoritos = {
         try {
             if (window.sigaSupabase) {
                 const userId = await this._obtenerUserIdConfiable();
+                console.log('[Favoritos-debug] agregar() → userId =', userId);
                 if (userId) {
                     const { data, error } = await window.sigaSupabase
                         .from('horarios_favoritos')
                         .insert({ user_id: userId, nombre: n, combo })
                         .select('id')
                         .single();
+                    console.log('[Favoritos-debug] agregar() → insert data =', data, ' error =', error);
                     if (error) throw error;
                     item.id = data.id;
                     sincronizado = true;
