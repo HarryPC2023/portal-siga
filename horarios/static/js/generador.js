@@ -213,19 +213,21 @@ async function sincronizarSeleccionDesdeNube() {
     try {
         const { data, error } = await window.sigaSupabase
             .from('horarios_alumno')
-            .select('secciones_generador, cruces')
+            .select('secciones_generador, cruces, prioridades_profesor')
             .eq('user_id', userId)
             .maybeSingle();
 
         if (error) { console.warn('No se pudo sincronizar la selección del generador desde la nube:', error); return; }
 
-        if (!data || (!data.secciones_generador && data.cruces == null)) {
+        if (!data || (!data.secciones_generador && data.cruces == null && !data.prioridades_profesor)) {
             // No hay nada en la nube todavía: si sí hay algo local (usuario
             // de antes de esta actualización), lo subimos una sola vez.
             const seleccionLocal = localStorage.getItem(LS_GEN_SECCIONES);
             const crucesLocal = localStorage.getItem(LS_GEN_CRUCES);
+            const prioridadesLocal = localStorage.getItem(LS_GEN_PRIORIDADES);
             if (seleccionLocal) { try { guardarEnNube({ secciones_generador: JSON.parse(seleccionLocal) }); } catch (e) { } }
             if (crucesLocal !== null) guardarEnNube({ cruces: parseInt(crucesLocal, 10) || 0 });
+            if (prioridadesLocal) { try { guardarEnNube({ prioridades_profesor: JSON.parse(prioridadesLocal) }); } catch (e) { } }
             return;
         }
 
@@ -248,6 +250,17 @@ async function sincronizarSeleccionDesdeNube() {
         if (data.cruces != null && String(data.cruces) !== localStorage.getItem(LS_GEN_CRUCES)) {
             setCruces(data.cruces); // ya guarda en LS_GEN_CRUCES vía guardarCruces()
             cambioAlgo = true;
+        }
+
+        // Prioridades de profesor (Estrategia de matrícula): no afectan
+        // qué combinaciones se generan, así que se aplican directo sobre
+        // los selectores ya dibujados sin pasar por generar() de nuevo.
+        if (data.prioridades_profesor) {
+            const nubeStr = JSON.stringify(data.prioridades_profesor);
+            if (localStorage.getItem(LS_GEN_PRIORIDADES) !== nubeStr) {
+                aplicarPrioridadesEnSidebar(data.prioridades_profesor);
+                try { localStorage.setItem(LS_GEN_PRIORIDADES, nubeStr); } catch (e) { /* no crítico */ }
+            }
         }
 
         // Solo regenera si la nube trajo algo distinto a lo que ya se
@@ -640,11 +653,34 @@ function leerPrioridadesActuales() {
 }
 
 function guardarPrioridadesProfesor() {
+    const prioridades = leerPrioridadesActuales();
     try {
-        localStorage.setItem(LS_GEN_PRIORIDADES, JSON.stringify(leerPrioridadesActuales()));
+        localStorage.setItem(LS_GEN_PRIORIDADES, JSON.stringify(prioridades));
     } catch (e) {
         console.warn('No se pudo guardar las prioridades de profesor:', e);
     }
+    guardarEnNube({ prioridades_profesor: prioridades });
+}
+
+// Aplica prioridades que llegaron de la nube directo sobre los
+// selectores ya dibujados (sin volver a llamar a renderSidebar, que
+// también reconstruiría los checkboxes de secciones y pisaría la
+// reconciliación que ya se hizo de esos). Mismo espíritu que el
+// parche de checkboxes de secciones, arriba.
+function aplicarPrioridadesEnSidebar(prioridades) {
+    const etiquetas = { '': 'Sin preferencia', '1': '1.ª opción', '2': '2.ª opción', '3': '3.ª opción' };
+    document.querySelectorAll('.docente-prioridad-valor').forEach(input => {
+        const curso = input.dataset.curso;
+        const docente = input.dataset.docente;
+        const valor = (prioridades[curso] && prioridades[curso][docente]) || '';
+        input.value = valor;
+
+        const textoEl = document.getElementById(input.id.replace('prioridad-valor-', 'prioridad-texto-'));
+        if (textoEl) textoEl.textContent = etiquetas[valor] || etiquetas[''];
+
+        const grupo = input.closest('.docente-group');
+        if (grupo) aplicarEstiloPrioridadGrupo(grupo, valor);
+    });
 }
 
 function leerPrioridadesGuardadas() {
@@ -774,8 +810,9 @@ function dibujar(idx) {
         if (btnSalir) btnSalir.style.display = 'inline-flex';
     } else {
         if (counterEl) counterEl.textContent = `${idx + 1} / ${combosValidos.length}`;
-        if (topbarTitleEl) topbarTitleEl.innerHTML =
-            `Opción <span>${idx + 1}</span> de <span>${combosValidos.length}</span> combinaciones`;
+        // Antes decía "Opción X de Y combinaciones" acá — redundante
+        // con el contador "X / Y" de al lado, así que se deja vacío.
+        if (topbarTitleEl) topbarTitleEl.textContent = '';
         if (btnSalir) btnSalir.style.display = 'none';
     }
 
