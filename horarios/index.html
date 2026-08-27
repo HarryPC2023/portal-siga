@@ -278,39 +278,75 @@
         // Trae la carga horaria oficial del ciclo y la deja lista, como si
         // el usuario acabara de subir el Excel (mismos elementos, mismo
         // flujo de guardado) — así no hay que duplicar nada más abajo.
-        function cargarCargaOficial() {
-            fetch(RUTA_CARGA_OFICIAL)
-                .then(resp => {
-                    if (!resp.ok) throw new Error('No se pudo obtener el archivo (' + resp.status + ')');
-                    return resp.json();
-                })
-                .then(data => {
-                    cargaGlobal = data.cursos || {};
-                    const meta = data.meta || {};
-                    nombreArchivoActual = `Carga oficial ${meta.ciclo || CICLO_ACTUAL}`;
-                    cursosMetadata = {};
-                    origenDatos = 'excel';
-                    cursosSeleccionados = new Set();
+        async function cargarCargaOficial() {
+            try {
+                const resp = await fetch(RUTA_CARGA_OFICIAL);
+                if (!resp.ok) throw new Error('No se pudo obtener el archivo (' + resp.status + ')');
+                const data = await resp.json();
 
-                    sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
+                cargaGlobal = data.cursos || {};
+                const meta = data.meta || {};
+                nombreArchivoActual = `Carga oficial ${meta.ciclo || CICLO_ACTUAL}`;
+                cursosMetadata = {};
+                origenDatos = 'excel';
+                cursosSeleccionados = new Set();
 
-                    const cursos = Object.keys(cargaGlobal).sort();
-                    fileInfo.style.display = 'flex';
-                    fileInfo.innerHTML = '📄 ' + nombreArchivoActual;
-                    uploadStatus.innerHTML =
-                        `<span style="color:#10b981">✅ ${cursos.length} cursos disponibles — no necesitas subir nada.</span>`;
+                sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
 
-                    construirListaCursos(cursos);
-                    cardCursos.style.display = 'block';
-                    persistActions.style.display = 'flex';
-                    actualizarSeleccion();
-                    guardarProgreso();
-                })
-                .catch(err => {
-                    uploadStatus.innerHTML =
-                        `<span style="color:#ef4444">❌ No se pudo cargar la carga horaria oficial (${err.message}). Puedes subir el Excel manualmente mientras tanto.</span>`;
-                    console.error('Error al cargar la carga horaria oficial:', err);
-                });
+                // Dispositivo nuevo (sin nada en localStorage): antes de
+                // mostrar la lista de cursos vacía, revisa si ya elegiste
+                // cursos desde otro dispositivo (quedan guardados en
+                // horarios_alumno al generar un horario) y los pre-marca,
+                // para no obligarte a repetir la selección desde cero.
+                try {
+                    await preseleccionarCursosDesdeNube();
+                } catch (e) {
+                    console.warn('No se pudo revisar cursos guardados en la nube:', e);
+                }
+
+                const cursos = Object.keys(cargaGlobal).sort();
+                fileInfo.style.display = 'flex';
+                fileInfo.innerHTML = '📄 ' + nombreArchivoActual;
+                uploadStatus.innerHTML = cursosSeleccionados.size > 0
+                    ? `<span style="color:#10b981">✅ ${cursos.length} cursos disponibles — recuperamos tu selección guardada en la nube.</span>`
+                    : `<span style="color:#10b981">✅ ${cursos.length} cursos disponibles — no necesitas subir nada.</span>`;
+
+                construirListaCursos(cursos);
+                cardCursos.style.display = 'block';
+                persistActions.style.display = 'flex';
+                actualizarSeleccion();
+                guardarProgreso();
+            } catch (err) {
+                uploadStatus.innerHTML =
+                    `<span style="color:#ef4444">❌ No se pudo cargar la carga horaria oficial (${err.message}). Puedes subir el Excel manualmente mientras tanto.</span>`;
+                console.error('Error al cargar la carga horaria oficial:', err);
+            }
+        }
+
+        /* Consulta horarios_alumno (misma tabla que usa el Generador para
+           reconciliar profesores/secciones entre dispositivos) y agrega a
+           cursosSeleccionados los cursos que sigan existiendo en la carga
+           horaria actual. Usa esperarSigaObtenerSesion(), definida más
+           abajo en este mismo bloque — function hoisting hace que esté
+           disponible igual, sin importar el orden en el archivo. */
+        async function preseleccionarCursosDesdeNube() {
+            await esperarSigaObtenerSesion();
+            if (!window.sigaObtenerSesion || !window.sigaSupabase) return;
+
+            const sesion = await window.sigaObtenerSesion();
+            if (!sesion) return;
+
+            const { data, error } = await window.sigaSupabase
+                .from('horarios_alumno')
+                .select('secciones_generador')
+                .eq('user_id', sesion.user.id)
+                .maybeSingle();
+
+            if (error || !data || !data.secciones_generador) return;
+
+            Object.keys(data.secciones_generador).forEach(curso => {
+                if (curso in cargaGlobal) cursosSeleccionados.add(curso);
+            });
         }
 
         // ── Autoguardado: se llama en cada cambio, no en un clic ──

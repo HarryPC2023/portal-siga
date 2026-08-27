@@ -195,11 +195,57 @@ function seleccionarMalla(malla) {
 
     actualizarResumenMalla();
     filtrarCarrerasPorMalla();
+
+    irAPantallaConCloudCheck();
+}
+
+/* Antes esto asumía que un dispositivo nuevo (sin nada en localStorage
+   para esta malla) significaba "usuario sin datos" y mandaba directo a
+   elegir carrera desde cero. Eso rompía la sincronización multi-
+   dispositivo: si ya tenías periodos guardados en la nube bajo otro
+   dispositivo, nunca se consultaban. Ahora SIEMPRE se revisa la nube
+   primero — si hay algo, se restaura directo al simulador; si no,
+   recién ahí se muestra "elegir carrera" vacío. */
+async function irAPantallaConCloudCheck() {
+    mostrarToast('Buscando tus datos guardados…');
+    await hidratarDesdeNube();
+
+    const restaurado = restaurarUltimoPeriodoGuardado();
+    if (restaurado) return;
+
     actualizarResumenCarrera();
     mostrarSelectorCarrera(true);
     mostrarBloquePeriodoCursos(false);
-
     irAPantalla(3);
+}
+
+/* Extraído de intentarRestaurarSesion() para poder reutilizarlo también
+   desde seleccionarMalla() (dispositivo nuevo). Devuelve true si encontró
+   y restauró un periodo guardado; false si no había nada que restaurar. */
+function restaurarUltimoPeriodoGuardado() {
+    const datos = leerDatosPeriodos();
+    const ultimoPeriodo = localStorage.getItem(claveUltimoPeriodo());
+    if (!ultimoPeriodo || !datos[ultimoPeriodo]) return false;
+
+    const entrada = datos[ultimoPeriodo];
+    if (!entrada.cursos || !Array.isArray(entrada.cursos) || !entrada.cursos.length) return false;
+
+    carreraSeleccionada = entrada.carrera;
+    periodoSeleccionado = ultimoPeriodo;
+    cursosSeleccionados = entrada.cursos;
+
+    // Prepara la Pantalla 3 en segundo plano por si el usuario pulsa "Cambiar cursos"
+    actualizarResumenCarrera();
+    mostrarSelectorCarrera(false);
+    mostrarBloquePeriodoCursos(true);
+    generarAcordeones();
+    generarOpcionesPeriodo();
+    marcarCursosSeleccionadosEnUI();
+
+    // Va directo al simulador con las notas ya cargadas
+    irAPantalla(4);
+    generarSimulador();
+    return true;
 }
 
 /* Botón "📚 Cambiar malla" (Pantalla 3) — pensado sobre todo para
@@ -2466,34 +2512,14 @@ async function intentarRestaurarSesion() {
         // reciente) y pisa el caché local con eso.
         await hidratarDesdeNube();
 
-        const datos = leerDatosPeriodos();
-        const ultimoPeriodo = localStorage.getItem(claveUltimoPeriodo());
-        if (!ultimoPeriodo || !datos[ultimoPeriodo]) {
-            // Ya eligió malla antes pero no tiene periodo guardado en ESA
-            // malla: lo llevamos a Pantalla 3 a elegir carrera, no a la 0.
-            irAPantalla(3);
-            mostrarSelectorCarrera(true);
-            return;
-        }
+        const restaurado = restaurarUltimoPeriodoGuardado();
+        if (restaurado) return;
 
-        const entrada = datos[ultimoPeriodo];
-        if (!entrada.cursos || !Array.isArray(entrada.cursos) || !entrada.cursos.length) return;
-
-        carreraSeleccionada = entrada.carrera;
-        periodoSeleccionado = ultimoPeriodo;
-        cursosSeleccionados = entrada.cursos;
-
-        // Prepara la Pantalla 3 en segundo plano por si el usuario pulsa "Cambiar cursos"
-        actualizarResumenCarrera();
-        mostrarSelectorCarrera(false);
-        mostrarBloquePeriodoCursos(true);
-        generarAcordeones();
-        generarOpcionesPeriodo();
-        marcarCursosSeleccionadosEnUI();
-
-        // Va directo al simulador con las notas ya cargadas
-        irAPantalla(4);
-        generarSimulador();
+        // Ya eligió malla antes pero no tiene periodo guardado en ESA
+        // malla (ni local ni en la nube): lo llevamos a Pantalla 3 a
+        // elegir carrera, no a la 0.
+        irAPantalla(3);
+        mostrarSelectorCarrera(true);
     } catch (e) {
         console.log('No se pudo restaurar la sesión:', e);
     }
