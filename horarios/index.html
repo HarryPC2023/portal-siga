@@ -322,18 +322,51 @@
             }
         }
 
+        // Sube cursosMetadata (Obligatorio/Electivo/Complementario/vacantes
+        // reales, obtenidas de Matrícula UNI) a la misma fila de
+        // horarios_alumno que ya usa el resto de la sincronización. Solo
+        // tiene contenido real tras "Conectar a Matrícula UNI" — con Excel
+        // manual o carga oficial, cursosMetadata está vacío y esto no hace
+        // nada (no hay nada que subir).
+        let _debounceMetadataNube = null;
+        function subirMetadataANube() {
+            if (!cursosMetadata || !Object.keys(cursosMetadata).length) return;
+            clearTimeout(_debounceMetadataNube);
+            _debounceMetadataNube = setTimeout(async () => {
+                await esperarSigaObtenerSesion();
+                if (!window.sigaObtenerSesion || !window.sigaSupabase) return;
+                const sesion = await window.sigaObtenerSesion();
+                if (!sesion) return;
+                try {
+                    const { error } = await window.sigaSupabase
+                        .from('horarios_alumno')
+                        .upsert({
+                            user_id: sesion.user.id,
+                            cursos_metadata: cursosMetadata,
+                            actualizado_en: new Date().toISOString(),
+                        });
+                    if (error) console.warn('No se pudo subir la categoría de cursos a la nube:', error);
+                } catch (e) {
+                    console.warn('Error subiendo categoría de cursos a la nube:', e);
+                }
+            }, 800);
+        }
+
         /* Consulta horarios_alumno (misma tabla que usa el Generador para
            reconciliar profesores/secciones entre dispositivos) y hace que
            cursosSeleccionados quede IGUAL a lo que hay en la nube — no solo
            agrega, reemplaza — así, sin importar si este dispositivo tenía
            una selección local vieja/vacía, gana lo último guardado desde
            cualquier dispositivo (mismo criterio que ya usa la reconciliación
-           de secciones/profesores en generador.js). Se llama tanto desde un
-           dispositivo 100% nuevo como desde uno con caché local existente.
-           Devuelve true si cambió algo respecto a lo que había localmente.
-           Usa esperarSigaObtenerSesion(), definida más abajo en este mismo
-           bloque — function hoisting hace que esté disponible igual, sin
-           importar el orden en el archivo. */
+           de secciones/profesores en generador.js). También reconcilia
+           cursosMetadata (badges Obligatorio/Electivo/Complementario): si
+           la nube trae algo y es distinto a lo que hay localmente, lo
+           adopta — por ejemplo, si conectaste a Matrícula UNI en la PC
+           DESPUÉS de que este dispositivo ya tenía los mismos cursos vía
+           carga oficial (sin badges). Devuelve true si cambió algo respecto
+           a lo que había localmente. Usa esperarSigaObtenerSesion(),
+           definida más abajo en este mismo bloque — function hoisting hace
+           que esté disponible igual, sin importar el orden en el archivo. */
         async function sincronizarSeleccionCursosDesdeNube() {
             await esperarSigaObtenerSesion();
             if (!window.sigaObtenerSesion || !window.sigaSupabase) return false;
@@ -343,7 +376,7 @@
 
             const { data, error } = await window.sigaSupabase
                 .from('horarios_alumno')
-                .select('secciones_generador')
+                .select('secciones_generador, cursos_metadata')
                 .eq('user_id', sesion.user.id)
                 .maybeSingle();
 
@@ -357,7 +390,16 @@
             const nubeSet = new Set(cursosNube);
             const igualQueLocal = nubeSet.size === cursosSeleccionados.size &&
                 [...nubeSet].every(c => cursosSeleccionados.has(c));
-            if (igualQueLocal) return false;
+
+            let cambioMetadata = false;
+            if (data.cursos_metadata && Object.keys(data.cursos_metadata).length) {
+                if (JSON.stringify(cursosMetadata) !== JSON.stringify(data.cursos_metadata)) {
+                    cursosMetadata = data.cursos_metadata;
+                    cambioMetadata = true;
+                }
+            }
+
+            if (igualQueLocal && !cambioMetadata) return false;
 
             cursosSeleccionados = nubeSet;
             return true;
@@ -713,6 +755,14 @@
                 cursosMetadata = JSON.parse(localStorage.getItem(LS_METADATA) || '{}');
                 origenDatos = localStorage.getItem(LS_ORIGEN) || 'excel';
 
+                // Si este dispositivo ya tenía categorías guardadas de una
+                // conexión a Matrícula UNI anterior (antes de que existiera
+                // esta subida a la nube), las sube ahora — sin necesidad de
+                // reconectar. Importante mientras Matrícula UNI esté caída:
+                // esto NO intenta conectar a nada, solo publica lo que ya
+                // tenías guardado en este dispositivo desde antes.
+                subirMetadataANube();
+
                 sessionStorage.setItem('cargaHoraria', cargaGuardada);
 
                 if (nombreArchivoActual) {
@@ -1014,6 +1064,12 @@
                 persistActions.style.display = 'flex';
                 actualizarSeleccion();
                 guardarProgreso();
+                // Las etiquetas Obligatorio/Electivo/Complementario recién
+                // obtenidas son datos reales tuyos (vienen de tu matrícula),
+                // no genéricos — deben viajar a los demás dispositivos igual
+                // que los cursos y secciones, para que no se pierdan al
+                // reconciliar desde un dispositivo que cargó por Excel/JSON.
+                subirMetadataANube();
                 cerrarModalSyncMatricula();
                 showToast('Conectado a Matrícula UNI ✓', 'success');
 
