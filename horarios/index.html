@@ -310,7 +310,7 @@
                     ? `<span style="color:#10b981">✅ ${cursos.length} cursos disponibles — recuperamos tu selección guardada en la nube.</span>`
                     : `<span style="color:#10b981">✅ ${cursos.length} cursos disponibles — no necesitas subir nada.</span>`;
 
-                construirListaCursos(cursos);
+                renderizarListaConFiltro(cursos);
                 cardCursos.style.display = 'block';
                 persistActions.style.display = 'flex';
                 actualizarSeleccion();
@@ -490,7 +490,7 @@
                     uploadStatus.innerHTML =
                         `<span style="color:#10b981">✅ ¡Éxito! ${cursos.length} cursos cargados.</span>`;
 
-                    construirListaCursos(cursos);
+                    renderizarListaConFiltro(cursos);
                     cardCursos.style.display = 'block';
                     persistActions.style.display = 'flex';
                     actualizarSeleccion();
@@ -502,6 +502,32 @@
                     btnUpload.disabled = false;
                 });
         };
+
+        // ── Filtro "solo mis cursos" (carga oficial genérica) ──────
+        // La carga oficial trae los 142 cursos de TODAS las carreras/ciclos
+        // — a diferencia de Matrícula UNI, que ya devuelve solo lo que le
+        // corresponde al alumno. cursos_metadata (propia o sincronizada de
+        // otro dispositivo) es justo esa lista de "lo que me corresponde",
+        // así que se usa para acotar la vista mientras la carga activa sea
+        // la genérica. Sin opción de "ver todos" a propósito: si hay
+        // metadata, es porque Matrícula UNI ya confirmó qué corresponde —
+        // no hace falta un catálogo completo de respaldo.
+        function esCargaOficialGenerica() {
+            return typeof nombreArchivoActual === 'string' && nombreArchivoActual.startsWith('Carga oficial');
+        }
+
+        function renderizarListaConFiltro(cursos) {
+            if (!esCargaOficialGenerica() || !cursosMetadata || !Object.keys(cursosMetadata).length) {
+                construirListaCursos(cursos);
+                return;
+            }
+
+            const propios = cursos.filter(c => c in cursosMetadata);
+            // Si por algún motivo ninguno de los cursos de cursos_metadata
+            // sigue existiendo en la carga actual, no tiene sentido mostrar
+            // una lista vacía — se cae de vuelta al catálogo completo.
+            construirListaCursos(propios.length ? propios : cursos);
+        }
 
         // ── 3. Construir lista de cursos dinámicamente ──────────
         // Los badges (tipo/vacantes/repetido) SOLO aparecen si cursosMetadata
@@ -811,7 +837,7 @@
                     return;
                 }
 
-                construirListaCursos(cursos);
+                renderizarListaConFiltro(cursos);
                 cardCursos.style.display = 'block';
                 persistActions.style.display = 'flex';
                 actualizarSeleccion();
