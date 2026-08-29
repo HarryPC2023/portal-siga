@@ -30,8 +30,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   modal.classList.add('visible');
 
+  const selectCarrera = inicializarSelectPersonalizado({
+    triggerId: 'carreraTrigger', textoId: 'carreraTriggerTexto',
+    listaId: 'carreraLista', valorId: 'carreraValor',
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (!selectCarrera.valor.value) {
+      msg.textContent = 'Elige tu carrera antes de guardar.';
+      return;
+    }
+
     const datos = Object.fromEntries(new FormData(form).entries());
     const codigo = datos.codigo_estudiante.trim().toUpperCase();
     const nombre = datos.nombre.trim();
