@@ -1004,6 +1004,7 @@ body.eliminar-curso-habilitado .course-eliminar-btn {
   padding: 1px 0;
   cursor: text;
   transition: all 0.15s;
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
