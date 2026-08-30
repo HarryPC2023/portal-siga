@@ -1039,13 +1039,48 @@ function showTip(e, sec, cl, color) {
 
 function moveTooltip(e) {
     if (!tooltipEl) return;
-    tooltipEl.style.left = (e.clientX + 14) + 'px';
-    tooltipEl.style.top = (e.clientY - 8) + 'px';
+
+    const margen = 8;
+    const anchoVentana = window.innerWidth;
+    const altoVentana = window.innerHeight;
+    const anchoTip = tooltipEl.offsetWidth;
+    const altoTip = tooltipEl.offsetHeight;
+
+    let left = e.clientX + 14;
+    let top = e.clientY - 8;
+
+    // Si abrirlo hacia la derecha del toque lo saca de pantalla (curso
+    // pegado al borde derecho, como pasa siempre con la última columna
+    // del horario), se abre hacia la izquierda del toque en su lugar.
+    if (left + anchoTip + margen > anchoVentana) {
+        left = e.clientX - anchoTip - 14;
+    }
+    // Pantalla muy angosta o toque muy pegado al borde izquierdo: lo
+    // pega al margen en vez de dejarlo salir por la izquierda.
+    if (left < margen) left = margen;
+
+    // Mismo criterio en vertical: si se sale por abajo, se abre hacia
+    // arriba del toque.
+    if (top + altoTip + margen > altoVentana) {
+        top = e.clientY - altoTip - 8;
+    }
+    if (top < margen) top = margen;
+
+    tooltipEl.style.left = left + 'px';
+    tooltipEl.style.top = top + 'px';
 }
 
 function hideTip() {
     if (tooltipEl) tooltipEl.style.display = 'none';
 }
+
+// En mobile no hay "mouseleave" real: el tooltip se abre con el toque
+// y puede quedarse pegado en pantalla. Un toque en cualquier otro
+// lugar (que no sea otro bloque de curso) lo cierra.
+document.addEventListener('touchstart', e => {
+    if (!tooltipEl || tooltipEl.style.display !== 'block') return;
+    if (!e.target.closest('.class-block')) hideTip();
+}, { passive: true });
 
 // ── FAVORITOS ─────────────────────────────────────────────────
 // ── MODAL "GUARDAR FAVORITO" ─────────────────────────────────
