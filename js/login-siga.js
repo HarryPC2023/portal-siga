@@ -61,10 +61,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const veniaDeFlujoLogin = new URLSearchParams(window.location.search).get('login') === '1'
       || modal.classList.contains('visible');
     if (veniaDeFlujoLogin) {
-      window.location.href = 'dashboard.html';
+      window.location.href = destinoTrasLogin();
     }
   });
 });
+
+// Si requerirSesion() nos mandó acá desde una página protegida (ej.
+// admin.html, horarios/), guardó esa ruta en ?next= — la usamos para
+// volver justo ahí en vez de caer siempre en dashboard.html. Solo se
+// acepta si es una ruta interna del portal (empieza con "/" y no con
+// "//", para no abrir la puerta a redirects armados a mano en la URL).
+function destinoTrasLogin() {
+  const next = new URLSearchParams(window.location.search).get('next');
+  if (next && next.startsWith('/') && !next.startsWith('//')) {
+    try {
+      return decodeURIComponent(next);
+    } catch (e) { /* next mal formado, se ignora */ }
+  }
+  return 'dashboard.html';
+}
 
 // Disparadores de "Inicio", "Registrarse" y "Comenzar" en el HTML.
 window.manejarClicInicio = (e) => { e.preventDefault(); irADashboardOAbrirModal('entrar'); return false; };

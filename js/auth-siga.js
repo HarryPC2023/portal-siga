@@ -93,30 +93,6 @@ export async function resolverUrlFoto(fotoUrl) {
   return error ? null : data.signedUrl;
 }
 
-/**
- * Se resuelve con la sesión real (o null) en cuanto el cliente de
- * Supabase determina el estado de sesión por PRIMERA vez — a diferencia
- * de llamar a getSession() a ciegas justo tras crear el cliente (que
- * puede devolver null todavía sin haber restaurado la sesión guardada),
- * esto escucha el evento real de auth y espera lo que haga falta, sin
- * inventar un tiempo de espera fijo. Se usa en pantallas como Horarios,
- * que recargan la página completa en cada navegación y por lo tanto
- * tienen que volver a levantar el cliente de Supabase desde cero cada
- * vez (puede tardar más de lo esperado según la red).
- * Trae un tope de seguridad de 8s por si el evento nunca llegara a
- * disparar, para no dejar la espera colgada para siempre.
- */
-export function esperarSesionLista() {
-  const esperaEvento = new Promise(resolve => {
-    const { data } = supabase.auth.onAuthStateChange((evento, sesion) => {
-      data.subscription.unsubscribe();
-      resolve(sesion);
-    });
-  });
-  const tope = new Promise(resolve => setTimeout(() => resolve(null), 8000));
-  return Promise.race([esperaEvento, tope]);
-}
-
 /** Eventos que NO representan un cambio real de sesión — se ignoran para
  * evitar que la interfaz "parpadee"/recargue solo por volver a la pestaña. */
 const EVENTOS_SESION_IGNORADOS = new Set(['TOKEN_REFRESHED', 'INITIAL_SESSION']);
@@ -218,7 +194,11 @@ export function montarNavUsuario() {
 export async function requerirSesion(raiz = '') {
   const sesion = await obtenerSesion();
   if (!sesion) {
-    window.location.href = `${raiz}index.html?login=1`;
+    // Guarda a dónde se iba (ruta completa, con query si tenía) para que
+    // login-siga.js pueda devolver ahí después de iniciar sesión, en vez
+    // de dejar siempre al usuario en dashboard.html.
+    const next = encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.href = `${raiz}index.html?login=1&next=${next}`;
     return null;
   }
   return sesion;
