@@ -2706,21 +2706,36 @@ async function resolverMetaV2Habilitado() {
     }
 }
 
-const META_BANDA_APROBADO = 11;   // valor "de pase" que se asume PRIMERO en lo que NO es foco
-const META_BANDA_ALTA_ASUMIDA = 15; // si con el mínimo no alcanza, se reintenta asumiendo que
-// el resto del curso también rinde bien — la meta se logra
-// en conjunto (PC+LAB+Mono+Examen), no aislando una sola parte
-const BANDAS_ASUMIDAS = [META_BANDA_APROBADO, META_BANDA_ALTA_ASUMIDA];
+/* Nota aprobatoria real en la UNI: 10 (no 11 — corregido). Se usa como
+   supuesto conservador para lo que NO es foco de una sección. */
+const BANDA_APROBADO = 10;
+const BANDA_RESTO_ALTA = 15; // si con el mínimo (10) no alcanza, se reintenta asumiendo
+// que el resto del curso también rinde bien (~15)
+const BANDAS_RESTO = [BANDA_APROBADO, BANDA_RESTO_ALTA];
 
-/* Patrones de variación (offsets relativos a una base que el motor
-   resuelve por búsqueda). PATRON_ALTA da variedad suave y siempre
-   por encima de la base; PATRON_MIXTA alterna claramente alto/bajo.
-   Se ciclan con % así que sirven igual para 1 componente que para 8
-   (PC tiene hasta 4, LAB hasta 8). El offset 0 (un solo valor, sin
-   variar) se usa aparte para EP/EF, donde variar no tiene sentido:
-   solo hay un número que resolver. */
-const PATRON_ALTA = [1, 2, 0, 1, 2, 0, 1, 2];
-const PATRON_MIXTA = [2, -2, 1, -3, 2, -1, 1, -2];
+/* "Todo al examen": el examen ancla arranca bajo (10, un alivio real
+   si le toca bajo) y solo escala a 16 si con 10 no alcanza siquiera
+   con el otro examen en 20. El que compensa siempre se resuelve
+   libre, sin techo — si hace falta un 18 o 19, se muestra tal cual. */
+const NIVELES_ESCALADA_EXAMEN = [
+    { resto: BANDA_APROBADO, ancla: BANDA_APROBADO },
+    { resto: BANDA_RESTO_ALTA, ancla: 16 },
+];
+
+/* Bandas realistas para PC y LAB — ya no se busca el mínimo matemático
+   desde 0 (eso daba cosas como "PC3: 1"), sino que se ofrecen valores
+   fijos y variados dentro de un rango que un estudiante reconoce como
+   razonable. El examen (EP/EF) es lo que absorbe la diferencia real
+   para llegar a la meta — ver generarAlternativaTipo más abajo. */
+const PATRON_ALTA_VALORES = [17, 14, 16, 13, 17, 15, 16, 14];
+const PATRON_MIXTA_VALORES = [13, 8, 11, 9, 12, 8, 13, 10];
+
+/* Fallback SOLO para cursos sin EP/EF (SOLO_PC, con o sin Monografía):
+   ahí no hay examen que compense, así que el propio tipo de foco debe
+   poder escalar libremente por encima de la banda realista si la meta
+   lo exige — se reutiliza el viejo esquema de offsets + búsqueda. */
+const PATRON_ALTA_OFFSET = [1, 2, 0, 1, 2, 0, 1, 2];
+const PATRON_MIXTA_OFFSET = [2, -2, 1, -3, 2, -1, 1, -2];
 
 let metaCursoSeleccionadoId = null;
 
@@ -2760,11 +2775,7 @@ function leerValoresActualesCurso(curso) {
 }
 
 /* Para todo lo que NO es del/los tipo(s) excluido(s): usa la nota
-   real si ya la tiene, o asume `bandaAsumida` si está pendiente. Así
-   cada sección puede "aislar" su tipo de foco sin tocar el resto —
-   pero la nota asumida ya no es fija: se prueba primero conservadora
-   (11) y, si con eso la meta no alcanza, se reintenta con una banda
-   más alta (ver BANDAS_ASUMIDAS) antes de declarar algo inalcanzable. */
+   real si ya la tiene, o asume `bandaAsumida` si está pendiente. */
 function baseNeutralExcluyendo(actuales, todos, tiposExcluidos, bandaAsumida) {
     const base = {};
     todos.forEach(c => {
@@ -2776,9 +2787,9 @@ function baseNeutralExcluyendo(actuales, todos, tiposExcluidos, bandaAsumida) {
 
 /* Busca la menor BASE entera en [0,20] tal que, sumándole el patrón
    de offsets a cada componente de `comps` (recortado a [0,20]), se
-   alcanza metaFinal. Con patron=[0] se comporta como un resolver de
-   un solo valor (caso EP/EF); con PATRON_ALTA/MIXTA da variedad real
-   entre componentes sin dejar de resolver matemáticamente la meta. */
+   alcanza metaFinal. Con patron=[0] resuelve un solo valor plano
+   (examen, o el fallback sin examen); con los offsets da variedad
+   real entre componentes sin dejar de resolver matemáticamente. */
 function resolverPatronMinimo(curso, fijosBase, comps, patron, metaFinal) {
     for (let base = 0; base <= 20; base++) {
         const prueba = { ...fijosBase };
@@ -2793,44 +2804,84 @@ function resolverPatronMinimo(curso, fijosBase, comps, patron, metaFinal) {
     return null;
 }
 
-/* Genera "Alternativa alta" / "Alternativa mixta" (o solo alta, para
-   Monografías) para un tipo de componente específico, aislándolo del
-   resto del curso vía baseNeutralExcluyendo. Si el tipo no tiene
-   nada pendiente, informa eso en vez de inventar alternativas.
+function valoresPatronFijo(comps, patronValores) {
+    const valores = {};
+    comps.forEach((c, i) => { valores[c] = patronValores[i % patronValores.length]; });
+    return valores;
+}
 
-   La meta se alcanza EN CONJUNTO (PC+LAB+Mono+Examen), no aislando
-   una sola parte — por eso primero se prueba con el resto del curso
-   en banda de aprobado (11, el supuesto más conservador) y, si con
-   eso no alcanza, se reintenta asumiendo que el resto también rinde
-   bien (banda alta). Solo si ni así alcanza se declara inalcanzable
-   de verdad — nunca se rinde con el primer intento pesimista. */
-function generarAlternativasTipo(curso, metaFinal, actuales, todos, comps, tipoExcluido, incluirMixta) {
+/* Resuelve UNA alternativa (alta o mixta) para un tipo de foco (PC o
+   LAB): el foco se fija en el patrón realista (13-17 / 8-13, variado
+   por componente, NUNCA buscado desde 0), y es el EXAMEN (EP/EF) el
+   que se resuelve libremente para cerrar la meta — sin techo, esa es
+   la respuesta real que le toca, así sea un alivio (05, 08) o exija
+   bastante (18). Si el curso no tiene examen (SOLO_PC), no hay nada
+   que compensar y el propio foco escala libremente como fallback. */
+function generarAlternativaTipo(curso, metaFinal, actuales, todos, grupoExamen, pendientesFoco, tipoFoco, patronValores, patronOffsetFallback) {
+    const valoresFoco = valoresPatronFijo(pendientesFoco, patronValores);
+
+    if (grupoExamen.length) {
+        for (const bandaResto of BANDAS_RESTO) {
+            const base = {};
+            todos.forEach(c => {
+                const tipo = tipoComponenteMeta(c);
+                if (tipo === tipoFoco) { base[c] = actuales[c] !== null ? actuales[c] : valoresFoco[c]; return; }
+                if (tipo === 'EXAMEN') { if (actuales[c] !== null) base[c] = actuales[c]; return; } // se deja pendiente si no
+                base[c] = actuales[c] !== null ? actuales[c] : bandaResto;
+            });
+            const pendientesExamen = grupoExamen.filter(c => base[c] === undefined);
+            let res;
+            if (pendientesExamen.length) {
+                res = resolverPatronMinimo(curso, base, pendientesExamen, [0], metaFinal);
+            } else {
+                const { nota_final } = calcularPFCompleto(curso, base);
+                res = (nota_final !== null && nota_final >= metaFinal) ? { valores: {}, notaFinal: nota_final } : null;
+            }
+            if (res) {
+                return {
+                    valores: { ...valoresFoco, ...res.valores }, notaFinal: res.notaFinal,
+                    bandaAsumida: bandaResto === BANDA_APROBADO ? null : bandaResto,
+                };
+            }
+        }
+        return null;
+    }
+
+    // Fallback: curso sin examen — el foco escala libremente, con el resto en banda (10→15).
+    for (const bandaResto of BANDAS_RESTO) {
+        const base = {};
+        todos.forEach(c => {
+            if (tipoComponenteMeta(c) === tipoFoco) return;
+            base[c] = actuales[c] !== null ? actuales[c] : bandaResto;
+        });
+        const res = resolverPatronMinimo(curso, base, pendientesFoco, patronOffsetFallback, metaFinal);
+        if (res) return { valores: res.valores, notaFinal: res.notaFinal, bandaAsumida: bandaResto === BANDA_APROBADO ? null : bandaResto };
+    }
+    return null;
+}
+
+/* Genera "Alternativa alta" / "Alternativa mixta" (o solo alta, para
+   Monografías) para un tipo de componente específico. Si el tipo no
+   tiene nada pendiente, informa eso en vez de inventar alternativas. */
+function generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoExamen, comps, tipoFoco, incluirMixta) {
     const pendientes = comps.filter(c => actuales[c] === null);
     const entradas = comps.filter(c => actuales[c] !== null).map(c => ({ comp: c, valor: actuales[c] }));
 
     if (!pendientes.length) return { sinPendientes: true, entradas };
 
-    for (const banda of BANDAS_ASUMIDAS) {
-        const base = baseNeutralExcluyendo(actuales, todos, [tipoExcluido], banda);
-        entradas.forEach(({ comp, valor }) => { base[comp] = valor; });
+    const alta = generarAlternativaTipo(curso, metaFinal, actuales, todos, grupoExamen, pendientes, tipoFoco, PATRON_ALTA_VALORES, PATRON_ALTA_OFFSET);
+    const mixtaCruda = incluirMixta ? generarAlternativaTipo(curso, metaFinal, actuales, todos, grupoExamen, pendientes, tipoFoco, PATRON_MIXTA_VALORES, PATRON_MIXTA_OFFSET) : null;
+    // Si alta y mixta terminan pidiendo exactamente lo mismo, mixta no aporta nada nuevo.
+    const mixta = (mixtaCruda && alta && JSON.stringify(mixtaCruda.valores) === JSON.stringify(alta.valores)) ? null : mixtaCruda;
 
-        const alta = resolverPatronMinimo(curso, base, pendientes, PATRON_ALTA, metaFinal);
-        const mixtaCruda = incluirMixta ? resolverPatronMinimo(curso, base, pendientes, PATRON_MIXTA, metaFinal) : null;
-        // Si alta y mixta terminan pidiendo exactamente lo mismo (típico con 1 solo
-        // componente pendiente), mixta no aporta nada nuevo y se descarta.
-        const mixta = (mixtaCruda && alta && JSON.stringify(mixtaCruda.valores) === JSON.stringify(alta.valores)) ? null : mixtaCruda;
-
-        if (alta || mixta) return { sinPendientes: false, entradas, alta, mixta, bandaAsumida: banda };
-    }
-
-    return { sinPendientes: false, entradas, alta: null, mixta: null, bandaAsumida: null };
+    return { sinPendientes: false, entradas, alta, mixta };
 }
 
 /* ---------- Sección 1: Estrategia en PCs ----------
    Siempre que el curso tenga PC (casi todos, salvo SOLO_EXAMENES). */
-function generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC) {
+function generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC, grupoExamen) {
     if (!grupoPC.length) return null;
-    const r = generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoPC, 'PC', true);
+    const r = generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoExamen, grupoPC, 'PC', true);
     return {
         id: 'pc', nombre: '📝 Estrategia en PCs',
         descripcion: 'Cómo repartir tus Prácticas Calificadas (PC) para llegar a tu meta.', ...r
@@ -2840,51 +2891,49 @@ function generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC) {
 /* ---------- Sección 2: Escenarios en LABs y Monografías ----------
    Siempre se muestra (aunque el curso no tenga ninguno de los dos),
    para que el estudiante entienda por qué no aplica en su caso. */
-function generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grupoMono) {
+function generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grupoMono, grupoExamen) {
     if (!grupoLab.length && !grupoMono.length) {
         return { id: 'labmono', nombre: '🧪 Escenarios en LABs y Monografías', noDisponible: true };
     }
-    const lab = grupoLab.length ? generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoLab, 'LAB', true) : null;
+    const lab = grupoLab.length ? generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoExamen, grupoLab, 'LAB', true) : null;
     // Monografías: casi siempre 1-2 casilleros y depende mucho del criterio
     // del profesor (grupal/individual) — no tiene sentido forzar "alta/mixta"
-    // ahí, así que se muestra un único valor referencial con banda más ancha.
-    const mono = grupoMono.length ? generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoMono, 'MONO', false) : null;
+    // ahí, así que se muestra un único valor referencial.
+    const mono = grupoMono.length ? generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoExamen, grupoMono, 'MONO', false) : null;
     return { id: 'labmono', nombre: '🧪 Escenarios en LABs y Monografías', lab, mono };
 }
 
-/* Resuelve UNA variante de "Todo al examen": el componente `foco`
-   (EP o EF) se resuelve, y el `otro` examen queda fijo (real si ya
-   lo tiene, o asumido). Igual que en generarAlternativasTipo, se
-   prueba primero con el resto del curso en banda de aprobado y, si
-   no alcanza, se reintenta con banda alta — nunca se descarta la
-   variante solo por el primer intento conservador. Si de verdad no
-   alcanza ni así, se devuelve marcada `inalcanzable` en vez de
-   desaparecer en silencio: el estudiante debe poder ver y entender
-   por qué esa ruta no es viable, no solo la que sí funcionó. */
+/* Resuelve UNA variante de "Todo al examen": el `foco` (EP o EF) se
+   resuelve LIBRE (sin techo — así sea un 18, se muestra tal cual), y
+   el `otro` examen queda como ancla: arranca en 10 (nota aprobatoria
+   real de la UNI — un alivio genuino saber que con eso ya alcanza) y
+   solo escala a 16 si con 10 no alcanza ni con el foco en 20. Si de
+   verdad no alcanza ni así, se devuelve marcada `inalcanzable` en vez
+   de desaparecer en silencio. */
 function resolverVarianteExamen(curso, metaFinal, actuales, todos, foco, otro) {
-    for (const banda of BANDAS_ASUMIDAS) {
-        const baseFuera = baseNeutralExcluyendo(actuales, todos, ['EXAMEN'], banda);
-        const base = { ...baseFuera, [otro]: actuales[otro] !== null ? actuales[otro] : banda };
+    const nombre = foco === 'EF' ? 'EP mínimo, EF compensa' : 'EF mínimo, EP compensa';
+    for (const nivel of NIVELES_ESCALADA_EXAMEN) {
+        const baseFuera = baseNeutralExcluyendo(actuales, todos, ['EXAMEN'], nivel.resto);
+        const base = { ...baseFuera, [otro]: actuales[otro] !== null ? actuales[otro] : nivel.ancla };
         const res = resolverPatronMinimo(curso, base, [foco], [0], metaFinal);
         if (res) {
             const valores = { ...base, [foco]: res.valores[foco] };
             return {
-                nombre: `Con el ${foco}`, notaFinal: res.notaFinal, bandaAsumida: banda, inalcanzable: false,
+                nombre, notaFinal: res.notaFinal, inalcanzable: false,
+                bandaAsumida: nivel.resto === BANDA_APROBADO ? null : nivel.resto,
                 comps: ['EP', 'EF'].map(c => ({ comp: c, valor: valores[c], esActual: c === otro && actuales[otro] !== null })),
             };
         }
     }
-    return { nombre: `Con el ${foco}`, inalcanzable: true };
+    return { nombre, inalcanzable: true };
 }
 
 /* ---------- Sección 3: Todo al examen ----------
-   Antes "Todo al examen final": ahora ofrece SIEMPRE ambos focos
-   posibles (EP y EF) cuando ambos están pendientes, no solo el EF —
-   el estudiante puede optar por concentrarse en el parcial o en el
-   final, independientemente de cuál sea matemáticamente más fácil.
-   Solo se genera si el curso realmente tiene EP y EF (se omite del
-   todo si no, a diferencia de LABs/Monografías que sí muestran
-   aviso). */
+   Antes "Todo al examen final": ahora ofrece SIEMPRE ambas variantes
+   ("EP mínimo, EF compensa" y "EF mínimo, EP compensa") cuando ambos
+   están pendientes — el estudiante ve claramente cómo se compensan
+   entre sí, no solo la ruta que salió matemáticamente más fácil.
+   Solo se genera si el curso realmente tiene EP y EF. */
 function generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen) {
     if (!grupoExamen.includes('EP') || !grupoExamen.includes('EF')) return null;
 
@@ -2912,8 +2961,8 @@ function generarEscenariosMetaV2(curso, metaFinal) {
     }
 
     const secciones = [
-        generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC),
-        generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grupoMono),
+        generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC, grupoExamen),
+        generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grupoMono, grupoExamen),
         generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen),
     ].filter(Boolean);
 
@@ -2924,6 +2973,7 @@ function generarEscenariosMetaV2(curso, metaFinal) {
    MOTOR v1 — sin cambios, se mantiene para todos los usuarios
    hasta que META_V2_HABILITADO_PARA_TODOS pase a `true`.
    ============================================================ */
+const META_BANDA_APROBADO_V1 = 11;
 const META_BANDA_COMODA = 16;
 
 function resolverValorMinimo(curso, base, comps, metaFinal) {
@@ -2984,13 +3034,13 @@ function generarEscenariosMetaV1(curso, metaFinal) {
 
     if (pendientesExamen.includes('EF')) {
         const base = { ...fijos };
-        pendientesPC.forEach(c => { base[c] = META_BANDA_APROBADO; });
-        if (pendientesExamen.includes('EP')) base['EP'] = META_BANDA_APROBADO;
+        pendientesPC.forEach(c => { base[c] = META_BANDA_APROBADO_V1; });
+        if (pendientesExamen.includes('EP')) base['EP'] = META_BANDA_APROBADO_V1;
         const res = resolverValorMinimo(curso, base, ['EF'], metaFinal);
         if (res) {
             const valores = {};
-            pendientesPC.forEach(c => { valores[c] = META_BANDA_APROBADO; });
-            if (pendientesExamen.includes('EP')) valores['EP'] = META_BANDA_APROBADO;
+            pendientesPC.forEach(c => { valores[c] = META_BANDA_APROBADO_V1; });
+            if (pendientesExamen.includes('EP')) valores['EP'] = META_BANDA_APROBADO_V1;
             valores['EF'] = res.valor;
             escenarios.push({
                 nombre: '🎯 Todo al examen final',
@@ -3004,15 +3054,15 @@ function generarEscenariosMetaV1(curso, metaFinal) {
         const ultima = pendientesPC[pendientesPC.length - 1];
         const previas = pendientesPC.slice(0, -1);
         const base = { ...fijos };
-        previas.forEach(c => { base[c] = META_BANDA_APROBADO; });
+        previas.forEach(c => { base[c] = META_BANDA_APROBADO_V1; });
         const res = resolverValorMinimo(curso, base, [ultima], metaFinal);
         if (res) {
             const valores = {};
-            previas.forEach(c => { valores[c] = META_BANDA_APROBADO; });
+            previas.forEach(c => { valores[c] = META_BANDA_APROBADO_V1; });
             valores[ultima] = res.valor;
             escenarios.push({
                 nombre: '🔁 Recupera con la última',
-                descripcion: `Tus demás PC quedan alrededor de ${META_BANDA_APROBADO} y todo se decide en tu última práctica.`,
+                descripcion: `Tus demás PC quedan alrededor de ${META_BANDA_APROBADO_V1} y todo se decide en tu última práctica.`,
                 valores, notaFinal: res.notaFinal
             });
         }
@@ -3102,11 +3152,21 @@ function renderGridValores(entradas, valoresProyectados) {
 }
 
 /* Nota que aclara el supuesto usado para el resto del curso, solo
-   cuando hizo falta la banda alta (con la conservadora de 11 no se
-   dice nada — es el caso normal y no hay que aclarar de más). */
-function notaBandaAsumida(bandaAsumida, nombreInalcanzable) {
-    if (bandaAsumida !== META_BANDA_ALTA_ASUMIDA) return '';
-    return `<p class="meta-aa-nota-banda">📌 Esto asume que el resto de tu curso (fuera de ${nombreInalcanzable}) también rinde bien (~${META_BANDA_ALTA_ASUMIDA}), no solo lo mínimo para pasar — la meta se logra en conjunto.</p>`;
+   cuando hizo falta la banda alta (con la conservadora de 10 no se
+   dice nada — es el caso normal y no hay que aclarar de más). Sin
+   número fijo: el "cuánto" ya se ve en las notas mostradas, la nota
+   solo aclara el criterio. */
+function notaBandaAsumida(bandaAsumida, nombreFoco) {
+    if (!bandaAsumida) return '';
+    return `<p class="meta-aa-nota-banda">📌 Esto asume que tus otras evaluaciones (fuera de ${nombreFoco}) también tienen buen desempeño — la meta no depende solo de ${nombreFoco}, sino del conjunto del curso.</p>`;
+}
+
+/* Nota específica para "Todo al examen": el foco ahí ya es el propio
+   examen, así que la frase genérica de PC/LAB ("no depende solo de
+   tus X") no calza — se aclara distinto. */
+function notaBandaAsumidaExamen(bandaAsumida) {
+    if (!bandaAsumida) return '';
+    return `<p class="meta-aa-nota-banda">📌 Esto asume que tus PC, LAB y Monografías también tienen buen desempeño, no solo lo mínimo para pasar.</p>`;
 }
 
 /* ---------- Render de una sección tipo (PC, o LAB/Mono por separado) ---------- */
@@ -3115,7 +3175,7 @@ function renderSeccionTipo(r, nombreInalcanzable) {
         return `<div class="meta-aa-sin-pendientes">Ya tienes todas tus notas de ${nombreInalcanzable} cargadas ✅</div>`;
     }
     if (!r.alta && !r.mixta) {
-        return `<div class="meta-aa-inalcanzable">⚠️ Ni siquiera asumiendo que el resto de tu curso rinde bien (~${META_BANDA_ALTA_ASUMIDA}), esta meta es alcanzable solo con ${nombreInalcanzable} (necesitarías más de 20).</div>`;
+        return `<div class="meta-aa-inalcanzable">⚠️ Ni siquiera asumiendo que el resto de tu curso rinde bien, esta meta es alcanzable solo con ${nombreInalcanzable} (necesitarías más de 20).</div>`;
     }
     let html = notaBandaAsumida(r.bandaAsumida, nombreInalcanzable);
     if (r.alta) {
@@ -3214,7 +3274,7 @@ function renderResultadoMetaV2(resultado) {
                 return `
                 <div class="meta-aa-alternativa">
                     <div class="meta-aa-alternativa-titulo">${v.nombre}</div>
-                    ${notaBandaAsumida(v.bandaAsumida, v.nombre === 'Con el EF' ? 'tu EF' : 'tu EP')}
+                    ${notaBandaAsumidaExamen(v.bandaAsumida)}
                     <div class="meta-aa-tarjeta-valores">
                         ${v.comps.map(c => `
                             <div class="meta-aa-valor ${c.esActual ? 'meta-aa-valor-actual' : ''}" ${c.esActual ? 'title="Ya la tienes cargada"' : ''}>
