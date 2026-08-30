@@ -2706,7 +2706,11 @@ async function resolverMetaV2Habilitado() {
     }
 }
 
-const META_BANDA_APROBADO = 11;   // valor "de pase" que se asume en lo que NO es foco de la sección
+const META_BANDA_APROBADO = 11;   // valor "de pase" que se asume PRIMERO en lo que NO es foco
+const META_BANDA_ALTA_ASUMIDA = 15; // si con el mínimo no alcanza, se reintenta asumiendo que
+// el resto del curso también rinde bien — la meta se logra
+// en conjunto (PC+LAB+Mono+Examen), no aislando una sola parte
+const BANDAS_ASUMIDAS = [META_BANDA_APROBADO, META_BANDA_ALTA_ASUMIDA];
 
 /* Patrones de variación (offsets relativos a una base que el motor
    resuelve por búsqueda). PATRON_ALTA da variedad suave y siempre
@@ -2756,14 +2760,16 @@ function leerValoresActualesCurso(curso) {
 }
 
 /* Para todo lo que NO es del/los tipo(s) excluido(s): usa la nota
-   real si ya la tiene, o asume banda de aprobado (11) si está
-   pendiente. Así cada sección puede "aislar" su tipo de foco sin
-   tocar el resto — el resto queda fijo como supuesto conservador. */
-function baseNeutralExcluyendo(actuales, todos, tiposExcluidos) {
+   real si ya la tiene, o asume `bandaAsumida` si está pendiente. Así
+   cada sección puede "aislar" su tipo de foco sin tocar el resto —
+   pero la nota asumida ya no es fija: se prueba primero conservadora
+   (11) y, si con eso la meta no alcanza, se reintenta con una banda
+   más alta (ver BANDAS_ASUMIDAS) antes de declarar algo inalcanzable. */
+function baseNeutralExcluyendo(actuales, todos, tiposExcluidos, bandaAsumida) {
     const base = {};
     todos.forEach(c => {
         if (tiposExcluidos.includes(tipoComponenteMeta(c))) return;
-        base[c] = actuales[c] !== null ? actuales[c] : META_BANDA_APROBADO;
+        base[c] = actuales[c] !== null ? actuales[c] : bandaAsumida;
     });
     return base;
 }
@@ -2790,23 +2796,34 @@ function resolverPatronMinimo(curso, fijosBase, comps, patron, metaFinal) {
 /* Genera "Alternativa alta" / "Alternativa mixta" (o solo alta, para
    Monografías) para un tipo de componente específico, aislándolo del
    resto del curso vía baseNeutralExcluyendo. Si el tipo no tiene
-   nada pendiente, informa eso en vez de inventar alternativas. */
+   nada pendiente, informa eso en vez de inventar alternativas.
+
+   La meta se alcanza EN CONJUNTO (PC+LAB+Mono+Examen), no aislando
+   una sola parte — por eso primero se prueba con el resto del curso
+   en banda de aprobado (11, el supuesto más conservador) y, si con
+   eso no alcanza, se reintenta asumiendo que el resto también rinde
+   bien (banda alta). Solo si ni así alcanza se declara inalcanzable
+   de verdad — nunca se rinde con el primer intento pesimista. */
 function generarAlternativasTipo(curso, metaFinal, actuales, todos, comps, tipoExcluido, incluirMixta) {
     const pendientes = comps.filter(c => actuales[c] === null);
     const entradas = comps.filter(c => actuales[c] !== null).map(c => ({ comp: c, valor: actuales[c] }));
 
     if (!pendientes.length) return { sinPendientes: true, entradas };
 
-    const base = baseNeutralExcluyendo(actuales, todos, [tipoExcluido]);
-    entradas.forEach(({ comp, valor }) => { base[comp] = valor; });
+    for (const banda of BANDAS_ASUMIDAS) {
+        const base = baseNeutralExcluyendo(actuales, todos, [tipoExcluido], banda);
+        entradas.forEach(({ comp, valor }) => { base[comp] = valor; });
 
-    const alta = resolverPatronMinimo(curso, base, pendientes, PATRON_ALTA, metaFinal);
-    const mixtaCruda = incluirMixta ? resolverPatronMinimo(curso, base, pendientes, PATRON_MIXTA, metaFinal) : null;
-    // Si alta y mixta terminan pidiendo exactamente lo mismo (típico con 1 solo
-    // componente pendiente), mixta no aporta nada nuevo y se descarta.
-    const mixta = (mixtaCruda && alta && JSON.stringify(mixtaCruda.valores) === JSON.stringify(alta.valores)) ? null : mixtaCruda;
+        const alta = resolverPatronMinimo(curso, base, pendientes, PATRON_ALTA, metaFinal);
+        const mixtaCruda = incluirMixta ? resolverPatronMinimo(curso, base, pendientes, PATRON_MIXTA, metaFinal) : null;
+        // Si alta y mixta terminan pidiendo exactamente lo mismo (típico con 1 solo
+        // componente pendiente), mixta no aporta nada nuevo y se descarta.
+        const mixta = (mixtaCruda && alta && JSON.stringify(mixtaCruda.valores) === JSON.stringify(alta.valores)) ? null : mixtaCruda;
 
-    return { sinPendientes: false, entradas, alta, mixta };
+        if (alta || mixta) return { sinPendientes: false, entradas, alta, mixta, bandaAsumida: banda };
+    }
+
+    return { sinPendientes: false, entradas, alta: null, mixta: null, bandaAsumida: null };
 }
 
 /* ---------- Sección 1: Estrategia en PCs ----------
@@ -2835,12 +2852,39 @@ function generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grup
     return { id: 'labmono', nombre: '🧪 Escenarios en LABs y Monografías', lab, mono };
 }
 
+/* Resuelve UNA variante de "Todo al examen": el componente `foco`
+   (EP o EF) se resuelve, y el `otro` examen queda fijo (real si ya
+   lo tiene, o asumido). Igual que en generarAlternativasTipo, se
+   prueba primero con el resto del curso en banda de aprobado y, si
+   no alcanza, se reintenta con banda alta — nunca se descarta la
+   variante solo por el primer intento conservador. Si de verdad no
+   alcanza ni así, se devuelve marcada `inalcanzable` en vez de
+   desaparecer en silencio: el estudiante debe poder ver y entender
+   por qué esa ruta no es viable, no solo la que sí funcionó. */
+function resolverVarianteExamen(curso, metaFinal, actuales, todos, foco, otro) {
+    for (const banda of BANDAS_ASUMIDAS) {
+        const baseFuera = baseNeutralExcluyendo(actuales, todos, ['EXAMEN'], banda);
+        const base = { ...baseFuera, [otro]: actuales[otro] !== null ? actuales[otro] : banda };
+        const res = resolverPatronMinimo(curso, base, [foco], [0], metaFinal);
+        if (res) {
+            const valores = { ...base, [foco]: res.valores[foco] };
+            return {
+                nombre: `Con el ${foco}`, notaFinal: res.notaFinal, bandaAsumida: banda, inalcanzable: false,
+                comps: ['EP', 'EF'].map(c => ({ comp: c, valor: valores[c], esActual: c === otro && actuales[otro] !== null })),
+            };
+        }
+    }
+    return { nombre: `Con el ${foco}`, inalcanzable: true };
+}
+
 /* ---------- Sección 3: Todo al examen ----------
-   Antes "Todo al examen final": ahora ofrece ambos focos posibles
-   (EP o EF), no solo el EF — el estudiante puede optar por
-   concentrarse en el parcial o en el final. Solo se genera si el
-   curso realmente tiene EP y EF (se omite del todo si no, a
-   diferencia de LABs/Monografías que sí muestran aviso). */
+   Antes "Todo al examen final": ahora ofrece SIEMPRE ambos focos
+   posibles (EP y EF) cuando ambos están pendientes, no solo el EF —
+   el estudiante puede optar por concentrarse en el parcial o en el
+   final, independientemente de cuál sea matemáticamente más fácil.
+   Solo se genera si el curso realmente tiene EP y EF (se omite del
+   todo si no, a diferencia de LABs/Monografías que sí muestran
+   aviso). */
 function generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen) {
     if (!grupoExamen.includes('EP') || !grupoExamen.includes('EF')) return null;
 
@@ -2850,31 +2894,9 @@ function generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen) {
         return { id: 'examen', nombre: '🎯 Todo al examen', sinPendientes: true };
     }
 
-    const baseFuera = baseNeutralExcluyendo(actuales, todos, ['EXAMEN']);
     const variantes = [];
-
-    if (efPendiente) {
-        const base = { ...baseFuera, EP: actuales.EP !== null ? actuales.EP : META_BANDA_APROBADO };
-        const res = resolverPatronMinimo(curso, base, ['EF'], [0], metaFinal);
-        if (res) variantes.push({
-            nombre: 'Con el EF', notaFinal: res.notaFinal,
-            comps: [
-                { comp: 'EP', valor: base.EP, esActual: actuales.EP !== null },
-                { comp: 'EF', valor: res.valores.EF, esActual: false },
-            ],
-        });
-    }
-    if (epPendiente) {
-        const base = { ...baseFuera, EF: actuales.EF !== null ? actuales.EF : META_BANDA_APROBADO };
-        const res = resolverPatronMinimo(curso, base, ['EP'], [0], metaFinal);
-        if (res) variantes.push({
-            nombre: 'Con el EP', notaFinal: res.notaFinal,
-            comps: [
-                { comp: 'EP', valor: res.valores.EP, esActual: false },
-                { comp: 'EF', valor: base.EF, esActual: actuales.EF !== null },
-            ],
-        });
-    }
+    if (efPendiente) variantes.push(resolverVarianteExamen(curso, metaFinal, actuales, todos, 'EF', 'EP'));
+    if (epPendiente) variantes.push(resolverVarianteExamen(curso, metaFinal, actuales, todos, 'EP', 'EF'));
 
     return { id: 'examen', nombre: '🎯 Todo al examen', sinPendientes: false, variantes };
 }
@@ -3079,15 +3101,23 @@ function renderGridValores(entradas, valoresProyectados) {
     return `<div class="meta-aa-tarjeta-valores">${yaIngresadas}${proyectadas}</div>`;
 }
 
+/* Nota que aclara el supuesto usado para el resto del curso, solo
+   cuando hizo falta la banda alta (con la conservadora de 11 no se
+   dice nada — es el caso normal y no hay que aclarar de más). */
+function notaBandaAsumida(bandaAsumida, nombreInalcanzable) {
+    if (bandaAsumida !== META_BANDA_ALTA_ASUMIDA) return '';
+    return `<p class="meta-aa-nota-banda">📌 Esto asume que el resto de tu curso (fuera de ${nombreInalcanzable}) también rinde bien (~${META_BANDA_ALTA_ASUMIDA}), no solo lo mínimo para pasar — la meta se logra en conjunto.</p>`;
+}
+
 /* ---------- Render de una sección tipo (PC, o LAB/Mono por separado) ---------- */
 function renderSeccionTipo(r, nombreInalcanzable) {
     if (r.sinPendientes) {
         return `<div class="meta-aa-sin-pendientes">Ya tienes todas tus notas de ${nombreInalcanzable} cargadas ✅</div>`;
     }
     if (!r.alta && !r.mixta) {
-        return `<div class="meta-aa-inalcanzable">⚠️ Con lo que ya tienes, esta meta no es alcanzable en ${nombreInalcanzable} (necesitarías más de 20).</div>`;
+        return `<div class="meta-aa-inalcanzable">⚠️ Ni siquiera asumiendo que el resto de tu curso rinde bien (~${META_BANDA_ALTA_ASUMIDA}), esta meta es alcanzable solo con ${nombreInalcanzable} (necesitarías más de 20).</div>`;
     }
-    let html = '';
+    let html = notaBandaAsumida(r.bandaAsumida, nombreInalcanzable);
     if (r.alta) {
         html += `
             <div class="meta-aa-alternativa">
@@ -3143,10 +3173,11 @@ function renderResultadoMetaV2(resultado) {
                 if (s.mono.sinPendientes) {
                     contenido += `<div class="meta-aa-sin-pendientes">Ya tienes tus Monografías cargadas ✅</div>`;
                 } else if (!s.mono.alta) {
-                    contenido += `<div class="meta-aa-inalcanzable">⚠️ Esta meta no es alcanzable solo con Monografías.</div>`;
+                    contenido += `<div class="meta-aa-inalcanzable">⚠️ Ni siquiera asumiendo que el resto de tu curso rinde bien, esta meta es alcanzable solo con Monografías.</div>`;
                 } else {
                     contenido += `
                         <p class="meta-aa-tarjeta-desc">Referencial — la nota real depende bastante del criterio del profesor y si es grupal o individual.</p>
+                        ${notaBandaAsumida(s.mono.bandaAsumida, 'Monografías')}
                         ${renderGridValores(s.mono.entradas, s.mono.alta.valores)}
                         <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${s.mono.alta.notaFinal.toFixed(1)}</strong></div>`;
                 }
@@ -3172,9 +3203,18 @@ function renderResultadoMetaV2(resultado) {
                         <div class="meta-aa-inalcanzable">⚠️ Con lo que ya tienes, esta meta no es alcanzable en el examen (necesitarías más de 20).</div>
                     </div>`;
             }
-            const variantesHtml = s.variantes.map(v => `
+            const variantesHtml = s.variantes.map(v => {
+                if (v.inalcanzable) {
+                    return `
+                        <div class="meta-aa-alternativa">
+                            <div class="meta-aa-alternativa-titulo">${v.nombre}</div>
+                            <div class="meta-aa-inalcanzable">⚠️ Ni siquiera asumiendo que el resto de tu curso rinde bien, esta ruta es alcanzable (necesitarías más de 20).</div>
+                        </div>`;
+                }
+                return `
                 <div class="meta-aa-alternativa">
                     <div class="meta-aa-alternativa-titulo">${v.nombre}</div>
+                    ${notaBandaAsumida(v.bandaAsumida, v.nombre === 'Con el EF' ? 'tu EF' : 'tu EP')}
                     <div class="meta-aa-tarjeta-valores">
                         ${v.comps.map(c => `
                             <div class="meta-aa-valor ${c.esActual ? 'meta-aa-valor-actual' : ''}" ${c.esActual ? 'title="Ya la tienes cargada"' : ''}>
@@ -3183,8 +3223,8 @@ function renderResultadoMetaV2(resultado) {
                         `).join('')}
                     </div>
                     <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${v.notaFinal.toFixed(1)}</strong></div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
             return `
                 <div class="meta-aa-tarjeta">
                     <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>

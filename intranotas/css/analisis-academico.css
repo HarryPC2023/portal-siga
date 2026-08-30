@@ -464,6 +464,16 @@
     line-height: 1.5;
 }
 
+.meta-aa-nota-banda {
+    font-size: 0.72rem;
+    color: var(--color-gris-texto);
+    line-height: 1.5;
+    background: var(--color-fondo-input);
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+}
+
 .meta-aa-no-disponible {
     font-size: 0.82rem;
     color: var(--color-gris-texto);
