@@ -406,6 +406,71 @@
     color: var(--color-cian);
 }
 
+/* ---------- Meta del curso v2: subtítulos, alternativas y estados ---------- */
+.meta-aa-tarjeta-subtitulo {
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-gris-texto);
+    margin: 10px 0 6px;
+}
+
+.meta-aa-tarjeta-subtitulo:first-child {
+    margin-top: 0;
+}
+
+.meta-aa-alternativa {
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px dashed var(--color-gris-claro);
+}
+
+.meta-aa-alternativa:first-of-type {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: none;
+}
+
+.meta-aa-alternativa-titulo {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--color-texto-principal);
+    margin-bottom: 8px;
+}
+
+/* Nota que el usuario YA ingresó: atenuada, con check, distinta de la
+   proyectada (que se queda con el morado/cian de siempre). */
+.meta-aa-valor-actual {
+    background: transparent;
+    border: 1px dashed var(--color-gris-claro);
+    opacity: 0.75;
+}
+
+.meta-aa-valor-actual span {
+    color: var(--color-verde-btn);
+}
+
+.meta-aa-valor-actual strong {
+    color: var(--color-gris-texto);
+}
+
+.meta-aa-sin-pendientes {
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--color-verde-btn);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.meta-aa-no-disponible {
+    font-size: 0.82rem;
+    color: var(--color-gris-texto);
+    line-height: 1.6;
+    font-style: italic;
+}
+
 /* ---------- Celular: el mismo panel se convierte en hoja inferior;
    el acento pasa de borde izquierdo a borde superior ---------- */
 @media (max-width: 768px) {

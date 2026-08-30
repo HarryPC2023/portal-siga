@@ -2673,32 +2673,73 @@ function abrirHerramienta(id) {
 }
 
 /* ============================================================
-   🎯 META DEL CURSO — motor de escenarios
+   🎯 META DEL CURSO — motor de escenarios (v2)
 
    Reutiliza calcularPFCompleto() como caja negra: nunca reescribe
-   el álgebra de ningún curso. Para cada componente pendiente
-   (que el usuario aún no ingresó en su tarjeta) genera hasta 3
-   escenarios de estudio ("arquetipos"), no todas las combinaciones
-   matemáticamente posibles. Los componentes ya ingresados por el
-   usuario se respetan siempre como fijos — y como este panel se
-   recalcula desde calcularTodo(), se actualiza solo apenas el
-   usuario escribe una nota nueva.
+   el álgebra de ningún curso. A diferencia de la v1 (un único
+   "Parejo" que sube todo por igual), acá cada tipo de evaluación
+   (PC, LAB, Monografía, Examen) tiene su propia sección con
+   alternativas VARIADAS — nunca se ofrece el mismo número repetido
+   en todos los componentes, así el curso tenga 0 notas cargadas o
+   varias. Los componentes ya ingresados por el usuario se respetan
+   siempre como fijos, y los pendientes de OTRO tipo (el que no es
+   foco de esa sección) se asumen en banda de aprobado (11) — el
+   mismo criterio que ya usaba "Todo al examen final" en la v1.
+
+   🔒 GATE DE VISIBILIDAD (temporal): mientras se prueba, este motor
+   nuevo SOLO se muestra a Harry — todos los demás usuarios siguen
+   viendo el motor v1 (generarEscenariosMetaV1) sin ningún cambio.
+   Cambiar META_V2_HABILITADO_PARA_TODOS a `true` cuando esté 100%
+   probado, sin tocar nada más de este archivo.
    ============================================================ */
-const META_BANDA_COMODA = 16;     // valor "cómodo" para una banda que se fija a propósito
-const META_BANDA_APROBADO = 11;   // valor "de pase" para una banda que se fija a propósito
+const ADMIN_UID_SIGA_META = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
+const META_V2_HABILITADO_PARA_TODOS = false; // 🔒 flag maestro
+let metaV2Habilitado = false; // cache, se resuelve una vez al abrir el panel
+
+async function resolverMetaV2Habilitado() {
+    if (META_V2_HABILITADO_PARA_TODOS) { metaV2Habilitado = true; return; }
+    try {
+        const sesion = await obtenerSesionNube();
+        metaV2Habilitado = !!(sesion && sesion.user && sesion.user.id === ADMIN_UID_SIGA_META);
+    } catch (e) {
+        metaV2Habilitado = false;
+    }
+}
+
+const META_BANDA_APROBADO = 11;   // valor "de pase" que se asume en lo que NO es foco de la sección
+
+/* Patrones de variación (offsets relativos a una base que el motor
+   resuelve por búsqueda). PATRON_ALTA da variedad suave y siempre
+   por encima de la base; PATRON_MIXTA alterna claramente alto/bajo.
+   Se ciclan con % así que sirven igual para 1 componente que para 8
+   (PC tiene hasta 4, LAB hasta 8). El offset 0 (un solo valor, sin
+   variar) se usa aparte para EP/EF, donde variar no tiene sentido:
+   solo hay un número que resolver. */
+const PATRON_ALTA = [1, 2, 0, 1, 2, 0, 1, 2];
+const PATRON_MIXTA = [2, -2, 1, -3, 2, -1, 1, -2];
 
 let metaCursoSeleccionadoId = null;
 
-/* Qué componentes tiene el curso (vía COMPONENT_LAYOUT, sin ES) y
-   cómo se agrupan: grupo de prácticas (todo lo que no es EP/EF) y
-   grupo de exámenes (EP/EF) — la misma separación conceptual que ya
-   usa el resto de Intranotas (Prom. PC vs. EP/EF). */
+/* Qué componentes tiene el curso (vía COMPONENT_LAYOUT, sin ES),
+   agrupados por tipo real de evaluación — PC, LAB, Monografía y
+   Examen (EP/EF) — en vez de la agrupación genérica "todo lo que no
+   es examen" que usaba la v1. Esto permite que cada tipo tenga su
+   propia sección independiente. */
+function tipoComponenteMeta(c) {
+    if (/^PC\d+$/.test(c)) return 'PC';
+    if (/^Lab\d+$/i.test(c)) return 'LAB';
+    if (/^Monografia\d+$/.test(c)) return 'MONO';
+    return 'EXAMEN'; // EP / EF
+}
+
 function obtenerComponentesCurso(curso) {
     const layout = COMPONENT_LAYOUT[curso.formula_type] || COMPONENT_LAYOUT['ESTANDAR_1_1_1'];
     const todos = layout.flatMap(fila => fila.comps).filter(c => c !== 'ES');
-    const grupoPC = todos.filter(c => c !== 'EP' && c !== 'EF');
-    const grupoExamen = todos.filter(c => c === 'EP' || c === 'EF');
-    return { todos, grupoPC, grupoExamen };
+    const grupoPC = todos.filter(c => tipoComponenteMeta(c) === 'PC');
+    const grupoLab = todos.filter(c => tipoComponenteMeta(c) === 'LAB');
+    const grupoMono = todos.filter(c => tipoComponenteMeta(c) === 'MONO');
+    const grupoExamen = todos.filter(c => tipoComponenteMeta(c) === 'EXAMEN');
+    return { todos, grupoPC, grupoLab, grupoMono, grupoExamen };
 }
 
 /* Lee del DOM las notas que el usuario YA ingresó para ese curso en
@@ -2714,11 +2755,155 @@ function leerValoresActualesCurso(curso) {
     return valores;
 }
 
-/* Busca el menor valor ENTERO en [0,20] que, asignado por igual a
-   todos los `comps` indicados (junto con lo ya fijo en `base`),
-   alcanza metaFinal. Las notas que Meta del curso propone por
-   componente son siempre enteras (más realista que pedir "16.4 en
-   tu PC2") — solo 21 valores a evaluar, trivial para el navegador. */
+/* Para todo lo que NO es del/los tipo(s) excluido(s): usa la nota
+   real si ya la tiene, o asume banda de aprobado (11) si está
+   pendiente. Así cada sección puede "aislar" su tipo de foco sin
+   tocar el resto — el resto queda fijo como supuesto conservador. */
+function baseNeutralExcluyendo(actuales, todos, tiposExcluidos) {
+    const base = {};
+    todos.forEach(c => {
+        if (tiposExcluidos.includes(tipoComponenteMeta(c))) return;
+        base[c] = actuales[c] !== null ? actuales[c] : META_BANDA_APROBADO;
+    });
+    return base;
+}
+
+/* Busca la menor BASE entera en [0,20] tal que, sumándole el patrón
+   de offsets a cada componente de `comps` (recortado a [0,20]), se
+   alcanza metaFinal. Con patron=[0] se comporta como un resolver de
+   un solo valor (caso EP/EF); con PATRON_ALTA/MIXTA da variedad real
+   entre componentes sin dejar de resolver matemáticamente la meta. */
+function resolverPatronMinimo(curso, fijosBase, comps, patron, metaFinal) {
+    for (let base = 0; base <= 20; base++) {
+        const prueba = { ...fijosBase };
+        comps.forEach((c, i) => { prueba[c] = Math.max(0, Math.min(20, base + patron[i % patron.length])); });
+        const { nota_final } = calcularPFCompleto(curso, prueba);
+        if (nota_final !== null && nota_final >= metaFinal) {
+            const valores = {};
+            comps.forEach((c, i) => { valores[c] = Math.max(0, Math.min(20, base + patron[i % patron.length])); });
+            return { valores, notaFinal: nota_final };
+        }
+    }
+    return null;
+}
+
+/* Genera "Alternativa alta" / "Alternativa mixta" (o solo alta, para
+   Monografías) para un tipo de componente específico, aislándolo del
+   resto del curso vía baseNeutralExcluyendo. Si el tipo no tiene
+   nada pendiente, informa eso en vez de inventar alternativas. */
+function generarAlternativasTipo(curso, metaFinal, actuales, todos, comps, tipoExcluido, incluirMixta) {
+    const pendientes = comps.filter(c => actuales[c] === null);
+    const entradas = comps.filter(c => actuales[c] !== null).map(c => ({ comp: c, valor: actuales[c] }));
+
+    if (!pendientes.length) return { sinPendientes: true, entradas };
+
+    const base = baseNeutralExcluyendo(actuales, todos, [tipoExcluido]);
+    entradas.forEach(({ comp, valor }) => { base[comp] = valor; });
+
+    const alta = resolverPatronMinimo(curso, base, pendientes, PATRON_ALTA, metaFinal);
+    const mixtaCruda = incluirMixta ? resolverPatronMinimo(curso, base, pendientes, PATRON_MIXTA, metaFinal) : null;
+    // Si alta y mixta terminan pidiendo exactamente lo mismo (típico con 1 solo
+    // componente pendiente), mixta no aporta nada nuevo y se descarta.
+    const mixta = (mixtaCruda && alta && JSON.stringify(mixtaCruda.valores) === JSON.stringify(alta.valores)) ? null : mixtaCruda;
+
+    return { sinPendientes: false, entradas, alta, mixta };
+}
+
+/* ---------- Sección 1: Estrategia en PCs ----------
+   Siempre que el curso tenga PC (casi todos, salvo SOLO_EXAMENES). */
+function generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC) {
+    if (!grupoPC.length) return null;
+    const r = generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoPC, 'PC', true);
+    return {
+        id: 'pc', nombre: '📝 Estrategia en PCs',
+        descripcion: 'Cómo repartir tus Prácticas Calificadas (PC) para llegar a tu meta.', ...r
+    };
+}
+
+/* ---------- Sección 2: Escenarios en LABs y Monografías ----------
+   Siempre se muestra (aunque el curso no tenga ninguno de los dos),
+   para que el estudiante entienda por qué no aplica en su caso. */
+function generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grupoMono) {
+    if (!grupoLab.length && !grupoMono.length) {
+        return { id: 'labmono', nombre: '🧪 Escenarios en LABs y Monografías', noDisponible: true };
+    }
+    const lab = grupoLab.length ? generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoLab, 'LAB', true) : null;
+    // Monografías: casi siempre 1-2 casilleros y depende mucho del criterio
+    // del profesor (grupal/individual) — no tiene sentido forzar "alta/mixta"
+    // ahí, así que se muestra un único valor referencial con banda más ancha.
+    const mono = grupoMono.length ? generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoMono, 'MONO', false) : null;
+    return { id: 'labmono', nombre: '🧪 Escenarios en LABs y Monografías', lab, mono };
+}
+
+/* ---------- Sección 3: Todo al examen ----------
+   Antes "Todo al examen final": ahora ofrece ambos focos posibles
+   (EP o EF), no solo el EF — el estudiante puede optar por
+   concentrarse en el parcial o en el final. Solo se genera si el
+   curso realmente tiene EP y EF (se omite del todo si no, a
+   diferencia de LABs/Monografías que sí muestran aviso). */
+function generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen) {
+    if (!grupoExamen.includes('EP') || !grupoExamen.includes('EF')) return null;
+
+    const epPendiente = actuales.EP === null;
+    const efPendiente = actuales.EF === null;
+    if (!epPendiente && !efPendiente) {
+        return { id: 'examen', nombre: '🎯 Todo al examen', sinPendientes: true };
+    }
+
+    const baseFuera = baseNeutralExcluyendo(actuales, todos, ['EXAMEN']);
+    const variantes = [];
+
+    if (efPendiente) {
+        const base = { ...baseFuera, EP: actuales.EP !== null ? actuales.EP : META_BANDA_APROBADO };
+        const res = resolverPatronMinimo(curso, base, ['EF'], [0], metaFinal);
+        if (res) variantes.push({
+            nombre: 'Con el EF', notaFinal: res.notaFinal,
+            comps: [
+                { comp: 'EP', valor: base.EP, esActual: actuales.EP !== null },
+                { comp: 'EF', valor: res.valores.EF, esActual: false },
+            ],
+        });
+    }
+    if (epPendiente) {
+        const base = { ...baseFuera, EF: actuales.EF !== null ? actuales.EF : META_BANDA_APROBADO };
+        const res = resolverPatronMinimo(curso, base, ['EP'], [0], metaFinal);
+        if (res) variantes.push({
+            nombre: 'Con el EP', notaFinal: res.notaFinal,
+            comps: [
+                { comp: 'EP', valor: res.valores.EP, esActual: false },
+                { comp: 'EF', valor: base.EF, esActual: actuales.EF !== null },
+            ],
+        });
+    }
+
+    return { id: 'examen', nombre: '🎯 Todo al examen', sinPendientes: false, variantes };
+}
+
+function generarEscenariosMetaV2(curso, metaFinal) {
+    const { todos, grupoPC, grupoLab, grupoMono, grupoExamen } = obtenerComponentesCurso(curso);
+    const actuales = leerValoresActualesCurso(curso);
+
+    // Ya tiene TODAS sus notas: no hay nada que proyectar, solo mostrar el PF real.
+    if (todos.every(c => actuales[c] !== null)) {
+        const { nota_final } = calcularPFCompleto(curso, actuales);
+        return { sinPendientesCurso: true, notaFinal: nota_final, alcanzaMeta: nota_final !== null && nota_final >= metaFinal };
+    }
+
+    const secciones = [
+        generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC),
+        generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grupoMono),
+        generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen),
+    ].filter(Boolean);
+
+    return { sinPendientesCurso: false, secciones };
+}
+
+/* ============================================================
+   MOTOR v1 — sin cambios, se mantiene para todos los usuarios
+   hasta que META_V2_HABILITADO_PARA_TODOS pase a `true`.
+   ============================================================ */
+const META_BANDA_COMODA = 16;
+
 function resolverValorMinimo(curso, base, comps, metaFinal) {
     for (let x = 0; x <= 20; x++) {
         const prueba = { ...base };
@@ -2729,8 +2914,11 @@ function resolverValorMinimo(curso, base, comps, metaFinal) {
     return null;
 }
 
-function generarEscenariosMeta(curso, metaFinal) {
-    const { grupoPC, grupoExamen } = obtenerComponentesCurso(curso);
+function generarEscenariosMetaV1(curso, metaFinal) {
+    const layout = COMPONENT_LAYOUT[curso.formula_type] || COMPONENT_LAYOUT['ESTANDAR_1_1_1'];
+    const todosComp = layout.flatMap(fila => fila.comps).filter(c => c !== 'ES');
+    const grupoPC = todosComp.filter(c => c !== 'EP' && c !== 'EF');
+    const grupoExamen = todosComp.filter(c => c === 'EP' || c === 'EF');
     const actuales = leerValoresActualesCurso(curso);
 
     const fijos = {};
@@ -2740,7 +2928,6 @@ function generarEscenariosMeta(curso, metaFinal) {
     grupoExamen.forEach(c => { if (actuales[c] !== null) fijos[c] = actuales[c]; else pendientesExamen.push(c); });
     const pendientesTodos = [...pendientesPC, ...pendientesExamen];
 
-    // Ya tiene TODAS sus notas: no hay nada que proyectar, solo mostrar el PF real.
     if (pendientesTodos.length === 0) {
         const { nota_final } = calcularPFCompleto(curso, fijos);
         return { sinPendientes: true, notaFinal: nota_final, alcanzaMeta: nota_final !== null && nota_final >= metaFinal };
@@ -2748,7 +2935,6 @@ function generarEscenariosMeta(curso, metaFinal) {
 
     const escenarios = [];
 
-    // 1) Parejo — todo lo pendiente sube por igual
     const parejo = resolverValorMinimo(curso, fijos, pendientesTodos, metaFinal);
     if (parejo) {
         escenarios.push({
@@ -2759,7 +2945,6 @@ function generarEscenariosMeta(curso, metaFinal) {
         });
     }
 
-    // 2) Fuerte en prácticas — prácticas en banda cómoda, se resuelve el examen
     if (pendientesPC.length && pendientesExamen.length) {
         const base = { ...fijos };
         pendientesPC.forEach(c => { base[c] = META_BANDA_COMODA; });
@@ -2775,7 +2960,6 @@ function generarEscenariosMeta(curso, metaFinal) {
         }
     }
 
-    // 3) Todo al examen final — prácticas + EP en banda de aprobado, se resuelve el EF
     if (pendientesExamen.includes('EF')) {
         const base = { ...fijos };
         pendientesPC.forEach(c => { base[c] = META_BANDA_APROBADO; });
@@ -2794,7 +2978,6 @@ function generarEscenariosMeta(curso, metaFinal) {
         }
     }
 
-    // 4) Recupera con la última PC — solo cursos SOLO_PC con 2+ PC pendientes
     if (FORMULAS_SOLO_PC.includes(curso.formula_type) && pendientesPC.length >= 2) {
         const ultima = pendientesPC[pendientesPC.length - 1];
         const previas = pendientesPC.slice(0, -1);
@@ -2813,7 +2996,6 @@ function generarEscenariosMeta(curso, metaFinal) {
         }
     }
 
-    // Deduplicar (misma combinación de valores ya cubierta por otro arquetipo)
     const vistos = new Set();
     const unicos = escenarios.filter(e => {
         const firma = pendientesTodos.map(c => e.valores[c] ?? '').join('|');
@@ -2866,7 +3048,7 @@ function generarVistaMeta() {
    inicializar el selector de una vez sin necesidad de un guardián
    de instancia — a diferencia de selectorPeriodoInstancia, que vive
    en un DOM fijo que nunca se destruye. */
-function inicializarVistaMeta() {
+async function inicializarVistaMeta() {
     const cursosOrdenados = [...cursosSeleccionados].sort((a, b) => a.name.localeCompare(b.name));
     const cursoActual = cursosOrdenados.find(c => c.id === metaCursoSeleccionadoId);
 
@@ -2877,12 +3059,140 @@ function inicializarVistaMeta() {
         alElegir: (valor) => cambiarCursoMeta(valor),
     })?.establecer(metaCursoSeleccionadoId, cursoActual ? cursoActual.name : '');
 
+    await resolverMetaV2Habilitado();
     refrescarVistaMeta();
 }
 
 function cambiarCursoMeta(cursoId) {
     metaCursoSeleccionadoId = cursoId;
     refrescarVistaMeta();
+}
+
+/* ---------- Render de valores (marca ya ingresadas vs proyectadas) ---------- */
+function renderGridValores(entradas, valoresProyectados) {
+    const yaIngresadas = (entradas || []).map(({ comp, valor }) => `
+        <div class="meta-aa-valor meta-aa-valor-actual" title="Ya la tienes cargada"><span>${comp} ✓</span><strong>${valor}</strong></div>
+    `).join('');
+    const proyectadas = Object.entries(valoresProyectados || {}).map(([comp, val]) => `
+        <div class="meta-aa-valor"><span>${comp}</span><strong>${val}</strong></div>
+    `).join('');
+    return `<div class="meta-aa-tarjeta-valores">${yaIngresadas}${proyectadas}</div>`;
+}
+
+/* ---------- Render de una sección tipo (PC, o LAB/Mono por separado) ---------- */
+function renderSeccionTipo(r, nombreInalcanzable) {
+    if (r.sinPendientes) {
+        return `<div class="meta-aa-sin-pendientes">Ya tienes todas tus notas de ${nombreInalcanzable} cargadas ✅</div>`;
+    }
+    if (!r.alta && !r.mixta) {
+        return `<div class="meta-aa-inalcanzable">⚠️ Con lo que ya tienes, esta meta no es alcanzable en ${nombreInalcanzable} (necesitarías más de 20).</div>`;
+    }
+    let html = '';
+    if (r.alta) {
+        html += `
+            <div class="meta-aa-alternativa">
+                <div class="meta-aa-alternativa-titulo">Alternativa alta</div>
+                ${renderGridValores(r.entradas, r.alta.valores)}
+                <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${r.alta.notaFinal.toFixed(1)}</strong></div>
+            </div>`;
+    }
+    if (r.mixta) {
+        html += `
+            <div class="meta-aa-alternativa">
+                <div class="meta-aa-alternativa-titulo">Alternativa mixta</div>
+                ${renderGridValores(r.entradas, r.mixta.valores)}
+                <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${r.mixta.notaFinal.toFixed(1)}</strong></div>
+            </div>`;
+    }
+    return html;
+}
+
+function renderResultadoMetaV2(resultado) {
+    if (resultado.sinPendientesCurso) {
+        return resultado.notaFinal === null ? '' : `
+            <div class="meta-aa-completo ${resultado.alcanzaMeta ? 'ok' : 'no'}">
+                Ya tienes todas tus notas: tu PF es <strong>${resultado.notaFinal.toFixed(1)}</strong>.
+                ${resultado.alcanzaMeta ? ' ✅ ¡Alcanzaste tu meta!' : ' ❌ No llegaste a la meta con estas notas.'}
+            </div>
+        `;
+    }
+
+    return resultado.secciones.map(s => {
+        if (s.id === 'pc') {
+            return `
+                <div class="meta-aa-tarjeta">
+                    <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
+                    <p class="meta-aa-tarjeta-desc">${s.descripcion}</p>
+                    ${renderSeccionTipo(s, 'PC')}
+                </div>`;
+        }
+        if (s.id === 'labmono') {
+            if (s.noDisponible) {
+                return `
+                    <div class="meta-aa-tarjeta">
+                        <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
+                        <p class="meta-aa-no-disponible">Este curso no maneja Laboratorios ni Monografías, así que esta sección no aplica acá.</p>
+                    </div>`;
+            }
+            let contenido = '';
+            if (s.lab) {
+                contenido += `<div class="meta-aa-tarjeta-subtitulo">Laboratorios (LAB)</div>${renderSeccionTipo(s.lab, 'LAB')}`;
+            }
+            if (s.mono) {
+                contenido += `<div class="meta-aa-tarjeta-subtitulo">Monografías</div>`;
+                if (s.mono.sinPendientes) {
+                    contenido += `<div class="meta-aa-sin-pendientes">Ya tienes tus Monografías cargadas ✅</div>`;
+                } else if (!s.mono.alta) {
+                    contenido += `<div class="meta-aa-inalcanzable">⚠️ Esta meta no es alcanzable solo con Monografías.</div>`;
+                } else {
+                    contenido += `
+                        <p class="meta-aa-tarjeta-desc">Referencial — la nota real depende bastante del criterio del profesor y si es grupal o individual.</p>
+                        ${renderGridValores(s.mono.entradas, s.mono.alta.valores)}
+                        <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${s.mono.alta.notaFinal.toFixed(1)}</strong></div>`;
+                }
+            }
+            return `
+                <div class="meta-aa-tarjeta">
+                    <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
+                    ${contenido}
+                </div>`;
+        }
+        if (s.id === 'examen') {
+            if (s.sinPendientes) {
+                return `
+                    <div class="meta-aa-tarjeta">
+                        <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
+                        <div class="meta-aa-sin-pendientes">Ya tienes EP y EF cargados ✅</div>
+                    </div>`;
+            }
+            if (!s.variantes.length) {
+                return `
+                    <div class="meta-aa-tarjeta">
+                        <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
+                        <div class="meta-aa-inalcanzable">⚠️ Con lo que ya tienes, esta meta no es alcanzable en el examen (necesitarías más de 20).</div>
+                    </div>`;
+            }
+            const variantesHtml = s.variantes.map(v => `
+                <div class="meta-aa-alternativa">
+                    <div class="meta-aa-alternativa-titulo">${v.nombre}</div>
+                    <div class="meta-aa-tarjeta-valores">
+                        ${v.comps.map(c => `
+                            <div class="meta-aa-valor ${c.esActual ? 'meta-aa-valor-actual' : ''}" ${c.esActual ? 'title="Ya la tienes cargada"' : ''}>
+                                <span>${c.comp}${c.esActual ? ' ✓' : ''}</span><strong>${c.valor}</strong>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${v.notaFinal.toFixed(1)}</strong></div>
+                </div>
+            `).join('');
+            return `
+                <div class="meta-aa-tarjeta">
+                    <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
+                    ${variantesHtml}
+                </div>`;
+        }
+        return '';
+    }).join('');
 }
 
 function refrescarVistaMeta() {
@@ -2896,7 +3206,13 @@ function refrescarVistaMeta() {
     const metaFinal = parseFloat(metaEl.value);
     if (isNaN(metaFinal)) { cont.innerHTML = ''; return; }
 
-    const resultado = generarEscenariosMeta(curso, metaFinal);
+    if (metaV2Habilitado) {
+        cont.innerHTML = renderResultadoMetaV2(generarEscenariosMetaV2(curso, metaFinal));
+        return;
+    }
+
+    // ---- Motor v1 (todos los usuarios hasta el flip) ----
+    const resultado = generarEscenariosMetaV1(curso, metaFinal);
 
     if (resultado.sinPendientes) {
         cont.innerHTML = resultado.notaFinal === null ? '' : `
