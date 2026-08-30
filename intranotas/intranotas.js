@@ -1801,6 +1801,9 @@ function calcularPFCompleto(curso, valores) {
     const lab = n => valores[`Lab${n}`] ?? null;
     const ep = valores.EP ?? null;
     const ef = valores.EF ?? null;
+    const es = valores.ES ?? null; // el sustitutorio pasa por aplicarSustitutorio() dentro de
+    // cada fórmula (calcularNotaFinalEstandar, etc.) — respeta
+    // el peso doble de EF automáticamente, sin reinventar nada.
 
     let prom_pc = null, nota_final = null;
 
@@ -1826,69 +1829,69 @@ function calcularPFCompleto(curso, valores) {
 
         case 'SOLO_EXAMENES':
             prom_pc = null;
-            nota_final = calcularNotaFinalSoloExamenes(ep, ef, null); break;
+            nota_final = calcularNotaFinalSoloExamenes(ep, ef, es); break;
 
         case 'QUIMICA':
             prom_pc = calcularPromPCQuimica(
                 [pc(1), pc(2), pc(3), pc(4)],
                 [lab(1), lab(2), lab(3), lab(4), lab(5), lab(6), lab(7), lab(8)]
             );
-            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
 
         case 'COMPUTACION_1_1_2':
         case 'ALGORITMIA':
             prom_pc = calcularPromPCComun(pc(1), pc(2), pc(3), pc(4));
-            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
 
         case 'FISICA_I':
             prom_pc = calcularPromPCFisica([pc(1), pc(2), pc(3), pc(4), pc(5)], [lab(1), lab(2), lab(3), lab(4), lab(5)]);
-            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
 
         case 'FISICA_II':
             prom_pc = calcularPromPCFisica([pc(1), pc(2), pc(3), pc(4), pc(5)], [lab(1), lab(2), lab(3), lab(4), lab(5)]);
-            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, es); break;
 
         case 'ESTANDAR_1_1_1':
         case 'ALGEBRA':
             prom_pc = calcularPromPCComun(pc(1), pc(2), pc(3), pc(4));
-            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, es); break;
 
         case 'PSICOLOGIA':
             prom_pc = calcularPromPCPsicologia(pc(1), pc(2), pc(3), pc(4), mon(1));
-            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, es); break;
 
         case 'BIOLOGICO':
             prom_pc = calcularPromPCBiologico([pc(1), pc(2), pc(3), pc(4), pc(5)], mon(1));
-            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, es); break;
 
         case 'MODELADO_DATOS':
         case 'INGENIERIA_DATOS':
             prom_pc = calcularPromPC4PC1Mon(pc(1), pc(2), pc(3), pc(4), mon(1));
-            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
 
         case 'TEORIA_ORGANIZACIONAL':
             prom_pc = calcularPromPCTeoriaOrganizacional(pc(1), pc(2), pc(3), pc(4), mon(1), mon(2));
-            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
 
         case 'TCS':
             prom_pc = calcularPromPCRedaccion(pc(1), pc(2), pc(3), pc(4), mon(1), mon(2));
-            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
 
         case 'TCS_APLICADA':
             prom_pc = calcularPromPCTCSEspecial(pc(1), pc(2), mon(1), mon(2));
-            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, es); break;
 
         case 'SISTEMAS_BLANDOS':
             prom_pc = calcularPromPCSistemasBlandos(pc(1), mon(1), mon(2));
-            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, es); break;
 
         case 'ARQ_EMPRESARIAL':
             prom_pc = calcularPromPCArqEmpresarial(pc(1), pc(2), pc(3), mon(1));
-            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, null); break;
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
 
         default:
             prom_pc = calcularPromPCComun(pc(1), pc(2), pc(3), pc(4));
-            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, null);
+            nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, es);
     }
 
     return { prom_pc, nota_final };
@@ -2950,24 +2953,76 @@ function generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen) {
     return { id: 'examen', nombre: '🎯 Todo al examen', sinPendientes: false, variantes };
 }
 
+/* ---------- Sección 4: 🔁 Jugada del susti ----------
+   El sustitutorio (ES) no se promedia como el resto: REEMPLAZA la
+   nota más baja entre EP y EF — y si esa nota baja resulta ser la de
+   peso doble (EF, en cursos DOBLE_EF), el susti hereda ese mismo peso
+   doble. Por eso vive aparte de las otras tres secciones (que son
+   planeación PREVIA a rendir) — el susti solo es una jugada real una
+   vez que ya rendiste ambos exámenes.
+
+   Se calcula pasando `ES` directo a calcularPFCompleto(), que ahora
+   lo reenvía a aplicarSustitutorio() — la MISMA función que ya usa
+   cada fórmula real del curso para decidir a cuál de los dos
+   reemplaza y con qué peso. Nunca se reinventa el álgebra acá.
+
+   Sin gate por fecha/periodo a propósito (SIGA no tiene calendario
+   académico real, y mantenerlo a mano cada ciclo sería más riesgo que
+   beneficio) — en su lugar, el mensaje queda en condicional ("si tu
+   curso todavía permite el sustitutorio...") para que el estudiante
+   lo lea como referencia, no como una alerta de que el susti es HOY. */
+function resolverSustitutorioMinimo(curso, valoresBase, metaFinal) {
+    for (let es = 0; es <= 20; es++) {
+        const { nota_final } = calcularPFCompleto(curso, { ...valoresBase, ES: es });
+        if (nota_final !== null && nota_final >= metaFinal) return { es, notaFinal: nota_final };
+    }
+    return null;
+}
+
+
+function generarSeccionSustitutorio(curso, metaFinal, actuales, grupoExamen) {
+    if (!grupoExamen.includes('EP') || !grupoExamen.includes('EF')) return null;
+    if (actuales.EP === null || actuales.EF === null) return null; // solo es una jugada real con ambos ya rendidos
+
+    const { nota_final } = calcularPFCompleto(curso, actuales);
+    const yaAlcanzaMeta = nota_final !== null && nota_final >= metaFinal;
+
+    if (yaAlcanzaMeta) {
+        const { nota_final: notaConVeinte } = calcularPFCompleto(curso, { ...actuales, ES: 20 });
+        return { id: 'susti', nombre: '🔁 Jugada del susti', yaAlcanzaMeta: true, notaActual: nota_final, notaConVeinte };
+    }
+
+    const resultado = resolverSustitutorioMinimo(curso, actuales, metaFinal);
+    return { id: 'susti', nombre: '🔁 Jugada del susti', yaAlcanzaMeta: false, notaActual: nota_final, resultado };
+}
+
 function generarEscenariosMetaV2(curso, metaFinal) {
     const { todos, grupoPC, grupoLab, grupoMono, grupoExamen } = obtenerComponentesCurso(curso);
     const actuales = leerValoresActualesCurso(curso);
+    const seccionSusti = generarSeccionSustitutorio(curso, metaFinal, actuales, grupoExamen);
 
-    // Ya tiene TODAS sus notas: no hay nada que proyectar, solo mostrar el PF real.
+    // Ya tiene TODAS sus notas: no hay nada que proyectar en PC/LAB/examen,
+    // pero el susti sigue siendo relevante — se muestra aparte del PF real.
     if (todos.every(c => actuales[c] !== null)) {
         const { nota_final } = calcularPFCompleto(curso, actuales);
-        return { sinPendientesCurso: true, notaFinal: nota_final, alcanzaMeta: nota_final !== null && nota_final >= metaFinal };
+        return {
+            sinPendientesCurso: true,
+            notaFinal: nota_final,
+            alcanzaMeta: nota_final !== null && nota_final >= metaFinal,
+            seccionSusti,
+        };
     }
 
     const secciones = [
         generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC, grupoExamen),
         generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grupoMono, grupoExamen),
         generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen),
+        seccionSusti,
     ].filter(Boolean);
 
     return { sinPendientesCurso: false, secciones };
 }
+
 
 /* ============================================================
    MOTOR v1 — sin cambios, se mantiene para todos los usuarios
@@ -3197,14 +3252,45 @@ function renderSeccionTipo(r, nombreInalcanzable) {
     return html;
 }
 
+/* ---------- Render de "🔁 Jugada del susti" ---------- */
+function renderSeccionSusti(s) {
+    const notaActualTxt = s.notaActual !== null ? s.notaActual.toFixed(1) : '—';
+
+    if (s.yaAlcanzaMeta) {
+        return `
+            <div class="meta-aa-tarjeta">
+                <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
+                <div class="meta-aa-sin-pendientes">Ya alcanzas tu meta con ${notaActualTxt}, no necesitas el susti para esto ✅</div>
+                <p class="meta-aa-tarjeta-desc">Si igual quieres tomarlo para subir tu promedio: con un 20 en el susti (reemplazando tu nota más baja entre EP y EF) tu PF subiría a <strong>${s.notaConVeinte.toFixed(1)}</strong>.</p>
+            </div>`;
+    }
+
+    const cuerpo = !s.resultado
+        ? `<div class="meta-aa-inalcanzable">⚠️ Ni con un 20 en el sustitutorio alcanzarías esta meta.</div>`
+        : `
+            <div class="meta-aa-tarjeta-valores">
+                <div class="meta-aa-valor"><span>Susti</span><strong>${s.resultado.es}</strong></div>
+            </div>
+            <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${s.resultado.notaFinal.toFixed(1)}</strong></div>`;
+
+    return `
+        <div class="meta-aa-tarjeta">
+            <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
+            <p class="meta-aa-tarjeta-desc">Tu nota actual es ${notaActualTxt}. Si tu curso todavía permite el sustitutorio, esto es lo que necesitarías para llegar a tu meta — reemplaza tu nota más baja entre EP y EF.</p>
+            ${cuerpo}
+        </div>`;
+}
+
 function renderResultadoMetaV2(resultado) {
     if (resultado.sinPendientesCurso) {
-        return resultado.notaFinal === null ? '' : `
+        const bloqueCompleto = resultado.notaFinal === null ? '' : `
             <div class="meta-aa-completo ${resultado.alcanzaMeta ? 'ok' : 'no'}">
                 Ya tienes todas tus notas: tu PF es <strong>${resultado.notaFinal.toFixed(1)}</strong>.
                 ${resultado.alcanzaMeta ? ' ✅ ¡Alcanzaste tu meta!' : ' ❌ No llegaste a la meta con estas notas.'}
             </div>
         `;
+        const bloqueSusti = resultado.seccionSusti ? renderSeccionSusti(resultado.seccionSusti) : '';
+        return bloqueCompleto + bloqueSusti;
     }
 
     return resultado.secciones.map(s => {
@@ -3291,6 +3377,7 @@ function renderResultadoMetaV2(resultado) {
                     ${variantesHtml}
                 </div>`;
         }
+        if (s.id === 'susti') return renderSeccionSusti(s);
         return '';
     }).join('');
 }
