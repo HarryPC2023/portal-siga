@@ -2896,7 +2896,7 @@ function generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC, grupoExame
     const r = generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoExamen, grupoPC, 'PC', true);
     return {
         id: 'pc', nombre: '📝 Estrategia en PCs',
-        descripcion: 'Cómo repartir tus Prácticas Calificadas (PC) para llegar a tu meta. Aunque mejores tus PC, la mayor parte de tu nota depende del EP y, sobre todo, del EF (que pesa doble en algunos cursos) — por eso la exigencia en los exámenes no baja tanto (mira las tarjetas de examen más abajo).', ...r
+        descripcion: 'Cómo repartir tus Prácticas Calificadas (PC) para llegar a tu meta.', ...r
     };
 }
 
@@ -3331,7 +3331,7 @@ function renderResultadoMetaV2(resultado) {
             }
             let contenido = '';
             if (s.lab) {
-                contenido += `<div class="meta-aa-tarjeta-subtitulo">Laboratorios (LAB)</div><p class="meta-aa-tarjeta-desc">Aunque mejores tus LAB, la mayor parte de tu nota depende del EP y, sobre todo, del EF (que pesa doble en algunos cursos) — por eso la exigencia en los exámenes no baja tanto (mira las tarjetas de examen más abajo).</p>${renderSeccionTipo(s.lab, 'LAB')}`;
+                contenido += `<div class="meta-aa-tarjeta-subtitulo">Laboratorios (LAB)</div>${renderSeccionTipo(s.lab, 'LAB')}`;
             }
             if (s.mono) {
                 contenido += `<div class="meta-aa-tarjeta-subtitulo">Monografías</div>`;

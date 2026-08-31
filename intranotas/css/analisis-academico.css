@@ -345,7 +345,8 @@
 }
 
 .meta-aa-tarjeta {
-    background: var(--color-fondo-input);
+    background: var(--color-azul-claro);
+    border: 1px solid var(--color-azul);
     border-radius: 12px;
     padding: 14px 16px;
     margin-bottom: 12px;
