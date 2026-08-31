@@ -2980,26 +2980,34 @@ function resolverSustitutorioMinimo(curso, valoresBase, metaFinal) {
 }
 
 
-function generarSeccionSustitutorio(curso, metaFinal, actuales, grupoExamen) {
+/* No requiere que EP/EF estén cargados de antemano: si cualquiera de
+   los dos falta, la sección simplemente no se genera (se omite). El
+   sustitutorio solo es una jugada real una vez que ambos exámenes ya
+   tienen nota real — antes de eso, no hay "nota más baja" que
+   reemplazar todavía. */
+function generarSeccionSustitutorio(curso, metaFinal, actuales, todos, grupoExamen) {
     if (!grupoExamen.includes('EP') || !grupoExamen.includes('EF')) return null;
-    if (actuales.EP === null || actuales.EF === null) return null; // solo es una jugada real con ambos ya rendidos
+    if (actuales.EP === null || actuales.EF === null) return null;
 
-    const { nota_final } = calcularPFCompleto(curso, actuales);
+    const valoresBase = {};
+    todos.forEach(c => { valoresBase[c] = actuales[c] !== null ? actuales[c] : BANDA_APROBADO; });
+
+    const { nota_final } = calcularPFCompleto(curso, valoresBase);
     const yaAlcanzaMeta = nota_final !== null && nota_final >= metaFinal;
 
     if (yaAlcanzaMeta) {
-        const { nota_final: notaConVeinte } = calcularPFCompleto(curso, { ...actuales, ES: 20 });
+        const { nota_final: notaConVeinte } = calcularPFCompleto(curso, { ...valoresBase, ES: 20 });
         return { id: 'susti', nombre: '🔁 Jugada del susti', yaAlcanzaMeta: true, notaActual: nota_final, notaConVeinte };
     }
 
-    const resultado = resolverSustitutorioMinimo(curso, actuales, metaFinal);
+    const resultado = resolverSustitutorioMinimo(curso, valoresBase, metaFinal);
     return { id: 'susti', nombre: '🔁 Jugada del susti', yaAlcanzaMeta: false, notaActual: nota_final, resultado };
 }
 
 function generarEscenariosMetaV2(curso, metaFinal) {
     const { todos, grupoPC, grupoLab, grupoMono, grupoExamen } = obtenerComponentesCurso(curso);
     const actuales = leerValoresActualesCurso(curso);
-    const seccionSusti = generarSeccionSustitutorio(curso, metaFinal, actuales, grupoExamen);
+    const seccionSusti = generarSeccionSustitutorio(curso, metaFinal, actuales, todos, grupoExamen);
 
     // Ya tiene TODAS sus notas: no hay nada que proyectar en PC/LAB/examen,
     // pero el susti sigue siendo relevante — se muestra aparte del PF real.
