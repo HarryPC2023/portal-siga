@@ -516,3 +516,48 @@ body {
   box-shadow: none;
   transform: none;
 }
+
+/* ═══════════════════════════════════════════════
+   FIRMA COMO SELLO FIJO (Harry.png)
+   Portado de style.css: dashboard.css lo carga en varias páginas
+   (Materiales, Opiniones, Asesorías) que NO cargan style.css, así
+   que sin esto la imagen queda sin ningún tamaño fijo y se ve a su
+   resolución real (gigante) en vez de como un sello discreto.
+   ═══════════════════════════════════════════════ */
+.harry-stamp {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 9999;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* En móvil: fluye con el contenido, al final del todo */
+@media (max-width: 900px) {
+  .harry-stamp {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    justify-content: flex-end;
+    padding: 20px 16px 32px 16px;
+    opacity: 0.5;
+  }
+}
+
+.harry-stamp-img {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.harry-stamp-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim, var(--ink-soft));
+  font-family: 'JetBrains Mono', monospace;
+}
