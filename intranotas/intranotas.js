@@ -2716,14 +2716,23 @@ const BANDA_RESTO_ALTA = 15; // si con el mínimo (10) no alcanza, se reintenta 
 // que el resto del curso también rinde bien (~15)
 const BANDAS_RESTO = [BANDA_APROBADO, BANDA_RESTO_ALTA];
 
-/* "Todo al examen": el examen ancla arranca bajo (10, un alivio real
-   si le toca bajo) y solo escala a 16 si con 10 no alcanza siquiera
-   con el otro examen en 20. El que compensa siempre se resuelve
-   libre, sin techo — si hace falta un 18 o 19, se muestra tal cual. */
-const NIVELES_ESCALADA_EXAMEN = [
-    { resto: BANDA_APROBADO, ancla: BANDA_APROBADO },
-    { resto: BANDA_RESTO_ALTA, ancla: 16 },
-];
+/* "Tu EP" / "Tu EF" (antes "Todo al examen"): cada examen pendiente
+   tiene su propia tarjeta con un mínimo y un máximo razonable —
+   nunca ambos extremos favorecen al mismo examen por casualidad del
+   orden de combinaciones (ese era el problema del diseño anterior).
+   "Mínimo asequible" asume que el resto del curso (PC/LAB/MONO/el
+   otro examen) rinde bien; "Máximo que te podría tocar" asume que el
+   resto se queda raspando abajo — pero NO en un plano 10 repetido: PC
+   y LAB usan un patrón variado (piso 10, techo 17) y el otro examen
+   se asume en 13, no en el mínimo puro, porque si ese otro examen
+   pesa doble (cursos DOBLE_EF), dejarlo en 10 distorsiona todo el
+   cálculo. Techo realista en 18 para el examen foco — si ni así
+   alcanza, se dice explícitamente en vez de mostrar un 19-20
+   disfrazado de respuesta. */
+const BANDA_RESTO_MIN_ASEQUIBLE = 15;
+const TECHO_MAXIMO_EXAMEN = 18;
+const BANDA_OTRO_EXAMEN_PEOR_CASO = 13;
+const PATRON_PEOR_CASO_EXAMEN = [17, 10, 13, 10, 15, 10, 17, 10];
 
 /* Bandas realistas para PC y LAB — ya no se busca el mínimo matemático
    desde 0 (eso daba cosas como "PC3: 1"), sino que se ofrecen valores
@@ -2731,7 +2740,7 @@ const NIVELES_ESCALADA_EXAMEN = [
    razonable. El examen (EP/EF) es lo que absorbe la diferencia real
    para llegar a la meta — ver generarAlternativaTipo más abajo. */
 const PATRON_ALTA_VALORES = [17, 14, 16, 13, 17, 15, 16, 14];
-const PATRON_MIXTA_VALORES = [13, 8, 11, 9, 12, 8, 13, 10];
+const PATRON_MIXTA_VALORES = [13, 10, 11, 10, 12, 10, 13, 10];
 
 /* Fallback SOLO para cursos sin EP/EF (SOLO_PC, con o sin Monografía):
    ahí no hay examen que compense, así que el propio tipo de foco debe
@@ -2887,7 +2896,7 @@ function generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC, grupoExame
     const r = generarAlternativasTipo(curso, metaFinal, actuales, todos, grupoExamen, grupoPC, 'PC', true);
     return {
         id: 'pc', nombre: '📝 Estrategia en PCs',
-        descripcion: 'Cómo repartir tus Prácticas Calificadas (PC) para llegar a tu meta.', ...r
+        descripcion: 'Cómo repartir tus Prácticas Calificadas (PC) para llegar a tu meta. Mantenerlas en este nivel es justo lo que hace que tu EP/EF te pida menos (mira las tarjetas de examen más abajo).', ...r
     };
 }
 
@@ -2906,51 +2915,57 @@ function generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grup
     return { id: 'labmono', nombre: '🧪 Escenarios en LABs y Monografías', lab, mono };
 }
 
-/* Resuelve UNA variante de "Todo al examen": el `foco` (EP o EF) se
-   resuelve LIBRE (sin techo — así sea un 18, se muestra tal cual), y
-   el `otro` examen queda como ancla: arranca en 10 (nota aprobatoria
-   real de la UNI — un alivio genuino saber que con eso ya alcanza) y
-   solo escala a 16 si con 10 no alcanza ni con el foco en 20. Si de
-   verdad no alcanza ni así, se devuelve marcada `inalcanzable` en vez
-   de desaparecer en silencio. */
-function resolverVarianteExamen(curso, metaFinal, actuales, todos, foco, otro) {
-    const nombre = foco === 'EF' ? 'EP mínimo, EF compensa' : 'EF mínimo, EP compensa';
-    for (const nivel of NIVELES_ESCALADA_EXAMEN) {
-        const baseFuera = baseNeutralExcluyendo(actuales, todos, ['EXAMEN'], nivel.resto);
-        const base = { ...baseFuera, [otro]: actuales[otro] !== null ? actuales[otro] : nivel.ancla };
-        const res = resolverPatronMinimo(curso, base, [foco], [0], metaFinal);
-        if (res) {
-            const valores = { ...base, [foco]: res.valores[foco] };
-            return {
-                nombre, notaFinal: res.notaFinal, inalcanzable: false,
-                bandaAsumida: nivel.resto === BANDA_APROBADO ? null : nivel.resto,
-                comps: ['EP', 'EF'].map(c => ({ comp: c, valor: valores[c], esActual: c === otro && actuales[otro] !== null })),
-            };
-        }
+/* Tarjeta de UN examen (EP o EF): calcula su propio mínimo y máximo
+   razonable, independiente del otro examen — así ningún examen queda
+   "condenado" a ser siempre el difícil solo por el orden en que se
+   generan las combinaciones (ese era el problema real del diseño
+   anterior). `todos` ya trae el resto de componentes (PC/LAB/MONO y
+   el otro examen) fijos en su valor real o pendientes. */
+function generarTarjetaExamen(curso, metaFinal, actuales, todos, foco) {
+    // Mínimo asequible: el resto del curso (incluido el otro examen, si
+    // está pendiente) se asume en banda alta — por eso este examen te
+    // pide poco. Se resuelve LIBRE, sin techo (es el mejor caso, no hay
+    // por qué capar algo que ya de por sí sale bajo).
+    const baseAlta = {};
+    todos.forEach(c => {
+        if (c === foco) return;
+        baseAlta[c] = actuales[c] !== null ? actuales[c] : BANDA_RESTO_MIN_ASEQUIBLE;
+    });
+    const minimo = resolverPatronMinimo(curso, baseAlta, [foco], [0], metaFinal);
+
+    // Máximo que te podría tocar: PC/LAB/MONO pendientes en un patrón
+    // variado (piso 10, techo 17 — nunca un plano 10 repetido), y el
+    // otro examen (si está pendiente) en 13, no en el piso puro — si
+    // pesa doble, dejarlo en 10 arrastra todo el cálculo sin remedio.
+    // Techo realista en 18 para el foco: si ni así alcanza, se declara
+    // explícitamente en vez de mostrar un 19-20 disfrazado de "solución".
+    const pendientesNoExamen = todos.filter(c => c !== foco && tipoComponenteMeta(c) !== 'EXAMEN' && actuales[c] === null);
+    const patronPeorCaso = valoresPatronFijo(pendientesNoExamen, PATRON_PEOR_CASO_EXAMEN);
+    const baseBaja = {};
+    todos.forEach(c => {
+        if (c === foco) return;
+        if (actuales[c] !== null) { baseBaja[c] = actuales[c]; return; }
+        baseBaja[c] = tipoComponenteMeta(c) === 'EXAMEN' ? BANDA_OTRO_EXAMEN_PEOR_CASO : patronPeorCaso[c];
+    });
+    let maximo = null;
+    for (let x = 0; x <= TECHO_MAXIMO_EXAMEN; x++) {
+        const { nota_final } = calcularPFCompleto(curso, { ...baseBaja, [foco]: x });
+        if (nota_final !== null && nota_final >= metaFinal) { maximo = { valor: x, notaFinal: nota_final }; break; }
     }
-    return { nombre, inalcanzable: true };
+
+    return { minimo, maximo };
 }
 
-/* ---------- Sección 3: Todo al examen ----------
-   Antes "Todo al examen final": ahora ofrece SIEMPRE ambas variantes
-   ("EP mínimo, EF compensa" y "EF mínimo, EP compensa") cuando ambos
-   están pendientes — el estudiante ve claramente cómo se compensan
-   entre sí, no solo la ruta que salió matemáticamente más fácil.
-   Solo se genera si el curso realmente tiene EP y EF. */
-function generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen) {
-    if (!grupoExamen.includes('EP') || !grupoExamen.includes('EF')) return null;
+/* ---------- Sección 3: 🎯 Tu EP / 🎯 Tu EF ----------
+   Antes "Todo al examen": una tarjeta por examen pendiente, cada una
+   con su propio mínimo y máximo. Si el examen ya tiene nota real, no
+   se genera tarjeta para él (nada que proyectar ahí). */
+function generarSeccionExamenIndividual(curso, metaFinal, actuales, todos, grupoExamen, foco) {
+    if (!grupoExamen.includes(foco)) return null;
+    if (actuales[foco] !== null) return null;
 
-    const epPendiente = actuales.EP === null;
-    const efPendiente = actuales.EF === null;
-    if (!epPendiente && !efPendiente) {
-        return { id: 'examen', nombre: '🎯 Todo al examen', sinPendientes: true };
-    }
-
-    const variantes = [];
-    if (efPendiente) variantes.push(resolverVarianteExamen(curso, metaFinal, actuales, todos, 'EF', 'EP'));
-    if (epPendiente) variantes.push(resolverVarianteExamen(curso, metaFinal, actuales, todos, 'EP', 'EF'));
-
-    return { id: 'examen', nombre: '🎯 Todo al examen', sinPendientes: false, variantes };
+    const { minimo, maximo } = generarTarjetaExamen(curso, metaFinal, actuales, todos, foco);
+    return { id: `examen-${foco}`, nombre: foco === 'EP' ? '🎯 Tu EP' : '🎯 Tu EF', foco, minimo, maximo };
 }
 
 /* ---------- Sección 4: 🔁 Jugada del susti ----------
@@ -3024,7 +3039,8 @@ function generarEscenariosMetaV2(curso, metaFinal) {
     const secciones = [
         generarSeccionPC(curso, metaFinal, actuales, todos, grupoPC, grupoExamen),
         generarSeccionLabMono(curso, metaFinal, actuales, todos, grupoLab, grupoMono, grupoExamen),
-        generarSeccionExamen(curso, metaFinal, actuales, todos, grupoExamen),
+        generarSeccionExamenIndividual(curso, metaFinal, actuales, todos, grupoExamen, 'EP'),
+        generarSeccionExamenIndividual(curso, metaFinal, actuales, todos, grupoExamen, 'EF'),
         seccionSusti,
     ].filter(Boolean);
 
@@ -3227,11 +3243,6 @@ function notaBandaAsumida(bandaAsumida, nombreFoco) {
 /* Nota específica para "Todo al examen": el foco ahí ya es el propio
    examen, así que la frase genérica de PC/LAB ("no depende solo de
    tus X") no calza — se aclara distinto. */
-function notaBandaAsumidaExamen(bandaAsumida) {
-    if (!bandaAsumida) return '';
-    return `<p class="meta-aa-nota-banda">📌 Esto asume que tus PC, LAB y Monografías también tienen buen desempeño, no solo lo mínimo para pasar.</p>`;
-}
-
 /* ---------- Render de una sección tipo (PC, o LAB/Mono por separado) ---------- */
 function renderSeccionTipo(r, nombreInalcanzable) {
     if (r.sinPendientes) {
@@ -3320,7 +3331,7 @@ function renderResultadoMetaV2(resultado) {
             }
             let contenido = '';
             if (s.lab) {
-                contenido += `<div class="meta-aa-tarjeta-subtitulo">Laboratorios (LAB)</div>${renderSeccionTipo(s.lab, 'LAB')}`;
+                contenido += `<div class="meta-aa-tarjeta-subtitulo">Laboratorios (LAB)</div><p class="meta-aa-tarjeta-desc">Mantenerlos en este nivel es justo lo que hace que tu EP/EF te pida menos (mira las tarjetas de examen más abajo).</p>${renderSeccionTipo(s.lab, 'LAB')}`;
             }
             if (s.mono) {
                 contenido += `<div class="meta-aa-tarjeta-subtitulo">Monografías</div>`;
@@ -3342,47 +3353,42 @@ function renderResultadoMetaV2(resultado) {
                     ${contenido}
                 </div>`;
         }
-        if (s.id === 'examen') {
-            if (s.sinPendientes) {
-                return `
-                    <div class="meta-aa-tarjeta">
-                        <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
-                        <div class="meta-aa-sin-pendientes">Ya tienes EP y EF cargados ✅</div>
+        if (s.id === 'examen-EP' || s.id === 'examen-EF') {
+            const filaMin = s.minimo
+                ? `
+                    <div class="meta-aa-alternativa">
+                        <div class="meta-aa-alternativa-titulo">Mínimo asequible</div>
+                        <p class="meta-aa-tarjeta-desc">Si tu PC, LAB, Monografías y tu otro examen rinden bien.</p>
+                        <div class="meta-aa-tarjeta-valores">
+                            <div class="meta-aa-valor"><span>${s.foco}</span><strong>${s.minimo.valores[s.foco]}</strong></div>
+                        </div>
+                        <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${s.minimo.notaFinal.toFixed(1)}</strong></div>
+                    </div>`
+                : `
+                    <div class="meta-aa-alternativa">
+                        <div class="meta-aa-alternativa-titulo">Mínimo asequible</div>
+                        <div class="meta-aa-inalcanzable">⚠️ Ni siquiera con todo lo demás rindiendo muy bien alcanzarías esta meta.</div>
                     </div>`;
-            }
-            if (!s.variantes.length) {
-                return `
-                    <div class="meta-aa-tarjeta">
-                        <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
-                        <div class="meta-aa-inalcanzable">⚠️ Con lo que ya tienes, esta meta no es alcanzable en el examen (necesitarías más de 20).</div>
+            const filaMax = s.maximo
+                ? `
+                    <div class="meta-aa-alternativa">
+                        <div class="meta-aa-alternativa-titulo">Máximo que te podría tocar</div>
+                        <p class="meta-aa-tarjeta-desc">Si el resto de tu curso se queda solo en lo mínimo para pasar.</p>
+                        <div class="meta-aa-tarjeta-valores">
+                            <div class="meta-aa-valor"><span>${s.foco}</span><strong>${s.maximo.valor}</strong></div>
+                        </div>
+                        <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${s.maximo.notaFinal.toFixed(1)}</strong></div>
+                    </div>`
+                : `
+                    <div class="meta-aa-alternativa">
+                        <div class="meta-aa-alternativa-titulo">Máximo que te podría tocar</div>
+                        <div class="meta-aa-inalcanzable">⚠️ Si el resto de tu curso se queda solo en lo mínimo, no alcanzarías esta meta ni con ${TECHO_MAXIMO_EXAMEN} en tu ${s.foco} — tus PC/LAB/Monografías también van a necesitar mejorar.</div>
                     </div>`;
-            }
-            const variantesHtml = s.variantes.map(v => {
-                if (v.inalcanzable) {
-                    return `
-                        <div class="meta-aa-alternativa">
-                            <div class="meta-aa-alternativa-titulo">${v.nombre}</div>
-                            <div class="meta-aa-inalcanzable">⚠️ Ni siquiera asumiendo que el resto de tu curso rinde bien, esta ruta es alcanzable (necesitarías más de 20).</div>
-                        </div>`;
-                }
-                return `
-                <div class="meta-aa-alternativa">
-                    <div class="meta-aa-alternativa-titulo">${v.nombre}</div>
-                    ${notaBandaAsumidaExamen(v.bandaAsumida)}
-                    <div class="meta-aa-tarjeta-valores">
-                        ${v.comps.map(c => `
-                            <div class="meta-aa-valor ${c.esActual ? 'meta-aa-valor-actual' : ''}" ${c.esActual ? 'title="Ya la tienes cargada"' : ''}>
-                                <span>${c.comp}${c.esActual ? ' ✓' : ''}</span><strong>${c.valor}</strong>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="meta-aa-tarjeta-pf">PF resultante: <strong>${v.notaFinal.toFixed(1)}</strong></div>
-                </div>`;
-            }).join('');
             return `
                 <div class="meta-aa-tarjeta">
                     <div class="meta-aa-tarjeta-nombre">${s.nombre}</div>
-                    ${variantesHtml}
+                    ${filaMin}
+                    ${filaMax}
                 </div>`;
         }
         if (s.id === 'susti') return renderSeccionSusti(s);
