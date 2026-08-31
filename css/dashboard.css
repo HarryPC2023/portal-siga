@@ -6,8 +6,11 @@
    toda la página (detrás del hero Y detrás de las tarjetas) sin costuras. */
 body {
   background: var(--paper);
-  /* ahora */
-  background-image: var(--siga-body-gradiente);
+  background-image: linear-gradient(135deg,
+      rgba(0, 255, 255, 0.13) 0%,
+      rgba(0, 255, 255, 0.13) 26%,
+      rgba(204, 0, 255, 0.2) 78%,
+      rgba(204, 0, 255, 0.2) 100%);
   background-size: 200% 200%;
   animation: moverInfo 14s ease-in-out infinite;
 }
@@ -33,9 +36,13 @@ body {
   margin: 0;
   gap: 20px;
   padding: 10px 32px;
-  background: rgba(255, 253, 249, 0.92);
+  /* Antes rgba(255,253,249,0.92) — casi blanco puro, se leía plano.
+     Mismo tono champagne que .titulo-pildora en landing.css (nunca
+     cambia con el tema — ver el "FIX DE CONTRASTE" en tema-siga.css,
+     así que aquí no hay riesgo de romper Oscuro/Ocean/Forest). */
+  background: linear-gradient(120deg, #FDFCF7 0%, #F5EFDE 50%, #FDFCF7 100%);
   backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .app-nav-logo {
@@ -249,7 +256,7 @@ body {
   font-size: 15.5px;
   font-weight: 500;
   color: var(--ink-soft);
-  max-width: 1160px;
+  max-width: 560px;
   line-height: 1.6;
 }
 
@@ -272,218 +279,6 @@ body {
 
 .dash-migas a:hover {
   text-decoration: underline;
-}
-
-/* ---------- ACCESOS RÁPIDOS EN INICIO: Notificaciones + Sugerencias ---------- */
-.inicio-accesos {
-  padding: 24px 32px 0;
-}
-
-.inicio-accesos-wrap {
-  max-width: 1160px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-.acceso-item {
-  position: relative;
-}
-
-.acceso-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
-  color: #fff;
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.acceso-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
-.acceso-btn:hover,
-.acceso-btn[aria-expanded="true"] {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(102, 0, 204, 0.28);
-}
-
-.acceso-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
-  border-radius: 999px;
-  background: var(--acento-ciruela, #E0447B);
-  color: #fff;
-  font-size: 10.5px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--paper, #FFFDF9);
-}
-
-.acceso-badge[hidden] {
-  display: none;
-}
-
-.acceso-panel {
-  position: absolute;
-  top: calc(100% + 14px);
-  right: 0;
-  width: min(340px, 90vw);
-  max-height: 400px;
-  overflow-y: auto;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
-  padding: 8px;
-  opacity: 0;
-  transform: translateY(-8px);
-  pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-  z-index: 30;
-}
-
-.acceso-panel.abierto {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.acceso-panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 12px;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--ink);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  margin-bottom: 6px;
-}
-
-.acceso-panel-limpiar {
-  border: none;
-  background: transparent;
-  font-family: var(--font-nav);
-  font-weight: 600;
-  font-size: 11.5px;
-  color: var(--brand-morado);
-  cursor: pointer;
-  padding: 2px 4px;
-}
-
-.acceso-panel-limpiar:hover {
-  text-decoration: underline;
-}
-
-.acceso-panel-vacio {
-  padding: 20px 12px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--ink-soft);
-}
-
-.notif-item {
-  position: relative;
-  display: block;
-  padding: 10px 28px 10px 12px;
-  border-radius: 10px;
-  transition: background 0.15s ease;
-}
-
-.notif-item-borrar {
-  position: absolute;
-  top: 8px;
-  right: 6px;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--ink-soft);
-  font-size: 11px;
-  line-height: 1;
-  opacity: 0.55;
-  cursor: pointer;
-  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
-}
-
-.notif-item-borrar:hover {
-  opacity: 1;
-  background: rgba(224, 68, 123, 0.14);
-  color: var(--acento-ciruela, #E0447B);
-}
-
-.notif-item:hover {
-  background: var(--brand-azul-tinte);
-}
-
-.notif-item+.notif-item {
-  margin-top: 2px;
-}
-
-.notif-item.no-leida {
-  background: var(--brand-azul-tinte);
-}
-
-.notif-item-titulo {
-  display: block;
-  font-family: var(--font-nav);
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--ink);
-  margin-bottom: 2px;
-}
-
-.notif-item.no-leida .notif-item-titulo::before {
-  content: "";
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--brand-morado);
-  margin-right: 6px;
-}
-
-.notif-item-mensaje {
-  display: block;
-  font-size: 12.5px;
-  color: var(--ink-soft);
-  line-height: 1.4;
-  margin-bottom: 4px;
-}
-
-.notif-item-fecha {
-  display: block;
-  font-size: 11px;
-  color: var(--ink-soft);
-  opacity: 0.75;
-}
-
-@media (max-width: 480px) {
-  .acceso-panel {
-    width: min(300px, 88vw);
-  }
 }
 
 /* ---------- GRID DE MODULOS ---------- */
@@ -720,46 +515,4 @@ body {
   color: var(--brand-morado);
   box-shadow: none;
   transform: none;
-}
-
-/* ---------- FIRMA "by Harry" ----------
-   Nunca tuvo estilo propio en este archivo (a diferencia de Horarios,
-   que sí lo tiene en style.css como sello fijo/position:fixed) — por
-   eso se pintaba a tamaño natural, gigante. Acá va en flujo normal de
-   la página, chica, al final del contenido. */
-.harry-stamp {
-  position: fixed;
-  bottom: 12px;
-  right: 16px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  z-index: 9999;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-@media (max-width: 900px) {
-  .harry-stamp {
-    position: relative;
-    bottom: auto;
-    right: auto;
-    justify-content: flex-end;
-    padding: 20px 16px 32px 16px;
-    opacity: 0.5;
-  }
-}
-
-.harry-stamp-img {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  object-fit: cover;
-}
-
-.harry-stamp-text {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--ink-soft);
-  font-family: monospace;
 }

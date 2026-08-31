@@ -323,6 +323,7 @@
     border-radius: 10px;
     font-size: 0.85rem;
     line-height: 1.6;
+    margin-bottom: 14px;
 }
 
 .meta-aa-completo.ok {
@@ -346,7 +347,7 @@
 
 .meta-aa-tarjeta {
     background: #fff;
-    border: 1px solid rgba(102, 0, 204, 0.15);
+    border: 1px solid #FFC000;
     border-radius: 12px;
     padding: 14px 16px;
     margin-bottom: 12px;
@@ -357,9 +358,12 @@
    desplegable de curso (select-custom-lista li:nth-child(odd)) —
    reutilizamos el mismo rgba(102,0,204,0.05) para que se sientan
    parte del mismo lenguaje visual, tarjeta por tarjeta en vez de
-   fila por fila. */
+   fila por fila. Bordes a propósito distintos por color (#680ECD
+   lila nítido / #FFC000 champagne, tomado del selector de malla)
+   para que el contraste entre una tarjeta y la siguiente se note. */
 #meta-aa-resultado>.meta-aa-tarjeta:nth-of-type(odd) {
     background: rgba(102, 0, 204, 0.05);
+    border-color: #680ECD;
 }
 
 .meta-aa-tarjeta-nombre {
