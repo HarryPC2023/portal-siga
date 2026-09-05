@@ -889,12 +889,104 @@ const INTRALU_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hos
 // el ZIP en Releases y cambia esta URL por la real.
 const EXTENSION_SIGA_URL = '#';
 
-function abrirModalSyncIntralu() {
+/* El código UNI empieza con el año de ingreso (ej. '20231059E' -> 2023).
+   Réplica exacta de extraer_anio_ingreso() en scraping_intralu.py, para
+   que el front y el back calculen siempre lo mismo. Devuelve null si el
+   código no existe o no calza con el formato esperado. */
+function anioIngresoDesdeCodigo(codigo) {
+    if (!codigo) return null;
+    const m = String(codigo).trim().match(/^(\d{4})/);
+    if (!m) return null;
+    const anio = parseInt(m[1], 10);
+    const anioActual = new Date().getFullYear();
+    return (anio >= 2000 && anio <= anioActual) ? anio : null;
+}
+
+/* Igual que generarPeriodosDisponibles(), pero en vez de una cantidad
+   fija, se detiene justo en el año de ingreso real del alumno — así la
+   lista no le muestra periodos de antes de haber entrado a la UNI, ni
+   le esconde ninguno de los que sí cursó. */
+function generarPeriodosDesdeIngreso(anioIngreso) {
+    const hoy = new Date();
+    const mes = hoy.getMonth();
+    let anio = hoy.getFullYear();
+    let periodo;
+    if (mes <= 1) { periodo = 3; anio -= 1; }
+    else if (mes <= 6) { periodo = 1; }
+    else { periodo = 2; }
+
+    const periodos = [];
+    while (anio >= anioIngreso) {
+        periodos.push(`${anio}-${periodo}`);
+        if (periodo > 1) periodo -= 1;
+        else { periodo = 3; anio -= 1; }
+    }
+    return periodos;
+}
+
+/* Guardamos el periodo de ingreso en el navegador (formato '2023-1')
+   SOLO cuando el alumno no tiene código guardado en su perfil — así no
+   se le vuelve a preguntar en futuras sincronizaciones desde el mismo
+   navegador. Si algún día lo guarda en su perfil, esa fuente manda y
+   esto deja de usarse (ver resolverAnioIngreso). */
+const LS_PERIODO_INGRESO = 'siga_periodo_ingreso_intralu';
+
+function obtenerPeriodoIngresoGuardado() {
+    try { return localStorage.getItem(LS_PERIODO_INGRESO); } catch { return null; }
+}
+
+function guardarPeriodoIngreso(periodo) {
+    try { localStorage.setItem(LS_PERIODO_INGRESO, periodo); } catch { /* localStorage bloqueado, no es crítico */ }
+}
+
+function olvidarPeriodoIngresoGuardado() {
+    try { localStorage.removeItem(LS_PERIODO_INGRESO); } catch { }
+}
+
+/* Busca el código de estudiante guardado en el perfil del alumno (si lo
+   llenó alguna vez en "Mi cuenta"). Es opcional. */
+async function obtenerCodigoDelPerfil() {
+    try {
+        const sesion = await window.sigaObtenerSesion();
+        if (!sesion) return null;
+        const { data, error } = await window.sigaSupabase
+            .from('perfiles_usuario')
+            .select('codigo_estudiante')
+            .eq('user_id', sesion.user.id)
+            .maybeSingle();
+        if (error || !data) return null;
+        return data.codigo_estudiante || null;
+    } catch {
+        return null;
+    }
+}
+
+// Se guardan aquí tras resolverse, para poder mandar el código también
+// al backend (mejora el rango de "todos los periodos").
+let _codigoEstudianteParaSync = null;
+
+/* Decide de dónde sale el año de ingreso, en orden de prioridad:
+   1) código guardado en el perfil (siempre manda si existe)
+   2) periodo de ingreso ya preguntado antes y guardado en este navegador
+   3) null -> hay que preguntarlo */
+async function resolverAnioIngreso() {
+    _codigoEstudianteParaSync = await obtenerCodigoDelPerfil();
+    const desdeCodigo = anioIngresoDesdeCodigo(_codigoEstudianteParaSync);
+    if (desdeCodigo) return desdeCodigo;
+
+    const guardado = obtenerPeriodoIngresoGuardado();
+    if (guardado) {
+        const anio = parseInt(guardado.split('-')[0], 10);
+        if (Number.isFinite(anio)) return anio;
+    }
+    return null;
+}
+
+async function abrirModalSyncIntralu() {
     const existente = document.getElementById('modal-sync-intralu-overlay');
     if (existente) {
-        document.getElementById('sync-intralu-error').style.display = 'none';
-        document.getElementById('sync-intralu-estado-extension').style.display = 'none';
         existente.classList.add('visible');
+        await renderCuerpoModalSync();
         return;
     }
 
@@ -921,39 +1013,99 @@ function abrirModalSyncIntralu() {
             <p style="font-size:0.78rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:14px;">
                 ✅ Cuando termine, puedes cerrar INTRALU sin problema.
             </p>
-
-            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué ciclo deseas cargar?</label>
-            <div class="campo-select-custom" style="width:100%; margin-bottom:12px;">
-                <button type="button" class="select-custom-trigger" id="syncIntraluAlcanceTrigger"
-                    aria-haspopup="listbox" aria-expanded="false">
-                    <span id="syncIntraluAlcanceTriggerTexto"></span>
-                    <span class="select-custom-chevron" aria-hidden="true">▾</span>
-                </button>
-                <ul class="select-custom-lista" id="syncIntraluAlcanceLista" role="listbox" hidden></ul>
-                <input type="hidden" id="syncIntraluAlcanceValor">
-            </div>
-
-            <div id="sync-intralu-estado-extension" style="display:none; padding:10px 12px; border-radius:8px; font-size:0.8rem; margin-bottom:6px; line-height:1.6;"></div>
-            <p id="sync-intralu-error" style="display:none; color:#dc2626; font-size:0.78rem; margin:4px 0 0;"></p>
-            <p id="sync-intralu-progreso" style="display:none; color:var(--color-cian); font-size:0.8rem; margin:12px 0 0; text-align:center; line-height:1.5;">
-                ⏳ Conectando con Intralú... esto puede tardar varios minutos, no cierres esta ventana.
-            </p>
-            <div style="display:flex; gap:8px; margin-top:18px;">
-                <button type="button" class="btn-volver" style="flex:1;" id="sync-intralu-btn-cancelar" onclick="cerrarModalSyncIntralu()">Cancelar</button>
-                <button type="button" class="btn-primary" style="flex:1;" id="sync-intralu-btn-confirmar" onclick="ejecutarSyncIntralu()">Sincronizar</button>
-            </div>
+            <div id="sync-intralu-cuerpo"><!-- se llena dinámicamente --></div>
         </div>
     `;
     document.body.appendChild(overlay);
     requestAnimationFrame(() => overlay.classList.add('visible'));
+    await renderCuerpoModalSync();
+}
 
-    // 'Todos mis periodos' va al final de la lista y NO es la opción
-    // recomendada (puede tardar 8-12 minutos) — la mayoría de alumnos
-    // solo quiere el ciclo actual, así que ese es el flujo rápido que
-    // se promueve. 'Todos' se deja disponible por si alguien la
-    // necesita puntualmente.
+/* Decide qué mostrar en el cuerpo del modal: si aún no sabemos el año
+   de ingreso (ni por perfil ni por localStorage), pregunta el periodo
+   de ingreso UNA sola vez; si ya lo sabemos, va directo al selector de
+   ciclos con la lista exacta. */
+async function renderCuerpoModalSync() {
+    const anioIngreso = await resolverAnioIngreso();
+    if (anioIngreso) {
+        renderSelectorPeriodosSync(anioIngreso);
+    } else {
+        renderPreguntaIngresoSync();
+    }
+}
+
+function renderPreguntaIngresoSync() {
+    const cuerpo = document.getElementById('sync-intralu-cuerpo');
+    const anioActual = new Date().getFullYear();
+    const anios = [];
+    for (let a = anioActual; a >= anioActual - 15; a--) anios.push(a);
+
+    cuerpo.innerHTML = `
+        <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:12px;">
+            Antes de tu primera sincronización, cuéntanos: ¿en qué periodo entraste a la UNI? Solo se pregunta una vez.
+        </p>
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+            <select id="sync-ingreso-anio" style="flex:1; padding:9px 10px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); font-size:0.88rem;">
+                ${anios.map(a => `<option value="${a}">${a}</option>`).join('')}
+            </select>
+            <select id="sync-ingreso-semestre" style="flex:1; padding:9px 10px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); font-size:0.88rem;">
+                <option value="1">Periodo 1</option>
+                <option value="2">Periodo 2</option>
+            </select>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <button type="button" class="btn-volver" style="flex:1;" onclick="cerrarModalSyncIntralu()">Cancelar</button>
+            <button type="button" class="btn-primary" style="flex:1;" onclick="confirmarPeriodoIngresoSync()">Continuar</button>
+        </div>
+    `;
+}
+
+function confirmarPeriodoIngresoSync() {
+    const anio = document.getElementById('sync-ingreso-anio').value;
+    const semestre = document.getElementById('sync-ingreso-semestre').value;
+    guardarPeriodoIngreso(`${anio}-${semestre}`);
+    renderSelectorPeriodosSync(parseInt(anio, 10));
+}
+
+function renderSelectorPeriodosSync(anioIngreso) {
+    const cuerpo = document.getElementById('sync-intralu-cuerpo');
+
+    // El link para corregir solo aparece cuando el año vino de
+    // localStorage (no del perfil) — si viene del perfil, corregirlo
+    // significa ir a "Mi cuenta", no tiene sentido ofrecerlo aquí.
+    const vieneDePerfil = !!anioIngresoDesdeCodigo(_codigoEstudianteParaSync);
+    const linkCorregir = vieneDePerfil ? '' : `
+        <p style="font-size:0.72rem; margin:0 0 12px;">
+            <a href="#" onclick="corregirPeriodoIngresoSync(event)" style="color:var(--color-gris-texto); text-decoration:underline;">¿Te equivocaste de periodo de ingreso? Corregir</a>
+        </p>`;
+
+    cuerpo.innerHTML = `
+        <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué ciclo deseas cargar?</label>
+        <div class="campo-select-custom" style="width:100%; margin-bottom:8px;">
+            <button type="button" class="select-custom-trigger" id="syncIntraluAlcanceTrigger"
+                aria-haspopup="listbox" aria-expanded="false">
+                <span id="syncIntraluAlcanceTriggerTexto"></span>
+                <span class="select-custom-chevron" aria-hidden="true">▾</span>
+            </button>
+            <ul class="select-custom-lista" id="syncIntraluAlcanceLista" role="listbox" hidden></ul>
+            <input type="hidden" id="syncIntraluAlcanceValor">
+        </div>
+        ${linkCorregir}
+        <div id="sync-intralu-estado-extension" style="display:none; padding:10px 12px; border-radius:8px; font-size:0.8rem; margin-bottom:6px; line-height:1.6;"></div>
+        <p id="sync-intralu-error" style="display:none; color:#dc2626; font-size:0.78rem; margin:4px 0 0;"></p>
+        <p id="sync-intralu-progreso" style="display:none; color:var(--color-cian); font-size:0.8rem; margin:12px 0 0; text-align:center; line-height:1.5;">
+            ⏳ Conectando con Intralú... esto puede tardar varios minutos, no cierres esta ventana.
+        </p>
+        <div style="display:flex; gap:8px; margin-top:18px;">
+            <button type="button" class="btn-volver" style="flex:1;" id="sync-intralu-btn-cancelar" onclick="cerrarModalSyncIntralu()">Cancelar</button>
+            <button type="button" class="btn-primary" style="flex:1;" id="sync-intralu-btn-confirmar" onclick="ejecutarSyncIntralu()">Sincronizar</button>
+        </div>
+    `;
+
+    // 'Todos mis periodos' al final y NO recomendada (puede tardar 8-12
+    // minutos) — la mayoría solo quiere el ciclo actual.
     const opcionesAlcance = [
-        ...generarPeriodosDisponibles(12).map(p => ({ value: p, label: `Solo ${formatoPeriodoCorto(p)}` })),
+        ...generarPeriodosDesdeIngreso(anioIngreso).map(p => ({ value: p, label: `Solo ${formatoPeriodoCorto(p)}` })),
         { value: 'todos', label: 'Todos mis periodos (tarda varios minutos)' },
     ];
     inicializarSelectPersonalizado({
@@ -962,6 +1114,12 @@ function abrirModalSyncIntralu() {
         opciones: opcionesAlcance,
         alElegir: () => { },
     })?.establecer('', 'Selecciona una opción');
+}
+
+function corregirPeriodoIngresoSync(event) {
+    event.preventDefault();
+    olvidarPeriodoIngresoGuardado();
+    renderPreguntaIngresoSync();
 }
 
 function cerrarModalSyncIntralu() {
@@ -1018,7 +1176,7 @@ function pedirCookiesExtensionSiga(timeoutMs = 3000) {
 function mostrarEstadoExtension(html, tipo) {
     const el = document.getElementById('sync-intralu-estado-extension');
     el.style.display = 'block';
-    el.style.background = tipo === 'error' ? '#fee2e2' : '#fef3c7';
+    el.style.background = tipo === 'error' ? '#fee2e2' : (tipo === 'aviso' ? '#e0f2fe' : '#fef3c7');
     el.innerHTML = html;
 }
 
@@ -1079,6 +1237,7 @@ async function ejecutarSyncIntralu() {
             body: JSON.stringify({
                 session_cookie: cookies.sessionCookie,
                 xsrf_token: cookies.xsrfToken,
+                codigo: _codigoEstudianteParaSync,
                 periodo,
             }),
         });
