@@ -919,7 +919,7 @@ function abrirModalSyncIntralu() {
                 🔄 Mantén tu sesión de INTRALU activa mientras se sincroniza.
             </p>
             <p style="font-size:0.78rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:14px;">
-                ✅ Cuando termine, puedes cerrar SIGA sin problema.
+                ✅ Cuando termine, puedes cerrar INTRALU sin problema.
             </p>
 
             <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué ciclo deseas cargar?</label>
