@@ -884,9 +884,10 @@ const INTRALU_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hos
     ? 'http://localhost:8000/api/sync-intralu'
     : 'https://siga-conexion-intralu.onrender.com/api/sync-intralu';
 
-// Ajusta esta URL cuando publiques el conector (Chrome Web Store o
-// una página propia con instrucciones de instalación).
-const EXTENSION_SIGA_URL = 'https://github.com/harrypc2023/siga-conector';
+// TODO: cuando pases de "solo yo probando" a distribuir a más alumnos,
+// crea un repo público (ej. github.com/harrypc2023/siga-conector) con
+// el ZIP en Releases y cambia esta URL por la real.
+const EXTENSION_SIGA_URL = '#';
 
 function abrirModalSyncIntralu() {
     const existente = document.getElementById('modal-sync-intralu-overlay');
@@ -907,9 +908,9 @@ function abrirModalSyncIntralu() {
                 Para sincronizar tus notas, ahora SIGA usa un conector (extensión). Solo necesitas:
             </p>
             <ol style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.7; margin:0 0 12px; padding-left:20px;">
-                <li>Instalar el conector de SIGA.</li>
-                <li>Abrir Intralú y entrar normalmente.</li>
-                <li>Volver aquí y presionar Sincronizar.</li>
+                <li>Agrega el conector de SIGA a tu navegador.</li>
+                <li>Abre Intralú y entra normalmente.</li>
+                <li>Vuelve aquí y presiona Sincronizar.</li>
             </ol>
             <p style="font-size:0.78rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:4px;">
                 No se pide tu código ni tu contraseña.
@@ -1041,8 +1042,8 @@ async function ejecutarSyncIntralu() {
     const hayExtension = await pingExtensionSiga();
     if (!hayExtension) {
         mostrarEstadoExtension(
-            `⚠️ No detectamos el conector de SIGA instalado.
-             <br><a href="${EXTENSION_SIGA_URL}" target="_blank" style="color:var(--color-cian); font-weight:600;">Instálalo aquí</a> y vuelve a presionar Sincronizar.`,
+            `⚠️ No detectamos el conector de SIGA en tu navegador.
+             <br><a href="${EXTENSION_SIGA_URL}" target="_blank" style="color:var(--color-cian); font-weight:600;">Agrégalo aquí</a> y vuelve a presionar Sincronizar.`,
             'error'
         );
         btnConfirmar.disabled = false;
