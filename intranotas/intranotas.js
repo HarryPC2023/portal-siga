@@ -884,10 +884,11 @@ const INTRALU_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hos
     ? 'http://localhost:8000/api/sync-intralu'
     : 'https://siga-conexion-intralu.onrender.com/api/sync-intralu';
 
-// TODO: cuando pases de "solo yo probando" a distribuir a más alumnos,
-// crea un repo público (ej. github.com/harrypc2023/siga-conector) con
-// el ZIP en Releases y cambia esta URL por la real.
-const EXTENSION_SIGA_URL = '#';
+// Repo privado de Harry (solo él puede accederlo mientras esté en
+// modo privado — perfecto para esta fase de pruebas). Cuando haya un
+// Release con el .zip adjunto, cambiar esto por el link directo del
+// asset para que la descarga sea de un clic.
+const EXTENSION_SIGA_URL = 'https://github.com/HarryPC2023/siga-conector';
 
 /* El código UNI empieza con el año de ingreso (ej. '20231059E' -> 2023).
    Réplica exacta de extraer_anio_ingreso() en scraping_intralu.py, para
@@ -1102,12 +1103,11 @@ function renderSelectorPeriodosSync(anioIngreso) {
         </div>
     `;
 
-    // 'Todos mis periodos' al final y NO recomendada (puede tardar 8-12
-    // minutos) — la mayoría solo quiere el ciclo actual.
-    const opcionesAlcance = [
-        ...generarPeriodosDesdeIngreso(anioIngreso).map(p => ({ value: p, label: `Solo ${formatoPeriodoCorto(p)}` })),
-        { value: 'todos', label: 'Todos mis periodos (tarda varios minutos)' },
-    ];
+    // Solo se ofrece ciclo por ciclo — Harry decidió quitar por completo
+    // la opción de "todos los periodos" (tardaba demasiado y casi nadie
+    // la iba a usar de todos modos).
+    const opcionesAlcance = generarPeriodosDesdeIngreso(anioIngreso)
+        .map(p => ({ value: p, label: `Solo ${formatoPeriodoCorto(p)}` }));
     inicializarSelectPersonalizado({
         triggerId: 'syncIntraluAlcanceTrigger', textoId: 'syncIntraluAlcanceTriggerTexto',
         listaId: 'syncIntraluAlcanceLista', valorId: 'syncIntraluAlcanceValor',
@@ -1187,8 +1187,13 @@ async function ejecutarSyncIntralu() {
     const btnConfirmar = document.getElementById('sync-intralu-btn-confirmar');
     const btnCancelar = document.getElementById('sync-intralu-btn-cancelar');
 
-    const alcance = document.getElementById('syncIntraluAlcanceValor').value || 'todos';
-    const periodo = alcance === 'todos' ? null : periodoIntranotasARaw(alcance);
+    const alcance = document.getElementById('syncIntraluAlcanceValor').value;
+    if (!alcance) {
+        errorEl.textContent = 'Elige un ciclo para sincronizar.';
+        errorEl.style.display = 'block';
+        return;
+    }
+    const periodo = periodoIntranotasARaw(alcance);
 
     errorEl.style.display = 'none';
     estadoExtEl.style.display = 'none';
