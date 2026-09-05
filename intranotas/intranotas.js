@@ -884,15 +884,15 @@ const INTRALU_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hos
     ? 'http://localhost:8000/api/sync-intralu'
     : 'https://siga-conexion-intralu.onrender.com/api/sync-intralu';
 
+// Ajusta esta URL cuando publiques el conector (Chrome Web Store o
+// una página propia con instrucciones de instalación).
+const EXTENSION_SIGA_URL = 'https://github.com/harrypc2023/siga-conector';
+
 function abrirModalSyncIntralu() {
     const existente = document.getElementById('modal-sync-intralu-overlay');
     if (existente) {
-        // Limpiar los campos SIEMPRE al reabrir — antes el modal se
-        // reutilizaba tal cual y por eso el código (y la contraseña)
-        // de la vez anterior se quedaba pegado en pantalla.
-        document.getElementById('sync-intralu-codigo').value = '';
-        document.getElementById('sync-intralu-password').value = '';
         document.getElementById('sync-intralu-error').style.display = 'none';
+        document.getElementById('sync-intralu-estado-extension').style.display = 'none';
         existente.classList.add('visible');
         return;
     }
@@ -902,14 +902,25 @@ function abrirModalSyncIntralu() {
     overlay.id = 'modal-sync-intralu-overlay';
     overlay.innerHTML = `
         <div class="modal-caja" style="max-width:380px; text-align:left;">
-            <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Cargar notas de Intralú</h3>
-            <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:16px;">
-                Ingresa tu código y contraseña de Intralú. Se usa una sola vez para iniciar sesión y leer tus cursos
-                y notas de todos tus periodos — puede tardar diez minutos o más si decides cargar todos los ciclos
-                que has cursado, dependiendo de la cantidad de cursos que llevaste por ciclo (elegir un solo periodo
-                es más rápido). Tus credenciales nunca se guardan en nuestros servidores: se descartan al terminar.
-                Además, no necesitas tener abierta Intralú para hacerlo.
+            <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Sincronización con Intralú</h3>
+            <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:10px;">
+                Para sincronizar tus notas, ahora SIGA usa un conector (extensión). Solo necesitas:
             </p>
+            <ol style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.7; margin:0 0 12px; padding-left:20px;">
+                <li>Instalar el conector de SIGA.</li>
+                <li>Abrir Intralú y entrar normalmente.</li>
+                <li>Volver aquí y presionar Sincronizar.</li>
+            </ol>
+            <p style="font-size:0.78rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:4px;">
+                No se pide tu código ni tu contraseña.
+            </p>
+            <p style="font-size:0.78rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:4px;">
+                🔄 Mantén tu sesión de INTRALU activa mientras se sincroniza.
+            </p>
+            <p style="font-size:0.78rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:14px;">
+                ✅ Cuando termine, puedes cerrar SIGA sin problema.
+            </p>
+
             <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">¿Qué ciclo deseas cargar?</label>
             <div class="campo-select-custom" style="width:100%; margin-bottom:12px;">
                 <button type="button" class="select-custom-trigger" id="syncIntraluAlcanceTrigger"
@@ -920,42 +931,30 @@ function abrirModalSyncIntralu() {
                 <ul class="select-custom-lista" id="syncIntraluAlcanceLista" role="listbox" hidden></ul>
                 <input type="hidden" id="syncIntraluAlcanceValor">
             </div>
-            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Código UNI</label>
-            <input id="sync-intralu-codigo" type="text" placeholder="2023XXXXX" autocomplete="off"
-                oninput="this.value = this.value.toUpperCase()"
-                style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:12px; font-size:0.9rem; box-sizing:border-box;">
-            <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Contraseña de Intralú</label>
-            <div style="position:relative;">
-                <input id="sync-intralu-password" type="password" placeholder="Contraseña" autocomplete="off"
-                    style="width:100%; padding:10px 40px 10px 12px; border-radius:8px; border:1px solid var(--color-borde, #e5e7eb); margin-bottom:6px; font-size:0.9rem; box-sizing:border-box;">
-                <button type="button" onclick="alternarVisibilidadPasswordIntralu()" aria-label="Mostrar u ocultar contraseña"
-                    style="position:absolute; right:10px; top:9px; background:none; border:none; cursor:pointer; font-size:1rem; padding:2px 4px; line-height:1;">
-                    <span id="sync-intralu-password-icono">👁️</span>
-                </button>
-            </div>
+
+            <div id="sync-intralu-estado-extension" style="display:none; padding:10px 12px; border-radius:8px; font-size:0.8rem; margin-bottom:6px; line-height:1.6;"></div>
             <p id="sync-intralu-error" style="display:none; color:#dc2626; font-size:0.78rem; margin:4px 0 0;"></p>
             <p id="sync-intralu-progreso" style="display:none; color:var(--color-cian); font-size:0.8rem; margin:12px 0 0; text-align:center; line-height:1.5;">
                 ⏳ Conectando con Intralú... esto puede tardar varios minutos, no cierres esta ventana.
             </p>
             <div style="display:flex; gap:8px; margin-top:18px;">
                 <button type="button" class="btn-volver" style="flex:1;" id="sync-intralu-btn-cancelar" onclick="cerrarModalSyncIntralu()">Cancelar</button>
-                <button type="button" class="btn-primary" style="flex:1;" id="sync-intralu-btn-confirmar" onclick="ejecutarSyncIntralu()">Ingresar y sincronizar</button>
+                <button type="button" class="btn-primary" style="flex:1;" id="sync-intralu-btn-confirmar" onclick="ejecutarSyncIntralu()">Sincronizar</button>
             </div>
         </div>
     `;
     document.body.appendChild(overlay);
     requestAnimationFrame(() => overlay.classList.add('visible'));
 
-    // 'Todos mis periodos' va al final de la lista (a pedido de Harry),
-    // pero se mantiene como valor por defecto seleccionado: es la
-    // opción más completa y la más segura si el usuario no elige nada.
+    // 'Todos mis periodos' va al final de la lista y NO es la opción
+    // recomendada (puede tardar 8-12 minutos) — la mayoría de alumnos
+    // solo quiere el ciclo actual, así que ese es el flujo rápido que
+    // se promueve. 'Todos' se deja disponible por si alguien la
+    // necesita puntualmente.
     const opcionesAlcance = [
         ...generarPeriodosDisponibles(12).map(p => ({ value: p, label: `Solo ${formatoPeriodoCorto(p)}` })),
         { value: 'todos', label: 'Todos mis periodos (tarda varios minutos)' },
     ];
-    // Arranca sin preseleccionar nada ("Selecciona una opción"); si el
-    // usuario confirma sin elegir, ejecutarSyncIntralu() ya cae por
-    // defecto a 'todos' (ver `|| 'todos'` más abajo).
     inicializarSelectPersonalizado({
         triggerId: 'syncIntraluAlcanceTrigger', textoId: 'syncIntraluAlcanceTriggerTexto',
         listaId: 'syncIntraluAlcanceLista', valorId: 'syncIntraluAlcanceValor',
@@ -964,63 +963,129 @@ function abrirModalSyncIntralu() {
     })?.establecer('', 'Selecciona una opción');
 }
 
-function alternarVisibilidadPasswordIntralu() {
-    const input = document.getElementById('sync-intralu-password');
-    const icono = document.getElementById('sync-intralu-password-icono');
-    const oculto = input.type === 'password';
-    input.type = oculto ? 'text' : 'password';
-    icono.textContent = oculto ? '🙈' : '👁️';
-}
-
 function cerrarModalSyncIntralu() {
     const overlay = document.getElementById('modal-sync-intralu-overlay');
     if (overlay) overlay.classList.remove('visible');
 }
 
+/* Le pregunta a la extensión 'SIGA Conector' (si está instalada) si
+   está presente, vía postMessage — el content script de la extensión
+   contesta con SIGA_EXT_PONG casi al instante. Si no hay extensión
+   instalada, nadie contesta y se resuelve false tras el timeout. */
+function pingExtensionSiga(timeoutMs = 700) {
+    return new Promise((resolve) => {
+        let resuelto = false;
+        function onMessage(event) {
+            if (event.source !== window || event.data?.type !== 'SIGA_EXT_PONG') return;
+            resuelto = true;
+            window.removeEventListener('message', onMessage);
+            resolve(true);
+        }
+        window.addEventListener('message', onMessage);
+        window.postMessage({ type: 'SIGA_EXT_PING' }, window.location.origin);
+        setTimeout(() => {
+            if (resuelto) return;
+            window.removeEventListener('message', onMessage);
+            resolve(false);
+        }, timeoutMs);
+    });
+}
+
+/* Le pide a la extensión las cookies de sesión de Intralú. Devuelve
+   { ok:true, sessionCookie, xsrfToken } si el alumno tiene sesión
+   activa, o { ok:false, motivo } si no (sin sesión, o se agotó el
+   tiempo de espera). */
+function pedirCookiesExtensionSiga(timeoutMs = 3000) {
+    return new Promise((resolve) => {
+        let resuelto = false;
+        function onMessage(event) {
+            if (event.source !== window || event.data?.type !== 'SIGA_EXT_COOKIES') return;
+            resuelto = true;
+            window.removeEventListener('message', onMessage);
+            resolve(event.data);
+        }
+        window.addEventListener('message', onMessage);
+        window.postMessage({ type: 'SIGA_EXT_REQUEST_COOKIES' }, window.location.origin);
+        setTimeout(() => {
+            if (resuelto) return;
+            window.removeEventListener('message', onMessage);
+            resolve({ ok: false, motivo: 'timeout' });
+        }, timeoutMs);
+    });
+}
+
+function mostrarEstadoExtension(html, tipo) {
+    const el = document.getElementById('sync-intralu-estado-extension');
+    el.style.display = 'block';
+    el.style.background = tipo === 'error' ? '#fee2e2' : '#fef3c7';
+    el.innerHTML = html;
+}
+
 async function ejecutarSyncIntralu() {
-    const codigoEl = document.getElementById('sync-intralu-codigo');
-    const passwordEl = document.getElementById('sync-intralu-password');
     const errorEl = document.getElementById('sync-intralu-error');
     const progresoEl = document.getElementById('sync-intralu-progreso');
+    const estadoExtEl = document.getElementById('sync-intralu-estado-extension');
     const btnConfirmar = document.getElementById('sync-intralu-btn-confirmar');
     const btnCancelar = document.getElementById('sync-intralu-btn-cancelar');
 
-    const codigo = codigoEl.value.trim();
-    const password = passwordEl.value;
     const alcance = document.getElementById('syncIntraluAlcanceValor').value || 'todos';
     const periodo = alcance === 'todos' ? null : periodoIntranotasARaw(alcance);
 
     errorEl.style.display = 'none';
+    estadoExtEl.style.display = 'none';
+    btnConfirmar.disabled = true;
+    btnCancelar.disabled = true;
 
-    if (!codigo || !password) {
-        errorEl.textContent = 'Ingresa tu código y tu contraseña.';
-        errorEl.style.display = 'block';
+    // Paso 1: ¿está instalado el conector?
+    btnConfirmar.textContent = 'Verificando conector...';
+    const hayExtension = await pingExtensionSiga();
+    if (!hayExtension) {
+        mostrarEstadoExtension(
+            `⚠️ No detectamos el conector de SIGA instalado.
+             <br><a href="${EXTENSION_SIGA_URL}" target="_blank" style="color:var(--color-cian); font-weight:600;">Instálalo aquí</a> y vuelve a presionar Sincronizar.`,
+            'error'
+        );
+        btnConfirmar.disabled = false;
+        btnCancelar.disabled = false;
+        btnConfirmar.textContent = 'Sincronizar';
         return;
     }
 
-    btnConfirmar.disabled = true;
-    btnCancelar.disabled = true;
+    // Paso 2: ¿tiene sesión activa en Intralú?
+    btnConfirmar.textContent = 'Verificando sesión...';
+    const cookies = await pedirCookiesExtensionSiga();
+    if (!cookies.ok) {
+        mostrarEstadoExtension(
+            `⚠️ Abre Intralú, inicia sesión y vuelve aquí para sincronizar.
+             <br><a href="https://alumnos.uni.edu.pe/login" target="_blank" style="color:var(--color-cian); font-weight:600;">Abrir Intralú</a>`,
+            'error'
+        );
+        btnConfirmar.disabled = false;
+        btnCancelar.disabled = false;
+        btnConfirmar.textContent = 'Sincronizar';
+        return;
+    }
+
+    // Paso 3: ya con la sesión prestada, mismo flujo de siempre (job + polling).
     btnConfirmar.textContent = 'Sincronizando...';
     progresoEl.style.display = 'block';
     progresoEl.textContent = '⏳ Conectando con Intralú...';
 
     try {
-        // Paso 1: iniciar el job — responde al instante con un job_id,
-        // el scraping real corre en segundo plano en el backend.
         const respInicio = await fetch(INTRALU_SYNC_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ codigo, password, periodo }),
+            body: JSON.stringify({
+                session_cookie: cookies.sessionCookie,
+                xsrf_token: cookies.xsrfToken,
+                periodo,
+            }),
         });
         const dataInicio = await respInicio.json();
         if (!respInicio.ok) {
             throw new Error(dataInicio.detail || 'No se pudo conectar con Intralú.');
         }
 
-        // Limpiamos la contraseña del DOM apenas se envió, por si acaso.
-        passwordEl.value = '';
-
-        // Paso 2: preguntar cada pocos segundos si ya terminó.
         const resultado = await esperarResultadoSyncIntralu(dataInicio.job_id, progresoEl);
 
         cerrarModalSyncIntralu();
@@ -1031,7 +1096,7 @@ async function ejecutarSyncIntralu() {
     } finally {
         btnConfirmar.disabled = false;
         btnCancelar.disabled = false;
-        btnConfirmar.textContent = 'Ingresar y sincronizar';
+        btnConfirmar.textContent = 'Sincronizar';
         progresoEl.style.display = 'none';
     }
 }
