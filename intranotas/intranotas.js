@@ -1000,11 +1000,20 @@ async function abrirModalSyncIntralu() {
             <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:10px;">
                 Para sincronizar tus notas, ahora SIGA usa un conector (extensión). Solo necesitas:
             </p>
-            <ol style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.7; margin:0 0 12px; padding-left:20px;">
-                <li>Agrega el conector de SIGA a tu navegador.</li>
-                <li>Abre Intralú y entra normalmente.</li>
-                <li>Vuelve aquí y presiona Sincronizar.</li>
-            </ol>
+            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;">
+                <div style="display:flex; align-items:center; gap:10px; background:#f8f7ff; border-radius:10px; padding:10px 12px;">
+                    <span style="flex-shrink:0; width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg, var(--brand-azul, #3C7CF8), var(--brand-morado, #6600CC)); color:#fff; font-size:0.72rem; font-weight:700; display:flex; align-items:center; justify-content:center;">1</span>
+                    <span style="font-size:0.82rem; color:var(--color-gris-texto);">Agrega el conector de SIGA a tu navegador.</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; background:#f8f7ff; border-radius:10px; padding:10px 12px;">
+                    <span style="flex-shrink:0; width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg, var(--brand-azul, #3C7CF8), var(--brand-morado, #6600CC)); color:#fff; font-size:0.72rem; font-weight:700; display:flex; align-items:center; justify-content:center;">2</span>
+                    <span style="font-size:0.82rem; color:var(--color-gris-texto);">Abre Intralú y entra normalmente.</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; background:#f8f7ff; border-radius:10px; padding:10px 12px;">
+                    <span style="flex-shrink:0; width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg, var(--brand-azul, #3C7CF8), var(--brand-morado, #6600CC)); color:#fff; font-size:0.72rem; font-weight:700; display:flex; align-items:center; justify-content:center;">3</span>
+                    <span style="font-size:0.82rem; color:var(--color-gris-texto);">Vuelve aquí y presiona Sincronizar.</span>
+                </div>
+            </div>
             <p style="font-size:0.78rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:4px;">
                 No se pide tu código ni tu contraseña.
             </p>
