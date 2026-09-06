@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Política de Privacidad — SIGA Conector</title>
+<style>
+    body {
+        font-family: 'Poppins', system-ui, sans-serif;
+        max-width: 720px;
+        margin: 40px auto;
+        padding: 0 20px;
+        color: #333;
+        line-height: 1.7;
+    }
+    h1 {
+        font-family: 'Montserrat', sans-serif;
+        color: #3C7CF8;
+        font-size: 1.5rem;
+    }
+    h2 {
+        font-family: 'Montserrat', sans-serif;
+        color: #6600CC;
+        font-size: 1.05rem;
+        margin-top: 32px;
+    }
+    .fecha {
+        color: #777;
+        font-size: 0.85rem;
+        margin-bottom: 24px;
+    }
+    ul { padding-left: 20px; }
+    code {
+        background: #f3f3f3;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.85em;
+    }
+</style>
+</head>
+<body>
+    <h1>🔗 Política de Privacidad — SIGA Conector</h1>
+    <p class="fecha">Última actualización: septiembre de 2026</p>
+
+    <p>SIGA Conector es una extensión de navegador creada para que <strong>SIGA</strong> (Sistema Integrado de Gestión Académica, un portal no oficial hecho por y para estudiantes de la UNI) pueda sincronizar tus notas de INTRALU sin pedirte tu código ni tu contraseña.</p>
+
+    <h2>¿Qué datos lee la extensión?</h2>
+    <p>La extensión lee dos cookies del sitio <code>alumnos.uni.edu.pe</code> (INTRALU), únicamente cuando tú presionas el botón "Sincronizar" dentro de SIGA:</p>
+    <ul>
+        <li><code>intranet_alumno_session</code> — identifica tu sesión ya iniciada en INTRALU.</li>
+        <li><code>XSRF-TOKEN</code> — un token de seguridad estándar del sitio de INTRALU.</li>
+    </ul>
+    <p>La extensión <strong>no lee, ve ni guarda</strong> tu código de estudiante ni tu contraseña — nunca los solicita ni tiene acceso a ellos.</p>
+
+    <h2>¿Qué se hace con esos datos?</h2>
+    <p>El valor de esas cookies se envía, en el momento, únicamente a la página de SIGA que tú tienes abierta (<code>harrypc2023.github.io/portal-siga</code>), y de ahí SIGA lo envía por HTTPS a su propio servidor para iniciar la sincronización de tus notas. La extensión no envía estos datos a ningún otro sitio, servidor o tercero.</p>
+
+    <h2>¿Se almacena algo?</h2>
+    <p>No. La extensión no guarda las cookies en ningún almacenamiento permanente (ni <code>chrome.storage</code>, ni disco). Se leen y se transmiten en el momento; una vez cerrada la pestaña o terminada la sincronización, no queda ningún rastro dentro de la extensión.</p>
+
+    <h2>¿Se comparte con terceros?</h2>
+    <p>No. No se vende, renta ni comparte ningún dato con anunciantes, analíticas ni terceros de ningún tipo.</p>
+
+    <h2>¿Dónde funciona la extensión?</h2>
+    <p>Solo actúa dentro de las páginas de SIGA (<code>harrypc2023.github.io/portal-siga</code>) y necesita permiso para leer cookies del dominio de INTRALU (<code>alumnos.uni.edu.pe</code>). No se ejecuta ni recopila información en ningún otro sitio web.</p>
+
+    <h2>Contacto</h2>
+    <p>Si tienes dudas sobre esta política o sobre cómo funciona SIGA Conector, puedes escribir a: <strong>openmindseduc@gmail.com</strong></p>
+</body>
+</html>
