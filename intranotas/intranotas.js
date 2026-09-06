@@ -994,7 +994,8 @@ async function abrirModalSyncIntralu() {
     overlay.className = 'modal-overlay';
     overlay.id = 'modal-sync-intralu-overlay';
     overlay.innerHTML = `
-        <div class="modal-caja" style="max-width:380px; text-align:left;">
+        <div class="modal-caja" style="max-width:380px; text-align:left; position:relative; overflow:hidden;">
+            <div style="height:6px; margin:-28px -24px 18px -24px; background:linear-gradient(90deg, var(--brand-azul, #3C7CF8), var(--brand-morado, #6600CC));"></div>
             <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Sincronización con Intralú</h3>
             <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:10px;">
                 Para sincronizar tus notas, ahora SIGA usa un conector (extensión). Solo necesitas:
@@ -1232,7 +1233,7 @@ async function ejecutarSyncIntralu() {
     // Paso 3: ya con la sesión prestada, mismo flujo de siempre (job + polling).
     btnConfirmar.textContent = 'Sincronizando...';
     progresoEl.style.display = 'block';
-    progresoEl.textContent = '⏳ Conectando con Intralú...';
+    progresoEl.textContent = '⏳ Conectando con Intralú... si el servidor estaba inactivo, puede tardar un poco más en arrancar.';
 
     try {
         const respInicio = await fetch(INTRALU_SYNC_URL, {
