@@ -14,13 +14,6 @@ const NOMBRES_CICLOS = {
     10: 'DÉCIMO CICLO'
 };
 
-/* Ciclos verificados — todos los ciclos de todas las carreras (sin badge) */
-const CICLOS_VERIFICADOS = {
-    sistemas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    industrial: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    software: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-};
-
 /* ============================================================
    LAYOUT DE COMPONENTES POR TIPO DE FÓRMULA
    ============================================================ */
@@ -394,16 +387,12 @@ function generarAcordeones() {
     for (let ciclo = 1; ciclo <= 10; ciclo++) {
         const cursos = cursosCarrera[ciclo] || [];
         const nombreCiclo = NOMBRES_CICLOS[ciclo];
-        const esVerificado = (CICLOS_VERIFICADOS[carreraSeleccionada] || []).includes(ciclo);
-        const badgeHTML = !esVerificado
-            ? `<span class="badge-criterio-oficial">CRITERIO DE EVALUACIÓN OFICIAL</span>`
-            : '';
 
         html += `
             <div class="acordeon" id="acordeon-ciclo-${ciclo}">
                 <div class="acordeon-header" onclick="toggleAcordeon(${ciclo})">
                     <span class="acordeon-icono">▶</span>
-                    <span class="acordeon-titulo">${nombreCiclo}${badgeHTML}</span>
+                    <span class="acordeon-titulo">${nombreCiclo}</span>
                     <span class="acordeon-contador" id="contador-ciclo-${ciclo}">0</span>
                 </div>
                 <div class="acordeon-contenido">
@@ -441,7 +430,28 @@ function generarListaCursos(cursos, ciclo) {
     if (!cursos || cursos.length === 0) {
         return `<p style="font-size:0.8rem; color:#9ca3af; padding: 8px 0;">No hay cursos registrados para este ciclo.</p>`;
     }
-    return [...cursos].sort((a, b) => a.name.localeCompare(b.name)).map(curso => `
+    return [...cursos].sort((a, b) => a.name.localeCompare(b.name)).map(curso => {
+        // Cursos sin fórmula confirmada todavía (formula_type: 'PENDIENTE',
+        // disponible: false en cursos_db_2026.js) — se listan para que se
+        // vea que el curso existe en la malla, pero no se pueden marcar:
+        // seleccionarlos calcularía un promedio con la fórmula por
+        // defecto (PC1-4/EP/EF), que no tiene por qué ser la real.
+        if (curso.disponible === false) {
+            return `
+                <label class="curso-item curso-item-pendiente" id="item-${curso.id}" style="opacity:0.55; cursor:default;">
+                    <input type="checkbox" class="curso-checkbox" data-curso-id="${curso.id}" data-ciclo="${ciclo}" disabled>
+                    <div class="curso-info">
+                        <div class="curso-nombre">${curso.name}</div>
+                        <div class="curso-detalles">
+                            <span class="curso-codigo">${curso.code}</span>
+                            <span class="curso-creditos">${curso.credits} créditos</span>
+                            <span style="font-size:0.68rem; font-weight:700; color:#9ca3af; margin-left:4px;">· Próximamente</span>
+                        </div>
+                    </div>
+                </label>
+            `;
+        }
+        return `
         <label class="curso-item" id="item-${curso.id}" onclick="event.stopPropagation()">
             <input
                 type="checkbox"
@@ -458,7 +468,8 @@ function generarListaCursos(cursos, ciclo) {
                 </div>
             </div>
         </label>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function toggleAcordeon(ciclo) {
@@ -489,6 +500,16 @@ function toggleCurso(cursoId, ciclo) {
     if (!curso) {
         const electivos = CURSOS_POR_CICLO[mallaSeleccionada][carreraSeleccionada]['electivos'] || [];
         curso = electivos.find(c => c.id === cursoId);
+    }
+
+    // Red de seguridad: el checkbox ya viene con `disabled` para estos
+    // cursos (ver generarListaCursos), así que en el uso normal esto
+    // nunca debería dispararse — pero si algo llega a marcarlo igual,
+    // se revierte antes de guardar nada calculado con la fórmula por
+    // defecto sobre un curso que todavía no tiene fórmula real.
+    if (curso && curso.disponible === false) {
+        checkbox.checked = false;
+        return;
     }
 
     if (checkbox.checked) {
@@ -1424,6 +1445,15 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
 
             if (!cursoCatalogo) {
                 noReconocidos.push(`${cursoIntralu.codigo} - ${cursoIntralu.nombre} (${claveIntranotas})`);
+                continue;
+            }
+
+            // Igual que un curso no reconocido: si todavía no se confirmó
+            // su fórmula real (disponible:false en cursos_db), no se
+            // mapea — se reporta para que se revise a mano, en vez de
+            // guardarle un promedio calculado con la fórmula por defecto.
+            if (cursoCatalogo.disponible === false) {
+                noReconocidos.push(`${cursoIntralu.codigo} - ${cursoIntralu.nombre} (${claveIntranotas}) — fórmula aún no confirmada`);
                 continue;
             }
 
