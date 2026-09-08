@@ -4,13 +4,25 @@
 // type="module"), para que tanto código con import como con onclick=""
 // puedan usarlo por igual.
 
-function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, opciones, alElegir, posicionFija = true }) {
+function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, opciones, alElegir }) {
     const trigger = document.getElementById(triggerId);
     const texto = document.getElementById(textoId);
     const lista = document.getElementById(listaId);
     const valor = document.getElementById(valorId);
 
     if (!trigger || !lista || !valor) return null;
+
+    // El will-change por sí solo no bastó: en este caso Chrome actualiza
+    // scrollTop internamente pero no repinta la pantalla (confirmado con
+    // el navegador: scrollTop cambia, la vista se queda igual). Forzamos
+    // un reflow sincrónico en cada scroll -- alternar display fuerza a
+    // Chrome a recalcular y repintar de verdad, no solo a nivel de
+    // sugerencia como hace will-change.
+    lista.addEventListener('scroll', () => {
+        lista.style.display = 'none';
+        void lista.offsetHeight; // fuerza el reflow synchronous
+        lista.style.display = '';
+    });
 
     if (opciones) {
         lista.innerHTML = opciones
@@ -68,7 +80,7 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
 
     trigger.addEventListener('click', () => {
         if (!lista.hidden) { cerrar(); return; }
-        if (posicionFija) posicionar();
+        posicionar();
         lista.hidden = false;
         trigger.setAttribute('aria-expanded', 'true');
     });
