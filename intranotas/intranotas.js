@@ -2393,6 +2393,16 @@ function calcularTodo() {
                 prom_pc = calcularPromPCComun(pc[0], pc[1], pc[2], pc[3]);
                 nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
 
+            // Faltaba este caso acá (sí estaba en calcularPFCompleto(), el
+            // motor de "Meta del curso", pero no en este motor — el que de
+            // verdad pinta las tarjetas). Sin él, cursos como BIC01 caían
+            // al 'default' de abajo, que busca notas en PC1-4 (inexistentes
+            // para estos cursos) en vez de en LAB1-4, y calculaba un
+            // Prom. PC de 0 aunque las notas sí estuvieran cargadas.
+            case 'LABS_4_DOBLE_EF':
+                prom_pc = calcularPromPCComun(lab[0], lab[1], lab[2], lab[3]);
+                nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
+
             case 'FISICA_I':
                 prom_pc = calcularPromPCFisica(pc.slice(0, 5), lab.slice(0, 5));
                 nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
