@@ -33,6 +33,13 @@ const COMPONENT_LAYOUT = {
         { comps: ['PC1', 'PC2', 'PC3', 'PC4'], grid: 'grid-4-cols' },
         { comps: ['EP', 'EF', 'ES'], grid: 'grid-4-cols' }
     ],
+    /* Igual que COMPUTACION_1_1_2 pero con Laboratorios en vez de
+       Prácticas Calificadas — cursos donde Intralú etiqueta las
+       evaluaciones como "LABORATORIO n", no "PRACTICA n" (ej. BIC01). */
+    'LABS_4_DOBLE_EF': [
+        { comps: ['Lab1', 'Lab2', 'Lab3', 'Lab4'], grid: 'grid-4-cols' },
+        { comps: ['EP', 'EF', 'ES'], grid: 'grid-4-cols' }
+    ],
     'ALGEBRA': [
         { comps: ['PC1', 'PC2', 'PC3', 'PC4'], grid: 'grid-4-cols' },
         { comps: ['EP', 'EF', 'ES'], grid: 'grid-4-cols' }
@@ -137,7 +144,7 @@ const COMPONENT_LAYOUT = {
    ARQUETIPOS DE FÓRMULA (compartidos entre simuladores)
    ============================================================ */
 const FORMULAS_DOBLE_EF = ['COMPUTACION_1_1_2', 'ALGORITMIA', 'FISICA_I', 'QUIMICA',
-    'MODELADO_DATOS', 'INGENIERIA_DATOS', 'TEORIA_ORGANIZACIONAL', 'TCS', 'ARQ_EMPRESARIAL'];
+    'MODELADO_DATOS', 'INGENIERIA_DATOS', 'TEORIA_ORGANIZACIONAL', 'TCS', 'ARQ_EMPRESARIAL', 'LABS_4_DOBLE_EF'];
 const FORMULAS_SOLO_PC = ['REDACCION_BASE', 'REALIDAD_NACIONAL', 'ETICA', 'METODOLOGIA_INV',
     'REALIDAD_NACIONAL_4PC', 'SOLO_PC', 'SOLO_PC_6'];
 const FORMULAS_SOLO_EXAMENES = ['SOLO_EXAMENES'];
@@ -2080,6 +2087,15 @@ function calcularPFCompleto(curso, valores) {
         case 'COMPUTACION_1_1_2':
         case 'ALGORITMIA':
             prom_pc = calcularPromPCComun(pc(1), pc(2), pc(3), pc(4));
+            nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
+
+        // Igual que COMPUTACION_1_1_2, pero el curso evalúa con
+        // Laboratorios en vez de Prácticas Calificadas (ej. BIC01,
+        // "Introducción a la Computación" — Intralú lo etiqueta como
+        // "LABORATORIO 1-4", no "PRACTICA 1-4"). Misma regla de
+        // descarte (la menor de 4), solo cambia el origen del dato.
+        case 'LABS_4_DOBLE_EF':
+            prom_pc = calcularPromPCComun(lab(1), lab(2), lab(3), lab(4));
             nota_final = calcularNotaFinalDobleEF(prom_pc, ep, ef, es); break;
 
         case 'FISICA_I':

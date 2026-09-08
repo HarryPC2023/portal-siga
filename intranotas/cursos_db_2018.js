@@ -32,7 +32,7 @@ const CURSOS_SISTEMAS = {
         { id: 'sis_geo', code: 'FB101', name: 'Geometría Analítica', credits: 3, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_cal', code: 'BMA01', name: 'Cálculo Diferencial', credits: 5, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'sis_qui', code: 'BQU01', name: 'Química I', credits: 5, formula_type: 'QUIMICA', components: ['PC1', 'PC2', 'PC3', 'PC4', 'Lab1', 'Lab2', 'Lab3', 'Lab4', 'Lab5', 'Lab6', 'Lab7', 'Lab8', 'EP', 'EF', 'ES'] },
-        { id: 'sis_com', code: 'BIC01', name: 'Introducción a la Computación', credits: 2, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sis_com', code: 'BIC01', name: 'Introducción a la Computación', credits: 2, formula_type: 'LABS_4_DOBLE_EF', components: ['Lab1', 'Lab2', 'Lab3', 'Lab4', 'EP', 'EF', 'ES'] },
         { id: 'sis_red', code: 'BRC01', name: 'Redacción y Comunicación', credits: 2, formula_type: 'REDACCION_BASE', components: ['PC1', 'PC2', 'PC3', 'PC4', 'Monografia1', 'Monografia2'] },
         { id: 'sis_pensa', code: 'SI101', name: 'Intro al Pensamiento y a la Ing. de Sistemas', credits: 3, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
     ],
@@ -152,7 +152,7 @@ const CURSOS_INDUSTRIAL = {
     2: [
         { id: 'ind_alg', code: 'BMA03', name: 'Álgebra Lineal', credits: 4, formula_type: 'ALGEBRA', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
         { id: 'ind_cal2', code: 'BMA02', name: 'Cálculo Integral', credits: 5, formula_type: 'ESTANDAR_1_1_1', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'ind_com', code: 'BIC01', name: 'Introducción a la Computación', credits: 2, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'ind_com', code: 'BIC01', name: 'Introducción a la Computación', credits: 2, formula_type: 'LABS_4_DOBLE_EF', components: ['Lab1', 'Lab2', 'Lab3', 'Lab4', 'EP', 'EF', 'ES'] },
         { id: 'ind_rn', code: 'BRN01', name: 'Realidad Nacional. Constitución y DDHH', credits: 3, formula_type: 'SOLO_PC', components: ['PC1', 'PC2', 'PC3', 'PC4'] },
         { id: 'ind_dp', code: 'HU102', name: 'Desarrollo Personal', credits: 2, formula_type: 'REDACCION_BASE', components: ['PC1', 'PC2', 'PC3', 'PC4', 'Monografia1', 'Monografia2'] },
         { id: 'ind_tgs', code: 'SI204', name: 'Teoría General de Sistemas', credits: 2, formula_type: 'SOLO_PC', components: ['PC1', 'PC2', 'PC3', 'PC4'] },
@@ -253,7 +253,7 @@ const CURSOS_SOFTWARE = {
         { id: 'sw_qui', code: 'BQU01', name: 'Química I', credits: 5, formula_type: 'QUIMICA', components: ['PC1', 'PC2', 'PC3', 'PC4', 'Lab1', 'Lab2', 'Lab3', 'Lab4', 'Lab5', 'Lab6', 'Lab7', 'Lab8', 'EP', 'EF', 'ES'] },
         { id: 'sw_red', code: 'BRC01', name: 'Redacción y Comunicación', credits: 2, formula_type: 'REDACCION_BASE', components: ['PC1', 'PC2', 'PC3', 'PC4', 'Monografia1', 'Monografia2'] },
         { id: 'sw_isw', code: 'SW101', name: 'Introducción a la Ing. de Software', credits: 3, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
-        { id: 'sw_com', code: 'BIC01', name: 'Introducción a la Computación', credits: 2, formula_type: 'COMPUTACION_1_1_2', components: ['PC1', 'PC2', 'PC3', 'PC4', 'EP', 'EF', 'ES'] },
+        { id: 'sw_com', code: 'BIC01', name: 'Introducción a la Computación', credits: 2, formula_type: 'LABS_4_DOBLE_EF', components: ['Lab1', 'Lab2', 'Lab3', 'Lab4', 'EP', 'EF', 'ES'] },
         { id: 'sw_dp', code: 'HU102', name: 'Desarrollo Personal', credits: 2, formula_type: 'REDACCION_BASE', components: ['PC1', 'PC2', 'PC3', 'PC4', 'Monografia1', 'Monografia2'] },
     ],
     2: [
