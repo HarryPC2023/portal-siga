@@ -2332,11 +2332,52 @@ function actualizarBannerAlertas(enRiesgo, desaprobados) {
 }
 
 /* ============================================================
+   CIERRE DE PERIODOS ACADÉMICOS
+   Fecha real en la que la UNI cierra las notas de un periodo — un
+   concepto DISTINTO del corte que usa generarPeriodosDisponibles()
+   para decidir qué periodo está "vigente" para armar el selector
+   (ese corte es apenas unos días más temprano; acá se necesita el
+   cierre real, con margen, para no tratar un periodo como cerrado
+   antes de que la UNI termine de procesar notas).
+
+   Periodo 1 (marzo-julio): cierra 31 de julio del mismo año.
+   Periodo 2 (agosto-diciembre): cierra 31 de diciembre del mismo año.
+   Periodo 3 / verano (enero-febrero, etiquetado con el año que cierra,
+   ej. "2025-3" corre en enero-febrero de 2026): cierra a mediados de
+   marzo (15) del año SIGUIENTE al del periodo — con margen extra a
+   propósito, para tenerlo más asegurado. */
+function fechaCierrePeriodo(periodo) {
+    const [anioStr, tipoStr] = (periodo || '').split('-');
+    const anio = parseInt(anioStr, 10);
+    const tipo = parseInt(tipoStr, 10);
+    if (!Number.isFinite(anio) || !Number.isFinite(tipo)) return null;
+    if (tipo === 1) return new Date(anio, 6, 31, 23, 59, 59);       // 31 jul
+    if (tipo === 2) return new Date(anio, 11, 31, 23, 59, 59);      // 31 dic
+    return new Date(anio + 1, 2, 15, 23, 59, 59);                   // 15 mar (verano)
+}
+
+/* Un periodo cerrado ya no tiene sustitutorio pendiente ni nota por
+   confirmar — sus evaluaciones se tratan siempre como completas, sin
+   el margen de duda de "en riesgo" que sí aplica al periodo vigente
+   mientras aún podría rendirse el ES. Cualquier periodo ANTERIOR al
+   que ya pasó su fecha de cierre entra acá automáticamente (su fecha
+   de cierre, por definición, ya quedó atrás). */
+function periodoEstaCerrado(periodo) {
+    const cierre = fechaCierrePeriodo(periodo);
+    if (!cierre) return false;
+    return new Date() > cierre;
+}
+
+/* ============================================================
    MOTOR DE CÁLCULOS PRINCIPAL
    ============================================================ */
 function calcularTodo() {
     let sumaPonderada = 0, sumaCreditos = 0;
     let cursosEnRiesgo = [], cursosDesaprobados = [];
+
+    // Un solo cálculo por pantalla (todos los cursos mostrados son del
+    // mismo periodoSeleccionado), no uno por curso.
+    const periodoCerrado = periodoEstaCerrado(periodoSeleccionado);
 
     cursosSeleccionados.forEach(curso => {
         const gn = comp => {
@@ -2356,7 +2397,7 @@ function calcularTodo() {
 
         const soloPC = FORMULAS_SOLO_PC.includes(curso.formula_type);
         const soloExam = FORMULAS_SOLO_EXAMENES.includes(curso.formula_type);
-        const evaluacionesCompletas = tieneES || (soloPC && tieneNotas) || (soloExam && tieneES);
+        const evaluacionesCompletas = periodoCerrado || tieneES || (soloPC && tieneNotas) || (soloExam && tieneES);
 
         let prom_pc = null, nota_final = null;
 
