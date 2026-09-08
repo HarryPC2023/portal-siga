@@ -920,7 +920,7 @@ const INTRALU_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hos
 // Repo privado de Harry (solo él puede accederlo mientras esté en
 // modo privado — perfecto para esta fase de pruebas). Link directo al
 // .zip del Release v1.0.0 — descarga de un clic.
-const EXTENSION_SIGA_URL = 'https://github.com/HarryPC2023/siga-conector/releases/download/v1.0.0/siga-conector-extension.zip';
+const EXTENSION_SIGA_URL = 'https://chromewebstore.google.com/detail/siga-conector-intralu/blnabmpadgdikiljbfillnkkhljkhgna';
 
 /* El código UNI empieza con el año de ingreso (ej. '20231059E' -> 2023).
    Réplica exacta de extraer_anio_ingreso() en scraping_intralu.py, para
