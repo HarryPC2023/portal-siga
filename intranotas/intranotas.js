@@ -157,6 +157,11 @@ let carreraSeleccionada = null;
 let cursosSeleccionados = [];
 let periodoSeleccionado = null;
 let selectorPeriodoInstancia = null; // instancia del select-custom de Pantalla 3 (se crea una sola vez)
+// { [cursoId]: notaOficialDeIntralu } del periodo actualmente en pantalla —
+// se recarga en cargarNotasGuardadas() cada vez que cambia de periodo. Solo
+// tiene entradas para cursos que vinieron de una sincronización con
+// INTRALU; los cursos con notas ingresadas a mano nunca aparecen acá.
+let notasOficialesPeriodo = {};
 
 // `let` NO crea propiedades en `window` (a diferencia de `var`), así
 // que sin esto, cualquier módulo aparte (progreso-malla.js) que lea
@@ -1397,6 +1402,14 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
         const claveIntranotas = entradaPeriodo.etiqueta_periodo;
         const cursosMapeados = [];
         const notasPeriodo = {};
+        // Nota final YA calculada y publicada por la UNI para cada curso
+        // (columna "NOTA" de "Cursos Matriculados"), aparte de las notas
+        // por componente de arriba. Sirve de referencia oficial: en el
+        // rarísimo caso de que no coincida con lo que da la fórmula
+        // pública a partir de PC/EP/EF (ej. un ajuste manual del
+        // profesor), calcularTodo() la usa a ella en vez de pelearse con
+        // el estudiante sobre quién tiene la razón.
+        const notasOficialesDelPeriodo = {};
 
         for (const cursoIntralu of entradaPeriodo.cursos) {
             let cursoCatalogo = buscarCursoEnCatalogoPorCodigo(
@@ -1429,6 +1442,10 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
                 notasCurso[compReal] = ev.nota;
             });
             if (Object.keys(notasCurso).length) notasPeriodo[cursoCatalogo.id] = notasCurso;
+
+            if (cursoIntralu.nota_oficial !== null && cursoIntralu.nota_oficial !== undefined && !isNaN(cursoIntralu.nota_oficial)) {
+                notasOficialesDelPeriodo[cursoCatalogo.id] = cursoIntralu.nota_oficial;
+            }
         }
 
         if (!cursosMapeados.length) continue; // Nada reconocido en este periodo: no se crea/toca entrada
@@ -1437,8 +1454,11 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
             carrera: carreraSeleccionada,
             cursos: cursosMapeados,
             notas: notasPeriodo,
+            notasOficiales: notasOficialesDelPeriodo,
         };
         periodosActualizados++;
+
+        reportarDiscrepanciasNotaOficial(claveIntranotas, cursosMapeados, notasPeriodo, notasOficialesDelPeriodo);
     }
 
     guardarDatosPeriodos(datos); // esto ya sube a la nube automáticamente (sincronizarNube)
@@ -1482,6 +1502,54 @@ async function reportarCursosNoReconocidos(lista) {
         });
     } catch (e) {
         console.log('No se pudo reportar cursos no reconocidos:', e);
+    }
+}
+
+// Margen para decidir si la nota calculada y la oficial de INTRALU
+// "difieren de verdad" — nunca 0 exacto, para no disparar falsos
+// positivos por cosas de precisión decimal que no son una diferencia
+// real (ej. redondeos internos de punto flotante).
+const MARGEN_DIFERENCIA_NOTA_OFICIAL = 0.05;
+
+/* Compara, para cada curso recién sincronizado, la nota que calcularía
+   la fórmula pública (vía calcularPFCompleto — el mismo motor puro que
+   usa "Meta del curso", sin tocar el DOM) contra la nota oficial que
+   trajo el scraping. No le muestra nada a Harry ni al estudiante en
+   pantalla — solo deja constancia en Supabase de qué curso y qué tan
+   grande fue la diferencia, para poder notar más adelante si esto es
+   un caso aislado (como le pasó a Harry) o si alguna facultad/carrera
+   tiene un patrón distinto una vez que SIGA se use en más sitios. */
+async function reportarDiscrepanciasNotaOficial(periodo, cursosMapeados, notasPeriodo, notasOficialesDelPeriodo) {
+    const discrepancias = [];
+
+    cursosMapeados.forEach(curso => {
+        const notaOficial = notasOficialesDelPeriodo[curso.id];
+        if (notaOficial === undefined) return;
+
+        const { nota_final } = calcularPFCompleto(curso, notasPeriodo[curso.id] || {});
+        if (nota_final === null) return;
+
+        if (Math.abs(nota_final - notaOficial) > MARGEN_DIFERENCIA_NOTA_OFICIAL) {
+            discrepancias.push({
+                periodo, codigo_curso: curso.code, formula_type: curso.formula_type,
+                malla: curso.malla_origen || mallaSeleccionada, carrera: carreraSeleccionada,
+                nota_calculada: nota_final, nota_oficial: notaOficial,
+            });
+        }
+    });
+
+    if (!discrepancias.length) return;
+
+    try {
+        if (!window.sigaObtenerSesion || !window.sigaSupabase) return;
+        const sesion = await window.sigaObtenerSesion();
+        if (!sesion?.user) return;
+
+        await window.sigaSupabase.from('intranotas_discrepancias_nota').insert(
+            discrepancias.map(d => ({ user_id: sesion.user.id, ...d }))
+        );
+    } catch (e) {
+        console.log('No se pudo reportar discrepancia de nota oficial:', e);
     }
 }
 
@@ -1805,11 +1873,17 @@ function generarTarjetaCurso(curso) {
                         Ingresar Notas
                     </button>
                 </div>
-                <div class="caja-promedio">
+                <div class="caja-promedio" style="position:relative;">
                     <span class="caja-promedio-label">Promedio<br>Curso</span>
                     <span class="caja-promedio-valor" id="promedio-${curso.id}">--</span>
+                    <button type="button" id="badge-oficial-${curso.id}" style="display:none; position:absolute; top:-4px; right:-4px; width:18px; height:18px; border-radius:50%; border:none; background:#e5e7eb; color:#6b7280; font-size:0.7rem; line-height:1; cursor:pointer; padding:0;"
+                        onclick="event.stopPropagation(); toggleDetalleNotaOficial('${curso.id}')"
+                        aria-label="Ver detalle de esta nota">ⓘ</button>
                 </div>
             </div>
+            <p id="detalle-oficial-${curso.id}" style="display:none; margin:0; padding:8px 16px; font-size:0.74rem; color:var(--color-gris-texto); background:var(--color-fondo-input); line-height:1.5;">
+                Esta nota usa el registro oficial de INTRALU, que no coincide exactamente con el cálculo a partir de tus evaluaciones.
+            </p>
             <div class="panel-notas" id="panel-${curso.id}" onclick="event.stopPropagation()">
                 ${generarInputsNotas(curso, layout)}
             </div>
@@ -1871,6 +1945,15 @@ function togglePanelNotas(cursoId) {
     const estabAbierto = panel.classList.contains('abierto');
     document.querySelectorAll('.panel-notas').forEach(p => p.classList.remove('abierto'));
     if (!estabAbierto) panel.classList.add('abierto');
+}
+
+/* Solo lo puede tocar quien vea el icono ⓘ — que solo aparece en el
+   rarísimo caso de que la nota calculada y la oficial de INTRALU no
+   coincidan (ver calcularTodo). Casi nadie llega a ver esto nunca. */
+function toggleDetalleNotaOficial(cursoId) {
+    const detalle = document.getElementById(`detalle-oficial-${cursoId}`);
+    if (!detalle) return;
+    detalle.style.display = detalle.style.display === 'none' ? 'block' : 'none';
 }
 
 function moverFoco(event, cursoId, compActual) {
@@ -2496,6 +2579,19 @@ function calcularTodo() {
                 nota_final = calcularNotaFinalEstandar(prom_pc, ep, ef, es);
         }
 
+        // Referencia oficial (solo existe si este curso vino de una
+        // sincronización con INTRALU). En el rarísimo caso de que no
+        // coincida con lo que da la fórmula pública — un ajuste manual
+        // del profesor que no se refleja en PC/EP/EF — se usa la oficial
+        // para la tarjeta y para el ponderado, sin pelearse con el
+        // estudiante sobre quién tiene la razón. Prom. PC no se toca:
+        // ese sí es puramente el cálculo de SIGA, nunca lo publica INTRALU.
+        const notaOficial = notasOficialesPeriodo[curso.id];
+        const tieneNotaOficial = notaOficial !== undefined && notaOficial !== null && !isNaN(notaOficial);
+        const difiereDeOficial = tieneNotaOficial && nota_final !== null
+            && Math.abs(nota_final - notaOficial) > MARGEN_DIFERENCIA_NOTA_OFICIAL;
+        if (difiereDeOficial) nota_final = notaOficial;
+
         // Prom PC display
         const promPCEl = document.getElementById(`prom-pc-${curso.id}`);
         if (promPCEl) {
@@ -2525,6 +2621,12 @@ function calcularTodo() {
                 notaEl.style.color = '#d1d5db';
             }
         }
+
+        // Indicador discreto — solo aparece en los cursos donde de verdad
+        // hubo diferencia (para casi todos los cursos, de casi todos los
+        // usuarios, este badge nunca se muestra).
+        const badgeOficialEl = document.getElementById(`badge-oficial-${curso.id}`);
+        if (badgeOficialEl) badgeOficialEl.style.display = difiereDeOficial ? 'inline-flex' : 'none';
 
         actualizarEstadoCurso(curso.id, nota_final, tieneNotas, evaluacionesCompletas);
         calcularNotaNecesaria(curso, prom_pc, ep, ef, es, nota_final);
@@ -2565,15 +2667,24 @@ function calcularTodo() {
    ============================================================ */
 function guardarConfiguracion() {
     const datos = leerDatosPeriodos();
-    const notasPrevias = (datos[periodoSeleccionado] && datos[periodoSeleccionado].notas) || {};
+    const entradaPrevia = datos[periodoSeleccionado];
+    const notasPrevias = (entradaPrevia && entradaPrevia.notas) || {};
+    // notasOficiales solo puede venir de una sincronización con INTRALU
+    // (nunca se escribe a mano) — se conserva igual que las notas, para
+    // no perder la referencia oficial de un curso ya sincronizado solo
+    // porque el estudiante volvió a pasar por Pantalla 3.
+    const notasOficialesPrevias = (entradaPrevia && entradaPrevia.notasOficiales) || {};
     const ids = cursosSeleccionados.map(c => c.id);
     const notasFiltradas = {};
     Object.keys(notasPrevias).forEach(id => { if (ids.includes(id)) notasFiltradas[id] = notasPrevias[id]; });
+    const notasOficialesFiltradas = {};
+    Object.keys(notasOficialesPrevias).forEach(id => { if (ids.includes(id)) notasOficialesFiltradas[id] = notasOficialesPrevias[id]; });
 
     datos[periodoSeleccionado] = {
         carrera: carreraSeleccionada,
         cursos: cursosSeleccionados,
         notas: notasFiltradas,
+        notasOficiales: notasOficialesFiltradas,
     };
     localStorage.setItem(claveUltimoPeriodo(), periodoSeleccionado);
     guardarDatosPeriodos(datos);
@@ -2602,6 +2713,7 @@ function guardarNotas() {
 function cargarNotasGuardadas() {
     const datos = leerDatosPeriodos();
     const entrada = datos[periodoSeleccionado];
+    notasOficialesPeriodo = (entrada && entrada.notasOficiales) || {};
     if (!entrada || !entrada.notas) return;
     const ids = cursosSeleccionados.map(c => c.id);
     Object.keys(entrada.notas).forEach(cursoId => {
