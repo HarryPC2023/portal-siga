@@ -7,6 +7,20 @@ const NOMBRES_CARRERAS = {
     software: 'Ingeniería de Software'
 };
 
+/* A qué facultad pertenece cada carrera — para las incidencias que se
+   reportan a Supabase (ver reportarIncidenciasIntranotas), agrupadas
+   por facultad/carrera, nunca por usuario. Mismos ids que usa
+   facultades-datos.js (ej. 'fiis'), para poder cruzar los datos de
+   ahí más adelante si hace falta. Se va ampliando a mano conforme
+   SIGA sume facultades nuevas. */
+const FACULTAD_POR_CARRERA = {
+    sistemas: 'fiis', industrial: 'fiis', software: 'fiis', ia: 'fiis',
+};
+
+function resolverFacultad(carrera) {
+    return FACULTAD_POR_CARRERA[carrera] || 'desconocida';
+}
+
 const NOMBRES_CICLOS = {
     1: 'PRIMER CICLO', 2: 'SEGUNDO CICLO', 3: 'TERCER CICLO',
     4: 'CUARTO CICLO', 5: 'QUINTO CICLO', 6: 'SEXTO CICLO',
@@ -917,9 +931,9 @@ const INTRALU_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hos
     ? 'http://localhost:8000/api/sync-intralu'
     : 'https://siga-conexion-intralu.onrender.com/api/sync-intralu';
 
-// Repo privado de Harry (solo él puede accederlo mientras esté en
-// modo privado — perfecto para esta fase de pruebas). Link directo al
-// .zip del Release v1.0.0 — descarga de un clic.
+// Publicada en la Chrome Web Store como "no listada" (no aparece en
+// búsquedas, pero cualquiera con el link puede instalarla con un
+// clic en "Agregar a Chrome" — sin modo desarrollador, sin .zip).
 const EXTENSION_SIGA_URL = 'https://chromewebstore.google.com/detail/siga-conector-intralu/blnabmpadgdikiljbfillnkkhljkhgna';
 
 /* El código UNI empieza con el año de ingreso (ej. '20231059E' -> 2023).
@@ -1248,7 +1262,7 @@ async function ejecutarSyncIntralu() {
     if (!hayExtension) {
         mostrarEstadoExtension(
             `⚠️ No detectamos el conector de SIGA en tu navegador.
-             <br><a href="${EXTENSION_SIGA_URL}" target="_blank" style="color:var(--color-cian); font-weight:600;">Agrégalo aquí</a> y vuelve a presionar Sincronizar.`,
+             <br><a href="${EXTENSION_SIGA_URL}" target="_blank" style="color:var(--color-cian); font-weight:600;">Agrégalo aquí</a>. Si ya lo instalaste, <strong>recarga esta página (F5)</strong> antes de volver a presionar Sincronizar — Chrome necesita eso para activar el conector en una pestaña que ya estaba abierta.`,
             'error'
         );
         btnConfirmar.disabled = false;
@@ -1408,15 +1422,29 @@ function buscarCursoEnCatalogoPorCodigo(codigo, nombreIntralu, creditosIntralu) 
     return { ...enPrincipal, _colision: enOtra };
 }
 
+// Margen para decidir si la nota calculada y la oficial de INTRALU
+// "difieren de verdad" — nunca 0 exacto, para no disparar falsos
+// positivos por cosas de precisión decimal que no son una diferencia
+// real (ej. redondeos internos de punto flotante).
+const MARGEN_DIFERENCIA_NOTA_OFICIAL = 0.05;
+
 /* Toma la respuesta del backend (agrupada por periodo, con la clave ya
    en formato "2026-1" gracias a etiquetar_periodo en el backend) y
    arma/reemplaza cada periodo dentro del cajón de la malla ACTIVA
    (igual que siempre) — cada curso individual lleva su propio
    malla_origen, así que un periodo puede tener cursos de ambas mallas
-   sin ambigüedad, sin necesidad de un cajón especial para eso. */
+   sin ambigüedad, sin necesidad de un cajón especial para eso.
+
+   De paso, junta en `incidenciasDetectadas` cualquier cosa rara que
+   encuentre en el camino (curso no reconocido, fórmula todavía
+   pendiente, nota que no coincide con la oficial) para reportarla al
+   final — ver reportarIncidenciasIntranotas(). Son señales sobre la
+   PLATAFORMA (qué facultad/curso/fórmula), nunca sobre la persona:
+   ninguna fila lleva usuario, nombre ni nada que identifique a nadie. */
 async function procesarRespuestaSyncIntralu(periodosIntralu) {
     const datos = leerDatosPeriodos();
-    const noReconocidos = [];
+    const facultad = resolverFacultad(carreraSeleccionada);
+    const incidenciasDetectadas = [];
     let periodosActualizados = 0;
 
     for (const entradaPeriodo of Object.values(periodosIntralu)) {
@@ -1444,7 +1472,12 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
             }
 
             if (!cursoCatalogo) {
-                noReconocidos.push(`${cursoIntralu.codigo} - ${cursoIntralu.nombre} (${claveIntranotas})`);
+                incidenciasDetectadas.push({
+                    tipo_incidencia: 'curso_no_reconocido',
+                    facultad, carrera: carreraSeleccionada,
+                    codigo_curso: cursoIntralu.codigo, periodo: claveIntranotas,
+                    detalle: cursoIntralu.nombre,
+                });
                 continue;
             }
 
@@ -1453,7 +1486,12 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
             // mapea — se reporta para que se revise a mano, en vez de
             // guardarle un promedio calculado con la fórmula por defecto.
             if (cursoCatalogo.disponible === false) {
-                noReconocidos.push(`${cursoIntralu.codigo} - ${cursoIntralu.nombre} (${claveIntranotas}) — fórmula aún no confirmada`);
+                incidenciasDetectadas.push({
+                    tipo_incidencia: 'formula_pendiente',
+                    facultad, carrera: carreraSeleccionada,
+                    codigo_curso: cursoIntralu.codigo, periodo: claveIntranotas,
+                    formula_type: cursoCatalogo.formula_type, detalle: cursoIntralu.nombre,
+                });
                 continue;
             }
 
@@ -1473,8 +1511,26 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
             });
             if (Object.keys(notasCurso).length) notasPeriodo[cursoCatalogo.id] = notasCurso;
 
-            if (cursoIntralu.nota_oficial !== null && cursoIntralu.nota_oficial !== undefined && !isNaN(cursoIntralu.nota_oficial)) {
-                notasOficialesDelPeriodo[cursoCatalogo.id] = cursoIntralu.nota_oficial;
+            const notaOficialCurso = cursoIntralu.nota_oficial;
+            const tieneNotaOficialCurso = notaOficialCurso !== null && notaOficialCurso !== undefined && !isNaN(notaOficialCurso);
+            if (tieneNotaOficialCurso) {
+                notasOficialesDelPeriodo[cursoCatalogo.id] = notaOficialCurso;
+
+                // Misma comparación que hace calcularTodo() en pantalla,
+                // pero acá con el motor puro (sin DOM) para poder
+                // reportarla apenas se sincroniza, sin esperar a que el
+                // estudiante abra esa tarjeta.
+                const { nota_final } = calcularPFCompleto(cursoCatalogo, notasCurso);
+                if (nota_final !== null && Math.abs(nota_final - notaOficialCurso) > MARGEN_DIFERENCIA_NOTA_OFICIAL) {
+                    incidenciasDetectadas.push({
+                        tipo_incidencia: 'nota_no_coincide',
+                        facultad, carrera: carreraSeleccionada,
+                        codigo_curso: cursoCatalogo.code, periodo: claveIntranotas,
+                        formula_type: cursoCatalogo.formula_type,
+                        nota_calculada: nota_final, nota_intralu: notaOficialCurso,
+                        diferencia: Math.round((nota_final - notaOficialCurso) * 100) / 100,
+                    });
+                }
             }
         }
 
@@ -1487,14 +1543,12 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
             notasOficiales: notasOficialesDelPeriodo,
         };
         periodosActualizados++;
-
-        reportarDiscrepanciasNotaOficial(claveIntranotas, cursosMapeados, notasPeriodo, notasOficialesDelPeriodo);
     }
 
     guardarDatosPeriodos(datos); // esto ya sube a la nube automáticamente (sincronizarNube)
 
-    if (noReconocidos.length) {
-        reportarCursosNoReconocidos(noReconocidos);
+    if (incidenciasDetectadas.length) {
+        reportarIncidenciasIntranotas(incidenciasDetectadas);
     }
 
     mostrarToast(
@@ -1512,74 +1566,22 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
     }
 }
 
-/* Envía a Supabase (tabla sugerencias) la lista de cursos que Intralú
-   trajo pero que el catálogo de Intranotas no reconoce, para que
-   Harry los revise y los mapee manualmente. Usa el cliente ya
-   expuesto en window.sigaSupabase/window.sigaObtenerSesion por el
-   <script type="module"> de intranotas/index.html (mismo patrón que
-   usa obtenerSesionNube() más abajo). */
-async function reportarCursosNoReconocidos(lista) {
+/* Reporta a Supabase (tabla intranotas_discrepancias_nota) cualquier
+   cosa rara detectada al sincronizar — curso que el catálogo no
+   reconoce, fórmula todavía pendiente de confirmar, o nota calculada
+   que no coincide con la oficial de INTRALU. Es un registro plano: una
+   fila por evento, sin usuario ni nada que identifique a nadie — para
+   ver "cuántos afectados" por facultad/carrera/curso, se agrupan filas
+   por SQL (GROUP BY) en vez de leer un contador ya armado. Deja la
+   tabla mucho más simple y no hace falta guardar identificadores en
+   ningún lado, ni siquiera ocultos, para evitar contar dos veces al
+   mismo estudiante. */
+async function reportarIncidenciasIntranotas(incidencias) {
     try {
-        if (!window.sigaObtenerSesion || !window.sigaSupabase) return;
-        const sesion = await window.sigaObtenerSesion();
-        if (!sesion?.user) return;
-
-        await window.sigaSupabase.from('sugerencias').insert({
-            user_id: sesion.user.id,
-            categoria: 'intranotas',
-            titulo: 'Cursos no reconocidos al sincronizar con Intralú',
-            descripcion: lista.join('\n'),
-        });
+        if (!window.sigaSupabase) return;
+        await window.sigaSupabase.from('intranotas_discrepancias_nota').insert(incidencias);
     } catch (e) {
-        console.log('No se pudo reportar cursos no reconocidos:', e);
-    }
-}
-
-// Margen para decidir si la nota calculada y la oficial de INTRALU
-// "difieren de verdad" — nunca 0 exacto, para no disparar falsos
-// positivos por cosas de precisión decimal que no son una diferencia
-// real (ej. redondeos internos de punto flotante).
-const MARGEN_DIFERENCIA_NOTA_OFICIAL = 0.05;
-
-/* Compara, para cada curso recién sincronizado, la nota que calcularía
-   la fórmula pública (vía calcularPFCompleto — el mismo motor puro que
-   usa "Meta del curso", sin tocar el DOM) contra la nota oficial que
-   trajo el scraping. No le muestra nada a Harry ni al estudiante en
-   pantalla — solo deja constancia en Supabase de qué curso y qué tan
-   grande fue la diferencia, para poder notar más adelante si esto es
-   un caso aislado (como le pasó a Harry) o si alguna facultad/carrera
-   tiene un patrón distinto una vez que SIGA se use en más sitios. */
-async function reportarDiscrepanciasNotaOficial(periodo, cursosMapeados, notasPeriodo, notasOficialesDelPeriodo) {
-    const discrepancias = [];
-
-    cursosMapeados.forEach(curso => {
-        const notaOficial = notasOficialesDelPeriodo[curso.id];
-        if (notaOficial === undefined) return;
-
-        const { nota_final } = calcularPFCompleto(curso, notasPeriodo[curso.id] || {});
-        if (nota_final === null) return;
-
-        if (Math.abs(nota_final - notaOficial) > MARGEN_DIFERENCIA_NOTA_OFICIAL) {
-            discrepancias.push({
-                periodo, codigo_curso: curso.code, formula_type: curso.formula_type,
-                malla: curso.malla_origen || mallaSeleccionada, carrera: carreraSeleccionada,
-                nota_calculada: nota_final, nota_oficial: notaOficial,
-            });
-        }
-    });
-
-    if (!discrepancias.length) return;
-
-    try {
-        if (!window.sigaObtenerSesion || !window.sigaSupabase) return;
-        const sesion = await window.sigaObtenerSesion();
-        if (!sesion?.user) return;
-
-        await window.sigaSupabase.from('intranotas_discrepancias_nota').insert(
-            discrepancias.map(d => ({ user_id: sesion.user.id, ...d }))
-        );
-    } catch (e) {
-        console.log('No se pudo reportar discrepancia de nota oficial:', e);
+        console.log('No se pudo reportar incidencias de sincronización:', e);
     }
 }
 
