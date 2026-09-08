@@ -1876,7 +1876,7 @@ function generarTarjetaCurso(curso) {
                 <div class="caja-promedio" style="position:relative;">
                     <span class="caja-promedio-label">Promedio<br>Curso</span>
                     <span class="caja-promedio-valor" id="promedio-${curso.id}">--</span>
-                    <button type="button" id="badge-oficial-${curso.id}" style="display:none; position:absolute; top:4px; right:4px; width:14px; height:14px; border:none; background:none; box-shadow:none; -webkit-appearance:none; appearance:none; color:#9ca3af; font-size:0.75rem; line-height:1; cursor:pointer; padding:0;"
+                    <button type="button" id="badge-oficial-${curso.id}" style="display:none; position:absolute; top:3px; right:2px; width:14px; height:14px; border:none; background:none; box-shadow:none; -webkit-appearance:none; appearance:none; color:#9ca3af; font-size:0.75rem; line-height:1; cursor:pointer; padding:0;"
                         onclick="event.stopPropagation(); toggleDetalleNotaOficial('${curso.id}')"
                         aria-label="Ver detalle de esta nota">ⓘ</button>
                 </div>
