@@ -1130,15 +1130,6 @@ function renderSelectorPeriodosSync(anioIngreso) {
         opciones: opcionesAlcance,
         alElegir: () => { },
     })?.establecer('', 'Selecciona una opción');
-
-    // El scroll interno de esta lista no responde bien al estar dentro de
-    // este modal (rueda del mouse ni arrastrar la barra funcionan, causa
-    // no confirmada). Como solo son ~11 periodos, el atajo más confiable
-    // es que quepan todos sin necesitar scroll — se queda fija en
-    // position:fixed (ver arriba), así que no la recorta el overflow:hidden
-    // del modal, solo se extiende hacia abajo lo que haga falta.
-    const listaPeriodos = document.getElementById('syncIntraluAlcanceLista');
-    if (listaPeriodos) listaPeriodos.style.maxHeight = 'none';
 }
 
 function corregirPeriodoIngresoSync(event) {
