@@ -12,18 +12,6 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
 
     if (!trigger || !lista || !valor) return null;
 
-    // El will-change por sí solo no bastó: en este caso Chrome actualiza
-    // scrollTop internamente pero no repinta la pantalla (confirmado con
-    // el navegador: scrollTop cambia, la vista se queda igual). Forzamos
-    // un reflow sincrónico en cada scroll -- alternar display fuerza a
-    // Chrome a recalcular y repintar de verdad, no solo a nivel de
-    // sugerencia como hace will-change.
-    lista.addEventListener('scroll', () => {
-        lista.style.display = 'none';
-        void lista.offsetHeight; // fuerza el reflow synchronous
-        lista.style.display = '';
-    });
-
     if (opciones) {
         lista.innerHTML = opciones
             .map((o) => `<li role="option" data-value="${o.value}" tabindex="0">${o.label}</li>`)
@@ -97,22 +85,35 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
         });
     });
 
-    document.addEventListener('click', (e) => {
-        if (!trigger.contains(e.target) && !lista.contains(e.target)) cerrar();
-    });
-
-    // Scroll fuera de la lista (el sidebar, la página, etc.) mientras está
-    // abierta invalida la posición calculada — más simple y confiable
-    // cerrarla que perseguir el scroll en tiempo real. Pero el scroll
-    // DENTRO de la propia lista (cuando tiene más opciones de las que
-    // caben) no debe cerrarla — si no, se cierra sola apenas intentas
-    // desplazarte para ver las demás opciones.
-    window.addEventListener('scroll', (e) => {
-        if (!lista.hidden && !lista.contains(e.target)) cerrar();
-    }, true);
+    _listasSelectAbiertas.add({ trigger, lista, cerrar });
 
     return { trigger, texto, lista, valor, establecer };
 }
+
+// Registrados UNA SOLA VEZ (a nivel de módulo, no dentro de la función de
+// arriba). Antes vivían dentro de inicializarSelectPersonalizado() y se
+// volvían a registrar cada vez que se llamaba — inofensivo en páginas
+// donde se inicializa una sola vez (Perfil, Horarios), pero en un modal
+// que se abre y cierra muchas veces en la misma sesión (ej. el de sync
+// con Intralú) se acumulan decenas de listeners sin que ninguno se
+// limpie nunca. Con suficientes de scroll acumulados, el navegador se
+// satura procesándolos todos en cada scroll y deja de repintar la lista
+// a tiempo — el scrollTop cambia por dentro, pero la pantalla no se
+// actualiza. Un solo listener global por evento, iterando sobre las
+// listas realmente abiertas ahora mismo, no tiene ese problema.
+const _listasSelectAbiertas = new Set();
+
+window.addEventListener('scroll', (e) => {
+    _listasSelectAbiertas.forEach(({ lista, cerrar }) => {
+        if (!lista.hidden && !lista.contains(e.target)) cerrar();
+    });
+}, true);
+
+document.addEventListener('click', (e) => {
+    _listasSelectAbiertas.forEach(({ trigger, lista, cerrar }) => {
+        if (!lista.hidden && !trigger.contains(e.target) && !lista.contains(e.target)) cerrar();
+    });
+});
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
