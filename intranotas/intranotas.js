@@ -1129,6 +1129,7 @@ function renderSelectorPeriodosSync(anioIngreso) {
         listaId: 'syncIntraluAlcanceLista', valorId: 'syncIntraluAlcanceValor',
         opciones: opcionesAlcance,
         alElegir: () => { },
+        posicionFija: false, // vive en un modal centrado, sin contenedor con scroll propio del que escapar
     })?.establecer('', 'Selecciona una opción');
 }
 

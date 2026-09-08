@@ -4,7 +4,7 @@
 // type="module"), para que tanto código con import como con onclick=""
 // puedan usarlo por igual.
 
-function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, opciones, alElegir }) {
+function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, opciones, alElegir, posicionFija = true }) {
     const trigger = document.getElementById(triggerId);
     const texto = document.getElementById(textoId);
     const lista = document.getElementById(listaId);
@@ -68,7 +68,7 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
 
     trigger.addEventListener('click', () => {
         if (!lista.hidden) { cerrar(); return; }
-        posicionar();
+        if (posicionFija) posicionar();
         lista.hidden = false;
         trigger.setAttribute('aria-expanded', 'true');
     });
