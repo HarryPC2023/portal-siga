@@ -18,12 +18,6 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
             .join('');
     }
 
-    // La lista se posiciona con position:fixed calculado en JS (en vez de
-    // absolute respecto al padre) para que pueda "escapar" de cualquier
-    // contenedor con su propio scroll (ej. el sidebar de Horarios) sin
-    // que el navegador la recorte. Se recalcula cada vez que se abre,
-    // por si el contenedor se desplazó desde la última vez.
-    //
     // Ojo: si algún ancestro tiene `transform` (ej. .aa-panel, que lo
     // usa para deslizarse al abrir/cerrar), ese ancestro se convierte
     // en el "contenedor" real de cualquier position:fixed adentro —
@@ -40,20 +34,60 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
         return null;
     }
 
+    /* La lista se posiciona con position:fixed calculado en JS (en vez de
+       absolute respecto al padre) para que pueda "escapar" de cualquier
+       contenedor con su propio scroll (ej. el sidebar de Horarios) sin
+       que el navegador la recorte. Se recalcula cada vez que se abre,
+       por si el contenedor se desplazó desde la última vez.
+
+       Antes la lista siempre intentaba dibujarse con max-height:260px
+       (fijo en el CSS) debajo del trigger, sin revisar si de verdad
+       había 260px libres hasta el borde de la ventana. Si el trigger
+       quedaba cerca del fondo de la pantalla (modal largo, celular,
+       ventana chica), buena parte de la lista se renderizaba fuera
+       del viewport — invisible e inalcanzable con scroll, aunque el
+       contenido siguiera ahí (este era el bug de "no puedo bajar más
+       allá de tal periodo" en el selector de sincronización con
+       INTRALU). Ahora se calcula el espacio real disponible hacia
+       abajo y hacia arriba, y:
+         1) Se usa el lado con más espacio (por defecto abajo, como
+            siempre, salvo que abajo quede muy apretado y arriba haya
+            claramente más sitio).
+         2) El alto máximo de la lista se ajusta a lo que realmente
+            cabe en pantalla, hasta un tope cómodo — así, en pantallas
+            grandes, alguien con muchos periodos cargados ve más
+            opciones de una sola vez sin que el cuadro se salga de la
+            ventana. */
     function posicionar() {
         const r = trigger.getBoundingClientRect();
-        let top = r.bottom + 4, left = r.left;
+        const margenViewport = 8;    // no pegar la lista al borde de la pantalla
+        const gap = 4;               // separación entre el trigger y la lista
+        const alturaMaxDeseada = 320; // tope cómodo, más generoso que el fijo de antes
+        const alturaMinUtil = 140;   // por debajo de esto, mejor intentar abrir para el otro lado
+
+        const espacioAbajo = window.innerHeight - r.bottom - gap - margenViewport;
+        const espacioArriba = r.top - gap - margenViewport;
+
+        const abrirArriba = espacioAbajo < alturaMinUtil && espacioArriba > espacioAbajo;
+        const espacioDisponible = abrirArriba ? espacioArriba : espacioAbajo;
+        const alturaFinal = Math.max(alturaMinUtil, Math.min(alturaMaxDeseada, espacioDisponible));
+
+        let top = abrirArriba ? (r.top - gap - alturaFinal) : (r.bottom + gap);
+        let left = r.left;
+
         const ancestro = ancestroConTransform(trigger);
         if (ancestro) {
             const ra = ancestro.getBoundingClientRect();
             top -= ra.top;
             left -= ra.left;
         }
+
         lista.style.position = 'fixed';
         lista.style.top = top + 'px';
         lista.style.left = left + 'px';
         lista.style.width = r.width + 'px';
         lista.style.right = 'auto';
+        lista.style.maxHeight = alturaFinal + 'px';
     }
 
     function cerrar() {

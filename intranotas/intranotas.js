@@ -1003,7 +1003,7 @@ async function abrirModalSyncIntralu() {
     overlay.innerHTML = `
         <div class="modal-caja" style="max-width:380px; text-align:left;">
             <div style="height:6px; margin:-28px -24px 18px -24px; border-radius:16px 16px 0 0; background:linear-gradient(90deg, var(--brand-azul, #3C7CF8), var(--brand-morado, #6600CC));"></div>
-            <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Sincronización con Intralú</h3>
+            <h3 style="margin:0 0 8px; font-size:1.05rem; color:var(--color-cian);">🔄 Sincronización con INTRALU</h3>
             <p style="font-size:0.82rem; color:var(--color-gris-texto); line-height:1.6; margin-bottom:10px;">
                 Para sincronizar tus notas, ahora SIGA usa un conector (extensión). Solo necesitas:
             </p>
@@ -1014,7 +1014,7 @@ async function abrirModalSyncIntralu() {
                 </div>
                 <div style="display:flex; align-items:center; gap:10px; background:#f8f7ff; border-radius:10px; padding:10px 12px;">
                     <span style="flex-shrink:0; width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg, var(--brand-azul, #3C7CF8), var(--brand-morado, #6600CC)); color:#fff; font-size:0.72rem; font-weight:700; display:flex; align-items:center; justify-content:center;">2</span>
-                    <span style="font-size:0.82rem; color:var(--color-gris-texto);">Abre Intralú y entra normalmente.</span>
+                    <span style="font-size:0.82rem; color:var(--color-gris-texto);">Abre INTRALU y entra normalmente.</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:10px; background:#f8f7ff; border-radius:10px; padding:10px 12px;">
                     <span style="flex-shrink:0; width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg, var(--brand-azul, #3C7CF8), var(--brand-morado, #6600CC)); color:#fff; font-size:0.72rem; font-weight:700; display:flex; align-items:center; justify-content:center;">3</span>
@@ -1111,7 +1111,7 @@ function renderSelectorPeriodosSync(anioIngreso) {
         <div id="sync-intralu-estado-extension" style="display:none; padding:10px 12px; border-radius:8px; font-size:0.8rem; margin-bottom:6px; line-height:1.6;"></div>
         <p id="sync-intralu-error" style="display:none; color:#dc2626; font-size:0.78rem; margin:4px 0 0;"></p>
         <p id="sync-intralu-progreso" style="display:none; color:var(--color-cian); font-size:0.8rem; margin:12px 0 0; text-align:center; line-height:1.5;">
-            ⏳ Conectando con Intralú... esto puede tardar varios minutos, no cierres esta ventana.
+            ⏳ Conectando con INTRALU... esto puede tardar varios minutos, no cierres esta ventana.
         </p>
         <div style="display:flex; gap:8px; margin-top:18px;">
             <button type="button" class="btn-volver" style="flex:1;" id="sync-intralu-btn-cancelar" onclick="cerrarModalSyncIntralu()">Cancelar</button>
@@ -1236,8 +1236,8 @@ async function ejecutarSyncIntralu() {
     const cookies = await pedirCookiesExtensionSiga();
     if (!cookies.ok) {
         mostrarEstadoExtension(
-            `⚠️ Abre Intralú, inicia sesión y vuelve aquí para sincronizar.
-             <br><a href="https://alumnos.uni.edu.pe/login" target="_blank" style="color:var(--color-cian); font-weight:600;">Abrir Intralú</a>`,
+            `⚠️ Abre INTRALU, inicia sesión y vuelve aquí para sincronizar.
+             <br><a href="https://alumnos.uni.edu.pe/login" target="_blank" style="color:var(--color-cian); font-weight:600;">Abrir INTRALU</a>`,
             'error'
         );
         btnConfirmar.disabled = false;
@@ -1249,7 +1249,7 @@ async function ejecutarSyncIntralu() {
     // Paso 3: ya con la sesión prestada, mismo flujo de siempre (job + polling).
     btnConfirmar.textContent = 'Sincronizando...';
     progresoEl.style.display = 'block';
-    progresoEl.textContent = '⏳ Conectando con Intralú... si el servidor estaba inactivo, puede tardar un poco más en arrancar.';
+    progresoEl.textContent = '⏳ Conectando con INTRALU... si el servidor estaba inactivo, puede tardar un poco más en arrancar.';
 
     try {
         const respInicio = await fetch(INTRALU_SYNC_URL, {
@@ -1264,7 +1264,7 @@ async function ejecutarSyncIntralu() {
         });
         const dataInicio = await respInicio.json();
         if (!respInicio.ok) {
-            throw new Error(dataInicio.detail || 'No se pudo conectar con Intralú.');
+            throw new Error(dataInicio.detail || 'No se pudo conectar con INTRALU.');
         }
 
         const resultado = await esperarResultadoSyncIntralu(dataInicio.job_id, progresoEl);
@@ -1309,7 +1309,7 @@ async function esperarResultadoSyncIntralu(jobId, progresoEl) {
             const segundos = Math.floor((Date.now() - inicio) / 1000);
             progresoEl.textContent = data.periodo_actual
                 ? `⏳ Revisando periodo ${data.periodo_actual}... (${segundos}s)`
-                : `⏳ Conectando con Intralú... (${segundos}s)`;
+                : `⏳ Conectando con INTRALU... (${segundos}s)`;
         }
     }
 }
@@ -1449,8 +1449,8 @@ async function procesarRespuestaSyncIntralu(periodosIntralu) {
 
     mostrarToast(
         periodosActualizados
-            ? `✅ Se sincronizaron ${periodosActualizados} periodo${periodosActualizados === 1 ? '' : 's'} desde Intralú`
-            : '⚠️ Intralú no trajo cursos que tu catálogo reconozca'
+            ? `✅ Se sincronizaron ${periodosActualizados} periodo${periodosActualizados === 1 ? '' : 's'} desde INTRALU`
+            : '⚠️ INTRALU no trajo cursos que tu catálogo reconozca'
     );
 
     // Si el periodo que se está viendo ahora mismo fue actualizado, refresca la pantalla.
@@ -1676,7 +1676,7 @@ function generarSimulador() {
             <button type="button" class="btn-volver"
                 style="flex-shrink:0; display:inline-flex; align-items:center; gap:6px; padding:8px 16px; white-space:nowrap; align-self:center;"
                 onclick="abrirModalSyncIntralu()">
-                🔄 Cargar notas de Intralú
+                🔄 Cargar notas de INTRALU
             </button>
             ` : ''}
         </div>
