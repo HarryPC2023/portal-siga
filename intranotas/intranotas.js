@@ -1289,8 +1289,7 @@ async function ejecutarSyncIntralu() {
     // Paso 3: ya con la sesión prestada, mismo flujo de siempre (job + polling).
     btnConfirmar.textContent = 'Sincronizando...';
     progresoEl.style.display = 'block';
-    progresoEl.textContent = '⏳ Conectando con INTRALU... si el servidor estaba inactivo, puede tardar un poco más en arrancar. Consejo: suele ir más rápido si mantienes INTRALU abierto en otra pestaña mientras esperas.';
-
+    progresoEl.textContent = '⏳ Conectando con INTRALU... si el servidor estaba inactivo, puede tardar un poco más en arrancar. Importante: no cierres INTRALU hasta que esto termine — cerrarlo antes puede hacer que algún curso no cargue completamente.';
     try {
         const respInicio = await fetch(INTRALU_SYNC_URL, {
             method: 'POST',
