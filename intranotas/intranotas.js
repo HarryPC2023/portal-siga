@@ -1154,7 +1154,7 @@ function renderSelectorPeriodosSync(anioIngreso) {
             ⏳ Conectando con INTRALU... esto puede tardar varios minutos, no cierres esta ventana.
         </p>
         <div style="display:flex; gap:8px; margin-top:18px;">
-            <button type="button" class="btn-volver" style="flex:1;" id="sync-intralu-btn-cancelar" onclick="cerrarModalSyncIntralu()">Cancelar</button>
+            <button type="button" class="btn-volver" style="flex:1;" id="sync-intralu-btn-cancelar" onclick="cancelarSyncIntralu()">Cancelar</button>
             <button type="button" class="btn-primary" style="flex:1;" id="sync-intralu-btn-confirmar" onclick="ejecutarSyncIntralu()">Sincronizar</button>
         </div>
     `;
@@ -1181,6 +1181,17 @@ function corregirPeriodoIngresoSync(event) {
 function cerrarModalSyncIntralu() {
     const overlay = document.getElementById('modal-sync-intralu-overlay');
     if (overlay) overlay.classList.remove('visible');
+}
+
+// Variable a nivel de módulo (no local a ejecutarSyncIntralu) para que
+// el botón Cancelar, en otro handler, pueda alcanzarla y abortar la
+// petición en curso — antes "Cancelar" solo escondía el modal, pero la
+// sincronización seguía corriendo de fondo sin que el usuario lo viera.
+let syncIntraluAbortController = null;
+
+function cancelarSyncIntralu() {
+    if (syncIntraluAbortController) syncIntraluAbortController.abort();
+    cerrarModalSyncIntralu();
 }
 
 /* Le pregunta a la extensión 'SIGA Conector' (si está instalada) si
@@ -1289,7 +1300,11 @@ async function ejecutarSyncIntralu() {
     // Paso 3: ya con la sesión prestada, mismo flujo de siempre (job + polling).
     btnConfirmar.textContent = 'Sincronizando...';
     progresoEl.style.display = 'block';
-    progresoEl.textContent = '⏳ Conectando con INTRALU... si el servidor estaba inactivo, puede tardar un poco más en arrancar. Importante: no cierres INTRALU hasta que esto termine — cerrarlo antes puede hacer que algún curso no cargue completamente.';
+    progresoEl.textContent = '⏳ Conectando con INTRALU... si el servidor estaba inactivo, puede tardar un poco más en arrancar. Consejo: suele ir más rápido si mantienes INTRALU abierto en otra pestaña mientras esperas.';
+
+    const abortController = new AbortController();
+    syncIntraluAbortController = abortController;
+
     try {
         const respInicio = await fetch(INTRALU_SYNC_URL, {
             method: 'POST',
@@ -1300,41 +1315,54 @@ async function ejecutarSyncIntralu() {
                 codigo: _codigoEstudianteParaSync,
                 periodo,
             }),
+            signal: abortController.signal,
         });
         const dataInicio = await respInicio.json();
         if (!respInicio.ok) {
             throw new Error(dataInicio.detail || 'No se pudo conectar con INTRALU.');
         }
 
-        const resultado = await esperarResultadoSyncIntralu(dataInicio.job_id, progresoEl);
+        const resultado = await esperarResultadoSyncIntralu(dataInicio.job_id, progresoEl, abortController);
 
         cerrarModalSyncIntralu();
         await procesarRespuestaSyncIntralu(resultado.periodos || {});
     } catch (err) {
-        errorEl.textContent = err.message || 'Ocurrió un error al sincronizar. Intenta de nuevo.';
-        errorEl.style.display = 'block';
+        // AbortError = el propio usuario canceló (ver cancelarSyncIntralu) —
+        // el modal ya se cerró en ese momento, no hay nada más que avisar.
+        if (err.name !== 'AbortError') {
+            errorEl.textContent = err.message || 'Ocurrió un error al sincronizar. Intenta de nuevo.';
+            errorEl.style.display = 'block';
+        }
     } finally {
         btnConfirmar.disabled = false;
         btnConfirmar.textContent = 'Sincronizar';
         progresoEl.style.display = 'none';
+        syncIntraluAbortController = null;
     }
 }
 
 /* Pregunta cada 3 segundos al backend si el job ya terminó, mostrando
    en vivo qué periodo está revisando ahora mismo. Corta con error si
    pasan más de 15 minutos (red de seguridad, no debería llegar ahí). */
-async function esperarResultadoSyncIntralu(jobId, progresoEl) {
+async function esperarResultadoSyncIntralu(jobId, progresoEl, abortController) {
     const inicio = Date.now();
     const LIMITE_MS = 15 * 60 * 1000;
 
     while (true) {
         await new Promise(resolve => setTimeout(resolve, 3000));
 
+        // El setTimeout de arriba no se interrumpe solo por abortar la señal
+        // (no es un fetch) — se revisa a mano apenas despierta, para no
+        // seguir preguntándole al backend después de que el usuario canceló.
+        if (abortController.signal.aborted) {
+            throw new DOMException('Cancelado por el usuario', 'AbortError');
+        }
+
         if (Date.now() - inicio > LIMITE_MS) {
             throw new Error('La sincronización está tardando demasiado. Intenta de nuevo más tarde.');
         }
 
-        const resp = await fetch(`${INTRALU_SYNC_URL}/${jobId}`);
+        const resp = await fetch(`${INTRALU_SYNC_URL}/${jobId}`, { signal: abortController.signal });
         const data = await resp.json();
 
         if (!resp.ok) {
