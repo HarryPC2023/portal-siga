@@ -1188,9 +1188,16 @@ function cerrarModalSyncIntralu() {
 // petición en curso — antes "Cancelar" solo escondía el modal, pero la
 // sincronización seguía corriendo de fondo sin que el usuario lo viera.
 let syncIntraluAbortController = null;
+let syncIntraluJobIdActual = null;
 
 function cancelarSyncIntralu() {
     if (syncIntraluAbortController) syncIntraluAbortController.abort();
+    // Avisa al backend que corte el scraping de verdad — sin esto, Playwright
+    // seguiría corriendo en el servidor aunque el navegador ya no escuche.
+    // "Fire and forget": no se espera la respuesta, ni importa si falla.
+    if (syncIntraluJobIdActual) {
+        fetch(`${INTRALU_SYNC_URL}/${syncIntraluJobIdActual}`, { method: 'DELETE' }).catch(() => { });
+    }
     cerrarModalSyncIntralu();
 }
 
@@ -1321,6 +1328,7 @@ async function ejecutarSyncIntralu() {
         if (!respInicio.ok) {
             throw new Error(dataInicio.detail || 'No se pudo conectar con INTRALU.');
         }
+        syncIntraluJobIdActual = dataInicio.job_id;
 
         const resultado = await esperarResultadoSyncIntralu(dataInicio.job_id, progresoEl, abortController);
 
@@ -1338,6 +1346,7 @@ async function ejecutarSyncIntralu() {
         btnConfirmar.textContent = 'Sincronizar';
         progresoEl.style.display = 'none';
         syncIntraluAbortController = null;
+        syncIntraluJobIdActual = null;
     }
 }
 
