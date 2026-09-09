@@ -1254,7 +1254,9 @@ async function ejecutarSyncIntralu() {
     errorEl.style.display = 'none';
     estadoExtEl.style.display = 'none';
     btnConfirmar.disabled = true;
-    btnCancelar.disabled = true;
+    // btnCancelar NUNCA se deshabilita: quien quiera salirse del modal
+    // debe poder hacerlo en cualquier momento, así el conector esté
+    // ocupado verificando algo o no.
 
     // Paso 1: ¿está instalado el conector?
     btnConfirmar.textContent = 'Verificando conector...';
@@ -1266,7 +1268,6 @@ async function ejecutarSyncIntralu() {
             'error'
         );
         btnConfirmar.disabled = false;
-        btnCancelar.disabled = false;
         btnConfirmar.textContent = 'Sincronizar';
         return;
     }
@@ -1281,7 +1282,6 @@ async function ejecutarSyncIntralu() {
             'error'
         );
         btnConfirmar.disabled = false;
-        btnCancelar.disabled = false;
         btnConfirmar.textContent = 'Sincronizar';
         return;
     }
@@ -1289,7 +1289,7 @@ async function ejecutarSyncIntralu() {
     // Paso 3: ya con la sesión prestada, mismo flujo de siempre (job + polling).
     btnConfirmar.textContent = 'Sincronizando...';
     progresoEl.style.display = 'block';
-    progresoEl.textContent = '⏳ Conectando con INTRALU... si el servidor estaba inactivo, puede tardar un poco más en arrancar.';
+    progresoEl.textContent = '⏳ Conectando con INTRALU... si el servidor estaba inactivo, puede tardar un poco más en arrancar. Consejo: suele ir más rápido si mantienes INTRALU abierto en otra pestaña mientras esperas.';
 
     try {
         const respInicio = await fetch(INTRALU_SYNC_URL, {
@@ -1316,7 +1316,6 @@ async function ejecutarSyncIntralu() {
         errorEl.style.display = 'block';
     } finally {
         btnConfirmar.disabled = false;
-        btnCancelar.disabled = false;
         btnConfirmar.textContent = 'Sincronizar';
         progresoEl.style.display = 'none';
     }
