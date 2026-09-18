@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/tema-siga.css?v=1">
     <link rel="stylesheet" href="css/admin.css?v=1">
+    <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
     <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
     <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
@@ -116,14 +117,18 @@
 
                     <label class="admin-form-campo">
                         <span>Contenedor</span>
-                        <div class="campo-select-custom">
-                            <button type="button" class="select-custom-trigger" id="viUsuarioTrigger"
-                                aria-haspopup="listbox" aria-expanded="false">
-                                <span id="viUsuarioTriggerTexto">Cargando lista…</span>
-                                <span class="select-custom-chevron" aria-hidden="true">▾</span>
-                            </button>
-                            <ul class="select-custom-lista" id="viUsuarioLista" role="listbox" hidden></ul>
-                            <input type="hidden" id="viUsuarioValor">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="campo-select-custom" style="flex:1;">
+                                <button type="button" class="select-custom-trigger" id="viUsuarioTrigger"
+                                    aria-haspopup="listbox" aria-expanded="false">
+                                    <span id="viUsuarioTriggerTexto">Cargando lista…</span>
+                                    <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                                </button>
+                                <ul class="select-custom-lista" id="viUsuarioLista" role="listbox" hidden></ul>
+                                <input type="hidden" id="viUsuarioValor">
+                            </div>
+                            <button type="button" class="btn-volver" id="viLimpiar" aria-label="Limpiar selección"
+                                title="Limpiar selección" style="flex-shrink:0; padding:8px 10px;">✕</button>
                         </div>
                     </label>
                 </div>

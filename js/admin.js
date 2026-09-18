@@ -70,6 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             li.style.display = normalizarTexto(li.textContent).includes(q) ? '' : 'none';
         });
     });
+
+    document.getElementById('viLimpiar').addEventListener('click', limpiarSeleccionVista);
 });
 
 function formatearFecha(iso) {
