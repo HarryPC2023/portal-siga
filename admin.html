@@ -43,6 +43,7 @@
                 <button type="button" class="admin-tab" data-tab="asesorias">Asesorías propuestas</button>
                 <button type="button" class="admin-tab" data-tab="opiniones">Opiniones reportadas</button>
                 <button type="button" class="admin-tab" data-tab="notificaciones">Notificaciones</button>
+                <button type="button" class="admin-tab" data-tab="vista-intranotas">Vista Intranotas</button>
             </div>
 
             <div id="panelSugerencias" class="admin-panel">
@@ -100,6 +101,53 @@
                     <p class="admin-vacio">Cargando…</p>
                 </div>
             </div>
+
+            <div id="panelVistaIntranotas" class="admin-panel" style="display:none;">
+                <div class="admin-form-caja">
+                    <h2 class="admin-form-titulo">Ver contenedor de un alumno</h2>
+                    <p style="margin:0 0 14px; opacity:.8; font-size:14px;">
+                        Solo lectura — nunca guarda ni sincroniza nada real, ni tuyo ni del alumno.
+                    </p>
+
+                    <label class="admin-form-campo">
+                        <span>Buscar</span>
+                        <input type="text" id="viBuscar" placeholder="Código de estudiante o nombre…" disabled>
+                    </label>
+
+                    <label class="admin-form-campo">
+                        <span>Contenedor</span>
+                        <div class="campo-select-custom">
+                            <button type="button" class="select-custom-trigger" id="viUsuarioTrigger"
+                                aria-haspopup="listbox" aria-expanded="false">
+                                <span id="viUsuarioTriggerTexto">Cargando lista…</span>
+                                <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                            </button>
+                            <ul class="select-custom-lista" id="viUsuarioLista" role="listbox" hidden></ul>
+                            <input type="hidden" id="viUsuarioValor">
+                        </div>
+                    </label>
+                </div>
+
+                <div id="viDetalle" style="display:none; margin-top:16px;">
+                    <div class="admin-tabs">
+                        <button type="button" class="admin-tab admin-tab-vi activo" data-vitab="json">JSON
+                            crudo</button>
+                        <button type="button" class="admin-tab admin-tab-vi" data-vitab="real">Vista real</button>
+                    </div>
+
+                    <div id="viPanelJson" class="admin-panel">
+                        <pre id="viJsonSalida"
+                            style="white-space:pre-wrap; word-break:break-word; background:#111; color:#7dffb3; padding:16px; border-radius:8px; max-height:70vh; overflow:auto; font-size:13px;"></pre>
+                    </div>
+
+                    <div id="viPanelReal" class="admin-panel" style="display:none;">
+                        <iframe id="viIframe" title="Vista real de Intranotas"
+                            style="width:100%; height:80vh; border:1px solid rgba(255,255,255,.15); border-radius:8px; background:#fff;"></iframe>
+                    </div>
+                </div>
+
+                <p class="admin-vacio" id="viVacio">Elige un contenedor de la lista para verlo.</p>
+            </div>
         </div>
     </section>
 
@@ -110,6 +158,7 @@
 
     <script src="js/landing.js"></script>
     <script src="js/tema-siga.js?v=1"></script>
+    <script src="js/selector-personalizado.js?v=1"></script>
     <script type="module" src="js/admin.js?v=1"></script>
 </body>
 

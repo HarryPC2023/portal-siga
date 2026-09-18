@@ -34,14 +34,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     inicializarFormNotificacion();
 
     document.querySelectorAll('.admin-tab').forEach((btn) => {
+        // Las sub-pestañas JSON crudo/Vista real de Vista Intranotas
+        // reusan la misma clase .admin-tab por consistencia visual,
+        // pero tienen su propio manejador (más abajo) — este bucle es
+        // solo para las pestañas de nivel superior del panel de admin.
+        if (btn.classList.contains('admin-tab-vi')) return;
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.admin-tab').forEach((b) => b.classList.remove('activo'));
+            document.querySelectorAll('.admin-tab').forEach((b) => {
+                if (!b.classList.contains('admin-tab-vi')) b.classList.remove('activo');
+            });
             btn.classList.add('activo');
             const tab = btn.dataset.tab;
             document.getElementById('panelSugerencias').style.display = tab === 'sugerencias' ? 'flex' : 'none';
             document.getElementById('panelAsesorias').style.display = tab === 'asesorias' ? 'flex' : 'none';
             document.getElementById('panelOpiniones').style.display = tab === 'opiniones' ? 'flex' : 'none';
             document.getElementById('panelNotificaciones').style.display = tab === 'notificaciones' ? 'flex' : 'none';
+            document.getElementById('panelVistaIntranotas').style.display = tab === 'vista-intranotas' ? 'flex' : 'none';
+            if (tab === 'vista-intranotas' && !viListaCargada) cargarListaVistaIntranotas();
+        });
+    });
+
+    document.querySelectorAll('.admin-tab-vi').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.admin-tab-vi').forEach((b) => b.classList.remove('activo'));
+            btn.classList.add('activo');
+            const vitab = btn.dataset.vitab;
+            document.getElementById('viPanelJson').style.display = vitab === 'json' ? 'block' : 'none';
+            document.getElementById('viPanelReal').style.display = vitab === 'real' ? 'block' : 'none';
+        });
+    });
+
+    document.getElementById('viBuscar').addEventListener('input', (e) => {
+        const q = normalizarTexto(e.target.value);
+        document.querySelectorAll('#viUsuarioLista li').forEach((li) => {
+            li.style.display = normalizarTexto(li.textContent).includes(q) ? '' : 'none';
         });
     });
 });
@@ -541,4 +567,118 @@ function inicializarFormNotificacion() {
         form.reset();
         cargarNotificaciones();
     });
+}
+/* ============================================================
+   VISTA INTRANOTAS (solo lectura) — inspeccionar el contenedor
+   de un alumno real de SIGA producción sin tocar sus datos ni
+   los propios. Requiere dos políticas RLS extra ya coordinadas
+   con Harry: SELECT para ADMIN_UID sobre intranotas_datos_nube
+   y sobre perfiles_usuario (ambas ya deberían estar corridas).
+   ============================================================ */
+const TABLA_NUBE_INTRANOTAS = 'intranotas_datos_nube';
+let viListaCargada = false;
+let viSelectorInstancia = null;
+let viContenedores = []; // [{ userId, malla, updatedAt, nombre, codigo }]
+
+// Quita tildes y pasa a minúsculas para que la búsqueda no dependa
+// de que el admin tipee los acentos exactos.
+function normalizarTexto(v) {
+    return (v ?? '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+async function cargarListaVistaIntranotas() {
+    viListaCargada = true;
+    const vacio = document.getElementById('viVacio');
+    const triggerTexto = document.getElementById('viUsuarioTriggerTexto');
+
+    const [{ data: filas, error: errorFilas }, { data: perfiles, error: errorPerfiles }] = await Promise.all([
+        supabase.from(TABLA_NUBE_INTRANOTAS).select('user_id, malla, updated_at').order('updated_at', { ascending: false }),
+        supabase.from('perfiles_usuario').select('user_id, nombre, codigo_estudiante'),
+    ]);
+
+    if (errorFilas) {
+        triggerTexto.textContent = 'Error al cargar';
+        vacio.textContent = 'No se pudo cargar la lista: ' + errorFilas.message
+            + '. Revisa que la política RLS de admin sobre intranotas_datos_nube esté corrida.';
+        return;
+    }
+
+    const perfilesPorUsuario = {};
+    (perfiles || []).forEach((p) => { perfilesPorUsuario[p.user_id] = p; });
+    if (errorPerfiles) {
+        console.warn('No se pudieron traer nombres de perfiles_usuario (¿falta la política RLS de admin ahí?):', errorPerfiles);
+    }
+
+    viContenedores = (filas || []).map((f) => {
+        const perfil = perfilesPorUsuario[f.user_id];
+        return {
+            userId: f.user_id,
+            malla: f.malla,
+            updatedAt: f.updated_at,
+            nombre: perfil?.nombre || '',
+            codigo: perfil?.codigo_estudiante || '',
+        };
+    });
+
+    if (!viContenedores.length) {
+        triggerTexto.textContent = 'Sin contenedores todavía';
+        vacio.textContent = 'Todavía no hay ningún alumno con datos guardados en intranotas_datos_nube.';
+        return;
+    }
+
+    const opciones = viContenedores.map((c, i) => {
+        const etiquetaPersona = c.codigo || c.nombre
+            ? `${c.codigo || '(sin código)'} — ${c.nombre || '(sin nombre)'}`
+            : `Usuario ${c.userId.slice(0, 8)}…`;
+        return {
+            value: String(i),
+            label: `${etiquetaPersona} · malla ${c.malla} · ${formatearFecha(c.updatedAt)}`,
+        };
+    });
+
+    viSelectorInstancia = inicializarSelectPersonalizado({
+        triggerId: 'viUsuarioTrigger',
+        textoId: 'viUsuarioTriggerTexto',
+        listaId: 'viUsuarioLista',
+        valorId: 'viUsuarioValor',
+        opciones,
+        alElegir: (indiceStr) => mostrarContenedorVista(viContenedores[Number(indiceStr)]),
+    });
+
+    document.getElementById('viBuscar').disabled = false;
+    triggerTexto.textContent = 'Elige un alumno…';
+}
+
+async function mostrarContenedorVista(contenedor) {
+    const vacio = document.getElementById('viVacio');
+    const detalle = document.getElementById('viDetalle');
+    const jsonSalida = document.getElementById('viJsonSalida');
+    const iframe = document.getElementById('viIframe');
+
+    vacio.style.display = 'none';
+    detalle.style.display = 'block';
+    jsonSalida.textContent = 'Cargando…';
+
+    const { data, error } = await supabase
+        .from(TABLA_NUBE_INTRANOTAS)
+        .select('datos_periodos, ultimo_periodo, updated_at')
+        .eq('user_id', contenedor.userId)
+        .eq('malla', contenedor.malla)
+        .maybeSingle();
+
+    if (error) {
+        jsonSalida.textContent = 'Error al traer el JSON: ' + error.message;
+    } else {
+        jsonSalida.textContent = JSON.stringify(data, null, 2);
+    }
+
+    // La vista real recarga el iframe desde cero (en vez de solo cambiar
+    // el src) para asegurar que intentarRestaurarSesion() vuelva a
+    // correr limpio si el admin cambia de alumno sin recargar la página.
+    const params = new URLSearchParams({
+        admin_preview_user: contenedor.userId,
+        admin_preview_malla: contenedor.malla,
+    });
+    iframe.src = 'about:blank';
+    setTimeout(() => { iframe.src = `intranotas/index.html?${params.toString()}`; }, 0);
 }

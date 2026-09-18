@@ -181,6 +181,39 @@ Object.defineProperty(window, 'cursosSeleccionados', { get: () => cursosSeleccio
 Object.defineProperty(window, 'periodoSeleccionado', { get: () => periodoSeleccionado, configurable: true });
 
 /* ============================================================
+   MODO VISTA ADMIN (solo lectura — visor de contenedores ajenos)
+   Se activa SOLO con ?admin_preview_user=<uid>&admin_preview_malla=
+   <2018|2026> en la URL, y solo si la sesión activa es la de Harry
+   (verificado en intentarRestaurarSesion, no acá — acá solo se lee
+   la intención de la URL). claveDatosPeriodos()/claveUltimoPeriodo()
+   son el único punto por el que pasa TODA lectura/escritura en
+   localStorage de este archivo — namespacearlas cuando este modo
+   está confirmado basta para que nada de lo que se vea o "guarde"
+   acá toque el localStorage real del admin ni el de nadie más.
+   ============================================================ */
+const ADMIN_UID_PREVIEW = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
+const paramsAdminPreview = new URLSearchParams(window.location.search);
+const previewUserId = paramsAdminPreview.get('admin_preview_user');
+const previewMalla = paramsAdminPreview.get('admin_preview_malla');
+let modoAdminPreviewConfirmado = false; // se confirma async en intentarRestaurarSesion()
+
+function modoAdminPreviewSolicitado() {
+    return !!(previewUserId && previewMalla);
+}
+function modoAdminPreview() {
+    return modoAdminPreviewSolicitado() && modoAdminPreviewConfirmado;
+}
+function mostrarBannerAdminPreview() {
+    if (document.getElementById('admin-preview-banner')) return;
+    const banner = document.createElement('div');
+    banner.id = 'admin-preview-banner';
+    banner.style.cssText = 'position:sticky;top:0;z-index:9999;background:#7c2d12;color:#fff;'
+        + 'text-align:center;padding:10px 16px;font-weight:700;font-size:14px;';
+    banner.textContent = '🔒 MODO VISTA ADMIN — datos de otro usuario, solo lectura. No sincroniza ni guarda nada real.';
+    document.body.prepend(banner);
+}
+
+/* ============================================================
    NAVEGACIÓN ENTRE PANTALLAS
    ============================================================ */
 function irAPantalla(num) {
@@ -189,7 +222,7 @@ function irAPantalla(num) {
     if (pantalla) pantalla.classList.add('activa');
     window.scrollTo(0, 0);
     const botones = document.getElementById('botones-flotantes');
-    if (botones) botones.style.display = num === 4 ? 'flex' : 'none';
+    if (botones) botones.style.display = (num === 4 && !modoAdminPreview()) ? 'flex' : 'none';
 }
 
 /* ============================================================
@@ -920,7 +953,7 @@ function resolverColisionMallaCurso(cursoIntralu, opcionA, opcionB) {
 /* Ya no está oculto tras un correo de beta: la sincronización con
    Intralú quedó validada y se habilita para todos los usuarios. */
 function syncIntraluHabilitado() {
-    return true;
+    return !modoAdminPreview();
 }
 
 // Detecta solo si estás corriendo tu Jekyll local (localhost/127.0.0.1) para
@@ -1632,10 +1665,12 @@ async function reportarIncidenciasIntranotas(incidencias) {
    un ingresante nunca choca con nada de la malla vieja, y cambiar de
    malla es seguro para los datos — cada una vive en su propia clave. */
 function claveDatosPeriodos() {
-    return `intranotas_datos_periodos_${mallaSeleccionada}`;
+    const sufijo = modoAdminPreview() ? '_admin_preview' : '';
+    return `intranotas_datos_periodos_${mallaSeleccionada}${sufijo}`;
 }
 function claveUltimoPeriodo() {
-    return `intranotas_ultimo_periodo_${mallaSeleccionada}`;
+    const sufijo = modoAdminPreview() ? '_admin_preview' : '';
+    return `intranotas_ultimo_periodo_${mallaSeleccionada}${sufijo}`;
 }
 
 function leerDatosPeriodos() {
@@ -1646,6 +1681,10 @@ function leerDatosPeriodos() {
 
 function guardarDatosPeriodos(datos) {
     localStorage.setItem(claveDatosPeriodos(), JSON.stringify(datos));
+    // En modo vista admin nunca se sube nada a la nube: la fila de
+    // Supabase que se subiría sería la de Harry (su propia sesión),
+    // no la del alumno previsualizado — subir acá la corrompería.
+    if (modoAdminPreview()) return;
     sincronizarNube(datos);
 }
 
@@ -1680,10 +1719,16 @@ async function hidratarDesdeNube() {
     const sesion = await obtenerSesionNube();
     if (!sesion || !window.sigaSupabase) return;
 
+    // En modo vista admin el contenedor a traer es el del alumno
+    // previsualizado, no el de la sesión activa (que sigue siendo la
+    // de Harry) — la política RLS agregada para ADMIN_UID_PREVIEW es
+    // la que permite este SELECT sobre una fila que no es la propia.
+    const userIdConsulta = modoAdminPreview() ? previewUserId : sesion.user.id;
+
     const { data, error } = await window.sigaSupabase
         .from(TABLA_NUBE)
         .select('datos_periodos, ultimo_periodo')
-        .eq('user_id', sesion.user.id)
+        .eq('user_id', userIdConsulta)
         .eq('malla', mallaSeleccionada)
         .maybeSingle();
 
@@ -2989,6 +3034,28 @@ document.addEventListener('DOMContentLoaded', async () => {
    ============================================================ */
 async function intentarRestaurarSesion() {
     try {
+        if (modoAdminPreviewSolicitado()) {
+            const sesion = await obtenerSesionNube();
+            modoAdminPreviewConfirmado = !!(sesion && sesion.user && sesion.user.id === ADMIN_UID_PREVIEW);
+            if (modoAdminPreviewConfirmado) {
+                mostrarBannerAdminPreview();
+                mallaSeleccionada = previewMalla;
+                actualizarResumenMalla();
+                filtrarCarrerasPorMalla();
+                await hidratarDesdeNube();
+
+                const restauradoPreview = restaurarUltimoPeriodoGuardado();
+                if (restauradoPreview) return;
+
+                irAPantalla(3);
+                mostrarSelectorCarrera(true);
+                return;
+            }
+            // Si la sesión activa no es la de Harry, se ignoran los
+            // parámetros por completo y sigue el flujo normal de abajo
+            // (nunca se filtra qué alumno se quiso previsualizar).
+        }
+
         const ultimaMalla = localStorage.getItem(LS_KEY_ULTIMA_MALLA);
         if (!ultimaMalla) return; // Sin malla guardada: se queda en Pantalla 0 (elegir malla)
         mallaSeleccionada = ultimaMalla;
