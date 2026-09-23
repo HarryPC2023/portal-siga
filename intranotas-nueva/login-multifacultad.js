@@ -58,6 +58,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
+    // El código de estudiante ya lo tiene SIGA (viene de tu cuenta) — se
+    // precarga solo, para no pedírtelo cada vez que vuelves a sincronizar.
+    if (perfil?.codigo_estudiante) {
+        const campoCodigo = document.getElementById('syncCodigo');
+        if (campoCodigo) campoCodigo.value = perfil.codigo_estudiante;
+    }
+
     if (perfil?.periodo_ingreso) {
         mostrarBloqueSync(user.id, perfil.periodo_ingreso);
     } else if (perfil?.codigo_estudiante) {
