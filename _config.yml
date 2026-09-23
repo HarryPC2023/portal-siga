@@ -1,2 +1,5 @@
 baseurl: "/portal-siga"
 url: "https://harrypc2023.github.io"
+
+exclude:
+  - actualizar-intranotas/
