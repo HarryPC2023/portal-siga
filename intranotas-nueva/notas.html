@@ -1,0 +1,1454 @@
+---
+---
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis notas - SIGA</title>
+    <meta name="description" content="Tus notas sincronizadas de INTRALU - SIGA">
+    <meta name="theme-color" content="#FFFDF9">
+
+    {% include tema-anti-flash.html %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/tema-siga.css">
+    <link rel="stylesheet" href="../css/selector-personalizado.css">
+    <link rel="stylesheet" href="css/progreso-carrera.css">
+    <link rel="stylesheet" href="css/ruta-curso.css">
+
+    <style>
+        body {
+            margin: 0;
+            background: var(--paper);
+            font-family: var(--font-datos);
+            color: var(--ink);
+        }
+
+        /* ============================================================
+           LAYOUT — un mismo panel de identidad que cambia de orientación
+           según el espacio: apilado arriba en móvil, lateral fijo en
+           escritorio. Diseñado primero para 375-420px y expandido desde
+           ahí, no al revés.
+           ============================================================ */
+        .layout-identidad {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        @media (min-width: 900px) {
+            .layout-identidad {
+                flex-direction: row;
+            }
+        }
+
+        /* ---------- Panel de identidad ---------- */
+        .panel-identidad {
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--brand-morado) 0%, var(--brand-azul) 100%);
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        @media (min-width: 900px) {
+            .panel-identidad {
+                width: 260px;
+                padding: 30px 22px;
+                gap: 20px;
+            }
+        }
+
+        .identidad-persona {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .identidad-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 17px;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        @media (min-width: 900px) {
+            .identidad-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 19px;
+            }
+        }
+
+        .identidad-nombre {
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+            line-height: 1.2;
+        }
+
+        .identidad-codigo {
+            color: var(--bg-lavanda);
+            font-size: 11px;
+        }
+
+        .chip-facultad {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.14);
+            border-left: 4px solid #fff;
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .chip-facultad__icono {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 8px;
+            padding: 3px;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 900px) {
+            .chip-facultad__icono {
+                width: 34px;
+                height: 34px;
+            }
+        }
+
+        .chip-facultad__nombre {
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .chip-facultad__periodo {
+            color: var(--bg-lavanda);
+            font-size: 11px;
+        }
+
+        /* ---------- Herramientas de Análisis Académico: visibles desde
+           el inicio, nunca escondidas en un submenú. ---------- */
+        .fila-herramientas {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        @media (min-width: 900px) {
+            .fila-herramientas {
+                flex-direction: column;
+                overflow: visible;
+            }
+
+            .panel-identidad .separador-panel {
+                height: 1px;
+                background: rgba(255, 255, 255, 0.2);
+                margin: 4px 0;
+            }
+
+            .panel-identidad .marca-pie {
+                margin-top: auto;
+                font-family: var(--font-logo);
+                color: #fff;
+                opacity: .8;
+                font-size: 14px;
+            }
+        }
+
+        .chip-herramienta {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        @media (min-width: 900px) {
+            .chip-herramienta {
+                padding: 12px 14px;
+                font-size: 13px;
+                white-space: normal;
+            }
+        }
+
+        .chip-herramienta--meta {
+            background: var(--bg-cian);
+            color: var(--acento-cian);
+        }
+
+        .chip-herramienta--progreso {
+            background: var(--bg-lavanda);
+            color: var(--acento-lavanda);
+        }
+
+        .chip-herramienta--ruta {
+            background: #EAF5C0;
+            color: #6B7F00;
+        }
+
+        /* ---------- Contenido: "Mis notas" ---------- */
+        .contenido-notas {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .contenido-notas__interior {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 20px 18px 60px;
+        }
+
+        @media (min-width: 900px) {
+            .contenido-notas__interior {
+                max-width: 900px;
+                padding: 32px 40px 60px;
+            }
+        }
+
+        .encabezado-notas {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .encabezado-notas__marca {
+            font-family: var(--font-logo);
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .encabezado-notas__volver {
+            font-size: 13px;
+            color: var(--brand-morado);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .fila-selector-periodo {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .fila-selector-periodo .campo-select-custom {
+            flex: 1;
+            position: relative;
+        }
+
+        .btn-eliminar-periodo {
+            flex-shrink: 0;
+            padding: 9px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            background: #fff;
+            font-size: 14px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .btn-eliminar-periodo:hover {
+            background: #FBE1E1;
+        }
+
+        .card-promedio {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--brand-morado-tinte);
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-bottom: 20px;
+            max-width: 480px;
+        }
+
+        .card-promedio__etiqueta {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            letter-spacing: 0.02em;
+        }
+
+        .card-promedio__valor {
+            font-family: var(--font-body);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--brand-morado);
+        }
+
+        .banner-riesgo {
+            display: none;
+            background: #FDF1E4;
+            border: 1px solid #E8A855;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .banner-riesgo.visible {
+            display: block;
+        }
+
+        .banner-riesgo__titulo {
+            font-weight: 600;
+            color: #A65D00;
+            margin: 0 0 4px;
+        }
+
+        .banner-riesgo__item {
+            color: #7A4600;
+        }
+
+        /* ---------- Tarjetas de curso: promedio a la izquierda, créditos
+           y estado con color propio, botón "Ingresar notas" celeste.
+           Mismo lenguaje de color que el panel de identidad. ---------- */
+        #listaCursos {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @media (min-width: 900px) {
+            #listaCursos {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+                align-items: start;
+            }
+        }
+
+        .curso-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: var(--sombra-tarjeta, 0 2px 10px rgba(0, 0, 0, 0.08));
+            padding: 14px 16px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            column-gap: 12px;
+            align-items: start;
+        }
+
+        .curso-card__promedio {
+            grid-column: 2;
+            grid-row: 1 / span 3;
+            align-self: start;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px 12px;
+            min-width: 85px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .curso-card__promedio-etiqueta {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: lowercase;
+            color: var(--ink-soft);
+            line-height: 1.2;
+            margin: 0 0 2px;
+        }
+
+        .curso-card__promedio-etiqueta::first-letter {
+            text-transform: uppercase;
+        }
+
+        .curso-card__promedio-valor {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #d1d5db;
+            margin: 0;
+        }
+
+        /* El color del promedio sigue al estado del curso (el badge se
+           actualiza en vivo al simular, y :has() lo sigue solo). */
+        .curso-card:has(.badge-aprobado) .curso-card__promedio-valor {
+            color: #1E88E5;
+        }
+
+        .curso-card:has(.badge-riesgo) .curso-card__promedio-valor {
+            color: #D97706;
+        }
+
+        .curso-card:has(.badge-critico) .curso-card__promedio-valor {
+            color: #EF4444;
+        }
+
+        /* Sus hijos (nombre, fila de códigos, botón y cuerpo) pasan a ser
+           celdas de la grilla de .curso-card. Así el promedio queda arriba
+           a la derecha con su tamaño natural, y el cuerpo desplegable ocupa
+           todo el ancho debajo sin estirar nada (mismo esquema que SIGA). */
+        .curso-card__cuerpo-principal {
+            display: contents;
+        }
+
+        .curso-card__cuerpo-principal>.btn-ingresar-notas {
+            grid-column: 1;
+            justify-self: start;
+        }
+
+        .curso-card__nombre {
+            grid-column: 1;
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.3;
+            margin: 0 0 4px;
+            overflow-wrap: anywhere;
+            hyphens: auto;
+        }
+
+        .curso-card__meta-fila {
+            grid-column: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .curso-card__codigo {
+            font-size: 11px;
+            color: var(--ink-soft);
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 8px;
+        }
+
+        .badge-creditos {
+            background: none;
+            padding: 0;
+            font-size: 11px;
+            color: var(--acento-lavanda);
+        }
+
+        .badge-aprobado {
+            background: #E1F5E9;
+            color: #12703E;
+        }
+
+        .badge-riesgo {
+            background: var(--bg-amarillo);
+            color: var(--acento-amarillo);
+        }
+
+        .badge-critico {
+            background: #FBE1E1;
+            color: #B4232A;
+        }
+
+        .badge-pendiente {
+            background: var(--bg-amarillo);
+            color: var(--acento-amarillo);
+        }
+
+        /* Con alguna nota pero sin nota final: azul suave, nunca rojo. */
+        .badge-proceso {
+            background: #E4EEFF;
+            color: #2B5DB8;
+        }
+
+
+        .btn-ingresar-notas {
+            background: #e6f6f8;
+            color: color-mix(in srgb, var(--brand-morado) 78%, #000);
+            border: 1px solid #bfe8ee;
+            border-radius: 6px;
+            padding: 5px 14px;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* Lila de marca al pasar el mouse, igual que SIGA. Solo con mouse:
+           en el celular el hover se queda "pegado" después de tocar. */
+        @media (hover: hover) {
+            .btn-ingresar-notas:hover {
+                background: var(--brand-morado);
+                border-color: var(--brand-morado);
+                color: #fff;
+            }
+        }
+
+        .curso-card__cuerpo {
+            display: none;
+            grid-column: 1 / -1;
+        }
+
+        .curso-card__acciones {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .btn-limpiar-curso {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-limpiar-curso:hover {
+            background: #fecaca;
+        }
+
+        .curso-card__cuerpo.visible {
+            display: block;
+            margin: 14px -16px -14px;
+            padding: 16px;
+            background: #EEF3FD;
+            border-top: 1px solid #e0e7ef;
+        }
+
+        .grid-componentes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .grid-componentes--4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .grid-componentes--2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .componente {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .componente label {
+            font-size: 10px;
+            color: var(--ink-soft);
+            text-align: center;
+        }
+
+        .componente input {
+            font-family: var(--font-body);
+            font-size: 14px;
+            text-align: center;
+            padding: 6px 4px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            background: #fff;
+            width: 100%;
+            max-width: 64px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .prom-pc {
+            font-size: 12px;
+            color: var(--ink-soft);
+            margin-bottom: 6px;
+        }
+
+        .prom-pc strong {
+            color: var(--ink);
+        }
+
+        /* ---------- ¿Qué nota necesito para aprobar? — mismo diseño que SIGA:
+           caja celeste con borde punteado y las notas en chips BLANCOS para
+           que resalten. Colores fijos (no dependen del tema), como en SIGA. ---------- */
+        .caja-necesito {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            line-height: 1.5;
+            color: #1e3a8a;
+        }
+
+        .caja-necesito__titulo {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .caja-necesito__fila {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 0;
+            border-bottom: 1px dotted #93c5fd;
+        }
+
+        .caja-necesito__fila:last-of-type {
+            border-bottom: none;
+        }
+
+        .caja-necesito__etiqueta {
+            font-weight: 500;
+        }
+
+        .caja-necesito__valor {
+            font-weight: 700;
+            background: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #1d4ed8;
+            white-space: nowrap;
+        }
+
+        .caja-necesito__ok {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .caja-necesito__mal {
+            background: #7f1d1d;
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .caja-necesito__aviso {
+            background: #fef3c7;
+            color: #d97706;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .caja-necesito__alerta {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .caja-necesito__supuesto {
+            margin: 8px 0 0;
+            font-size: 0.68rem;
+            font-style: italic;
+            color: #3b5ba9;
+        }
+
+        .aviso-sin-formula {
+            font-size: 12px;
+            color: var(--ink-soft);
+            font-style: italic;
+        }
+
+        .estado-vacio {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--ink-soft);
+            font-size: 14px;
+        }
+
+        /* ============================================================
+           MODAL DE CONFIRMACIÓN — mismo patrón visual que producción.
+           ============================================================ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 300;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal-caja {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px 24px;
+            max-width: 340px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        .modal-icono {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .modal-titulo {
+            font-family: var(--font-heading);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--brand-morado);
+            margin: 0 0 8px;
+        }
+
+        .modal-mensaje {
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            color: var(--ink-soft);
+            line-height: 1.5;
+            margin: 0 0 24px;
+        }
+
+        .modal-botones {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .modal-btn-cancelar {
+            background: #F3F4F6;
+            color: var(--ink-soft);
+        }
+
+        .modal-btn-cancelar:hover {
+            background: #E5E7EB;
+        }
+
+        .modal-btn-confirmar {
+            background: #B4232A;
+            color: #fff;
+        }
+
+        .modal-btn-confirmar:hover {
+            background: #9C1E23;
+        }
+
+        /* ---------- Guardar / Limpiar todo (mismo esquema que SIGA) ---------- */
+        .acciones-lista {
+            display: none;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin: 22px 0 8px;
+        }
+
+        .btn-accion {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .btn-accion:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-accion--guardar {
+            background: #10b981;
+        }
+
+        .btn-accion--limpiar {
+            background: #ef4444;
+        }
+
+        .toast-notas {
+            position: fixed;
+            left: 50%;
+            bottom: 32px;
+            transform: translate(-50%, 20px);
+            background: #1f2937;
+            color: #fff;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 12px 22px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 400;
+        }
+
+        .toast-notas.visible {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        /* ============================================================
+           META DEL CURSO — panel lateral (escritorio) / hoja inferior
+           (celular). Mismo diseño que SIGA producción. El contenido va
+           en Poppins (fuente de datos) para contrastar con la fuente del
+           tema; los títulos de tarjeta conservan la del tema.
+           ============================================================ */
+        :root {
+            --font-datos: 'Poppins', 'Segoe UI', Arial, sans-serif;
+            --font-valor: 'Montserrat', 'Poppins', 'Segoe UI', Arial, sans-serif;
+        }
+
+        .meta-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 998;
+        }
+
+        .meta-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .meta-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 380px;
+            max-width: 92vw;
+            background: #fff;
+            border-left: 4px solid var(--brand-morado);
+            box-shadow: -8px 0 24px rgba(0, 0, 0, 0.14);
+            transform: translateX(100%);
+            transition: transform 0.25s ease;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: var(--font-datos);
+        }
+
+        .meta-panel.abierto {
+            transform: translateX(0);
+        }
+
+        .meta-panel__cabecera {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 18px;
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .meta-panel__titulo-grupo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .meta-panel__icono {
+            font-size: 1.3rem;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: color-mix(in srgb, var(--brand-morado) 10%, transparent);
+        }
+
+        .meta-panel__titulo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--ink);
+        }
+
+        .meta-panel__cerrar {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            color: var(--ink-soft);
+            cursor: pointer;
+            line-height: 1;
+            padding: 6px;
+        }
+
+        .meta-panel__cuerpo {
+            padding: 16px 18px 28px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .meta-campo {
+            margin-bottom: 14px;
+        }
+
+        .meta-campo label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--ink-soft);
+            margin-bottom: 6px;
+        }
+
+        .meta-campo input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            background: #EAF2FF;
+            color: var(--ink);
+            font-family: var(--font-datos);
+            font-size: 0.9rem;
+        }
+
+        #metaCursoTexto,
+        #metaCursoLista li {
+            font-family: var(--font-datos);
+        }
+
+        .meta-vacio {
+            font-size: 0.82rem;
+            color: var(--ink-soft);
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .meta-completo {
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        .meta-completo.ok {
+            background: rgba(16, 185, 129, 0.12);
+            color: #0b7a58;
+        }
+
+        .meta-completo.no {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .meta-inalcanzable {
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .meta-tarjeta {
+            background: #fff;
+            border: 1px solid #FFC000;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Tarjetas alternadas lila / champagne, como en SIGA. */
+        #metaResultado>.meta-tarjeta:nth-of-type(odd) {
+            background: rgba(102, 0, 204, 0.05);
+            border-color: #680ECD;
+        }
+
+        .meta-tarjeta__nombre {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .meta-desc {
+            font-size: 0.76rem;
+            color: var(--ink-soft);
+            line-height: 1.5;
+            margin: 0 0 10px;
+        }
+
+        .meta-subtitulo {
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--ink-soft);
+            margin: 10px 0 6px;
+        }
+
+        .meta-subtitulo:first-of-type {
+            margin-top: 0;
+        }
+
+        .meta-alternativa {
+            padding-top: 10px;
+            margin-top: 10px;
+            border-top: 1px dashed #d1d5db;
+        }
+
+        .meta-alternativa:first-of-type {
+            padding-top: 0;
+            margin-top: 0;
+            border-top: none;
+        }
+
+        .meta-alternativa__titulo {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        /* 4 por fila, como en SIGA: PC1 PC2 PC3 PC4 en la misma fila y luego EP, EF... */
+        .meta-valores {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .meta-valor {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: #EAF2FF;
+            border-radius: 8px;
+            padding: 6px 4px;
+            min-width: 0;
+            text-align: center;
+        }
+
+        .meta-valor span {
+            overflow-wrap: anywhere;
+            line-height: 1.2;
+            font-size: 0.65rem;
+            color: var(--ink-soft);
+            font-weight: 600;
+        }
+
+        .meta-valor strong {
+            font-size: 0.95rem;
+            color: var(--brand-morado);
+        }
+
+        /* Nota que el alumno YA tiene: atenuada y con check. */
+        .meta-valor--actual {
+            background: transparent;
+            border: 1px dashed #d1d5db;
+            opacity: 0.75;
+        }
+
+        .meta-valor--actual span {
+            color: #10b981;
+        }
+
+        .meta-valor--actual strong {
+            color: var(--ink-soft);
+        }
+
+        .meta-pf {
+            font-size: 0.8rem;
+            color: var(--ink);
+            border-top: 1px solid #e5e7eb;
+            padding-top: 8px;
+        }
+
+        .meta-pf strong {
+            color: var(--brand-morado);
+        }
+
+        .meta-sin-pendientes {
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(16, 185, 129, 0.12);
+            color: #0b7a58;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .meta-nota-banda {
+            font-size: 0.72rem;
+            color: var(--ink-soft);
+            line-height: 1.5;
+            background: #EAF2FF;
+            border-radius: 8px;
+            padding: 6px 10px;
+            margin: 0 0 8px;
+        }
+
+        .meta-no-disponible {
+            font-size: 0.82rem;
+            color: var(--ink-soft);
+            line-height: 1.6;
+            font-style: italic;
+            margin: 0;
+        }
+
+        /* Celular: el mismo panel se vuelve hoja inferior (mismo umbral de
+           900px que el resto de la pantalla). */
+        @media (max-width: 899px) {
+            .meta-panel {
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                max-height: 82vh;
+                border-radius: 14px 14px 0 0;
+                border-left: none;
+                border-top: 4px solid var(--brand-morado);
+                transform: translateY(100%);
+                box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+            }
+
+            .meta-panel.abierto {
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================================
+           FUENTES — el mismo reparto que SIGA producción (Intranotas):
+           - Poppins: el cuerpo de la página y casi todo el contenido
+             (nombres de curso, botones, casilleros, cajas, modales)
+           - Montserrat: valores grandes (promedios) y títulos de ventanas
+           - Black Ops One: título de la página y marca
+           - Orbitron: solo lo de "Análisis académico" (botones, títulos
+             de tarjetas, casilleros del mapa, meta)
+           Va al final para ganar sobre las reglas anteriores.
+           ============================================================ */
+        .componente label,
+        .componente input,
+        .prom-pc,
+        .caja-necesito,
+        .curso-card__promedio-etiqueta,
+        .banner-riesgo__item,
+        .btn-ingresar-notas,
+        .btn-limpiar-curso,
+        .btn-accion,
+        .modal-mensaje,
+        .modal-btn,
+        .toast-notas,
+        .select-custom-trigger,
+        .select-custom-lista li {
+            font-family: var(--font-datos);
+        }
+
+        .card-promedio__valor,
+        .curso-card__promedio-valor,
+        .modal-titulo {
+            font-family: var(--font-valor);
+        }
+
+        .chip-herramienta,
+        .meta-panel__titulo,
+        .meta-tarjeta__nombre,
+        .meta-campo input {
+            font-family: var(--font-heading);
+        }
+
+        /* ============================================================
+           TEMAS DE SIGA (atributo data-tema del <html>; ver tema-siga.css).
+           SIGA cambia solo unas pocas variables por tema (el fondo --paper y
+           los colores de marca) y deja el texto oscuro a propósito, porque
+           casi todo vive dentro de tarjetas blancas. Dos casos necesitan
+           ayuda para leerse bien:
+           - Texto que flota directo sobre el fondo de la página (el título
+             y el mensaje de "sin cursos"): en el tema oscuro usa --hero-texto,
+             igual que el resto de SIGA.
+           - Texto CHICO de marca sobre superficies claras: el morado
+             brillante del tema oscuro (#a855f7) da solo 3.5:1 de contraste;
+             se oscurece (--brand-texto) solo en Oscuro y Forest, así Claro y
+             Ocean quedan idénticos.
+           ============================================================ */
+        :root {
+            --texto-pagina: var(--ink);
+            --texto-pagina-suave: var(--ink-soft);
+            --brand-texto: var(--brand-morado);
+        }
+
+        html[data-tema="oscuro"] {
+            --texto-pagina: var(--hero-texto, #cbc3e8);
+            --texto-pagina-suave: var(--hero-texto, #cbc3e8);
+            --brand-texto: color-mix(in srgb, var(--brand-morado) 62%, #000);
+        }
+
+        html[data-tema="forest"] {
+            --brand-texto: color-mix(in srgb, var(--brand-morado) 80%, #000);
+        }
+
+        .encabezado-notas__marca {
+            color: var(--texto-pagina);
+        }
+
+        .estado-vacio {
+            color: var(--texto-pagina-suave);
+        }
+
+        /* Código de estudiante en el panel lateral: el lavanda no alcanza
+           contraste sobre el degradado de los temas de color. */
+        html[data-tema="oscuro"] .identidad-codigo,
+        html[data-tema="ocean"] .identidad-codigo,
+        html[data-tema="forest"] .identidad-codigo {
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        .meta-valor strong,
+        .meta-pf strong {
+            color: var(--brand-texto);
+        }
+
+        /* ============================================================
+           PANEL LATERAL QUE ACOMPAÑA EL SCROLL — las herramientas de
+           Análisis académico (Meta, Progreso, Ruta) se usan mientras se
+           miran las notas, así que no pueden irse con el scroll.
+           - Escritorio: el panel se queda pegado a la altura de la ventana
+             (antes era una columna tan alta como toda la página y su
+             contenido se iba con el scroll). Mismo ancho de siempre:
+             260px + 2×22px de padding = 304px, ahora con border-box.
+           - Celular: el panel va arriba y solo queda pegada la fila de
+             herramientas; notas.js calcula cuánto del panel esconder
+             (fijarHerramientasEnMovil). La marca "SIGA" no se muestra ahí.
+           ============================================================ */
+        @media (min-width: 900px) {
+            .panel-identidad {
+                position: sticky;
+                top: 0;
+                align-self: flex-start;
+                box-sizing: border-box;
+                width: 304px;
+                height: 100vh;
+                height: 100dvh;
+                overflow-y: auto;
+            }
+        }
+
+        @media (max-width: 899px) {
+            .panel-identidad {
+                position: sticky;
+                top: 0;
+                z-index: 40;
+            }
+
+            .panel-identidad .marca-pie {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include nav.html activo="intranotas" %}
+
+    <div class="layout-identidad">
+
+        <!-- ===== Panel de identidad: horizontal arriba en móvil, lateral
+             fijo en escritorio (ver media query arriba). Se llena con JS
+             (pintarIdentidad en notas.js) desde el perfil real y la
+             sesión — nunca datos elegidos a mano. ===== -->
+        <div class="panel-identidad" id="panelIdentidad">
+            <div class="identidad-persona">
+                <div class="identidad-avatar" id="identidadAvatar">?</div>
+                <div>
+                    <div class="identidad-nombre" id="identidadNombre">Cargando…</div>
+                    <div class="identidad-codigo" id="identidadCodigo"></div>
+                </div>
+            </div>
+
+            <div class="chip-facultad" id="chipFacultad" style="display:none;">
+                <img class="chip-facultad__icono" id="chipFacultadIcono" src="" alt="">
+                <div>
+                    <div class="chip-facultad__nombre" id="chipFacultadNombre"></div>
+                    <div class="chip-facultad__periodo" id="chipFacultadPeriodo"></div>
+                </div>
+            </div>
+
+            <div class="separador-panel"></div>
+
+            <div class="fila-herramientas">
+                <button type="button" class="chip-herramienta chip-herramienta--meta" data-aa="meta">
+                    🎯 Meta del curso
+                </button>
+                <button type="button" class="chip-herramienta chip-herramienta--progreso" data-aa="progreso">
+                    🗺️ Progreso de tu carrera
+                </button>
+                <button type="button" class="chip-herramienta chip-herramienta--ruta" data-aa="ruta">
+                    🔗 Ruta del curso
+                </button>
+            </div>
+
+            <div class="marca-pie">SIGA</div>
+        </div>
+
+        <!-- ===== Contenido: Mis notas ===== -->
+        <div class="contenido-notas">
+            <div class="contenido-notas__interior">
+                <div class="encabezado-notas">
+                    <h1 class="encabezado-notas__marca">Mis notas</h1>
+                    <a class="encabezado-notas__volver" href="index.html">← Sincronizar otro periodo</a>
+                </div>
+
+                <div class="fila-selector-periodo">
+                    <div class="campo-select-custom">
+                        <button type="button" class="select-custom-trigger" id="selectorPeriodoTrigger"
+                            aria-haspopup="listbox" aria-expanded="false">
+                            <span id="selectorPeriodoTexto">Elige un periodo</span>
+                            <span class="select-custom-chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <ul class="select-custom-lista" id="selectorPeriodoLista" role="listbox" hidden></ul>
+                        <input type="hidden" id="selectorPeriodoValor">
+                    </div>
+                    <button type="button" class="btn-eliminar-periodo" id="btnEliminarPeriodo"
+                        aria-label="Eliminar este periodo">🗑️</button>
+                </div>
+
+                <div class="card-promedio">
+                    <span class="card-promedio__etiqueta">PROMEDIO PONDERADO</span>
+                    <span class="card-promedio__valor" id="promedioPonderado">--</span>
+                </div>
+
+                <div class="banner-riesgo" id="bannerRiesgo">
+                    <p class="banner-riesgo__titulo">⚠ Cursos en riesgo</p>
+                    <div id="bannerRiesgoLista"></div>
+                </div>
+
+                <div id="listaCursos"></div>
+                <div class="acciones-lista" id="accionesLista">
+                    <button type="button" class="btn-accion btn-accion--guardar" id="btnGuardarNotas">💾
+                        Guardar</button>
+                    <button type="button" class="btn-accion btn-accion--limpiar" id="btnLimpiarTodo">🗑️ Limpiar
+                        todo</button>
+                </div>
+                <div class="estado-vacio" id="estadoVacio" style="display:none;">Aún no sincronizas ningún curso.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: eliminar el periodo actualmente seleccionado. -->
+    <div id="modalEliminarPeriodo" class="modal-overlay">
+        <div class="modal-caja">
+            <div class="modal-icono">🗑️</div>
+            <h2 class="modal-titulo">¿Eliminar este periodo?</h2>
+            <p class="modal-mensaje" id="modalEliminarPeriodoTexto">Se eliminará por completo este periodo, con
+                todos sus cursos y notas. No se puede deshacer.</p>
+            <div class="modal-botones">
+                <button type="button" class="modal-btn modal-btn-cancelar"
+                    id="btnCancelarEliminarPeriodo">Cancelar</button>
+                <button type="button" class="modal-btn modal-btn-confirmar" id="btnConfirmarEliminarPeriodo">Sí,
+                    eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: limpiar todas las notas escritas del periodo (mismo texto que SIGA). -->
+    <div id="modalLimpiarTodo" class="modal-overlay">
+        <div class="modal-caja">
+            <div class="modal-icono">🗑️</div>
+            <h2 class="modal-titulo">¿Borrar todas las notas?</h2>
+            <p class="modal-mensaje">Esta acción eliminará todas las notas ingresadas. No se puede deshacer.</p>
+            <div class="modal-botones">
+                <button type="button" class="modal-btn modal-btn-cancelar" id="btnCancelarLimpiarTodo">Cancelar</button>
+                <button type="button" class="modal-btn modal-btn-confirmar" id="btnConfirmarLimpiarTodo">Sí, borrar
+                    todo</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-notas" id="toastNotas" role="status" aria-live="polite"></div>
+
+    <!-- Meta del curso: panel lateral (escritorio) / hoja inferior (celular). -->
+    <div id="metaOverlay" class="meta-overlay"></div>
+    <aside id="metaPanel" class="meta-panel" aria-hidden="true" aria-label="Meta del curso" inert>
+        <div class="meta-panel__cabecera">
+            <div class="meta-panel__titulo-grupo">
+                <span class="meta-panel__icono">🎯</span>
+                <div class="meta-panel__titulo">Meta del curso</div>
+            </div>
+            <button type="button" class="meta-panel__cerrar" id="metaCerrar" aria-label="Cerrar">✕</button>
+        </div>
+        <div class="meta-panel__cuerpo" id="metaCuerpo"></div>
+    </aside>
+
+
+    <script type="module" src="../js/gate.js"></script>
+    <script src="../js/selector-personalizado.js?v=1"></script>
+    <script type="module" src="notas.js"></script>
+    <script src="../js/tema-siga.js?v=1"></script>
+</body>
+
+</html>
