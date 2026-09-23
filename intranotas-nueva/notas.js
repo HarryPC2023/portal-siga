@@ -84,7 +84,7 @@ async function pintarIdentidad(sesion) {
 
     const avatar = document.getElementById('identidadAvatar');
     if (foto) {
-        avatar.innerHTML = `<img src="${foto}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+        avatar.innerHTML = `<img src="${foto}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff;">`;
     } else {
         avatar.textContent = nombre.trim().charAt(0).toUpperCase();
     }

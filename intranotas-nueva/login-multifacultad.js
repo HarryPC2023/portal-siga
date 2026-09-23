@@ -184,10 +184,39 @@ function prepararOjoPassword() {
     const boton = document.getElementById('btnOjoSync');
     const input = document.getElementById('syncPassword');
     if (!boton || !input) return;
+
+    // Sin nada escrito no hay nada real que mostrar/ocultar (la
+    // contraseña guardada nunca vuelve al navegador) — apagado hasta
+    // que el alumno escriba algo, para no dar la impresión de un botón
+    // que "no hace nada".
+    let temporizadorOcultar = null;
+    const ocultarAhora = () => {
+        input.type = 'password';
+        boton.setAttribute('aria-label', 'Mostrar contraseña');
+        clearTimeout(temporizadorOcultar);
+        temporizadorOcultar = null;
+    };
+
+    const actualizarDisponibilidad = () => {
+        boton.disabled = input.value.length === 0;
+        if (input.value.length === 0) ocultarAhora();
+    };
+    actualizarDisponibilidad();
+    input.addEventListener('input', actualizarDisponibilidad);
+
     boton.addEventListener('click', () => {
         const mostrar = input.type === 'password';
-        input.type = mostrar ? 'text' : 'password';
-        boton.setAttribute('aria-label', mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña');
+        if (mostrar) {
+            input.type = 'text';
+            boton.setAttribute('aria-label', 'Ocultar contraseña');
+            // Se tapa sola a los 4s — así el alumno puede confirmar
+            // rápido lo que escribió sin dejarla expuesta todo el
+            // tiempo, ni depender de acordarse de ocultarla él mismo.
+            clearTimeout(temporizadorOcultar);
+            temporizadorOcultar = setTimeout(ocultarAhora, 4000);
+        } else {
+            ocultarAhora();
+        }
     });
 }
 
@@ -262,7 +291,7 @@ function aplicarEstadoCredencial() {
     const aviso = document.getElementById('avisoCredencialGuardada');
     passwordInput.required = !hayCredencialGuardada;
     passwordInput.placeholder = hayCredencialGuardada
-        ? 'Contraseña'
+        ? '••••••••'
         : 'Contraseña de INTRALU';
     aviso.style.display = hayCredencialGuardada ? 'block' : 'none';
 }
