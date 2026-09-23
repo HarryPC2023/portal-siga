@@ -68,6 +68,14 @@
             font-weight: 400;
         }
 
+        /* Botón del ojo apagado cuando el campo está vacío (nada real
+           que mostrar/ocultar) — visualmente distinto a cuando sí hay
+           algo escrito y el botón funciona. */
+        .btn-ojo:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
         .aviso-sin-intralu {
             text-align: center;
             font-size: 11px;
@@ -289,11 +297,14 @@
                 <input type="text" id="syncCodigo" name="codigo" placeholder="20261234X" autocomplete="off" required
                     style="text-transform:uppercase;">
                 <div class="campo-contrasena">
-                    <input type="password" id="syncPassword" name="password" placeholder="••••••••"
+                    <input type="password" id="syncPassword" name="password" placeholder="Contraseña de INTRALU"
                         autocomplete="current-password">
                     <button type="button" class="btn-ojo" id="btnOjoSync" aria-label="Mostrar contraseña">👁</button>
                 </div>
 
+                <!-- DESACTIVADO (sep 2026) — "Recordar mi contraseña". Ver el
+                     bloque DESACTIVADO equivalente en login-multifacultad.js
+                     para los pasos completos de cómo reactivar esto.
                 <p class="aviso-nota" id="avisoCredencialGuardada" style="display:none; margin:-6px 0 4px;">
                     🔐 Ya tienes una contraseña guardada — puedes dejar el campo vacío para usarla.
                     <button type="button" id="btnOlvidarCredencial"
@@ -306,6 +317,7 @@
                     <input type="checkbox" id="syncRecordar" style="width:auto; margin:0;">
                     Recordar mi contraseña (no tendrás que escribirla la próxima vez)
                 </label>
+                -->
 
                 <button type="button" class="select-custom-trigger" id="syncPeriodoTrigger" aria-haspopup="listbox"
                     aria-expanded="false">
