@@ -66,7 +66,7 @@ async function pintarIdentidad(sesion) {
     const meta = sesion.user?.user_metadata || {};
     const { data: perfil } = await supabase
         .from('perfiles_usuario')
-        .select('codigo_estudiante, facultad, carrera, periodo_actual')
+        .select('codigo_estudiante, facultad, carrera, periodo_actual, nombre, foto_url')
         .eq('user_id', sesion.user.id)
         .maybeSingle();
 
@@ -75,11 +75,12 @@ async function pintarIdentidad(sesion) {
     claveAlmacenUsuario = await claveDeAlmacenamiento(perfil?.codigo_estudiante);
     migrarAlmacenAntiguo();
 
-    // Sesión anónima (como es hoy este sandbox): sin nombre/foto de
-    // Google todavía — se usa el código de estudiante como identidad
-    // visible mientras tanto, nunca un nombre inventado.
-    const nombre = meta.full_name || meta.name || perfil?.codigo_estudiante || 'Alumno';
-    const foto = meta.avatar_url || meta.picture || null;
+    // Nombre/foto reales de SIGA viven en perfiles_usuario (los llena el
+    // resto de la plataforma al iniciar sesión) — se usan primero; solo si
+    // faltaran, se cae a los metadatos de auth y luego al código de
+    // estudiante como último respaldo, nunca un nombre inventado.
+    const nombre = perfil?.nombre || meta.full_name || meta.name || perfil?.codigo_estudiante || 'Alumno';
+    const foto = perfil?.foto_url || meta.avatar_url || meta.picture || null;
 
     const avatar = document.getElementById('identidadAvatar');
     if (foto) {
