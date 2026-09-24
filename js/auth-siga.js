@@ -139,8 +139,7 @@ export function montarNavUsuario() {
   if (!cont) return;
 
   async function pintar(sesion) {
-    // TEMPORAL: '/intranotas-nueva/' se quita en el corte final
-    const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/') || window.location.pathname.includes('/intranotas-nueva/')
+    const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/')
       ? '../' : '';
     if (sesion) {
       cont.innerHTML = `
