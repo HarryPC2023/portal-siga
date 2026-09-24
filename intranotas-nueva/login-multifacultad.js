@@ -116,11 +116,14 @@ async function derivarYGuardarPeriodoDesdeCodigo(userId, codigoEstudiante) {
    ninguna de las 11 facultades conocidas, no hay nada que guardar acá
    y el perfil simplemente se queda sin facultad hasta la próxima sync. */
 async function guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance) {
-    await supabase.from('perfiles_usuario').upsert({
+    const { error } = await supabase.from('perfiles_usuario').upsert({
         user_id: userId,
         facultad: resultadoAvance.facultad,
         carrera: resultadoAvance.carrera,
     }, { onConflict: 'user_id' });
+    if (error) {
+        console.error('Error guardando facultad/carrera en perfiles_usuario:', error);
+    }
 }
 
 /* Pinta la insignia de facultad/carrera en la pantalla de éxito, con
