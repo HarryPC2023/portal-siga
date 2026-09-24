@@ -87,7 +87,7 @@ async function pintarIdentidad(sesion) {
     // ya se ve en el menú de arriba, y repetirla aquí se veía redundante.
     const avatar = document.getElementById('identidadAvatar');
     if (facultad) {
-        avatar.innerHTML = `<img src="${facultad.icono}" alt="Ícono de ${facultad.sigla}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
+        avatar.innerHTML = `<img src="${facultad.icono}" alt="Ícono de ${facultad.sigla}" style="width:100%;height:100%;object-fit:cover;transform:scale(1.25);">`;
     } else {
         avatar.textContent = nombre.trim().charAt(0).toUpperCase();
     }
@@ -98,8 +98,6 @@ async function pintarIdentidad(sesion) {
         const chip = document.getElementById('chipFacultad');
         chip.style.display = 'flex';
         chip.style.borderLeftColor = facultad.color;
-        document.getElementById('chipFacultadIcono').src = facultad.icono;
-        document.getElementById('chipFacultadIcono').alt = `Ícono de ${facultad.sigla}`;
         document.getElementById('chipFacultadNombre').textContent = `${facultad.sigla} · ${perfil.carrera}`;
     }
 }

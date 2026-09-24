@@ -78,8 +78,8 @@
         }
 
         .identidad-avatar {
-            width: 44px;
-            height: 44px;
+            width: 52px;
+            height: 52px;
             border-radius: 14px;
             background: rgba(255, 255, 255, 0.25);
             color: #fff;
@@ -92,12 +92,13 @@
             object-fit: cover;
             border: 3px solid #fff;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
         }
 
         @media (min-width: 900px) {
             .identidad-avatar {
-                width: 50px;
-                height: 50px;
+                width: 58px;
+                height: 58px;
                 font-size: 19px;
             }
         }
@@ -122,23 +123,6 @@
             border-left: 4px solid #fff;
             border-radius: 10px;
             padding: 10px 12px;
-        }
-
-        .chip-facultad__icono {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-            background: #fff;
-            border-radius: 8px;
-            padding: 3px;
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 900px) {
-            .chip-facultad__icono {
-                width: 34px;
-                height: 34px;
-            }
         }
 
         .chip-facultad__nombre {
@@ -1334,10 +1318,7 @@
             </div>
 
             <div class="chip-facultad" id="chipFacultad" style="display:none;">
-                <img class="chip-facultad__icono" id="chipFacultadIcono" src="" alt="">
-                <div>
-                    <div class="chip-facultad__nombre" id="chipFacultadNombre"></div>
-                </div>
+                <div class="chip-facultad__nombre" id="chipFacultadNombre"></div>
             </div>
 
             <div class="separador-panel"></div>
