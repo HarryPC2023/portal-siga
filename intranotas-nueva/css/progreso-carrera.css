@@ -395,23 +395,36 @@
 }
 
 .pc-desbloquea-item {
-    background: #EEF3FD;
+    background: #fff;
+    border: 1.5px solid color-mix(in srgb, var(--brand-morado, #6600CC) 30%, transparent);
     border-radius: 10px;
     padding: 10px 12px;
     margin-bottom: 8px;
     font-size: 0.82rem;
 }
 
+/* Si hay varios cursos, se alternan blanco y lila */
+.pc-desbloquea-item:nth-of-type(even) {
+    background: color-mix(in srgb, var(--brand-morado, #6600CC) 8%, #fff);
+}
+
 .pc-desbloquea-nivel2 {
     margin: 8px 0 0 14px;
     padding-left: 10px;
-    border-left: 2px solid #d1d5db;
+    border-left: 2px solid color-mix(in srgb, var(--brand-morado, #6600CC) 30%, transparent);
 }
 
+/* Cursos de adentro: filas sin borde que se alternan lila y blanco */
 .pc-desbloquea-nivel2 .pc-desbloquea-item {
-    background: transparent;
-    padding: 4px 0;
-    margin-bottom: 4px;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-bottom: 2px;
+    background: #fff;
+}
+
+.pc-desbloquea-nivel2 .pc-desbloquea-item:nth-of-type(odd) {
+    background: color-mix(in srgb, var(--brand-morado, #6600CC) 10%, #fff);
 }
 
 /* ---------- Celular: pantalla completa (mismo umbral de 900px del resto de la pantalla) ---------- */
