@@ -139,9 +139,9 @@ export function montarNavUsuario() {
   if (!cont) return;
 
   async function pintar(sesion) {
-    const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/')
+    // TEMPORAL: '/intranotas-nueva/' se quita en el corte final
+    const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/') || window.location.pathname.includes('/intranotas-nueva/')
       ? '../' : '';
-
     if (sesion) {
       cont.innerHTML = `
         <button type="button" class="app-nav-avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false" aria-label="Cuenta">

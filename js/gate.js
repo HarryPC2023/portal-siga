@@ -4,6 +4,7 @@
 import { requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
 
 montarNavUsuario();
-const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/')
+// TEMPORAL: '/intranotas-nueva/' se quita en el corte final
+const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/') || window.location.pathname.includes('/intranotas-nueva/')
     ? '../' : '';
 await requerirSesion(raiz);
