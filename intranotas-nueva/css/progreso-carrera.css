@@ -30,12 +30,15 @@
     width: min(920px, 94vw);
     max-height: 88vh;
     background: #fff;
-    /* Mismo borde y sombra lila que la tarjeta de la primera pantalla de Intranotas */
-    border: 1.5px solid rgba(102, 0, 204, 0.30);
-    border: 1.5px solid color-mix(in srgb, var(--brand-morado) 30%, transparent);
+    /* Borde y sombra lila como la tarjeta de la primera pantalla de Intranotas.
+       Van más intensos que allá porque detrás de esta ventana hay un fondo oscuro
+       que "se come" una sombra suave; así se perciben con la misma fuerza. */
+    border: 2px solid rgba(102, 0, 204, 0.55);
+    border: 2px solid color-mix(in srgb, var(--brand-morado) 55%, transparent);
     border-radius: 20px;
-    box-shadow: 0 12px 32px rgba(102, 0, 204, 0.16);
-    box-shadow: 0 12px 32px color-mix(in srgb, var(--brand-morado) 16%, transparent);
+    box-shadow: 0 0 0 4px rgba(102, 0, 204, 0.18), 0 16px 44px rgba(102, 0, 204, 0.45);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-morado) 18%, transparent),
+        0 16px 44px color-mix(in srgb, var(--brand-morado) 45%, transparent);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
@@ -399,36 +402,32 @@
 }
 
 .pc-desbloquea-item {
-    background: color-mix(in srgb, var(--brand-morado, #6600CC) 8%, #fff);
-    border: 1.5px solid color-mix(in srgb, var(--brand-morado, #6600CC) 30%, transparent);
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     font-size: 0.82rem;
 }
 
-/* Si hay varios cursos, se alternan lila y blanco (empieza en lila) */
-.pc-desbloquea-item:nth-of-type(even) {
+/* Cada curso es una fila sin contenedor; si hay varios, se alternan lila y blanco
+   (empieza en lila). Se colorea solo la fila del curso, no lo que se abre debajo,
+   así los cursos de adentro no quedan metidos en una caja lila. */
+.pc-desbloquea-item>div:first-child {
+    padding: 8px 12px;
+    border-radius: 8px;
     background: #fff;
 }
 
+.pc-desbloquea-item:nth-of-type(odd)>div:first-child {
+    background: color-mix(in srgb, var(--brand-morado, #6600CC) 10%, #fff);
+}
+
+/* Lo que se abre después: mismas filas alternadas, con la línea lila al costado */
 .pc-desbloquea-nivel2 {
-    margin: 8px 0 0 14px;
+    margin: 4px 0 6px 14px;
     padding-left: 10px;
     border-left: 2px solid color-mix(in srgb, var(--brand-morado, #6600CC) 30%, transparent);
 }
 
-/* Cursos de adentro: filas sin borde que se alternan lila y blanco */
 .pc-desbloquea-nivel2 .pc-desbloquea-item {
-    border: none;
-    border-radius: 8px;
-    padding: 6px 10px;
     margin-bottom: 2px;
-    background: #fff;
-}
-
-.pc-desbloquea-nivel2 .pc-desbloquea-item:nth-of-type(odd) {
-    background: color-mix(in srgb, var(--brand-morado, #6600CC) 14%, #fff);
 }
 
 /* ---------- Celular: pantalla completa (mismo umbral de 900px del resto de la pantalla) ---------- */
@@ -442,6 +441,8 @@
         height: 100%;
         max-height: 100%;
         border-radius: 0;
+        border: none;
+        box-shadow: none;
     }
 
     .pc-modal.pc-visible {
