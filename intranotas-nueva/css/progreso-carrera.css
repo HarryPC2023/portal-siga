@@ -419,11 +419,23 @@
     background: color-mix(in srgb, var(--brand-morado, #6600CC) 10%, #fff);
 }
 
-/* Lo que se abre después: mismas filas alternadas, con la línea lila al costado */
+/* Línea lila al costado de la lista principal de "Se abre al aprobarlo".
+   Va en cada curso (sin espacio entre ellos) para que se vea como una sola línea continua. */
+.pc-detalle-seccion>.pc-desbloquea-item {
+    margin-bottom: 0;
+    padding: 0 0 4px 10px;
+    border-left: 2px solid color-mix(in srgb, var(--brand-morado, #6600CC) 40%, transparent);
+}
+
+.pc-detalle-seccion>.pc-desbloquea-item:last-of-type {
+    padding-bottom: 0;
+}
+
+/* Lo que se abre después: mismas filas alternadas, con su propia línea lila al costado */
 .pc-desbloquea-nivel2 {
     margin: 4px 0 6px 14px;
     padding-left: 10px;
-    border-left: 2px solid color-mix(in srgb, var(--brand-morado, #6600CC) 30%, transparent);
+    border-left: 2px solid color-mix(in srgb, var(--brand-morado, #6600CC) 40%, transparent);
 }
 
 .pc-desbloquea-nivel2 .pc-desbloquea-item {
