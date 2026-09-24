@@ -75,23 +75,25 @@ async function pintarIdentidad(sesion) {
     claveAlmacenUsuario = await claveDeAlmacenamiento(perfil?.codigo_estudiante);
     migrarAlmacenAntiguo();
 
-    // Nombre/foto reales de SIGA viven en perfiles_usuario (los llena el
-    // resto de la plataforma al iniciar sesión) — se usan primero; solo si
-    // faltaran, se cae a los metadatos de auth y luego al código de
-    // estudiante como último respaldo, nunca un nombre inventado.
+    // Nombre real de SIGA vive en perfiles_usuario (lo llena el resto de
+    // la plataforma al iniciar sesión) — se usa primero; solo si faltara,
+    // se cae a los metadatos de auth y luego al código de estudiante como
+    // último respaldo, nunca un nombre inventado.
     const nombre = perfil?.nombre || meta.full_name || meta.name || perfil?.codigo_estudiante || 'Alumno';
-    const foto = perfil?.foto_url || meta.avatar_url || meta.picture || null;
+    const facultad = FACULTADES.find((f) => f.sigla === perfil?.facultad);
 
+    // El avatar del panel muestra el ícono de la facultad/carrera
+    // (autodetectada del Avance Curricular), no la foto de perfil — esa
+    // ya se ve en el menú de arriba, y repetirla aquí se veía redundante.
     const avatar = document.getElementById('identidadAvatar');
-    if (foto) {
-        avatar.innerHTML = `<img src="${foto}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;background:#fff;">`;
+    if (facultad) {
+        avatar.innerHTML = `<img src="${facultad.icono}" alt="Ícono de ${facultad.sigla}" style="width:70%;height:70%;object-fit:contain;">`;
     } else {
         avatar.textContent = nombre.trim().charAt(0).toUpperCase();
     }
     document.getElementById('identidadNombre').textContent = nombre;
     document.getElementById('identidadCodigo').textContent = perfil?.codigo_estudiante || '';
 
-    const facultad = FACULTADES.find((f) => f.sigla === perfil?.facultad);
     if (facultad) {
         const chip = document.getElementById('chipFacultad');
         chip.style.display = 'flex';

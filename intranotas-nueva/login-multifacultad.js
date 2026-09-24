@@ -45,6 +45,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!sesion) return;
     const user = sesion.user;
 
+    // 1.5 Si ya tiene al menos una nota sincronizada de antes, lo mandamos
+    // directo a "Mis notas" en vez de hacerlo pasar por esta pantalla
+    // cada vez — igual que hacía la Intranotas vieja. El link "←
+    // Sincronizar otro periodo" de notas.html agrega ?sincronizar=1
+    // para saltarse este salto cuando sí quiere volver aquí a propósito.
+    const vieneAsincronizarAProposito = new URLSearchParams(window.location.search).has('sincronizar');
+    if (!vieneAsincronizarAProposito) {
+        const { count } = await supabase
+            .from('notas_curso')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', user.id);
+        if (count && count > 0) {
+            window.location.href = 'notas.html';
+            return;
+        }
+    }
+
     // 2. ¿Ya sabemos su periodo de ingreso? (dato informativo del perfil,
     // no tiene relación con qué periodo se sincroniza ahora). Facultad y
     // carrera YA NO se piden ni se guardan acá — se autodetectan del
