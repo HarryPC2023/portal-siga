@@ -633,20 +633,21 @@ async function manejarSync(e, userId) {
         mostrarProgreso('Cargando notas...');
         await guardarResultadoSync(userId, resultadoNotas);
 
-        let textoAvance = '';
         if (resultadoNotas.avancePdfBase64) {
             try {
                 const resultadoAvance = await guardarAvanceCurricularDesdeBase64(userId, resultadoNotas.avancePdfBase64);
                 if (resultadoAvance.ok) {
                     await guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance);
                     pintarInsigniaFacultad(resultadoAvance.facultad, resultadoAvance.carrera);
-                    textoAvance = ` Avance Curricular actualizado (${resultadoAvance.cursosGuardados} curso(s)).`;
+                    // Dato interno, no le sirve al alumno saberlo — solo queda
+                    // en consola por si algún día hay que revisar cuántos
+                    // cursos trajo el Avance Curricular esta vez.
+                    console.log(`Avance Curricular actualizado: ${resultadoAvance.cursosGuardados} curso(s).`);
                 } else {
-                    textoAvance = ' No se pudo guardar tu Avance Curricular esta vez, pero tus notas sí se guardaron.';
+                    console.warn('No se pudo guardar el Avance Curricular esta vez:', resultadoAvance.motivo, resultadoAvance.detalle);
                 }
             } catch (errAvance) {
                 console.error('Error guardando Avance Curricular:', errAvance);
-                textoAvance = ' No se pudo guardar tu Avance Curricular esta vez, pero tus notas sí se guardaron.';
             }
         }
 
@@ -656,7 +657,6 @@ async function manejarSync(e, userId) {
         if (resultadoNotas.errores.length) {
             texto += ` (${resultadoNotas.errores.length} curso(s) no se pudieron traer, intenta de nuevo más tarde.)`;
         }
-        texto += textoAvance;
 
         document.getElementById('resumenFinalTexto').textContent = texto;
         document.getElementById('resumenFinal').classList.add('visible');

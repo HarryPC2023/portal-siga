@@ -100,12 +100,20 @@ function inicializarSelectPersonalizado({ triggerId, textoId, listaId, valorId, 
         texto.textContent = etiqueta;
     }
 
-    trigger.addEventListener('click', () => {
-        if (!lista.hidden) { cerrar(); return; }
-        posicionar();
-        lista.hidden = false;
-        trigger.setAttribute('aria-expanded', 'true');
-    });
+    // Se guarda con un flag en el propio elemento para no volver a
+    // agregar el listener si esta funcion se llama de nuevo sobre el
+    // mismo trigger (ej. Intranotas reconstruye el selector de periodos
+    // despues de borrar uno) — sin esto, cada llamada suma un listener
+    // más, y con 2+ el clic abre y cierra la lista en el mismo golpe.
+    if (!trigger.dataset.selectPersonalizadoInit) {
+        trigger.addEventListener('click', () => {
+            if (!lista.hidden) { cerrar(); return; }
+            posicionar();
+            lista.hidden = false;
+            trigger.setAttribute('aria-expanded', 'true');
+        });
+        trigger.dataset.selectPersonalizadoInit = '1';
+    }
 
     lista.querySelectorAll('li').forEach((opcion) => {
         const elegir = () => {
