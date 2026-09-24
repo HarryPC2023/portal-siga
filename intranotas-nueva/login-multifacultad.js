@@ -653,7 +653,8 @@ async function manejarSync(e, userId) {
 
         ocultarProgreso();
 
-        let texto = `${resultadoNotas.cursos.length} curso(s) sincronizado(s) en ${resultadoNotas.periodo}.`;
+        const periodoLindo = `${resultadoNotas.periodo.slice(0, 4)}-${resultadoNotas.periodo.slice(4)}`;
+        let texto = `Periodo ${periodoLindo} cargado.`;
         if (resultadoNotas.errores.length) {
             texto += ` (${resultadoNotas.errores.length} curso(s) no se pudieron traer, intenta de nuevo más tarde.)`;
         }
