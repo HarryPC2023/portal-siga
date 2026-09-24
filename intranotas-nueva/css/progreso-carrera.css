@@ -30,8 +30,12 @@
     width: min(920px, 94vw);
     max-height: 88vh;
     background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.25);
+    /* Mismo borde y sombra lila que la tarjeta de la primera pantalla de Intranotas */
+    border: 1.5px solid rgba(102, 0, 204, 0.30);
+    border: 1.5px solid color-mix(in srgb, var(--brand-morado) 30%, transparent);
+    border-radius: 20px;
+    box-shadow: 0 12px 32px rgba(102, 0, 204, 0.16);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--brand-morado) 16%, transparent);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
@@ -395,7 +399,7 @@
 }
 
 .pc-desbloquea-item {
-    background: #fff;
+    background: color-mix(in srgb, var(--brand-morado, #6600CC) 8%, #fff);
     border: 1.5px solid color-mix(in srgb, var(--brand-morado, #6600CC) 30%, transparent);
     border-radius: 10px;
     padding: 10px 12px;
@@ -403,9 +407,9 @@
     font-size: 0.82rem;
 }
 
-/* Si hay varios cursos, se alternan blanco y lila */
+/* Si hay varios cursos, se alternan lila y blanco (empieza en lila) */
 .pc-desbloquea-item:nth-of-type(even) {
-    background: color-mix(in srgb, var(--brand-morado, #6600CC) 8%, #fff);
+    background: #fff;
 }
 
 .pc-desbloquea-nivel2 {
@@ -424,7 +428,7 @@
 }
 
 .pc-desbloquea-nivel2 .pc-desbloquea-item:nth-of-type(odd) {
-    background: color-mix(in srgb, var(--brand-morado, #6600CC) 10%, #fff);
+    background: color-mix(in srgb, var(--brand-morado, #6600CC) 14%, #fff);
 }
 
 /* ---------- Celular: pantalla completa (mismo umbral de 900px del resto de la pantalla) ---------- */
