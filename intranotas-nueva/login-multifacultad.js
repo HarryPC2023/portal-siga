@@ -56,12 +56,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
-    // El código de estudiante ya lo tiene SIGA (viene de tu cuenta) — se
-    // precarga solo, para no pedírtelo cada vez que vuelves a sincronizar.
-    if (perfil?.codigo_estudiante) {
-        const campoCodigo = document.getElementById('syncCodigo');
-        if (campoCodigo) campoCodigo.value = perfil.codigo_estudiante;
-    }
+    // DESACTIVADO (sep 2026) — precargar el código de estudiante. Se
+    // decidió que no valía la pena tener una diferencia de
+    // comportamiento entre el código (se recordaba) y la contraseña
+    // (nunca se recuerda) — mejor consistente: el alumno siempre
+    // escribe los dos, sin ninguna excepción que explicar.
 
     if (perfil?.periodo_ingreso) {
         mostrarBloqueSync(user.id, perfil.periodo_ingreso);
