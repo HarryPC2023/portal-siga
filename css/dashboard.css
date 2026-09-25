@@ -6,11 +6,13 @@
    toda la página (detrás del hero Y detrás de las tarjetas) sin costuras. */
 body {
   background: var(--paper);
-  background-image: linear-gradient(135deg,
-      rgba(0, 255, 255, 0.13) 0%,
-      rgba(0, 255, 255, 0.13) 26%,
-      rgba(204, 0, 255, 0.2) 78%,
-      rgba(204, 0, 255, 0.2) 100%);
+  /* Cada tema define su degradado en tema-siga.css; si esa hoja no
+     está cargada, se usa el de Claro como respaldo. */
+  background-image: var(--siga-body-gradiente, linear-gradient(135deg,
+        rgba(0, 255, 255, 0.13) 0%,
+        rgba(0, 255, 255, 0.13) 26%,
+        rgba(204, 0, 255, 0.2) 78%,
+        rgba(204, 0, 255, 0.2) 100%));
   background-size: 200% 200%;
   animation: moverInfo 14s ease-in-out infinite;
 }
