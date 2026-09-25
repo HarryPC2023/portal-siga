@@ -1,13 +1,13 @@
 // login-multifacultad.js — Pantalla de sync del Intranotas nuevo (SIGA
-// producción, carpeta intranotas-nueva/). Flujo por CÓDIGO+CONTRASEÑA,
+// producción, carpeta intranotas/). Flujo por CÓDIGO+CONTRASEÑA,
 // sin extensión ni bookmarklet: el alumno escribe su código y contraseña
 // de INTRALU aquí mismo; SIGA los manda una sola vez al backend propio
 // (scraping_intralu.py en Render), que hace login con Playwright +
 // stealth (pasa el reCAPTCHA) y trae notas+fórmulas por HTTP directo.
 // El backend responde al instante con un job_id y el trabajo real corre
 // en un hilo aparte — el frontend hace polling hasta que termina. Ni el
-// código ni la contraseña de INTRALU se guardan en ningún lado (salvo
-// que el alumno marque "Recordar", y ahí solo cifrada).
+// código ni la contraseña de INTRALU se guardan en ningún lado
+// ("Recordar mi contraseña" está DESACTIVADO desde sep 2026).
 //
 // Adaptado del sandbox siga-multifacultad: usa la sesión REAL compartida
 // de SIGA (gate.js ya la garantiza antes de mostrar esta página), no la

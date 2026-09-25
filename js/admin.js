@@ -694,7 +694,7 @@ function pintarMetricasVi(perfiles, notas) {
         `<div class="vi-metrica"><span>${etiqueta}</span><strong>${valor}</strong></div>`;
 
     document.getElementById('viMetricas').innerHTML =
-        tarjeta('Usuarios registrados', perfiles.length) +
+        tarjeta('Perfiles completos', perfiles.length) +
         tarjeta('Alumnos con notas', alumnosConNotas) +
         tarjeta('Periodos sincronizados', periodos) +
         tarjeta('Última sincronización', haceCuanto(ultima));
