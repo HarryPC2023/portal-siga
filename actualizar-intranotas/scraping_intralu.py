@@ -17,6 +17,7 @@ import requests
 # from cryptography.fernet import Fernet, InvalidToken
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from playwright.sync_api import sync_playwright
 from playwright_stealth import Stealth
 from pydantic import BaseModel, Field
@@ -90,9 +91,9 @@ class LoginIntraluRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    """Sigue usándose SOLO para /api/sync-horarios (Matrícula UNI), que es
-    un sistema de login totalmente distinto a INTRALU y que, por ahora, no
-    tiene reCAPTCHA."""
+    """Se usa SOLO para /api/sync-horarios (Matrícula UNI), que es un
+    sistema de login totalmente distinto a INTRALU. Desde sep 2026 su
+    login también exige reCAPTCHA — ver _obtener_token_matricula."""
     codigo: str = Field(..., examples=["20231059E"], description="Tu código de estudiante UNI.")
     password: str = Field(..., examples=["tu_contraseña"], description="Tu contraseña. Nunca se guarda.")
 
@@ -755,42 +756,110 @@ def _hora_a_entero_matricula(hora_str):
 
 
 def _obtener_token_matricula(codigo, password):
-    with sync_playwright() as p:
+    """Login a Matrícula UNI y devuelve el accessToken (texto plano, listo
+    para usarse como `Authorization: Bearer <token>`).
+
+    Cambios de Matrícula confirmados en vivo por DevTools (sep 2026):
+      1. `POST /api/login` ahora exige un `recaptcha_token` (reCAPTCHA v3)
+         que solo genera un navegador real al hacer clic en "Iniciar
+         Sesión" — por eso se usa Chromium con stealth y tipeo humano,
+         la misma técnica que ya pasa el reCAPTCHA de INTRALU.
+      2. El `accessToken` ya NO llega como cookie: viene en el cuerpo JSON
+         de la respuesta de /api/login (`{"accessToken": ..., "userData":
+         {...}}`). Por eso se escucha esa respuesta directamente en vez de
+         buscar la cookie — era la causa de fondo del error genérico
+         "Código o contraseña incorrectos... o la página no está habilitada".
+      3. /api/login tiene un límite de 5 intentos por ventana de tiempo
+         (header X-Ratelimit-Limit: 5) — se avisa con un 429 claro.
+
+    Chromium se cierra apenas se obtiene el token: todo lo demás (ficha y
+    horarios) se hace con `requests`, así la RAM se libera en segundos.
+    """
+    estado = None
+    cuerpo = {}
+    url_final = None
+
+    with Stealth().use_sync(sync_playwright()) as p:
         browser = p.chromium.launch(headless=True)
-        context = browser.new_context()
-        page = context.new_page()
-
-        # Antes se pasaba primero por el login de Intralú (alumnos.uni.edu.pe)
-        # y recién después por el de Matrícula — dos sistemas de autenticación
-        # totalmente independientes (por eso pedían código y contraseña dos
-        # veces, cada uno con su propia sesión). Como esta función solo
-        # necesita el accessToken de Matrícula, vamos directo a su login:
-        # nos ahorramos una navegación completa y un login entero, así el
-        # proceso baja de los ~1:40 actuales a bastante menos.
-        page.goto(f"{MATRICULA_BASE}/login", wait_until="domcontentloaded")
-        page.wait_for_timeout(1500)
-        page.fill("input[type='text']", codigo)
-        page.fill("input[type='password']", password)
-        page.click("button:has-text('Iniciar Sesión')")
-
-        token = None
-        for _ in range(20):
-            for c in context.cookies():
-                if c["name"] == "accessToken":
-                    token = c["value"]
-                    break
-            if token:
-                break
-            page.wait_for_timeout(500)
-
-        browser.close()
-
-        if not token:
-            raise HTTPException(
-                status_code=401,
-                detail="Código o contraseña incorrectos en Matrícula, o la página no está habilitada."
+        try:
+            context = browser.new_context(
+                user_agent=(
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+                ),
+                viewport={"width": 1366, "height": 768},
+                locale="es-PE",
             )
-        return unquote(token)
+            page = context.new_page()
+
+            page.goto(f"{MATRICULA_BASE}/login", wait_until="domcontentloaded")
+            # Tiempo para que cargue el script de reCAPTCHA antes de
+            # interactuar (si se hace clic antes, no hay token que mandar).
+            page.wait_for_timeout(random.randint(1500, 2500))
+
+            campo_codigo = page.locator("input[type='text']").first
+            campo_password = page.locator("input[type='password']").first
+
+            campo_codigo.click()
+            campo_codigo.type(codigo, delay=random.randint(90, 190))
+            page.wait_for_timeout(random.randint(300, 800))
+
+            campo_password.click()
+            campo_password.type(password, delay=random.randint(90, 190))
+            page.wait_for_timeout(random.randint(400, 900))
+
+            try:
+                with page.expect_response(
+                    lambda r: r.url.rstrip("/").endswith("/api/login") and r.request.method == "POST",
+                    timeout=25000,
+                ) as info_respuesta:
+                    page.click("button:has-text('Iniciar Sesión')")
+                respuesta = info_respuesta.value
+                estado = respuesta.status
+                try:
+                    cuerpo = respuesta.json() or {}
+                except Exception:
+                    cuerpo = {}
+            except PlaywrightTimeoutError:
+                url_final = page.url
+        finally:
+            browser.close()
+
+    if estado is None:
+        # Nunca salió el POST a /api/login: la página no cargó bien, cambió
+        # el formulario, o el propio reCAPTCHA no dejó enviar.
+        logger.warning("Matrícula: no se detectó respuesta de /api/login (url final: %s)", url_final)
+        raise HTTPException(
+            status_code=504,
+            detail="Matrícula no respondió al iniciar sesión. Intenta de nuevo en unos minutos.",
+        )
+
+    mensaje = str(cuerpo.get("message") or cuerpo.get("error") or "") if isinstance(cuerpo, dict) else ""
+    logger.info("Matrícula: /api/login respondió HTTP %s %s", estado, f"({mensaje})" if mensaje else "")
+
+    if estado == 429:
+        raise HTTPException(
+            status_code=429,
+            detail="Demasiados intentos de inicio de sesión en Matrícula. Espera un minuto y vuelve a intentar.",
+        )
+
+    if "captcha" in mensaje.lower():
+        raise HTTPException(
+            status_code=503,
+            detail="Matrícula no aceptó la verificación de seguridad (reCAPTCHA). Intenta de nuevo en unos minutos.",
+        )
+
+    token = cuerpo.get("accessToken") if isinstance(cuerpo, dict) else None
+    if estado == 200 and token:
+        return token
+
+    if estado in (400, 401, 403, 422):
+        raise HTTPException(status_code=401, detail="Código o contraseña incorrectos en Matrícula.")
+
+    raise HTTPException(
+        status_code=502,
+        detail=f"Matrícula respondió de forma inesperada (HTTP {estado}). Intenta de nuevo más tarde.",
+    )
 
 
 @app.post("/api/sync-horarios")
@@ -806,7 +875,15 @@ def sync_horarios(credentials: LoginRequest):
 
     try:
         token = _obtener_token_matricula(credentials.codigo, credentials.password)
-        headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/json",
+            # Mismo origen que usa la propia web de Matrícula (visto en
+            # DevTools) — no es obligatorio hoy, pero evita sorpresas si
+            # algún día empiezan a validarlo como hace INTRALU.
+            "Origin": MATRICULA_BASE,
+            "Referer": f"{MATRICULA_BASE}/",
+        }
 
         resp_ficha = requests.get(f"{MATRICULA_BASE}/api/matricula/ficha", headers=headers, timeout=15)
         if resp_ficha.status_code != 200:
