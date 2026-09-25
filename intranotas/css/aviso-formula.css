@@ -1,0 +1,82 @@
+/* aviso-formula.css — Aviso de la fórmula de prácticas en la tarjeta del
+   curso y en Meta del curso (ver formula-practicas.js).
+   Ámbar = estimada (pide cautela). Azul = de un ciclo anterior (es real,
+   solo informativo). Si la fórmula es oficial no se pinta nada. */
+
+.aviso-formula {
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 4px 0 12px;
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
+.aviso-formula p {
+    margin: 0;
+}
+
+.aviso-formula--estimada {
+    background: #fff8e6;
+    border: 1px solid #f5c26b;
+    color: #7a4a00;
+}
+
+.aviso-formula--anterior {
+    background: #eef4ff;
+    border: 1px solid #9dbcf5;
+    color: #1e3a8a;
+}
+
+.aviso-formula__titulo {
+    font-weight: 700;
+}
+
+.aviso-formula__texto {
+    margin-top: 2px !important;
+}
+
+.aviso-formula__formula {
+    margin-top: 6px !important;
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    color: #1f2937;
+    word-break: break-word;
+}
+
+.aviso-formula__opcion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.aviso-formula__opcion input {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: var(--brand-morado, #6600cc);
+    cursor: pointer;
+}
+
+/* Versión de una línea en el panel de Meta del curso */
+.aviso-formula-corto {
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin: 0 0 12px;
+    font-size: 0.75rem;
+    line-height: 1.45;
+}
+
+.aviso-formula-corto--estimada {
+    background: #fff8e6;
+    border: 1px solid #f5c26b;
+    color: #7a4a00;
+}
+
+.aviso-formula-corto--anterior {
+    background: #eef4ff;
+    border: 1px solid #9dbcf5;
+    color: #1e3a8a;
+}

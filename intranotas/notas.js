@@ -23,11 +23,13 @@ import { montarProgresoCarrera, nombreLindo, soltarFocoDe } from './progreso-car
 import { montarRutaCurso } from './ruta-curso-ui.js';
 import { construirValoresFormula, notaComoNumero, clasificarExamen } from './formula-mapper.js';
 import { FACULTADES } from './facultades-datos.js';
+import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.js';
 
 const UMBRAL_APROBACION = 10;
 
 let notasPorPeriodo = {};   // { "2023-2": [ {codigo_curso, seccion, nombre_curso, promedio_practicas, promedio_final, nota_asistencia, evaluaciones}, ... ] }
 let formulasPorCurso = {};  // clave `${codigo_curso}|${seccion}|${periodo}` -> {formula_practicas, formula_nota_final, creditos}
+let bancoFormulas = {};     // codigo_curso -> [filas de formulas_curso de TODOS los periodos/secciones] (banco compartido)
 let periodoActivo = null;
 let valoresSimulados = {};  // clave `${codigo_curso}|${seccion}` -> { N1: 14, EP: 12, ... } (solo del periodo activo)
 let usuarioActual = null;
@@ -198,15 +200,20 @@ async function cargarDatos(userId) {
         notasPorPeriodo[etiqueta].push(fila);
     });
 
-    const periodosNormalizados = [...new Set((notas || []).map((f) => f.periodo))];
-    if (periodosNormalizados.length) {
+    // Se piden las fórmulas por CURSO (no por periodo): así llegan de una vez
+    // las de este alumno y las del banco compartido — las de ciclos ya
+    // cerrados de ese mismo curso, que sirven de respaldo mientras INTRALU no
+    // publica la fórmula de prácticas del ciclo actual (ver formula-practicas.js).
+    const codigos = [...new Set((notas || []).map((f) => f.codigo_curso))];
+    if (codigos.length) {
         const { data: formulas } = await supabase
             .from('formulas_curso')
             .select('codigo_curso, seccion, periodo, formula_practicas, formula_nota_final, creditos')
-            .in('periodo', periodosNormalizados);
+            .in('codigo_curso', codigos);
 
         (formulas || []).forEach((f) => {
             formulasPorCurso[`${f.codigo_curso}|${f.seccion || ''}|${f.periodo}`] = f;
+            (bancoFormulas[f.codigo_curso] ||= []).push(f);
         });
     }
 }
@@ -358,7 +365,7 @@ function refrescarMeta() {
         grupos,
         meta,
     });
-    cont.innerHTML = htmlResultadoMeta(resultado, etiquetas);
+    cont.innerHTML = htmlAvisoFormulaCorto(formula) + htmlResultadoMeta(resultado, etiquetas);
 }
 
 /* ---------- Render (mismos textos que producción) ---------- */
@@ -772,9 +779,124 @@ function claveSimulacion(curso) {
     return `${curso.codigo_curso}|${curso.seccion || ''}`;
 }
 
+/* Fórmulas del curso con la de prácticas YA RESUELTA en 3 niveles (oficial,
+   de un ciclo anterior o estimada — ver formula-practicas.js). Todo lo que
+   calcula (tarjeta, "¿Qué nota necesito?", Meta del curso) pasa por acá, así
+   que nadie más tiene que saber de dónde salió la fórmula. Además de los
+   campos de siempre trae `fuentePP`, `origenPP` y `estimacionPP` para pintar
+   el aviso. Sin fila oficial (no hay fórmula de nota final) devuelve null. */
 function formulaDeCurso(curso) {
     const periodoNormalizado = periodoActivo.replace('-', '');
-    return formulasPorCurso[`${curso.codigo_curso}|${curso.seccion || ''}|${periodoNormalizado}`] || null;
+    const oficial = formulasPorCurso[`${curso.codigo_curso}|${curso.seccion || ''}|${periodoNormalizado}`] || null;
+    if (!oficial) return null;
+
+    const resuelta = resolverFormulaPracticas({
+        oficial,
+        banco: bancoFormulas[curso.codigo_curso] || [],
+        seccion: curso.seccion,
+        periodo: periodoNormalizado,
+        evaluaciones: curso.evaluaciones,
+        opciones: leerDescartes(curso),
+    });
+    return {
+        ...oficial,
+        formula_practicas: resuelta.formula,
+        fuentePP: resuelta.fuente,
+        origenPP: resuelta.origen,
+        estimacionPP: resuelta.estimacion,
+    };
+}
+
+/* ---------- Cuadritos "Eliminar la PC más baja" / "Eliminar LAB" ----------
+   Solo aplican a la fórmula ESTIMADA. Lo que elige el alumno se recuerda en
+   este navegador por curso/sección/periodo (mismo espíritu que "Guardar"). */
+const CLAVE_ALMACEN_DESCARTES = 'siga_descartes_pp';
+
+function claveAlmacenDescartes() {
+    return `${CLAVE_ALMACEN_DESCARTES}_${claveAlmacenUsuario || usuarioActual?.id || 'anonimo'}`;
+}
+
+function claveDescartesCurso(curso) {
+    return `${claveSimulacion(curso)}|${periodoActivo}`;
+}
+
+function leerDescartes(curso) {
+    try {
+        const todo = JSON.parse(localStorage.getItem(claveAlmacenDescartes())) || {};
+        return todo[claveDescartesCurso(curso)] || {};
+    } catch {
+        return {};
+    }
+}
+
+function guardarDescarte(curso, campo, valor) {
+    try {
+        const todo = JSON.parse(localStorage.getItem(claveAlmacenDescartes())) || {};
+        const clave = claveDescartesCurso(curso);
+        todo[clave] = { ...(todo[clave] || {}), [campo]: valor };
+        localStorage.setItem(claveAlmacenDescartes(), JSON.stringify(todo));
+    } catch { /* modo privado o sin espacio: igual funciona en esta visita */ }
+}
+
+/* "N1 + N2 - MIN(N1, N2)" -> "PC1 + PC2 − la menor de (PC1, PC2)", con los
+   nombres que el alumno ve en su tarjeta. */
+function formulaLegible(formula, etiquetas) {
+    return String(formula)
+        .replace(/K(\d+)MIN\s*\(/g, 'las $1 menores de (')
+        .replace(/\bMIN\s*\(/g, 'la menor de (')
+        .replace(/\bN(\d+)\b/g, (m) => etiquetas[m] || m)
+        .replace(/\s*-\s*/g, ' − ')
+        .replace(/\s*\+\s*/g, ' + ')
+        .replace(/\s*\/\s*/g, ' / ')
+        .replace(/\(\s*/g, '(')
+        .replace(/\s*\)/g, ')')
+        .replace(/\s*,\s*/g, ', ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function nombrePeriodo(periodoRaw) {
+    return periodoConGuion(periodoRaw);
+}
+
+/* Aviso de la tarjeta: nada si la fórmula es oficial; azul si viene de un
+   ciclo anterior; ámbar (con cuadritos) si es estimada. */
+function htmlAvisoFormula(formula, etiquetas) {
+    if (!formula || !formula.fuentePP || formula.fuentePP === 'oficial') return '';
+
+    if (formula.fuentePP === 'anterior') {
+        const seccion = formula.origenPP.mismaSeccion ? ' (misma sección)' : ' (otra sección)';
+        return `
+            <div class="aviso-formula aviso-formula--anterior">
+                <p class="aviso-formula__titulo">📚 Fórmula de prácticas del ciclo ${nombrePeriodo(formula.origenPP.periodo)}${seccion}</p>
+                <p class="aviso-formula__texto">Referencial: INTRALU publica la de este ciclo recién al cerrarlo.</p>
+                <p class="aviso-formula__formula">PP = ${escaparHtml(formulaLegible(formula.formula_practicas, etiquetas))}</p>
+            </div>`;
+    }
+
+    const e = formula.estimacionPP;
+    const cuadritoPC = e.puedeEliminarPC
+        ? `<label class="aviso-formula__opcion"><input type="checkbox" data-descarte="eliminarPC" ${e.eliminarPC ? 'checked' : ''}> Eliminar la PC más baja</label>`
+        : '';
+    const cuadritoLab = e.puedeEliminarLab
+        ? `<label class="aviso-formula__opcion"><input type="checkbox" data-descarte="eliminarLab" ${e.eliminarLab ? 'checked' : ''}> ${e.cantidadLab === 2 ? 'Eliminar los 2 LAB más bajos' : 'Eliminar el LAB más bajo'}</label>`
+        : '';
+    return `
+        <div class="aviso-formula aviso-formula--estimada">
+            <p class="aviso-formula__titulo">⚠️ Fórmula de prácticas estimada</p>
+            <p class="aviso-formula__texto">INTRALU la publica recién al cerrar el ciclo. Mientras tanto se usa la regla general de la UNI.</p>
+            <p class="aviso-formula__formula">PP = ${escaparHtml(formulaLegible(formula.formula_practicas, etiquetas))}</p>
+            ${cuadritoPC}${cuadritoLab}
+        </div>`;
+}
+
+/* Versión de una línea para el panel de Meta del curso. */
+function htmlAvisoFormulaCorto(formula) {
+    if (!formula || !formula.fuentePP || formula.fuentePP === 'oficial') return '';
+    const texto = formula.fuentePP === 'anterior'
+        ? `📚 Usando la fórmula de prácticas del ciclo ${nombrePeriodo(formula.origenPP.periodo)} (referencial).`
+        : '⚠️ Usando una fórmula de prácticas estimada: INTRALU la publica al cerrar el ciclo.';
+    return `<p class="aviso-formula-corto aviso-formula-corto--${formula.fuentePP}">${texto}</p>`;
 }
 
 function haySimulacionActiva(curso) {
@@ -971,16 +1093,8 @@ function toggleCurso(idx, curso) {
     }
 }
 
-/* Clasifica una evaluación NO examen (es_examen === false) por lo que dice
-   su descripción real de INTRALU — no por camnot, que solo numera para la
-   fórmula y no distingue tipo. PENDIENTE DE VERIFICAR con un curso real
-   que tenga labs o monografía (ver nota en formula-mapper.js). */
-function claseEvaluacion(descripcion) {
-    const d = (descripcion || '').toUpperCase();
-    if (d.includes('LABORATORIO') || /(^|[^A-Z])LAB/.test(d)) return 'LAB';
-    if (d.includes('MONOGRAF')) return 'MONOGRAFIA';
-    return 'PC';
-}
+/* claseEvaluacion(descripcion) ahora vive en formula-practicas.js (la usa
+   también la fórmula estimada) y se importa arriba. */
 
 /* Etiqueta visible para una evaluación NO examen: PC1/PC2 para prácticas
    calificadas, LAB1/LAB2 para laboratorios (así las conocen los alumnos),
@@ -1033,6 +1147,19 @@ function armarCuerpoCurso(cuerpo, curso, idx) {
         limpiarNotasDeCurso(cuerpo, curso, idx);
     });
     cuerpo.appendChild(acciones);
+
+    // Aviso de la fórmula de prácticas (solo si NO es la oficial). Se repinta
+    // en actualizarCuerpoCurso; los cuadritos se escuchan una sola vez acá.
+    const aviso = document.createElement('div');
+    aviso.className = 'aviso-formula-contenedor';
+    aviso.addEventListener('change', (e) => {
+        const campo = e.target?.dataset?.descarte;
+        if (!campo) return;
+        guardarDescarte(curso, campo, e.target.checked);
+        actualizarCuerpoCurso(cuerpo, curso, idx);
+        if (metaCursoClave === claveSimulacion(curso)) refrescarMeta();
+    });
+    cuerpo.appendChild(aviso);
 
     // Mismo orden y columnas que SIGA producción: cada grupo en su propia
     // fila (o filas) — PC y LAB de a 4, monografías de a 2 y los exámenes
@@ -1130,6 +1257,10 @@ function actualizarCuerpoCurso(cuerpo, curso, idx) {
     }
     actualizarResumenPeriodo();
 
+    const etiquetasCurso = Object.fromEntries(componentesVisibles(curso.evaluaciones).map((f) => [f.variable, f.label]));
+    const contenedorAviso = cuerpo.querySelector('.aviso-formula-contenedor');
+    if (contenedorAviso) contenedorAviso.innerHTML = htmlAvisoFormula(formula, etiquetasCurso);
+
     const caja = cuerpo.querySelector('.caja-necesito');
     if (!formula || !formula.formula_nota_final) {
         caja.innerHTML = periodoEstaAbierto(periodoActivo)
@@ -1144,8 +1275,7 @@ function actualizarCuerpoCurso(cuerpo, curso, idx) {
         valores,
         umbral: UMBRAL_APROBACION,
     });
-    const etiquetas = Object.fromEntries(componentesVisibles(curso.evaluaciones).map((f) => [f.variable, f.label]));
-    caja.innerHTML = htmlCajaNecesito(necesito, etiquetas);
+    caja.innerHTML = htmlCajaNecesito(necesito, etiquetasCurso);
 }
 
 /* ---------- Caja "¿Qué nota necesito para aprobar?" ----------
@@ -1215,8 +1345,13 @@ function htmlCajaNecesito(r, etiquetas) {
             break;
 
         case 'faltan-datos':
-        case 'error':
             cuerpo = '<p class="aviso-sin-formula">Aún faltan otros datos para calcularlo.</p>';
+            break;
+
+        // Antes caía en el mismo texto que 'faltan-datos' y escondía el error
+        // (así pasó con "En proceso..." en el 2026-2). Ahora se dice la verdad.
+        case 'error':
+            cuerpo = '<p class="aviso-sin-formula">No se pudo calcular con la fórmula de este curso. Vuelve a sincronizar; si sigue igual, avísale a Harry.</p>';
             break;
 
         default:
