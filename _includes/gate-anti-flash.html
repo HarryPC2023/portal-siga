@@ -1,0 +1,43 @@
+<script>
+    /* Limpieza única de la Intranotas VIEJA (sep 2026).
+       Borra del navegador las claves con prefijo "intranotas_" que dejó
+       la versión anterior (datos_periodos_*, metas, ultima_malla, etc.).
+       Nada del SIGA actual usa ese prefijo — verificado en todo el repo.
+       NO toca: siga_mf_notas_guardadas_v1_* (notas de la Intranotas NUEVA),
+       horarioGen_* (Horarios), siga_tema, opiniones_*, asesorias_* ni las
+       sesiones sb-*. Si no encuentra nada, no hace nada. */
+    (function () {
+        try {
+            var viejas = [];
+            for (var i = 0; i < localStorage.length; i++) {
+                var clave = localStorage.key(i);
+                if (clave && clave.indexOf('intranotas_') === 0) viejas.push(clave);
+            }
+            viejas.forEach(function (c) { localStorage.removeItem(c); });
+        } catch (e) { /* sin localStorage: nada que limpiar */ }
+    })();
+
+    /* Anti-"instante" de páginas protegidas (sep 2026).
+       gate.js es un módulo: espera a que cargue supabase-js desde la red
+       antes de revisar la sesión, y mientras tanto la página ya se ve.
+       Este script corre ANTES de pintar nada: si en este navegador no hay
+       ninguna sesión de SIGA guardada, redirige al login de inmediato.
+       Si sí hay sesión (aunque esté vencida), no hace nada y gate.js
+       sigue validándola como siempre. Busca la clave EXACTA de SIGA (no
+       cualquier "sb-"), porque el sandbox siga-multifacultad comparte el
+       mismo localStorage de harrypc2023.github.io.
+       Solo va en páginas protegidas, NUNCA en index.html (es el login y
+       entraría en bucle). */
+    (function () {
+        try {
+            var CLAVE_SESION = 'sb-pinoriectlepnihjbxmt-auth-token';
+            // Si la URL trae tokens de un inicio de sesión recién hecho,
+            // dejar que supabase-js los procese.
+            if (/access_token=|[?&]code=/.test(location.hash + location.search)) return;
+            if (localStorage.getItem(CLAVE_SESION)) return;
+            var p = location.pathname;
+            var raiz = (p.indexOf('/intranotas/') > -1 || p.indexOf('/horarios/') > -1) ? '../' : '';
+            location.replace(raiz + 'index.html?login=1&next=' + encodeURIComponent(p + location.search));
+        } catch (e) { /* sin localStorage: gate.js se encarga */ }
+    })();
+</script>
