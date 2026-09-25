@@ -1285,10 +1285,12 @@ function escaparHtml(texto) {
     return String(texto).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-/* El mínimo siempre se sube a 1 decimal, nunca se baja: mostrar 7.2
-   cuando hacen falta 7.25 le haría creer al alumno que le alcanza. */
+/* Los exámenes en la UNI se califican con ENTEROS, así que el mínimo
+   siempre se sube al siguiente entero, nunca se baja: si hacen falta
+   14.125, con un 14 la nota final queda en 9.9 (desaprobado, porque la
+   UNI no redondea), así que la respuesta honesta es 15. */
 function formatearMinimo(valor) {
-    return (Math.ceil(valor * 10 - 1e-9) / 10).toFixed(1);
+    return String(Math.ceil(valor - 1e-9));
 }
 
 function etiquetaCorta(variable, etiquetas) {
