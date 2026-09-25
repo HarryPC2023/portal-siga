@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="css/landing.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/tema-siga.css?v=1">
-    <link rel="stylesheet" href="css/admin.css?v=1">
+    <link rel="stylesheet" href="css/admin.css?v=2">
     <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
     <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
@@ -31,7 +31,7 @@
     <section class="dash-hero">
         <div class="dash-wrap">
             <h1 class="dash-hero-titulo"><span class="titulo-pildora">ADMIN</span></h1>
-            <p>Panel privado — sugerencias y asesorías propuestas por la comunidad.</p>
+            <p>Panel privado — sugerencias, asesorías propuestas y vista de Intranotas.</p>
         </div>
     </section>
 
@@ -44,9 +44,7 @@
                 <button type="button" class="admin-tab" data-tab="asesorias">Asesorías propuestas</button>
                 <button type="button" class="admin-tab" data-tab="opiniones">Opiniones reportadas</button>
                 <button type="button" class="admin-tab" data-tab="notificaciones">Notificaciones</button>
-                <!-- DESACTIVADO (sep 2026): leía intranotas_datos_nube y la Intranotas vieja. Rehacer para las tablas nuevas después del corte.
                 <button type="button" class="admin-tab" data-tab="vista-intranotas">Vista Intranotas</button>
-                -->
             </div>
 
             <div id="panelSugerencias" class="admin-panel">
@@ -106,11 +104,33 @@
             </div>
 
             <div id="panelVistaIntranotas" class="admin-panel" style="display:none;">
+                <div class="vi-metricas" id="viMetricas">
+                    <p class="admin-vacio" style="padding:12px 0;">Cargando resumen…</p>
+                </div>
+
+                <div class="vi-dos-columnas">
+                    <div class="admin-form-caja">
+                        <div class="vi-caja-cabecera">
+                            <h2 class="admin-form-titulo" style="margin:0;">Cursos más cargados</h2>
+                            <div class="vi-modos">
+                                <button type="button" class="vi-modo activo" data-modo="actual">Periodo actual</button>
+                                <button type="button" class="vi-modo" data-modo="historico">Histórico</button>
+                            </div>
+                        </div>
+                        <p class="vi-nota" id="viRankingNota"></p>
+                        <div id="viRanking"></div>
+                    </div>
+
+                    <div class="admin-form-caja">
+                        <h2 class="admin-form-titulo">Usuarios por facultad</h2>
+                        <div id="viFacultades"></div>
+                    </div>
+                </div>
+
                 <div class="admin-form-caja">
-                    <h2 class="admin-form-titulo">Ver contenedor de un alumno</h2>
-                    <p style="margin:0 0 14px; opacity:.8; font-size:14px;">
-                        Solo lectura — nunca guarda ni sincroniza nada real, ni tuyo ni del alumno.
-                    </p>
+                    <h2 class="admin-form-titulo">Ver un alumno</h2>
+                    <p class="vi-nota" style="margin-top:-8px;">Solo lectura — nunca modifica datos, ni tuyos ni del
+                        alumno.</p>
 
                     <label class="admin-form-campo">
                         <span>Buscar</span>
@@ -118,7 +138,7 @@
                     </label>
 
                     <label class="admin-form-campo">
-                        <span>Contenedor</span>
+                        <span>Alumno</span>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <div class="campo-select-custom" style="flex:1;">
                                 <button type="button" class="select-custom-trigger" id="viUsuarioTrigger"
@@ -133,27 +153,22 @@
                                 title="Limpiar selección" style="flex-shrink:0; padding:8px 10px;">✕</button>
                         </div>
                     </label>
+
+                    <div id="viDetalle" style="display:none;">
+                        <div class="vi-ficha" id="viFicha"></div>
+                        <div class="vi-periodos-fila">
+                            <div class="vi-periodos" id="viPeriodos"></div>
+                            <span class="vi-nota" id="viAvance"></span>
+                        </div>
+                        <div id="viTabla"></div>
+                        <details class="vi-json">
+                            <summary>Ver datos crudos (JSON) para soporte</summary>
+                            <pre id="viJsonSalida"></pre>
+                        </details>
+                    </div>
+
+                    <p class="admin-vacio" id="viVacio">Elige un alumno de la lista para verlo.</p>
                 </div>
-
-                <div id="viDetalle" style="display:none; margin-top:16px;">
-                    <div class="admin-tabs">
-                        <button type="button" class="admin-tab admin-tab-vi activo" data-vitab="json">JSON
-                            crudo</button>
-                        <button type="button" class="admin-tab admin-tab-vi" data-vitab="real">Vista real</button>
-                    </div>
-
-                    <div id="viPanelJson" class="admin-panel">
-                        <pre id="viJsonSalida"
-                            style="white-space:pre-wrap; word-break:break-word; background:#111; color:#7dffb3; padding:16px; border-radius:8px; max-height:70vh; overflow:auto; font-size:13px;"></pre>
-                    </div>
-
-                    <div id="viPanelReal" class="admin-panel" style="display:none;">
-                        <iframe id="viIframe" title="Vista real de Intranotas"
-                            style="width:100%; height:80vh; border:1px solid rgba(255,255,255,.15); border-radius:8px; background:#fff;"></iframe>
-                    </div>
-                </div>
-
-                <p class="admin-vacio" id="viVacio">Elige un contenedor de la lista para verlo.</p>
             </div>
         </div>
     </section>
@@ -166,7 +181,7 @@
     <script src="js/landing.js"></script>
     <script src="js/tema-siga.js?v=1"></script>
     <script src="js/selector-personalizado.js?v=1"></script>
-    <script type="module" src="js/admin.js?v=1"></script>
+    <script type="module" src="js/admin.js?v=2"></script>
 </body>
 
 </html>

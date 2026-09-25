@@ -34,15 +34,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     inicializarFormNotificacion();
 
     document.querySelectorAll('.admin-tab').forEach((btn) => {
-        // Las sub-pestañas JSON crudo/Vista real de Vista Intranotas
-        // reusan la misma clase .admin-tab por consistencia visual,
-        // pero tienen su propio manejador (más abajo) — este bucle es
-        // solo para las pestañas de nivel superior del panel de admin.
-        if (btn.classList.contains('admin-tab-vi')) return;
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.admin-tab').forEach((b) => {
-                if (!b.classList.contains('admin-tab-vi')) b.classList.remove('activo');
-            });
+            document.querySelectorAll('.admin-tab').forEach((b) => b.classList.remove('activo'));
             btn.classList.add('activo');
             const tab = btn.dataset.tab;
             document.getElementById('panelSugerencias').style.display = tab === 'sugerencias' ? 'flex' : 'none';
@@ -54,13 +47,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    document.querySelectorAll('.admin-tab-vi').forEach((btn) => {
+    document.querySelectorAll('.vi-modo').forEach((btn) => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.admin-tab-vi').forEach((b) => b.classList.remove('activo'));
+            document.querySelectorAll('.vi-modo').forEach((b) => b.classList.remove('activo'));
             btn.classList.add('activo');
-            const vitab = btn.dataset.vitab;
-            document.getElementById('viPanelJson').style.display = vitab === 'json' ? 'block' : 'none';
-            document.getElementById('viPanelReal').style.display = vitab === 'real' ? 'block' : 'none';
+            viModoRanking = btn.dataset.modo;
+            pintarRankingVi();
         });
     });
 
@@ -571,16 +563,30 @@ function inicializarFormNotificacion() {
     });
 }
 /* ============================================================
-   VISTA INTRANOTAS (solo lectura) — inspeccionar el contenedor
-   de un alumno real de SIGA producción sin tocar sus datos ni
-   los propios. Requiere dos políticas RLS extra ya coordinadas
-   con Harry: SELECT para ADMIN_UID sobre intranotas_datos_nube
-   y sobre perfiles_usuario (ambas ya deberían estar corridas).
+   VISTA INTRANOTAS (solo lectura) — rehecha en sep 2026 para las
+   tablas nuevas (notas_curso, avance_curricular, perfiles_usuario).
+
+   Sirve para dos cosas:
+     1) Soporte: elegir un alumno y ver exactamente qué tiene guardado.
+     2) Planificar asesorías: ver qué cursos lleva la comunidad y en
+        cuáles hay más alumnos en riesgo.
+
+   Seguridad: todo es SELECT. Depende de 3 políticas RLS de solo
+   lectura para ADMIN_UID (admin_lee_notas_curso,
+   admin_lee_avance_curricular, admin_lee_perfiles_usuario). Nunca
+   toca credenciales_intralu. Ya no usa iframe: así notas.js de
+   producción no necesita ningún "modo vista previa".
    ============================================================ */
-const TABLA_NUBE_INTRANOTAS = 'intranotas_datos_nube';
+const UMBRAL_APROBACION_VI = 10; // mismo umbral que intranotas/notas.js
+const TOP_RANKING_VI = 10;
+
 let viListaCargada = false;
-let viSelectorInstancia = null;
-let viContenedores = []; // [{ userId, malla, updatedAt, nombre, codigo }]
+let viPerfiles = {};        // { user_id: perfil }
+let viNotasResumen = [];    // filas livianas de notas_curso (sin evaluaciones)
+let viAlumnos = [];         // lista del selector, ya ordenada
+let viModoRanking = 'actual';
+let viPeriodoActual = null; // periodo más reciente presente en notas_curso (ej. "20262")
+let viAlumnoActual = null;  // { alumno, notas, avance }
 
 // Quita tildes y pasa a minúsculas para que la búsqueda no dependa
 // de que el admin tipee los acentos exactos.
@@ -588,99 +594,336 @@ function normalizarTexto(v) {
     return (v ?? '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
+// Nombres y cursos vienen de datos de usuarios: siempre se escapan
+// antes de ir a innerHTML.
+function escaparHtml(v) {
+    return (v ?? '').toString()
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function periodoConGuionVi(p) {
+    const s = String(p ?? '');
+    return s.length === 5 ? `${s.slice(0, 4)}-${s.slice(4)}` : s;
+}
+
+function numeroONull(v) {
+    if (v === null || v === undefined || v === '') return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+}
+
+function formatearNota(v) {
+    const n = numeroONull(v);
+    return n === null ? '—' : n.toFixed(1);
+}
+
+// Nota de referencia para medir riesgo: la final si ya existe; si el
+// curso sigue en proceso, el promedio de prácticas.
+function notaReferencia(fila) {
+    const final = numeroONull(fila.promedio_final);
+    return final !== null ? final : numeroONull(fila.promedio_practicas);
+}
+
+function haceCuanto(iso) {
+    if (!iso) return '—';
+    const min = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if (min < 1) return 'justo ahora';
+    if (min < 60) return `hace ${min} min`;
+    const h = Math.round(min / 60);
+    if (h < 24) return `hace ${h} h`;
+    const d = Math.round(h / 24);
+    return d === 1 ? 'hace 1 día' : `hace ${d} días`;
+}
+
+// Supabase devuelve como máximo 1000 filas por consulta: con 350+
+// usuarios, notas_curso pasa ese límite rápido. Esto pide por páginas
+// hasta traer todo.
+async function traerTodo(crearConsulta) {
+    const PAGINA = 1000;
+    let desde = 0;
+    const todas = [];
+    for (; ;) {
+        const { data, error } = await crearConsulta().range(desde, desde + PAGINA - 1);
+        if (error) throw error;
+        todas.push(...(data || []));
+        if (!data || data.length < PAGINA) break;
+        desde += PAGINA;
+    }
+    return todas;
+}
+
 async function cargarListaVistaIntranotas() {
     viListaCargada = true;
-    const vacio = document.getElementById('viVacio');
     const triggerTexto = document.getElementById('viUsuarioTriggerTexto');
 
-    const [{ data: filas, error: errorFilas }, { data: perfiles, error: errorPerfiles }] = await Promise.all([
-        supabase.from(TABLA_NUBE_INTRANOTAS).select('user_id, malla, updated_at').order('updated_at', { ascending: false }),
-        supabase.from('perfiles_usuario').select('user_id, nombre, codigo_estudiante'),
-    ]);
-
-    if (errorFilas) {
+    let perfiles, notas;
+    try {
+        [perfiles, notas] = await Promise.all([
+            traerTodo(() => supabase.from('perfiles_usuario')
+                .select('user_id, nombre, codigo_estudiante, facultad, carrera, periodo_ingreso, periodo_actual, foto_url, creado_en')
+                .order('user_id')),
+            traerTodo(() => supabase.from('notas_curso')
+                .select('user_id, periodo, codigo_curso, nombre_curso, seccion, promedio_practicas, promedio_final, actualizado_en')
+                .order('id')),
+        ]);
+    } catch (error) {
         triggerTexto.textContent = 'Error al cargar';
-        vacio.textContent = 'No se pudo cargar la lista: ' + errorFilas.message
-            + '. Revisa que la política RLS de admin sobre intranotas_datos_nube esté corrida.';
+        document.getElementById('viMetricas').innerHTML =
+            `<p class="admin-vacio">No se pudo cargar: ${escaparHtml(error.message)}. Revisa las políticas RLS de admin.</p>`;
         return;
     }
 
-    const perfilesPorUsuario = {};
-    (perfiles || []).forEach((p) => { perfilesPorUsuario[p.user_id] = p; });
-    if (errorPerfiles) {
-        console.warn('No se pudieron traer nombres de perfiles_usuario (¿falta la política RLS de admin ahí?):', errorPerfiles);
-    }
+    viPerfiles = {};
+    perfiles.forEach((p) => { viPerfiles[p.user_id] = p; });
+    viNotasResumen = notas;
+    viPeriodoActual = notas.reduce((max, f) => (String(f.periodo) > (max || '') ? String(f.periodo) : max), null);
 
-    viContenedores = (filas || []).map((f) => {
-        const perfil = perfilesPorUsuario[f.user_id];
-        return {
-            userId: f.user_id,
-            malla: f.malla,
-            updatedAt: f.updated_at,
-            nombre: perfil?.nombre || '',
-            codigo: perfil?.codigo_estudiante || '',
-        };
-    });
+    pintarMetricasVi(perfiles, notas);
+    pintarFacultadesVi(perfiles);
+    pintarRankingVi();
+    construirSelectorAlumnosVi(perfiles, notas);
+}
 
-    if (!viContenedores.length) {
-        triggerTexto.textContent = 'Sin contenedores todavía';
-        vacio.textContent = 'Todavía no hay ningún alumno con datos guardados en intranotas_datos_nube.';
+function pintarMetricasVi(perfiles, notas) {
+    const alumnosConNotas = new Set(notas.map((f) => f.user_id)).size;
+    const periodos = new Set(notas.map((f) => `${f.user_id}|${f.periodo}`)).size;
+    const ultima = notas.reduce((max, f) => (f.actualizado_en && f.actualizado_en > (max || '') ? f.actualizado_en : max), null);
+
+    const tarjeta = (etiqueta, valor) =>
+        `<div class="vi-metrica"><span>${etiqueta}</span><strong>${valor}</strong></div>`;
+
+    document.getElementById('viMetricas').innerHTML =
+        tarjeta('Usuarios registrados', perfiles.length) +
+        tarjeta('Alumnos con notas', alumnosConNotas) +
+        tarjeta('Periodos sincronizados', periodos) +
+        tarjeta('Última sincronización', haceCuanto(ultima));
+}
+
+function pintarBarras(contenedorId, filas, textoVacio) {
+    const cont = document.getElementById(contenedorId);
+    if (!filas.length) {
+        cont.innerHTML = `<p class="admin-vacio" style="padding:12px 0;">${textoVacio}</p>`;
         return;
     }
+    const max = Math.max(...filas.map((f) => f.valor));
+    cont.innerHTML = filas.map((f) => `
+        <div class="vi-barra-fila">
+            <span class="vi-barra-etiqueta" title="${escaparHtml(f.titulo || f.etiqueta)}">${escaparHtml(f.etiqueta)}</span>
+            <div class="vi-barra-pista"><div class="vi-barra-relleno" style="width:${Math.max(4, Math.round((f.valor / max) * 100))}%"></div></div>
+            <span class="vi-barra-detalle">${f.detalle}</span>
+        </div>`).join('');
+}
 
-    const opciones = viContenedores.map((c, i) => {
-        const etiquetaPersona = c.codigo || c.nombre
-            ? `${c.codigo || '(sin código)'} — ${c.nombre || '(sin nombre)'}`
-            : `Usuario ${c.userId.slice(0, 8)}…`;
-        return {
-            value: String(i),
-            label: `${etiquetaPersona} · malla ${c.malla} · ${formatearFecha(c.updatedAt)}`,
-        };
+function pintarFacultadesVi(perfiles) {
+    const conteo = {};
+    perfiles.forEach((p) => {
+        const clave = p.facultad || 'Sin facultad aún';
+        conteo[clave] = (conteo[clave] || 0) + 1;
+    });
+    const filas = Object.entries(conteo)
+        .sort((a, b) => b[1] - a[1])
+        .map(([facultad, n]) => ({ etiqueta: facultad, valor: n, detalle: String(n) }));
+    pintarBarras('viFacultades', filas, 'Todavía no hay perfiles.');
+}
+
+function pintarRankingVi() {
+    const esActual = viModoRanking === 'actual';
+    const filas = esActual
+        ? viNotasResumen.filter((f) => String(f.periodo) === viPeriodoActual)
+        : viNotasResumen;
+
+    document.getElementById('viRankingNota').textContent = esActual
+        ? `Periodo ${periodoConGuionVi(viPeriodoActual) || '—'} · ordenado por alumnos en riesgo (nota < ${UMBRAL_APROBACION_VI})`
+        : 'Todos los periodos · ordenado por cantidad de alumnos';
+
+    const porCurso = {};
+    filas.forEach((f) => {
+        const c = porCurso[f.codigo_curso] || (porCurso[f.codigo_curso] = {
+            codigo: f.codigo_curso, nombre: '', alumnos: new Set(), notas: [], bajo: 0,
+        });
+        if (!c.nombre && f.nombre_curso) c.nombre = f.nombre_curso;
+        c.alumnos.add(f.user_id);
+        const ref = notaReferencia(f);
+        if (ref !== null) {
+            c.notas.push(ref);
+            if (ref < UMBRAL_APROBACION_VI) c.bajo += 1;
+        }
     });
 
-    viSelectorInstancia = inicializarSelectPersonalizado({
+    const cursos = Object.values(porCurso).map((c) => ({
+        ...c,
+        nAlumnos: c.alumnos.size,
+        promedio: c.notas.length ? c.notas.reduce((a, b) => a + b, 0) / c.notas.length : null,
+    }));
+    cursos.sort(esActual
+        ? (a, b) => (b.bajo - a.bajo) || (b.nAlumnos - a.nAlumnos)
+        : (a, b) => (b.nAlumnos - a.nAlumnos) || (b.bajo - a.bajo));
+
+    const etiquetaBajo = esActual ? 'en riesgo' : 'desaprob.';
+    pintarBarras('viRanking', cursos.slice(0, TOP_RANKING_VI).map((c) => ({
+        etiqueta: `${c.codigo} ${c.nombre}`,
+        titulo: `${c.codigo} — ${c.nombre}`,
+        valor: c.nAlumnos,
+        detalle: `${c.nAlumnos} alum. · prom ${c.promedio === null ? '—' : c.promedio.toFixed(1)}`
+            + (c.bajo ? ` · <span class="vi-riesgo">${c.bajo} ${etiquetaBajo}</span>` : ''),
+    })), 'Todavía no hay notas en este periodo.');
+}
+
+function construirSelectorAlumnosVi(perfiles, notas) {
+    const resumen = {};
+    notas.forEach((f) => {
+        const r = resumen[f.user_id] || (resumen[f.user_id] = { periodos: new Set(), ultima: null });
+        r.periodos.add(String(f.periodo));
+        if (f.actualizado_en && f.actualizado_en > (r.ultima || '')) r.ultima = f.actualizado_en;
+    });
+
+    const ids = new Set([...perfiles.map((p) => p.user_id), ...Object.keys(resumen)]);
+    viAlumnos = [...ids].map((userId) => ({
+        userId,
+        perfil: viPerfiles[userId] || {},
+        nPeriodos: resumen[userId]?.periodos.size || 0,
+        ultima: resumen[userId]?.ultima || null,
+    }));
+    // Primero quien sincronizó más recientemente; al final, quien nunca sincronizó.
+    viAlumnos.sort((a, b) => (b.ultima || '').localeCompare(a.ultima || ''));
+
+    const opciones = viAlumnos.map((a, i) => {
+        const codigo = a.perfil.codigo_estudiante || '(sin código)';
+        const nombre = a.perfil.nombre || `Usuario ${a.userId.slice(0, 8)}…`;
+        const extra = a.nPeriodos
+            ? `${a.nPeriodos} periodo${a.nPeriodos === 1 ? '' : 's'} · ${haceCuanto(a.ultima)}`
+            : 'sin notas';
+        return { value: String(i), label: escaparHtml(`${codigo} — ${nombre} · ${extra}`) };
+    });
+
+    inicializarSelectPersonalizado({
         triggerId: 'viUsuarioTrigger',
         textoId: 'viUsuarioTriggerTexto',
         listaId: 'viUsuarioLista',
         valorId: 'viUsuarioValor',
         opciones,
-        alElegir: (indiceStr) => mostrarContenedorVista(viContenedores[Number(indiceStr)]),
+        alElegir: (indiceStr) => mostrarAlumnoVi(viAlumnos[Number(indiceStr)]),
     });
 
     document.getElementById('viBuscar').disabled = false;
-    triggerTexto.textContent = 'Elige un alumno…';
+    document.getElementById('viUsuarioTriggerTexto').textContent =
+        viAlumnos.length ? 'Elige un alumno…' : 'Todavía no hay usuarios';
 }
 
-async function mostrarContenedorVista(contenedor) {
-    const vacio = document.getElementById('viVacio');
+async function mostrarAlumnoVi(alumno) {
     const detalle = document.getElementById('viDetalle');
-    const jsonSalida = document.getElementById('viJsonSalida');
-    const iframe = document.getElementById('viIframe');
-
-    vacio.style.display = 'none';
+    document.getElementById('viVacio').style.display = 'none';
     detalle.style.display = 'block';
-    jsonSalida.textContent = 'Cargando…';
 
-    const { data, error } = await supabase
-        .from(TABLA_NUBE_INTRANOTAS)
-        .select('datos_periodos, ultimo_periodo, updated_at')
-        .eq('user_id', contenedor.userId)
-        .eq('malla', contenedor.malla)
-        .maybeSingle();
+    const p = alumno.perfil;
+    const nombre = p.nombre || '(sin nombre)';
+    const iniciales = nombre.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '?';
+    const avatar = p.foto_url
+        ? `<img src="${escaparHtml(p.foto_url)}" alt="" class="vi-avatar">`
+        : `<div class="vi-avatar">${escaparHtml(iniciales)}</div>`;
+    const datos = [
+        p.codigo_estudiante,
+        [p.facultad, p.carrera].filter(Boolean).join(' · '),
+        p.periodo_ingreso ? `ingreso ${periodoConGuionVi(p.periodo_ingreso)}` : null,
+        p.periodo_actual ? `actual ${periodoConGuionVi(p.periodo_actual)}` : null,
+    ].filter(Boolean).join(' · ');
 
-    if (error) {
-        jsonSalida.textContent = 'Error al traer el JSON: ' + error.message;
-    } else {
-        jsonSalida.textContent = JSON.stringify(data, null, 2);
+    document.getElementById('viFicha').innerHTML = `${avatar}
+        <div><p class="vi-ficha-nombre">${escaparHtml(nombre)}</p>
+        <p class="vi-ficha-datos">${escaparHtml(datos || 'Sin datos de perfil')}</p></div>`;
+    document.getElementById('viPeriodos').innerHTML = '';
+    document.getElementById('viAvance').textContent = '';
+    document.getElementById('viTabla').innerHTML = '<p class="admin-vacio" style="padding:16px 0;">Cargando…</p>';
+    document.getElementById('viJsonSalida').textContent = 'Cargando…';
+
+    const [notasRes, avanceRes] = await Promise.all([
+        supabase.from('notas_curso')
+            .select('periodo, codigo_curso, nombre_curso, seccion, promedio_practicas, promedio_final, nota_asistencia, evaluaciones, actualizado_en')
+            .eq('user_id', alumno.userId),
+        supabase.from('avance_curricular')
+            .select('facultad, carrera, categoria, ciclo, codigo_curso, nombre_curso, creditos, nota, veces_llevado, situacion, periodo_normalizado, actualizado_en')
+            .eq('user_id', alumno.userId),
+    ]);
+
+    // Si el admin ya eligió a otro alumno mientras esto cargaba, no pisar su vista.
+    if (document.getElementById('viUsuarioValor').value !== String(viAlumnos.indexOf(alumno))) return;
+
+    if (notasRes.error || avanceRes.error) {
+        const msg = (notasRes.error || avanceRes.error).message;
+        document.getElementById('viTabla').innerHTML = `<p class="admin-vacio">Error: ${escaparHtml(msg)}</p>`;
+        document.getElementById('viJsonSalida').textContent = msg;
+        return;
     }
 
-    // La vista real recarga el iframe desde cero (en vez de solo cambiar
-    // el src) para asegurar que intentarRestaurarSesion() vuelva a
-    // correr limpio si el admin cambia de alumno sin recargar la página.
-    const params = new URLSearchParams({
-        admin_preview_user: contenedor.userId,
-        admin_preview_malla: contenedor.malla,
+    const notas = notasRes.data || [];
+    const avance = avanceRes.data || [];
+    viAlumnoActual = { alumno, notas, avance };
+
+    if (avance.length) {
+        const aprobados = avance.filter((c) => /aprob/i.test(c.situacion || '')
+            || (numeroONull(c.nota) !== null && numeroONull(c.nota) >= UMBRAL_APROBACION_VI));
+        const creditos = aprobados.reduce((s, c) => s + (Number(c.creditos) || 0), 0);
+        document.getElementById('viAvance').textContent =
+            `Avance: ${aprobados.length} de ${avance.length} cursos · ${creditos} créditos aprobados`;
+    } else {
+        document.getElementById('viAvance').textContent = 'Sin avance curricular guardado';
+    }
+
+    const periodos = [...new Set(notas.map((f) => String(f.periodo)))].sort().reverse();
+    document.getElementById('viPeriodos').innerHTML = periodos.map((per, i) =>
+        `<button type="button" class="vi-chip${i === 0 ? ' activo' : ''}" data-periodo="${escaparHtml(per)}">${escaparHtml(periodoConGuionVi(per))}</button>`
+    ).join('');
+    document.querySelectorAll('#viPeriodos .vi-chip').forEach((chip) => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('#viPeriodos .vi-chip').forEach((c) => c.classList.remove('activo'));
+            chip.classList.add('activo');
+            pintarTablaPeriodoVi(chip.dataset.periodo);
+        });
     });
-    iframe.src = 'about:blank';
-    setTimeout(() => { iframe.src = `intranotas/index.html?${params.toString()}`; }, 0);
+
+    if (periodos.length) {
+        pintarTablaPeriodoVi(periodos[0]);
+    } else {
+        document.getElementById('viTabla').innerHTML =
+            '<p class="admin-vacio" style="padding:16px 0;">Este alumno todavía no sincronizó ningún periodo.</p>';
+    }
+
+    document.getElementById('viJsonSalida').textContent = JSON.stringify({
+        perfil: p, notas_curso: notas, avance_curricular: avance,
+    }, null, 2);
+}
+
+function pintarTablaPeriodoVi(periodo) {
+    const filas = (viAlumnoActual?.notas || [])
+        .filter((f) => String(f.periodo) === periodo)
+        .sort((a, b) => (a.codigo_curso || '').localeCompare(b.codigo_curso || ''));
+
+    const claseNota = (v) => {
+        const n = numeroONull(v);
+        return n !== null && n < UMBRAL_APROBACION_VI ? ' class="vi-riesgo"' : '';
+    };
+
+    document.getElementById('viTabla').innerHTML = `
+        <div class="vi-tabla-scroll"><table class="vi-tabla">
+            <thead><tr><th>Código</th><th>Curso</th><th>Secc.</th><th>Prácticas</th><th>Final</th><th>Asist.</th></tr></thead>
+            <tbody>${filas.map((f) => `<tr>
+                <td>${escaparHtml(f.codigo_curso)}</td>
+                <td>${escaparHtml(f.nombre_curso)}</td>
+                <td>${escaparHtml(f.seccion || '—')}</td>
+                <td${claseNota(f.promedio_practicas)}>${formatearNota(f.promedio_practicas)}</td>
+                <td${claseNota(f.promedio_final)}>${formatearNota(f.promedio_final)}</td>
+                <td>${formatearNota(f.nota_asistencia)}</td>
+            </tr>`).join('')}</tbody>
+        </table></div>`;
+}
+
+function limpiarSeleccionVista() {
+    document.getElementById('viUsuarioValor').value = '';
+    document.getElementById('viUsuarioTriggerTexto').textContent = viAlumnos.length ? 'Elige un alumno…' : 'Cargando lista…';
+    document.getElementById('viBuscar').value = '';
+    document.querySelectorAll('#viUsuarioLista li').forEach((li) => { li.style.display = ''; });
+    document.getElementById('viDetalle').style.display = 'none';
+    document.getElementById('viVacio').style.display = 'block';
+    viAlumnoActual = null;
 }

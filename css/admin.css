@@ -440,3 +440,229 @@
     background: #dbeafe;
     color: #1e40af;
 }
+
+/* ---------- VISTA INTRANOTAS (sep 2026): resumen, ranking y visor de alumno ---------- */
+.vi-metricas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.vi-metrica {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vi-metrica span {
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+
+.vi-metrica strong {
+    font-family: var(--font-heading);
+    font-size: 24px;
+    color: var(--ink);
+}
+
+.vi-dos-columnas {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 900px) {
+    .vi-dos-columnas {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.vi-caja-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.vi-modos {
+    display: flex;
+    gap: 6px;
+}
+
+.vi-modo,
+.vi-chip {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: transparent;
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.vi-modo.activo,
+.vi-chip.activo {
+    background: var(--brand-morado-tinte);
+    border-color: var(--brand-morado);
+    color: var(--brand-morado);
+    font-weight: 600;
+}
+
+.vi-nota {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0 0 12px;
+}
+
+.vi-barra-fila {
+    display: grid;
+    grid-template-columns: minmax(0, 190px) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    padding: 5px 0;
+}
+
+.vi-barra-etiqueta {
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vi-barra-pista {
+    height: 8px;
+    background: var(--brand-azul-tinte);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.vi-barra-relleno {
+    height: 100%;
+    background: linear-gradient(90deg, var(--brand-azul), var(--brand-morado));
+    border-radius: 4px;
+}
+
+.vi-barra-detalle {
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+
+.vi-riesgo {
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+.vi-ficha {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0 14px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    margin-top: 8px;
+}
+
+.vi-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--brand-morado-tinte);
+    color: var(--brand-morado);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.vi-ficha-nombre {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.vi-ficha-datos {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+
+.vi-periodos-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 14px 0 6px;
+}
+
+.vi-periodos-fila .vi-nota {
+    margin: 0;
+}
+
+.vi-periodos {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.vi-tabla-scroll {
+    overflow-x: auto;
+}
+
+.vi-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.vi-tabla th {
+    text-align: left;
+    font-weight: 500;
+    color: var(--ink-soft);
+    padding: 8px 10px 8px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    white-space: nowrap;
+}
+
+.vi-tabla td {
+    padding: 8px 10px 8px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    color: var(--ink);
+}
+
+.vi-json {
+    margin-top: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.vi-json summary {
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+
+.vi-json pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #111;
+    color: #7dffb3;
+    padding: 16px;
+    border-radius: 8px;
+    max-height: 60vh;
+    overflow: auto;
+    font-size: 13px;
+    margin: 12px 0 0;
+}
