@@ -459,6 +459,47 @@ _trabajador_chromium = _TrabajadorChromium()
 _trabajador_chromium.precalentar()
 
 
+# --------------------------------------------------------------
+# MEMORIA (sep 2026): el plan gratis de Render no muestra el gráfico de
+# memoria, así que el propio servicio la anota en el log después de cada
+# login (con Chromium abierto, cerca del pico). Se lee del cgroup del
+# contenedor, que cuenta TODO (Python + Chromium), sin librerías extra.
+# Filtrar "Memoria" en Render -> Logs. El límite del plan gratis es 512 MB.
+# --------------------------------------------------------------
+def _leer_archivo(ruta):
+    try:
+        with open(ruta) as f:
+            return f.read().strip()
+    except OSError:
+        return None
+
+
+def _registrar_memoria(momento):
+    """Nunca lanza: si algo falla, simplemente no anota nada. Los números
+    incluyen la caché de archivos (que el sistema libera si hace falta),
+    así que la presión real es igual o menor a la que se anota."""
+    try:
+        mb = lambda b: int(b) / (1024 * 1024)
+        uso = _leer_archivo("/sys/fs/cgroup/memory.current")            # cgroup v2
+        if uso is not None:
+            limite = _leer_archivo("/sys/fs/cgroup/memory.max")
+            pico = _leer_archivo("/sys/fs/cgroup/memory.peak")
+        else:                                                           # cgroup v1
+            uso = _leer_archivo("/sys/fs/cgroup/memory/memory.usage_in_bytes")
+            if uso is None:
+                return
+            limite = _leer_archivo("/sys/fs/cgroup/memory/memory.limit_in_bytes")
+            pico = _leer_archivo("/sys/fs/cgroup/memory/memory.max_usage_in_bytes")
+
+        texto_limite = ""
+        if limite and limite.isdigit() and int(limite) < (1 << 50):  # "max" o un número gigante = sin límite visible
+            texto_limite = f" de {mb(limite):.0f} MB"
+        texto_pico = f" (pico desde el arranque: {mb(pico):.0f} MB)" if pico and pico.isdigit() else ""
+        logger.info("Memoria (%s): %.0f MB%s%s", momento, mb(uso), texto_limite, texto_pico)
+    except Exception:
+        pass
+
+
 def _nuevo_contexto(browser):
     return browser.new_context(
         user_agent=UA_NAVEGADOR,
@@ -572,6 +613,7 @@ def _intento_login_intralu(browser, codigo, password, modo):
         tiempos["respuesta"] = time.time() - t
 
         cookies = context.cookies() if resultado is True else None
+        _registrar_memoria("login INTRALU")
         return resultado, cookies, tiempos
     finally:
         try:
@@ -1251,6 +1293,7 @@ def _login_matricula_en(browser, codigo, password):
         except PlaywrightTimeoutError:
             url_final = page.url
         tiempos["respuesta"] = time.time() - t
+        _registrar_memoria("login Matrícula")
     finally:
         try:
             context.close()
