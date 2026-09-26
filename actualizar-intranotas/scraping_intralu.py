@@ -5,10 +5,13 @@ import random
 import threading
 import time
 import uuid
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor
+from html.parser import HTMLParser
 # datetime/timezone y Optional hoy solo los usa el código DESACTIVADO de
 # "Recordar mi contraseña" — se dejan importados para reactivarlo fácil.
 from datetime import datetime, timezone  # noqa: F401
-from typing import Optional  # noqa: F401
+from typing import List, Optional  # noqa: F401
 from urllib.parse import unquote
 
 import requests
@@ -51,16 +54,100 @@ app.add_middleware(
 )
 
 # --------------------------------------------------------------
-# Ahora que volvemos a visitar el detalle de cada curso, cada sync es
-# pesada otra vez — bajamos el límite de simultáneas para proteger el
-# servidor (sobre todo en un plan gratuito de hosting).
+# FILA DE ESPERA PARA CHROMIUM (reemplaza al viejo "1 a la vez o
+# rechazo"). Render (plan gratuito) da 512 MB de RAM y un Chromium usa
+# varios cientos, así que sigue abriéndose UNO a la vez — pero desde sep
+# 2026 Chromium se usa SOLO para el login (INTRALU y Matrícula), unos
+# 10-15 s, y se cierra. Todo lo demás (cursos, notas, PDF, horarios) va
+# por `requests`, sin navegador y en paralelo para todos. Quien llega
+# mientras Chromium está ocupado ya no recibe un error: espera su turno
+# en orden de llegada, y el frontend le muestra cuántos hay antes.
 # --------------------------------------------------------------
-# Render (plan gratuito) da solo 512 MB de RAM — un solo Chromium ya usa
-# varios cientos de MB, así que con 2 simultáneas correríamos riesgo real
-# de quedarnos sin memoria. Si más adelante subes a un plan con más RAM,
-# puedes volver a subir este número.
-MAX_SYNCS_SIMULTANEOS = 1
-_semaforo_sync = threading.Semaphore(MAX_SYNCS_SIMULTANEOS)
+_fila_chromium = []                 # tickets esperando, en orden de llegada
+_fila_cond = threading.Condition()
+_chromium_ocupado = False
+ESPERA_MAXIMA_FILA_SEGUNDOS = 5 * 60
+
+
+class _SyncCancelada(Exception):
+    """El alumno presionó 'Cancelar' desde el frontend. Se revisa en la
+    fila de espera y entre cada curso, para que cancelar corte rápido."""
+    pass
+
+
+class _FilaDemasiadoLarga(Exception):
+    """Se esperó más de ESPERA_MAXIMA_FILA_SEGUNDOS sin llegar el turno."""
+    pass
+
+
+def _tomar_turno_chromium(ticket, al_cambiar_posicion=None, esta_cancelado=None,
+                          espera_maxima=ESPERA_MAXIMA_FILA_SEGUNDOS):
+    """Bloquea hasta que sea el turno de `ticket` de usar Chromium.
+    `al_cambiar_posicion(n)` recibe cuántas personas hay antes (incluida
+    la que está usando Chromium ahora). Siempre hay que llamar después a
+    _soltar_turno_chromium() en un finally."""
+    global _chromium_ocupado
+    limite = time.time() + espera_maxima
+    with _fila_cond:
+        _fila_chromium.append(ticket)
+        try:
+            while True:
+                if esta_cancelado and esta_cancelado():
+                    raise _SyncCancelada()
+                if _fila_chromium[0] == ticket and not _chromium_ocupado:
+                    _fila_chromium.pop(0)
+                    _chromium_ocupado = True
+                    _fila_cond.notify_all()
+                    return
+                if al_cambiar_posicion:
+                    delante = _fila_chromium.index(ticket) + (1 if _chromium_ocupado else 0)
+                    al_cambiar_posicion(delante)
+                restante = limite - time.time()
+                if restante <= 0:
+                    raise _FilaDemasiadoLarga()
+                _fila_cond.wait(timeout=min(1.0, restante))
+        except BaseException:
+            if ticket in _fila_chromium:
+                _fila_chromium.remove(ticket)
+                _fila_cond.notify_all()
+            raise
+
+
+def _soltar_turno_chromium():
+    global _chromium_ocupado
+    with _fila_cond:
+        _chromium_ocupado = False
+        _fila_cond.notify_all()
+
+
+# --------------------------------------------------------------
+# TOPE PROPIO DE LOGINS A MATRÍCULA: su /api/login acepta 5 por minuto y
+# todo apunta a que los cuenta por IP (confirmado con DevTools, sep 2026:
+# también cuentan los logins correctos). Todos los alumnos de SIGA salen
+# por la misma IP de Render, así que SIGA se pone su propio tope de 4 por
+# minuto (1 de margen): nadie ve nunca el "Demasiados intentos" de la UNI.
+# Se respeta el límite de la UNI; no se intenta esquivarlo.
+# --------------------------------------------------------------
+MAX_LOGINS_MATRICULA_POR_MINUTO = 4
+_logins_matricula = deque()
+_logins_matricula_lock = threading.Lock()
+
+
+def _esperar_cupo_login_matricula():
+    """Se llama YA con el turno de Chromium tomado, justo antes del
+    login: si ya hubo 4 logins en el último minuto, espera lo justo."""
+    while True:
+        with _logins_matricula_lock:
+            ahora = time.time()
+            while _logins_matricula and ahora - _logins_matricula[0] >= 60:
+                _logins_matricula.popleft()
+            if len(_logins_matricula) < MAX_LOGINS_MATRICULA_POR_MINUTO:
+                _logins_matricula.append(ahora)
+                return
+            espera = 60 - (ahora - _logins_matricula[0]) + 0.5
+        logger.info("Matrícula: tope propio de %d logins/min alcanzado, esperando %.1fs",
+                    MAX_LOGINS_MATRICULA_POR_MINUTO, espera)
+        time.sleep(espera)
 
 
 class LoginIntraluRequest(BaseModel):
@@ -79,15 +166,14 @@ class LoginIntraluRequest(BaseModel):
     codigo: str = Field(..., examples=["20231059E"], description="Tu código de estudiante UNI (el mismo de INTRALU).")
     password: str = Field(..., examples=["tu_contraseña_de_intralu"], description="Tu contraseña de INTRALU. Nunca se guarda.")
     user_id: str = Field(..., description="UUID del alumno en Supabase (auth.users.id).")
-    periodo: str = Field(
-        ...,
-        examples=["20262"],
-        description=(
-            "Periodo específico a sincronizar, formato crudo AÑO+TIPO "
-            "('20262' = 2026-2) — también acepta el formato con guion "
-            "('2026-2'). Siempre se pide UN periodo, nunca 'todos'."
-        ),
-    )
+    # Desde sep 2026 se sincroniza TODO el historial de una vez (desde el
+    # año de ingreso, que sale del código, hasta el periodo actual).
+    # `omitir` son los periodos que SIGA ya tiene completos (cerrados y con
+    # nota final): no se vuelven a pedir, así las siguientes
+    # sincronizaciones solo traen lo nuevo. `periodo` queda por
+    # compatibilidad: si viene, se sincroniza solo ese.
+    periodo: Optional[str] = Field(None, examples=["20262"], description="(Opcional) Un solo periodo, formato '20262' o '2026-2'.")
+    omitir: List[str] = Field(default_factory=list, description="Periodos crudos ('20241') que no hace falta volver a pedir.")
 
 
 class LoginRequest(BaseModel):
@@ -271,16 +357,20 @@ DOMINIO_INTRALU = "alumnos.uni.edu.pe"
 URL_AVANCE_CURRICULAR_PDF = f"https://{DOMINIO_INTRALU}/informacion-academica/avance-curricular-pdf"
 
 
+UA_NAVEGADOR = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+)
+URL_BASE_INTRALU = f"https://{DOMINIO_INTRALU}"
+PETICIONES_PARALELAS_NOTAS = 3  # educado con INTRALU, y aun así rápido
+
+
 def _login_intralu_page(context, codigo, password):
-    """Login NUEVO (código+contraseña, con tecleo de pausas humanas —
-    el 'stealth' real ya lo aplica Stealth().use_sync() al envolver
-    sync_playwright() en _ejecutar_sync, no aquí). Mismo patrón que
-    _login_por_cookie: recibe un `context` ya abierto por quien llama y
-    devuelve una `page` autenticada, sin cerrar el browser — así el resto
-    de _ejecutar_sync (que navega curso por curso con esa misma page) no
-    necesita cambiar nada más."""
+    """Login con código+contraseña y tecleo con pausas humanas (el
+    'stealth' real lo aplica Stealth().use_sync() al envolver
+    sync_playwright()). Devuelve la page ya autenticada."""
     page = context.new_page()
-    page.goto(f"https://{DOMINIO_INTRALU}/login", wait_until="domcontentloaded")
+    page.goto(f"{URL_BASE_INTRALU}/login", wait_until="domcontentloaded")
     page.wait_for_timeout(random.randint(600, 1400))
 
     page.click("#txt-codigo")
@@ -301,320 +391,371 @@ def _login_intralu_page(context, codigo, password):
     return page
 
 
-class _SyncCancelada(Exception):
-    """El alumno presionó 'Cancelar' desde el frontend (ej. eligió mal el
-    periodo, o simplemente ya no quiere esperar). Se revisa entre cada
-    curso, no solo entre periodos, para que cancelar corte rápido incluso
-    a mitad de un ciclo con muchos cursos."""
-    pass
-
-
-def _ejecutar_sync(job_id, codigo, password, periodo_especifico):
-    """Corre en un hilo aparte (no bloquea ningún request HTTP). Guarda
-    el progreso y el resultado final en _jobs[job_id] para que el
-    frontend los recoja haciendo polling contra GET /api/sync-intralu/{job_id}."""
-    periodo_especifico = normalizar_periodo(periodo_especifico)
-    adquirido = _semaforo_sync.acquire(blocking=False)
-    if not adquirido:
-        with _jobs_lock:
-            _jobs[job_id]["status"] = "error"
-            _jobs[job_id]["status_code"] = 429
-            _jobs[job_id]["detail"] = "Hay muchas sincronizaciones en curso ahora mismo. Intenta de nuevo en un minuto."
-        logger.info("Job %s: ❌ RECHAZADO (ya hay %d syncs en curso)", job_id, MAX_SYNCS_SIMULTANEOS)
-        return
-
-    inicio = time.time()
-
-    data_por_periodo = {}
-    browser = None
-
-    try:
-        with Stealth().use_sync(sync_playwright()) as p:
-            browser = p.chromium.launch(headless=True)
+def _cookies_de_login_intralu(codigo, password):
+    """Abre Chromium, hace el login y devuelve SOLO las cookies de la
+    sesión. Chromium se cierra al salir de aquí: es lo único pesado de
+    toda la sincronización y dura unos segundos."""
+    with Stealth().use_sync(sync_playwright()) as p:
+        browser = p.chromium.launch(headless=True)
+        try:
             context = browser.new_context(
-                user_agent=(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                ),
+                user_agent=UA_NAVEGADOR,
                 viewport={"width": 1366, "height": 768},
                 locale="es-PE",
             )
-
-            # 1. Login nuevo (código+contraseña, stealth) — reemplaza al
-            # login por cookie de la extensión.
-            try:
-                page = _login_intralu_page(context, codigo, password)
-            except HTTPException as e:
-                with _jobs_lock:
-                    _jobs[job_id]["status"] = "error"
-                    _jobs[job_id]["status_code"] = e.status_code
-                    _jobs[job_id]["detail"] = e.detail
-                logger.info("Job %s: ❌ LOGIN FALLIDO tras %.1fs", job_id, time.time() - inicio)
-                return
-
-            # DESACTIVADO (sep 2026) — guardar la contraseña cifrada tras un login
-            # exitoso. Para reactivar: devolver user_id y recordar a la firma
-            # de esta función y descomentar:
-            # # El login ya funcionó — recién aquí, no antes, vale la pena
-            # # guardar la contraseña (si el alumno lo pidió). Si esto
-            # # falla, no se aborta la sincronización: ya tiene una sesión
-            # # válida y sus notas importan más que este guardado opcional.
-            # if recordar and user_id:
-            #     try:
-            #         _guardar_credencial(user_id, password)
-            #         logger.info("Job %s: contraseña guardada cifrada para %s", job_id, user_id)
-            #     except Exception:
-            #         logger.exception("Job %s: no se pudo guardar la contraseña cifrada (no crítico, sync continúa)", job_id)
-
-            # Token CSRF para las peticiones POST directas (cursos/notas):
-            # Laravel exige el valor de la cookie XSRF-TOKEN decodificado
-            # en el header X-XSRF-TOKEN — confirmado en vivo, es el bug
-            # raíz de todo bloqueo CSRF con este endpoint.
-            xsrf_token = None
-            for c in context.cookies():
-                if c["name"] == "XSRF-TOKEN":
-                    xsrf_token = unquote(c["value"])
-                    break
-
-            # 2. El sandbox multifacultad siempre sincroniza un periodo
-            # específico a la vez (no existe la opción de "todos" acá).
-            periodos = [periodo_especifico]
-            logger.info("Job %s: revisando solo el periodo %s", job_id, periodo_especifico)
-
-            # 3. Recorrer cada periodo del rango
-            for periodo in periodos:
-                with _jobs_lock:
-                    _jobs[job_id]["periodo_actual"] = periodo
-                logger.info("Job %s: revisando periodo %s...", job_id, periodo)
-
-                url_periodo = f"https://alumnos.uni.edu.pe/informacion-academica/cursos/{periodo}"
-                page.goto(url_periodo, wait_until="domcontentloaded")
-
-                try:
-                    page.wait_for_selector("table", timeout=6000)
-                except Exception:
-                    continue  # Sin cursos en este periodo, salta rápido al siguiente
-
-                filas_cursos = (
-                    page.locator("table").first.locator("tbody tr").all()
-                )
-
-                # Primero recolectamos los datos básicos de TODOS los cursos de este ciclo
-                cursos_temp = []
-                for fila in filas_cursos:
-                    cols = fila.locator("td").all()
-                    if len(cols) >= 3:
-                        cod_raw = cols[0].inner_text().strip()
-                        nombre = cols[1].inner_text().strip()
-                        creditos = cols[2].inner_text().strip()
-
-                        if (
-                            cod_raw
-                            and "-" in cod_raw
-                            and not cod_raw[0].isdigit()
-                        ):
-                            partes = [p.strip() for p in cod_raw.split("-")]
-                            cod_curso = partes[0]
-                            seccion = partes[1] if len(partes) > 1 else ""
-                            cursos_temp.append(
-                                {
-                                    "cod_curso": cod_curso,
-                                    "seccion": seccion,
-                                    "nombre": nombre,
-                                    "creditos": creditos,
-                                }
-                            )
-
-                # Ahora sí, sacamos las notas de cada curso — UNA petición
-                # HTTP directa por curso (el mismo endpoint que usa Intralú
-                # por dentro), en vez de navegar y esperar con reintentos a
-                # que Angular pinte la tabla. Esta sola llamada trae de una:
-                # evaluaciones, fórmulas Y promedios ya calculados por Intralú.
-                cursos_lista = []
-                errores_curso = []
-                for c_info in cursos_temp:
-                    with _jobs_lock:
-                        if _jobs[job_id].get("cancelado"):
-                            raise _SyncCancelada()
-
-                    logger.info(
-                        "Job %s:   -> %s (%s)", job_id, c_info["cod_curso"], periodo,
-                    )
-
-                    evaluaciones = []
-                    formula_practicas = None
-                    formula_nota_final = None
-                    promedio_practicas = None
-                    promedio_final = None
-                    nota_asistencia = None
-                    datos_curso = None
-
-                    try:
-                        resp = page.request.post(
-                            "https://alumnos.uni.edu.pe/informacion-academica/cursos/notas",
-                            form={
-                                "codper": periodo,
-                                "codcur": c_info["cod_curso"],
-                                "seccion": c_info["seccion"],
-                            },
-                            headers={
-                                "X-XSRF-TOKEN": xsrf_token or "",
-                                "X-Requested-With": "XMLHttpRequest",
-                            },
-                        )
-                        if resp.ok:
-                            datos_curso = resp.json()
-                        else:
-                            errores_curso.append({
-                                "codigo": c_info["cod_curso"],
-                                "seccion": c_info["seccion"],
-                                "motivo": f"HTTP {resp.status} al pedir notas",
-                            })
-                    except Exception as e:
-                        logger.info(
-                            "Job %s:   %s (%s) -> error de red pidiendo notas",
-                            job_id, c_info["cod_curso"], periodo,
-                        )
-                        errores_curso.append({
-                            "codigo": c_info["cod_curso"],
-                            "seccion": c_info["seccion"],
-                            "motivo": str(e),
-                        })
-
-                    if datos_curso:
-                        # Diagnóstico TEMPORAL: confirmar en los logs de Render
-                        # la forma real de la respuesta la primera vez que esto
-                        # corre en vivo, por si algún nombre de clave no calza
-                        # exactamente con lo documentado. Se puede quitar una
-                        # vez confirmado.
-                        logger.info(
-                            "Job %s:   %s (%s) -> claves recibidas: %s",
-                            job_id, c_info["cod_curso"], periodo, list(datos_curso.keys()),
-                        )
-
-                        # Crudas, sin re-etiquetar: mismo esquema que ya
-                        # mandaba el bookmarklet (camnot/descripcion/nota/
-                        # fecha_registro_acta). simplificar_etiqueta() daba
-                        # PC1/Lab1/Monografia1 — nomenclatura del catálogo
-                        # viejo de producción (cursos_db_2018.js), que no es
-                        # la que necesita formula-mapper.js aquí: ese archivo
-                        # ya sabe construir las variables N1/N2/EP/EF/ES que
-                        # formula-engine.js necesita, a partir de camnot +
-                        # descripcion tal cual vienen de Intralú — no hay que
-                        # reinventar esa clasificación en el backend.
-                        for ev in datos_curso.get("data", []):
-                            try:
-                                val_n = float(ev.get("nota"))
-                            except (TypeError, ValueError):
-                                val_n = None
-                            evaluaciones.append(
-                                {
-                                    "camnot": ev.get("camnot"),
-                                    "descripcion": (ev.get("descripcion") or "").strip() or None,
-                                    "nota": val_n,
-                                    "fecha_registro_acta": ev.get("fecha_registro_acta"),
-                                }
-                            )
-
-                        formulas = datos_curso.get("formulas") or {}
-                        formula_practicas = formulas.get("practicas")
-                        formula_nota_final = formulas.get("teoria")
-
-                        promedios = datos_curso.get("promedios") or {}
-                        promedio_practicas = promedios.get("promedio_practicas")
-                        promedio_final = promedios.get("promedio_final")
-                        nota_asistencia = promedios.get("nota_asistencia")
-
-                    logger.info(
-                        "Job %s:   %s (%s) -> %d evaluaciones, fórmulas: pp=%s final=%s",
-                        job_id, c_info["cod_curso"], periodo, len(evaluaciones),
-                        "sí" if formula_practicas else "no",
-                        "sí" if formula_nota_final else "no",
-                    )
-
-                    # Nombres de campo elegidos a propósito para calzar EXACTO
-                    # con lo que ya espera guardarResultadoSync() en
-                    # login-multifacultad.js (formula_practicas,
-                    # formula_nota_final, promedio_practicas, promedio_final,
-                    # nota_asistencia) — así conectar el frontend más
-                    # adelante no requiere tocar el mapeo de campos.
-                    creditos_val = c_info["creditos"]
-                    cursos_lista.append(
-                        {
-                            "codigo": c_info["cod_curso"],
-                            "nombre": c_info["nombre"],
-                            "creditos": int(creditos_val)
-                            if creditos_val.isdigit()
-                            else creditos_val,
-                            "evaluaciones": evaluaciones,
-                            "seccion": c_info["seccion"],
-                            "formula_practicas": formula_practicas,
-                            "formula_nota_final": formula_nota_final,
-                            "promedio_practicas": promedio_practicas,
-                            "promedio_final": promedio_final,
-                            "nota_asistencia": nota_asistencia,
-                        }
-                    )
-
-                if cursos_lista:
-                    data_por_periodo[periodo] = {
-                        "etiqueta_periodo": etiquetar_periodo(periodo),
-                        "cursos": cursos_lista,
-                        "errores": errores_curso,
-                    }
-
-            # 4. Avance Curricular: se aprovecha la MISMA page ya
-            # autenticada (page.request comparte cookies con page) — no
-            # hace falta un segundo login ni un segundo reCAPTCHA para
-            # esto. Best-effort: si falla, no se aborta la sincronización
-            # — las notas (lo principal) ya están listas, así que el
-            # frontend simplemente no actualiza el Avance Curricular esa
-            # vez y lo intenta de nuevo en la próxima sincronización.
-            avance_pdf_base64 = None
-            try:
-                resp_avance = page.request.get(URL_AVANCE_CURRICULAR_PDF)
-                if resp_avance.status == 200:
-                    avance_pdf_base64 = base64.b64encode(resp_avance.body()).decode()
-                else:
-                    logger.warning(
-                        "Job %s: Avance Curricular respondió HTTP %d, se omite esta vez",
-                        job_id, resp_avance.status,
-                    )
-            except Exception:
-                logger.exception(
-                    "Job %s: no se pudo descargar el Avance Curricular (no crítico, notas ya están listas)",
-                    job_id,
-                )
-
-            with _jobs_lock:
-                _jobs[job_id]["status"] = "listo"
-                _jobs[job_id]["periodos"] = data_por_periodo
-                _jobs[job_id]["avance_pdf_base64"] = avance_pdf_base64
-
-            duracion = time.time() - inicio
-            logger.info(
-                "Job %s: ✅ SINCRONIZACIÓN COMPLETA en %.1fs — %d periodos con cursos encontrados",
-                job_id, duracion, len(data_por_periodo),
-            )
-
-    except _SyncCancelada:
-        with _jobs_lock:
-            _jobs[job_id]["status"] = "cancelado"
-        logger.info("Job %s: 🛑 CANCELADO por el usuario tras %.1fs", job_id, time.time() - inicio)
-    except Exception:
-        logger.exception("Job %s: error durante la sincronización con Intralú", job_id)
-        with _jobs_lock:
-            _jobs[job_id]["status"] = "error"
-            _jobs[job_id]["status_code"] = 500
-            _jobs[job_id]["detail"] = "No se pudo completar la sincronización con Intralú. Intenta de nuevo más tarde."
-        logger.info("Job %s: ❌ TERMINÓ CON ERROR tras %.1fs", job_id, time.time() - inicio)
-    finally:
-        if browser:
+            _login_intralu_page(context, codigo, password)
+            return context.cookies()
+        finally:
             try:
                 browser.close()
             except Exception:
                 pass
-        _semaforo_sync.release()
+
+
+def _sesion_http_intralu(cookies):
+    """Sesión liviana de `requests` con las cookies del login. Se envían
+    Origin/Referer del propio INTRALU (lo valida) y el mismo user-agent
+    del navegador que hizo el login."""
+    sesion = requests.Session()
+    for c in cookies:
+        sesion.cookies.set(c["name"], c["value"], domain=c.get("domain"), path=c.get("path", "/"))
+    sesion.headers.update({
+        "User-Agent": UA_NAVEGADOR,
+        "Accept-Language": "es-PE,es;q=0.9",
+        "Origin": URL_BASE_INTRALU,
+        "Referer": f"{URL_BASE_INTRALU}/home",
+    })
+    return sesion
+
+
+def _xsrf_de_sesion(sesion):
+    """Laravel pide en X-XSRF-TOKEN el valor DECODIFICADO de la cookie
+    XSRF-TOKEN. Se lee en cada petición porque Laravel puede renovarla."""
+    for cookie in sesion.cookies:
+        if cookie.name == "XSRF-TOKEN":
+            return unquote(cookie.value)
+    return ""
+
+
+class _TablaCursosParser(HTMLParser):
+    """Lee la PRIMERA tabla de /informacion-academica/cursos/{periodo}
+    (HTML del servidor, sin JavaScript). Por fila guarda el texto de cada
+    celda y los atributos data-codcur / data-seccion del botón 'Ver curso'."""
+
+    def __init__(self):
+        super().__init__()
+        self.filas = []
+        self._tablas_vistas = 0
+        self._en_primera_tabla = False
+        self._en_tbody = False
+        self._fila = None
+        self._celda = None
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if tag == "table":
+            self._tablas_vistas += 1
+            self._en_primera_tabla = self._tablas_vistas == 1
+        elif tag == "tbody" and self._en_primera_tabla:
+            self._en_tbody = True
+        elif tag == "tr" and self._en_tbody:
+            self._fila = {"celdas": [], "codcur": None, "seccion": None}
+        elif tag == "td" and self._fila is not None:
+            self._celda = []
+        if self._fila is not None:
+            if a.get("data-codcur"):
+                self._fila["codcur"] = a["data-codcur"].strip()
+            if a.get("data-seccion") is not None and self._fila.get("seccion") is None:
+                self._fila["seccion"] = (a.get("data-seccion") or "").strip()
+
+    def handle_endtag(self, tag):
+        if tag == "td" and self._celda is not None and self._fila is not None:
+            self._fila["celdas"].append(" ".join("".join(self._celda).split()))
+            self._celda = None
+        elif tag == "tr" and self._fila is not None:
+            self.filas.append(self._fila)
+            self._fila = None
+        elif tag == "tbody":
+            self._en_tbody = False
+        elif tag == "table":
+            self._en_primera_tabla = False
+
+    def handle_data(self, data):
+        if self._celda is not None:
+            self._celda.append(data)
+
+
+class _SesionIntraluVencida(Exception):
+    pass
+
+
+def _listar_cursos_periodo(sesion, periodo):
+    """Cursos matriculados en un periodo: [{cod_curso, seccion, nombre,
+    creditos}]. Periodo sin cursos -> lista vacía."""
+    resp = sesion.get(
+        f"{URL_BASE_INTRALU}/informacion-academica/cursos/{periodo}",
+        headers={"Accept": "text/html,application/xhtml+xml"},
+        timeout=20,
+    )
+    if "/login" in resp.url:
+        raise _SesionIntraluVencida()
+    if resp.status_code != 200:
+        logger.warning("Lista de cursos %s respondió HTTP %d", periodo, resp.status_code)
+        return []
+
+    parser = _TablaCursosParser()
+    parser.feed(resp.text)
+
+    cursos = []
+    for fila in parser.filas:
+        celdas = fila["celdas"]
+        if len(celdas) < 3:
+            continue
+        cod_raw, nombre, creditos = celdas[0], celdas[1], celdas[2]
+        cod_curso, seccion = fila["codcur"], fila["seccion"]
+        if not cod_curso:
+            # Respaldo: el texto de la 1ra celda es tipo "GE709 -V"
+            if not cod_raw or "-" not in cod_raw or cod_raw[0].isdigit():
+                continue
+            partes = [x.strip() for x in cod_raw.split("-")]
+            cod_curso, seccion = partes[0], (partes[1] if len(partes) > 1 else "")
+        cursos.append({
+            "cod_curso": cod_curso,
+            "seccion": seccion or "",
+            "nombre": nombre,
+            "creditos": creditos,
+        })
+    return cursos
+
+
+def _traer_notas_curso(sesion, periodo, c_info):
+    """UNA petición por curso: evaluaciones + fórmulas + promedios.
+    Devuelve (curso_armado, error_o_None)."""
+    evaluaciones = []
+    formula_practicas = formula_nota_final = None
+    promedio_practicas = promedio_final = nota_asistencia = None
+    error = None
+
+    try:
+        resp = sesion.post(
+            f"{URL_BASE_INTRALU}/informacion-academica/cursos/notas",
+            data={"codper": periodo, "codcur": c_info["cod_curso"], "seccion": c_info["seccion"]},
+            headers={
+                "X-XSRF-TOKEN": _xsrf_de_sesion(sesion),
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept": "application/json, text/plain, */*",
+                "Referer": f"{URL_BASE_INTRALU}/informacion-academica/cursos/{periodo}/{c_info['cod_curso']}/{c_info['seccion']}",
+            },
+            timeout=20,
+        )
+        if resp.status_code == 200:
+            datos_curso = resp.json()
+            # Crudas, sin re-etiquetar (camnot/descripcion/nota/fecha_registro_acta):
+            # formula-mapper.js arma N1/N2/EP/EF/ES al vuelo en el frontend.
+            for ev in datos_curso.get("data", []):
+                try:
+                    val_n = float(ev.get("nota"))
+                except (TypeError, ValueError):
+                    val_n = None
+                evaluaciones.append({
+                    "camnot": ev.get("camnot"),
+                    "descripcion": (ev.get("descripcion") or "").strip() or None,
+                    "nota": val_n,
+                    "fecha_registro_acta": ev.get("fecha_registro_acta"),
+                })
+            formulas = datos_curso.get("formulas") or {}
+            formula_practicas = formulas.get("practicas")
+            formula_nota_final = formulas.get("teoria")
+            promedios = datos_curso.get("promedios") or {}
+            promedio_practicas = promedios.get("promedio_practicas")
+            promedio_final = promedios.get("promedio_final")
+            nota_asistencia = promedios.get("nota_asistencia")
+        else:
+            error = f"HTTP {resp.status_code} al pedir notas"
+    except Exception as e:
+        error = f"error de red pidiendo notas: {e}"
+
+    creditos_val = str(c_info["creditos"] or "")
+    curso = {
+        "codigo": c_info["cod_curso"],
+        "nombre": c_info["nombre"],
+        "creditos": int(creditos_val) if creditos_val.isdigit() else creditos_val,
+        "evaluaciones": evaluaciones,
+        "seccion": c_info["seccion"],
+        "formula_practicas": formula_practicas,
+        "formula_nota_final": formula_nota_final,
+        "promedio_practicas": promedio_practicas,
+        "promedio_final": promedio_final,
+        "nota_asistencia": nota_asistencia,
+    }
+    return curso, error
+
+
+def _periodo_actual_aproximado():
+    """Mismo criterio que el frontend, con la hora de Lima (UTC-5):
+    ene-feb = verano (tipo 3 del año anterior), mar-jul = 1, ago-dic = 2."""
+    ahora = time.gmtime(time.time() - 5 * 3600)
+    anio, mes = ahora.tm_year, ahora.tm_mon
+    if mes <= 2:
+        return anio - 1, 3
+    if mes <= 7:
+        return anio, 1
+    return anio, 2
+
+
+def _siguiente_periodo(anio, tipo):
+    if tipo == 1:
+        return anio, 2
+    if tipo == 2:
+        return anio, 3
+    return anio + 1, 1  # después del verano (tipo 3) viene el 1 del año siguiente
+
+
+def _periodos_del_historial(codigo):
+    """Todos los periodos desde el año de ingreso (primeros 4 dígitos del
+    código UNI) hasta el actual + 1 de adelanto (por si INTRALU ya abrió
+    el siguiente). Orden cronológico, veranos incluidos."""
+    anio_actual, tipo_actual = _periodo_actual_aproximado()
+    try:
+        anio_ingreso = int(str(codigo)[:4])
+        if not (2000 <= anio_ingreso <= anio_actual):
+            raise ValueError
+    except ValueError:
+        anio_ingreso = anio_actual - 8
+
+    periodos = []
+    anio, tipo = anio_ingreso, 1
+    limite = _siguiente_periodo(anio_actual, tipo_actual)
+    while (anio, tipo) != _siguiente_periodo(*limite) and len(periodos) < 60:
+        periodos.append(f"{anio}{tipo}")
+        anio, tipo = _siguiente_periodo(anio, tipo)
+    return periodos
+
+
+def _actualizar_job(job_id, **campos):
+    with _jobs_lock:
+        if job_id in _jobs:
+            _jobs[job_id].update(campos)
+
+
+def _job_cancelado(job_id):
+    with _jobs_lock:
+        return bool(_jobs.get(job_id, {}).get("cancelado"))
+
+
+def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
+    """Corre en un hilo aparte. Guarda progreso y resultado en _jobs[job_id]
+    para que el frontend los recoja con GET /api/sync-intralu/{job_id}.
+
+    Flujo (sep 2026):
+      1. Fila de espera para Chromium (posición visible en el frontend).
+      2. Login con Chromium -> cookies -> se cierra Chromium y se suelta el
+         turno (el siguiente alumno ya puede entrar).
+      3. Con `requests`: lista de cursos de cada periodo del historial y
+         notas de cada curso (3 en paralelo), + PDF del Avance Curricular.
+    """
+    inicio = time.time()
+    data_por_periodo = {}
+
+    try:
+        # 1-2. Solo esta parte usa Chromium (y la fila).
+        _actualizar_job(job_id, etapa="en_fila", personas_delante=0)
+        _tomar_turno_chromium(
+            job_id,
+            al_cambiar_posicion=lambda n: _actualizar_job(job_id, personas_delante=n),
+            esta_cancelado=lambda: _job_cancelado(job_id),
+        )
+        try:
+            _actualizar_job(job_id, etapa="iniciando_sesion", personas_delante=0)
+            espera_fila = time.time() - inicio
+            cookies = _cookies_de_login_intralu(codigo, password)
+        finally:
+            _soltar_turno_chromium()
+        logger.info("Job %s: login OK (fila %.1fs, total %.1fs) — Chromium cerrado",
+                    job_id, espera_fila, time.time() - inicio)
+
+        sesion = _sesion_http_intralu(cookies)
+
+        # 3. Qué periodos revisar.
+        if periodo_especifico:
+            periodos = [normalizar_periodo(periodo_especifico)]
+        else:
+            omitidos = {normalizar_periodo(p) for p in (omitir or [])}
+            periodos = [p for p in _periodos_del_historial(codigo) if p not in omitidos]
+        _actualizar_job(job_id, etapa="descargando", periodos_total=len(periodos), periodos_hechos=0)
+        logger.info("Job %s: %d periodo(s) a revisar: %s", job_id, len(periodos), ", ".join(periodos))
+
+        with ThreadPoolExecutor(max_workers=PETICIONES_PARALELAS_NOTAS) as pool:
+            for i, periodo in enumerate(periodos):
+                if _job_cancelado(job_id):
+                    raise _SyncCancelada()
+                _actualizar_job(job_id, periodo_actual=periodo, periodos_hechos=i)
+
+                cursos_temp = _listar_cursos_periodo(sesion, periodo)
+                if not cursos_temp:
+                    continue
+
+                futuros = [pool.submit(_traer_notas_curso, sesion, periodo, c) for c in cursos_temp]
+                cursos_lista, errores_curso = [], []
+                for futuro in futuros:
+                    if _job_cancelado(job_id):
+                        raise _SyncCancelada()
+                    curso, error = futuro.result()
+                    cursos_lista.append(curso)
+                    if error:
+                        errores_curso.append({"codigo": curso["codigo"], "seccion": curso["seccion"], "motivo": error})
+
+                data_por_periodo[periodo] = {
+                    "etiqueta_periodo": etiquetar_periodo(periodo),
+                    "cursos": cursos_lista,
+                    "errores": errores_curso,
+                }
+                logger.info("Job %s:   %s -> %d curso(s), %d error(es)",
+                            job_id, periodo, len(cursos_lista), len(errores_curso))
+
+        _actualizar_job(job_id, periodos_hechos=len(periodos), periodo_actual=None)
+
+        # Avance Curricular (best-effort, con la misma sesión, sin 2do login).
+        avance_pdf_base64 = None
+        try:
+            resp_avance = sesion.get(URL_AVANCE_CURRICULAR_PDF, timeout=30)
+            if resp_avance.status_code == 200 and resp_avance.content[:4] == b"%PDF":
+                avance_pdf_base64 = base64.b64encode(resp_avance.content).decode()
+            else:
+                logger.warning("Job %s: Avance Curricular respondió HTTP %d, se omite esta vez",
+                               job_id, resp_avance.status_code)
+        except Exception:
+            logger.exception("Job %s: no se pudo descargar el Avance Curricular (no crítico)", job_id)
+
+        _actualizar_job(
+            job_id,
+            status="listo",
+            periodos=data_por_periodo,
+            periodos_revisados=periodos,
+            avance_pdf_base64=avance_pdf_base64,
+        )
+        logger.info("Job %s: ✅ SINCRONIZACIÓN COMPLETA en %.1fs — %d periodo(s) con cursos de %d revisado(s)",
+                    job_id, time.time() - inicio, len(data_por_periodo), len(periodos))
+
+    except HTTPException as e:
+        _actualizar_job(job_id, status="error", status_code=e.status_code, detail=e.detail)
+        logger.info("Job %s: ❌ LOGIN FALLIDO tras %.1fs", job_id, time.time() - inicio)
+    except _SyncCancelada:
+        _actualizar_job(job_id, status="cancelado")
+        logger.info("Job %s: 🛑 CANCELADO por el usuario tras %.1fs", job_id, time.time() - inicio)
+    except _FilaDemasiadoLarga:
+        _actualizar_job(job_id, status="error", status_code=503,
+                        detail="SIGA está atendiendo a muchos alumnos ahora mismo. Intenta de nuevo en unos minutos.")
+        logger.info("Job %s: ❌ fila demasiado larga tras %.1fs", job_id, time.time() - inicio)
+    except _SesionIntraluVencida:
+        _actualizar_job(job_id, status="error", status_code=502,
+                        detail="INTRALU cerró la sesión a mitad de la sincronización. Intenta de nuevo.")
+        logger.info("Job %s: ❌ sesión de INTRALU vencida tras %.1fs", job_id, time.time() - inicio)
+    except Exception:
+        logger.exception("Job %s: error durante la sincronización con Intralú", job_id)
+        _actualizar_job(job_id, status="error", status_code=500,
+                        detail="No se pudo completar la sincronización con Intralú. Intenta de nuevo más tarde.")
+        logger.info("Job %s: ❌ TERMINÓ CON ERROR tras %.1fs", job_id, time.time() - inicio)
 
 
 @app.post("/api/sync-intralu")
@@ -641,11 +782,13 @@ def iniciar_sync(credentials: LoginIntraluRequest):
             "creado_en": time.time(),
             "periodo_actual": None,
             "cancelado": False,
+            "etapa": "en_fila",
+            "personas_delante": 0,
         }
 
     hilo = threading.Thread(
         target=_ejecutar_sync,
-        args=(job_id, credentials.codigo, credentials.password, credentials.periodo),
+        args=(job_id, credentials.codigo, credentials.password, credentials.periodo, credentials.omitir),
         daemon=True,
     )
     hilo.start()
@@ -674,10 +817,9 @@ def iniciar_sync(credentials: LoginIntraluRequest):
 @app.post("/api/sync-intralu/{job_id}/cancelar")
 def cancelar_sync(job_id: str):
     """El frontend llama esto cuando el alumno presiona 'Cancelar'. Solo
-    levanta la bandera — el hilo de _ejecutar_sync la revisa entre cada
-    curso y se detiene solo, soltando el semáforo. No hay nada que
-    "matar" a la fuerza: Playwright sigue corriendo dentro de ese hilo
-    hasta el próximo punto de chequeo."""
+    levanta la bandera — el hilo de _ejecutar_sync la revisa en la fila de
+    espera y entre cada curso, y se detiene solo. Si justo está en el
+    login (unos segundos), termina el login y se detiene después."""
     with _jobs_lock:
         job = _jobs.get(job_id)
         if not job:
@@ -705,8 +847,13 @@ def consultar_sync(job_id: str):
             )
         return {
             "status": job["status"],
+            "etapa": job.get("etapa"),
+            "personas_delante": job.get("personas_delante", 0),
             "periodo_actual": job.get("periodo_actual"),
+            "periodos_total": job.get("periodos_total"),
+            "periodos_hechos": job.get("periodos_hechos"),
             "periodos": job.get("periodos"),
+            "periodos_revisados": job.get("periodos_revisados"),
             "avance_pdf_base64": job.get("avance_pdf_base64"),
         }
 
@@ -717,9 +864,10 @@ def consultar_sync(job_id: str):
 # solo se usa para el login (obtener el accessToken de la cookie), y
 # el resto es puro `requests` contra la API de Matrícula — toma
 # segundos, no minutos, así que no necesita el patrón de job/polling.
-# Comparte _semaforo_sync con Intralú (mismo límite de RAM del plan
-# gratuito): si ya hay una sync pesada en curso, esta espera su turno
-# en vez de arrancar un segundo Chromium en paralelo.
+# Comparte la fila de Chromium con Intralú (mismo límite de RAM del plan
+# gratuito): si otro alumno está haciendo login, esta espera su turno en
+# vez de arrancar un segundo Chromium en paralelo, y además respeta el
+# tope propio de 4 logins de Matrícula por minuto.
 # ================================================================
 MATRICULA_BASE = "https://matricula-alumno.uni.edu.pe"
 
@@ -783,10 +931,7 @@ def _obtener_token_matricula(codigo, password):
         browser = p.chromium.launch(headless=True)
         try:
             context = browser.new_context(
-                user_agent=(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                ),
+                user_agent=UA_NAVEGADOR,
                 viewport={"width": 1366, "height": 768},
                 locale="es-PE",
             )
@@ -862,19 +1007,31 @@ def _obtener_token_matricula(codigo, password):
     )
 
 
+ESPERA_MAXIMA_FILA_MATRICULA_SEGUNDOS = 120  # es una petición síncrona: no se deja colgando mucho
+
+
 @app.post("/api/sync-horarios")
 def sync_horarios(credentials: LoginRequest):
-    adquirido = _semaforo_sync.acquire(blocking=False)
-    if not adquirido:
-        raise HTTPException(
-            status_code=429,
-            detail="Hay una sincronización en curso ahora mismo. Intenta de nuevo en un minuto."
-        )
-
     inicio = time.time()
 
+    # Fila de Chromium (compartida con INTRALU) + tope propio de 4 logins
+    # de Matrícula por minuto. El turno se suelta apenas hay token: ficha
+    # y horarios van por `requests`, sin ocupar Chromium.
+    ticket = f"matricula-{uuid.uuid4()}"
     try:
+        _tomar_turno_chromium(ticket, espera_maxima=ESPERA_MAXIMA_FILA_MATRICULA_SEGUNDOS)
+    except _FilaDemasiadoLarga:
+        raise HTTPException(
+            status_code=503,
+            detail="SIGA está atendiendo a muchos alumnos ahora mismo. Intenta de nuevo en un minuto.",
+        )
+    try:
+        _esperar_cupo_login_matricula()
         token = _obtener_token_matricula(credentials.codigo, credentials.password)
+    finally:
+        _soltar_turno_chromium()
+
+    try:
         headers = {
             "Authorization": f"Bearer {token}",
             "Accept": "application/json",
@@ -969,8 +1126,6 @@ def sync_horarios(credentials: LoginRequest):
         logger.exception("Error durante la sincronización con Matrícula UNI")
         logger.info("Sync Matrícula: ❌ TERMINÓ CON ERROR tras %.1fs", time.time() - inicio)
         raise HTTPException(status_code=500, detail=f"Error en servidor: {str(e)}")
-    finally:
-        _semaforo_sync.release()
 
 
 if __name__ == "__main__":
