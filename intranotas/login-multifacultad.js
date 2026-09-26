@@ -28,11 +28,12 @@ const BACKEND_BASE_URL = ['localhost', '127.0.0.1'].includes(window.location.hos
     : 'https://actualizar-intranotas.onrender.com';
 const BACKEND_SYNC_URL = `${BACKEND_BASE_URL}/api/sync-intralu`;
 
-// Cada cuántos ms se pregunta al backend si ya terminó, y cuánto se
-// espera como máximo antes de rendirse (Render free tier + Playwright
-// + varios cursos puede tardar 1-2 minutos reales).
-const INTERVALO_POLLING_MS = 3000;
-const TIMEOUT_POLLING_MS = 240000;
+// Cada cuántos ms se pregunta al backend cómo va, y cuánto se espera como
+// máximo antes de rendirse. Desde sep 2026 se sincroniza TODO el historial
+// de una vez y puede haber fila de espera, así que el tope es más amplio
+// (el backend mismo corta la fila a los 5 min con un mensaje claro).
+const INTERVALO_POLLING_MS = 2000;
+const TIMEOUT_POLLING_MS = 10 * 60 * 1000;
 
 document.addEventListener('DOMContentLoaded', async () => {
     prepararOjoPassword();
@@ -243,21 +244,10 @@ function prepararOjoPassword() {
 let syncCancelada = false;
 let jobIdActual = null;
 
-/* Da el (anio, tipo) cronológicamente ANTERIOR a un (anio, tipo) dado.
-   Orden real dentro de un año: tipo 1 (mar-jul) -> tipo 2 (ago-dic) ->
-   tipo 3 = verano (ene-feb del año SIGUIENTE, pero etiquetado con el
-   año que ya venía corriendo, ej. "24V" de Intralú = "20233", no
-   "20243" -- confirmado en decisions-and-learnings). Por eso el paso
-   anterior a un tipo 1 es el tipo 3 del año ANTERIOR, no el tipo 2. */
-function pasoAnterior(anio, tipo) {
-    if (tipo === 1) return { anio: anio - 1, tipo: 3 };
-    if (tipo === 2) return { anio, tipo: 1 };
-    return { anio, tipo: 2 }; // tipo === 3
-}
-
-/* Punto de partida del selector: el periodo "actual" aproximado según
-   la fecha de hoy. Enero/febrero cae en verano (tipo 3, año anterior);
-   marzo-julio es tipo 1; agosto-diciembre es tipo 2. */
+/* Periodo "actual" aproximado según la fecha de hoy (mismo criterio que el
+   backend): enero/febrero = verano (tipo 3 del año anterior, porque el
+   verano se etiqueta con el año del ciclo 2 que le precede), marzo-julio =
+   tipo 1, agosto-diciembre = tipo 2. */
 function periodoActualAproximado() {
     const hoy = new Date();
     const mes = hoy.getMonth() + 1;
@@ -267,26 +257,58 @@ function periodoActualAproximado() {
     return { anio, tipo: 2 };
 }
 
-/* Genera el dropdown de periodos (incluyendo verano) acotado por el
-   año del periodo de ingreso guardado en el perfil. */
-function prepararPeriodosSync(periodoIngreso) {
-    const anioIngreso = parseInt((periodoIngreso || '').slice(0, 4), 10);
-    const anioValido = !Number.isNaN(anioIngreso) && anioIngreso >= 2000 && anioIngreso <= new Date().getFullYear();
-    const limiteInferior = anioValido ? anioIngreso : new Date().getFullYear() - 8;
+/* Número de orden cronológico de un periodo. Dentro de un año: 1 -> 2 -> 3 (verano). */
+function ordenPeriodo(anio, tipo) {
+    return anio * 3 + (tipo - 1);
+}
 
-    let actual = periodoActualAproximado();
-    const opciones = [];
-    while (actual.anio > limiteInferior || (actual.anio === limiteInferior && actual.tipo >= 1)) {
-        opciones.push({ value: `${actual.anio}${actual.tipo}`, label: `${actual.anio}-${actual.tipo}` });
-        actual = pasoAnterior(actual.anio, actual.tipo);
-        if (opciones.length >= 60) break; // tope de seguridad (3 tipos por año, no 2 como antes)
-    }
+/* ¿El periodo ya terminó? Cualquiera ANTERIOR al actual está cerrado. */
+function periodoCerrado(periodoRaw) {
+    const anio = parseInt(String(periodoRaw).slice(0, 4), 10);
+    const tipo = parseInt(String(periodoRaw).slice(4), 10);
+    const actual = periodoActualAproximado();
+    return ordenPeriodo(anio, tipo) < ordenPeriodo(actual.anio, actual.tipo);
+}
 
-    inicializarSelectPersonalizado({
-        triggerId: 'syncPeriodoTrigger', textoId: 'syncPeriodoTriggerTexto',
-        listaId: 'syncPeriodoLista', valorId: 'syncPeriodoValor',
-        opciones,
+/* Periodos cerrados que INTRALU ya dijo que no tienen cursos para este
+   alumno (típicamente veranos que no llevó). Se recuerdan en el navegador
+   para no volver a preguntarlos en cada sincronización. */
+function claveVacios(userId) {
+    return `siga_periodos_sin_cursos_${userId}`;
+}
+function leerPeriodosVacios(userId) {
+    try { return JSON.parse(localStorage.getItem(claveVacios(userId))) || []; } catch { return []; }
+}
+function guardarPeriodosVacios(userId, periodos) {
+    try { localStorage.setItem(claveVacios(userId), JSON.stringify([...new Set(periodos)])); } catch { /* sin espacio: no pasa nada */ }
+}
+
+/* Qué periodos NO hace falta volver a pedirle a INTRALU:
+   - cerrados en los que TODOS sus cursos ya tienen nota final (quedaron
+     completos: INTRALU ya no los va a cambiar), y
+   - cerrados que ya se revisaron y no tenían cursos.
+   Todo lo demás se pide: el periodo actual, los que faltan, y el que
+   acaba de cerrar (recién ahí INTRALU publica la fórmula de prácticas y
+   las notas finales — por eso se vuelve a traer hasta que queden). */
+async function calcularPeriodosAOmitir(userId) {
+    const { data } = await supabase
+        .from('notas_curso')
+        .select('periodo, promedio_final')
+        .eq('user_id', userId);
+
+    const porPeriodo = {};
+    (data || []).forEach((fila) => {
+        const p = String(fila.periodo);
+        if (!porPeriodo[p]) porPeriodo[p] = { total: 0, conFinal: 0 };
+        porPeriodo[p].total += 1;
+        if (fila.promedio_final !== null && fila.promedio_final !== undefined) porPeriodo[p].conFinal += 1;
     });
+
+    const completos = Object.entries(porPeriodo)
+        .filter(([p, c]) => periodoCerrado(p) && c.total > 0 && c.conFinal === c.total)
+        .map(([p]) => p);
+    const vacios = leerPeriodosVacios(userId).filter((p) => periodoCerrado(p) && !porPeriodo[p]);
+    return [...new Set([...completos, ...vacios])];
 }
 
 /* ============================================================
@@ -305,7 +327,7 @@ function prepararPeriodosSync(periodoIngreso) {
       y engancha btnOlvidarCredencial).
    3. En manejarSync: volver a leer `syncRecordar.checked` en
       `recordar`, pasarlo a sincronizarConBackend, y restaurar el
-      bloque "if (resultadoNotas.ok && recordar) {...}" después del
+      bloque "if (resultado.ok && recordar) {...}" después del
       sync.
    4. En sincronizarConBackend: agregar de nuevo el parámetro
       `recordar` y `recordar` en el body.
@@ -321,7 +343,6 @@ let hayCredencialGuardadaDESACTIVADO = false;
 
 async function mostrarBloqueSyncDESACTIVADO(userId, periodoIngreso) {
     document.getElementById('bloqueSync').classList.add('visible');
-    prepararPeriodosSync(periodoIngreso);
     document.getElementById('formSync').addEventListener('submit', (e) => manejarSync(e, userId));
     document.getElementById('btnCancelarSync').addEventListener('click', cancelarSyncEnCurso);
     document.getElementById('btnOlvidarCredencial').addEventListener('click', () => olvidarCredencial(userId));
@@ -367,7 +388,6 @@ async function olvidarCredencial(userId) {
 
 async function mostrarBloqueSync(userId, periodoIngreso) {
     document.getElementById('bloqueSync').classList.add('visible');
-    prepararPeriodosSync(periodoIngreso);
     document.getElementById('formSync').addEventListener('submit', (e) => manejarSync(e, userId));
     document.getElementById('btnCancelarSync').addEventListener('click', cancelarSyncEnCurso);
 }
@@ -378,16 +398,39 @@ function esperar(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/* "20241" -> "2024-1" */
+function periodoLindo(periodoRaw) {
+    const p = String(periodoRaw);
+    return p.length === 5 ? `${p.slice(0, 4)}-${p.slice(4)}` : p;
+}
+
+/* Texto de avance según lo que el backend cuenta en cada consulta. */
+function textoProgreso(data) {
+    if (data.etapa === 'en_fila') {
+        const n = data.personas_delante || 0;
+        return n > 0
+            ? `En fila: ${n === 1 ? 'hay 1 persona' : `hay ${n} personas`} antes que tú. Ya casi...`
+            : 'Preparando la conexión con INTRALU...';
+    }
+    if (data.etapa === 'iniciando_sesion') return 'Iniciando sesión en INTRALU...';
+    if (data.etapa === 'descargando' && data.periodos_total) {
+        const actual = Math.min((data.periodos_hechos || 0) + 1, data.periodos_total);
+        return data.periodo_actual
+            ? `Cargando ${periodoLindo(data.periodo_actual)} (${actual} de ${data.periodos_total})...`
+            : 'Terminando de cargar...';
+    }
+    return 'Conectando con INTRALU...';
+}
+
 /* Arranca el job en el backend (POST) y hace polling (GET) hasta que
-   quede "listo", "cancelado", o el backend responda un error real
-   (credenciales incorrectas, servidor ocupado, etc.). Nunca lanza: 
-   siempre resuelve con { ok, motivo?, detalle?, ...datos }, para que
-   manejarSync() decida qué mostrar sin try/catch anidados. */
-async function sincronizarConBackend(codigo, password, periodo, userId) {
+   quede "listo", "cancelado", o el backend responda un error real.
+   Nunca lanza: siempre resuelve con { ok, motivo?, detalle?, ...datos }.
+   Desde sep 2026 no se elige periodo: el backend recorre TODO el
+   historial y se salta los periodos de `omitir` (ya completos en SIGA). */
+async function sincronizarConBackend(codigo, password, omitir, userId) {
     let jobId;
     try {
-        const body = { codigo, periodo, user_id: userId };
-        if (password) body.password = password;
+        const body = { codigo, password, user_id: userId, omitir };
         const respInicio = await fetch(BACKEND_SYNC_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -406,11 +449,10 @@ async function sincronizarConBackend(codigo, password, periodo, userId) {
     const inicio = Date.now();
 
     while (Date.now() - inicio < TIMEOUT_POLLING_MS) {
-        if (syncCancelada) {
-            return { ok: false, motivo: 'cancelado' };
-        }
+        if (syncCancelada) return { ok: false, motivo: 'cancelado' };
 
         await esperar(INTERVALO_POLLING_MS);
+        if (syncCancelada) return { ok: false, motivo: 'cancelado' };
 
         let data;
         try {
@@ -426,24 +468,17 @@ async function sincronizarConBackend(codigo, password, periodo, userId) {
         }
 
         if (data.status === 'en_progreso') {
-            mostrarProgreso('Conectando con INTRALU...');
+            mostrarProgreso(textoProgreso(data));
             continue;
         }
 
-        if (data.status === 'cancelado') {
-            return { ok: false, motivo: 'cancelado' };
-        }
+        if (data.status === 'cancelado') return { ok: false, motivo: 'cancelado' };
 
         if (data.status === 'listo') {
-            const datosPeriodo = (data.periodos || {})[periodo];
-            if (!datosPeriodo || !datosPeriodo.cursos.length) {
-                return { ok: false, motivo: 'sin_cursos', detalle: 'No se encontró ningún curso matriculado en INTRALU para ese periodo.' };
-            }
             return {
                 ok: true,
-                periodo,
-                cursos: datosPeriodo.cursos,
-                errores: datosPeriodo.errores || [],
+                periodos: data.periodos || {},
+                revisados: data.periodos_revisados || [],
                 avancePdfBase64: data.avance_pdf_base64 || null,
             };
         }
@@ -457,7 +492,6 @@ function mensajeError(resultado) {
         timeout: resultado.detalle,
         sin_cursos: resultado.detalle || 'No se encontró ningún curso matriculado en INTRALU.',
         cancelado: 'Sincronización cancelada.',
-        sin_periodo: 'Elige un periodo para sincronizar.',
         error_inesperado: resultado.detalle,
         error_backend: resultado.detalle || 'No pudimos conectar con INTRALU. Probablemente está caído o en mantenimiento ahora mismo. No es un error de SIGA.',
     };
@@ -493,13 +527,13 @@ function numeroOMulo(valor) {
    evaluaciones crudas en jsonb, sin mapear a N1/EP/etc. — eso lo hace
    formula-mapper.js al vuelo, cuando se necesita calcular algo, nunca
    al guardar). */
-async function guardarResultadoSync(userId, resultado) {
-    if (!resultado.cursos.length) return;
+async function guardarResultadoSync(userId, periodo, cursos) {
+    if (!cursos.length) return;
 
-    const filasFormulas = resultado.cursos.map((c) => ({
+    const filasFormulas = cursos.map((c) => ({
         codigo_curso: c.codigo,
         seccion: c.seccion,
-        periodo: resultado.periodo,
+        periodo,
         formula_practicas: c.formula_practicas,
         formula_nota_final: c.formula_nota_final,
         creditos: c.creditos,
@@ -509,9 +543,9 @@ async function guardarResultadoSync(userId, resultado) {
         .upsert(filasFormulas, { onConflict: 'codigo_curso,seccion,periodo' });
     if (errorFormulas) throw errorFormulas;
 
-    const filasNotas = resultado.cursos.map((c) => ({
+    const filasNotas = cursos.map((c) => ({
         user_id: userId,
-        periodo: resultado.periodo,
+        periodo,
         codigo_curso: c.codigo,
         seccion: c.seccion,
         nombre_curso: c.nombre,
@@ -524,11 +558,6 @@ async function guardarResultadoSync(userId, resultado) {
         .from('notas_curso')
         .upsert(filasNotas, { onConflict: 'user_id,periodo,codigo_curso' });
     if (errorNotas) throw errorNotas;
-
-    await supabase.from('perfiles_usuario').upsert({
-        user_id: userId,
-        periodo_actual: resultado.periodo,
-    }, { onConflict: 'user_id' });
 }
 
 /* Extrae el texto del PDF (pdf.js) y lo pasa por el parser + guardado
@@ -584,10 +613,9 @@ async function manejarSync(e, userId) {
     const btnSync = document.getElementById('btnSync');
     const btnCancelar = document.getElementById('btnCancelarSync');
 
-    // Paso 1: código, contraseña (opcional si ya hay una guardada) y periodo.
+    // Paso 1: código y contraseña. Ya no se elige periodo: se carga todo.
     const codigo = document.getElementById('syncCodigo').value.trim().toUpperCase();
     const password = document.getElementById('syncPassword').value;
-    const periodoElegido = document.getElementById('syncPeriodoValor').value;
 
     if (!codigo) {
         mostrarBanner('error', 'Ingresa tu código de estudiante.');
@@ -597,51 +625,75 @@ async function manejarSync(e, userId) {
         mostrarBanner('error', 'Ingresa tu contraseña de INTRALU.');
         return;
     }
-    if (!periodoElegido) {
-        mostrarBanner('error', 'Elige un periodo para sincronizar.');
-        return;
-    }
 
-    // Paso 2: mandar credenciales al backend y esperar a que termine,
-    // con polling. La contraseña nunca se guarda en SIGA — se usa una
-    // sola vez para esta sincronización y se descarta.
+    // Paso 2: mandar credenciales al backend y esperar con polling. La
+    // contraseña nunca se guarda en SIGA — se usa una sola vez y se descarta.
     btnSync.disabled = true;
     btnSync.textContent = 'Conectando...';
     btnCancelar.style.display = 'block';
     mostrarProgreso('Conectando con INTRALU...');
 
-    const resultadoNotas = await sincronizarConBackend(codigo, password, periodoElegido, userId);
+    let omitir = [];
+    try {
+        omitir = await calcularPeriodosAOmitir(userId);
+    } catch (err) {
+        console.warn('No se pudo calcular qué periodos omitir; se pedirá todo:', err);
+    }
+
+    const resultado = await sincronizarConBackend(codigo, password, omitir, userId);
     document.getElementById('syncPassword').value = '';
     ocultarProgreso();
     btnCancelar.style.display = 'none';
 
     if (syncCancelada) return; // ya canceló y reseteó la UI, ignoramos esta respuesta tardía
 
-    if (!resultadoNotas.ok) {
-        mostrarBanner('error', mensajeError(resultadoNotas));
+    if (!resultado.ok) {
+        mostrarBanner('error', mensajeError(resultado));
         btnSync.disabled = false;
         btnSync.textContent = 'Sincronizar';
         return;
     }
 
-    // Paso 3: guardar notas + fórmulas, y — si el backend trajo el PDF en
-    // esta misma sincronización — también el Avance Curricular. Si eso
-    // sale bien, ESA es la única fuente de verdad para facultad/carrera:
-    // se guardan en el perfil y se pintan en la insignia, nunca elegidas
-    // a mano.
-    try {
-        mostrarProgreso('Cargando notas...');
-        await guardarResultadoSync(userId, resultadoNotas);
+    const periodosConCursos = Object.keys(resultado.periodos).sort();
+    if (!periodosConCursos.length && !omitir.length) {
+        mostrarBanner('error', 'No se encontró ningún curso matriculado en INTRALU.');
+        btnSync.disabled = false;
+        btnSync.textContent = 'Sincronizar';
+        return;
+    }
 
-        if (resultadoNotas.avancePdfBase64) {
+    // Paso 3: guardar periodo por periodo (notas + fórmulas) y, si vino el
+    // PDF, el Avance Curricular (única fuente de verdad de facultad/carrera).
+    try {
+        let totalCursos = 0;
+        let totalErrores = 0;
+        for (let i = 0; i < periodosConCursos.length; i++) {
+            const periodo = periodosConCursos[i];
+            const datos = resultado.periodos[periodo];
+            mostrarProgreso(`Guardando ${periodoLindo(periodo)} en SIGA (${i + 1} de ${periodosConCursos.length})...`);
+            await guardarResultadoSync(userId, periodo, datos.cursos || []);
+            totalCursos += (datos.cursos || []).length;
+            totalErrores += (datos.errores || []).length;
+        }
+
+        // Recordar los periodos cerrados revisados que no tenían cursos.
+        const vaciosNuevos = resultado.revisados.filter((p) => !resultado.periodos[p] && periodoCerrado(p));
+        if (vaciosNuevos.length) guardarPeriodosVacios(userId, [...leerPeriodosVacios(userId), ...vaciosNuevos]);
+
+        if (periodosConCursos.length) {
+            await supabase.from('perfiles_usuario').upsert({
+                user_id: userId,
+                periodo_actual: periodosConCursos[periodosConCursos.length - 1],
+            }, { onConflict: 'user_id' });
+        }
+
+        if (resultado.avancePdfBase64) {
             try {
-                const resultadoAvance = await guardarAvanceCurricularDesdeBase64(userId, resultadoNotas.avancePdfBase64);
+                mostrarProgreso('Actualizando tu avance curricular...');
+                const resultadoAvance = await guardarAvanceCurricularDesdeBase64(userId, resultado.avancePdfBase64);
                 if (resultadoAvance.ok) {
                     await guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance);
                     pintarInsigniaFacultad(resultadoAvance.facultad, resultadoAvance.carrera);
-                    // Dato interno, no le sirve al alumno saberlo — solo queda
-                    // en consola por si algún día hay que revisar cuántos
-                    // cursos trajo el Avance Curricular esta vez.
                     console.log(`Avance Curricular actualizado: ${resultadoAvance.cursosGuardados} curso(s).`);
                 } else {
                     console.warn('No se pudo guardar el Avance Curricular esta vez:', resultadoAvance.motivo, resultadoAvance.detalle);
@@ -653,10 +705,16 @@ async function manejarSync(e, userId) {
 
         ocultarProgreso();
 
-        const periodoLindo = `${resultadoNotas.periodo.slice(0, 4)}-${resultadoNotas.periodo.slice(4)}`;
-        let texto = `Periodo ${periodoLindo} cargado.`;
-        if (resultadoNotas.errores.length) {
-            texto += ` (${resultadoNotas.errores.length} curso(s) no se pudieron traer, intenta de nuevo más tarde.)`;
+        let texto;
+        if (periodosConCursos.length === 0) {
+            texto = 'Tus notas ya estaban al día: no había nada nuevo en INTRALU.';
+        } else if (periodosConCursos.length === 1) {
+            texto = `Periodo ${periodoLindo(periodosConCursos[0])} actualizado (${totalCursos} curso${totalCursos === 1 ? '' : 's'}).`;
+        } else {
+            texto = `${periodosConCursos.length} periodos cargados (${periodoLindo(periodosConCursos[0])} a ${periodoLindo(periodosConCursos[periodosConCursos.length - 1])}), ${totalCursos} cursos en total.`;
+        }
+        if (totalErrores) {
+            texto += ` (${totalErrores} curso(s) no se pudieron traer; vuelve a sincronizar más tarde.)`;
         }
 
         document.getElementById('resumenFinalTexto').textContent = texto;

@@ -80,6 +80,67 @@
             cursor: not-allowed;
         }
 
+        /* El ojo va DENTRO de la caja de la contraseña (no como una pieza
+           pegada al costado): así nunca se ve desbordado ni con otro tono
+           de fondo. Sobrescribe auth-siga.css solo en esta página. */
+        .form-login .campo-contrasena {
+            position: relative;
+            display: block;
+        }
+
+        .form-login .campo-contrasena input {
+            padding-right: 50px;
+            border-right: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+
+        .form-login .campo-contrasena .btn-ojo {
+            position: absolute;
+            top: 50%;
+            right: 6px;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        .form-login .campo-contrasena .btn-ojo:not(:disabled):hover {
+            background: rgba(102, 0, 204, 0.08);
+        }
+
+        /* Sincronizar/Conectando y Cancelar: misma altura, misma letra y
+           centrados como pareja (antes el margin:auto del botón morado lo
+           empujaba y quedaban desalineados). */
+        .fila-botones-sync {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .fila-botones-sync .btn-sincronizar {
+            margin: 0;
+        }
+
+        .btn-cancelar-sync {
+            display: none;
+            padding: 14px 28px;
+            border: 1.5px solid var(--brand-morado);
+            border-radius: 14px;
+            background: #fff;
+            color: var(--brand-morado);
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 14px;
+            line-height: normal;
+            cursor: pointer;
+        }
+
         .aviso-sin-intralu {
             text-align: center;
             font-size: 11px;
@@ -323,22 +384,13 @@
                 </label>
                 -->
 
-                <button type="button" class="select-custom-trigger" id="syncPeriodoTrigger" aria-haspopup="listbox"
-                    aria-expanded="false">
-                    <span id="syncPeriodoTriggerTexto">Elige el periodo a sincronizar</span>
-                    <span class="select-custom-chevron" aria-hidden="true">▾</span>
-                </button>
-                <ul class="select-custom-lista" id="syncPeriodoLista" role="listbox" hidden></ul>
-                <input type="hidden" id="syncPeriodoValor">
-
-                <div style="display:flex; gap:10px; align-items:center; justify-content:center;">
+                <div class="fila-botones-sync">
                     <button type="submit" class="btn-sincronizar" id="btnSync">Sincronizar</button>
-                    <button type="button" id="btnCancelarSync"
-                        style="display:none; padding:14px 28px; border:1px solid var(--brand-morado); background:#fff; color:var(--brand-morado); border-radius:14px; font-weight:600; cursor:pointer;">Cancelar</button>
+                    <button type="button" class="btn-cancelar-sync" id="btnCancelarSync">Cancelar</button>
                 </div>
             </form>
 
-            <p class="aviso-sin-intralu">No necesitas activar ni abrir INTRALU para cargar tus notas.</p>
+            <p class="aviso-sin-intralu">Se cargan todos tus ciclos de una vez. No necesitas abrir INTRALU.</p>
 
             <div class="resumen-final" id="resumenFinal">
                 <div class="resumen-final__check">✓</div>
