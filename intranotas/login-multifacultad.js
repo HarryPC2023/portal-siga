@@ -412,7 +412,7 @@ function textoProgreso(data) {
             ? `En fila: ${n === 1 ? 'hay 1 persona' : `hay ${n} personas`} antes que tú. Ya casi...`
             : 'Preparando la conexión con INTRALU...';
     }
-    if (data.etapa === 'iniciando_sesion') return 'Iniciando sesión en INTRALU...';
+    if (data.etapa === 'iniciando_sesion') return 'Conectando con INTRALU...';
     if (data.etapa === 'descargando' && data.periodos_total) {
         const actual = Math.min((data.periodos_hechos || 0) + 1, data.periodos_total);
         return data.periodo_actual
@@ -689,7 +689,6 @@ async function manejarSync(e, userId) {
 
         if (resultado.avancePdfBase64) {
             try {
-                mostrarProgreso('Actualizando tu avance curricular...');
                 const resultadoAvance = await guardarAvanceCurricularDesdeBase64(userId, resultado.avancePdfBase64);
                 if (resultadoAvance.ok) {
                     await guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance);
@@ -709,9 +708,9 @@ async function manejarSync(e, userId) {
         if (periodosConCursos.length === 0) {
             texto = 'Tus notas ya estaban al día: no había nada nuevo en INTRALU.';
         } else if (periodosConCursos.length === 1) {
-            texto = `Periodo ${periodoLindo(periodosConCursos[0])} actualizado (${totalCursos} curso${totalCursos === 1 ? '' : 's'}).`;
+            texto = `Periodo ${periodoLindo(periodosConCursos[0])} actualizado.`;
         } else {
-            texto = `${periodosConCursos.length} periodos cargados (${periodoLindo(periodosConCursos[0])} a ${periodoLindo(periodosConCursos[periodosConCursos.length - 1])}), ${totalCursos} cursos en total.`;
+            texto = `${periodosConCursos.length} periodos cargados (${periodoLindo(periodosConCursos[0])} a ${periodoLindo(periodosConCursos[periodosConCursos.length - 1])}).`;
         }
         if (totalErrores) {
             texto += ` (${totalErrores} curso(s) no se pudieron traer; vuelve a sincronizar más tarde.)`;
