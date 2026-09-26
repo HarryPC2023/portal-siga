@@ -1,0 +1,622 @@
+/* ============================================================
+   horarios-inicio.css — Pantalla inicial de Horarios (sep 2026)
+   Dos vistas en la misma página, igual que Intranotas:
+     · #vistaInicio  → card "Conecta tus horarios de Matrícula UNI"
+                       + sección "Carga horaria anticipada"
+     · #vistaCursos  → "Elige tus cursos", agrupados por categoría,
+                       con barra fija de seleccionados abajo
+   Las cards son blancas en todos los temas (mismo criterio que
+   Intranotas): el tema cambia el fondo de la página, no las cards.
+   ============================================================ */
+
+.hi-contenedor {
+    box-sizing: border-box;
+    width: calc(100% - 32px);
+    max-width: 460px;
+    margin: 32px auto 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.hi-contenedor.hi-ancho {
+    max-width: 920px;
+}
+
+.hi-vista[hidden] {
+    display: none !important;
+}
+
+/* ── Card principal (misma estética que Intranotas) ── */
+.hi-card {
+    box-sizing: border-box;
+    background: #fff;
+    color: var(--ink);
+    border: 1.5px solid rgba(102, 0, 204, 0.30);
+    border: 1.5px solid color-mix(in srgb, var(--brand-morado) 30%, transparent);
+    border-radius: 20px;
+    padding: 24px 22px 26px;
+    box-shadow: 0 12px 32px rgba(102, 0, 204, 0.16);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--brand-morado) 16%, transparent);
+}
+
+.hi-card-secundaria {
+    border-width: 1px;
+    border-radius: 16px;
+    padding: 18px 20px 20px;
+    box-shadow: 0 4px 14px rgba(102, 0, 204, 0.08);
+}
+
+.hi-marca {
+    font-family: var(--font-logo);
+    font-size: 22px;
+    color: var(--brand-morado);
+    margin: 0 0 4px;
+}
+
+.hi-titulo {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.3;
+    margin: 0 0 6px;
+}
+
+.hi-enlace-volver {
+    display: block;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--brand-morado);
+    text-decoration: none;
+    margin: 4px 0 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-body);
+    width: 100%;
+}
+
+.hi-enlace-volver[hidden] {
+    display: none;
+}
+
+/* ── Formulario (copiado del look de .form-login de Intranotas) ── */
+.hi-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.hi-form input {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: var(--brand-azul-tinte);
+    color: #000;
+}
+
+.hi-form input:focus {
+    outline: none;
+    border-color: var(--brand-morado);
+}
+
+.hi-form input::placeholder {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+}
+
+.hi-campo-contrasena {
+    position: relative;
+}
+
+.hi-campo-contrasena input {
+    padding-right: 50px;
+}
+
+.hi-btn-ojo {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.hi-btn-ojo:not(:disabled):hover {
+    background: rgba(102, 0, 204, 0.08);
+}
+
+.hi-btn-ojo:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.hi-fila-botones {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
+}
+
+.hi-btn-principal {
+    padding: 14px 44px;
+    border: none;
+    border-radius: 14px;
+    background: var(--brand-morado);
+    color: #fff;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.hi-btn-principal:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.hi-btn-secundario {
+    padding: 14px 28px;
+    border: 1.5px solid var(--brand-morado);
+    border-radius: 14px;
+    background: #fff;
+    color: var(--brand-morado);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.hi-btn-secundario[hidden] {
+    display: none;
+}
+
+.hi-btn-ancho {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 13px;
+}
+
+.hi-nota {
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin: 14px 0 0;
+    line-height: 1.5;
+}
+
+/* ── Estados: progreso y mensajes ── */
+.hi-progreso {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--brand-morado);
+    margin: 4px 0 2px;
+}
+
+.hi-progreso.visible {
+    display: flex;
+}
+
+.hi-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--brand-morado-tinte);
+    border-top-color: var(--brand-morado);
+    border-radius: 50%;
+    animation: hiGirar 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes hiGirar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.hi-banner {
+    display: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.hi-banner.visible {
+    display: block;
+}
+
+.hi-banner.error {
+    background: #FBE1E1;
+    color: #B4232A;
+}
+
+.hi-banner.info {
+    background: var(--brand-morado-tinte);
+    color: #3d1470;
+}
+
+/* ── Carga horaria anticipada ── */
+.hi-subtitulo {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 15px;
+    margin: 0 0 4px;
+}
+
+.hi-desc {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0 0 12px;
+}
+
+.hi-facultades {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.hi-fac {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #8a8a8a;
+}
+
+.hi-fac.disponible {
+    border-color: #9fd9b6;
+    background: #E1F5E9;
+    color: #12703E;
+}
+
+.hi-fac.mia {
+    outline: 2px solid var(--brand-morado);
+    outline-offset: 1px;
+}
+
+.hi-aviso-caja {
+    background: var(--brand-morado-tinte);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #3d1470;
+}
+
+.hi-meta-carga {
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+}
+
+/* ── Vista "Elige tus cursos" ── */
+.hi-cabecera-cursos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-soft);
+}
+
+.hi-btn-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--brand-morado);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.hi-buscador {
+    position: relative;
+    margin: 12px 0 4px;
+}
+
+.hi-buscador input {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 12px 40px 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: var(--brand-azul-tinte);
+    color: #000;
+}
+
+.hi-buscador input:focus {
+    outline: none;
+    border-color: var(--brand-morado);
+}
+
+.hi-buscador input::placeholder {
+    font-family: 'Poppins', sans-serif;
+}
+
+.hi-buscador button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+
+.hi-grupo-titulo {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin: 18px 0 8px;
+}
+
+.hi-grilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+}
+
+.hi-curso {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    background: #fff;
+    border: 1.5px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    color: var(--ink);
+    transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.hi-curso:hover {
+    border-color: color-mix(in srgb, var(--brand-morado) 45%, transparent);
+}
+
+.hi-curso.seleccionado {
+    border: 2px solid var(--brand-morado);
+    background: var(--brand-morado-tinte);
+}
+
+.hi-curso-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+}
+
+.hi-curso-codigo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--brand-morado);
+    background: var(--brand-morado-tinte);
+    padding: 1px 6px;
+    border-radius: 6px;
+}
+
+.hi-curso-check {
+    color: var(--brand-morado);
+    font-weight: 700;
+    visibility: hidden;
+}
+
+.hi-curso.seleccionado .hi-curso-check {
+    visibility: visible;
+}
+
+.hi-curso-nombre {
+    display: block;
+    font-size: 12.5px;
+    line-height: 1.35;
+    margin: 6px 0 8px;
+}
+
+.hi-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.hi-badge {
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+.hi-badge.vacantes {
+    background: #E1F5E9;
+    color: #12703E;
+}
+
+.hi-badge.sin-vacantes {
+    background: #FDF0CF;
+    color: #8A5A00;
+}
+
+.hi-badge.repetido {
+    background: #FBE1E1;
+    color: #B4232A;
+}
+
+.hi-badge.seccion {
+    background: #f1f1f1;
+    color: #555;
+}
+
+.hi-vacio {
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 20px 0;
+}
+
+.hi-sin-horario {
+    margin-top: 10px;
+    font-size: 12px;
+    background: #FDF0CF;
+    color: #8A5A00;
+    border-radius: 10px;
+    padding: 8px 12px;
+}
+
+.hi-sin-horario summary {
+    cursor: pointer;
+}
+
+/* ── Barra fija de seleccionados ── */
+.hi-barra {
+    position: sticky;
+    bottom: 12px;
+    z-index: 20;
+    margin-top: 16px;
+    background: #fff;
+    border: 1.5px solid color-mix(in srgb, var(--brand-morado) 35%, transparent);
+    border-radius: 16px;
+    padding: 10px 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.hi-barra-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.hi-barra-conteo {
+    font-size: 13px;
+}
+
+.hi-barra-conteo strong {
+    color: var(--brand-morado);
+}
+
+.hi-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 4px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.hi-chips[hidden] {
+    display: none;
+}
+
+.hi-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    padding: 4px 6px 4px 10px;
+    border-radius: 999px;
+    background: var(--brand-morado-tinte);
+    color: #3d1470;
+}
+
+.hi-chip button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #3d1470;
+    font-size: 12px;
+    padding: 0 2px;
+}
+
+.hi-btn-limpiar-sel {
+    border: none;
+    background: none;
+    color: #dc2626;
+    font-family: var(--font-body);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.hi-borrar {
+    display: block;
+    margin: 6px auto 0;
+    background: none;
+    border: none;
+    color: #dc2626;
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.85;
+}
+
+.hi-borrar:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* ── Modal de confirmación de borrado ── */
+.hi-modal-lista {
+    text-align: left;
+    font-size: 12.5px;
+    color: #4a3a5e;
+    margin: 0 0 16px;
+    padding-left: 18px;
+    line-height: 1.6;
+}
+
+.modal-btn-peligro {
+    flex: 1;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    background: #dc2626;
+    color: #fff;
+}
+
+.modal-btn-peligro:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+@media (max-width: 520px) {
+    .hi-card {
+        padding: 20px 16px 22px;
+    }
+
+    .hi-grilla {
+        grid-template-columns: 1fr;
+    }
+
+    .hi-btn-principal {
+        padding: 13px 32px;
+    }
+}

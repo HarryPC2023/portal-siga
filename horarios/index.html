@@ -4,7 +4,6 @@
 <html lang="es">
 
 <head>
-    <link rel="manifest" href="manifest.json">
     <link rel="icon" href="../icons/siga_web.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Poppins:wght@400;500;600&display=swap"
         rel="stylesheet">
     <!-- Tipografía de marca SIGA: Orbitron para todo el texto, Black Ops
-         One solo para el wordmark (ver .logo-title en siga-theme-horarios.css) -->
+         One solo para el wordmark -->
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="../css/variables.css">
@@ -26,13 +25,10 @@
     <link rel="stylesheet" href="../css/tema-siga.css?v=1">
     <link rel="stylesheet" href="static/css/style.css?v=1">
     <link rel="stylesheet" href="static/css/siga-theme-horarios.css">
-
-    <!-- SheetJS: equivale a openpyxl, lee el Excel en el navegador -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="static/css/horarios-inicio.css?v=1">
 
     <!-- Gate de sesión: sin cuenta, redirige a index.html con el login
-         listo para abrirse. Antes faltaba en este módulo. Mismo patrón
-         que ya usa Intranotas. -->
+         listo para abrirse. Mismo patrón que Intranotas. -->
     <script type="module">
         import { supabase, obtenerSesion } from '../js/auth-siga.js?v=8';
         window.sigaSupabase = supabase;
@@ -45,230 +41,205 @@
 
     {% include nav.html activo="horarios" %}
 
-    <div class="page-index" style="min-height: 100vh;">
+    <!-- ═══════════════════════════════════════════════════════════
+         DOS VISTAS EN LA MISMA PÁGINA (mismo criterio que Intranotas)
+         · vistaInicio: aún no hay cursos cargados (o el alumno pulsó
+           "Actualizar desde Matrícula") → card para conectar + carga
+           horaria anticipada.
+         · vistaCursos: ya hay cursos → "Elige tus cursos", agrupados por
+           categoría, con barra fija de seleccionados abajo.
+         Ambas empiezan ocultas: JS decide cuál mostrar al arrancar, así
+         no parpadea la vista equivocada mientras se revisa la nube.
+         ═══════════════════════════════════════════════════════════ -->
 
-        <!-- ═══ BODY ═══ -->
-        <!-- El header propio (.idx-header, logo + "Generador de Horarios")
-             se quitó: ya es redundante con el nav global de SIGA de arriba,
-             que ya muestra "Horarios" como sección activa. -->
-        <div class="idx-body">
-
-            <!-- ── FILA: CONECTAR A MATRÍCULA UNI + SUBIR CARGA HORARIA ──
-                 Antes eran cards independientes apiladas; ahora van lado a
-                 lado (una sola fila) porque ambas alimentan el MISMO
-                 contenedor de "Seleccionar cursos" de abajo — ponerlas al
-                 mismo nivel visual refleja eso. En pantallas angostas
-                 (.idx-fila-inicio, ver CSS) se apilan solas. -->
-            <div class="idx-fila-inicio">
-
-                <!-- ── CARD 0: CONECTAR A MATRÍCULA UNI ── -->
-                <!-- Trae cursos, vacantes y horarios automáticamente desde la
-                 intranet, vía el backend recolectar_horario.py (mismo patrón
-                 que la sincronización de Intralú en Intranotas). Es un
-                 camino alternativo al de subir el Excel a mano — ambos
-                 conviven, ninguno reemplaza al otro.
-                 Ya NO se oculta por completo para no-admins: siempre visible
-                 con badge "Próximamente", pero el botón solo funciona para
-                 el UID admin (ver matriculaConexionHabilitada() más abajo). -->
-                <div class="idx-card" id="cardConectarMatricula">
-                    <div class="card-title">
-                        🔗 Conectar a Matrícula UNI
-                        <span class="badge-proximamente" id="badgeProximamenteMatricula"
-                            style="display:none">Próximamente</span>
-                    </div>
-                    <div class="card-desc card-desc-matricula">Trae tus cursos, vacantes y horarios automáticamente
-                        de Intralu, pero solo aquellos que te corresponden al actual periodo académico y no toda la
-                        carga horaria completa. El proceso tarda menos de un minuto</div>
-                    <div class="matricula-aviso-caida">
-                        ⚠️ Si la página de la intranet no está activa, no será posible realizar la conexión ni cargar
-                        los horarios en la web.
-                    </div>
-
-                    <button id="btnConectarMatricula" class="btn-primary btn-primary-compacto"
-                        onclick="abrirModalSyncMatricula()">
-                        Conectar a Matrícula UNI
-                    </button>
-
-                    <div id="matriculaStatus" class="upload-status"></div>
-                    <div id="matriculaSinHorario" style="display:none"></div>
-                </div>
-
-                <!-- ── CARD 1: CARGA HORARIA OFICIAL ── -->
-                <!-- Antes lideraba "Subir carga horaria" con la zona de
-                     arrastrar archivo bien visible, aunque ya no hace falta
-                     subir nada. Ahora lidera la confirmación (fileInfo +
-                     uploadStatus, mismos IDs, misma lógica JS de siempre) y
-                     la subida manual queda colapsada — sigue ahí para quien
-                     de verdad la necesite (corrección puntual, o si en el
-                     futuro esta automatización deja de mantenerse), pero
-                     ya no compite visualmente con lo que la mayoría necesita. -->
-                <div class="idx-card">
-                    <div class="co-header">
-                        <span class="co-header-icono">📅</span>
-                        <span class="co-header-textos">
-                            <span class="co-header-titulo-texto">Carga horaria oficial</span>
-                            <span class="co-header-subtitulo">Ya está lista y cargada toda la carga horaria oficial
-                                completa</span>
-                        </span>
-                    </div>
-
-                    <div id="fileInfo" class="file-badge" style="display:none"></div>
-                    <div id="uploadStatus" class="upload-status"></div>
-
-                    <details class="carga-manual-detalle">
-                        <summary>Si deseas puedes subir tú mismo la carga horaria</summary>
-                        <div class="carga-manual-contenido">
-                            <div class="upload-zone" id="uploadZone">
-                                <input type="file" id="fileInput" accept=".xlsx,.xls">
-                                <div class="upload-icon">📄</div>
-                                <div class="upload-label">
-                                    <strong>Click para seleccionar archivo</strong>
-                                    Formatos: .xlsx, .xls
-                                </div>
-                            </div>
-
-                            <button id="btnUpload" class="btn-primary" disabled>
-                                Cargar archivo
-                            </button>
-                        </div>
-                    </details>
-
-                    <!-- Progreso: se guarda solo en cada cambio, ya no depende de un clic -->
-                    <div id="persistActions" style="display:none; flex-direction:column; gap:6px; margin-top:10px;">
-                        <div class="autosave-hint" style="font-size:11px; opacity:.6; text-align:center;">
-                            💾 Tu progreso se guarda automáticamente
-                        </div>
-                        <button id="btnLimpiarTodo" class="btn-action" style="width:100%; color:#ef4444;"
-                            title="Borrar archivo y selección guardados">
-                            🗑 Limpiar todo
-                        </button>
-                    </div>
-                </div>
-
+    <div class="hi-contenedor" id="vistaCargando">
+        <div class="hi-card" style="text-align:center;">
+            <div class="hi-progreso visible" style="justify-content:center;">
+                <span class="hi-spinner"></span> Cargando tus horarios...
             </div>
-            <!-- ── FIN FILA: CONECTAR A MATRÍCULA UNI + SUBIR CARGA HORARIA ── -->
-
-            <!-- ── CARD 2: SELECCIONAR CURSOS ── -->
-            <!-- Debajo de AMBAS opciones de la fila (no de una sola): es un
-                 único contenedor compartido, alimentado tanto por Excel como
-                 por Matrícula, así que no debe favorecer visualmente a
-                 ninguna. Empieza oculta, JS la muestra tras cargar Excel o
-                 conectar a Matrícula. -->
-            <div class="idx-card" id="cardCursos" style="display:none">
-                <div class="card-title">📚 Seleccionar cursos</div>
-                <div class="card-desc">Busca y elige los cursos que deseas incluir</div>
-
-                <div class="search-wrap">
-                    <input type="text" id="courseSearch" class="search-input"
-                        placeholder="Buscar por nombre o código de curso...">
-                    <button id="clearSearch" class="clear-search-btn">✕</button>
-                </div>
-
-                <!-- JS llenará esta lista con los cursos del Excel o de Matrícula -->
-                <div class="cursos-lista" id="cursosLista"></div>
-
-                <div class="seleccionados-wrap">
-                    <div class="sel-header">
-                        <span class="sel-label">Seleccionados</span>
-                        <span class="sel-count" id="selCount">0</span>
-                    </div>
-
-                    <!-- Chips de cursos seleccionados, cada uno se puede quitar individualmente -->
-                    <div class="sel-chips" id="selChips"></div>
-
-                    <button id="btnClearSel" class="btn-action"
-                        style="width:100%; margin-bottom:10px; display:none; color:#ef4444;">
-                        ✕ Limpiar selección
-                    </button>
-
-                    <button id="btnNext" class="btn-primary btn-next" disabled>
-                        Ir al Simulador →
-                    </button>
-                </div>
-            </div>
-
         </div>
+    </div>
+
+    <!-- ══════════ VISTA 1: INICIO ══════════ -->
+    <div class="hi-contenedor hi-vista" id="vistaInicio" hidden>
+
+        <section class="hi-card">
+            <p class="hi-marca">SIGA</p>
+            <h1 class="hi-titulo">Conecta tus horarios de Matrícula UNI</h1>
+
+            <button type="button" class="hi-enlace-volver" id="btnVolverCursos" hidden>
+                Ver mis cursos guardados →
+            </button>
+
+            <div class="hi-banner" id="bannerMatricula"></div>
+            <div class="hi-progreso" id="progresoMatricula">
+                <span class="hi-spinner"></span>
+                <span id="progresoMatriculaTexto">Conectando...</span>
+            </div>
+
+            <form class="hi-form" id="formMatricula" autocomplete="off">
+                <input type="text" id="matriculaCodigo" placeholder="20231234X" autocomplete="off"
+                    style="text-transform:uppercase;" required>
+                <div class="hi-campo-contrasena">
+                    <input type="password" id="matriculaPassword" placeholder="Contraseña de INTRALU"
+                        autocomplete="off" required>
+                    <button type="button" class="hi-btn-ojo" id="btnOjoMatricula"
+                        aria-label="Mostrar contraseña" disabled>👁</button>
+                </div>
+
+                <div class="hi-fila-botones">
+                    <button type="submit" class="hi-btn-principal" id="btnConectar">Conectar</button>
+                    <button type="button" class="hi-btn-secundario" id="btnCancelarConexion" hidden>Cancelar</button>
+                </div>
+            </form>
+
+            <p class="hi-nota">
+                Trae tus cursos del periodo actual con vacantes y horarios reales. Funciona para todas las
+                facultades cuando la página de Matrícula está activa. Tu contraseña se usa una sola vez y
+                nunca se guarda.
+            </p>
+        </section>
+
+        <section class="hi-card hi-card-secundaria" id="seccionAnticipada">
+            <h2 class="hi-subtitulo">📅 Carga horaria anticipada</h2>
+            <p class="hi-desc">Arma tu horario antes de que abra Matrícula con la carga oficial de tu facultad.</p>
+            <div class="hi-facultades" id="listaFacultades"></div>
+            <div id="contenidoAnticipada"></div>
+        </section>
+
+        <button type="button" class="hi-borrar" id="btnBorrarInicio" hidden>🗑 Borrar mis datos de Horarios</button>
+    </div>
+
+    <!-- ══════════ VISTA 2: ELIGE TUS CURSOS ══════════ -->
+    <div class="hi-contenedor hi-ancho hi-vista" id="vistaCursos" hidden>
+        <section class="hi-card">
+            <div class="hi-cabecera-cursos">
+                <span id="infoOrigen"></span>
+                <button type="button" class="hi-btn-link" id="btnIrAConectar">🔄 Actualizar desde Matrícula</button>
+            </div>
+            <div id="avisoSinHorario"></div>
+
+            <h1 class="hi-titulo" style="margin-top:12px;">Elige tus cursos</h1>
+
+            <div class="hi-buscador">
+                <input type="text" id="buscadorCursos" placeholder="Buscar por nombre o código">
+                <button type="button" id="btnLimpiarBusqueda" aria-label="Borrar búsqueda" hidden>✕</button>
+            </div>
+
+            <div id="gruposCursos"></div>
+
+            <div class="hi-barra">
+                <div class="hi-barra-fila">
+                    <span class="hi-barra-conteo">
+                        <strong id="conteoSeleccion">0</strong> seleccionados ·
+                        <button type="button" class="hi-btn-link" id="btnVerLista">ver lista ▾</button>
+                    </span>
+                    <button type="button" class="hi-btn-principal" id="btnIrSimulador" style="padding:11px 24px;"
+                        disabled>Ir al simulador →</button>
+                </div>
+                <div id="panelChips" hidden>
+                    <div class="hi-chips" id="chipsSeleccion"></div>
+                    <button type="button" class="hi-btn-limpiar-sel" id="btnLimpiarSeleccion">✕ Limpiar selección</button>
+                </div>
+            </div>
+        </section>
+
+        <button type="button" class="hi-borrar" id="btnBorrarCursos">🗑 Borrar mis datos de Horarios</button>
     </div>
 
     <div class="toast" id="toast"></div>
 
-    <!-- ── Scripts ── -->
-    <!-- parser.js debe cargarse antes que este script -->
-    <script src="static/js/parser.js"></script>
     <!-- Motor de temas SIGA (Claro/Oscuro/Ocean/Forest), compartido con generador.html -->
     <script src="../js/tema-siga.js?v=1"></script>
 
     <script>
-        // ── Referencias al DOM ──────────────────────────────────
-        const fileInput = document.getElementById('fileInput');
-        const btnUpload = document.getElementById('btnUpload');
-        const fileInfo = document.getElementById('fileInfo');
-        const uploadStatus = document.getElementById('uploadStatus');
-        const uploadZone = document.getElementById('uploadZone');
-        const cardCursos = document.getElementById('cardCursos');
-        const cursosLista = document.getElementById('cursosLista');
-        const courseSearch = document.getElementById('courseSearch');
-        const clearSearch = document.getElementById('clearSearch');
-        const persistActions = document.getElementById('persistActions');
-        const btnClearSel = document.getElementById('btnClearSel');
-
-        // Almacena la carga horaria parseada y los cursos seleccionados
-        // Equivale a carga_horaria = {} en app.py
-        let cargaGlobal = null;
+        /* ============================================================
+           ESTADO
+           ============================================================ */
+        let cargaGlobal = null;            // { nombreCurso: { seccion: {...} } }
         let cursosSeleccionados = new Set();
-        let nombreArchivoActual = '';
+        let nombreArchivoActual = '';      // texto que se muestra (ej. "Matrícula UNI · periodo 20262")
+        let cursosMetadata = {};           // solo con Matrícula: tipo O/E/C, vacantes, repetido
+        // De dónde viene la carga: 'matricula' | 'oficial:<id del catálogo>' | 'archivo'
+        // ('archivo' = Excel subido a mano en versiones anteriores; ya no se ofrece,
+        // pero se respeta si alguien todavía lo tiene guardado).
+        let origenCarga = '';
+        let cursosSinHorario = [];         // aviso de la última conexión a Matrícula
+        let perfilAlumno = { codigo: '', facultad: '' };
+        // true si la nube guarda algo tuyo aunque este dispositivo no tenga
+        // carga (así "Borrar mis datos" aparece igual en la vista de inicio).
+        let hayDatosEnNube = false;
 
-        // Metadata extra (solo existe cuando la carga vino de "Conectar a
-        // Matrícula UNI"): tipo de curso, vacantes, veces repetido, etc.
-        // Con Excel esto queda vacío y construirListaCursos() no muestra
-        // ningún badge — comportamiento idéntico al de siempre.
-        let cursosMetadata = {};
-        // 'excel' | 'matricula' — el Asistente de Horario (asistente-horario.js)
-        // lee esto de localStorage para decidir si mostrarse o no.
-        let origenDatos = 'excel';
-
-        // Claves de guardado persistente (sobreviven a cerrar la app/pestaña)
+        /* ── Claves del navegador ── */
         const LS_CARGA = 'horarioGen_carga';
         const LS_NOMBRE = 'horarioGen_archivo';
         const LS_SEL = 'horarioGen_seleccion';
         const LS_METADATA = 'horarioGen_metadata';
         const LS_ORIGEN = 'horarioGen_origen';
-        // Estas dos las usa generador.js (pantalla 2), pero se limpian desde
-        // acá cuando cambia el archivo o el usuario pulsa "Limpiar todo"
+        // Cuándo se escribió por última vez lo guardado en ESTE dispositivo.
+        // Se compara con limpiado_en de la nube: si alguien borró todo
+        // después (desde otro dispositivo), lo local se descarta en vez de
+        // resucitar. Ver arrancar().
+        const LS_GUARDADO_EN = 'horarioGen_guardadoEn';
+        const LS_CICLO = 'horarioGen_ciclo';
+        // Estas las usa generador.js (pantalla 2)
         const LS_GEN_SECCIONES = 'horarioGen_seccionesGen';
         const LS_GEN_CRUCES = 'horarioGen_cruces';
+        const LS_GEN_PRIORIDADES = 'horarioGen_prioridadesProfesor';
+        const LS_GEN_COMBOS = 'horarioGen_combosCache';
+        const LS_GEN_COMBOS_IDX = 'horarioGen_combosIdx';
 
-        // ── Carga horaria oficial ya integrada (sin subir Excel) ────────
-        // Cuando el usuario no tiene nada guardado (primera visita, o
-        // pulsó "Limpiar todo"), se trae sola desde static/data/ en vez
-        // de esperar a que suba un archivo. El Excel manual y "Conectar a
-        // Matrícula UNI" siguen funcionando exactamente igual que antes,
-        // por si alguien necesita otra fuente puntual.
+        // Todo lo que es DATO de Horarios. A propósito NO incluye las
+        // preferencias (horarioGen_tema, horarioGen_huecosVisiblesCalendario)
+        // ni horarioGen_ciclo: "Borrar mis datos" no debe cambiarte el tema.
+        const CLAVES_DATOS = [LS_CARGA, LS_NOMBRE, LS_SEL, LS_METADATA, LS_ORIGEN, LS_GUARDADO_EN,
+            LS_GEN_SECCIONES, LS_GEN_CRUCES, LS_GEN_PRIORIDADES, LS_GEN_COMBOS, LS_GEN_COMBOS_IDX];
+
+        /* ── Ciclo y catálogo de cargas oficiales anticipadas ──
+           Para agregar la carga de otra facultad: poner su JSON en
+           static/data/cargas/ (mismo formato que genera
+           scripts/generar_carga_horario.py) y sumar una entrada acá. Solo
+           se ofrecen las entradas del CICLO_ACTUAL. */
         const CICLO_ACTUAL = '2026-2';
-        const RUTA_CARGA_OFICIAL = 'static/data/carga-2026-2.json';
-        const LS_CICLO = 'horarioGen_ciclo';
+        const CATALOGO_CARGAS = [
+            {
+                id: 'fiis-2026-2',
+                facultad: 'FIIS',
+                ciclo: '2026-2',
+                ruta: 'static/data/cargas/fiis-2026-2.json',
+                detalle: '4 carreras, todos los ciclos',
+            },
+        ];
+        const SIGLAS_FACULTADES = ['FIIS', 'FIEE', 'FIM', 'FIC', 'FIGMM', 'FIQT', 'FC', 'FAUA', 'FIP', 'FIA', 'FIEECS'];
 
-        // Si cambió el ciclo desde la última visita (ej. 2026-1 → 2026-2),
-        // todo lo guardado (Excel, Matrícula, selección, secciones/cruces
-        // del generador) pertenece a una carga que ya no existe.
+        function cargasDelCiclo() {
+            return CATALOGO_CARGAS.filter(c => c.ciclo === CICLO_ACTUAL);
+        }
+
+        // Si cambió el ciclo desde la última visita (ej. 2026-2 → 2027-1),
+        // lo guardado en el navegador pertenece a una carga que ya no existe.
         (function invalidarSiCambioDeCiclo() {
             const cicloGuardado = localStorage.getItem(LS_CICLO);
             if (cicloGuardado && cicloGuardado !== CICLO_ACTUAL) {
-                [LS_CARGA, LS_NOMBRE, LS_SEL, LS_METADATA, LS_ORIGEN,
-                    LS_GEN_SECCIONES, LS_GEN_CRUCES,
-                    'horarioGen_combosCache', 'horarioGen_combosIdx'
-                ].forEach(k => localStorage.removeItem(k));
+                CLAVES_DATOS.forEach(k => localStorage.removeItem(k));
             }
             localStorage.setItem(LS_CICLO, CICLO_ACTUAL);
         })();
 
-        // ── Nombre a mostrar en pantalla ─────────────────────────
+        /* ============================================================
+           UTILIDADES
+           ============================================================ */
+        const $ = (id) => document.getElementById(id);
+
+        function escapeHtml(s) {
+            return String(s ?? '').replace(/[&<>"']/g, ch => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[ch]));
+        }
+
         // La llave interna de un curso a veces trae " (CÓDIGO)" pegado al
-        // final — solo pasa en los pocos casos donde dos cursos de
-        // carreras distintas comparten exactamente el mismo nombre oficial
-        // pero tienen código distinto (ver generar_carga_horario.py). Ese
-        // sufijo hace falta por dentro para no mezclarlos, pero en pantalla
-        // se quita: el código ya se ve aparte en su badge.
+        // final (dos cursos de carreras distintas con el mismo nombre
+        // oficial). Hace falta por dentro; en pantalla se quita.
         function nombreVisible(nombre, codigo) {
             if (codigo && nombre.endsWith(` (${codigo})`)) {
                 return nombre.slice(0, -(`(${codigo})`.length + 1));
@@ -276,598 +247,27 @@
             return nombre;
         }
 
-        // Trae la carga horaria oficial del ciclo y la deja lista, como si
-        // el usuario acabara de subir el Excel (mismos elementos, mismo
-        // flujo de guardado) — así no hay que duplicar nada más abajo.
-        async function cargarCargaOficial() {
-            try {
-                const resp = await fetch(RUTA_CARGA_OFICIAL);
-                if (!resp.ok) throw new Error('No se pudo obtener el archivo (' + resp.status + ')');
-                const data = await resp.json();
-
-                cargaGlobal = data.cursos || {};
-                const meta = data.meta || {};
-                nombreArchivoActual = `Carga oficial ${meta.ciclo || CICLO_ACTUAL}`;
-                cursosMetadata = {};
-                origenDatos = 'excel';
-                cursosSeleccionados = new Set();
-
-                sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
-
-                // Dispositivo nuevo (sin nada en localStorage): antes de
-                // mostrar la lista de cursos vacía, revisa si ya elegiste
-                // cursos desde otro dispositivo (quedan guardados en
-                // horarios_alumno al generar un horario).
-                try {
-                    await sincronizarSeleccionCursosDesdeNube();
-                } catch (e) {
-                    console.warn('No se pudo revisar cursos guardados en la nube:', e);
-                }
-
-                const cursos = Object.keys(cargaGlobal).sort();
-                fileInfo.style.display = 'flex';
-                fileInfo.innerHTML = '📄 ' + nombreArchivoActual;
-                uploadStatus.innerHTML = cursosSeleccionados.size > 0
-                    ? `<span style="color:#10b981">✅ ${cursos.length} cursos disponibles — recuperamos tu selección guardada en la nube.</span>`
-                    : `<span style="color:#10b981">✅ ${cursos.length} cursos disponibles — no necesitas subir nada.</span>`;
-
-                renderizarListaConFiltro(cursos);
-                cardCursos.style.display = 'block';
-                persistActions.style.display = 'flex';
-                actualizarSeleccion();
-                guardarProgreso();
-            } catch (err) {
-                uploadStatus.innerHTML =
-                    `<span style="color:#ef4444">❌ No se pudo cargar la carga horaria oficial (${err.message}). Puedes subir el Excel manualmente mientras tanto.</span>`;
-                console.error('Error al cargar la carga horaria oficial:', err);
-            }
-        }
-
-        // Sube cursosMetadata (Obligatorio/Electivo/Complementario/vacantes
-        // reales, obtenidas de Matrícula UNI) a la misma fila de
-        // horarios_alumno que ya usa el resto de la sincronización. Solo
-        // tiene contenido real tras "Conectar a Matrícula UNI" — con Excel
-        // manual o carga oficial, cursosMetadata está vacío y esto no hace
-        // nada (no hay nada que subir).
-        let _debounceMetadataNube = null;
-        function subirMetadataANube() {
-            if (!cursosMetadata || !Object.keys(cursosMetadata).length) return;
-            clearTimeout(_debounceMetadataNube);
-            _debounceMetadataNube = setTimeout(async () => {
-                await esperarSigaObtenerSesion();
-                if (!window.sigaObtenerSesion || !window.sigaSupabase) return;
-                const sesion = await window.sigaObtenerSesion();
-                if (!sesion) return;
-                try {
-                    const { error } = await window.sigaSupabase
-                        .from('horarios_alumno')
-                        .upsert({
-                            user_id: sesion.user.id,
-                            cursos_metadata: cursosMetadata,
-                            actualizado_en: new Date().toISOString(),
-                        });
-                    if (error) console.warn('No se pudo subir la categoría de cursos a la nube:', error);
-                } catch (e) {
-                    console.warn('Error subiendo categoría de cursos a la nube:', e);
-                }
-            }, 800);
-        }
-
-        /* Consulta horarios_alumno (misma tabla que usa el Generador para
-           reconciliar profesores/secciones entre dispositivos) y hace que
-           cursosSeleccionados quede IGUAL a lo que hay en la nube — no solo
-           agrega, reemplaza — así, sin importar si este dispositivo tenía
-           una selección local vieja/vacía, gana lo último guardado desde
-           cualquier dispositivo (mismo criterio que ya usa la reconciliación
-           de secciones/profesores en generador.js). También reconcilia
-           cursosMetadata (badges Obligatorio/Electivo/Complementario): si
-           la nube trae algo y es distinto a lo que hay localmente, lo
-           adopta — por ejemplo, si conectaste a Matrícula UNI en la PC
-           DESPUÉS de que este dispositivo ya tenía los mismos cursos vía
-           carga oficial (sin badges). Devuelve true si cambió algo respecto
-           a lo que había localmente. Usa esperarSigaObtenerSesion(),
-           definida más abajo en este mismo bloque — function hoisting hace
-           que esté disponible igual, sin importar el orden en el archivo. */
-        async function sincronizarSeleccionCursosDesdeNube() {
-            await esperarSigaObtenerSesion();
-            if (!window.sigaObtenerSesion || !window.sigaSupabase) return false;
-
-            const sesion = await window.sigaObtenerSesion();
-            if (!sesion) return false;
-
-            const { data, error } = await window.sigaSupabase
-                .from('horarios_alumno')
-                .select('secciones_generador, cursos_metadata')
-                .eq('user_id', sesion.user.id)
-                .maybeSingle();
-
-            if (error || !data || !data.secciones_generador) return false;
-
-            // Solo cursos que sigan existiendo en la carga horaria actual
-            // (por si algún curso ya no se dicta este ciclo).
-            const cursosNube = Object.keys(data.secciones_generador).filter(c => c in cargaGlobal);
-            if (!cursosNube.length) return false;
-
-            const nubeSet = new Set(cursosNube);
-            const igualQueLocal = nubeSet.size === cursosSeleccionados.size &&
-                [...nubeSet].every(c => cursosSeleccionados.has(c));
-
-            let cambioMetadata = false;
-            if (data.cursos_metadata && Object.keys(data.cursos_metadata).length) {
-                if (JSON.stringify(cursosMetadata) !== JSON.stringify(data.cursos_metadata)) {
-                    cursosMetadata = data.cursos_metadata;
-                    cambioMetadata = true;
-                }
-            }
-
-            if (igualQueLocal && !cambioMetadata) return false;
-
-            cursosSeleccionados = nubeSet;
-            return true;
-        }
-
-        // ── Autoguardado: se llama en cada cambio, no en un clic ──
-        // Reemplaza al antiguo botón "Guardar" manual.
-        function guardarProgreso() {
-            if (!cargaGlobal) return;
-            try {
-                localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
-                localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
-                localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
-                localStorage.setItem(LS_METADATA, JSON.stringify(cursosMetadata));
-                localStorage.setItem(LS_ORIGEN, origenDatos);
-                avisarAutoguardadoUnaVez();
-            } catch (e) {
-                // Ej: archivo muy grande para el límite de localStorage del navegador
-                showToast('No se pudo guardar automáticamente (archivo muy grande para el navegador)', 'error');
-            }
-        }
-
-        // Avisa una sola vez por sesión de pestaña que el guardado es automático,
-        // para no mostrar un toast en cada clic/selección.
-        function avisarAutoguardadoUnaVez() {
-            if (sessionStorage.getItem('horarioGen_avisoAutoguardado')) return;
-            sessionStorage.setItem('horarioGen_avisoAutoguardado', '1');
-            showToast('Tu progreso se guarda automáticamente ✓', 'success');
-        }
-
-        // ── Código del curso a partir de la carga ───────────────
         function getCodigoCurso(nombre) {
             if (!cargaGlobal || !cargaGlobal[nombre]) return '';
             const secciones = Object.values(cargaGlobal[nombre]);
             return secciones.length ? (secciones[0].codigo || '') : '';
         }
 
-        // ── 1. Archivo seleccionado: muestra nombre y habilita botón ──
-        fileInput.onchange = () => {
-            if (fileInput.files.length > 0) {
-                const name = fileInput.files[0].name;
-                fileInfo.style.display = 'flex';
-                fileInfo.innerHTML = '📄 ' + name;
-                uploadZone.classList.add('active');
-                btnUpload.disabled = false;
-            }
-        };
-
-        // ── 2. Cargar archivo: llama a parsearExcel() de parser.js ──
-        btnUpload.onclick = () => {
-            if (!fileInput.files.length) return;
-
-            const file = fileInput.files[0];
-            btnUpload.disabled = true;
-            fileInfo.style.display = 'flex';
-            fileInfo.innerHTML = '⏳ Cargando: ' + file.name;
-            uploadStatus.innerHTML = '<span class="spinner"></span> Procesando archivo...';
-
-            // Al cargar un archivo nuevo se limpia la selección anterior
-            cursosSeleccionados = new Set();
-
-            parsearExcel(file)
-                .then(carga => {
-                    // Si ya había un archivo distinto guardado, la selección de
-                    // secciones/profesores y cruces de la pantalla 2 (que pertenece
-                    // a ese archivo anterior) ya no tiene sentido: se limpia y se avisa.
-                    const nombreAnterior = localStorage.getItem(LS_NOMBRE);
-                    const habiaSeleccionGenerador =
-                        !!localStorage.getItem(LS_GEN_SECCIONES) || !!localStorage.getItem(LS_GEN_CRUCES);
-                    if (nombreAnterior && nombreAnterior !== file.name && habiaSeleccionGenerador) {
-                        localStorage.removeItem(LS_GEN_SECCIONES);
-                        localStorage.removeItem(LS_GEN_CRUCES);
-                        showToast('Archivo nuevo detectado: tu selección de secciones y cruces anterior quedó desactualizada', 'info');
-                    }
-
-                    cargaGlobal = carga;
-                    nombreArchivoActual = file.name;
-                    // El Excel no trae tipo/vacantes/vacantes ni garantiza
-                    // que los docentes sean del ciclo actual, así que el
-                    // origen vuelve a 'excel' (apaga badges y Asistente).
-                    cursosMetadata = {};
-                    origenDatos = 'excel';
-
-                    // Guarda la carga en sessionStorage para que generador.html la use
-                    sessionStorage.setItem('cargaHoraria', JSON.stringify(carga));
-
-                    const cursos = Object.keys(carga).sort();
-                    uploadStatus.innerHTML =
-                        `<span style="color:#10b981">✅ ¡Éxito! ${cursos.length} cursos cargados.</span>`;
-
-                    renderizarListaConFiltro(cursos);
-                    cardCursos.style.display = 'block';
-                    persistActions.style.display = 'flex';
-                    actualizarSeleccion();
-                    guardarProgreso();
-                })
-                .catch(err => {
-                    uploadStatus.innerHTML =
-                        `<span style="color:#ef4444">❌ ${err}</span>`;
-                    btnUpload.disabled = false;
-                });
-        };
-
-        // ── Filtro "solo mis cursos" (carga oficial genérica) ──────
-        // La carga oficial trae los 142 cursos de TODAS las carreras/ciclos
-        // — a diferencia de Matrícula UNI, que ya devuelve solo lo que le
-        // corresponde al alumno. cursos_metadata (propia o sincronizada de
-        // otro dispositivo) es justo esa lista de "lo que me corresponde",
-        // así que se usa para acotar la vista mientras la carga activa sea
-        // la genérica. Sin opción de "ver todos" a propósito: si hay
-        // metadata, es porque Matrícula UNI ya confirmó qué corresponde —
-        // no hace falta un catálogo completo de respaldo.
-        function esCargaOficialGenerica() {
-            return typeof nombreArchivoActual === 'string' && nombreArchivoActual.startsWith('Carga oficial');
+        function showToast(msg, type = 'info') {
+            const t = $('toast');
+            if (!t) return;
+            t.textContent = msg;
+            t.className = `toast show ${type}`;
+            setTimeout(() => { t.className = 'toast'; }, 3000);
         }
 
-        function renderizarListaConFiltro(cursos) {
-            if (!esCargaOficialGenerica() || !cursosMetadata || !Object.keys(cursosMetadata).length) {
-                construirListaCursos(cursos);
-                return;
-            }
-
-            const propios = cursos.filter(c => c in cursosMetadata);
-            // Si por algún motivo ninguno de los cursos de cursos_metadata
-            // sigue existiendo en la carga actual, no tiene sentido mostrar
-            // una lista vacía — se cae de vuelta al catálogo completo.
-            construirListaCursos(propios.length ? propios : cursos);
-        }
-
-        // ── 3. Construir lista de cursos dinámicamente ──────────
-        // Los badges (tipo/vacantes/repetido) SOLO aparecen si cursosMetadata
-        // trae algo para ese curso — es decir, solo tras "Conectar a Matrícula
-        // UNI". Con Excel, cursosMetadata está vacío y esto se comporta
-        // exactamente igual que antes.
-        const TIPO_BADGE = {
-            O: { label: 'Obligatorio', clase: 'curso-badge-o' },
-            E: { label: 'Electivo', clase: 'curso-badge-e' },
-            C: { label: 'Complementario', clase: 'curso-badge-c' },
-        };
-
-        function construirListaCursos(cursos) {
-            cursosLista.innerHTML = '';
-            cursos.forEach(nombre => {
-                const codigo = getCodigoCurso(nombre);
-                const meta = cursosMetadata[nombre];
-                const div = document.createElement('div');
-                div.className = 'curso-item';
-                div.dataset.nombre = nombre;
-                div.dataset.codigo = codigo;
-
-                let badgesHtml = '';
-                if (meta) {
-                    const tipo = TIPO_BADGE[meta.tipo];
-                    if (tipo) badgesHtml += `<span class="curso-badge ${tipo.clase}">${tipo.label}</span>`;
-                    if (meta.vecesRepetido > 0) badgesHtml += `<span class="curso-badge curso-badge-n">N · repetido</span>`;
-                    if (typeof meta.vacantesDisponibles === 'number') {
-                        badgesHtml += `<span class="curso-badge curso-badge-vacantes">${meta.vacantesDisponibles} vacantes libres</span>`;
-                    }
-                }
-
-                // Vacantes por sección: solo existen cuando la carga viene de
-                // la carga horaria oficial (carga-<ciclo>.json trae
-                // "vacantes" por sección). Con Excel manual o Matrícula
-                // (que ya muestra su propio badge arriba) esto no aparece
-                // — no hay datos para eso. Solo en esta pantalla, nunca en
-                // el generador (pantalla 2).
-                let vacantesHtml = '';
-                const seccionesCurso = (cargaGlobal && cargaGlobal[nombre]) || {};
-                const conVacantes = Object.entries(seccionesCurso)
-                    .filter(([, info]) => typeof info.vacantes === 'number')
-                    .sort((a, b) => a[0].localeCompare(b[0], 'es'));
-                if (!meta && conVacantes.length) {
-                    vacantesHtml = `<div class="curso-vacantes-wrap">${conVacantes.map(([sec, info]) =>
-                        `<span class="curso-vacante-item" title="Sección ${sec} — ${info.vacantes} vacantes">${sec} · ${info.vacantes}</span>`
-                    ).join('')}</div>`;
-                }
-
-                div.innerHTML = `
-        <div class="curso-item-row">
-          <span class="curso-nombre">${codigo ? `<span class="curso-codigo">${codigo}</span> ` : ''}${nombreVisible(nombre, codigo)}</span>
-          <span class="curso-check">✔</span>
-        </div>
-        ${badgesHtml ? `<div class="curso-badges-wrap">${badgesHtml}</div>` : ''}
-        ${vacantesHtml}
-      `;
-                div.onclick = () => toggleCursoSeleccionado(div, nombre);
-                if (cursosSeleccionados.has(nombre)) {
-                    div.classList.add('seleccionado');
-                    div.querySelector('.curso-check').style.display = 'inline';
-                }
-                cursosLista.appendChild(div);
-            });
-        }
-
-        // ── 4. Buscador: "empieza por" con prioridad, no "contiene en cualquier parte" ──
-        // Orden de resultados:
-        //   0) el nombre del curso empieza con lo escrito
-        //   1) alguna palabra intermedia del nombre empieza con lo escrito
-        //   2) el código del curso empieza con lo escrito
-        // y dentro de cada grupo, alfabético.
-        function normalizarBusqueda(s) {
-            return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        }
-
-        function prioridadBusqueda(item, q) {
-            const nombre = normalizarBusqueda(item.dataset.nombre || '');
-            const codigo = normalizarBusqueda(item.dataset.codigo || '');
-
-            if (nombre.startsWith(q)) return 0;
-            if (nombre.split(/\s+/).some(palabra => palabra.startsWith(q))) return 1;
-            if (codigo.startsWith(q)) return 2;
-            return -1;
-        }
-
-        function restaurarOrdenAlfabetico() {
-            const items = [...document.querySelectorAll('.curso-item')];
-            items.sort((a, b) => a.dataset.nombre.localeCompare(b.dataset.nombre, 'es'));
-            items.forEach(item => {
-                item.style.display = 'flex';
-                cursosLista.appendChild(item);
-            });
-        }
-
-        courseSearch.addEventListener('input', e => {
-            const q = normalizarBusqueda(e.target.value.trim());
-            clearSearch.style.display = q.length > 0 ? 'block' : 'none';
-
-            if (!q) {
-                restaurarOrdenAlfabetico();
-                return;
-            }
-
-            const items = [...document.querySelectorAll('.curso-item')];
-            const conPrioridad = items
-                .map(item => ({ item, prioridad: prioridadBusqueda(item, q) }))
-                .filter(x => x.prioridad !== -1);
-
-            conPrioridad.sort((a, b) => {
-                if (a.prioridad !== b.prioridad) return a.prioridad - b.prioridad;
-                return a.item.dataset.nombre.localeCompare(b.item.dataset.nombre, 'es');
-            });
-
-            items.forEach(item => { item.style.display = 'none'; });
-            conPrioridad.forEach(({ item }) => {
-                item.style.display = 'flex';
-                cursosLista.appendChild(item);
-            });
-        });
-
-        clearSearch.onclick = () => {
-            courseSearch.value = '';
-            clearSearch.style.display = 'none';
-            restaurarOrdenAlfabetico();
-            courseSearch.focus();
-        };
-
-        // ── 5. Selección de cursos: toggle ✔, chips y contador ───
-        function toggleCursoSeleccionado(elemento, nombre) {
-            const checkIcon = elemento.querySelector('.curso-check');
-            const estaSeleccionado = elemento.classList.toggle('seleccionado');
-
-            if (estaSeleccionado) {
-                checkIcon.style.display = 'inline';
-                cursosSeleccionados.add(nombre);
-            } else {
-                checkIcon.style.display = 'none';
-                cursosSeleccionados.delete(nombre);
-            }
-
-            actualizarSeleccion();
-            guardarProgreso();
-        }
-
-        // Sincroniza contador + chips + botón "Generar" cada vez que cambia la selección
-        function actualizarSeleccion() {
-            document.getElementById('selCount').innerText = cursosSeleccionados.size;
-            document.getElementById('btnNext').disabled = cursosSeleccionados.size === 0;
-            renderChips();
-        }
-
-        function renderChips() {
-            const chipsWrap = document.getElementById('selChips');
-            chipsWrap.innerHTML = '';
-
-            if (!cursosSeleccionados.size) {
-                chipsWrap.innerHTML = '<div class="sel-chips-empty">Aquí verás los cursos que vayas eligiendo</div>';
-                btnClearSel.style.display = 'none';
-                return;
-            }
-
-            [...cursosSeleccionados].forEach(nombre => {
-                const chip = document.createElement('div');
-                chip.className = 'chip';
-                chip.innerHTML = `<span>${nombreVisible(nombre, getCodigoCurso(nombre))}</span><button type="button" title="Quitar de la selección">✕</button>`;
-                chip.querySelector('button').onclick = (ev) => {
-                    ev.stopPropagation();
-                    const item = document.querySelector(`.curso-item[data-nombre="${CSS.escape(nombre)}"]`);
-                    if (item) {
-                        toggleCursoSeleccionado(item, nombre);
-                    } else {
-                        cursosSeleccionados.delete(nombre);
-                        actualizarSeleccion();
-                    }
-                };
-                chipsWrap.appendChild(chip);
-            });
-            btnClearSel.style.display = 'block';
-        }
-
-        // Botón "Limpiar selección": desmarca todos los cursos de golpe
-        btnClearSel.onclick = () => {
-            document.querySelectorAll('.curso-item.seleccionado').forEach(item => {
-                item.classList.remove('seleccionado');
-                item.querySelector('.curso-check').style.display = 'none';
-            });
-            cursosSeleccionados.clear();
-            actualizarSeleccion();
-            guardarProgreso();
-        };
-
-        // ── 6. Ir al generador ──────────────────────────────────
-        document.getElementById('btnNext').onclick = () => {
-            if (!cursosSeleccionados.size) return;
-            const params = new URLSearchParams();
-            cursosSeleccionados.forEach(c => params.append('curso', c));
-            window.location.href = 'generador.html?' + params.toString();
-        };
-
-        // ── 7. Limpiar progreso (el guardado ahora es automático, en cada cambio) ──
-        document.getElementById('btnLimpiarTodo').onclick = () => {
-            localStorage.removeItem(LS_CARGA);
-            localStorage.removeItem(LS_NOMBRE);
-            localStorage.removeItem(LS_SEL);
-            localStorage.removeItem(LS_GEN_SECCIONES);
-            localStorage.removeItem(LS_GEN_CRUCES);
-            localStorage.removeItem(LS_METADATA);
-            localStorage.removeItem(LS_ORIGEN);
-            // Caché de combinaciones generadas (ver generador.js) — si no se
-            // limpia acá, queda un horario "fantasma" cacheado después de
-            // que el usuario pidió borrar todo.
-            localStorage.removeItem('horarioGen_combosCache');
-            localStorage.removeItem('horarioGen_combosIdx');
-            sessionStorage.removeItem('cargaHoraria');
-
-            cargaGlobal = null;
-            cursosSeleccionados = new Set();
-            nombreArchivoActual = '';
-            cursosMetadata = {};
-            origenDatos = 'excel';
-
-            fileInput.value = '';
-            fileInfo.style.display = 'none';
-            uploadZone.classList.remove('active');
-            btnUpload.disabled = true;
-            uploadStatus.innerHTML = '';
-            cardCursos.style.display = 'none';
-            cursosLista.innerHTML = '';
-            courseSearch.value = '';
-            clearSearch.style.display = 'none';
-            persistActions.style.display = 'none';
-            document.getElementById('matriculaStatus').innerHTML = '';
-            document.getElementById('matriculaSinHorario').style.display = 'none';
-
-            showToast('Todo limpio — listo para cargar un nuevo archivo', 'success');
-        };
-
-        // ── Restaurar progreso guardado al abrir la app ──────────
-        (async function restaurarProgreso() {
-            const cargaGuardada = localStorage.getItem(LS_CARGA);
-            if (!cargaGuardada) {
-                cargarCargaOficial();
-                return;
-            }
-
-            try {
-                cargaGlobal = JSON.parse(cargaGuardada);
-                nombreArchivoActual = localStorage.getItem(LS_NOMBRE) || '';
-                const seleccionGuardada = JSON.parse(localStorage.getItem(LS_SEL) || '[]');
-                cursosMetadata = JSON.parse(localStorage.getItem(LS_METADATA) || '{}');
-                origenDatos = localStorage.getItem(LS_ORIGEN) || 'excel';
-
-                // Si este dispositivo ya tenía categorías guardadas de una
-                // conexión a Matrícula UNI anterior (antes de que existiera
-                // esta subida a la nube), las sube ahora — sin necesidad de
-                // reconectar. Importante mientras Matrícula UNI esté caída:
-                // esto NO intenta conectar a nada, solo publica lo que ya
-                // tenías guardado en este dispositivo desde antes.
-                subirMetadataANube();
-
-                sessionStorage.setItem('cargaHoraria', cargaGuardada);
-
-                if (nombreArchivoActual) {
-                    fileInfo.style.display = 'flex';
-                    fileInfo.innerHTML = '📄 ' + nombreArchivoActual + ' (guardado)';
-                }
-
-                const cursos = Object.keys(cargaGlobal).sort();
-                uploadStatus.innerHTML =
-                    `<span style="color:#10b981">✅ ${cursos.length} cursos restaurados de tu última sesión.</span>`;
-
-                seleccionGuardada.forEach(c => cursosSeleccionados.add(c));
-
-                // Antes vivía solo en cargarCargaOficial() (dispositivo sin
-                // NADA en localStorage). El bug real: un dispositivo que sí
-                // tiene caché local (como el celular, con la carga horaria
-                // ya guardada) entraba por ESTE camino y nunca revisaba la
-                // nube — así que si desde otro dispositivo cambiaste tu
-                // selección de cursos después, este dispositivo se quedaba
-                // con la versión vieja (o vacía) sin enterarse nunca. Ahora
-                // se revisa siempre, tenga o no caché local.
-                try {
-                    const huboCambioDesdeNube = await sincronizarSeleccionCursosDesdeNube();
-                    if (huboCambioDesdeNube) {
-                        uploadStatus.innerHTML =
-                            `<span style="color:#10b981">✅ ${cursos.length} cursos disponibles — actualizamos tu selección con la de otro dispositivo.</span>`;
-                        guardarProgreso();
-                    }
-                } catch (e) {
-                    console.warn('No se pudo reconciliar la selección de cursos con la nube:', e);
-                }
-
-                // ── Saltar directo a la pantalla 2 ──────────────────
-                // Si ya hay una selección de cursos (local o recién traída
-                // de la nube), no tiene sentido pasar por acá de nuevo — se
-                // salta directo al generador (que a su vez restaura las
-                // combinaciones ya generadas, si siguen siendo válidas).
-                // Excepción: si el usuario vino a propósito con "←
-                // Elegir cursos" (generador.html le agrega ?editar=1),
-                // se queda acá para poder cambiar su selección.
-                const vieneAEditar = new URLSearchParams(window.location.search).has('editar');
-                if (!vieneAEditar && cursosSeleccionados.size > 0) {
-                    const params = new URLSearchParams();
-                    cursosSeleccionados.forEach(c => params.append('curso', c));
-                    window.location.href = 'generador.html?' + params.toString();
-                    return;
-                }
-
-                renderizarListaConFiltro(cursos);
-                cardCursos.style.display = 'block';
-                persistActions.style.display = 'flex';
-                actualizarSeleccion();
-            } catch (e) {
-                console.warn('No se pudo restaurar el progreso guardado:', e);
-            }
-        })();
+        const esperarMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         /* ============================================================
-           CONEXIÓN A MATRÍCULA UNI
-           Trae cursos + vacantes + horarios directo desde la API de la
-           intranet, vía el backend recolectar_horario.py (mismo patrón
-           de seguridad que la sincronización de Intralú en Intranotas:
-           las credenciales viajan una sola vez por HTTPS al backend y
-           se descartan al terminar, nunca se guardan).
-
-           GATE DE VISIBILIDAD (temporal): igual criterio que se usó con
-           la sincronización de Intralú y con el Asistente de Horario —
-           mientras se termina de probar a fondo, la card SOLO aparece
-           para Harry. Cuando esté 100% óptimo y funcional, cambiar
-           MATRICULA_HABILITADA_PARA_TODOS a `true` acá abajo y se
-           habilita para todos los usuarios, sin tocar nada más.
+           SUPABASE
            ============================================================ */
-        const ADMIN_UID_SIGA_MATRICULA = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
-        const MATRICULA_HABILITADA_PARA_TODOS = true;
-
-        // index.html no dispara 'siga:supabase-listo' (solo generador.html
-        // lo hace), así que esperamos con un polling corto a que el script
-        // module del <head> haya terminado de exponer window.sigaObtenerSesion.
+        // El script de tipo module del head expone window.sigaObtenerSesion
+        // un instante después; esperamos con un polling corto.
         function esperarSigaObtenerSesion() {
             return new Promise(resolve => {
                 if (window.sigaObtenerSesion) return resolve();
@@ -881,121 +281,440 @@
             });
         }
 
-        async function matriculaConexionHabilitada() {
-            if (MATRICULA_HABILITADA_PARA_TODOS) return true;
+        async function obtenerUserId() {
             await esperarSigaObtenerSesion();
+            if (!window.sigaObtenerSesion) return null;
             try {
                 const sesion = await window.sigaObtenerSesion();
-                return !!(sesion && sesion.user && sesion.user.id === ADMIN_UID_SIGA_MATRICULA);
+                return sesion?.user?.id || null;
             } catch (e) {
-                console.warn('No se pudo verificar sesión para Conectar a Matrícula UNI:', e);
-                return false;
+                console.warn('No se pudo obtener la sesión:', e);
+                return null;
             }
         }
 
-        (async function iniciarGateMatricula() {
-            const card = document.getElementById('cardConectarMatricula');
-            const boton = document.getElementById('btnConectarMatricula');
-            const badge = document.getElementById('badgeProximamenteMatricula');
-            if (!card || !boton || !badge) return;
+        async function leerFilaNube() {
+            const uid = await obtenerUserId();
+            if (!uid || !window.sigaSupabase) return null;
+            const { data, error } = await window.sigaSupabase
+                .from('horarios_alumno')
+                .select('carga_horaria, nombre_archivo, origen_carga, cursos_seleccionados, cursos_metadata, secciones_generador, prioridades_profesor, limpiado_en, actualizado_en')
+                .eq('user_id', uid)
+                .maybeSingle();
+            if (error) throw error;
+            return data;
+        }
 
-            const habilitado = await matriculaConexionHabilitada();
-            if (habilitado) return; // Admin: card queda tal cual, activa y funcional.
+        async function leerPerfil() {
+            const uid = await obtenerUserId();
+            if (!uid || !window.sigaSupabase) return;
+            try {
+                const { data } = await window.sigaSupabase
+                    .from('perfiles_usuario')
+                    .select('codigo_estudiante, facultad')
+                    .eq('user_id', uid)
+                    .maybeSingle();
+                perfilAlumno = {
+                    codigo: (data?.codigo_estudiante || '').toUpperCase(),
+                    facultad: (data?.facultad || '').toUpperCase(),
+                };
+            } catch (e) {
+                console.warn('No se pudo leer el perfil:', e);
+            }
+        }
 
-            // No-admin: la card se ve (nuevo diseño incluido), pero apagada
-            // y con badge — comunica que la función existe y viene en
-            // camino, sin dejar que la usen todavía.
-            card.classList.add('matricula-proximamente');
-            badge.style.display = 'inline-block';
-            boton.disabled = true;
-            boton.onclick = null;
-        })();
+        /* Subida a la nube con debounce: junta varios cambios seguidos
+           (ej. marcar 5 cursos rápido) en un solo upsert. */
+        let _debounceNube = null;
+        let _camposPendientesNube = {};
+        function subirANube(campos) {
+            Object.assign(_camposPendientesNube, campos);
+            clearTimeout(_debounceNube);
+            _debounceNube = setTimeout(async () => {
+                const pendientes = _camposPendientesNube;
+                _camposPendientesNube = {};
+                const uid = await obtenerUserId();
+                if (!uid || !window.sigaSupabase) return;
+                try {
+                    const { error } = await window.sigaSupabase
+                        .from('horarios_alumno')
+                        .upsert({ user_id: uid, actualizado_en: new Date().toISOString(), ...pendientes });
+                    if (error) console.warn('No se pudo guardar en la nube:', error);
+                } catch (e) {
+                    console.warn('Error guardando en la nube:', e);
+                }
+            }, 700);
+        }
 
-        const MATRICULA_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)
-            ? 'http://localhost:8000/api/sync-horarios'
-            : 'https://actualizar-intranotas.onrender.com/api/sync-horarios';
+        function cancelarSubidasPendientes() {
+            clearTimeout(_debounceNube);
+            _camposPendientesNube = {};
+        }
 
-        /* Desde sep 2026 la conexión a Matrícula usa el mismo patrón que
-           Intranotas: POST .../iniciar responde al instante con un job_id y
-           se consulta el avance con GET .../{job_id} cada 2 s. Así el alumno
-           ve su posición en la fila y "Cancelar" lo saca de verdad (sin
-           gastar uno de los 4 logins por minuto que SIGA reparte). */
-        const MATRICULA_INTERVALO_POLLING_MS = 2000;
-        const MATRICULA_ESPERA_MAXIMA_MS = 7 * 60 * 1000;
-        let matriculaJobActual = null;      // job en curso (null si no hay)
-        let matriculaSyncCancelada = false;
+        /* Qué parte de la carga viaja a la nube. La carga oficial NO se
+           sube entera (pesa ~270 KB y ya está publicada en el catálogo):
+           basta con su id en origen_carga; otro dispositivo la vuelve a
+           traer de static/data/cargas/. La de Matrícula sí se sube: es
+           personal y liviana. */
+        function camposCargaParaNube() {
+            return {
+                carga_horaria: origenCarga.startsWith('oficial:') ? null : cargaGlobal,
+                nombre_archivo: nombreArchivoActual || null,
+                origen_carga: origenCarga || null,
+                cursos_metadata: Object.keys(cursosMetadata).length ? cursosMetadata : null,
+            };
+        }
 
-        function abrirModalSyncMatricula() {
-            const existente = document.getElementById('modal-sync-matricula-overlay');
-            if (existente) {
-                document.getElementById('sync-matricula-codigo').value = '';
-                document.getElementById('sync-matricula-password').value = '';
-                document.getElementById('sync-matricula-error').style.display = 'none';
-                requestAnimationFrame(() => existente.classList.add('show'));
+        /* ============================================================
+           GUARDADO
+           ============================================================ */
+        function guardarLocal(marcaTiempo) {
+            if (!cargaGlobal) return;
+            try {
+                localStorage.setItem(LS_CARGA, JSON.stringify(cargaGlobal));
+                localStorage.setItem(LS_NOMBRE, nombreArchivoActual);
+                localStorage.setItem(LS_SEL, JSON.stringify([...cursosSeleccionados]));
+                localStorage.setItem(LS_METADATA, JSON.stringify(cursosMetadata));
+                localStorage.setItem(LS_ORIGEN, origenCarga);
+                localStorage.setItem(LS_GUARDADO_EN, marcaTiempo || new Date().toISOString());
+            } catch (e) {
+                showToast('No se pudo guardar en este navegador (poco espacio disponible)', 'error');
+            }
+            sessionStorage.setItem('cargaHoraria', JSON.stringify(cargaGlobal));
+        }
+
+        // Cada cambio de selección se guarda al instante en ambos lados.
+        // Antes solo se guardaba en la nube al usar el simulador, y por eso
+        // un curso quitado aquí "volvía" al recargar.
+        function guardarSeleccion() {
+            guardarLocal();
+            subirANube({ cursos_seleccionados: [...cursosSeleccionados] });
+        }
+
+        // Tras cambiar la carga completa (conectar, usar carga oficial).
+        function guardarTodo() {
+            guardarLocal();
+            subirANube({ ...camposCargaParaNube(), cursos_seleccionados: [...cursosSeleccionados] });
+        }
+
+        function borrarLocal() {
+            CLAVES_DATOS.forEach(k => localStorage.removeItem(k));
+            sessionStorage.removeItem('cargaHoraria');
+            cargaGlobal = null;
+            cursosSeleccionados = new Set();
+            nombreArchivoActual = '';
+            cursosMetadata = {};
+            origenCarga = '';
+            cursosSinHorario = [];
+        }
+
+        /* ============================================================
+           LECTURA DE LO GUARDADO
+           ============================================================ */
+        function leerLocal() {
+            const cargaStr = localStorage.getItem(LS_CARGA);
+            if (!cargaStr) return null;
+            try {
+                const local = {
+                    carga: JSON.parse(cargaStr),
+                    nombre: localStorage.getItem(LS_NOMBRE) || '',
+                    seleccion: JSON.parse(localStorage.getItem(LS_SEL) || '[]'),
+                    metadata: JSON.parse(localStorage.getItem(LS_METADATA) || '{}'),
+                    origen: localStorage.getItem(LS_ORIGEN) || '',
+                    guardadoEn: Date.parse(localStorage.getItem(LS_GUARDADO_EN) || '') || 0,
+                };
+
+                // Migración desde la versión anterior, que guardaba
+                // 'excel' | 'matricula' y cargaba sola la carga FIIS.
+                if (local.origen === 'excel' || !local.origen) {
+                    local.origen = local.nombre.startsWith('Carga oficial') ? 'oficial:fiis-2026-2' : 'archivo';
+                }
+                // Carga FIIS que se cargó SOLA (versión anterior) y nunca se
+                // usó: se descarta, para que alumnos de otras facultades no
+                // sigan viendo cursos que no son suyos. Si ya habían elegido
+                // cursos, se respeta (la estaban usando de verdad).
+                if (local.origen.startsWith('oficial:') && !local.seleccion.length &&
+                    !localStorage.getItem(LS_GUARDADO_EN)) {
+                    CLAVES_DATOS.forEach(k => localStorage.removeItem(k));
+                    return null;
+                }
+                return local;
+            } catch (e) {
+                console.warn('Lo guardado en el navegador está dañado; se ignora:', e);
+                return null;
+            }
+        }
+
+        function seleccionDeFila(fila) {
+            if (Array.isArray(fila.cursos_seleccionados)) return fila.cursos_seleccionados;
+            // Filas de antes de sep 2026: la selección solo existía como las
+            // llaves de secciones_generador.
+            if (fila.cursos_seleccionados == null && fila.secciones_generador) {
+                return Object.keys(fila.secciones_generador);
+            }
+            return null;
+        }
+
+        function aplicarEstado({ carga, nombre, seleccion, metadata, origen }) {
+            cargaGlobal = carga;
+            nombreArchivoActual = nombre || '';
+            cursosMetadata = metadata || {};
+            origenCarga = origen || 'archivo';
+            cursosSeleccionados = new Set((seleccion || []).filter(c => c in carga));
+            sessionStorage.setItem('cargaHoraria', JSON.stringify(carga));
+        }
+
+        async function traerCargaOficial(idCatalogo) {
+            const entrada = CATALOGO_CARGAS.find(c => c.id === idCatalogo);
+            if (!entrada) throw new Error('Esta carga oficial ya no está disponible.');
+            const resp = await fetch(entrada.ruta);
+            if (!resp.ok) throw new Error(`No se pudo obtener la carga oficial (${resp.status}).`);
+            const data = await resp.json();
+            return { entrada, cursos: data.cursos || {} };
+        }
+
+        // Adopta lo que hay en la nube (otro dispositivo guardó algo más nuevo).
+        async function aplicarDesdeNube(fila) {
+            const origen = fila.origen_carga || 'archivo';
+            let carga = fila.carga_horaria;
+            if (!carga && origen.startsWith('oficial:')) {
+                carga = (await traerCargaOficial(origen.slice('oficial:'.length))).cursos;
+            }
+            if (!carga || !Object.keys(carga).length) return false;
+            aplicarEstado({
+                carga,
+                nombre: fila.nombre_archivo,
+                seleccion: seleccionDeFila(fila) || [],
+                metadata: fila.cursos_metadata,
+                origen,
+            });
+            // Se marca con la hora de la nube (no "ahora") para no
+            // reenviarle a la nube lo mismo que acaba de traer.
+            guardarLocal(fila.actualizado_en);
+            return true;
+        }
+
+        /* ============================================================
+           ARRANQUE
+           ============================================================ */
+        (async function arrancar() {
+            let local = leerLocal();
+            let fila = null;
+            try {
+                [fila] = await Promise.all([leerFilaNube(), leerPerfil()]);
+            } catch (e) {
+                console.warn('No se pudo revisar la nube; se sigue con lo del navegador:', e);
+            }
+
+            // 1) ¿Alguien pulsó "Borrar mis datos" DESPUÉS de lo último que
+            //    guardó este dispositivo? Entonces lo local ya no vale.
+            if (fila?.limpiado_en && local) {
+                if (local.guardadoEn < Date.parse(fila.limpiado_en)) {
+                    CLAVES_DATOS.forEach(k => localStorage.removeItem(k));
+                    local = null;
+                }
+            }
+
+            const tNube = fila ? (Date.parse(fila.actualizado_en) || 0) : 0;
+            const nubeTieneCarga = !!(fila && (fila.carga_horaria || (fila.origen_carga || '').startsWith('oficial:')));
+
+            try {
+                if (local) {
+                    const nubeTieneOtraCarga = nubeTieneCarga && tNube > local.guardadoEn &&
+                        (fila.origen_carga !== local.origen || (fila.nombre_archivo || '') !== local.nombre);
+
+                    if (nubeTieneOtraCarga) {
+                        // Otro dispositivo conectó/eligió una carga distinta después.
+                        if (!(await aplicarDesdeNube(fila))) aplicarEstado(local);
+                    } else {
+                        aplicarEstado(local);
+                        if (fila && tNube > local.guardadoEn) {
+                            // Misma carga, pero la selección más reciente está en la nube.
+                            const selNube = seleccionDeFila(fila);
+                            if (selNube) {
+                                cursosSeleccionados = new Set(selNube.filter(c => c in cargaGlobal));
+                                guardarLocal(fila.actualizado_en);
+                            }
+                        }
+                        if (!nubeTieneCarga || local.guardadoEn > tNube) {
+                            // La nube aún no tiene esta carga (alumnos de antes
+                            // de sep 2026) o lo de este dispositivo es más nuevo.
+                            subirANube({ ...camposCargaParaNube(), cursos_seleccionados: [...cursosSeleccionados] });
+                        }
+                    }
+                } else if (nubeTieneCarga) {
+                    await aplicarDesdeNube(fila);
+                }
+            } catch (e) {
+                console.warn('No se pudo recuperar tu carga guardada:', e);
+                if (local) aplicarEstado(local);
+            }
+
+            hayDatosEnNube = !!(fila && (fila.carga_horaria || fila.origen_carga || fila.secciones_generador ||
+                (fila.cursos_seleccionados || []).length || fila.prioridades_profesor));
+
+            // Con cursos ya elegidos se salta directo al simulador, salvo que
+            // el alumno haya vuelto a propósito con "← Elegir cursos"
+            // (generador.html agrega ?editar=1). El "Cargando..." sigue en
+            // pantalla mientras tanto.
+            const vieneAEditar = new URLSearchParams(window.location.search).has('editar');
+            if (cargaGlobal && !vieneAEditar && cursosSeleccionados.size > 0) {
+                irAlSimulador();
                 return;
             }
 
-            const overlay = document.createElement('div');
-            overlay.className = 'modal-overlay';
-            overlay.id = 'modal-sync-matricula-overlay';
-            overlay.innerHTML = `
-        <div class="modal-card" style="text-align:left; width:340px;">
-          <div class="modal-icon">🔗</div>
-          <div class="modal-title" style="text-align:center;">Conectar a Matrícula UNI</div>
-          <div class="modal-desc" style="text-align:center;">
-            Ingresa tu código y contraseña. Se usan una sola vez para traer tus cursos,
-            vacantes y horarios — nunca se guardan en nuestros servidores.
-          </div>
-          <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Código UNI</label>
-          <input id="sync-matricula-codigo" type="text" class="modal-input" placeholder="2023XXXXX"
-            autocomplete="off" oninput="this.value = this.value.toUpperCase()" style="margin-bottom:12px;">
-          <label style="display:block; font-size:0.78rem; font-weight:600; margin-bottom:4px;">Contraseña</label>
-          <div style="position:relative;">
-            <input id="sync-matricula-password" type="password" class="modal-input" placeholder="Contraseña" autocomplete="off">
-            <button type="button" onclick="alternarVisibilidadPasswordMatricula()" aria-label="Mostrar u ocultar contraseña"
-              style="position:absolute; right:10px; top:9px; background:none; border:none; cursor:pointer; font-size:1rem; padding:2px 4px; line-height:1;">
-              <span id="sync-matricula-password-icono">👁️</span>
-            </button>
-          </div>
-          <p id="sync-matricula-error" style="display:none; color:#dc2626; font-size:0.78rem; margin:4px 0 0;"></p>
-          <p id="sync-matricula-progreso" style="display:none; color:var(--accent); font-size:0.8rem; margin:12px 0 0; text-align:center;">
-            <span class="spinner"></span> Conectando con Matrícula...
-          </p>
-          <div class="modal-actions" style="margin-top:18px;">
-            <button type="button" class="modal-btn-cancel" id="sync-matricula-btn-cancelar" onclick="cerrarModalSyncMatricula()">Cancelar</button>
-            <button type="button" class="modal-btn-primary" id="sync-matricula-btn-confirmar" onclick="ejecutarSyncMatricula()">Conectar</button>
-          </div>
-        </div>`;
-            document.body.appendChild(overlay);
-            requestAnimationFrame(() => overlay.classList.add('show'));
-            overlay.addEventListener('click', e => { if (e.target === overlay) cerrarModalSyncMatricula(); });
+            $('vistaCargando').style.display = 'none';
+            if (!cargaGlobal) {
+                mostrarInicio();
+                return;
+            }
+            mostrarCursos();
+        })();
+
+        /* ============================================================
+           VISTA 1: INICIO
+           ============================================================ */
+        function mostrarInicio() {
+            $('vistaCursos').hidden = true;
+            $('vistaInicio').hidden = false;
+            $('btnVolverCursos').hidden = !cargaGlobal;
+            $('btnBorrarInicio').hidden = !(cargaGlobal || hayDatosEnNube);
+            if (!$('matriculaCodigo').value && perfilAlumno.codigo) {
+                $('matriculaCodigo').value = perfilAlumno.codigo;
+            }
+            renderAnticipada();
+            window.scrollTo({ top: 0 });
         }
 
-        function alternarVisibilidadPasswordMatricula() {
-            const input = document.getElementById('sync-matricula-password');
-            const icono = document.getElementById('sync-matricula-password-icono');
-            const oculto = input.type === 'password';
-            input.type = oculto ? 'text' : 'password';
-            icono.textContent = oculto ? '🙈' : '👁️';
+        function renderAnticipada() {
+            const disponibles = cargasDelCiclo();
+            const siglasDisponibles = new Set(disponibles.map(c => c.facultad));
+            const mia = perfilAlumno.facultad;
+
+            $('listaFacultades').innerHTML = SIGLAS_FACULTADES.map(sigla => {
+                const clases = ['hi-fac'];
+                if (siglasDisponibles.has(sigla)) clases.push('disponible');
+                if (sigla === mia) clases.push('mia');
+                return `<span class="${clases.join(' ')}">${siglasDisponibles.has(sigla) ? '✓ ' : ''}${sigla}</span>`;
+            }).join('');
+
+            const cont = $('contenidoAnticipada');
+            // Facultad conocida: solo su carga (si existe). Desconocida (aún
+            // no sincronizó Intranotas): todas las disponibles, bien rotuladas.
+            const aMostrar = mia ? disponibles.filter(c => c.facultad === mia) : disponibles;
+
+            if (!aMostrar.length) {
+                cont.innerHTML = `
+                    <div class="hi-aviso-caja">
+                        ${mia
+                        ? `La carga horaria de tu facultad (${escapeHtml(mia)}) aún no está disponible.`
+                        : 'Todavía no hay cargas horarias anticipadas para este ciclo.'}
+                        Mientras tanto, conecta con Matrícula apenas abra.
+                    </div>`;
+                return;
+            }
+
+            cont.innerHTML = aMostrar.map(c => {
+                const enUso = origenCarga === `oficial:${c.id}`;
+                return `
+                    <p class="hi-meta-carga">${escapeHtml(c.facultad)} · ${escapeHtml(c.ciclo)} · ${escapeHtml(c.detalle)}</p>
+                    <button type="button" class="hi-btn-secundario hi-btn-ancho" data-carga-oficial="${escapeHtml(c.id)}">
+                        ${enUso ? 'Ya la estás usando — ver cursos' : `Usar carga oficial ${escapeHtml(c.facultad)} ${escapeHtml(c.ciclo)}`}
+                    </button>`;
+            }).join('');
+
+            cont.querySelectorAll('[data-carga-oficial]').forEach(btn => {
+                btn.onclick = () => usarCargaOficial(btn.dataset.cargaOficial, btn);
+            });
         }
 
-        function cerrarModalSyncMatricula() {
-            // Si hay una conexión en curso, cerrar = cancelarla de verdad.
-            if (matriculaJobActual) cancelarSyncMatricula();
-            const overlay = document.getElementById('modal-sync-matricula-overlay');
-            if (overlay) overlay.classList.remove('show');
-        }
-
-        function cancelarSyncMatricula() {
-            const jobId = matriculaJobActual;
-            matriculaSyncCancelada = true;
-            matriculaJobActual = null;
-            if (jobId) {
-                fetch(`${MATRICULA_SYNC_URL}/${jobId}/cancelar`, { method: 'POST' }).catch(() => { /* ya se cortó igual en la página */ });
+        async function usarCargaOficial(id, btn) {
+            if (origenCarga === `oficial:${id}` && cargaGlobal) {
+                mostrarCursos();
+                return;
+            }
+            const textoOriginal = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Cargando...';
+            try {
+                const { entrada, cursos } = await traerCargaOficial(id);
+                const anteriores = cursosSeleccionados;
+                limpiarCacheGenerador(true);
+                cargaGlobal = cursos;
+                nombreArchivoActual = `Carga oficial ${entrada.facultad} ${entrada.ciclo}`;
+                cursosMetadata = {};
+                origenCarga = `oficial:${entrada.id}`;
+                cursosSinHorario = [];
+                cursosSeleccionados = new Set([...anteriores].filter(c => c in cursos));
+                guardarTodo();
+                mostrarCursos();
+                showToast(`Carga oficial ${entrada.facultad} lista ✓`, 'success');
+            } catch (e) {
+                showToast(e.message || 'No se pudo cargar la carga oficial', 'error');
+                btn.disabled = false;
+                btn.textContent = textoOriginal;
             }
         }
 
-        /* Texto de avance según la etapa que informa el backend. */
+        // Al cambiar de carga, las combinaciones ya generadas quedan
+        // viejas. Las secciones marcadas solo se limpian si la carga es
+        // de otro tipo (de oficial a Matrícula o al revés); al actualizar
+        // Matrícula se conservan, porque son los mismos cursos.
+        function limpiarCacheGenerador(cambiaTipoDeCarga) {
+            localStorage.removeItem(LS_GEN_COMBOS);
+            localStorage.removeItem(LS_GEN_COMBOS_IDX);
+            if (cambiaTipoDeCarga) {
+                localStorage.removeItem(LS_GEN_SECCIONES);
+                localStorage.removeItem(LS_GEN_CRUCES);
+            }
+        }
+
+        $('btnVolverCursos').onclick = () => mostrarCursos();
+
+        /* ── Ojo de la contraseña (igual que Intranotas) ── */
+        $('matriculaPassword').addEventListener('input', () => {
+            $('btnOjoMatricula').disabled = !$('matriculaPassword').value;
+        });
+        $('btnOjoMatricula').onclick = () => {
+            const input = $('matriculaPassword');
+            const oculto = input.type === 'password';
+            input.type = oculto ? 'text' : 'password';
+            $('btnOjoMatricula').textContent = oculto ? '🙈' : '👁';
+            $('btnOjoMatricula').setAttribute('aria-label', oculto ? 'Ocultar contraseña' : 'Mostrar contraseña');
+        };
+        $('matriculaCodigo').addEventListener('input', e => {
+            e.target.value = e.target.value.toUpperCase();
+        });
+
+        /* ============================================================
+           CONEXIÓN A MATRÍCULA UNI
+           Mismo patrón que Intranotas: POST .../iniciar responde al
+           instante con un job_id y se consulta el avance cada 2 s. El
+           alumno ve su posición en la fila y "Cancelar" lo saca de verdad.
+           Las credenciales viajan una sola vez por HTTPS y no se guardan.
+           ============================================================ */
+        const MATRICULA_SYNC_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+            ? 'http://localhost:8000/api/sync-horarios'
+            : 'https://actualizar-intranotas.onrender.com/api/sync-horarios';
+        const MATRICULA_INTERVALO_POLLING_MS = 2000;
+        const MATRICULA_ESPERA_MAXIMA_MS = 7 * 60 * 1000;
+        let matriculaJobActual = null;
+        let matriculaSyncCancelada = false;
+
+        function mostrarBanner(texto, tipo) {
+            const b = $('bannerMatricula');
+            if (!texto) { b.className = 'hi-banner'; b.textContent = ''; return; }
+            b.className = `hi-banner visible ${tipo}`;
+            b.textContent = texto;
+        }
+
+        function mostrarProgreso(texto) {
+            const p = $('progresoMatricula');
+            if (!texto) { p.classList.remove('visible'); return; }
+            $('progresoMatriculaTexto').textContent = texto;
+            p.classList.add('visible');
+        }
+
         function textoProgresoMatricula(data) {
             if (data.etapa === 'en_fila') {
                 const n = data.personas_delante || 0;
@@ -1008,16 +727,24 @@
             return 'Conectando con Matrícula...';
         }
 
-        function mostrarProgresoMatricula(texto) {
-            const progresoEl = document.getElementById('sync-matricula-progreso');
-            if (progresoEl) progresoEl.innerHTML = `<span class="spinner"></span> ${texto}`;
+        function cancelarSyncMatricula() {
+            const jobId = matriculaJobActual;
+            matriculaSyncCancelada = true;
+            matriculaJobActual = null;
+            if (jobId) {
+                fetch(`${MATRICULA_SYNC_URL}/${jobId}/cancelar`, { method: 'POST' }).catch(() => { });
+            }
         }
 
-        const esperarMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        $('btnCancelarConexion').onclick = () => {
+            cancelarSyncMatricula();
+            mostrarProgreso('');
+            mostrarBanner('Conexión cancelada.', 'info');
+        };
 
         /* Arranca el job y consulta hasta que termine. Devuelve el
-           resultado (mismo JSON de siempre), o null si el alumno canceló.
-           Lanza Error con el mensaje del backend si algo falla. */
+           resultado, o null si el alumno canceló. Lanza Error con el
+           mensaje del backend si algo falla. */
         async function sincronizarMatriculaConBackend(codigo, password) {
             const respInicio = await fetch(`${MATRICULA_SYNC_URL}/iniciar`, {
                 method: 'POST',
@@ -1051,16 +778,13 @@
                 if (!resp.ok) throw new Error(data.detail || 'No se pudo conectar con Matrícula.');
                 if (data.status === 'cancelado') { matriculaJobActual = null; return null; }
                 if (data.status === 'listo') { matriculaJobActual = null; return data.resultado; }
-                mostrarProgresoMatricula(textoProgresoMatricula(data));
+                mostrarProgreso(textoProgresoMatricula(data));
             }
             cancelarSyncMatricula();
             throw new Error('La conexión tardó demasiado. Intenta de nuevo en unos minutos.');
         }
 
-        // Convierte la respuesta del backend (cursos + carga) en el
-        // cursosMetadata que lee construirListaCursos() para los badges.
-        // Se indexa por NOMBRE porque cargaGlobal usa el nombre como
-        // clave (igual que parsearExcel en parser.js), no el código.
+        // Metadata por NOMBRE, porque cargaGlobal usa el nombre como clave.
         function construirMetadataDesdeCursos(cursos) {
             const metadata = {};
             cursos.forEach(c => {
@@ -1075,10 +799,7 @@
             return metadata;
         }
 
-        // Completa vacantesMaximas/Ocupadas/Disponibles en cursosMetadata
-        // usando la sección con más vacantes disponibles de cada curso en
-        // `carga` (si un curso tiene varias secciones, cada una puede tener
-        // distintas vacantes — mostramos la más favorable como resumen).
+        // Resumen de vacantes: la sección más favorable de cada curso.
         function completarVacantesEnMetadata(metadata, carga) {
             Object.keys(carga).forEach(nombre => {
                 const secciones = Object.values(carga[nombre]);
@@ -1093,179 +814,420 @@
             });
         }
 
-        function renderCursosSinHorario(lista) {
-            const wrap = document.getElementById('matriculaSinHorario');
-            if (!lista || !lista.length) {
-                wrap.style.display = 'none';
-                wrap.innerHTML = '';
-                return;
-            }
-            wrap.style.display = 'block';
-            wrap.className = 'matricula-sin-horario-box';
-            wrap.innerHTML = `
-        <details>
-          <summary>⚠️ ${lista.length} curso(s) sin horario aperturado aún</summary>
-          <div class="matricula-sin-horario-lista">${lista.map(c => c.nombre).join(', ')}</div>
-        </details>
-      `;
-        }
-
-        async function ejecutarSyncMatricula() {
-            const codigoEl = document.getElementById('sync-matricula-codigo');
-            const passwordEl = document.getElementById('sync-matricula-password');
-            const errorEl = document.getElementById('sync-matricula-error');
-            const progresoEl = document.getElementById('sync-matricula-progreso');
-            const btnConfirmar = document.getElementById('sync-matricula-btn-confirmar');
-            const btnCancelar = document.getElementById('sync-matricula-btn-cancelar');
-
-            const codigo = codigoEl.value.trim();
+        $('formMatricula').addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+            const codigo = $('matriculaCodigo').value.trim();
+            const passwordEl = $('matriculaPassword');
             const password = passwordEl.value;
 
-            errorEl.style.display = 'none';
+            mostrarBanner('');
             if (!codigo || !password) {
-                errorEl.textContent = 'Ingresa tu código y tu contraseña.';
-                errorEl.style.display = 'block';
+                mostrarBanner('Ingresa tu código y tu contraseña.', 'error');
                 return;
             }
 
-            btnConfirmar.disabled = true;
-            // "Cancelar" queda ACTIVO durante la conexión: saca al alumno de
-            // la fila de verdad (ver cancelarSyncMatricula).
-            btnConfirmar.textContent = 'Conectando...';
-            mostrarProgresoMatricula('Conectando con Matrícula...');
-            progresoEl.style.display = 'block';
+            const btn = $('btnConectar');
+            btn.disabled = true;
+            btn.textContent = 'Conectando...';
+            $('btnCancelarConexion').hidden = false;
+            mostrarProgreso('Conectando con Matrícula...');
             matriculaSyncCancelada = false;
 
             try {
                 const data = await sincronizarMatriculaConBackend(codigo, password);
-                passwordEl.value = '';
-                if (data === null) {
-                    showToast('Conexión cancelada', 'info');
-                    return;
-                }
+                if (data === null) return;  // canceló: el banner ya lo avisó
 
                 if (!data.carga || !Object.keys(data.carga).length) {
                     throw new Error('No se encontraron cursos con horario disponible en tu Matrícula.');
                 }
 
-                // Si ya había un Excel/conexión anterior con otra selección
-                // de secciones/cruces en generador.html, esa selección queda
-                // desactualizada (igual criterio que al subir un Excel nuevo).
-                if (localStorage.getItem(LS_GEN_SECCIONES) || localStorage.getItem(LS_GEN_CRUCES)) {
-                    localStorage.removeItem(LS_GEN_SECCIONES);
-                    localStorage.removeItem(LS_GEN_CRUCES);
-                }
+                const eraMatricula = origenCarga === 'matricula';
+                const anteriores = cursosSeleccionados;
+                limpiarCacheGenerador(!eraMatricula);
 
                 cargaGlobal = data.carga;
-                nombreArchivoActual = `Matrícula UNI · periodo ${data.periodo || ''}`;
-                cursosSeleccionados = new Set();
+                nombreArchivoActual = `Matrícula UNI · periodo ${data.periodo || ''}`.trim();
                 cursosMetadata = construirMetadataDesdeCursos(data.cursos || []);
                 completarVacantesEnMetadata(cursosMetadata, data.carga);
-                origenDatos = 'matricula';
+                origenCarga = 'matricula';
+                cursosSinHorario = data.cursos_sin_horario || [];
+                // Actualizar no borra tu selección: se conservan los cursos
+                // que siguen existiendo en la carga nueva.
+                cursosSeleccionados = new Set([...anteriores].filter(c => c in data.carga));
 
-                sessionStorage.setItem('cargaHoraria', JSON.stringify(data.carga));
-
-                const cursos = Object.keys(data.carga).sort();
-                document.getElementById('matriculaStatus').innerHTML =
-                    `<span style="color:#10b981">✅ ${data.cursos_con_horario} cursos con horario conectados.</span>`;
-                renderCursosSinHorario(data.cursos_sin_horario);
-
-                construirListaCursos(cursos);
-                cardCursos.style.display = 'block';
-                persistActions.style.display = 'flex';
-                actualizarSeleccion();
-                guardarProgreso();
-                // Las etiquetas Obligatorio/Electivo/Complementario recién
-                // obtenidas son datos reales tuyos (vienen de tu matrícula),
-                // no genéricos — deben viajar a los demás dispositivos igual
-                // que los cursos y secciones, para que no se pierdan al
-                // reconciliar desde un dispositivo que cargó por Excel/JSON.
-                subirMetadataANube();
-                cerrarModalSyncMatricula();
+                guardarTodo();
+                passwordEl.value = '';
+                $('btnOjoMatricula').disabled = true;
+                mostrarCursos();
                 showToast('Conectado a Matrícula UNI ✓', 'success');
-
-                // La Card 2 queda debajo de la Card 1 (Excel) — sin este
-                // scroll, con la Card 1 llena de texto (archivo restaurado,
-                // etc.) el usuario no la ve y parece que "no pasó nada".
-                setTimeout(() => {
-                    cardCursos.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    cardCursos.classList.add('card-resaltada');
-                    setTimeout(() => cardCursos.classList.remove('card-resaltada'), 1600);
-                }, 200);
             } catch (err) {
-                errorEl.textContent = err.message || 'Ocurrió un error al conectar. Intenta de nuevo.';
-                errorEl.style.display = 'block';
+                mostrarBanner(err.message || 'Ocurrió un error al conectar. Intenta de nuevo.', 'error');
             } finally {
                 matriculaJobActual = null;
-                btnConfirmar.disabled = false;
-                btnCancelar.disabled = false;
-                btnConfirmar.textContent = 'Conectar';
-                progresoEl.style.display = 'none';
+                btn.disabled = false;
+                btn.textContent = 'Conectar';
+                $('btnCancelarConexion').hidden = true;
+                mostrarProgreso('');
             }
+        });
+
+        /* ============================================================
+           VISTA 2: ELIGE TUS CURSOS
+           ============================================================ */
+        const GRUPOS = [
+            { tipo: 'O', titulo: 'Obligatorios' },
+            { tipo: 'E', titulo: 'Electivos' },
+            { tipo: 'C', titulo: 'Complementarios' },
+        ];
+
+        function mostrarCursos() {
+            $('vistaInicio').hidden = true;
+            $('vistaCursos').hidden = false;
+
+            const total = Object.keys(cargaGlobal || {}).length;
+            $('infoOrigen').textContent = `${origenCarga === 'matricula' ? '🔗' : '📄'} ${nombreArchivoActual || 'Tu carga horaria'} · ${total} cursos`;
+            $('btnIrAConectar').textContent = origenCarga === 'matricula'
+                ? '🔄 Actualizar desde Matrícula'
+                : '🔗 Conectar a Matrícula';
+
+            $('avisoSinHorario').innerHTML = cursosSinHorario.length
+                ? `<details class="hi-sin-horario"><summary>⚠️ ${cursosSinHorario.length} curso(s) sin horario aperturado aún</summary>
+                     <div style="margin-top:6px;">${cursosSinHorario.map(c => escapeHtml(c.nombre)).join(', ')}</div></details>`
+                : '';
+
+            $('buscadorCursos').value = '';
+            $('btnLimpiarBusqueda').hidden = true;
+            renderCursos();
+            actualizarBarra();
+            window.scrollTo({ top: 0 });
         }
 
-        // ── Toast ─────────────────────────────────────────────────
-        function showToast(msg, type = 'info') {
-            const t = document.getElementById('toast');
-            if (!t) return;
-            t.textContent = msg;
-            t.className = `toast show ${type}`;
-            setTimeout(() => { t.className = 'toast'; }, 3000);
+        $('btnIrAConectar').onclick = () => mostrarInicio();
+
+        function normalizarBusqueda(s) {
+            return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         }
-    </script>
 
-    <!-- ── Registro PWA + aviso de actualización ── -->
-    <script>
-        let swRegistro = null;
+        // Prioridad de búsqueda: 0 el nombre empieza con lo escrito,
+        // 1 alguna palabra empieza con lo escrito, 2 el código empieza.
+        function prioridadBusqueda(nombre, codigo, q) {
+            const n = normalizarBusqueda(nombre);
+            const c = normalizarBusqueda(codigo);
+            if (n.startsWith(q)) return 0;
+            if (n.split(/\s+/).some(p => p.startsWith(q))) return 1;
+            if (c.startsWith(q)) return 2;
+            return -1;
+        }
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
-                .then(reg => {
-                    console.log('SW registrado');
-                    swRegistro = reg;
-                    if (reg.waiting) mostrarAvisoActualizacion(reg.waiting);
-                    reg.addEventListener('updatefound', () => {
-                        const nuevoSW = reg.installing;
-                        if (!nuevoSW) return;
-                        nuevoSW.addEventListener('statechange', () => {
-                            if (nuevoSW.state === 'installed' && navigator.serviceWorker.controller) {
-                                mostrarAvisoActualizacion(nuevoSW);
-                            }
-                        });
-                    });
+        function vacantesDe(nombre) {
+            const v = cursosMetadata[nombre]?.vacantesDisponibles;
+            return typeof v === 'number' ? v : null;
+        }
 
-                    // Revisa activamente si hay versión nueva: al volver a la pestaña
-                    // y cada 60s mientras la app está abierta. Así el aviso aparece
-                    // sin depender de que el navegador decida chequear por su cuenta.
-                    // Revisión inmediata al cargar, además de las periódicas de abajo
-                    reg.update().catch(() => { });
-                    setInterval(() => reg.update().catch(() => { }), 60 * 1000);
-                    document.addEventListener('visibilitychange', () => {
-                        if (document.visibilityState === 'visible') {
-                            reg.update().catch(() => { });
-                        }
-                    });
-                })
-                .catch(err => console.warn('SW error:', err));
+        function htmlCurso(nombre) {
+            const codigo = getCodigoCurso(nombre);
+            const meta = cursosMetadata[nombre];
+            let badges = '';
 
-            let recargando = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (recargando) return;
-                recargando = true;
-                window.location.reload();
+            if (meta) {
+                const v = vacantesDe(nombre);
+                if (v !== null) {
+                    badges += v > 0
+                        ? `<span class="hi-badge vacantes">${v} vacante${v === 1 ? '' : 's'}</span>`
+                        : '<span class="hi-badge sin-vacantes">Sin vacantes</span>';
+                }
+                if (meta.vecesRepetido > 0) badges += '<span class="hi-badge repetido">N · repetido</span>';
+            } else {
+                // Carga oficial: trae vacantes por sección.
+                const secciones = Object.entries(cargaGlobal[nombre] || {})
+                    .filter(([, info]) => typeof info.vacantes === 'number')
+                    .sort((a, b) => a[0].localeCompare(b[0], 'es'));
+                badges += secciones.map(([sec, info]) =>
+                    `<span class="hi-badge seccion" title="Sección ${escapeHtml(sec)}: ${info.vacantes} vacantes">${escapeHtml(sec)} · ${info.vacantes}</span>`
+                ).join('');
+            }
+
+            const sel = cursosSeleccionados.has(nombre) ? ' seleccionado' : '';
+            return `
+                <button type="button" class="hi-curso${sel}" data-nombre="${escapeHtml(nombre)}" aria-pressed="${!!sel}">
+                    <span class="hi-curso-fila">
+                        ${codigo ? `<span class="hi-curso-codigo">${escapeHtml(codigo)}</span>` : '<span></span>'}
+                        <span class="hi-curso-check">✓</span>
+                    </span>
+                    <span class="hi-curso-nombre">${escapeHtml(nombreVisible(nombre, codigo))}</span>
+                    ${badges ? `<span class="hi-badges">${badges}</span>` : ''}
+                </button>`;
+        }
+
+        function htmlGrupo(titulo, nombres) {
+            return `<p class="hi-grupo-titulo">${escapeHtml(titulo)} · ${nombres.length}</p>
+                    <div class="hi-grilla">${nombres.map(htmlCurso).join('')}</div>`;
+        }
+
+        // Dentro de cada grupo: primero los que tienen vacantes, luego alfabético.
+        function ordenarGrupo(nombres) {
+            return nombres.sort((a, b) => {
+                const va = vacantesDe(a), vb = vacantesDe(b);
+                const ca = va === null ? 1 : (va > 0 ? 0 : 2);
+                const cb = vb === null ? 1 : (vb > 0 ? 0 : 2);
+                if (ca !== cb) return ca - cb;
+                return a.localeCompare(b, 'es');
             });
         }
 
-        function mostrarAvisoActualizacion(sw) {
-            if (document.querySelector('.update-banner')) return;
-            const banner = document.createElement('div');
-            banner.className = 'update-banner';
-            banner.innerHTML = `🔄 ¡Hay una actualización disponible! <button type="button">Actualizar ahora</button>`;
-            document.body.appendChild(banner);
-            banner.querySelector('button').onclick = () => {
-                sw.postMessage('SKIP_WAITING');
-                banner.remove();
-            };
+        function renderCursos() {
+            const cont = $('gruposCursos');
+            const todos = Object.keys(cargaGlobal || {});
+            const q = normalizarBusqueda($('buscadorCursos').value.trim());
+
+            if (q) {
+                const resultados = todos
+                    .map(n => ({ n, p: prioridadBusqueda(n, getCodigoCurso(n), q) }))
+                    .filter(x => x.p !== -1)
+                    .sort((a, b) => a.p - b.p || a.n.localeCompare(b.n, 'es'))
+                    .map(x => x.n);
+                cont.innerHTML = resultados.length
+                    ? htmlGrupo('Resultados', resultados)
+                    : '<p class="hi-vacio">Ningún curso coincide con tu búsqueda.</p>';
+                return;
+            }
+
+            const hayMetadata = Object.keys(cursosMetadata).length > 0;
+            if (!hayMetadata) {
+                cont.innerHTML = htmlGrupo('Todos los cursos', ordenarGrupo(todos));
+                return;
+            }
+
+            let html = '';
+            const usados = new Set();
+            GRUPOS.forEach(g => {
+                const nombres = todos.filter(n => cursosMetadata[n]?.tipo === g.tipo);
+                nombres.forEach(n => usados.add(n));
+                if (nombres.length) html += htmlGrupo(g.titulo, ordenarGrupo(nombres));
+            });
+            const otros = todos.filter(n => !usados.has(n));
+            if (otros.length) html += htmlGrupo('Otros cursos', ordenarGrupo(otros));
+            cont.innerHTML = html;
+        }
+
+        // Un solo listener para todas las tarjetas (se redibujan seguido).
+        $('gruposCursos').addEventListener('click', (ev) => {
+            const tarjeta = ev.target.closest('.hi-curso');
+            if (!tarjeta) return;
+            const nombre = tarjeta.dataset.nombre;
+            if (cursosSeleccionados.has(nombre)) cursosSeleccionados.delete(nombre);
+            else cursosSeleccionados.add(nombre);
+            const marcado = cursosSeleccionados.has(nombre);
+            tarjeta.classList.toggle('seleccionado', marcado);
+            tarjeta.setAttribute('aria-pressed', String(marcado));
+            actualizarBarra();
+            guardarSeleccion();
+        });
+
+        $('buscadorCursos').addEventListener('input', () => {
+            $('btnLimpiarBusqueda').hidden = !$('buscadorCursos').value;
+            renderCursos();
+        });
+        $('btnLimpiarBusqueda').onclick = () => {
+            $('buscadorCursos').value = '';
+            $('btnLimpiarBusqueda').hidden = true;
+            renderCursos();
+            $('buscadorCursos').focus();
+        };
+
+        /* ── Barra de seleccionados ── */
+        function actualizarBarra() {
+            $('conteoSeleccion').textContent = cursosSeleccionados.size;
+            $('btnIrSimulador').disabled = cursosSeleccionados.size === 0;
+            const chips = $('chipsSeleccion');
+            if (!cursosSeleccionados.size) {
+                chips.innerHTML = '<span class="hi-desc" style="margin:0;">Aquí verás los cursos que vayas eligiendo.</span>';
+                $('btnLimpiarSeleccion').hidden = true;
+                return;
+            }
+            $('btnLimpiarSeleccion').hidden = false;
+            chips.innerHTML = [...cursosSeleccionados].map(n =>
+                `<span class="hi-chip">${escapeHtml(nombreVisible(n, getCodigoCurso(n)))}
+                   <button type="button" data-quitar="${escapeHtml(n)}" aria-label="Quitar">✕</button></span>`
+            ).join('');
+        }
+
+        $('chipsSeleccion').addEventListener('click', (ev) => {
+            const btn = ev.target.closest('[data-quitar]');
+            if (!btn) return;
+            cursosSeleccionados.delete(btn.dataset.quitar);
+            actualizarBarra();
+            renderCursos();
+            guardarSeleccion();
+        });
+
+        $('btnVerLista').onclick = () => {
+            const panel = $('panelChips');
+            panel.hidden = !panel.hidden;
+            $('btnVerLista').textContent = panel.hidden ? 'ver lista ▾' : 'ocultar lista ▴';
+        };
+
+        $('btnLimpiarSeleccion').onclick = () => {
+            cursosSeleccionados.clear();
+            actualizarBarra();
+            renderCursos();
+            guardarSeleccion();
+        };
+
+        // Antes de salir de la página se manda YA cualquier guardado que
+        // estaba esperando su turno (si no, se perdería al navegar).
+        async function enviarPendientesAhora() {
+            clearTimeout(_debounceNube);
+            const pendientes = _camposPendientesNube;
+            _camposPendientesNube = {};
+            if (!Object.keys(pendientes).length) return;
+            try {
+                const uid = await obtenerUserId();
+                if (uid && window.sigaSupabase) {
+                    await window.sigaSupabase.from('horarios_alumno')
+                        .upsert({ user_id: uid, actualizado_en: new Date().toISOString(), ...pendientes });
+                }
+            } catch (e) {
+                console.warn('No se pudo guardar antes de salir:', e);
+            }
+        }
+
+        async function irAlSimulador() {
+            if (!cursosSeleccionados.size) return;
+            $('btnIrSimulador').disabled = true;
+            await enviarPendientesAhora();
+            const params = new URLSearchParams();
+            cursosSeleccionados.forEach(c => params.append('curso', c));
+            window.location.href = 'generador.html?' + params.toString();
+        }
+
+        $('btnIrSimulador').onclick = () => irAlSimulador();
+
+        /* ============================================================
+           BORRAR MIS DATOS DE HORARIOS
+           Borra de verdad: el navegador Y la nube (horarios_alumno +
+           horarios_favoritos). En vez de eliminar la fila de
+           horarios_alumno se deja vacía con limpiado_en = ahora: esa marca
+           es la que avisa a tus otros dispositivos que descarten su copia
+           local en vez de volver a subirla.
+           ============================================================ */
+        async function contarFavoritos() {
+            const uid = await obtenerUserId();
+            if (!uid || !window.sigaSupabase) return 0;
+            const { count, error } = await window.sigaSupabase
+                .from('horarios_favoritos')
+                .select('id', { count: 'exact', head: true })
+                .eq('user_id', uid);
+            return error ? 0 : (count || 0);
+        }
+
+        async function abrirConfirmacionBorrado() {
+            let overlay = $('modalBorrarOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'modal-overlay';
+                overlay.id = 'modalBorrarOverlay';
+                overlay.innerHTML = `
+                    <div class="modal-card" style="width:360px;">
+                        <div class="modal-icon" style="background:#dc2626;">🗑</div>
+                        <div class="modal-title">¿Borrar tus datos de Horarios?</div>
+                        <div class="modal-desc">Se borrará en este dispositivo y en todos los demás donde uses SIGA:</div>
+                        <ul class="hi-modal-lista">
+                            <li>Tus cursos cargados (de Matrícula o de la carga oficial)</li>
+                            <li>Los cursos que elegiste</li>
+                            <li>Las secciones, profesores y prioridades que marcaste</li>
+                            <li id="lineaFavoritos">Tus horarios favoritos</li>
+                        </ul>
+                        <div class="modal-desc" style="margin-bottom:14px;">Esta acción no se puede deshacer.</div>
+                        <div class="modal-actions">
+                            <button type="button" class="modal-btn-cancel" id="btnBorrarCancelar">Cancelar</button>
+                            <button type="button" class="modal-btn-peligro" id="btnBorrarConfirmar">Borrar todo</button>
+                        </div>
+                    </div>`;
+                document.body.appendChild(overlay);
+                overlay.addEventListener('click', e => { if (e.target === overlay) cerrarConfirmacionBorrado(); });
+                $('btnBorrarCancelar').onclick = cerrarConfirmacionBorrado;
+                $('btnBorrarConfirmar').onclick = borrarTodo;
+            }
+            $('lineaFavoritos').textContent = 'Tus horarios favoritos';
+            $('btnBorrarConfirmar').disabled = false;
+            $('btnBorrarConfirmar').textContent = 'Borrar todo';
+            requestAnimationFrame(() => overlay.classList.add('show'));
+
+            const n = await contarFavoritos();
+            $('lineaFavoritos').textContent = n > 0
+                ? `Tus ${n} horario${n === 1 ? '' : 's'} favorito${n === 1 ? '' : 's'}`
+                : 'Tus horarios favoritos (no tienes ninguno guardado)';
+        }
+
+        function cerrarConfirmacionBorrado() {
+            const overlay = $('modalBorrarOverlay');
+            if (overlay) overlay.classList.remove('show');
+        }
+
+        async function borrarTodo() {
+            const btn = $('btnBorrarConfirmar');
+            btn.disabled = true;
+            btn.textContent = 'Borrando...';
+            // Un guardado en espera podría volver a subir lo que se está borrando.
+            cancelarSubidasPendientes();
+
+            try {
+                const uid = await obtenerUserId();
+                if (!uid || !window.sigaSupabase) throw new Error('Tu sesión expiró. Vuelve a iniciar sesión e inténtalo de nuevo.');
+                const ahora = new Date().toISOString();
+
+                const { error: errFila } = await window.sigaSupabase
+                    .from('horarios_alumno')
+                    .upsert({
+                        user_id: uid,
+                        carga_horaria: null,
+                        nombre_archivo: null,
+                        origen_carga: null,
+                        cursos_seleccionados: null,
+                        cursos_metadata: null,
+                        secciones_generador: null,
+                        cruces: 0,
+                        prioridades_profesor: null,
+                        limpiado_en: ahora,
+                        actualizado_en: ahora,
+                    });
+                if (errFila) throw errFila;
+
+                const { error: errFavs } = await window.sigaSupabase
+                    .from('horarios_favoritos')
+                    .delete()
+                    .eq('user_id', uid);
+                if (errFavs) throw errFavs;
+            } catch (e) {
+                console.error('No se pudo borrar en la nube:', e);
+                btn.disabled = false;
+                btn.textContent = 'Borrar todo';
+                // Sin fingir: si la nube no se borró, lo local tampoco se toca.
+                showToast('No se pudo borrar. Revisa tu conexión e intenta de nuevo.', 'error');
+                return;
+            }
+
+            borrarLocal();
+            hayDatosEnNube = false;
+            cerrarConfirmacionBorrado();
+            mostrarBanner('');
+            mostrarInicio();
+            showToast('Tus datos de Horarios se borraron ✓', 'success');
+        }
+
+        $('btnBorrarCursos').onclick = abrirConfirmacionBorrado;
+        $('btnBorrarInicio').onclick = abrirConfirmacionBorrado;
+    </script>
+
+    <!-- Horarios ya no usa Service Worker (el sw.js que antes se registraba
+         aquí ya no existe). Igual que generador.html: se desregistra
+         cualquiera que haya quedado instalado de antes. -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(regs => {
+                regs.forEach(reg => reg.unregister());
+            });
         }
     </script>
 </body>
