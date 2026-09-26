@@ -134,21 +134,22 @@ _logins_matricula = deque()
 _logins_matricula_lock = threading.Lock()
 
 
-def _esperar_cupo_login_matricula():
-    """Se llama YA con el turno de Chromium tomado, justo antes del
-    login: si ya hubo 4 logins en el último minuto, espera lo justo."""
-    while True:
-        with _logins_matricula_lock:
-            ahora = time.time()
-            while _logins_matricula and ahora - _logins_matricula[0] >= 60:
-                _logins_matricula.popleft()
-            if len(_logins_matricula) < MAX_LOGINS_MATRICULA_POR_MINUTO:
-                _logins_matricula.append(ahora)
-                return
-            espera = 60 - (ahora - _logins_matricula[0]) + 0.5
-        logger.info("Matrícula: tope propio de %d logins/min alcanzado, esperando %.1fs",
-                    MAX_LOGINS_MATRICULA_POR_MINUTO, espera)
-        time.sleep(espera)
+def _tomar_cupo_login_matricula():
+    """Se llama YA con el turno de Chromium tomado, justo antes del login.
+    NO espera (sep 2026): si hay cupo lo registra y devuelve 0; si ya hubo
+    4 logins en el último minuto devuelve cuántos segundos faltan. Quien
+    llama suelta el Chromium mientras espera, para no frenar a Intranotas
+    (antes se dormía sosteniendo el turno y bloqueaba también a INTRALU).
+    El registro se hace justo antes del login real, así el conteo de
+    "4 por minuto" coincide con lo que ve Matrícula."""
+    with _logins_matricula_lock:
+        ahora = time.time()
+        while _logins_matricula and ahora - _logins_matricula[0] >= 60:
+            _logins_matricula.popleft()
+        if len(_logins_matricula) < MAX_LOGINS_MATRICULA_POR_MINUTO:
+            _logins_matricula.append(ahora)
+            return 0
+        return 60 - (ahora - _logins_matricula[0]) + 0.5
 
 
 class LoginIntraluRequest(BaseModel):
@@ -1197,7 +1198,7 @@ def _obtener_token_matricula(codigo, password):
     )
 
 
-ESPERA_MAXIMA_FILA_MATRICULA_SEGUNDOS = 120  # es una petición síncrona: no se deja colgando mucho
+ESPERA_MAXIMA_FILA_MATRICULA_SEGUNDOS = 120  # solo la ruta vieja síncrona (TEMPORAL)
 
 
 def _login_matricula_en(browser, codigo, password):
@@ -1246,121 +1247,248 @@ def _login_matricula_en(browser, codigo, password):
     return estado, cuerpo, url_final
 
 
+def _token_matricula_con_fila(codigo, password, ticket, espera_maxima,
+                              al_cambiar_posicion=None, esta_cancelado=None,
+                              al_esperar_cupo=None, al_iniciar_login=None):
+    """Fila de Chromium (compartida con INTRALU) + tope propio de 4 logins
+    de Matrícula por minuto. Si al llegar el turno no hay cupo, SUELTA el
+    Chromium, espera fuera de la fila (Intranotas sigue fluyendo) y vuelve
+    a formarse. Devuelve el accessToken."""
+    limite = time.time() + espera_maxima
+    while True:
+        restante = limite - time.time()
+        if restante <= 0:
+            raise _FilaDemasiadoLarga()
+        _tomar_turno_chromium(ticket, al_cambiar_posicion=al_cambiar_posicion,
+                              esta_cancelado=esta_cancelado, espera_maxima=restante)
+        try:
+            # Si canceló justo al llegar su turno, no se gasta un cupo de login.
+            if esta_cancelado and esta_cancelado():
+                raise _SyncCancelada()
+            espera = _tomar_cupo_login_matricula()
+            if espera == 0:
+                if al_iniciar_login:
+                    al_iniciar_login()
+                return _obtener_token_matricula(codigo, password)
+        finally:
+            _soltar_turno_chromium()
+
+        logger.info("Matrícula: tope propio de %d logins/min alcanzado, esperando %.1fs (sin ocupar Chromium)",
+                    MAX_LOGINS_MATRICULA_POR_MINUTO, espera)
+        if al_esperar_cupo:
+            al_esperar_cupo(espera)
+        fin = min(time.time() + espera, limite)
+        while time.time() < fin:
+            if esta_cancelado and esta_cancelado():
+                raise _SyncCancelada()
+            time.sleep(min(1.0, max(0.0, fin - time.time())))
+
+
+def _descargar_horarios_matricula(token):
+    """Ya con el accessToken: ficha + horarios de cada curso, puro
+    `requests` (sin Chromium). Devuelve el mismo JSON de siempre."""
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/json",
+        # Mismo origen que usa la propia web de Matrícula (visto en
+        # DevTools) — no es obligatorio hoy, pero evita sorpresas si
+        # algún día empiezan a validarlo como hace INTRALU.
+        "Origin": MATRICULA_BASE,
+        "Referer": f"{MATRICULA_BASE}/",
+    }
+
+    resp_ficha = requests.get(f"{MATRICULA_BASE}/api/matricula/ficha", headers=headers, timeout=15)
+    if resp_ficha.status_code != 200:
+        raise HTTPException(status_code=502, detail="No se pudo obtener la ficha de matrícula.")
+
+    ficha = resp_ficha.json()
+    cursos_disponibles = ficha.get("cursos", [])
+
+    carga = {}
+    cursos_sin_horario = []
+
+    for curso in cursos_disponibles:
+        codigo_curso = curso.get("codigo")
+        nombre_curso = (curso.get("nombre") or "").rstrip("-").strip()
+
+        if not curso.get("tieneHorario"):
+            cursos_sin_horario.append({"codigo": codigo_curso, "nombre": nombre_curso})
+            continue
+
+        resp_horario = requests.get(
+            f"{MATRICULA_BASE}/api/matricula/cursos/{codigo_curso}/horarios",
+            headers=headers, timeout=15,
+        )
+        if resp_horario.status_code != 200:
+            cursos_sin_horario.append({
+                "codigo": codigo_curso, "nombre": nombre_curso,
+                "error": f"HTTP {resp_horario.status_code}",
+            })
+            continue
+
+        secciones = resp_horario.json().get("secciones", [])
+        if not secciones:
+            continue
+
+        carga[nombre_curso] = {}
+        for seccion in secciones:
+            letra_seccion = seccion.get("seccion")
+            docente = "POR ASIGNAR"
+            clases = []
+            for h in seccion.get("horario", []):
+                dia = _normalizar_dia_matricula(h.get("dia"))
+                ini = _hora_a_entero_matricula(h.get("horaInicio"))
+                fin = _hora_a_entero_matricula(h.get("horaFin"))
+                if ini is None or fin is None or ini >= fin:
+                    continue
+                if h.get("docente"):
+                    docente = h["docente"]
+                clases.append({
+                    "dia": dia, "ini": ini, "fin": fin,
+                    "tipo": (h.get("concepto") or "P").upper(),
+                    "aula": h.get("aula") or "S/A",
+                })
+
+            carga[nombre_curso][letra_seccion] = {
+                "docente": docente,
+                "codigo": codigo_curso,
+                "vacantesMaximas": seccion.get("vacantesMaximas"),
+                "vacantesOcupadas": seccion.get("vacantesOcupadas"),
+                "vacantesDisponibles": seccion.get("vacantesDisponibles"),
+                "clases": clases,
+            }
+
+    logger.info("Sync Matrícula: %d cursos con horario, %d sin horario", len(carga), len(cursos_sin_horario))
+    return {
+        "status": "success",
+        "periodo": ficha.get("periodo"),
+        "total_cursos": len(cursos_disponibles),
+        "cursos_con_horario": len(carga),
+        "cursos_sin_horario": cursos_sin_horario,
+        "cursos": cursos_disponibles,
+        "carga": carga,
+    }
+
+
+def _ejecutar_sync_matricula(job_id, codigo, password):
+    """Corre en un hilo aparte, igual que la sync de INTRALU (sep 2026):
+    el frontend consulta el avance con GET /api/sync-horarios/{job_id}.
+    Etapas: en_fila -> esperando_cupo (solo si se llegó al tope de 4
+    logins/min) -> iniciando_sesion -> descargando -> listo."""
+    inicio = time.time()
+    try:
+        token = _token_matricula_con_fila(
+            codigo, password,
+            ticket=f"matricula-{job_id}",
+            espera_maxima=ESPERA_MAXIMA_FILA_SEGUNDOS,
+            al_cambiar_posicion=lambda n: _actualizar_job(job_id, etapa="en_fila", personas_delante=n),
+            esta_cancelado=lambda: _job_cancelado(job_id),
+            al_esperar_cupo=lambda seg: _actualizar_job(job_id, etapa="esperando_cupo", personas_delante=0,
+                                                        segundos_espera=int(seg) + 1),
+            al_iniciar_login=lambda: _actualizar_job(job_id, etapa="iniciando_sesion", personas_delante=0),
+        )
+        if _job_cancelado(job_id):
+            raise _SyncCancelada()
+
+        _actualizar_job(job_id, etapa="descargando")
+        resultado = _descargar_horarios_matricula(token)
+        _actualizar_job(job_id, status="listo", resultado=resultado)
+        logger.info("Job Matrícula %s: ✅ COMPLETA en %.1fs", job_id, time.time() - inicio)
+
+    except HTTPException as e:
+        _actualizar_job(job_id, status="error", status_code=e.status_code, detail=e.detail)
+        logger.info("Job Matrícula %s: ❌ ERROR (%s) tras %.1fs", job_id, e.status_code, time.time() - inicio)
+    except _SyncCancelada:
+        _actualizar_job(job_id, status="cancelado")
+        logger.info("Job Matrícula %s: 🛑 CANCELADO por el usuario tras %.1fs", job_id, time.time() - inicio)
+    except _FilaDemasiadoLarga:
+        _actualizar_job(job_id, status="error", status_code=503,
+                        detail="SIGA está atendiendo a muchos alumnos ahora mismo. Intenta de nuevo en unos minutos.")
+        logger.info("Job Matrícula %s: ❌ fila demasiado larga tras %.1fs", job_id, time.time() - inicio)
+    except Exception:
+        logger.exception("Job Matrícula %s: error durante la sincronización con Matrícula UNI", job_id)
+        _actualizar_job(job_id, status="error", status_code=500,
+                        detail="No se pudo completar la conexión con Matrícula. Intenta de nuevo más tarde.")
+
+
+@app.post("/api/sync-horarios/iniciar")
+def iniciar_sync_horarios(credentials: LoginRequest):
+    """Responde AL INSTANTE con un job_id (mismo patrón que Intranotas)."""
+    _limpiar_jobs_viejos()
+    job_id = str(uuid.uuid4())
+    with _jobs_lock:
+        _jobs[job_id] = {
+            "tipo": "matricula",
+            "status": "en_progreso",
+            "creado_en": time.time(),
+            "cancelado": False,
+            "etapa": "en_fila",
+            "personas_delante": 0,
+        }
+    threading.Thread(
+        target=_ejecutar_sync_matricula,
+        args=(job_id, credentials.codigo, credentials.password),
+        daemon=True,
+    ).start()
+    return {"job_id": job_id}
+
+
+@app.post("/api/sync-horarios/{job_id}/cancelar")
+def cancelar_sync_horarios(job_id: str):
+    """Levanta la bandera: si aún está en la fila o esperando cupo, sale
+    sin gastar un login de Matrícula."""
+    with _jobs_lock:
+        job = _jobs.get(job_id)
+        if not job or job.get("tipo") != "matricula":
+            raise HTTPException(status_code=404, detail="No se encontró esa conexión (puede haber expirado).")
+        job["cancelado"] = True
+    logger.info("Job Matrícula %s: solicitud de cancelación recibida", job_id)
+    return {"status": "cancelando"}
+
+
+@app.get("/api/sync-horarios/{job_id}")
+def consultar_sync_horarios(job_id: str):
+    with _jobs_lock:
+        job = _jobs.get(job_id)
+        if not job or job.get("tipo") != "matricula":
+            raise HTTPException(status_code=404, detail="No se encontró esa conexión (puede haber expirado).")
+        if job["status"] == "error":
+            raise HTTPException(status_code=job.get("status_code", 500), detail=job["detail"])
+        return {
+            "status": job["status"],
+            "etapa": job.get("etapa"),
+            "personas_delante": job.get("personas_delante", 0),
+            "segundos_espera": job.get("segundos_espera"),
+            "resultado": job.get("resultado"),
+        }
+
+
+# TEMPORAL (sep 2026): ruta vieja síncrona, para que nadie vea un error
+# mientras GitHub Pages aún no publica el frontend nuevo. Se retira en el
+# chat de Horarios, cuando ya nadie la llame.
 @app.post("/api/sync-horarios")
 def sync_horarios(credentials: LoginRequest):
     inicio = time.time()
-
-    # Fila de Chromium (compartida con INTRALU) + tope propio de 4 logins
-    # de Matrícula por minuto. El turno se suelta apenas hay token: ficha
-    # y horarios van por `requests`, sin ocupar Chromium.
-    ticket = f"matricula-{uuid.uuid4()}"
     try:
-        _tomar_turno_chromium(ticket, espera_maxima=ESPERA_MAXIMA_FILA_MATRICULA_SEGUNDOS)
+        token = _token_matricula_con_fila(
+            credentials.codigo, credentials.password,
+            ticket=f"matricula-{uuid.uuid4()}",
+            espera_maxima=ESPERA_MAXIMA_FILA_MATRICULA_SEGUNDOS,
+        )
     except _FilaDemasiadoLarga:
         raise HTTPException(
             status_code=503,
             detail="SIGA está atendiendo a muchos alumnos ahora mismo. Intenta de nuevo en un minuto.",
         )
     try:
-        _esperar_cupo_login_matricula()
-        token = _obtener_token_matricula(credentials.codigo, credentials.password)
-    finally:
-        _soltar_turno_chromium()
-
-    try:
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Accept": "application/json",
-            # Mismo origen que usa la propia web de Matrícula (visto en
-            # DevTools) — no es obligatorio hoy, pero evita sorpresas si
-            # algún día empiezan a validarlo como hace INTRALU.
-            "Origin": MATRICULA_BASE,
-            "Referer": f"{MATRICULA_BASE}/",
-        }
-
-        resp_ficha = requests.get(f"{MATRICULA_BASE}/api/matricula/ficha", headers=headers, timeout=15)
-        if resp_ficha.status_code != 200:
-            raise HTTPException(status_code=502, detail="No se pudo obtener la ficha de matrícula.")
-
-        ficha = resp_ficha.json()
-        cursos_disponibles = ficha.get("cursos", [])
-
-        carga = {}
-        cursos_sin_horario = []
-
-        for curso in cursos_disponibles:
-            codigo_curso = curso.get("codigo")
-            nombre_curso = (curso.get("nombre") or "").rstrip("-").strip()
-
-            if not curso.get("tieneHorario"):
-                cursos_sin_horario.append({"codigo": codigo_curso, "nombre": nombre_curso})
-                continue
-
-            resp_horario = requests.get(
-                f"{MATRICULA_BASE}/api/matricula/cursos/{codigo_curso}/horarios",
-                headers=headers, timeout=15,
-            )
-            if resp_horario.status_code != 200:
-                cursos_sin_horario.append({
-                    "codigo": codigo_curso, "nombre": nombre_curso,
-                    "error": f"HTTP {resp_horario.status_code}",
-                })
-                continue
-
-            secciones = resp_horario.json().get("secciones", [])
-            if not secciones:
-                continue
-
-            carga[nombre_curso] = {}
-            for seccion in secciones:
-                letra_seccion = seccion.get("seccion")
-                docente = "POR ASIGNAR"
-                clases = []
-                for h in seccion.get("horario", []):
-                    dia = _normalizar_dia_matricula(h.get("dia"))
-                    ini = _hora_a_entero_matricula(h.get("horaInicio"))
-                    fin = _hora_a_entero_matricula(h.get("horaFin"))
-                    if ini is None or fin is None or ini >= fin:
-                        continue
-                    if h.get("docente"):
-                        docente = h["docente"]
-                    clases.append({
-                        "dia": dia, "ini": ini, "fin": fin,
-                        "tipo": (h.get("concepto") or "P").upper(),
-                        "aula": h.get("aula") or "S/A",
-                    })
-
-                carga[nombre_curso][letra_seccion] = {
-                    "docente": docente,
-                    "codigo": codigo_curso,
-                    "vacantesMaximas": seccion.get("vacantesMaximas"),
-                    "vacantesOcupadas": seccion.get("vacantesOcupadas"),
-                    "vacantesDisponibles": seccion.get("vacantesDisponibles"),
-                    "clases": clases,
-                }
-
-        duracion = time.time() - inicio
-        logger.info(
-            "Sync Matrícula: ✅ COMPLETA en %.1fs — %d cursos con horario, %d sin horario",
-            duracion, len(carga), len(cursos_sin_horario),
-        )
-
-        return {
-            "status": "success",
-            "periodo": ficha.get("periodo"),
-            "total_cursos": len(cursos_disponibles),
-            "cursos_con_horario": len(carga),
-            "cursos_sin_horario": cursos_sin_horario,
-            "cursos": cursos_disponibles,
-            "carga": carga,
-        }
-
+        resultado = _descargar_horarios_matricula(token)
+        logger.info("Sync Matrícula (ruta vieja): ✅ COMPLETA en %.1fs", time.time() - inicio)
+        return resultado
     except HTTPException:
-        logger.info("Sync Matrícula: ❌ TERMINÓ CON ERROR tras %.1fs", time.time() - inicio)
+        logger.info("Sync Matrícula (ruta vieja): ❌ TERMINÓ CON ERROR tras %.1fs", time.time() - inicio)
         raise
     except Exception as e:
         logger.exception("Error durante la sincronización con Matrícula UNI")
-        logger.info("Sync Matrícula: ❌ TERMINÓ CON ERROR tras %.1fs", time.time() - inicio)
         raise HTTPException(status_code=500, detail=f"Error en servidor: {str(e)}")
 
 
