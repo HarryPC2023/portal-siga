@@ -915,6 +915,16 @@
             ? 'http://localhost:8000/api/sync-horarios'
             : 'https://actualizar-intranotas.onrender.com/api/sync-horarios';
 
+        /* Desde sep 2026 la conexión a Matrícula usa el mismo patrón que
+           Intranotas: POST .../iniciar responde al instante con un job_id y
+           se consulta el avance con GET .../{job_id} cada 2 s. Así el alumno
+           ve su posición en la fila y "Cancelar" lo saca de verdad (sin
+           gastar uno de los 4 logins por minuto que SIGA reparte). */
+        const MATRICULA_INTERVALO_POLLING_MS = 2000;
+        const MATRICULA_ESPERA_MAXIMA_MS = 7 * 60 * 1000;
+        let matriculaJobActual = null;      // job en curso (null si no hay)
+        let matriculaSyncCancelada = false;
+
         function abrirModalSyncMatricula() {
             const existente = document.getElementById('modal-sync-matricula-overlay');
             if (existente) {
@@ -953,7 +963,7 @@
           </p>
           <div class="modal-actions" style="margin-top:18px;">
             <button type="button" class="modal-btn-cancel" id="sync-matricula-btn-cancelar" onclick="cerrarModalSyncMatricula()">Cancelar</button>
-            <button type="button" class="modal-btn-primary" id="sync-matricula-btn-confirmar" onclick="ejecutarSyncMatricula()">Ingresar y conectar</button>
+            <button type="button" class="modal-btn-primary" id="sync-matricula-btn-confirmar" onclick="ejecutarSyncMatricula()">Conectar</button>
           </div>
         </div>`;
             document.body.appendChild(overlay);
@@ -970,8 +980,81 @@
         }
 
         function cerrarModalSyncMatricula() {
+            // Si hay una conexión en curso, cerrar = cancelarla de verdad.
+            if (matriculaJobActual) cancelarSyncMatricula();
             const overlay = document.getElementById('modal-sync-matricula-overlay');
             if (overlay) overlay.classList.remove('show');
+        }
+
+        function cancelarSyncMatricula() {
+            const jobId = matriculaJobActual;
+            matriculaSyncCancelada = true;
+            matriculaJobActual = null;
+            if (jobId) {
+                fetch(`${MATRICULA_SYNC_URL}/${jobId}/cancelar`, { method: 'POST' }).catch(() => { /* ya se cortó igual en la página */ });
+            }
+        }
+
+        /* Texto de avance según la etapa que informa el backend. */
+        function textoProgresoMatricula(data) {
+            if (data.etapa === 'en_fila') {
+                const n = data.personas_delante || 0;
+                return n > 0
+                    ? `En fila: ${n === 1 ? 'hay 1 persona' : `hay ${n} personas`} antes que tú. Ya casi...`
+                    : 'Preparando la conexión con Matrícula...';
+            }
+            if (data.etapa === 'esperando_cupo') return 'Matrícula acepta pocas conexiones por minuto. Tu turno llega en menos de un minuto...';
+            if (data.etapa === 'descargando') return 'Trayendo tus cursos y horarios...';
+            return 'Conectando con Matrícula...';
+        }
+
+        function mostrarProgresoMatricula(texto) {
+            const progresoEl = document.getElementById('sync-matricula-progreso');
+            if (progresoEl) progresoEl.innerHTML = `<span class="spinner"></span> ${texto}`;
+        }
+
+        const esperarMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        /* Arranca el job y consulta hasta que termine. Devuelve el
+           resultado (mismo JSON de siempre), o null si el alumno canceló.
+           Lanza Error con el mensaje del backend si algo falla. */
+        async function sincronizarMatriculaConBackend(codigo, password) {
+            const respInicio = await fetch(`${MATRICULA_SYNC_URL}/iniciar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ codigo, password }),
+            });
+            const inicio = await respInicio.json().catch(() => ({}));
+            if (!respInicio.ok || !inicio.job_id) throw new Error(inicio.detail || 'No se pudo conectar con Matrícula.');
+            if (matriculaSyncCancelada) {
+                fetch(`${MATRICULA_SYNC_URL}/${inicio.job_id}/cancelar`, { method: 'POST' }).catch(() => { });
+                return null;
+            }
+            matriculaJobActual = inicio.job_id;
+
+            const limite = Date.now() + MATRICULA_ESPERA_MAXIMA_MS;
+            let fallosSeguidos = 0;
+            while (Date.now() < limite) {
+                await esperarMs(MATRICULA_INTERVALO_POLLING_MS);
+                if (matriculaSyncCancelada) return null;
+                let resp, data;
+                try {
+                    resp = await fetch(`${MATRICULA_SYNC_URL}/${inicio.job_id}`);
+                    data = await resp.json();
+                    fallosSeguidos = 0;
+                } catch (err) {
+                    // Un corte de red momentáneo no debe tumbar la conexión.
+                    if (++fallosSeguidos >= 3) throw new Error('Se perdió la conexión con SIGA. Revisa tu internet e intenta de nuevo.');
+                    continue;
+                }
+                if (matriculaSyncCancelada) return null;
+                if (!resp.ok) throw new Error(data.detail || 'No se pudo conectar con Matrícula.');
+                if (data.status === 'cancelado') return null;
+                if (data.status === 'listo') return data.resultado;
+                mostrarProgresoMatricula(textoProgresoMatricula(data));
+            }
+            cancelarSyncMatricula();
+            throw new Error('La conexión tardó demasiado. Intenta de nuevo en unos minutos.');
         }
 
         // Convierte la respuesta del backend (cursos + carga) en el
@@ -1046,19 +1129,20 @@
             }
 
             btnConfirmar.disabled = true;
-            btnCancelar.disabled = true;
+            // "Cancelar" queda ACTIVO durante la conexión: saca al alumno de
+            // la fila de verdad (ver cancelarSyncMatricula).
             btnConfirmar.textContent = 'Conectando...';
+            mostrarProgresoMatricula('Conectando con Matrícula...');
             progresoEl.style.display = 'block';
+            matriculaSyncCancelada = false;
 
             try {
-                const resp = await fetch(MATRICULA_SYNC_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ codigo, password }),
-                });
-                const data = await resp.json();
+                const data = await sincronizarMatriculaConBackend(codigo, password);
                 passwordEl.value = '';
-                if (!resp.ok) throw new Error(data.detail || 'No se pudo conectar con Matrícula.');
+                if (data === null) {
+                    showToast('Conexión cancelada', 'info');
+                    return;
+                }
 
                 if (!data.carga || !Object.keys(data.carga).length) {
                     throw new Error('No se encontraron cursos con horario disponible en tu Matrícula.');
@@ -1112,9 +1196,10 @@
                 errorEl.textContent = err.message || 'Ocurrió un error al conectar. Intenta de nuevo.';
                 errorEl.style.display = 'block';
             } finally {
+                matriculaJobActual = null;
                 btnConfirmar.disabled = false;
                 btnCancelar.disabled = false;
-                btnConfirmar.textContent = 'Ingresar y conectar';
+                btnConfirmar.textContent = 'Conectar';
                 progresoEl.style.display = 'none';
             }
         }
