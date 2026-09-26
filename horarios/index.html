@@ -119,7 +119,13 @@
                  horarias enviadas". Cerrado por defecto para no competir
                  con Matrícula ni con la carga oficial. -->
             <button type="button" class="hi-enlace-envio" id="btnAbrirEnvio">
-                ¿Te dieron la carga horaria de tu facultad? Envíanosla y la dejamos lista para todos ▾
+                <span class="hi-envio-icono" aria-hidden="true">📤</span>
+                <span class="hi-envio-textos">
+                    <span class="hi-envio-titulo">¿Te dieron la carga horaria de tu facultad?</span>
+                    <span class="hi-envio-sub">Envíanosla y la dejamos lista para todos. También puedes tocar una
+                        facultad en gris.</span>
+                </span>
+                <span class="hi-envio-flecha" aria-hidden="true">▾</span>
             </button>
             <form class="hi-form hi-envio-form" id="formEnvio" hidden>
                 <p class="hi-desc" id="envioFacultadTexto" style="margin:0;"></p>
@@ -643,18 +649,25 @@
             const siglasDisponibles = new Set(disponibles.map(c => c.facultad));
             const mia = perfilAlumno.facultad;
 
-            // Si no sabemos tu facultad y abriste el envío, las siglas se
-            // vuelven botones para que elijas la tuya.
-            const eligiendo = !mia && !$('formEnvio').hidden;
+            // Las facultades en gris son una invitación: al tocarlas se abre el
+            // envío con esa facultad elegida. Con el formulario abierto, todas
+            // se pueden tocar para cambiar de qué facultad es el archivo.
+            const formAbierto = !$('formEnvio').hidden;
+            const resaltada = formAbierto ? facultadDelEnvio() : mia;
             $('listaFacultades').innerHTML = SIGLAS_FACULTADES.map(sigla => {
+                const disponible = siglasDisponibles.has(sigla);
                 const clases = ['hi-fac'];
-                if (siglasDisponibles.has(sigla)) clases.push('disponible');
-                if (sigla === (mia || facultadEnvio)) clases.push('mia');
-                if (eligiendo) clases.push('elegible');
-                const etiqueta = `${siglasDisponibles.has(sigla) ? '✓ ' : ''}${sigla}`;
-                return eligiendo
-                    ? `<button type="button" class="${clases.join(' ')}" data-sigla="${sigla}">${etiqueta}</button>`
-                    : `<span class="${clases.join(' ')}">${etiqueta}</span>`;
+                if (disponible) clases.push('disponible');
+                if (sigla === resaltada) clases.push('mia');
+                const tocable = formAbierto || !disponible;
+                if (tocable) clases.push('elegible');
+                const titulo = tocable
+                    ? (disponible ? `Enviar una versión nueva de la carga ${sigla}` : `¿Tienes la carga de ${sigla}? Envíanosla`)
+                    : `La carga de ${sigla} ya está disponible`;
+                const etiqueta = `${disponible ? '✓ ' : ''}${sigla}`;
+                return tocable
+                    ? `<button type="button" class="${clases.join(' ')}" data-sigla="${sigla}" title="${titulo}">${etiqueta}</button>`
+                    : `<span class="${clases.join(' ')}" title="${titulo}">${etiqueta}</span>`;
             }).join('');
             actualizarTextoFacultadEnvio();
 
@@ -755,15 +768,19 @@
         const BUCKET_CARGAS = 'cargas-horarias';
         const ENVIO_MAX_MB = 10;
         const ENVIO_EXTENSIONES = ['pdf', 'xlsx', 'xls', 'csv', 'png', 'jpg', 'jpeg', 'webp'];
+        // De qué facultad es el ARCHIVO (no quién lo envía): por defecto la
+        // del perfil; tocando otra sigla se cambia (ej. un alumno FIIS que
+        // consiguió la carga de FIM de un amigo).
         let facultadEnvio = '';
+        const facultadDelEnvio = () => facultadEnvio || perfilAlumno.facultad;
 
         function actualizarTextoFacultadEnvio() {
             const el = $('envioFacultadTexto');
             if (!el) return;
-            const fac = perfilAlumno.facultad || facultadEnvio;
+            const fac = facultadDelEnvio();
             el.innerHTML = fac
-                ? `Facultad: <strong>${escapeHtml(fac)}</strong> · ciclo ${escapeHtml(CICLO_ACTUAL)}`
-                : 'Toca arriba las siglas de tu facultad.';
+                ? `Carga horaria de: <strong>${escapeHtml(fac)}</strong> · ciclo ${escapeHtml(CICLO_ACTUAL)} <span class="hi-envio-cambiar">(toca otra sigla para cambiarla)</span>`
+                : 'Toca arriba las siglas de la facultad de esta carga horaria.';
         }
 
         function mostrarBannerEnvio(texto, tipo) {
@@ -773,18 +790,24 @@
             b.textContent = texto;
         }
 
-        $('btnAbrirEnvio').onclick = () => {
+        function abrirEnvio() {
             $('formEnvio').hidden = false;
             $('btnAbrirEnvio').hidden = true;
             renderAnticipada();
-        };
+        }
+        $('btnAbrirEnvio').onclick = abrirEnvio;
 
         $('listaFacultades').addEventListener('click', (ev) => {
             const btn = ev.target.closest('[data-sigla]');
             if (!btn) return;
             facultadEnvio = btn.dataset.sigla;
             mostrarBannerEnvio('');
-            renderAnticipada();
+            if ($('formEnvio').hidden) {
+                abrirEnvio();
+                $('formEnvio').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                renderAnticipada();
+            }
         });
 
         $('envioArchivo').addEventListener('change', () => {
@@ -805,9 +828,9 @@
             ev.preventDefault();
             mostrarBannerEnvio('');
             const file = $('envioArchivo').files[0];
-            const facultad = perfilAlumno.facultad || facultadEnvio;
+            const facultad = facultadDelEnvio();
 
-            if (!facultad) { mostrarBannerEnvio('Elige primero tu facultad tocando sus siglas.', 'error'); return; }
+            if (!facultad) { mostrarBannerEnvio('Elige primero de qué facultad es, tocando sus siglas.', 'error'); return; }
             if (!file) { mostrarBannerEnvio('Elige el archivo de la carga horaria.', 'error'); return; }
             const ext = (file.name.split('.').pop() || '').toLowerCase();
             if (!ENVIO_EXTENSIONES.includes(ext)) {

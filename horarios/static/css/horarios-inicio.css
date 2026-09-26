@@ -339,18 +339,60 @@ body.page-index-body {
 
 /* ── Envío de la carga horaria de tu facultad ── */
 .hi-enlace-envio {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     width: 100%;
-    margin-top: 12px;
-    background: none;
-    border: none;
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: var(--brand-morado-tinte);
+    border: 1.5px dashed color-mix(in srgb, var(--brand-morado) 45%, transparent);
+    border-radius: 14px;
     cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
+    text-align: left;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.hi-enlace-envio:hover {
+    border-color: var(--brand-morado);
+    transform: translateY(-1px);
+}
+
+.hi-envio-icono {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.hi-envio-textos {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.hi-envio-titulo {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
     color: var(--brand-morado);
-    text-align: center;
-    line-height: 1.5;
+}
+
+.hi-envio-sub {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11.5px;
+    color: #4b2a78;
+    line-height: 1.45;
+}
+
+.hi-envio-flecha {
+    color: var(--brand-morado);
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.hi-envio-cambiar {
+    color: var(--ink-soft);
+    font-size: 11px;
 }
 
 .hi-enlace-envio[hidden] {
@@ -430,6 +472,7 @@ button.hi-fac {
 .hi-fac.elegible:hover {
     border-color: var(--brand-morado);
     color: var(--brand-morado);
+    background: var(--brand-morado-tinte);
 }
 
 /* ── Vista "Elige tus cursos" ── */

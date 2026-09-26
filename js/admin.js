@@ -10,6 +10,38 @@ const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
 const BUCKET_CARGAS = 'cargas-horarias';
 
+/* ── Globitos de novedades en las pestañas ──────────────────────
+   Sugerencias, Asesorías propuestas y Cargas horarias enviadas: cuentan
+   lo que llegó DESPUÉS de la última vez que abriste esa pestaña (fecha
+   guardada en este navegador). Al abrirla, el globito se va.
+   Opiniones reportadas: cuenta todas las que siguen reportadas, porque
+   esas requieren una acción tuya hasta resolverlas. */
+const LS_ADMIN_VISTO = 'siga_admin_visto_';
+
+function pintarGlobito(tab, n) {
+    const btn = document.querySelector(`.admin-tab[data-tab="${tab}"]`);
+    if (!btn) return;
+    let globito = btn.querySelector('.admin-tab-globito');
+    if (!n) { if (globito) globito.remove(); return; }
+    if (!globito) {
+        globito = document.createElement('span');
+        globito.className = 'admin-tab-globito';
+        btn.appendChild(globito);
+    }
+    globito.textContent = n > 99 ? '99+' : String(n);
+}
+
+function contarNovedades(tab, fechas) {
+    const visto = Date.parse(localStorage.getItem(LS_ADMIN_VISTO + tab) || '') || 0;
+    pintarGlobito(tab, fechas.filter((f) => (Date.parse(f) || 0) > visto).length);
+}
+
+function marcarPestanaVista(tab) {
+    if (!['sugerencias', 'asesorias', 'cargas'].includes(tab)) return;
+    localStorage.setItem(LS_ADMIN_VISTO + tab, new Date().toISOString());
+    pintarGlobito(tab, 0);
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Pinta el correo/avatar reales en el menú de cuenta del nav (mismo
     // patrón que gate.js usa en el resto de SIGA) — sin esto, el nav se
@@ -40,6 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.querySelectorAll('.admin-tab').forEach((b) => b.classList.remove('activo'));
             btn.classList.add('activo');
             const tab = btn.dataset.tab;
+            marcarPestanaVista(tab);
             document.getElementById('panelSugerencias').style.display = tab === 'sugerencias' ? 'flex' : 'none';
             document.getElementById('panelAsesorias').style.display = tab === 'asesorias' ? 'flex' : 'none';
             document.getElementById('panelCargas').style.display = tab === 'cargas' ? 'flex' : 'none';
@@ -153,6 +186,7 @@ async function cargarSugerencias() {
         cont.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;
         return;
     }
+    contarNovedades('sugerencias', data.map((x) => x.creado_en));
     if (!data.length) {
         cont.innerHTML = '<p class="admin-vacio">No hay sugerencias todavía.</p>';
         return;
@@ -227,6 +261,7 @@ async function cargarOpiniones() {
         cont.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;
         return;
     }
+    pintarGlobito('opiniones', data.length);
     if (!data.length) {
         cont.innerHTML = '<p class="admin-vacio">No hay opiniones reportadas — todo tranquilo.</p>';
         return;
@@ -323,6 +358,7 @@ async function cargarAsesorias() {
         cont.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;
         return;
     }
+    contarNovedades('asesorias', data.map((x) => x.created_at));
     if (!data.length) {
         cont.innerHTML = '<p class="admin-vacio">No hay propuestas todavía.</p>';
         return;
@@ -436,6 +472,7 @@ async function cargarCargasEnviadas() {
         cont.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;
         return;
     }
+    contarNovedades('cargas', data.map((x) => x.created_at));
     if (!data.length) {
         cont.innerHTML = '<p class="admin-vacio">Nadie ha enviado una carga horaria todavía.</p>';
         return;
