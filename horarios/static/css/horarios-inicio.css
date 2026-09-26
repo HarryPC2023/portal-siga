@@ -838,3 +838,16 @@ button.hi-fac {
         padding: 13px 32px;
     }
 }
+
+/* La cajita 📤 como interruptor: flecha gira y borde sólido al estar abierta */
+.hi-envio-flecha {
+    transition: transform 0.2s ease;
+}
+
+.hi-enlace-envio.abierto {
+    border-style: solid;
+}
+
+.hi-enlace-envio.abierto .hi-envio-flecha {
+    transform: rotate(180deg);
+}

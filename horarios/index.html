@@ -790,16 +790,29 @@
             b.textContent = texto;
         }
 
+        // La cajita 📤 abre y cierra el envío (queda visible como interruptor).
         function abrirEnvio() {
             $('formEnvio').hidden = false;
-            $('btnAbrirEnvio').hidden = true;
+            $('btnAbrirEnvio').classList.add('abierto');
             renderAnticipada();
         }
-        $('btnAbrirEnvio').onclick = abrirEnvio;
+        function cerrarEnvio() {
+            $('formEnvio').hidden = true;
+            $('btnAbrirEnvio').classList.remove('abierto');
+            facultadEnvio = '';
+            mostrarBannerEnvio('');
+            renderAnticipada();
+        }
+        $('btnAbrirEnvio').onclick = () => ($('formEnvio').hidden ? abrirEnvio() : cerrarEnvio());
 
         $('listaFacultades').addEventListener('click', (ev) => {
             const btn = ev.target.closest('[data-sigla]');
             if (!btn) return;
+            // Tocar de nuevo la facultad ya elegida cierra el envío.
+            if (!$('formEnvio').hidden && btn.dataset.sigla === facultadDelEnvio()) {
+                cerrarEnvio();
+                return;
+            }
             facultadEnvio = btn.dataset.sigla;
             mostrarBannerEnvio('');
             if ($('formEnvio').hidden) {
