@@ -1256,9 +1256,6 @@ def _obtener_token_matricula(codigo, password):
     )
 
 
-ESPERA_MAXIMA_FILA_MATRICULA_SEGUNDOS = 120  # solo la ruta vieja síncrona (TEMPORAL)
-
-
 def _login_matricula_en(browser, codigo, password):
     """Corre DENTRO del hilo de Chromium (siempre encendido): contexto
     nuevo, login con tecleo humano, escucha la respuesta de /api/login y
@@ -1556,35 +1553,6 @@ def consultar_sync_horarios(job_id: str):
             "segundos_espera": job.get("segundos_espera"),
             "resultado": job.get("resultado"),
         }
-
-
-# TEMPORAL (sep 2026): ruta vieja síncrona, para que nadie vea un error
-# mientras GitHub Pages aún no publica el frontend nuevo. Se retira en el
-# chat de Horarios, cuando ya nadie la llame.
-@app.post("/api/sync-horarios")
-def sync_horarios(credentials: LoginRequest):
-    inicio = time.time()
-    try:
-        token = _token_matricula_con_fila(
-            credentials.codigo, credentials.password,
-            ticket=f"matricula-{uuid.uuid4()}",
-            espera_maxima=ESPERA_MAXIMA_FILA_MATRICULA_SEGUNDOS,
-        )
-    except _FilaDemasiadoLarga:
-        raise HTTPException(
-            status_code=503,
-            detail="SIGA está atendiendo a muchos alumnos ahora mismo. Intenta de nuevo en un minuto.",
-        )
-    try:
-        resultado = _descargar_horarios_matricula(token)
-        logger.info("Sync Matrícula (ruta vieja): ✅ COMPLETA en %.1fs", time.time() - inicio)
-        return resultado
-    except HTTPException:
-        logger.info("Sync Matrícula (ruta vieja): ❌ TERMINÓ CON ERROR tras %.1fs", time.time() - inicio)
-        raise
-    except Exception as e:
-        logger.exception("Error durante la sincronización con Matrícula UNI")
-        raise HTTPException(status_code=500, detail=f"Error en servidor: {str(e)}")
 
 
 if __name__ == "__main__":
