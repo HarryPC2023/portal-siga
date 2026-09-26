@@ -78,6 +78,14 @@
             </div>
 
             <form class="hi-form" id="formMatricula" autocomplete="off">
+                <!-- Señuelos invisibles (mismo truco que Intranotas): el
+                     administrador de contraseñas del navegador rellena estos
+                     con el login de SIGA y deja en paz el código y la
+                     contraseña de INTRALU. -->
+                <div class="hi-senuelo" aria-hidden="true">
+                    <input type="text" name="usuario_senuelo" autocomplete="username" tabindex="-1">
+                    <input type="password" name="password_senuelo" autocomplete="current-password" tabindex="-1">
+                </div>
                 <input type="text" id="matriculaCodigo" placeholder="20231234X" autocomplete="off"
                     style="text-transform:uppercase;" required>
                 <div class="hi-campo-contrasena">
@@ -173,9 +181,9 @@
         // true si la nube guarda algo tuyo aunque este dispositivo no tenga
         // carga (así "Borrar mis datos" aparece igual en la vista de inicio).
         let hayDatosEnNube = false;
-        // Tu malla (solo para la carga oficial anticipada): se arma con el
-        // avance_curricular que ya guarda Intranotas, usando la misma lógica
-        // de "Progreso de tu carrera" (intranotas/progreso-carrera.js).
+        // Tu malla (solo para la carga oficial anticipada): los cursos de tu
+        // plan, sacados del avance_curricular que ya guarda Intranotas.
+        // { CODIGO: { categoria, ciclo, aprobado } }, o null si no hay avance.
         let progresoMalla = null;
         let _mallaPedida = false;
 
@@ -905,11 +913,18 @@
                 if (!uid || !window.sigaSupabase) return null;
                 const { data, error } = await window.sigaSupabase
                     .from('avance_curricular')
-                    .select('categoria, ciclo, codigo_curso, nombre_curso, creditos, prerequisitos, periodo_pdf, nota, veces_llevado, situacion')
+                    .select('codigo_curso, categoria, ciclo, nota')
                     .eq('user_id', uid);
                 if (error || !data || !data.length) return null;
-                const modulo = await import('../intranotas/progreso-carrera.js?v=1');
-                progresoMalla = modulo.construirProgresoCarrera(data);
+                progresoMalla = {};
+                data.forEach(f => {
+                    const nota = parseFloat(f.nota);
+                    progresoMalla[String(f.codigo_curso || '').toUpperCase()] = {
+                        categoria: f.categoria,
+                        ciclo: f.ciclo == null || f.ciclo === '' ? null : Number(f.ciclo),
+                        aprobado: !Number.isNaN(nota) && nota >= 10,
+                    };
+                });
             } catch (e) {
                 console.warn('No se pudo leer tu malla (se muestra la lista normal):', e);
             }
@@ -919,7 +934,7 @@
         function infoMalla(nombre) {
             if (!progresoMalla || !esCargaOficial()) return null;
             const codigo = getCodigoCurso(nombre).toUpperCase();
-            return (codigo && progresoMalla.porCodigo[codigo]) || null;
+            return (codigo && progresoMalla[codigo]) || null;
         }
 
         function renderAvisoMalla() {
@@ -1028,14 +1043,12 @@
             if (malla) {
                 const cat = ETIQUETA_CATEGORIA[malla.categoria] || 'De tu malla';
                 badgesMalla = `<span class="hi-badge malla">${cat}${malla.ciclo && malla.categoria === 'obligatorio' ? ` · ciclo ${malla.ciclo}` : ''}</span>`;
-                if (malla.jalado) badgesMalla += '<span class="hi-badge repetido">Lo repites</span>';
-                if (malla.estado === 'aprobado') badgesMalla += '<span class="hi-badge seccion">Ya aprobado</span>';
-                if (malla.estado === 'en_curso') badgesMalla += '<span class="hi-badge seccion">Lo llevas ahora</span>';
+                if (malla.aprobado) badgesMalla += '<span class="hi-badge seccion">Ya aprobado</span>';
             }
             badges = badgesMalla + badges;
 
             const sel = cursosSeleccionados.has(nombre) ? ' seleccionado' : '';
-            const deMalla = malla && (malla.estado === 'disponible' || malla.estado === 'proximo') ? ' de-malla' : '';
+            const deMalla = malla && !malla.aprobado ? ' de-malla' : '';
             return `
                 <button type="button" class="hi-curso${sel}${deMalla}" data-nombre="${escapeHtml(nombre)}" aria-pressed="${!!sel}">
                     <span class="hi-curso-fila">
@@ -1084,13 +1097,12 @@
             }
 
             if (esCargaOficial() && progresoMalla) {
-                const disponibles = todos.filter(n => infoMalla(n)?.estado === 'disponible');
-                const proximos = todos.filter(n => infoMalla(n)?.estado === 'proximo');
-                const otros = todos.filter(n => !['disponible', 'proximo'].includes(infoMalla(n)?.estado));
+                // Primero, sin título (el aviso de arriba ya lo dice): los
+                // cursos de tu malla que aún no aprobaste. Tú eliges cuáles.
+                const deMalla = todos.filter(n => { const m = infoMalla(n); return m && !m.aprobado; });
+                const otros = todos.filter(n => { const m = infoMalla(n); return !m || m.aprobado; });
                 let html = '';
-                // Sin título: el aviso de arriba ya dice que primero va tu malla.
-                if (disponibles.length) html += htmlGrupo(null, ordenarPorMalla(disponibles));
-                if (proximos.length) html += htmlGrupo('Se abren si apruebas lo que llevas ahora', ordenarPorMalla(proximos));
+                if (deMalla.length) html += htmlGrupo(null, ordenarPorMalla(deMalla));
                 if (otros.length) html += htmlGrupo('Otros cursos de la facultad', ordenarGrupo(otros));
                 cont.innerHTML = html;
                 return;
