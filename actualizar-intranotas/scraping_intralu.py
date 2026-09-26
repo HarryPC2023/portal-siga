@@ -516,10 +516,30 @@ def _esperar_resultado_login(page, avisos_previos, limite_segundos=20):
     return None
 
 
-def _login_intralu_en(browser, codigo, password):
-    """Corre DENTRO del hilo de Chromium. Contexto nuevo (cookies aisladas),
-    login con tecleo humano, devuelve las cookies y cierra el contexto.
-    Deja en el log cuánto tomó cada paso."""
+# Dos formas de escribir en el formulario de INTRALU:
+#   - "rápido": el código se pega de golpe y la contraseña se teclea con
+#     pausas cortas. En el plan gratis de Render cada tecla simulada es
+#     lenta, y el modo humano se comía ~15 s del login (medido, sep 2026).
+#   - "humano": el tecleo de siempre, validado 20/20 contra el reCAPTCHA.
+# Se intenta primero el rápido; si INTRALU no responde o rechaza la
+# verificación de seguridad, se repite solo en modo humano (red de
+# seguridad). Una contraseña incorrecta de verdad NO se repite.
+MODOS_TIPEO = {
+    "rapido": {"tecla": (35, 75), "entre_campos": (150, 350), "antes_de_enviar": (200, 450)},
+    "humano": {"tecla": (90, 190), "entre_campos": (300, 800), "antes_de_enviar": (400, 900)},
+}
+
+
+def _es_contrasena_incorrecta(texto):
+    t = (texto or "").lower()
+    return "contrase" in t or "incorrect" in t or "no coincid" in t or "credencial" in t
+
+
+def _intento_login_intralu(browser, codigo, password, modo):
+    """UN intento de login en un contexto nuevo. Devuelve (resultado,
+    cookies, tiempos): resultado es True, el texto del aviso de error, o
+    None si INTRALU no respondió."""
+    cfg = MODOS_TIPEO[modo]
     tiempos = {}
     t = time.time()
     context = _nuevo_contexto(browser)
@@ -534,11 +554,14 @@ def _login_intralu_en(browser, codigo, password):
 
         t = time.time()
         page.click("#txt-codigo")
-        page.type("#txt-codigo", codigo, delay=random.randint(90, 190))
-        page.wait_for_timeout(random.randint(300, 800))
+        if modo == "rapido":
+            page.fill("#txt-codigo", codigo)
+        else:
+            page.type("#txt-codigo", codigo, delay=random.randint(*cfg["tecla"]))
+        page.wait_for_timeout(random.randint(*cfg["entre_campos"]))
         page.click("#txt-password")
-        page.type("#txt-password", password, delay=random.randint(90, 190))
-        page.wait_for_timeout(random.randint(400, 900))
+        page.type("#txt-password", password, delay=random.randint(*cfg["tecla"]))
+        page.wait_for_timeout(random.randint(*cfg["antes_de_enviar"]))
         tiempos["tipeo"] = time.time() - t
 
         t = time.time()
@@ -547,22 +570,35 @@ def _login_intralu_en(browser, codigo, password):
         resultado = _esperar_resultado_login(page, avisos_previos)
         tiempos["respuesta"] = time.time() - t
 
-        logger.info(
-            "Login INTRALU: contexto %.1fs, página %.1fs, tipeo %.1fs, respuesta %.1fs -> %s",
-            tiempos["contexto"], tiempos["pagina"], tiempos["tipeo"], tiempos["respuesta"],
-            "OK" if resultado is True else f"ERROR ({resultado or 'sin respuesta en 20s'})",
-        )
-
-        if resultado is True:
-            return context.cookies()
-        if resultado and "captcha" in resultado.lower():
-            raise HTTPException(status_code=503, detail="INTRALU no aceptó la verificación de seguridad. Intenta de nuevo en unos minutos.")
-        raise HTTPException(status_code=401, detail="Código o contraseña incorrectos en Intralú.")
+        cookies = context.cookies() if resultado is True else None
+        return resultado, cookies, tiempos
     finally:
         try:
             context.close()
         except Exception:
             pass
+
+
+def _login_intralu_en(browser, codigo, password):
+    """Corre DENTRO del hilo de Chromium: intenta en modo rápido y, solo si
+    INTRALU no respondió o rechazó la verificación, repite en modo humano.
+    Deja en el log cuánto tomó cada paso y qué modo funcionó."""
+    for modo in ("rapido", "humano"):
+        resultado, cookies, tiempos = _intento_login_intralu(browser, codigo, password, modo)
+        logger.info(
+            "Login INTRALU [%s]: contexto %.1fs, página %.1fs, tipeo %.1fs, respuesta %.1fs -> %s",
+            modo, tiempos["contexto"], tiempos["pagina"], tiempos["tipeo"], tiempos["respuesta"],
+            "OK" if resultado is True else f"ERROR ({resultado or 'sin respuesta en 20s'})",
+        )
+        if resultado is True:
+            return cookies
+        if resultado and _es_contrasena_incorrecta(resultado):
+            raise HTTPException(status_code=401, detail="Código o contraseña incorrectos en Intralú.")
+        # Sin respuesta, captcha u otro aviso raro: se reintenta en modo humano.
+
+    if resultado and "captcha" in resultado.lower():
+        raise HTTPException(status_code=503, detail="INTRALU no aceptó la verificación de seguridad. Intenta de nuevo en unos minutos.")
+    raise HTTPException(status_code=401, detail="Código o contraseña incorrectos en Intralú.")
 
 
 def _cookies_de_login_intralu(codigo, password):
