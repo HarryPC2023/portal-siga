@@ -1,12 +1,13 @@
 import base64
 import logging
 import os
+import queue
 import random
 import threading
 import time
 import uuid
 from collections import deque
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
 from html.parser import HTMLParser
 # datetime/timezone y Optional hoy solo los usa el código DESACTIVADO de
 # "Recordar mi contraseña" — se dejan importados para reactivarlo fácil.
@@ -362,54 +363,211 @@ UA_NAVEGADOR = (
     "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
 )
 URL_BASE_INTRALU = f"https://{DOMINIO_INTRALU}"
-PETICIONES_PARALELAS_NOTAS = 3  # educado con INTRALU, y aun así rápido
+PETICIONES_PARALELAS = 6  # cursos/notas de TODOS los periodos a la vez (antes: 3, periodo por periodo)
 
 
-def _login_intralu_page(context, codigo, password):
-    """Login con código+contraseña y tecleo con pausas humanas (el
-    'stealth' real lo aplica Stealth().use_sync() al envolver
-    sync_playwright()). Devuelve la page ya autenticada."""
-    page = context.new_page()
-    page.goto(f"{URL_BASE_INTRALU}/login", wait_until="domcontentloaded")
-    page.wait_for_timeout(random.randint(600, 1400))
+# ================================================================
+# CHROMIUM SIEMPRE ENCENDIDO (sep 2026)
+# Antes cada login abría y cerraba su propio Chromium: en el plan
+# gratuito de Render (muy poca CPU) solo arrancarlo se comía buena
+# parte de los ~49 s del login. Ahora UN hilo dedicado es dueño de un
+# único Chromium que queda abierto entre logins; cada login usa un
+# "contexto" nuevo (como una ventana de incógnito: cookies aisladas por
+# alumno) y lo cierra al terminar.
+#   - Playwright "sync" solo puede usarse desde el hilo que lo creó, por
+#     eso todo pasa por este hilo (los logins ya iban de uno en uno por
+#     la fila, así que no se pierde nada).
+#   - Se reinicia solo si se cae, si algo falla raro, o cada
+#     MAX_LOGINS_POR_CHROMIUM logins (para que no acumule memoria).
+#   - Arranca "en frío" al levantar el servidor, así el primer alumno
+#     tras el despertar de Render ya lo encuentra calentándose.
+# ================================================================
+MAX_LOGINS_POR_CHROMIUM = 30
+ESPERA_MAXIMA_LOGIN_SEGUNDOS = 150
 
-    page.click("#txt-codigo")
-    page.type("#txt-codigo", codigo, delay=random.randint(90, 190))
-    page.wait_for_timeout(random.randint(300, 800))
 
-    page.click("#txt-password")
-    page.type("#txt-password", password, delay=random.randint(90, 190))
-    page.wait_for_timeout(random.randint(400, 900))
+class _TrabajadorChromium:
+    def __init__(self):
+        self._tareas = queue.Queue()
+        self._hilo = threading.Thread(target=self._bucle, name="chromium", daemon=True)
+        self._hilo.start()
 
-    page.click("#btn-login")
+    def ejecutar(self, funcion, espera_maxima=ESPERA_MAXIMA_LOGIN_SEGUNDOS):
+        """Corre `funcion(browser)` en el hilo de Chromium y devuelve su
+        resultado (o relanza su excepción) en el hilo que llama."""
+        futuro = Future()
+        self._tareas.put((funcion, futuro))
+        return futuro.result(timeout=espera_maxima)
 
+    def precalentar(self):
+        """Pide arrancar Chromium sin esperar la respuesta."""
+        self._tareas.put((None, None))
+
+    def _bucle(self):
+        administrador = playwright = browser = None
+        usos = 0
+
+        def cerrar():
+            nonlocal administrador, playwright, browser, usos
+            for accion in (
+                lambda: browser and browser.close(),
+                lambda: administrador and administrador.__exit__(None, None, None),
+            ):
+                try:
+                    accion()
+                except Exception:
+                    pass
+            administrador = playwright = browser = None
+            usos = 0
+
+        def asegurar_browser():
+            nonlocal administrador, playwright, browser, usos
+            if browser is not None and browser.is_connected() and usos < MAX_LOGINS_POR_CHROMIUM:
+                return
+            if browser is not None:
+                logger.info("Chromium: reiniciando (usos=%d, conectado=%s)", usos, browser.is_connected())
+            cerrar()
+            t0 = time.time()
+            administrador = Stealth().use_sync(sync_playwright())
+            playwright = administrador.__enter__()
+            browser = playwright.chromium.launch(headless=True)
+            logger.info("Chromium: encendido en %.1fs (queda abierto para los siguientes logins)", time.time() - t0)
+
+        while True:
+            funcion, futuro = self._tareas.get()
+            try:
+                asegurar_browser()
+                if funcion is None:
+                    continue  # solo era precalentar
+                usos += 1
+                resultado = funcion(browser)
+                futuro.set_result(resultado)
+            except HTTPException as e:
+                # Error "de negocio" (contraseña incorrecta, etc.): Chromium está bien.
+                if futuro and not futuro.done():
+                    futuro.set_exception(e)
+            except BaseException as e:
+                logger.exception("Chromium: falló una tarea; se reiniciará para la siguiente")
+                cerrar()
+                if futuro and not futuro.done():
+                    futuro.set_exception(e)
+
+
+_trabajador_chromium = _TrabajadorChromium()
+_trabajador_chromium.precalentar()
+
+
+def _nuevo_contexto(browser):
+    return browser.new_context(
+        user_agent=UA_NAVEGADOR,
+        viewport={"width": 1366, "height": 768},
+        locale="es-PE",
+    )
+
+
+# Dónde suele aparecer el aviso de error en un login web (SweetAlert,
+# Bootstrap, toasts, validación de Laravel). Se exige texto de al menos
+# 6 letras para no confundir un asterisco rojo de "campo obligatorio"
+# con un error real. El texto encontrado queda en el log para poder
+# confirmar con una contraseña equivocada a propósito.
+SELECTORES_ERROR_LOGIN = (
+    ".swal2-popup",
+    ".alert-danger",
+    ".alert",
+    ".invalid-feedback",
+    ".toast-error",
+    ".toast",
+    "[role='alert']",
+    ".text-danger",
+)
+
+
+def _avisos_visibles(page):
+    """Textos de los avisos visibles AHORA en la página (ver SELECTORES_ERROR_LOGIN)."""
+    textos = set()
+    for selector in SELECTORES_ERROR_LOGIN:
+        try:
+            elementos = page.locator(selector)
+            for i in range(min(elementos.count(), 5)):
+                elemento = elementos.nth(i)
+                if elemento.is_visible():
+                    texto = " ".join((elemento.inner_text() or "").split())
+                    if len(texto) >= 6:
+                        textos.add(texto)
+        except Exception:
+            pass
+    return textos
+
+
+def _esperar_resultado_login(page, avisos_previos, limite_segundos=20):
+    """Devuelve True si entró (llegó a /home), o el texto del error si
+    INTRALU mostró un aviso NUEVO (que no estaba antes de apretar el
+    botón), o None si no pasó nada en `limite_segundos`. Revisa cada
+    0.3 s: quien se equivoca de contraseña lo sabe en segundos."""
+    fin = time.time() + limite_segundos
+    while time.time() < fin:
+        if "/home" in page.url:
+            return True
+        nuevos = _avisos_visibles(page) - avisos_previos
+        if nuevos:
+            return sorted(nuevos, key=len)[-1]
+        page.wait_for_timeout(300)
+    return None
+
+
+def _login_intralu_en(browser, codigo, password):
+    """Corre DENTRO del hilo de Chromium. Contexto nuevo (cookies aisladas),
+    login con tecleo humano, devuelve las cookies y cierra el contexto.
+    Deja en el log cuánto tomó cada paso."""
+    tiempos = {}
+    t = time.time()
+    context = _nuevo_contexto(browser)
     try:
-        page.wait_for_url("**/home**", timeout=20000)
-    except Exception:
-        raise HTTPException(status_code=401, detail="Código o contraseña incorrectos en Intralú.")
+        page = context.new_page()
+        tiempos["contexto"] = time.time() - t
 
-    return page
+        t = time.time()
+        page.goto(f"{URL_BASE_INTRALU}/login", wait_until="domcontentloaded")
+        page.wait_for_timeout(random.randint(600, 1400))
+        tiempos["pagina"] = time.time() - t
+
+        t = time.time()
+        page.click("#txt-codigo")
+        page.type("#txt-codigo", codigo, delay=random.randint(90, 190))
+        page.wait_for_timeout(random.randint(300, 800))
+        page.click("#txt-password")
+        page.type("#txt-password", password, delay=random.randint(90, 190))
+        page.wait_for_timeout(random.randint(400, 900))
+        tiempos["tipeo"] = time.time() - t
+
+        t = time.time()
+        avisos_previos = _avisos_visibles(page)
+        page.click("#btn-login")
+        resultado = _esperar_resultado_login(page, avisos_previos)
+        tiempos["respuesta"] = time.time() - t
+
+        logger.info(
+            "Login INTRALU: contexto %.1fs, página %.1fs, tipeo %.1fs, respuesta %.1fs -> %s",
+            tiempos["contexto"], tiempos["pagina"], tiempos["tipeo"], tiempos["respuesta"],
+            "OK" if resultado is True else f"ERROR ({resultado or 'sin respuesta en 20s'})",
+        )
+
+        if resultado is True:
+            return context.cookies()
+        if resultado and "captcha" in resultado.lower():
+            raise HTTPException(status_code=503, detail="INTRALU no aceptó la verificación de seguridad. Intenta de nuevo en unos minutos.")
+        raise HTTPException(status_code=401, detail="Código o contraseña incorrectos en Intralú.")
+    finally:
+        try:
+            context.close()
+        except Exception:
+            pass
 
 
 def _cookies_de_login_intralu(codigo, password):
-    """Abre Chromium, hace el login y devuelve SOLO las cookies de la
-    sesión. Chromium se cierra al salir de aquí: es lo único pesado de
-    toda la sincronización y dura unos segundos."""
-    with Stealth().use_sync(sync_playwright()) as p:
-        browser = p.chromium.launch(headless=True)
-        try:
-            context = browser.new_context(
-                user_agent=UA_NAVEGADOR,
-                viewport={"width": 1366, "height": 768},
-                locale="es-PE",
-            )
-            _login_intralu_page(context, codigo, password)
-            return context.cookies()
-        finally:
-            try:
-                browser.close()
-            except Exception:
-                pass
+    """Hace el login en el Chromium siempre encendido y devuelve SOLO las
+    cookies de la sesión (lo demás va por `requests`)."""
+    return _trabajador_chromium.ejecutar(lambda browser: _login_intralu_en(browser, codigo, password))
 
 
 def _sesion_http_intralu(cookies):
@@ -671,10 +829,11 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
             cookies = _cookies_de_login_intralu(codigo, password)
         finally:
             _soltar_turno_chromium()
-        logger.info("Job %s: login OK (fila %.1fs, total %.1fs) — Chromium cerrado",
+        logger.info("Job %s: login OK (fila %.1fs, total %.1fs)",
                     job_id, espera_fila, time.time() - inicio)
 
         sesion = _sesion_http_intralu(cookies)
+        inicio_descarga = time.time()
 
         # 3. Qué periodos revisar.
         if periodo_especifico:
@@ -685,19 +844,28 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
         _actualizar_job(job_id, etapa="descargando", periodos_total=len(periodos), periodos_hechos=0)
         logger.info("Job %s: %d periodo(s) a revisar: %s", job_id, len(periodos), ", ".join(periodos))
 
-        with ThreadPoolExecutor(max_workers=PETICIONES_PARALELAS_NOTAS) as pool:
+        # Todo en paralelo: primero las listas de cursos de TODOS los
+        # periodos a la vez, y apenas llega cada lista se encolan sus
+        # cursos. Se espera en orden cronológico solo para mostrar un
+        # avance ordenado ("Cargando 2024-1 (3 de 8)"), pero por detrás
+        # ya se está descargando todo junto.
+        pool = ThreadPoolExecutor(max_workers=PETICIONES_PARALELAS)
+        try:
+            futuros_lista = {p: pool.submit(_listar_cursos_periodo, sesion, p) for p in periodos}
+            futuros_notas = {}
+            for periodo in periodos:
+                cursos_temp = futuros_lista[periodo].result()
+                futuros_notas[periodo] = [pool.submit(_traer_notas_curso, sesion, periodo, c) for c in cursos_temp]
+
             for i, periodo in enumerate(periodos):
                 if _job_cancelado(job_id):
                     raise _SyncCancelada()
                 _actualizar_job(job_id, periodo_actual=periodo, periodos_hechos=i)
 
-                cursos_temp = _listar_cursos_periodo(sesion, periodo)
-                if not cursos_temp:
+                if not futuros_notas[periodo]:
                     continue
-
-                futuros = [pool.submit(_traer_notas_curso, sesion, periodo, c) for c in cursos_temp]
                 cursos_lista, errores_curso = [], []
-                for futuro in futuros:
+                for futuro in futuros_notas[periodo]:
                     if _job_cancelado(job_id):
                         raise _SyncCancelada()
                     curso, error = futuro.result()
@@ -712,7 +880,10 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
                 }
                 logger.info("Job %s:   %s -> %d curso(s), %d error(es)",
                             job_id, periodo, len(cursos_lista), len(errores_curso))
+        finally:
+            pool.shutdown(wait=False, cancel_futures=True)
 
+        logger.info("Job %s: descarga de %d periodo(s) en %.1fs", job_id, len(periodos), time.time() - inicio_descarga)
         _actualizar_job(job_id, periodos_hechos=len(periodos), periodo_actual=None)
 
         # Avance Curricular (best-effort, con la misma sesión, sin 2do login).
@@ -920,55 +1091,12 @@ def _obtener_token_matricula(codigo, password):
       3. /api/login tiene un límite de 5 intentos por ventana de tiempo
          (header X-Ratelimit-Limit: 5) — se avisa con un 429 claro.
 
-    Chromium se cierra apenas se obtiene el token: todo lo demás (ficha y
-    horarios) se hace con `requests`, así la RAM se libera en segundos.
+    El login usa el Chromium siempre encendido (un contexto nuevo que se
+    cierra al terminar); todo lo demás (ficha y horarios) va por `requests`.
     """
-    estado = None
-    cuerpo = {}
-    url_final = None
-
-    with Stealth().use_sync(sync_playwright()) as p:
-        browser = p.chromium.launch(headless=True)
-        try:
-            context = browser.new_context(
-                user_agent=UA_NAVEGADOR,
-                viewport={"width": 1366, "height": 768},
-                locale="es-PE",
-            )
-            page = context.new_page()
-
-            page.goto(f"{MATRICULA_BASE}/login", wait_until="domcontentloaded")
-            # Tiempo para que cargue el script de reCAPTCHA antes de
-            # interactuar (si se hace clic antes, no hay token que mandar).
-            page.wait_for_timeout(random.randint(1500, 2500))
-
-            campo_codigo = page.locator("input[type='text']").first
-            campo_password = page.locator("input[type='password']").first
-
-            campo_codigo.click()
-            campo_codigo.type(codigo, delay=random.randint(90, 190))
-            page.wait_for_timeout(random.randint(300, 800))
-
-            campo_password.click()
-            campo_password.type(password, delay=random.randint(90, 190))
-            page.wait_for_timeout(random.randint(400, 900))
-
-            try:
-                with page.expect_response(
-                    lambda r: r.url.rstrip("/").endswith("/api/login") and r.request.method == "POST",
-                    timeout=25000,
-                ) as info_respuesta:
-                    page.click("button:has-text('Iniciar Sesión')")
-                respuesta = info_respuesta.value
-                estado = respuesta.status
-                try:
-                    cuerpo = respuesta.json() or {}
-                except Exception:
-                    cuerpo = {}
-            except PlaywrightTimeoutError:
-                url_final = page.url
-        finally:
-            browser.close()
+    estado, cuerpo, url_final = _trabajador_chromium.ejecutar(
+        lambda browser: _login_matricula_en(browser, codigo, password)
+    )
 
     if estado is None:
         # Nunca salió el POST a /api/login: la página no cargó bien, cambió
@@ -1008,6 +1136,52 @@ def _obtener_token_matricula(codigo, password):
 
 
 ESPERA_MAXIMA_FILA_MATRICULA_SEGUNDOS = 120  # es una petición síncrona: no se deja colgando mucho
+
+
+def _login_matricula_en(browser, codigo, password):
+    """Corre DENTRO del hilo de Chromium (siempre encendido): contexto
+    nuevo, login con tecleo humano, escucha la respuesta de /api/login y
+    devuelve (estado_http, cuerpo_json, url_final)."""
+    estado, cuerpo, url_final = None, {}, None
+    context = _nuevo_contexto(browser)
+    try:
+        page = context.new_page()
+        page.goto(f"{MATRICULA_BASE}/login", wait_until="domcontentloaded")
+        # Tiempo para que cargue el script de reCAPTCHA antes de
+        # interactuar (si se hace clic antes, no hay token que mandar).
+        page.wait_for_timeout(random.randint(1500, 2500))
+
+        campo_codigo = page.locator("input[type='text']").first
+        campo_password = page.locator("input[type='password']").first
+
+        campo_codigo.click()
+        campo_codigo.type(codigo, delay=random.randint(90, 190))
+        page.wait_for_timeout(random.randint(300, 800))
+
+        campo_password.click()
+        campo_password.type(password, delay=random.randint(90, 190))
+        page.wait_for_timeout(random.randint(400, 900))
+
+        try:
+            with page.expect_response(
+                lambda r: r.url.rstrip("/").endswith("/api/login") and r.request.method == "POST",
+                timeout=25000,
+            ) as info_respuesta:
+                page.click("button:has-text('Iniciar Sesión')")
+            respuesta = info_respuesta.value
+            estado = respuesta.status
+            try:
+                cuerpo = respuesta.json() or {}
+            except Exception:
+                cuerpo = {}
+        except PlaywrightTimeoutError:
+            url_final = page.url
+    finally:
+        try:
+            context.close()
+        except Exception:
+            pass
+    return estado, cuerpo, url_final
 
 
 @app.post("/api/sync-horarios")
