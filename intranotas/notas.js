@@ -634,6 +634,13 @@ function restaurarNotasGuardadas(periodo) {
         const variables = delPeriodo[claveCurso];
         Object.keys(variables).forEach((variable) => {
             const guardado = variables[variable];
+            // Lo guardado vacío tampoco tapa una nota oficial que ya existe
+            // (limpia también lo que se haya guardado así antes de esta regla).
+            if (guardado.v === null && valorOficial(curso, variable) !== null) {
+                delete variables[variable];
+                huboDescartes = true;
+                return;
+            }
             if (valorOficial(curso, variable) !== guardado.base) {
                 delete variables[variable];
                 huboDescartes = true;
@@ -669,6 +676,9 @@ function guardarNotas() {
         Object.keys(escritas).forEach((variable) => {
             const base = valorOficial(curso, variable);
             if (escritas[variable] === base) return; // igual a lo oficial: nada que guardar
+            // Una casilla vacía nunca se guarda encima de una nota oficial de
+            // INTRALU: taparía la nota real y el alumno creería que SIGA la perdió.
+            if (escritas[variable] === null && base !== null) return;
             guardadas[variable] = { v: escritas[variable], base };
         });
         if (Object.keys(guardadas).length) delPeriodo[claveCurso] = guardadas;
