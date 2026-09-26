@@ -475,27 +475,43 @@ def _leer_archivo(ruta):
 
 
 def _registrar_memoria(momento):
-    """Nunca lanza: si algo falla, simplemente no anota nada. Los números
-    incluyen la caché de archivos (que el sistema libera si hace falta),
-    así que la presión real es igual o menor a la que se anota."""
+    """Nunca lanza: si algo falla, simplemente no anota nada.
+
+    Anota DOS números (corregido sep 2026, tras ver 471 MB "de uso" sin
+    ningún reinicio por memoria en Events):
+      - real: memoria de los procesos (Python + Chromium), la que NO se
+        puede liberar. Es la que importa: si esta llega a 512 MB, Render
+        reinicia el servicio.
+      - con caché: lo anterior + caché de archivos. Linux la llena hasta
+        casi el límite a propósito y la suelta sola cuando hace falta, por
+        eso este número siempre se ve alto y no es señal de problema."""
     try:
         mb = lambda b: int(b) / (1024 * 1024)
         uso = _leer_archivo("/sys/fs/cgroup/memory.current")            # cgroup v2
         if uso is not None:
             limite = _leer_archivo("/sys/fs/cgroup/memory.max")
-            pico = _leer_archivo("/sys/fs/cgroup/memory.peak")
+            stat = _leer_archivo("/sys/fs/cgroup/memory.stat") or ""
+            clave_real = "anon"
         else:                                                           # cgroup v1
             uso = _leer_archivo("/sys/fs/cgroup/memory/memory.usage_in_bytes")
             if uso is None:
                 return
             limite = _leer_archivo("/sys/fs/cgroup/memory/memory.limit_in_bytes")
-            pico = _leer_archivo("/sys/fs/cgroup/memory/memory.max_usage_in_bytes")
+            stat = _leer_archivo("/sys/fs/cgroup/memory/memory.stat") or ""
+            clave_real = "total_rss"
+
+        real = None
+        for linea in stat.splitlines():
+            partes = linea.split()
+            if len(partes) == 2 and partes[0] == clave_real:
+                real = int(partes[1])
+                break
 
         texto_limite = ""
         if limite and limite.isdigit() and int(limite) < (1 << 50):  # "max" o un número gigante = sin límite visible
             texto_limite = f" de {mb(limite):.0f} MB"
-        texto_pico = f" (pico desde el arranque: {mb(pico):.0f} MB)" if pico and pico.isdigit() else ""
-        logger.info("Memoria (%s): %.0f MB%s%s", momento, mb(uso), texto_limite, texto_pico)
+        texto_real = f"real {mb(real):.0f} MB · " if real is not None else ""
+        logger.info("Memoria (%s): %scon caché %.0f MB%s", momento, texto_real, mb(uso), texto_limite)
     except Exception:
         pass
 
