@@ -8,6 +8,7 @@ import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
 
 const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
+const BUCKET_CARGAS = 'cargas-horarias';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Pinta el correo/avatar reales en el menú de cuenta del nav (mismo
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     cargarSugerencias();
     cargarAsesorias();
+    cargarCargasEnviadas();
     cargarOpiniones();
     cargarNotificaciones();
     inicializarFormNotificacion();
@@ -40,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const tab = btn.dataset.tab;
             document.getElementById('panelSugerencias').style.display = tab === 'sugerencias' ? 'flex' : 'none';
             document.getElementById('panelAsesorias').style.display = tab === 'asesorias' ? 'flex' : 'none';
+            document.getElementById('panelCargas').style.display = tab === 'cargas' ? 'flex' : 'none';
             document.getElementById('panelOpiniones').style.display = tab === 'opiniones' ? 'flex' : 'none';
             document.getElementById('panelNotificaciones').style.display = tab === 'notificaciones' ? 'flex' : 'none';
             document.getElementById('panelVistaIntranotas').style.display = tab === 'vista-intranotas' ? 'flex' : 'none';
@@ -409,6 +412,93 @@ async function eliminarAsesoria(id, urlRecurso, btn) {
         return;
     }
 
+    btn.closest('.admin-item').remove();
+}
+
+/* ============================================================
+   CARGAS HORARIAS ENVIADAS (Horarios → "Envíanos la carga de tu facultad")
+   Mismo patrón que Asesorías propuestas: bucket privado, URL firmada
+   temporal para revisar el archivo y borrado de fila + archivo.
+   Flujo: revisas el archivo, lo conviertes con
+   scripts/generar_carga_horario.py (o un conversor para ese formato),
+   lo publicas en horarios/static/data/cargas/ y lo sumas al
+   CATALOGO_CARGAS de horarios/index.html.
+   ============================================================ */
+async function cargarCargasEnviadas() {
+    const cont = document.getElementById('listaCargas');
+    if (!cont) return;
+    const { data, error } = await supabase
+        .from('cargas_horarias_enviadas')
+        .select('id, facultad, ciclo, ruta_archivo, nombre_archivo, comentario, autor_email, created_at')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        cont.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;
+        return;
+    }
+    if (!data.length) {
+        cont.innerHTML = '<p class="admin-vacio">Nadie ha enviado una carga horaria todavía.</p>';
+        return;
+    }
+
+    cont.innerHTML = data.map((c) => `
+        <div class="admin-item" data-id="${c.id}">
+            <div class="admin-item-cabecera">
+                <span class="admin-item-titulo">${escapeHtml(c.facultad)} · ${escapeHtml(c.ciclo)}</span>
+            </div>
+            <p class="admin-item-meta">${escapeHtml(c.nombre_archivo || 'archivo')} · ${formatearFecha(c.created_at)}</p>
+            <p class="admin-item-meta">Enviado por: ${escapeHtml(c.autor_email || '—')}</p>
+            ${c.comentario ? `<p class="admin-item-texto">${escapeHtml(c.comentario)}</p>` : ''}
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <button type="button" class="modulo-accion admin-btn-ver-carga" data-ruta="${escapeHtml(c.ruta_archivo)}">Ver archivo →</button>
+                <button type="button" class="admin-btn-eliminar admin-btn-eliminar-carga" data-id="${c.id}" data-ruta="${escapeHtml(c.ruta_archivo)}" aria-label="Eliminar envío" title="Eliminar">🗑</button>
+            </div>
+        </div>
+    `).join('');
+
+    cont.querySelectorAll('.admin-btn-ver-carga').forEach((btn) => {
+        btn.addEventListener('click', () => abrirCargaEnviada(btn.dataset.ruta, btn));
+    });
+    cont.querySelectorAll('.admin-btn-eliminar-carga').forEach((btn) => {
+        btn.addEventListener('click', () => eliminarCargaEnviada(btn.dataset.id, btn.dataset.ruta, btn));
+    });
+}
+
+async function abrirCargaEnviada(ruta, btn) {
+    const textoOriginal = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Abriendo…';
+    const { data, error } = await supabase.storage.from(BUCKET_CARGAS).createSignedUrl(ruta, 300);
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
+    if (error || !data) {
+        alert('No se pudo abrir el archivo: ' + (error?.message || 'error desconocido'));
+        return;
+    }
+    window.open(data.signedUrl, '_blank', 'noopener');
+}
+
+async function eliminarCargaEnviada(id, ruta, btn) {
+    const ok = await confirmarAccion(
+        'Se borrará este envío junto con su archivo. Si no lo has descargado, ya no podrás recuperarlo.',
+        { titulo: '¿Eliminar esta carga horaria?' }
+    );
+    if (!ok) return;
+
+    btn.disabled = true;
+    if (ruta) {
+        const { error: errStorage } = await supabase.storage.from(BUCKET_CARGAS).remove([ruta]);
+        if (errStorage) console.error('No se pudo borrar el archivo del Storage:', errStorage);
+    }
+
+    // .select() devuelve las filas realmente borradas: si RLS no dejara
+    // borrar, vendría vacío en vez de fingir que se borró.
+    const { data, error } = await supabase.from('cargas_horarias_enviadas').delete().eq('id', id).select('id');
+    if (error || !data || !data.length) {
+        btn.disabled = false;
+        alert('No se pudo eliminar: ' + (error?.message || 'sin permiso para borrar'));
+        return;
+    }
     btn.closest('.admin-item').remove();
 }
 

@@ -337,6 +337,101 @@ body.page-index-body {
     margin: 0 0 10px;
 }
 
+/* ── Envío de la carga horaria de tu facultad ── */
+.hi-enlace-envio {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--brand-morado);
+    text-align: center;
+    line-height: 1.5;
+}
+
+.hi-enlace-envio[hidden] {
+    display: none;
+}
+
+.hi-envio-form {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    gap: 10px;
+}
+
+.hi-envio-form[hidden] {
+    display: none;
+}
+
+.hi-envio-form input[type="text"] {
+    font-family: 'Poppins', sans-serif;
+}
+
+.hi-archivo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 14px;
+    border: 1.5px dashed color-mix(in srgb, var(--brand-morado) 40%, transparent);
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    background: #fcfaff;
+}
+
+.hi-archivo:hover {
+    background: var(--brand-morado-tinte);
+}
+
+.hi-archivo input[type="file"] {
+    display: none;
+}
+
+.hi-archivo-texto {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3d1470;
+    word-break: break-all;
+}
+
+.hi-archivo-ayuda {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    color: var(--ink-soft);
+}
+
+.hi-nota a {
+    color: var(--brand-morado);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.hi-banner.exito {
+    background: #E1F5E9;
+    color: #12703E;
+}
+
+button.hi-fac {
+    font-family: var(--font-body);
+    background: #fff;
+}
+
+.hi-fac.elegible {
+    cursor: pointer;
+}
+
+.hi-fac.elegible:hover {
+    border-color: var(--brand-morado);
+    color: var(--brand-morado);
+}
+
 /* ── Vista "Elige tus cursos" ── */
 .hi-cabecera-cursos {
     display: flex;

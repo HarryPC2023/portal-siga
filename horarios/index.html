@@ -113,6 +113,29 @@
             <p class="hi-desc">Arma tu horario antes de que abra Matrícula con la carga oficial de tu facultad.</p>
             <div class="hi-facultades" id="listaFacultades"></div>
             <div id="contenidoAnticipada"></div>
+
+            <!-- Envío de la carga horaria de su facultad (mismo patrón que
+                 las propuestas de Asesorías): llega a Admin → "Cargas
+                 horarias enviadas". Cerrado por defecto para no competir
+                 con Matrícula ni con la carga oficial. -->
+            <button type="button" class="hi-enlace-envio" id="btnAbrirEnvio">
+                ¿Te dieron la carga horaria de tu facultad? Envíanosla y la dejamos lista para todos ▾
+            </button>
+            <form class="hi-form hi-envio-form" id="formEnvio" hidden>
+                <p class="hi-desc" id="envioFacultadTexto" style="margin:0;"></p>
+                <label class="hi-archivo" for="envioArchivo">
+                    <input type="file" id="envioArchivo" accept=".pdf,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.webp">
+                    <span class="hi-archivo-texto" id="envioArchivoTexto">📎 Elegir archivo</span>
+                    <span class="hi-archivo-ayuda">PDF, Excel o foto · máx. 10 MB</span>
+                </label>
+                <input type="text" id="envioComentario" placeholder="Comentario (opcional)" maxlength="300">
+                <button type="submit" class="hi-btn-principal hi-btn-ancho" id="btnEnviarCarga">Enviar carga
+                    horaria</button>
+                <div class="hi-banner" id="bannerEnvio"></div>
+                <p class="hi-nota" style="margin-top:2px;">¿Problemas para enviarlo? Escríbeme a
+                    <a href="mailto:harrypc2021@gmail.com">harrypc2021@gmail.com</a>
+                </p>
+            </form>
         </section>
 
         <button type="button" class="hi-borrar" id="btnBorrarInicio" hidden>🗑 Borrar mis datos de Horarios</button>
@@ -620,12 +643,20 @@
             const siglasDisponibles = new Set(disponibles.map(c => c.facultad));
             const mia = perfilAlumno.facultad;
 
+            // Si no sabemos tu facultad y abriste el envío, las siglas se
+            // vuelven botones para que elijas la tuya.
+            const eligiendo = !mia && !$('formEnvio').hidden;
             $('listaFacultades').innerHTML = SIGLAS_FACULTADES.map(sigla => {
                 const clases = ['hi-fac'];
                 if (siglasDisponibles.has(sigla)) clases.push('disponible');
-                if (sigla === mia) clases.push('mia');
-                return `<span class="${clases.join(' ')}">${siglasDisponibles.has(sigla) ? '✓ ' : ''}${sigla}</span>`;
+                if (sigla === (mia || facultadEnvio)) clases.push('mia');
+                if (eligiendo) clases.push('elegible');
+                const etiqueta = `${siglasDisponibles.has(sigla) ? '✓ ' : ''}${sigla}`;
+                return eligiendo
+                    ? `<button type="button" class="${clases.join(' ')}" data-sigla="${sigla}">${etiqueta}</button>`
+                    : `<span class="${clases.join(' ')}">${etiqueta}</span>`;
             }).join('');
+            actualizarTextoFacultadEnvio();
 
             const cont = $('contenidoAnticipada');
             // Facultad conocida: solo su carga (si existe). Desconocida (aún
@@ -713,6 +744,115 @@
         };
         $('matriculaCodigo').addEventListener('input', e => {
             e.target.value = e.target.value.toUpperCase();
+        });
+
+        /* ============================================================
+           ENVÍO DE LA CARGA HORARIA DE TU FACULTAD
+           Sube el archivo al bucket privado "cargas-horarias" (carpeta del
+           propio alumno, exigido por RLS) y deja una fila en
+           cargas_horarias_enviadas. SIGA no lo lee: lo revisa Harry en Admin.
+           ============================================================ */
+        const BUCKET_CARGAS = 'cargas-horarias';
+        const ENVIO_MAX_MB = 10;
+        const ENVIO_EXTENSIONES = ['pdf', 'xlsx', 'xls', 'csv', 'png', 'jpg', 'jpeg', 'webp'];
+        let facultadEnvio = '';
+
+        function actualizarTextoFacultadEnvio() {
+            const el = $('envioFacultadTexto');
+            if (!el) return;
+            const fac = perfilAlumno.facultad || facultadEnvio;
+            el.innerHTML = fac
+                ? `Facultad: <strong>${escapeHtml(fac)}</strong> · ciclo ${escapeHtml(CICLO_ACTUAL)}`
+                : 'Toca arriba las siglas de tu facultad.';
+        }
+
+        function mostrarBannerEnvio(texto, tipo) {
+            const b = $('bannerEnvio');
+            if (!texto) { b.className = 'hi-banner'; b.textContent = ''; return; }
+            b.className = `hi-banner visible ${tipo}`;
+            b.textContent = texto;
+        }
+
+        $('btnAbrirEnvio').onclick = () => {
+            $('formEnvio').hidden = false;
+            $('btnAbrirEnvio').hidden = true;
+            renderAnticipada();
+        };
+
+        $('listaFacultades').addEventListener('click', (ev) => {
+            const btn = ev.target.closest('[data-sigla]');
+            if (!btn) return;
+            facultadEnvio = btn.dataset.sigla;
+            mostrarBannerEnvio('');
+            renderAnticipada();
+        });
+
+        $('envioArchivo').addEventListener('change', () => {
+            const f = $('envioArchivo').files[0];
+            $('envioArchivoTexto').textContent = f ? `📎 ${f.name}` : '📎 Elegir archivo';
+            mostrarBannerEnvio('');
+        });
+
+        async function subirCargaEnviada(file, uid) {
+            const nombreLimpio = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+            const ruta = `${uid}/${Date.now()}-${nombreLimpio}`;
+            const { error } = await window.sigaSupabase.storage.from(BUCKET_CARGAS).upload(ruta, file);
+            if (error) throw error;
+            return ruta;
+        }
+
+        $('formEnvio').addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+            mostrarBannerEnvio('');
+            const file = $('envioArchivo').files[0];
+            const facultad = perfilAlumno.facultad || facultadEnvio;
+
+            if (!facultad) { mostrarBannerEnvio('Elige primero tu facultad tocando sus siglas.', 'error'); return; }
+            if (!file) { mostrarBannerEnvio('Elige el archivo de la carga horaria.', 'error'); return; }
+            const ext = (file.name.split('.').pop() || '').toLowerCase();
+            if (!ENVIO_EXTENSIONES.includes(ext)) {
+                mostrarBannerEnvio('Ese tipo de archivo no se acepta. Sube un PDF, un Excel o una foto.', 'error');
+                return;
+            }
+            if (file.size > ENVIO_MAX_MB * 1024 * 1024) {
+                mostrarBannerEnvio(`El archivo pesa más de ${ENVIO_MAX_MB} MB. Prueba con uno más liviano.`, 'error');
+                return;
+            }
+
+            const btn = $('btnEnviarCarga');
+            btn.disabled = true;
+            btn.textContent = 'Subiendo archivo...';
+            try {
+                await esperarSigaObtenerSesion();
+                const sesion = window.sigaObtenerSesion ? await window.sigaObtenerSesion() : null;
+                const uid = sesion?.user?.id;
+                if (!uid) throw new Error('Tu sesión expiró. Vuelve a iniciar sesión e inténtalo de nuevo.');
+
+                const ruta = await subirCargaEnviada(file, uid);
+                btn.textContent = 'Enviando...';
+                const { error } = await window.sigaSupabase.from('cargas_horarias_enviadas').insert({
+                    user_id: uid,
+                    autor_email: sesion.user.email || null,
+                    facultad,
+                    ciclo: CICLO_ACTUAL,
+                    ruta_archivo: ruta,
+                    nombre_archivo: file.name,
+                    comentario: $('envioComentario').value.trim() || null,
+                });
+                if (error) throw error;
+
+                $('formEnvio').reset();
+                $('envioArchivoTexto').textContent = '📎 Elegir archivo';
+                mostrarBannerEnvio('¡Gracias! Revisaré el archivo y, si todo está bien, dejaré lista la carga de tu facultad para todos.', 'exito');
+            } catch (e) {
+                console.error('No se pudo enviar la carga horaria:', e);
+                mostrarBannerEnvio(e.message && e.message.includes('sesión')
+                    ? e.message
+                    : 'No se pudo enviar. Revisa tu conexión e intenta de nuevo.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Enviar carga horaria';
+            }
         });
 
         /* ============================================================
