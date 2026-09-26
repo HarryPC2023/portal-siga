@@ -653,7 +653,7 @@
             // envío con esa facultad elegida. Con el formulario abierto, todas
             // se pueden tocar para cambiar de qué facultad es el archivo.
             const formAbierto = !$('formEnvio').hidden;
-            const resaltada = formAbierto ? facultadDelEnvio() : mia;
+            const resaltada = facultadDelEnvio();  // la última que tocaste (o la tuya)
             $('listaFacultades').innerHTML = SIGLAS_FACULTADES.map(sigla => {
                 const disponible = siglasDisponibles.has(sigla);
                 const clases = ['hi-fac'];
@@ -799,7 +799,6 @@
         function cerrarEnvio() {
             $('formEnvio').hidden = true;
             $('btnAbrirEnvio').classList.remove('abierto');
-            facultadEnvio = '';
             mostrarBannerEnvio('');
             renderAnticipada();
         }
