@@ -36,6 +36,27 @@ body.page-index-body {
     overflow: visible !important;
 }
 
+/* ── Contraste tipográfico ──
+   Orbitron se queda en títulos, botones y la marca; los textos largos
+   (nombres de cursos, ayudas, etiquetas) van en Poppins, más legible en
+   bloque — el mismo contraste que ya usan los placeholders de Intranotas. */
+.hi-curso-nombre,
+.hi-desc,
+.hi-nota,
+.hi-aviso-malla,
+.hi-aviso-caja,
+.hi-meta-carga,
+.hi-cabecera-cursos,
+.hi-barra-conteo,
+.hi-chip,
+.hi-banner,
+.hi-progreso,
+.hi-sin-horario,
+.hi-vacio,
+.hi-modal-lista {
+    font-family: 'Poppins', sans-serif;
+}
+
 /* ── Card principal (misma estética que Intranotas) ── */
 .hi-card {
     box-sizing: border-box;
@@ -441,7 +462,8 @@ body.page-index-body {
 
 .hi-curso-nombre {
     display: block;
-    font-size: 12.5px;
+    font-weight: 500;
+    font-size: 13px;
     line-height: 1.35;
     margin: 6px 0 8px;
 }

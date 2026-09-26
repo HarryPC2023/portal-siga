@@ -483,8 +483,20 @@
         }
 
         // Adopta lo que hay en la nube (otro dispositivo guardó algo más nuevo).
+        // ¿Esta carga guardada en la nube es del ciclo actual? Al pasar a un
+        // ciclo nuevo (cambiar CICLO_ACTUAL), la del ciclo anterior se ignora.
+        function cargaEsDelCicloActual(origen, nombre) {
+            if (origen.startsWith('oficial:')) {
+                const entrada = CATALOGO_CARGAS.find(c => c.id === origen.slice('oficial:'.length));
+                return !!entrada && entrada.ciclo === CICLO_ACTUAL;
+            }
+            const periodo = /periodo\s*(\d{5})/.exec(nombre || '');
+            return !periodo || periodo[1] === CICLO_ACTUAL.replace('-', '');
+        }
+
         async function aplicarDesdeNube(fila) {
             const origen = fila.origen_carga || 'archivo';
+            if (!cargaEsDelCicloActual(origen, fila.nombre_archivo)) return false;
             let carga = fila.carga_horaria;
             if (!carga && origen.startsWith('oficial:')) {
                 carga = (await traerCargaOficial(origen.slice('oficial:'.length))).cursos;
@@ -944,9 +956,7 @@
 
             const total = Object.keys(cargaGlobal || {}).length;
             $('infoOrigen').textContent = `${origenCarga === 'matricula' ? '🔗' : '📄'} ${nombreArchivoActual || 'Tu carga horaria'} · ${total} cursos`;
-            $('btnIrAConectar').textContent = origenCarga === 'matricula'
-                ? '🔄 Actualizar desde Matrícula'
-                : '🔗 Conectar a Matrícula';
+            $('btnIrAConectar').textContent = '🔄 Actualizar desde Matrícula';
 
             $('avisoSinHorario').innerHTML = cursosSinHorario.length
                 ? `<details class="hi-sin-horario"><summary>⚠️ ${cursosSinHorario.length} curso(s) sin horario aperturado aún</summary>
@@ -1037,9 +1047,12 @@
                 </button>`;
         }
 
+        // Sin título (null): la grilla va sola, con un poco de aire arriba.
         function htmlGrupo(titulo, nombres) {
-            return `<p class="hi-grupo-titulo">${escapeHtml(titulo)} · ${nombres.length}</p>
-                    <div class="hi-grilla">${nombres.map(htmlCurso).join('')}</div>`;
+            const cabecera = titulo
+                ? `<p class="hi-grupo-titulo">${escapeHtml(titulo)} · ${nombres.length}</p>`
+                : '<div style="height:14px;"></div>';
+            return `${cabecera}<div class="hi-grilla">${nombres.map(htmlCurso).join('')}</div>`;
         }
 
         // Dentro de cada grupo: primero los que tienen vacantes, luego alfabético.
@@ -1075,7 +1088,8 @@
                 const proximos = todos.filter(n => infoMalla(n)?.estado === 'proximo');
                 const otros = todos.filter(n => !['disponible', 'proximo'].includes(infoMalla(n)?.estado));
                 let html = '';
-                if (disponibles.length) html += htmlGrupo('Según tu malla, ya puedes llevarlos', ordenarPorMalla(disponibles));
+                // Sin título: el aviso de arriba ya dice que primero va tu malla.
+                if (disponibles.length) html += htmlGrupo(null, ordenarPorMalla(disponibles));
                 if (proximos.length) html += htmlGrupo('Se abren si apruebas lo que llevas ahora', ordenarPorMalla(proximos));
                 if (otros.length) html += htmlGrupo('Otros cursos de la facultad', ordenarGrupo(otros));
                 cont.innerHTML = html;
