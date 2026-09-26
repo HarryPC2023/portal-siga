@@ -74,11 +74,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
-    // DESACTIVADO (sep 2026) — precargar el código de estudiante. Se
-    // decidió que no valía la pena tener una diferencia de
-    // comportamiento entre el código (se recordaba) y la contraseña
-    // (nunca se recuerda) — mejor consistente: el alumno siempre
-    // escribe los dos, sin ninguna excepción que explicar.
+    // Precarga el código de estudiante (sep 2026, igual que Horarios):
+    // el código no es secreto y ya está en el perfil. La contraseña
+    // nunca se recuerda.
+    const inputCodigo = document.getElementById('syncCodigo');
+    if (inputCodigo && !inputCodigo.value && perfil?.codigo_estudiante) {
+        inputCodigo.value = String(perfil.codigo_estudiante).toUpperCase();
+    }
 
     if (perfil?.periodo_ingreso) {
         mostrarBloqueSync(user.id, perfil.periodo_ingreso);
