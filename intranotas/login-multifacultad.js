@@ -211,6 +211,7 @@ function prepararOjoPassword() {
     const ocultarAhora = () => {
         input.type = 'password';
         boton.setAttribute('aria-label', 'Mostrar contraseña');
+        boton.textContent = '👁';
         clearTimeout(temporizadorOcultar);
         temporizadorOcultar = null;
     };
@@ -227,6 +228,7 @@ function prepararOjoPassword() {
         if (mostrar) {
             input.type = 'text';
             boton.setAttribute('aria-label', 'Ocultar contraseña');
+            boton.textContent = '🙈';
             // Se tapa sola a los 4s — así el alumno puede confirmar
             // rápido lo que escribió sin dejarla expuesta todo el
             // tiempo, ni depender de acordarse de ocultarla él mismo.
