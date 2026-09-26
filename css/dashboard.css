@@ -230,6 +230,14 @@ body {
   color: var(--acento-ciruela);
 }
 
+/* Tablet (sep 2026): menos espacio lateral por enlace para que los 6
+   enlaces entren completos (a 768px "INICIO" salía cortado). */
+@media (max-width: 900px) {
+  .app-nav-links a {
+    padding: 7px 9px;
+  }
+}
+
 @media (max-width: 780px) {
   .app-nav {
     padding: 10px 20px;
