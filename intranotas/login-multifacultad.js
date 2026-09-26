@@ -406,7 +406,20 @@ function periodoLindo(periodoRaw) {
     return p.length === 5 ? `${p.slice(0, 4)}-${p.slice(4)}` : p;
 }
 
-/* Texto de avance según lo que el backend cuenta en cada consulta. */
+/* ¿El periodo es POSTERIOR al actual? Es el "+1 de adelanto" que el
+   backend revisa por si INTRALU ya abrió el siguiente (hoy, p. ej., el
+   verano). El alumno no lo reconoce como suyo, así que no se muestra. */
+function periodoFuturo(periodoRaw) {
+    const anio = parseInt(String(periodoRaw).slice(0, 4), 10);
+    const tipo = parseInt(String(periodoRaw).slice(4), 10);
+    const actual = periodoActualAproximado();
+    return ordenPeriodo(anio, tipo) > ordenPeriodo(actual.anio, actual.tipo);
+}
+
+/* Texto de avance según lo que el backend cuenta en cada consulta.
+   Sin contador "(1 de 2)" (sep 2026): el total incluye el periodo de
+   adelanto y daba a entender una segunda carga pendiente. El avance se
+   nota igual porque el nombre del periodo va cambiando en pantalla. */
 function textoProgreso(data) {
     if (data.etapa === 'en_fila') {
         const n = data.personas_delante || 0;
@@ -415,10 +428,9 @@ function textoProgreso(data) {
             : 'Preparando la conexión con INTRALU...';
     }
     if (data.etapa === 'iniciando_sesion') return 'Conectando con INTRALU...';
-    if (data.etapa === 'descargando' && data.periodos_total) {
-        const actual = Math.min((data.periodos_hechos || 0) + 1, data.periodos_total);
-        return data.periodo_actual
-            ? `Cargando ${periodoLindo(data.periodo_actual)} (${actual} de ${data.periodos_total})...`
+    if (data.etapa === 'descargando') {
+        return data.periodo_actual && !periodoFuturo(data.periodo_actual)
+            ? `Cargando ${periodoLindo(data.periodo_actual)}...`
             : 'Terminando de cargar...';
     }
     return 'Conectando con INTRALU...';
@@ -672,7 +684,7 @@ async function manejarSync(e, userId) {
         for (let i = 0; i < periodosConCursos.length; i++) {
             const periodo = periodosConCursos[i];
             const datos = resultado.periodos[periodo];
-            mostrarProgreso(`Guardando ${periodoLindo(periodo)} en SIGA (${i + 1} de ${periodosConCursos.length})...`);
+            mostrarProgreso(`Guardando ${periodoLindo(periodo)} en SIGA...`);
             await guardarResultadoSync(userId, periodo, datos.cursos || []);
             totalCursos += (datos.cursos || []).length;
             totalErrores += (datos.errores || []).length;
