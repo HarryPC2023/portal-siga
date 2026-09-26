@@ -1049,8 +1049,8 @@
                 }
                 if (matriculaSyncCancelada) return null;
                 if (!resp.ok) throw new Error(data.detail || 'No se pudo conectar con Matrícula.');
-                if (data.status === 'cancelado') return null;
-                if (data.status === 'listo') return data.resultado;
+                if (data.status === 'cancelado') { matriculaJobActual = null; return null; }
+                if (data.status === 'listo') { matriculaJobActual = null; return data.resultado; }
                 mostrarProgresoMatricula(textoProgresoMatricula(data));
             }
             cancelarSyncMatricula();
