@@ -1206,13 +1206,22 @@ def _login_matricula_en(browser, codigo, password):
     nuevo, login con tecleo humano, escucha la respuesta de /api/login y
     devuelve (estado_http, cuerpo_json, url_final)."""
     estado, cuerpo, url_final = None, {}, None
+    # Tiempos por paso (sep 2026), igual que el login de INTRALU: sirven
+    # para decidir con datos si vale la pena un tipeo más rápido aquí.
+    tiempos = {"contexto": 0.0, "pagina": 0.0, "tipeo": 0.0, "respuesta": 0.0}
+    t = time.time()
     context = _nuevo_contexto(browser)
     try:
         page = context.new_page()
+        tiempos["contexto"] = time.time() - t
+
+        t = time.time()
         page.goto(f"{MATRICULA_BASE}/login", wait_until="domcontentloaded")
         # Tiempo para que cargue el script de reCAPTCHA antes de
         # interactuar (si se hace clic antes, no hay token que mandar).
         page.wait_for_timeout(random.randint(1500, 2500))
+        tiempos["pagina"] = time.time() - t
+        t = time.time()
 
         campo_codigo = page.locator("input[type='text']").first
         campo_password = page.locator("input[type='password']").first
@@ -1224,7 +1233,9 @@ def _login_matricula_en(browser, codigo, password):
         campo_password.click()
         campo_password.type(password, delay=random.randint(90, 190))
         page.wait_for_timeout(random.randint(400, 900))
+        tiempos["tipeo"] = time.time() - t
 
+        t = time.time()
         try:
             with page.expect_response(
                 lambda r: r.url.rstrip("/").endswith("/api/login") and r.request.method == "POST",
@@ -1239,11 +1250,14 @@ def _login_matricula_en(browser, codigo, password):
                 cuerpo = {}
         except PlaywrightTimeoutError:
             url_final = page.url
+        tiempos["respuesta"] = time.time() - t
     finally:
         try:
             context.close()
         except Exception:
             pass
+    logger.info("Login Matrícula: contexto %.1fs, página %.1fs, tipeo %.1fs, respuesta %.1fs -> HTTP %s",
+                tiempos["contexto"], tiempos["pagina"], tiempos["tipeo"], tiempos["respuesta"], estado)
     return estado, cuerpo, url_final
 
 
@@ -1284,9 +1298,72 @@ def _token_matricula_con_fila(codigo, password, ticket, espera_maxima,
             time.sleep(min(1.0, max(0.0, fin - time.time())))
 
 
+PETICIONES_PARALELAS_MATRICULA = 4  # Matrícula permite 60 peticiones/min por alumno en rutas con sesión
+
+
+def _horario_de_curso_matricula(headers, curso):
+    """Horarios de UN curso. Devuelve (nombre, secciones_o_None, aviso_o_None):
+    secciones es el dict {letra: {...}} listo para `carga`; aviso es la
+    entrada para `cursos_sin_horario` si no tiene horario o falló."""
+    codigo_curso = curso.get("codigo")
+    nombre_curso = (curso.get("nombre") or "").rstrip("-").strip()
+
+    if not curso.get("tieneHorario"):
+        return nombre_curso, None, {"codigo": codigo_curso, "nombre": nombre_curso}
+
+    try:
+        resp_horario = requests.get(
+            f"{MATRICULA_BASE}/api/matricula/cursos/{codigo_curso}/horarios",
+            headers=headers, timeout=15,
+        )
+    except requests.RequestException as e:
+        return nombre_curso, None, {"codigo": codigo_curso, "nombre": nombre_curso, "error": type(e).__name__}
+    if resp_horario.status_code != 200:
+        return nombre_curso, None, {
+            "codigo": codigo_curso, "nombre": nombre_curso,
+            "error": f"HTTP {resp_horario.status_code}",
+        }
+
+    secciones = resp_horario.json().get("secciones", [])
+    if not secciones:
+        return nombre_curso, None, None
+
+    resultado = {}
+    for seccion in secciones:
+        letra_seccion = seccion.get("seccion")
+        docente = "POR ASIGNAR"
+        clases = []
+        for h in seccion.get("horario", []):
+            dia = _normalizar_dia_matricula(h.get("dia"))
+            ini = _hora_a_entero_matricula(h.get("horaInicio"))
+            fin = _hora_a_entero_matricula(h.get("horaFin"))
+            if ini is None or fin is None or ini >= fin:
+                continue
+            if h.get("docente"):
+                docente = h["docente"]
+            clases.append({
+                "dia": dia, "ini": ini, "fin": fin,
+                "tipo": (h.get("concepto") or "P").upper(),
+                "aula": h.get("aula") or "S/A",
+            })
+
+        resultado[letra_seccion] = {
+            "docente": docente,
+            "codigo": codigo_curso,
+            "vacantesMaximas": seccion.get("vacantesMaximas"),
+            "vacantesOcupadas": seccion.get("vacantesOcupadas"),
+            "vacantesDisponibles": seccion.get("vacantesDisponibles"),
+            "clases": clases,
+        }
+    return nombre_curso, resultado, None
+
+
 def _descargar_horarios_matricula(token):
     """Ya con el accessToken: ficha + horarios de cada curso, puro
-    `requests` (sin Chromium). Devuelve el mismo JSON de siempre."""
+    `requests` (sin Chromium). Desde sep 2026 los horarios se piden de a
+    4 en paralelo (antes uno por uno: ~32 s con 27 cursos). Devuelve el
+    mismo JSON de siempre, en el mismo orden de cursos."""
+    inicio = time.time()
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/json",
@@ -1304,61 +1381,20 @@ def _descargar_horarios_matricula(token):
     ficha = resp_ficha.json()
     cursos_disponibles = ficha.get("cursos", [])
 
+    with ThreadPoolExecutor(max_workers=PETICIONES_PARALELAS_MATRICULA) as pool:
+        # pool.map conserva el orden original de los cursos.
+        resultados = list(pool.map(lambda c: _horario_de_curso_matricula(headers, c), cursos_disponibles))
+
     carga = {}
     cursos_sin_horario = []
+    for nombre_curso, secciones, aviso in resultados:
+        if aviso:
+            cursos_sin_horario.append(aviso)
+        elif secciones:
+            carga[nombre_curso] = secciones
 
-    for curso in cursos_disponibles:
-        codigo_curso = curso.get("codigo")
-        nombre_curso = (curso.get("nombre") or "").rstrip("-").strip()
-
-        if not curso.get("tieneHorario"):
-            cursos_sin_horario.append({"codigo": codigo_curso, "nombre": nombre_curso})
-            continue
-
-        resp_horario = requests.get(
-            f"{MATRICULA_BASE}/api/matricula/cursos/{codigo_curso}/horarios",
-            headers=headers, timeout=15,
-        )
-        if resp_horario.status_code != 200:
-            cursos_sin_horario.append({
-                "codigo": codigo_curso, "nombre": nombre_curso,
-                "error": f"HTTP {resp_horario.status_code}",
-            })
-            continue
-
-        secciones = resp_horario.json().get("secciones", [])
-        if not secciones:
-            continue
-
-        carga[nombre_curso] = {}
-        for seccion in secciones:
-            letra_seccion = seccion.get("seccion")
-            docente = "POR ASIGNAR"
-            clases = []
-            for h in seccion.get("horario", []):
-                dia = _normalizar_dia_matricula(h.get("dia"))
-                ini = _hora_a_entero_matricula(h.get("horaInicio"))
-                fin = _hora_a_entero_matricula(h.get("horaFin"))
-                if ini is None or fin is None or ini >= fin:
-                    continue
-                if h.get("docente"):
-                    docente = h["docente"]
-                clases.append({
-                    "dia": dia, "ini": ini, "fin": fin,
-                    "tipo": (h.get("concepto") or "P").upper(),
-                    "aula": h.get("aula") or "S/A",
-                })
-
-            carga[nombre_curso][letra_seccion] = {
-                "docente": docente,
-                "codigo": codigo_curso,
-                "vacantesMaximas": seccion.get("vacantesMaximas"),
-                "vacantesOcupadas": seccion.get("vacantesOcupadas"),
-                "vacantesDisponibles": seccion.get("vacantesDisponibles"),
-                "clases": clases,
-            }
-
-    logger.info("Sync Matrícula: %d cursos con horario, %d sin horario", len(carga), len(cursos_sin_horario))
+    logger.info("Sync Matrícula: %d cursos con horario, %d sin horario (descarga en %.1fs)",
+                len(carga), len(cursos_sin_horario), time.time() - inicio)
     return {
         "status": "success",
         "periodo": ficha.get("periodo"),
