@@ -81,10 +81,10 @@
                 <input type="text" id="matriculaCodigo" placeholder="20231234X" autocomplete="off"
                     style="text-transform:uppercase;" required>
                 <div class="hi-campo-contrasena">
-                    <input type="password" id="matriculaPassword" placeholder="Contraseña de INTRALU"
-                        autocomplete="off" required>
-                    <button type="button" class="hi-btn-ojo" id="btnOjoMatricula"
-                        aria-label="Mostrar contraseña" disabled>👁</button>
+                    <input type="password" id="matriculaPassword" placeholder="Contraseña de INTRALU" autocomplete="off"
+                        required>
+                    <button type="button" class="hi-btn-ojo" id="btnOjoMatricula" aria-label="Mostrar contraseña"
+                        disabled>👁</button>
                 </div>
 
                 <div class="hi-fila-botones">
@@ -120,6 +120,7 @@
             <div id="avisoSinHorario"></div>
 
             <h1 class="hi-titulo" style="margin-top:12px;">Elige tus cursos</h1>
+            <div id="avisoMalla"></div>
 
             <div class="hi-buscador">
                 <input type="text" id="buscadorCursos" placeholder="Buscar por nombre o código">
@@ -139,13 +140,16 @@
                 </div>
                 <div id="panelChips" hidden>
                     <div class="hi-chips" id="chipsSeleccion"></div>
-                    <button type="button" class="hi-btn-limpiar-sel" id="btnLimpiarSeleccion">✕ Limpiar selección</button>
+                    <button type="button" class="hi-btn-limpiar-sel" id="btnLimpiarSeleccion">✕ Limpiar
+                        selección</button>
                 </div>
             </div>
         </section>
 
         <button type="button" class="hi-borrar" id="btnBorrarCursos">🗑 Borrar mis datos de Horarios</button>
     </div>
+
+    <button type="button" class="volver-arriba hi-volver-arriba" id="btnSubir" aria-label="Volver arriba">↑</button>
 
     <div class="toast" id="toast"></div>
 
@@ -169,6 +173,11 @@
         // true si la nube guarda algo tuyo aunque este dispositivo no tenga
         // carga (así "Borrar mis datos" aparece igual en la vista de inicio).
         let hayDatosEnNube = false;
+        // Tu malla (solo para la carga oficial anticipada): se arma con el
+        // avance_curricular que ya guarda Intranotas, usando la misma lógica
+        // de "Progreso de tu carrera" (intranotas/progreso-carrera.js).
+        let progresoMalla = null;
+        let _mallaPedida = false;
 
         /* ── Claves del navegador ── */
         const LS_CARGA = 'horarioGen_carga';
@@ -874,6 +883,55 @@
         /* ============================================================
            VISTA 2: ELIGE TUS CURSOS
            ============================================================ */
+        const esCargaOficial = () => origenCarga.startsWith('oficial:');
+
+        async function cargarMalla() {
+            if (_mallaPedida) return progresoMalla;
+            _mallaPedida = true;
+            try {
+                const uid = await obtenerUserId();
+                if (!uid || !window.sigaSupabase) return null;
+                const { data, error } = await window.sigaSupabase
+                    .from('avance_curricular')
+                    .select('categoria, ciclo, codigo_curso, nombre_curso, creditos, prerequisitos, periodo_pdf, nota, veces_llevado, situacion')
+                    .eq('user_id', uid);
+                if (error || !data || !data.length) return null;
+                const modulo = await import('../intranotas/progreso-carrera.js?v=1');
+                progresoMalla = modulo.construirProgresoCarrera(data);
+            } catch (e) {
+                console.warn('No se pudo leer tu malla (se muestra la lista normal):', e);
+            }
+            return progresoMalla;
+        }
+
+        function infoMalla(nombre) {
+            if (!progresoMalla || !esCargaOficial()) return null;
+            const codigo = getCodigoCurso(nombre).toUpperCase();
+            return (codigo && progresoMalla.porCodigo[codigo]) || null;
+        }
+
+        function renderAvisoMalla() {
+            const cont = $('avisoMalla');
+            if (!esCargaOficial() || !_mallaPedida) { cont.innerHTML = ''; return; }
+            cont.innerHTML = progresoMalla
+                ? '<p class="hi-aviso-malla">✨ Primero van los cursos de tu malla, según tu avance sincronizado en Intranotas.</p>'
+                : '<p class="hi-aviso-malla">¿Quieres ver primero los cursos de tu malla? <a href="../intranotas/index.html">Sincroniza tus notas en Intranotas →</a></p>';
+        }
+
+        const ORDEN_CATEGORIA = { obligatorio: 0, electivo: 1, electivo_complementario: 2 };
+        const ETIQUETA_CATEGORIA = { obligatorio: 'Obligatorio', electivo: 'Electivo', electivo_complementario: 'Complementario' };
+
+        function ordenarPorMalla(nombres) {
+            return nombres.sort((a, b) => {
+                const ia = infoMalla(a), ib = infoMalla(b);
+                const ca = ORDEN_CATEGORIA[ia?.categoria] ?? 9, cb = ORDEN_CATEGORIA[ib?.categoria] ?? 9;
+                if (ca !== cb) return ca - cb;
+                const ka = ia?.ciclo ?? 99, kb = ib?.ciclo ?? 99;
+                if (ka !== kb) return ka - kb;
+                return a.localeCompare(b, 'es');
+            });
+        }
+
         const GRUPOS = [
             { tipo: 'O', titulo: 'Obligatorios' },
             { tipo: 'E', titulo: 'Electivos' },
@@ -897,9 +955,17 @@
 
             $('buscadorCursos').value = '';
             $('btnLimpiarBusqueda').hidden = true;
+            renderAvisoMalla();
             renderCursos();
             actualizarBarra();
             window.scrollTo({ top: 0 });
+
+            if (esCargaOficial() && !_mallaPedida) {
+                cargarMalla().then(() => {
+                    renderAvisoMalla();
+                    renderCursos();
+                });
+            }
         }
 
         $('btnIrAConectar').onclick = () => mostrarInicio();
@@ -947,9 +1013,21 @@
                 ).join('');
             }
 
+            const malla = infoMalla(nombre);
+            let badgesMalla = '';
+            if (malla) {
+                const cat = ETIQUETA_CATEGORIA[malla.categoria] || 'De tu malla';
+                badgesMalla = `<span class="hi-badge malla">${cat}${malla.ciclo && malla.categoria === 'obligatorio' ? ` · ciclo ${malla.ciclo}` : ''}</span>`;
+                if (malla.jalado) badgesMalla += '<span class="hi-badge repetido">Lo repites</span>';
+                if (malla.estado === 'aprobado') badgesMalla += '<span class="hi-badge seccion">Ya aprobado</span>';
+                if (malla.estado === 'en_curso') badgesMalla += '<span class="hi-badge seccion">Lo llevas ahora</span>';
+            }
+            badges = badgesMalla + badges;
+
             const sel = cursosSeleccionados.has(nombre) ? ' seleccionado' : '';
+            const deMalla = malla && (malla.estado === 'disponible' || malla.estado === 'proximo') ? ' de-malla' : '';
             return `
-                <button type="button" class="hi-curso${sel}" data-nombre="${escapeHtml(nombre)}" aria-pressed="${!!sel}">
+                <button type="button" class="hi-curso${sel}${deMalla}" data-nombre="${escapeHtml(nombre)}" aria-pressed="${!!sel}">
                     <span class="hi-curso-fila">
                         ${codigo ? `<span class="hi-curso-codigo">${escapeHtml(codigo)}</span>` : '<span></span>'}
                         <span class="hi-curso-check">✓</span>
@@ -989,6 +1067,18 @@
                 cont.innerHTML = resultados.length
                     ? htmlGrupo('Resultados', resultados)
                     : '<p class="hi-vacio">Ningún curso coincide con tu búsqueda.</p>';
+                return;
+            }
+
+            if (esCargaOficial() && progresoMalla) {
+                const disponibles = todos.filter(n => infoMalla(n)?.estado === 'disponible');
+                const proximos = todos.filter(n => infoMalla(n)?.estado === 'proximo');
+                const otros = todos.filter(n => !['disponible', 'proximo'].includes(infoMalla(n)?.estado));
+                let html = '';
+                if (disponibles.length) html += htmlGrupo('Según tu malla, ya puedes llevarlos', ordenarPorMalla(disponibles));
+                if (proximos.length) html += htmlGrupo('Se abren si apruebas lo que llevas ahora', ordenarPorMalla(proximos));
+                if (otros.length) html += htmlGrupo('Otros cursos de la facultad', ordenarGrupo(otros));
+                cont.innerHTML = html;
                 return;
             }
 
@@ -1215,6 +1305,13 @@
             mostrarInicio();
             showToast('Tus datos de Horarios se borraron ✓', 'success');
         }
+
+        /* ── Flecha para volver arriba (misma de la landing) ── */
+        window.addEventListener('scroll', () => {
+            const mostrar = window.scrollY > 500 && !$('vistaCursos').hidden;
+            $('btnSubir').classList.toggle('visible', mostrar);
+        }, { passive: true });
+        $('btnSubir').onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
         $('btnBorrarCursos').onclick = abrirConfirmacionBorrado;
         $('btnBorrarInicio').onclick = abrirConfirmacionBorrado;

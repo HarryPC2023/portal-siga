@@ -27,6 +27,15 @@
     display: none !important;
 }
 
+/* El style.css viejo de Horarios pone overflow en el <body>. Eso
+   convierte al body en "contenedor de scroll" y anula en silencio el
+   position: sticky de la barra de seleccionados (y hace que window.scrollY
+   no cambie). Aquí el body vuelve a ser normal: el que se desplaza es la
+   ventana. Solo afecta a esta página (generador.html no carga este CSS). */
+body.page-index-body {
+    overflow: visible !important;
+}
+
 /* ── Card principal (misma estética que Intranotas) ── */
 .hi-card {
     box-sizing: border-box;
@@ -578,6 +587,37 @@
 .hi-borrar:hover {
     opacity: 1;
     text-decoration: underline;
+}
+
+/* ── Tu malla (carga oficial anticipada) ── */
+.hi-aviso-malla {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin: 0 0 4px;
+    line-height: 1.5;
+}
+
+.hi-aviso-malla a {
+    color: var(--brand-morado);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.hi-badge.malla {
+    background: var(--brand-morado-tinte);
+    color: #4b1a8a;
+}
+
+.hi-curso.de-malla:not(.seleccionado) {
+    border-color: color-mix(in srgb, var(--brand-morado) 40%, transparent);
+}
+
+/* La flecha de la landing, un poco más arriba para no tapar la barra
+   de "Ir al simulador". */
+.hi-volver-arriba {
+    border: none;
+    cursor: pointer;
+    bottom: 110px;
 }
 
 /* ── Modal de confirmación de borrado ── */
