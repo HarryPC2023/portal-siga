@@ -67,6 +67,15 @@ const LS_GEN_PRIORIDADES = 'horarioGen_prioridadesProfesor';
 // marcados en "Elegir cursos" — se actualiza al eliminar un curso acá,
 // para que ambas pantallas queden consistentes.
 const LS_SEL_INDEX = 'horarioGen_seleccion';
+// Cuándo escribió index.html lo guardado en ESTE dispositivo. Se compara
+// con limpiado_en de la nube: si el alumno pulsó "Borrar mis datos de
+// Horarios" después (desde cualquier dispositivo), lo local ya no vale.
+const LS_GUARDADO_EN = 'horarioGen_guardadoEn';
+// Mismas claves de DATOS que borra index.html (no las preferencias como
+// el tema o los huecos visibles).
+const CLAVES_DATOS_HORARIOS = ['horarioGen_carga', 'horarioGen_archivo', LS_SEL_INDEX,
+    'horarioGen_metadata', 'horarioGen_origen', LS_GUARDADO_EN, LS_GEN_SECCIONES,
+    LS_GEN_CRUCES, LS_GEN_PRIORIDADES, LS_GEN_COMBOS, LS_GEN_COMBOS_IDX];
 
 // ── ELIMINAR CURSO: gate de admin (mismo patrón que
 //    ASISTENTE_HABILITADO_PARA_TODOS en asistente-horario.js) ────
@@ -122,21 +131,73 @@ async function obtenerUserIdActual() {
 }
 
 // Autoguardado en la nube con debounce (evita un upsert por cada checkbox).
+// Los cambios que llegan seguidos se JUNTAN (antes el último pisaba a los
+// anteriores: si cambiabas cruces y prioridades en menos de 1 s, solo se
+// guardaba uno de los dos).
 let _debounceNubeGen = null;
+let _pendientesNubeGen = {};
 function guardarEnNube(campos) {
+    Object.assign(_pendientesNubeGen, campos);
     clearTimeout(_debounceNubeGen);
     _debounceNubeGen = setTimeout(async () => {
+        // Nada sube a la nube hasta confirmar que el alumno no borró sus
+        // datos desde otro dispositivo (si no, esta copia vieja los
+        // "resucitaría"). Ver verificarBorradoRemoto().
+        if (_verificacionBorrado && !(await _verificacionBorrado)) {
+            _pendientesNubeGen = {};
+            return;
+        }
+        const pendientes = _pendientesNubeGen;
+        _pendientesNubeGen = {};
+        if (!Object.keys(pendientes).length) return;
         const userId = await obtenerUserIdActual();
         if (!userId) return;
         try {
             const { error } = await window.sigaSupabase
                 .from('horarios_alumno')
-                .upsert({ user_id: userId, actualizado_en: new Date().toISOString(), ...campos });
+                .upsert({ user_id: userId, actualizado_en: new Date().toISOString(), ...pendientes });
             if (error) console.warn('No se pudo sincronizar con la nube:', error);
         } catch (e) {
             console.warn('Error sincronizando con la nube:', e);
         }
     }, 800);
+}
+
+// ── "Borrar mis datos de Horarios" hecho en otro dispositivo ─────
+// Devuelve true si lo local sigue siendo válido. Si en la nube hay un
+// limpiado_en más reciente que lo guardado aquí, borra la copia local y
+// manda al inicio de Horarios (devuelve false). Ante un error de red
+// devuelve true: mejor no bloquear al alumno por una falla momentánea.
+let _verificacionBorrado = null;
+async function verificarBorradoRemoto() {
+    let borradoDespues = false;
+    try {
+        const userId = await obtenerUserIdActual();
+        if (!userId) return true;
+        const { data, error } = await window.sigaSupabase
+            .from('horarios_alumno')
+            .select('limpiado_en')
+            .eq('user_id', userId)
+            .maybeSingle();
+        if (error || !data || !data.limpiado_en) return true;
+        const guardadoLocal = Date.parse(localStorage.getItem(LS_GUARDADO_EN) || '') || 0;
+        borradoDespues = guardadoLocal < Date.parse(data.limpiado_en);
+    } catch (e) {
+        console.warn('No se pudo verificar si hubo un borrado desde otro dispositivo:', e);
+        return true;
+    }
+    if (!borradoDespues) return true;
+
+    // Decisión tomada: esta copia local ya no vale. Pase lo que pase con
+    // la redirección, se devuelve false para que nada suba a la nube.
+    try {
+        CLAVES_DATOS_HORARIOS.forEach(k => localStorage.removeItem(k));
+        sessionStorage.removeItem('cargaHoraria');
+        window.location.replace('index.html');
+    } catch (e) {
+        console.warn('No se pudo volver al inicio de Horarios:', e);
+    }
+    return false;
 }
 
 // ── TOOLTIP ───────────────────────────────────────────────────
@@ -180,6 +241,10 @@ function inicializar(cursos) {
         }
     });
 
+    // Arranca YA (antes de restaurar nada): así cualquier guardado que se
+    // dispare al restaurar espera esta verificación antes de subir.
+    _verificacionBorrado = verificarBorradoRemoto();
+
     renderSidebar(seccionesData);
     iniciarGateEliminarCurso();
 
@@ -207,6 +272,7 @@ function inicializar(cursos) {
 // ── Reconciliación con la nube (no reemplaza el caché local, solo
 //    corrige si hay algo distinto guardado desde otro dispositivo) ──
 async function sincronizarSeleccionDesdeNube() {
+    if (_verificacionBorrado && !(await _verificacionBorrado)) return;
     const userId = await obtenerUserIdActual();
     if (!userId) return;
 
@@ -359,15 +425,19 @@ function eliminarCursoDelGenerador(curso, blockEl) {
 
     // Sincroniza con la lista de "Elegir cursos" (index.html) — misma
     // clave que usa esa pantalla (LS_SEL ahí, LS_SEL_INDEX acá).
+    let listaRestante = Object.keys(seccionesData);
     try {
         const guardado = localStorage.getItem(LS_SEL_INDEX);
         if (guardado) {
-            const lista = JSON.parse(guardado).filter(c => c !== curso);
-            localStorage.setItem(LS_SEL_INDEX, JSON.stringify(lista));
+            listaRestante = JSON.parse(guardado).filter(c => c !== curso);
+            localStorage.setItem(LS_SEL_INDEX, JSON.stringify(listaRestante));
         }
     } catch (e) {
         console.warn('No se pudo actualizar la selección de "Elegir cursos":', e);
     }
+    // También en la nube: si no, al volver a "Elegir cursos" el curso
+    // eliminado reaparecía (la nube aún lo tenía como seleccionado).
+    guardarEnNube({ cursos_seleccionados: listaRestante });
 
     // Limpia la selección de secciones guardada (lee de los checkbox
     // que quedan en el DOM, ya sin el curso eliminado) y sube el cambio
