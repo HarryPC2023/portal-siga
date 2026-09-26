@@ -363,7 +363,8 @@ UA_NAVEGADOR = (
     "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
 )
 URL_BASE_INTRALU = f"https://{DOMINIO_INTRALU}"
-PETICIONES_PARALELAS = 6  # cursos/notas de TODOS los periodos a la vez (antes: 3, periodo por periodo)
+PETICIONES_PARALELAS = 4  # cursos/notas de TODOS los periodos a la vez. Con 6 INTRALU se ahogó y rechazó un curso (sep 2026)
+REINTENTOS_NOTAS = 2      # si un curso falla, se vuelve a pedir hasta 2 veces más, con pausa creciente
 
 
 # ================================================================
@@ -687,6 +688,23 @@ def _listar_cursos_periodo(sesion, periodo):
 
 
 def _traer_notas_curso(sesion, periodo, c_info):
+    """Notas de un curso con reintentos. Devuelve (curso_armado, error_o_None).
+    Si al final sigue fallando, el curso NO debe guardarse (ver _ejecutar_sync):
+    guardarlo vacío pisaría las notas buenas que el alumno ya tenía en SIGA."""
+    curso, error = None, None
+    for intento in range(REINTENTOS_NOTAS + 1):
+        curso, error = _traer_notas_curso_una_vez(sesion, periodo, c_info)
+        if not error:
+            if intento:
+                logger.info("Notas %s-%s (%s): OK en el reintento %d", c_info["cod_curso"], c_info["seccion"], periodo, intento)
+            return curso, None
+        logger.warning("Notas %s-%s (%s): intento %d falló (%s)",
+                       c_info["cod_curso"], c_info["seccion"], periodo, intento + 1, error)
+        time.sleep(1.5 * (intento + 1))
+    return curso, error
+
+
+def _traer_notas_curso_una_vez(sesion, periodo, c_info):
     """UNA petición por curso: evaluaciones + fórmulas + promedios.
     Devuelve (curso_armado, error_o_None)."""
     evaluaciones = []
@@ -869,10 +887,18 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
                     if _job_cancelado(job_id):
                         raise _SyncCancelada()
                     curso, error = futuro.result()
-                    cursos_lista.append(curso)
                     if error:
+                        # NO se manda a guardar: un curso vacío pisaría en SIGA las
+                        # notas y la fórmula buenas que ya existían. Solo se reporta.
                         errores_curso.append({"codigo": curso["codigo"], "seccion": curso["seccion"], "motivo": error})
+                    else:
+                        cursos_lista.append(curso)
 
+                if not cursos_lista:
+                    # Todos sus cursos fallaron: se reporta el error, pero el
+                    # periodo no se toca en SIGA.
+                    data_por_periodo[periodo] = {"etiqueta_periodo": etiquetar_periodo(periodo), "cursos": [], "errores": errores_curso}
+                    continue
                 data_por_periodo[periodo] = {
                     "etiqueta_periodo": etiquetar_periodo(periodo),
                     "cursos": cursos_lista,
