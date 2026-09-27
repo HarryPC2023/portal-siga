@@ -10,6 +10,12 @@
    degradado de marca (intermedia) o el de su facultad.
    ============================================================ */
 
+/* Poppins para todo lo que se LEE; Orbitron (--font-heading) para
+   marca, títulos, etiquetas pequeñas y el código UNI. */
+:root {
+    --font-lectura: 'Poppins', system-ui, sans-serif;
+}
+
 /* ---------- Carnet ---------- */
 .carnet-siga {
     --carnet-g1: var(--brand-azul);
@@ -211,15 +217,15 @@
     padding: 14px 16px;
     border-radius: 16px;
     background: #ffffff;
-    border: 1px solid rgba(102, 0, 204, 0.14);
+    border: 1.5px solid rgba(102, 0, 204, 0.26);
     color: var(--ink);
-    font-family: var(--font-body);
+    font-family: var(--font-lectura);
     box-sizing: border-box;
 }
 
 .tarjeta-pieza.falta {
     border-style: dashed;
-    border-color: rgba(102, 0, 204, 0.4);
+    border-color: rgba(102, 0, 204, 0.55);
     background: var(--brand-morado-tinte);
 }
 
@@ -227,13 +233,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 11.5px;
+    font-family: var(--font-heading);
+    font-size: 11px;
+    letter-spacing: 0.3px;
     color: var(--ink-soft);
 }
 
 .tarjeta-pieza-pregunta {
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 600;
+    line-height: 1.35;
     color: var(--brand-morado);
 }
 
@@ -246,8 +255,13 @@
     border: 1px solid rgba(102, 0, 204, 0.25);
     background: #ffffff;
     color: var(--ink);
-    font: 500 13px var(--font-body);
-    letter-spacing: 0.5px;
+    font: 500 14px var(--font-lectura);
+}
+
+.tarjeta-pieza-campo.es-codigo {
+    font-family: var(--font-heading);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
 }
 
 .tarjeta-pieza-campo:focus {
@@ -257,13 +271,15 @@
 }
 
 .tarjeta-pieza-nota {
-    font-size: 11px;
+    font-size: 12px;
+    line-height: 1.45;
     color: var(--ink-soft);
     min-height: 14px;
 }
 
 .tarjeta-pieza-error {
-    font-size: 11.5px;
+    font-size: 12px;
+    line-height: 1.45;
     color: #c2185b;
     min-height: 14px;
 }
@@ -278,7 +294,7 @@
     border: 0;
     border-radius: 999px;
     padding: 8px 16px;
-    font: 600 12px var(--font-body);
+    font: 600 13px var(--font-lectura);
     cursor: pointer;
     transition: transform 0.15s ease, opacity 0.15s ease;
 }
@@ -338,10 +354,16 @@
 }
 
 .tarjeta-pieza-valor {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
+    line-height: 1.3;
     color: var(--ink);
     overflow-wrap: anywhere;
+}
+
+.tarjeta-pieza-valor.es-codigo {
+    font-family: var(--font-heading);
+    letter-spacing: 1.5px;
 }
 
 .tarjeta-pieza.solo-lectura .tarjeta-pieza-etiqueta svg {
@@ -351,6 +373,8 @@
 .tarjeta-pieza-opcional {
     font-size: 10px;
     color: var(--ink-soft);
+    display: inline-flex;
+    align-items: center;
 }
 
 .tarjeta-pieza.solo-lectura .tarjeta-pieza-acciones {
@@ -381,7 +405,8 @@
 .mi-carnet-estado p {
     margin: 0;
     color: var(--ink-soft);
-    font-size: 13px;
+    font-family: var(--font-lectura);
+    font-size: 14px;
     line-height: 1.6;
 }
 
@@ -421,6 +446,180 @@
         margin-left: auto;
         margin-right: auto;
     }
+}
+
+
+/* ---------- Selector de lista propio (carrera / modalidad) ---------- */
+.selector-lista {
+    margin-top: 4px;
+    border: 1.5px solid rgba(102, 0, 204, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.selector-lista-buscar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid rgba(102, 0, 204, 0.15);
+}
+
+.selector-lista-buscar input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font: 400 13.5px var(--font-lectura);
+    color: var(--ink);
+}
+
+.selector-lista-opciones {
+    position: relative;
+    max-height: 264px;
+    overflow-y: auto;
+    padding: 4px;
+    overscroll-behavior: contain;
+}
+
+.selector-lista-grupo {
+    position: sticky;
+    top: -4px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 6px;
+    background: #ffffff;
+}
+
+.selector-lista-grupo-sigla {
+    flex: 0 0 auto;
+    padding: 3px 10px;
+    border-radius: 999px;
+    color: #ffffff;
+    font: 700 10.5px var(--font-heading);
+    letter-spacing: 1px;
+}
+
+.selector-lista-grupo-nombre {
+    font: 500 11px var(--font-lectura);
+    color: var(--ink-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selector-lista-opcion {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px 9px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink);
+    font: 400 13.5px var(--font-lectura);
+    text-align: left;
+    cursor: pointer;
+}
+
+.selector-lista-opcion:nth-child(odd of .selector-lista-opcion) {
+    background: rgba(102, 0, 204, 0.06);
+}
+
+.selector-lista-opcion:hover,
+.selector-lista-opcion:focus-visible {
+    background: var(--brand-azul-tinte);
+    outline: none;
+}
+
+.selector-lista-opcion.activa {
+    background: rgba(102, 0, 204, 0.14);
+    color: var(--brand-morado);
+    font-weight: 600;
+}
+
+.selector-lista-texto {
+    flex: 1;
+}
+
+.selector-lista-check {
+    flex: 0 0 auto;
+    color: var(--brand-morado);
+}
+
+.selector-lista-vacio {
+    padding: 14px;
+    font: 400 13px var(--font-lectura);
+    color: var(--ink-soft);
+}
+
+.insignia-sugerido {
+    flex: 0 0 auto;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #FFF4CC;
+    color: #7A5600;
+    font: 600 10px var(--font-lectura);
+}
+
+/* ---------- Chips de semestre ---------- */
+.chips-semestre {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.chip-semestre {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 10px 12px;
+    border: 1.5px solid rgba(102, 0, 204, 0.3);
+    border-radius: 12px;
+    background: #ffffff;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.chip-semestre:hover,
+.chip-semestre:focus-visible {
+    border-color: var(--brand-morado);
+    outline: none;
+}
+
+.chip-semestre.activa {
+    border-color: var(--brand-morado);
+    background: var(--brand-morado-tinte);
+}
+
+.chip-semestre-valor {
+    font: 700 14px var(--font-heading);
+    letter-spacing: 1px;
+}
+
+.chip-semestre-sub {
+    font: 400 12px var(--font-lectura);
+    color: var(--ink-soft);
+}
+
+.chip-semestre .insignia-sugerido {
+    margin-top: 4px;
+}
+
+/* ---------- Contenedor principal de Mi cuenta: acentos lila ---------- */
+.perfil-hub-panel {
+    border: 1.5px solid rgba(102, 0, 204, 0.18);
+    box-shadow: 0 18px 44px -24px rgba(102, 0, 204, 0.45);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -6,15 +6,22 @@
 // - Arriba: el carnet vivo (se repinta con cada cambio).
 // - Abajo: una tarjeta por dato. Las piezas que faltan van punteadas
 //   con su pregunta; las completas se editan tocándolas.
-// - Periodo de ingreso y periodo actual son de solo lectura:
-//   salen del código y de Intranotas.
+// - Periodo de ingreso (semestre) y modalidad de ingreso son datos
+//   OPCIONALES y editables, con sugerencia según el código. No son
+//   piezas del carnet: no generan preguntas en el dashboard ni tocan
+//   ultima_pieza_at. Sirven además para validar qué significa el
+//   5.º dígito del código en cada modalidad.
+//   (periodo_ingreso_declarado es aparte de periodo_ingreso, que usa
+//   Intranotas para saber desde qué periodo sincronizar.)
 // - La foto es opcional y no cuenta para completar el carnet.
 // ------------------------------------------------------------
 
 import { supabase, resolverUrlFoto } from './auth-siga.js?v=9';
 import {
-    PIEZAS, buscarCarrera, periodoIngreso, periodoLegible, piezasFaltantes,
-    pintarCarnet, crearTarjetaPregunta, guardarPieza,
+    PIEZAS, buscarCarrera, buscarModalidad, periodoMostrado, piezasFaltantes,
+    sugerirModalidad, sugerirSemestre, pintarCarnet, crearTarjetaPregunta,
+    crearTarjetaEdicion, crearChipsSemestre, crearSelectorModalidad,
+    guardarPieza, guardarDato,
 } from './carnet-siga.js';
 
 const BUCKET_AVATARS = 'avatars';
@@ -37,7 +44,6 @@ function el(tag, clase, texto) {
 
 const ICONO_BRILLO = '<svg class="pieza-brillo" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6z"/></svg>';
 const ICONO_LAPIZ = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>';
-const ICONO_CANDADO = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
 
 export async function montarMiCarnet(sesion) {
     const raiz = document.getElementById('miCarnet');
@@ -55,7 +61,7 @@ export async function montarMiCarnet(sesion) {
 
     const { data, error } = await supabase
         .from('perfiles_usuario')
-        .select('nombre, codigo_estudiante, carrera, facultad, periodo_actual, foto_url')
+        .select('nombre, codigo_estudiante, carrera, facultad, periodo_ingreso_declarado, modalidad_ingreso, foto_url')
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -92,10 +98,8 @@ export async function montarMiCarnet(sesion) {
 
         rejilla.replaceChildren(
             ...PIEZAS.map(tarjetaPieza),
-            tarjetaSoloLectura('Periodo de ingreso', periodoIngreso(perfil.codigo_estudiante),
-                'Sale de tu código', 'Aparece cuando pongas tu código'),
-            tarjetaSoloLectura('Periodo actual', periodoLegible(perfil.periodo_actual),
-                'Lo actualiza Intranotas', 'Aparece al sincronizar Intranotas'),
+            tarjetaPeriodo(),
+            tarjetaModalidad(),
             tarjetaFoto(),
         );
     }
@@ -137,7 +141,7 @@ export async function montarMiCarnet(sesion) {
                 mostrado = info ? info.carrera.nombre : valor;
                 nota = info ? info.facultad.nombre : '';
             }
-            tarjeta.append(etiqueta, el('div', 'tarjeta-pieza-valor', mostrado));
+            tarjeta.append(etiqueta, el('div', `tarjeta-pieza-valor${pieza === 'codigo' ? ' es-codigo' : ''}`, mostrado));
             if (nota) tarjeta.append(el('div', 'tarjeta-pieza-nota', nota));
             tarjeta.setAttribute('aria-label', `${ETIQUETAS[pieza]}: ${mostrado}. Toca para editar`);
         }
@@ -150,14 +154,103 @@ export async function montarMiCarnet(sesion) {
         return tarjeta;
     }
 
-    function tarjetaSoloLectura(nombre, valor, notaCon, notaSin) {
-        const t = el('div', 'tarjeta-pieza solo-lectura');
-        const etiqueta = el('div', 'tarjeta-pieza-etiqueta', nombre);
-        etiqueta.insertAdjacentHTML('beforeend', ICONO_CANDADO);
-        t.append(etiqueta,
-            el('div', 'tarjeta-pieza-valor', valor || '—'),
-            el('div', 'tarjeta-pieza-nota', valor ? notaCon : notaSin));
+    /* Tarjeta de dato opcional: muestra el valor o una invitación suave,
+       y al tocarla se convierte en su editor. */
+    function tarjetaOpcional({ clave, etiqueta, valor, nota, pregunta, bloqueada, notaBloqueada, crearEditor }) {
+        if (editando === clave && !bloqueada) return crearEditor();
+
+        const t = el('div', 'tarjeta-pieza');
+        const cab = el('div', 'tarjeta-pieza-etiqueta', etiqueta);
+        cab.append(el('span', 'tarjeta-pieza-opcional', 'Opcional'));
+        t.append(cab);
+
+        if (bloqueada) {
+            t.classList.add('solo-lectura');
+            t.append(el('div', 'tarjeta-pieza-valor', '—'), el('div', 'tarjeta-pieza-nota', notaBloqueada));
+            return t;
+        }
+
+        t.classList.add('clicable');
+        t.tabIndex = 0;
+        t.setAttribute('role', 'button');
+        if (valor) {
+            cab.lastChild.replaceWith(el('span', 'tarjeta-pieza-opcional', ''));
+            cab.lastChild.insertAdjacentHTML('beforeend', ICONO_LAPIZ);
+            t.append(el('div', 'tarjeta-pieza-valor', valor));
+            if (nota) t.append(el('div', 'tarjeta-pieza-nota', nota));
+            t.setAttribute('aria-label', `${etiqueta}: ${valor}. Toca para editar`);
+        } else {
+            t.append(el('div', 'tarjeta-pieza-pregunta', pregunta), el('div', 'tarjeta-pieza-nota', 'Toca para responder'));
+            t.setAttribute('aria-label', `${pregunta} Toca para responder`);
+        }
+        const abrir = () => { editando = clave; render(); };
+        t.addEventListener('click', abrir);
+        t.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrir(); }
+        });
         return t;
+    }
+
+    function alGuardarOpcional(cambios) {
+        Object.assign(perfil, cambios);
+        editando = null;
+        render(true);
+    }
+
+    function tarjetaPeriodo() {
+        const codigo = perfil.codigo_estudiante;
+        const mostrado = periodoMostrado(perfil);
+        const declarado = mostrado && mostrado === perfil.periodo_ingreso_declarado;
+        const conSemestre = mostrado && mostrado.includes('-');
+        return tarjetaOpcional({
+            clave: 'periodo',
+            etiqueta: 'Periodo de ingreso',
+            valor: conSemestre ? mostrado : null,
+            nota: declarado ? 'Confirmado por ti' : 'Sugerido por tu código · toca para confirmar',
+            pregunta: codigo ? `¿Ingresaste en febrero o agosto de ${codigo.slice(0, 4)}?` : '',
+            bloqueada: !codigo,
+            notaBloqueada: 'Aparece cuando pongas tu código',
+            crearEditor: () => {
+                const control = crearChipsSemestre(codigo, perfil.periodo_ingreso_declarado || mostrado);
+                return crearTarjetaEdicion({
+                    etiqueta: 'Periodo de ingreso',
+                    pregunta: '¿En qué semestre ingresaste?',
+                    control,
+                    nota: sugerirSemestre(codigo) ? 'Marcamos el que sugiere tu código.' : 'Tu código no nos dice el semestre: ¡cuéntanos!',
+                    textoCancelar: 'Cancelar',
+                    guardar: (valor) => (valor
+                        ? guardarDato(userId, 'periodo_ingreso_declarado', valor)
+                        : Promise.resolve({ ok: false, mensaje: 'Elige un semestre.' })),
+                    alGuardar: alGuardarOpcional,
+                    alCancelar: () => { editando = null; render(); },
+                });
+            },
+        });
+    }
+
+    function tarjetaModalidad() {
+        const codigo = perfil.codigo_estudiante;
+        const guardada = buscarModalidad(perfil.modalidad_ingreso);
+        const sugerida = buscarModalidad(sugerirModalidad(codigo));
+        return tarjetaOpcional({
+            clave: 'modalidad',
+            etiqueta: 'Modalidad de ingreso',
+            valor: guardada ? guardada.nombre : null,
+            nota: 'Nunca se muestra en tu carnet',
+            pregunta: sugerida ? `¿Ingresaste por ${sugerida.nombre}?` : '¿Por qué modalidad ingresaste?',
+            crearEditor: () => crearTarjetaEdicion({
+                etiqueta: 'Modalidad de ingreso',
+                pregunta: '¿Por qué modalidad ingresaste?',
+                control: crearSelectorModalidad(perfil.modalidad_ingreso || null, codigo),
+                nota: 'Solo tú la ves. Nos ayuda a entender cómo se arma el código UNI.',
+                textoCancelar: 'Cancelar',
+                guardar: (valor) => (valor
+                    ? guardarDato(userId, 'modalidad_ingreso', valor)
+                    : Promise.resolve({ ok: false, mensaje: 'Elige una modalidad.' })),
+                alGuardar: alGuardarOpcional,
+                alCancelar: () => { editando = null; render(); },
+            }),
+        });
     }
 
     function tarjetaFoto() {
