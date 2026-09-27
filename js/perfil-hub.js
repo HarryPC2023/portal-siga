@@ -1,30 +1,10 @@
 // js/perfil-hub.js — Página "Mi cuenta": Información General, Cuenta,
 // Preferencias, Preguntas Frecuentes y Sugerencias, todo en una sola
 // página con pestañas (reemplaza a perfil.html + configuracion.html).
-import { supabase, requerirSesion, montarNavUsuario, establecerNuevaContrasena, resolverUrlFoto } from './auth-siga.js?v=9';
+import { supabase, requerirSesion, montarNavUsuario, establecerNuevaContrasena } from './auth-siga.js?v=9';
+import { montarMiCarnet } from './mi-carnet.js';
 
-const BUCKET_AVATARS = 'avatars';
 const TABS_VALIDAS = ['info', 'cuenta', 'preferencias', 'faq', 'sugerencias'];
-
-function generarPeriodosDisponibles(cantidad = 24) {
-    const hoy = new Date();
-    const MES_CORTE_PERIODO_2 = 7; // agosto
-    let anio = hoy.getFullYear();
-    let periodo = hoy.getMonth() >= MES_CORTE_PERIODO_2 ? 2 : 1;
-    const periodos = [];
-    for (let i = 0; i < cantidad; i++) {
-        periodos.push(`${anio}-${periodo}`);
-        if (periodo === 1) { periodo = 2; anio -= 1; } else { periodo = 1; }
-    }
-    return periodos;
-}
-
-const CARRERA_LABELS = {
-    sistemas: 'Ingeniería de Sistemas',
-    industrial: 'Ingeniería Industrial',
-    software: 'Ingeniería de Software',
-    ia: 'Ingeniería de Inteligencia Artificial',
-};
 
 document.addEventListener('DOMContentLoaded', async () => {
     montarNavUsuario();
@@ -58,123 +38,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     activarTab(window.location.hash.replace('#', ''));
 
-    // ================= INFORMACIÓN GENERAL =================
-    const form = document.getElementById('formPerfil');
-    const msg = document.getElementById('perfilMsg');
-    const inputFoto = document.getElementById('inputFoto');
-    const btnCamara = document.getElementById('btnCamara');
-    const previewFoto = document.getElementById('previewFoto');
-    const previewFotoVacia = document.getElementById('previewFotoVacia');
-
-    btnCamara.addEventListener('click', () => inputFoto.click());
-
-    const selectCarrera = inicializarSelectPersonalizado({
-        triggerId: 'carreraTrigger', textoId: 'carreraTriggerTexto',
-        listaId: 'carreraLista', valorId: 'carreraValor',
-    });
-
-    function mostrarFoto(url) {
-        if (url) {
-            previewFoto.src = url;
-            previewFoto.style.display = 'block';
-            previewFotoVacia.style.display = 'none';
-        } else {
-            previewFoto.style.display = 'none';
-            previewFotoVacia.style.display = 'flex';
-        }
-    }
-
-    inputFoto.addEventListener('change', () => {
-        const archivo = inputFoto.files[0];
-        if (archivo) mostrarFoto(URL.createObjectURL(archivo));
-    });
-
-    const periodos = generarPeriodosDisponibles();
-    const selectPeriodo = inicializarSelectPersonalizado({
-        triggerId: 'periodoTrigger', textoId: 'periodoTriggerTexto',
-        listaId: 'periodoLista', valorId: 'periodoValor',
-        opciones: periodos.map((p) => ({ value: p, label: p })),
-    });
-    selectPeriodo.establecer(periodos[0], periodos[0]);
-
-    const { data: perfil, error: errPerfil } = await supabase
-        .from('perfiles_usuario')
-        .select('nombre, codigo_estudiante, carrera, periodo_actual, foto_url')
-        .eq('user_id', sesion.user.id)
-        .maybeSingle();
-
-    if (errPerfil) {
-        console.error('Error cargando perfil:', errPerfil);
-        msg.textContent = 'No se pudo cargar tu perfil.';
-    }
-
-    const fotoGoogleSugerida = sesion.user.user_metadata?.avatar_url
-        || sesion.user.user_metadata?.picture
-        || null;
-
-    if (perfil) {
-        form.nombre.value = perfil.nombre ?? '';
-        form.codigo_estudiante.value = perfil.codigo_estudiante ?? '';
-        if (perfil.carrera) selectCarrera.establecer(perfil.carrera, CARRERA_LABELS[perfil.carrera] || perfil.carrera);
-        if (perfil.periodo_actual) selectPeriodo.establecer(perfil.periodo_actual, perfil.periodo_actual);
-        const urlFotoActual = await resolverUrlFoto(perfil.foto_url);
-        mostrarFoto(urlFotoActual || fotoGoogleSugerida);
-    } else if (fotoGoogleSugerida) {
-        mostrarFoto(fotoGoogleSugerida);
-    }
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        if (!selectCarrera.valor.value) {
-            msg.textContent = 'Elige tu carrera antes de guardar.';
-            return;
-        }
-
-        const datos = Object.fromEntries(new FormData(form).entries());
-
-        let fotoUrl = perfil?.foto_url || fotoGoogleSugerida || null;
-        let avisoFoto = null;
-        const archivo = inputFoto.files[0];
-
-        if (archivo) {
-            const extension = archivo.name.split('.').pop();
-            const ruta = `${sesion.user.id}/avatar.${extension}`;
-
-            const { error: errSubida } = await supabase.storage
-                .from(BUCKET_AVATARS)
-                .upload(ruta, archivo, { upsert: true });
-
-            if (errSubida) {
-                console.error('Error subiendo foto:', errSubida);
-                avisoFoto = 'No se pudo subir la foto (revisa que el bucket "avatars" exista). Se guardó el resto de tus datos.';
-            } else {
-                // El bucket es privado: guardamos solo la ruta, no una URL pública.
-                // Cada vez que se muestre la foto, se firma una URL temporal con resolverUrlFoto().
-                fotoUrl = ruta;
-            }
-        }
-
-        const { error: errUpsert } = await supabase
-            .from('perfiles_usuario')
-            .upsert({
-                user_id: sesion.user.id,
-                nombre: datos.nombre.trim(),
-                codigo_estudiante: datos.codigo_estudiante.trim().toUpperCase(),
-                carrera: datos.carrera,
-                periodo_actual: datos.periodo_actual,
-                foto_url: fotoUrl,
-            });
-
-        if (errUpsert) {
-            msg.textContent = errUpsert.message?.includes('duplicate')
-                ? 'Ese código de estudiante ya está registrado con otra cuenta.'
-                : 'No se pudo guardar. Intenta de nuevo.';
-            return;
-        }
-
-        msg.textContent = avisoFoto ?? '¡Perfil actualizado!';
-    });
+    // ================= INFORMACIÓN GENERAL: CARNET SIGA =================
+    // Toda la lógica vive en js/mi-carnet.js (carnet + tarjetas editables).
+    montarMiCarnet(sesion);
 
     // ================= CUENTA: CAMBIAR CONTRASEÑA =================
     const formPass = document.getElementById('formCambiarContrasena');

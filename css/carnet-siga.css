@@ -322,6 +322,107 @@
     }
 }
 
+/* ---------- Tarjetas en Mi cuenta ---------- */
+.tarjeta-pieza.clicable {
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tarjeta-pieza.clicable:hover,
+.tarjeta-pieza.clicable:focus-visible {
+    outline: none;
+    transform: translateY(-2px);
+    border-color: var(--brand-morado);
+    box-shadow: 0 12px 26px -20px var(--brand-morado);
+}
+
+.tarjeta-pieza-valor {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+}
+
+.tarjeta-pieza.solo-lectura .tarjeta-pieza-etiqueta svg {
+    opacity: 0.6;
+}
+
+.tarjeta-pieza-opcional {
+    font-size: 10px;
+    color: var(--ink-soft);
+}
+
+.tarjeta-pieza.solo-lectura .tarjeta-pieza-acciones {
+    justify-content: flex-start;
+    margin-top: 4px;
+}
+
+/* ---------- Pestaña Información General (Mi cuenta) ---------- */
+.mi-carnet {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
+.mi-carnet-hero {
+    display: grid;
+    grid-template-columns: minmax(260px, 380px) 1fr;
+    gap: 28px;
+    align-items: center;
+}
+
+.mi-carnet-estado h2 {
+    margin: 0 0 6px;
+    font-family: var(--font-heading);
+    font-size: 18px;
+}
+
+.mi-carnet-estado p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.mi-carnet-piezas {
+    display: flex;
+    gap: 6px;
+    margin-top: 14px;
+    max-width: 260px;
+}
+
+.mi-carnet-piezas i {
+    flex: 1;
+    height: 6px;
+    border-radius: 4px;
+    background: rgba(102, 0, 204, 0.14);
+    transition: background 0.4s ease;
+}
+
+.mi-carnet-piezas i.on {
+    background: var(--brand-morado);
+}
+
+.mi-carnet-tarjetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+@media (max-width: 760px) {
+    .mi-carnet-hero {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .mi-carnet-piezas {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
 
     .carnet-siga,

@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/perfil-siga.css">
     <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
     <link rel="stylesheet" href="css/perfil-hub.css?v=2">
+    <link rel="stylesheet" href="css/carnet-siga.css">
     <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
     <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
@@ -51,69 +52,21 @@
 
         <div class="perfil-hub-panel">
 
-            <!-- ===== INFORMACIÓN GENERAL ===== -->
+            <!-- ===== INFORMACIÓN GENERAL: CARNET SIGA (rediseño sep 2026) ===== -->
             <div class="perfil-panel" data-panel="info">
-                <form id="formPerfil" class="form-perfil form-perfil-ancho">
-                    <div class="perfil-foto-fila">
-                        <div style="position:relative; width:88px;">
-                            <img id="previewFoto" src="" alt="Foto de perfil"
-                                style="width:88px; height:88px; border-radius:50%; object-fit:cover; background:var(--brand-azul-tinte); display:none;">
-                            <div id="previewFotoVacia"
-                                style="width:88px; height:88px; border-radius:50%; background:var(--brand-azul-tinte); display:flex; align-items:center; justify-content:center; font-size:32px; color:var(--brand-morado);">
-                                👤</div>
-                            <button type="button" id="btnCamara" aria-label="Cambiar foto de perfil"
-                                style="position:absolute; bottom:-2px; right:-2px; width:32px; height:32px; border-radius:50%; background:var(--brand-morado); border:3px solid #fff; color:#fff; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center;">📷</button>
-                            <input type="file" name="foto" id="inputFoto" accept="image/*" hidden>
+                <div class="mi-carnet" id="miCarnet">
+                    <div class="mi-carnet-hero">
+                        <div class="mi-carnet-lugar" id="carnetMiCuenta"></div>
+                        <div class="mi-carnet-estado">
+                            <h2 id="carnetEstadoTitulo">Cargando tu carnet…</h2>
+                            <p id="carnetEstadoTexto"></p>
+                            <div class="mi-carnet-piezas" id="carnetPiezas" aria-hidden="true"><i></i><i></i><i></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="perfil-grid-campos">
-                        <label>Nombre completo
-                            <input type="text" name="nombre" placeholder="Tu nombre y apellido" required>
-                        </label>
-                        <label>Código de estudiante
-                            <input type="text" name="codigo_estudiante" placeholder="Ej. 20261234X" required>
-                        </label>
-                        <div class="campo-select-custom">
-                            <span class="etiqueta-select">Carrera</span>
-                            <button type="button" class="select-custom-trigger" id="carreraTrigger"
-                                aria-haspopup="listbox" aria-expanded="false">
-                                <span id="carreraTriggerTexto">Selecciona tu carrera</span>
-                                <span class="select-custom-chevron" aria-hidden="true">▾</span>
-                            </button>
-                            <ul class="select-custom-lista" id="carreraLista" role="listbox" hidden>
-                                <li role="option" data-value="sistemas" tabindex="0">
-                                    <span class="select-swatch" style="background:#3C7CF8;"></span>Ingeniería de
-                                    Sistemas
-                                </li>
-                                <li role="option" data-value="industrial" tabindex="0">
-                                    <span class="select-swatch" style="background:#00B8A9;"></span>Ingeniería
-                                    Industrial
-                                </li>
-                                <li role="option" data-value="software" tabindex="0">
-                                    <span class="select-swatch" style="background:#F4A100;"></span>Ingeniería de
-                                    Software
-                                </li>
-                                <li role="option" data-value="ia" tabindex="0">
-                                    <span class="select-swatch" style="background:#FF6B6B;"></span>Ingeniería de
-                                    Inteligencia Artificial
-                                </li>
-                            </ul>
-                            <input type="hidden" name="carrera" id="carreraValor">
-                        </div>
-                        <div class="campo-select-custom">
-                            <span class="etiqueta-select">Periodo académico actual</span>
-                            <button type="button" class="select-custom-trigger" id="periodoTrigger"
-                                aria-haspopup="listbox" aria-expanded="false">
-                                <span id="periodoTriggerTexto">Selecciona un periodo</span>
-                                <span class="select-custom-chevron" aria-hidden="true">▾</span>
-                            </button>
-                            <ul class="select-custom-lista" id="periodoLista" role="listbox" hidden></ul>
-                            <input type="hidden" name="periodo_actual" id="periodoValor">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn-primary btn-alineado-derecha">Guardar cambios</button>
-                    <p class="perfil-msg" id="perfilMsg"></p>
-                </form>
+                    <div class="mi-carnet-tarjetas" id="carnetTarjetas"></div>
+                    <input type="file" id="inputFoto" accept="image/*" hidden>
+                </div>
             </div>
 
             <!-- ===== CUENTA ===== -->

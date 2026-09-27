@@ -14,7 +14,7 @@
 // La foto tampoco cuenta para completar el carnet.
 // ------------------------------------------------------------
 
-import { supabase } from './auth-siga.js';
+import { supabase } from './auth-siga.js?v=9';
 import { FACULTADES } from '../intranotas/facultades-datos.js';
 
 export const PIEZAS = ['codigo', 'nombre', 'carrera'];
