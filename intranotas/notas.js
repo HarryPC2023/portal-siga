@@ -100,7 +100,8 @@ async function pintarIdentidad(sesion) {
         const chip = document.getElementById('chipFacultad');
         chip.style.display = 'flex';
         chip.style.borderLeftColor = facultad.color;
-        document.getElementById('chipFacultadNombre').textContent = `${facultad.sigla} · ${perfil.carrera}`;
+        const nombreCarrera = facultad.carreras.find((c) => c.id === perfil.carrera)?.nombre || perfil.carrera;
+        document.getElementById('chipFacultadNombre').textContent = `${facultad.sigla} · ${nombreCarrera}`;
     }
 }
 
