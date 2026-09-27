@@ -359,13 +359,14 @@ function crearSelectorLista({ opciones, grupos = null, valorActual = null, busca
                 nodos.push(cab);
             }
 
-            visibles.forEach((o) => {
+            visibles.forEach((o, i) => {
                 const fila = el('button', 'selector-lista-opcion');
                 fila.type = 'button';
                 fila.setAttribute('role', 'option');
                 fila.dataset.valor = o.valor;
                 const activo = o.valor === seleccionado;
                 fila.setAttribute('aria-selected', activo ? 'true' : 'false');
+                if (i % 2 === 0) fila.classList.add('alterna'); // cada grupo empieza en lila
                 if (activo) fila.classList.add('activa');
                 fila.append(el('span', 'selector-lista-texto', o.texto));
                 if (o.valor === sugerido) fila.append(el('span', 'insignia-sugerido', 'Sugerido'));
