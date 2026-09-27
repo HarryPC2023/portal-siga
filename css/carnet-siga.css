@@ -36,7 +36,9 @@
     animation: carnet-aparece 0.45s ease both;
 }
 
-.carnet-siga.texto-oscuro { --carnet-texto: #2A1600; }
+.carnet-siga.texto-oscuro {
+    --carnet-texto: #2A1600;
+}
 
 .carnet-siga.fase-inicial {
     --carnet-texto: var(--ink-soft);
@@ -64,9 +66,23 @@
     align-items: center;
 }
 
-.carnet-logo { display: flex; align-items: baseline; gap: 6px; }
-.carnet-logo-siga { font-family: var(--font-logo); font-size: 17px; letter-spacing: 1px; }
-.carnet-logo-uni { font-size: 11px; letter-spacing: 2px; opacity: 0.85; }
+.carnet-logo {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.carnet-logo-siga {
+    font-family: var(--font-logo);
+    font-size: 17px;
+    letter-spacing: 1px;
+}
+
+.carnet-logo-uni {
+    font-size: 11px;
+    letter-spacing: 2px;
+    opacity: 0.85;
+}
 
 .carnet-sigla {
     font-size: 11px;
@@ -76,9 +92,17 @@
     border: 1px solid currentColor;
     background: rgba(255, 255, 255, 0.16);
 }
-.texto-oscuro .carnet-sigla { background: rgba(0, 0, 0, 0.08); }
 
-.carnet-centro { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.texto-oscuro .carnet-sigla {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.carnet-centro {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
 
 .carnet-foto {
     flex: 0 0 auto;
@@ -95,10 +119,26 @@
     border: 1.5px solid currentColor;
     background: rgba(255, 255, 255, 0.16);
 }
-.carnet-foto img { width: 100%; height: 100%; object-fit: cover; }
-.fase-inicial .carnet-foto { border-style: dashed; background: transparent; }
 
-.carnet-datos { min-width: 0; }
+.carnet-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fase-inicial .carnet-foto {
+    border-style: dashed;
+    background: transparent;
+}
+
+.fase-inicial .carnet-marca {
+    display: none;
+}
+
+.carnet-datos {
+    min-width: 0;
+}
+
 .carnet-nombre {
     font-size: 18px;
     font-weight: 600;
@@ -107,7 +147,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.carnet-ingreso { font-size: 11px; opacity: 0.85; margin-top: 3px; }
+
+.carnet-ingreso {
+    font-size: 11px;
+    opacity: 0.85;
+    margin-top: 3px;
+}
 
 .carnet-pie {
     display: flex;
@@ -116,8 +161,15 @@
     gap: 10px;
     font-size: 12px;
 }
-.carnet-codigo { letter-spacing: 1.5px; font-size: 13px; }
-.carnet-carrera { text-align: right; }
+
+.carnet-codigo {
+    letter-spacing: 1.5px;
+    font-size: 13px;
+}
+
+.carnet-carrera {
+    text-align: right;
+}
 
 .carnet-hueco {
     display: inline-block;
@@ -128,14 +180,26 @@
 }
 
 @keyframes carnet-aparece {
-    from { opacity: 0; transform: translateY(6px) scale(0.98); }
-    to   { opacity: 1; transform: none; }
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 /* Pequeño "latido" al completar una pieza (lo activa el JS). */
-.carnet-siga.carnet-latido { animation: carnet-latido 0.5s ease; }
+.carnet-siga.carnet-latido {
+    animation: carnet-latido 0.5s ease;
+}
+
 @keyframes carnet-latido {
-    40% { transform: scale(1.04); }
+    40% {
+        transform: scale(1.04);
+    }
 }
 
 /* ---------- Tarjeta de pieza ---------- */
@@ -167,7 +231,11 @@
     color: var(--ink-soft);
 }
 
-.tarjeta-pieza-pregunta { font-size: 14px; font-weight: 600; color: var(--brand-morado); }
+.tarjeta-pieza-pregunta {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--brand-morado);
+}
 
 .tarjeta-pieza-campo {
     width: 100%;
@@ -181,16 +249,30 @@
     font: 500 13px var(--font-body);
     letter-spacing: 0.5px;
 }
+
 .tarjeta-pieza-campo:focus {
     outline: none;
     border-color: var(--brand-morado);
     box-shadow: 0 0 0 3px rgba(102, 0, 204, 0.15);
 }
 
-.tarjeta-pieza-nota { font-size: 11px; color: var(--ink-soft); min-height: 14px; }
-.tarjeta-pieza-error { font-size: 11.5px; color: #c2185b; min-height: 14px; }
+.tarjeta-pieza-nota {
+    font-size: 11px;
+    color: var(--ink-soft);
+    min-height: 14px;
+}
 
-.tarjeta-pieza-acciones { display: flex; justify-content: flex-end; gap: 8px; }
+.tarjeta-pieza-error {
+    font-size: 11.5px;
+    color: #c2185b;
+    min-height: 14px;
+}
+
+.tarjeta-pieza-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
 
 .tarjeta-pieza-btn {
     border: 0;
@@ -200,21 +282,51 @@
     cursor: pointer;
     transition: transform 0.15s ease, opacity 0.15s ease;
 }
-.tarjeta-pieza-btn:active { transform: scale(0.97); }
-.tarjeta-pieza-btn:disabled { opacity: 0.6; cursor: wait; }
-.tarjeta-pieza-btn.principal { background: var(--brand-morado); color: #ffffff; }
-.tarjeta-pieza-btn.secundario { background: transparent; color: var(--ink-soft); }
+
+.tarjeta-pieza-btn:active {
+    transform: scale(0.97);
+}
+
+.tarjeta-pieza-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.tarjeta-pieza-btn.principal {
+    background: var(--brand-morado);
+    color: #ffffff;
+}
+
+.tarjeta-pieza-btn.secundario {
+    background: transparent;
+    color: var(--ink-soft);
+}
 
 /* Brillito de las piezas que faltan. */
 .pieza-brillo {
     color: var(--brand-morado);
     animation: pieza-brillo 2s ease-in-out infinite;
 }
+
 @keyframes pieza-brillo {
-    0%, 100% { opacity: 0.45; transform: scale(1); }
-    50%      { opacity: 1;    transform: scale(1.2); }
+
+    0%,
+    100% {
+        opacity: 0.45;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .carnet-siga, .carnet-siga.carnet-latido, .pieza-brillo { animation: none; }
+
+    .carnet-siga,
+    .carnet-siga.carnet-latido,
+    .pieza-brillo {
+        animation: none;
+    }
 }
