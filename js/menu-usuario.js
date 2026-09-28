@@ -16,15 +16,24 @@
 import { supabase, cerrarSesion, resolverUrlFoto } from './auth-siga.js?v=9';
 import { PIEZAS, piezasFaltantes, pintarCarnet, asegurarEstilosCarnet } from './carnet-siga.js';
 
+/* Mismos íconos (SVG, no emojis: 🪪 no existe en Windows 10) que las
+   pestañas en píldoras de perfil.html. */
+const ICONOS = {
+    info: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2"/><path d="M6.5 16c.6-1.4 1.5-2 2.5-2s1.9.6 2.5 2M14 10h4M14 13.5h3"/>',
+    preferencias: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+    faq: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.6 9.6a2.5 2.5 0 0 1 4.8 1c0 1.6-2.4 2-2.4 3.4M12 17h.01"/>',
+    sugerencias: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>',
+    cuenta: '<path d="M12 3l7 3v5c0 5-3.4 8.4-7 10-3.6-1.6-7-5-7-10V6z"/><path d="M9.5 12l1.8 1.8L15 10"/>',
+};
+
 const ACCESOS = [
-    { tab: 'info', icono: '🪪', titulo: 'Mi carnet', texto: 'Tus datos y tu foto', color: '#EEF3FF', acento: '#3C7CF8' },
-    { tab: 'preferencias', icono: '🔔', titulo: 'Avisos', texto: 'Qué quieres que te avisemos', color: '#FFF6DD', acento: '#E0A100' },
-    { tab: 'faq', icono: '💬', titulo: 'Ayuda', texto: 'Respuestas rápidas', color: '#E6F7F4', acento: '#0FA89E' },
-    { tab: 'sugerencias', icono: '💡', titulo: 'Ideas', texto: 'Mejora SIGA con nosotros', color: '#FDEAF3', acento: '#C13F94' },
+    { tab: 'info', titulo: 'Mi carnet', texto: 'Tus datos y tu foto', color: '#EEF3FF', acento: '#3C7CF8' },
+    { tab: 'preferencias', titulo: 'Avisos', texto: 'Qué quieres que te avisemos', color: '#FFF6DD', acento: '#E0A100' },
+    { tab: 'faq', titulo: 'Ayuda', texto: 'Respuestas rápidas', color: '#E6F7F4', acento: '#0FA89E' },
+    { tab: 'sugerencias', titulo: 'Ideas', texto: 'Mejora SIGA con nosotros', color: '#FDEAF3', acento: '#C13F94' },
 ];
 
 const ICONO_USUARIO = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" /></svg>';
-const ICONO_CANDADO = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>';
 
 function el(tag, clase, texto) {
     const n = document.createElement(tag);
@@ -63,8 +72,10 @@ export async function montarMenuUsuario(cont, sesion, raiz) {
         enlace.href = perfilUrl(a.tab);
         enlace.style.setProperty('--acceso-fondo', a.color);
         enlace.style.setProperty('--acceso-acento', a.acento);
+        const icono = el('span', 'menu-usuario-acceso-icono');
+        icono.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS[a.tab]}</svg>`;
         enlace.append(
-            el('span', 'menu-usuario-acceso-icono', a.icono),
+            icono,
             el('span', 'menu-usuario-acceso-titulo', a.titulo),
             el('span', 'menu-usuario-acceso-texto', a.texto),
         );
@@ -94,7 +105,7 @@ export async function montarMenuUsuario(cont, sesion, raiz) {
     const pie = el('div', 'menu-usuario-pie');
     const seguridad = el('a', 'menu-usuario-seguridad');
     seguridad.href = perfilUrl('cuenta');
-    seguridad.innerHTML = ICONO_CANDADO;
+    seguridad.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS.cuenta}</svg>`;
     seguridad.append(' Seguridad de la cuenta');
     const fila = el('div', 'menu-usuario-fila');
     const salir = el('button', 'menu-usuario-salir', 'Cerrar sesión');

@@ -899,8 +899,13 @@
 }
 
 .menu-usuario-acceso-icono {
-    font-size: 20px;
-    line-height: 1;
+    display: flex;
+    color: var(--acceso-acento);
+}
+
+.menu-usuario-acceso-icono svg {
+    width: 22px;
+    height: 22px;
 }
 
 .menu-usuario-acceso-titulo {
@@ -1002,6 +1007,77 @@
 
 .menu-usuario-salir:hover {
     background: #FDEAF1;
+}
+
+
+/* ---------- Mi cuenta: pestañas en píldoras (reemplazan al lateral) ---------- */
+.perfil-hub {
+    grid-template-columns: 1fr;
+    gap: 22px;
+}
+
+.perfil-hub>.perfil-hub-nav.perfil-hub-pildoras {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+}
+
+.perfil-hub-pildoras .perfil-hub-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    padding: 10px 18px 10px 14px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1.5px solid rgba(102, 0, 204, 0.16);
+    box-shadow: 0 6px 16px -12px rgba(60, 20, 120, 0.45);
+    font: 600 13.5px var(--font-lectura);
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+
+.perfil-hub-pildoras .perfil-hub-tab svg {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    color: var(--tab-acento);
+}
+
+.perfil-hub-pildoras .perfil-hub-tab:hover {
+    transform: translateY(-2px);
+    border-color: var(--tab-acento);
+    box-shadow: 0 10px 20px -14px var(--tab-acento);
+}
+
+.perfil-hub-pildoras .perfil-hub-tab.activo {
+    background: var(--tab-fondo);
+    border-color: var(--tab-acento);
+    color: var(--ink);
+    box-shadow: 0 10px 22px -14px var(--tab-acento);
+}
+
+@media (max-width: 760px) {
+    .perfil-hub>.perfil-hub-nav.perfil-hub-pildoras {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        margin: 0 -20px;
+        padding: 2px 20px 8px;
+    }
+
+    .perfil-hub>.perfil-hub-nav.perfil-hub-pildoras::-webkit-scrollbar {
+        display: none;
+    }
+
+    .perfil-hub-pildoras .perfil-hub-tab {
+        flex: 0 0 auto;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
