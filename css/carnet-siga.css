@@ -723,6 +723,31 @@
     margin-bottom: 12px;
 }
 
+.carnet-aviso-enlace {
+    display: block;
+    border-radius: 18px;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.carnet-aviso-enlace:hover,
+.carnet-aviso-enlace:focus-visible {
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.carnet-aviso-enlace:focus-visible .carnet-siga {
+    box-shadow: 0 0 0 3px rgba(102, 0, 204, 0.35);
+}
+
+.carnet-aviso-pista {
+    display: block;
+    margin-top: 8px;
+    text-align: right;
+    font: 600 12px var(--font-lectura);
+    color: var(--brand-morado);
+}
+
 .carnet-aviso-carnet .carnet-siga {
     max-width: none;
 }
