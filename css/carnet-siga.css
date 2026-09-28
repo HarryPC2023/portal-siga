@@ -776,6 +776,234 @@
     }
 }
 
+
+/* ---------- Menú de usuario (js/menu-usuario.js) ---------- */
+/* Con sesión, el tema se elige dentro del menú: se oculta el botón suelto. */
+.app-nav-user.con-sesion .app-nav-tema {
+    display: none;
+}
+
+.app-nav-avatar {
+    position: relative;
+}
+
+.app-nav-avatar-foto {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.menu-usuario-punto {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #FFB800;
+    border: 2px solid #ffffff;
+    animation: pieza-brillo 2s ease-in-out infinite;
+}
+
+.app-nav-user-menu.menu-usuario {
+    width: min(340px, calc(100vw - 24px));
+    min-width: 0;
+    padding: 14px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    border: 1.5px solid rgba(102, 0, 204, 0.18);
+    box-shadow: 0 24px 50px -20px rgba(60, 20, 120, 0.45);
+    font-family: var(--font-lectura);
+    transform-origin: top right;
+}
+
+.menu-usuario-mini {
+    display: block;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.menu-usuario-mini:hover,
+.menu-usuario-mini:focus-visible {
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.menu-usuario-mini:focus-visible .carnet-siga {
+    box-shadow: 0 0 0 3px rgba(102, 0, 204, 0.35);
+}
+
+.carnet-siga.carnet-mini {
+    max-width: none;
+    padding: 12px 14px;
+    border-radius: 16px;
+}
+
+.carnet-mini .carnet-marca {
+    font-size: 66px;
+    bottom: -16px;
+}
+
+.carnet-mini .carnet-foto {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.carnet-mini .carnet-nombre {
+    font-size: 15.5px;
+}
+
+.carnet-mini .carnet-pie {
+    font-size: 11px;
+}
+
+.carnet-mini .carnet-codigo {
+    font-size: 12px;
+}
+
+.menu-usuario-mini-pista {
+    display: block;
+    margin-top: 6px;
+    text-align: right;
+    font: 600 11.5px var(--font-lectura);
+    color: var(--brand-morado);
+}
+
+.menu-usuario-accesos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.menu-usuario-acceso {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px;
+    border-radius: 14px;
+    background: var(--acceso-fondo);
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.menu-usuario-acceso:hover,
+.menu-usuario-acceso:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -14px var(--acceso-acento);
+    outline: none;
+}
+
+.menu-usuario-acceso-icono {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.menu-usuario-acceso-titulo {
+    margin-top: 6px;
+    font: 700 12.5px var(--font-heading);
+    color: var(--ink);
+}
+
+.menu-usuario-acceso-texto {
+    font: 400 11px/1.35 var(--font-lectura);
+    color: var(--ink-soft);
+}
+
+.menu-usuario-temas {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.menu-usuario-temas-titulo {
+    margin-right: auto;
+    font: 500 11.5px var(--font-lectura);
+    color: var(--ink-soft);
+}
+
+.menu-usuario .tema-opcion.menu-usuario-tema {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F4F2FA;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.menu-usuario .tema-opcion.menu-usuario-tema:hover {
+    transform: scale(1.08);
+}
+
+.menu-usuario .tema-opcion.menu-usuario-tema.activo {
+    border-color: var(--brand-morado);
+    background: var(--brand-morado-tinte);
+}
+
+.menu-usuario-pie {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(102, 0, 204, 0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.menu-usuario-seguridad {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 500 12px var(--font-lectura);
+    color: var(--ink-soft);
+    text-decoration: none;
+}
+
+.menu-usuario-seguridad:hover {
+    color: var(--brand-morado);
+}
+
+.menu-usuario-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.menu-usuario-correo {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font: 400 11.5px var(--font-lectura);
+    color: var(--ink-soft);
+}
+
+.menu-usuario-salir {
+    flex: 0 0 auto;
+    padding: 6px 14px;
+    border: 1.5px solid rgba(194, 24, 91, 0.3);
+    border-radius: 999px;
+    background: #ffffff;
+    color: #c2185b;
+    font: 600 12px var(--font-lectura);
+    cursor: pointer;
+}
+
+.menu-usuario-salir:hover {
+    background: #FDEAF1;
+}
+
 @media (prefers-reduced-motion: reduce) {
 
     .carnet-siga,
@@ -783,7 +1011,8 @@
     .pieza-brillo,
     .carnet-aviso,
     .carnet-aviso.saliendo,
-    .carnet-aviso-brillo {
+    .carnet-aviso-brillo,
+    .menu-usuario-punto {
         animation: none;
     }
 }

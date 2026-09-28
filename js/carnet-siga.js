@@ -153,6 +153,26 @@ function luminancia(hex) {
     return 0.2126 * canal((n >> 16) & 255) + 0.7152 * canal((n >> 8) & 255) + 0.0722 * canal(n & 255);
 }
 
+/* ---------- Estilos ---------- */
+
+/** Inyecta css/carnet-siga.css y Poppins si la página no los carga.
+    Así el menú de usuario y la tarjetita funcionan en cualquier sección. */
+export function asegurarEstilosCarnet() {
+    if (!document.querySelector('link[href*="carnet-siga.css"]')) {
+        const version = new URL(import.meta.url).search; // mismo ?v= que este archivo
+        const css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = new URL(`../css/carnet-siga.css${version}`, import.meta.url).href;
+        document.head.append(css);
+    }
+    if (!document.querySelector('link[href*="family=Poppins"][href*="600"]')) {
+        const fuente = document.createElement('link');
+        fuente.rel = 'stylesheet';
+        fuente.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap';
+        document.head.append(fuente);
+    }
+}
+
 /* ---------- Guardado ---------- */
 
 /**

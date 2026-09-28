@@ -6,7 +6,7 @@
 //     <script type="module" src="js/carnet-aviso.js"></script>
 // NO se carga en Intranotas ni Horarios: ahí el alumno está en plena
 // tarea (sincronizando o armando su horario) y no se le interrumpe.
-// El propio módulo inyecta css/carnet-siga.css y Poppins si faltan.
+// Inyecta css/carnet-siga.css y Poppins si faltan (asegurarEstilosCarnet).
 //
 // Reglas (decididas con Harry):
 // - Solo aparece si al alumno le falta alguna pieza del carnet
@@ -23,6 +23,7 @@
 import { supabase } from './auth-siga.js?v=9';
 import {
     piezasFaltantes, puedePreguntarHoy, crearTarjetaPregunta, guardarPieza, pintarCarnet,
+    asegurarEstilosCarnet,
 } from './carnet-siga.js';
 
 const RETRASO_MS = 1500;
@@ -35,23 +36,6 @@ function dijoAhoraNo() {
 }
 function recordarAhoraNo() {
     try { sessionStorage.setItem(CLAVE_AHORA_NO, '1'); } catch { /* sin storage: no pasa nada */ }
-}
-
-/* Estilos que necesita la tarjetita, por si la página no los carga. */
-function asegurarEstilos() {
-    if (!document.querySelector('link[href*="carnet-siga.css"]')) {
-        const version = new URL(import.meta.url).search; // mismo ?v= que este archivo
-        const css = document.createElement('link');
-        css.rel = 'stylesheet';
-        css.href = new URL(`../css/carnet-siga.css${version}`, import.meta.url).href;
-        document.head.append(css);
-    }
-    if (!document.querySelector('link[href*="family=Poppins"][href*="600"]')) {
-        const fuente = document.createElement('link');
-        fuente.rel = 'stylesheet';
-        fuente.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap';
-        document.head.append(fuente);
-    }
 }
 
 async function iniciar() {
@@ -73,7 +57,7 @@ async function iniciar() {
     const faltan = piezasFaltantes(perfil);
     if (!faltan.length || !puedePreguntarHoy(perfil) || dijoAhoraNo()) return;
 
-    asegurarEstilos();
+    asegurarEstilosCarnet();
     setTimeout(() => mostrarTarjetita(session.user.id, perfil, faltan[0]), RETRASO_MS);
 }
 

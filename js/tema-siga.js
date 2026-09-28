@@ -93,6 +93,9 @@
         });
     }
 
+    // El menú de usuario (js/menu-usuario.js) elige el tema desde sus bolitas.
+    window.sigaAplicarTema = aplicarTema;
+    window.sigaTemas = TEMAS;
     document.addEventListener('DOMContentLoaded', () => {
         aplicarTema(temaGuardado());
         inicializarSelector();

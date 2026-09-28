@@ -142,58 +142,12 @@ export function montarNavUsuario() {
     const raiz = window.location.pathname.includes('/intranotas/') || window.location.pathname.includes('/horarios/')
       ? '../' : '';
     if (sesion) {
-      cont.innerHTML = `
-        <button type="button" class="app-nav-avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false" aria-label="Cuenta">
-          <svg id="avatarIconoDefault" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
-          </svg>
-          <img id="avatarFotoReal" src="" alt="" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
-        </button>
-        <div class="app-nav-user-menu" id="avatarMenu">
-          <div class="app-nav-user-info">
-            <span class="app-nav-user-correo">${sesion.user.email ?? ''}</span>
-          </div>
-          <a href="${raiz}perfil.html#info" class="app-nav-user-item">Mi perfil</a>
-          <a href="${raiz}perfil.html#cuenta" class="app-nav-user-item">Configuración de la cuenta</a>
-          <div class="app-nav-user-sep"></div>
-          <button type="button" class="app-nav-user-item app-nav-user-salir" id="btnCerrarSesionSiga">Cerrar sesión</button>
-        </div>`;
-
-      const btn = document.getElementById('avatarBtn');
-      const menu = document.getElementById('avatarMenu');
-      btn.addEventListener('click', () => {
-        const abierto = menu.classList.toggle('abierto');
-        btn.setAttribute('aria-expanded', String(abierto));
-      });
-      document.addEventListener('click', (e) => {
-        if (!cont.contains(e.target)) {
-          menu.classList.remove('abierto');
-          btn.setAttribute('aria-expanded', 'false');
-        }
-      });
-      document.getElementById('btnCerrarSesionSiga').addEventListener('click', async () => {
-        await cerrarSesion();
-        window.location.href = `${raiz}index.html`;
-      });
-
-      // Si ya tiene foto de perfil guardada, mostrarla en vez del ícono genérico.
-      const { data: perfil } = await supabase
-        .from('perfiles_usuario')
-        .select('foto_url')
-        .eq('user_id', sesion.user.id)
-        .maybeSingle();
-
-      if (perfil?.foto_url) {
-        const urlFoto = await resolverUrlFoto(perfil.foto_url);
-        const img = document.getElementById('avatarFotoReal');
-        const iconoDefault = document.getElementById('avatarIconoDefault');
-        if (img && iconoDefault && urlFoto) {
-          img.src = urlFoto;
-          img.style.display = 'block';
-          iconoDefault.style.display = 'none';
-        }
-      }
+      // Menú rediseñado (sep 2026): mini carnet, accesos, tema y seguridad.
+      // Vive en js/menu-usuario.js; se carga solo cuando hay sesión.
+      const { montarMenuUsuario } = await import('./menu-usuario.js');
+      await montarMenuUsuario(cont, sesion, raiz);
     } else {
+      cont.closest('.app-nav-user')?.classList.remove('con-sesion');
       cont.innerHTML = `<button type="button" class="btn-login-siga" id="btnAbrirLoginSiga">Iniciar sesión</button>`;
       document.getElementById('btnAbrirLoginSiga').addEventListener('click', () => {
         document.dispatchEvent(new CustomEvent('siga:abrir-login'));
