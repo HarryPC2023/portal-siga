@@ -17,8 +17,6 @@
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/tema-siga.css?v=1">
-  <link rel="stylesheet" href="css/perfil-siga.css">
-  <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
   <link rel="stylesheet" href="css/carnet-siga.css">
   <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
@@ -153,56 +151,8 @@
     <span class="harry-stamp-text">by Harry</span>
   </div>
 
-  <div class="modal-perfil" id="modalPerfil">
-    <div class="modal-perfil-caja">
-      <h2>Completa tu perfil</h2>
-      <p class="intro">Un par de datos para identificarte académicamente en SIGA — esto es distinto de la cuenta con
-        la que iniciaste sesión, y solo se pide una vez.</p>
-
-      <form id="formPerfil" class="form-perfil">
-        <label>Nombre completo
-          <input type="text" name="nombre" placeholder="Tu nombre y apellido" required>
-        </label>
-        <label>Código de estudiante
-          <input type="text" name="codigo_estudiante" placeholder="Ej. 20231059E" required>
-        </label>
-        <div class="campo-select-custom">
-          <span class="etiqueta-select">Carrera</span>
-          <button type="button" class="select-custom-trigger" id="carreraTrigger" aria-haspopup="listbox"
-            aria-expanded="false">
-            <span id="carreraTriggerTexto">Selecciona tu carrera</span>
-            <span class="select-custom-chevron" aria-hidden="true">▾</span>
-          </button>
-          <ul class="select-custom-lista" id="carreraLista" role="listbox" hidden>
-            <li role="option" data-value="sistemas" tabindex="0">
-              <span class="select-swatch" style="background:#3C7CF8;"></span>Ingeniería de
-              Sistemas
-            </li>
-            <li role="option" data-value="industrial" tabindex="0">
-              <span class="select-swatch" style="background:#00B8A9;"></span>Ingeniería
-              Industrial
-            </li>
-            <li role="option" data-value="software" tabindex="0">
-              <span class="select-swatch" style="background:#F4A100;"></span>Ingeniería de
-              Software
-            </li>
-            <li role="option" data-value="ia" tabindex="0">
-              <span class="select-swatch" style="background:#FF6B6B;"></span>Ingeniería de
-              Inteligencia Artificial
-            </li>
-          </ul>
-          <input type="hidden" name="carrera" id="carreraValor">
-        </div>
-        <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Guardar y
-          continuar</button>
-        <p class="perfil-msg" id="perfilMsg"></p>
-      </form>
-    </div>
-  </div>
-
   <script src="js/landing.js"></script>
   <script src="js/tema-siga.js?v=1"></script>
-  <script src="js/selector-personalizado.js?v=1"></script>
   <script type="module" src="js/perfil-siga.js?v=8"></script>
   <script type="module" src="js/notificaciones-siga.js?v=1"></script>
 </body>
