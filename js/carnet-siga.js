@@ -515,13 +515,13 @@ export function crearTarjetaEdicion(opciones) {
     });
 
     tarjeta.append(cabeza, titulo, opciones.control.el, nota, error, acciones);
-    setTimeout(() => opciones.control.foco(), 0);
+    if (opciones.autoFoco !== false) setTimeout(() => opciones.control.foco(), 0);
     return tarjeta;
 }
 
 /**
  * Tarjeta que pregunta (o edita) UNA pieza del carnet.
- * opciones: valorActual, textoCancelar, guardar(pieza, valor), alGuardar, alCancelar
+ * opciones: valorActual, textoCancelar, autoFoco, guardar(pieza, valor), alGuardar, alCancelar
  */
 export function crearTarjetaPregunta(pieza, opciones = {}) {
     const def = PREGUNTAS[pieza];
@@ -536,6 +536,7 @@ export function crearTarjetaPregunta(pieza, opciones = {}) {
             control,
             nota: facultadDe(opciones.valorActual),
             textoCancelar: opciones.textoCancelar,
+            autoFoco: opciones.autoFoco,
             guardar: (valor) => opciones.guardar(pieza, valor),
             alGuardar: opciones.alGuardar,
             alCancelar: opciones.alCancelar,
@@ -553,6 +554,7 @@ export function crearTarjetaPregunta(pieza, opciones = {}) {
         control,
         nota,
         textoCancelar: opciones.textoCancelar,
+        autoFoco: opciones.autoFoco,
         guardar: (valor) => opciones.guardar(pieza, valor),
         alGuardar: opciones.alGuardar,
         alCancelar: opciones.alCancelar,
