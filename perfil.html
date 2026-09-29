@@ -112,80 +112,14 @@
                 </div>
             </div>
 
-            <!-- ===== CUENTA ===== -->
+            <!-- ===== SEGURIDAD (antes Cuenta) — contenido en js/seguridad.js ===== -->
             <div class="perfil-panel" data-panel="cuenta" hidden>
-                <div class="perfil-bloque">
-                    <h2>Cambiar contraseña</h2>
-                    <p class="intro">Solo aplica si iniciaste sesión con correo y contraseña. Si entraste con Google,
-                        tu contraseña se administra desde tu cuenta de Google.</p>
-                    <form id="formCambiarContrasena" class="form-perfil">
-                        <label>Nueva contraseña
-                            <div class="campo-contrasena">
-                                <input type="password" name="nueva" minlength="6" required>
-                                <button type="button" class="btn-ojo" aria-label="Mostrar contraseña">👁</button>
-                            </div>
-                        </label>
-                        <label>Repite la nueva contraseña
-                            <div class="campo-contrasena">
-                                <input type="password" name="confirmar" minlength="6" required>
-                                <button type="button" class="btn-ojo" aria-label="Mostrar contraseña">👁</button>
-                            </div>
-                        </label>
-                        <button type="submit" class="btn-primary btn-ancho-automatico">Actualizar contraseña</button>
-                        <p class="perfil-msg" id="configMsg"></p>
-                    </form>
-                </div>
-
-                <div class="perfil-bloque perfil-bloque-peligro">
-                    <h2>Eliminar cuenta</h2>
-                    <p class="intro">Esta acción borra tu cuenta y toda tu información en SIGA de forma permanente.
-                        No se puede deshacer.</p>
-                    <button type="button" class="btn-peligro" id="btnAbrirEliminar">Eliminar mi cuenta</button>
-                </div>
+                <div class="seguridad" id="seguridad"></div>
             </div>
 
-            <!-- ===== PREFERENCIAS ===== -->
+            <!-- ===== AVISOS (antes Preferencias) — contenido en js/avisos.js ===== -->
             <div class="perfil-panel" data-panel="preferencias" hidden>
-                <div class="perfil-bloque">
-                    <h2>Preferencias de notificación</h2>
-                    <p class="intro">Elige qué avisos quieres recibir de SIGA.</p>
-                    <div class="perfil-toggle-lista">
-                        <label class="perfil-toggle">
-                            <span>
-                                <strong>Activar notificaciones</strong>
-                                <small>Interruptor general — si lo apagas, no recibes ninguna de las de
-                                    abajo.</small>
-                            </span>
-                            <input type="checkbox" id="prefActivas" checked>
-                            <span class="perfil-toggle-visual"></span>
-                        </label>
-                        <label class="perfil-toggle">
-                            <span>
-                                <strong>Avisos de nuevos materiales</strong>
-                                <small>Cuando alguien suba un recurso nuevo a un curso que sigues.</small>
-                            </span>
-                            <input type="checkbox" id="prefMateriales" checked>
-                            <span class="perfil-toggle-visual"></span>
-                        </label>
-                        <label class="perfil-toggle">
-                            <span>
-                                <strong>Recordatorios</strong>
-                                <small>Avisos sobre asesorías o fechas que guardaste.</small>
-                            </span>
-                            <input type="checkbox" id="prefRecordatorios" checked>
-                            <span class="perfil-toggle-visual"></span>
-                        </label>
-                        <label class="perfil-toggle">
-                            <span>
-                                <strong>Actualizaciones de módulos</strong>
-                                <small>Cuando SIGA lanza mejoras o funciones nuevas.</small>
-                            </span>
-                            <input type="checkbox" id="prefActualizaciones" checked>
-                            <span class="perfil-toggle-visual"></span>
-                        </label>
-                    </div>
-                    <p class="perfil-msg" id="prefMsg"></p>
-                </div>
+                <div class="avisos" id="avisos"></div>
             </div>
 
             <!-- ===== PREGUNTAS FRECUENTES ===== -->
@@ -200,23 +134,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Modal de confirmación para eliminar cuenta -->
-    <div class="modal-perfil" id="modalEliminar">
-        <div class="modal-perfil-caja">
-            <h2>¿Eliminar tu cuenta?</h2>
-            <p class="intro">Esta acción es permanente. Se borrará tu perfil, tus preferencias, tus sugerencias y no
-                podrás recuperar el acceso. Escribe <strong>ELIMINAR</strong> para confirmar.</p>
-            <input type="text" id="inputConfirmarEliminar" placeholder="ELIMINAR"
-                style="width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(0,0,0,0.15); margin-bottom:16px;">
-            <p class="perfil-msg" id="eliminarMsg"></p>
-            <div style="display:flex; gap:10px; justify-content:flex-end;">
-                <button type="button" class="btn-secundario" id="btnCancelarEliminar">Cancelar</button>
-                <button type="button" class="btn-peligro" id="btnConfirmarEliminar" disabled>Sí, eliminar mi
-                    cuenta</button>
-            </div>
-        </div>
-    </div>
 
     <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
