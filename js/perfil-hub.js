@@ -3,6 +3,7 @@
 // página con pestañas (reemplaza a perfil.html + configuracion.html).
 import { supabase, requerirSesion, montarNavUsuario, establecerNuevaContrasena } from './auth-siga.js?v=9';
 import { montarMiCarnet } from './mi-carnet.js';
+import { montarAyuda } from './ayuda.js';
 
 const TABS_VALIDAS = ['info', 'cuenta', 'preferencias', 'faq', 'sugerencias'];
 
@@ -173,14 +174,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // ================= PREGUNTAS FRECUENTES (acordeón) =================
-    document.querySelectorAll('.perfil-faq-item').forEach((item) => {
-        item.querySelector('.perfil-faq-pregunta').addEventListener('click', () => {
-            const yaAbierto = item.classList.contains('abierto');
-            document.querySelectorAll('.perfil-faq-item.abierto').forEach((otro) => otro.classList.remove('abierto'));
-            if (!yaAbierto) item.classList.add('abierto');
-        });
-    });
+    // ================= AYUDA (antes Preguntas Frecuentes) =================
+    // Buscador, chips por módulo, acordeón y votos: todo en js/ayuda.js.
+    montarAyuda(sesion);
 
     // ================= SUGERENCIAS =================
     const formSugerencia = document.getElementById('formSugerencia');

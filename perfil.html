@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
     <link rel="stylesheet" href="css/perfil-hub.css?v=2">
     <link rel="stylesheet" href="css/carnet-siga.css">
+    <link rel="stylesheet" href="css/mi-cuenta.css">
     <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
     <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
@@ -189,90 +190,9 @@
             </div>
 
             <!-- ===== PREGUNTAS FRECUENTES ===== -->
+            <!-- ===== AYUDA (antes Preguntas Frecuentes) — contenido en js/ayuda.js ===== -->
             <div class="perfil-panel" data-panel="faq" hidden>
-                <div class="perfil-faq-lista" id="faqLista">
-                    <div class="perfil-faq-item">
-                        <button type="button" class="perfil-faq-pregunta">¿Qué es SIGA?</button>
-                        <div class="perfil-faq-respuesta">
-                            <p>SIGA (Sistema Integrado de Gestión Académica) es una plataforma que reúne diferentes
-                                herramientas y recursos para ayudarte a organizar, planificar y gestionar tu ciclo
-                                universitario desde un solo lugar.</p>
-                        </div>
-                    </div>
-                    <div class="perfil-faq-item">
-                        <button type="button" class="perfil-faq-pregunta">¿Qué puedo hacer en Intranotas?</button>
-                        <div class="perfil-faq-respuesta">
-                            <p>Intranotas te permite consultar y trabajar con tus notas de diferentes maneras. Puedes
-                                ingresar tus calificaciones manualmente. También puedes establecer una <strong>"Meta
-                                    del Curso"</strong> para calcular qué calificaciones necesitas obtener en las
-                                evaluaciones restantes para alcanzar el promedio que deseas.</p>
-                        </div>
-                    </div>
-                    <div class="perfil-faq-item">
-                        <button type="button" class="perfil-faq-pregunta">¿Cómo puedo generar mi horario?</button>
-                        <div class="perfil-faq-respuesta">
-                            <p>Para comenzar, carga el archivo de cursos y horarios proporcionado por la
-                                universidad. Luego, busca y selecciona los cursos que deseas llevar por código o
-                                nombre y revisa tu selección antes de continuar. En el siguiente paso, elige las
-                                secciones o profesores de tu preferencia y establece la cantidad de cruces que estás
-                                dispuesto a aceptar. Al generar los horarios, SIGA analizará las combinaciones
-                                disponibles respetando las restricciones establecidas y evitando los cruces que no
-                                estén permitidos. Podrás comparar las alternativas encontradas, guardarlas en
-                                <strong>Favoritos</strong> y exportarlas como <strong>Excel o imagen</strong> listo
-                                para imprimirlas o consultarlas posteriormente.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="perfil-faq-item">
-                        <button type="button" class="perfil-faq-pregunta">¿Cómo funcionan las opiniones sobre
-                            profesores?</button>
-                        <div class="perfil-faq-respuesta">
-                            <p>Puedes compartir tu experiencia sobre un curso y su profesor para ayudar a otros
-                                estudiantes a conocer mejor la metodología, el nivel de exigencia, la forma de
-                                evaluación y otros aspectos académicos. Las opiniones deben ser respetuosas,
-                                objetivas y estar relacionadas con la experiencia académica.</p>
-                            <p>Antes de publicar, revisa que tu comentario no incluya insultos, ataques personales,
-                                información privada u otro contenido que no contribuya a orientar a otros
-                                estudiantes. Las opiniones pueden ser revisadas y retiradas si no cumplen con las
-                                normas de convivencia de SIGA.</p>
-                        </div>
-                    </div>
-                    <div class="perfil-faq-item">
-                        <button type="button" class="perfil-faq-pregunta">¿Es anónima mi opinión sobre un
-                            profesor?</button>
-                        <div class="perfil-faq-respuesta">
-                            <p>Sí. Aunque inicias sesión con tu cuenta para poder opinar, tu opinión se publica sin
-                                tu nombre ni ningún dato que te identifique — ningún otro estudiante, ni siquiera
-                                navegando la web, puede saber quién la escribió. Tu cuenta solo se usa para
-                                verificar que eres estudiante y evitar opiniones duplicadas o de spam; no queda
-                                vinculada a lo que dices en ningún lugar visible de la plataforma.</p>
-                        </div>
-                    </div>
-                    <div class="perfil-faq-item">
-                        <button type="button" class="perfil-faq-pregunta">¿Qué pasa si reporto una opinión o si la
-                            mía es retirada?</button>
-                        <div class="perfil-faq-respuesta">
-                            <p>Si una opinión no cumple las normas de convivencia (insultos, ataques personales,
-                                información privada), cualquier estudiante puede reportarla para que sea revisada.
-                                Si tu propia opinión es retirada, no se elimina de la base de datos — simplemente
-                                deja de ser visible para los demás estudiantes.</p>
-                        </div>
-                    </div>
-                    <div class="perfil-faq-item">
-                        <button type="button" class="perfil-faq-pregunta">¿Cómo puedo encontrar materiales para mis
-                            cursos?</button>
-                        <div class="perfil-faq-respuesta">
-                            <p>Ingresa al módulo Materiales y selecciona el curso que deseas consultar. Allí
-                                encontrarás los recursos disponibles, organizados para facilitar su búsqueda y
-                                acceso. Puedes utilizar los filtros o categorías disponibles para encontrar más
-                                rápidamente el material que necesitas.</p>
-                            <p>Si tienes materiales que puedan ser útiles para otros estudiantes, también puedes
-                                compartirlos con la comunidad de SIGA. Tu aporte puede ayudar a que más compañeros
-                                encuentren recursos para sus cursos y, de esta manera, contribuir a ampliar y
-                                mejorar el contenido disponible en la plataforma.</p>
-                        </div>
-                    </div>
-                </div>
+                <div class="ayuda" id="ayuda"></div>
             </div>
 
             <!-- ===== SUGERENCIAS ===== -->

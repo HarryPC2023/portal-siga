@@ -1,0 +1,169 @@
+/* ============================================================
+   SIGA — MI CUENTA: Ayuda, Ideas, Avisos y Seguridad (sep 2026)
+   (css/mi-cuenta.css — cargar después de carnet-siga.css)
+   Misma línea visual que el carnet: Orbitron para títulos y
+   etiquetas, Poppins (--font-lectura) para todo lo que se lee.
+   ============================================================ */
+
+/* ---------- AYUDA ---------- */
+.ayuda { display: flex; flex-direction: column; gap: 16px; font-family: var(--font-lectura); }
+
+.ayuda-titulo { margin: 0 0 4px; font-family: var(--font-heading); font-size: 20px; color: var(--ink); }
+.ayuda-sub { margin: 0; font-size: 14px; color: var(--ink-soft); }
+
+.ayuda-buscar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1.5px solid rgba(102, 0, 204, 0.26);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--ink-soft);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.ayuda-buscar:focus-within { border-color: var(--brand-morado); box-shadow: 0 0 0 3px rgba(102, 0, 204, 0.12); }
+.ayuda-buscar input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font: 400 14.5px var(--font-lectura);
+    color: var(--ink);
+}
+
+.ayuda-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ayuda-chip {
+    padding: 7px 14px;
+    border: 1.5px solid var(--chip-color);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--chip-color);
+    font: 600 12.5px var(--font-lectura);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.ayuda-chip:hover { transform: translateY(-1px); }
+.ayuda-chip.activo { background: var(--chip-color); color: #ffffff; }
+
+.ayuda-lista { display: flex; flex-direction: column; gap: 10px; }
+
+.ayuda-item {
+    border: 1.5px solid rgba(102, 0, 204, 0.14);
+    border-left: 4px solid var(--item-color);
+    border-radius: 14px;
+    background: #ffffff;
+    overflow: hidden;
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.ayuda-item.abierto { border-color: var(--item-color); box-shadow: 0 14px 30px -22px var(--item-color); }
+
+.ayuda-pregunta {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: 600 15px var(--font-lectura);
+    text-align: left;
+    cursor: pointer;
+}
+.ayuda-pregunta:focus-visible { outline: 2px solid var(--item-color); outline-offset: -2px; border-radius: 12px; }
+.ayuda-icono {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--item-color);
+    background: color-mix(in srgb, var(--item-color) 13%, #ffffff);
+}
+.ayuda-pregunta-texto { flex: 1; }
+.ayuda-mas { flex: 0 0 auto; display: flex; color: var(--item-color); transition: transform 0.25s ease; }
+.ayuda-item.abierto .ayuda-mas { transform: rotate(45deg); }
+
+/* Abre/cierra suave sin medir alturas: grid 0fr → 1fr. */
+.ayuda-respuesta { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+.ayuda-item.abierto .ayuda-respuesta { grid-template-rows: 1fr; }
+.ayuda-respuesta-interior { overflow: hidden; padding: 0 18px 0 66px; }
+.ayuda-item.abierto .ayuda-respuesta-interior { padding-bottom: 16px; }
+.ayuda-respuesta-texto p { margin: 0 0 10px; font-size: 14px; line-height: 1.7; color: var(--ink-soft); }
+.ayuda-respuesta-texto strong { color: var(--ink); }
+
+.ayuda-enlace {
+    display: inline-block;
+    margin: 2px 0 10px;
+    font: 600 13px var(--font-lectura);
+    color: var(--item-color);
+    text-decoration: none;
+}
+.ayuda-enlace:hover { text-decoration: underline; }
+
+.ayuda-voto { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-soft); }
+.ayuda-voto-btn {
+    padding: 4px 12px;
+    border: 1.5px solid rgba(102, 0, 204, 0.16);
+    border-radius: 999px;
+    background: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.ayuda-voto-btn:hover { transform: scale(1.08); border-color: var(--item-color); }
+.ayuda-voto-gracias { font-weight: 600; color: var(--item-color); }
+
+.ayuda-vacio {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    padding: 26px 16px;
+    border: 1.5px dashed rgba(102, 0, 204, 0.3);
+    border-radius: 14px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-soft);
+}
+.ayuda-vacio strong { color: var(--ink); }
+
+.ayuda-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 16px;
+    background: var(--brand-morado-tinte);
+    font: 500 14px var(--font-lectura);
+    color: var(--ink);
+}
+.ayuda-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--brand-morado);
+    color: #ffffff;
+    font: 600 13px var(--font-lectura);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+.ayuda-cta-btn:hover { transform: translateY(-2px); }
+
+@media (max-width: 600px) {
+    .ayuda-respuesta-interior { padding-left: 18px; }
+    .ayuda-pregunta { font-size: 14px; gap: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ayuda-respuesta, .ayuda-mas, .ayuda-item { transition: none; }
+}
