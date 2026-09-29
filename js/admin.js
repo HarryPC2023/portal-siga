@@ -175,11 +175,30 @@ function confirmarAccion(mensaje, { titulo = '¿Eliminar esto?', textoBoton = 'S
 /* ============================================================
    SUGERENCIAS
    ============================================================ */
+const CATEGORIAS_IDEA = {
+    nueva_funcion: 'Nueva función',
+    mejora_funcion: 'Mejora',
+    contenido: 'Contenido',
+    algo_falla: 'Algo falla',
+    otro: 'Otro',
+};
+const MODULOS_IDEA = {
+    asesorias: 'Asesorías', horarios: 'Horarios', intranotas: 'Intranotas', materiales: 'Materiales',
+    opiniones: 'Opiniones', mi_cuenta: 'Mi cuenta', otro: 'Otro',
+};
+const ESTADOS_IDEA = {
+    nueva: 'Recibida',
+    en_revision: 'En revisión',
+    implementada: '¡Hecha!',
+    descartada: 'Por ahora no',
+};
+const MAX_RESPUESTA = 300;
+
 async function cargarSugerencias() {
     const cont = document.getElementById('listaSugerencias');
     const { data, error } = await supabase
         .from('sugerencias')
-        .select('id, user_id, categoria, titulo, descripcion, estado, creado_en')
+        .select('id, user_id, categoria, modulo, titulo, descripcion, estado, respuesta, creado_en')
         .order('creado_en', { ascending: false });
 
     if (error) {
@@ -196,10 +215,23 @@ async function cargarSugerencias() {
         <div class="admin-item" data-id="${s.id}">
             <div class="admin-item-cabecera">
                 <span class="admin-item-titulo">${escapeHtml(s.titulo)}</span>
-                <span class="admin-badge admin-badge-${escapeHtml(s.estado)}">${escapeHtml(s.estado)}</span>
+                <span class="admin-badge admin-badge-${escapeHtml(s.estado)}">${escapeHtml(ESTADOS_IDEA[s.estado] || s.estado)}</span>
             </div>
-            <p class="admin-item-meta">${escapeHtml(s.categoria)} · ${formatearFecha(s.creado_en)} · usuario ${escapeHtml((s.user_id || '').slice(0, 8))}…</p>
+            <p class="admin-item-meta">${escapeHtml(CATEGORIAS_IDEA[s.categoria] || s.categoria)}${s.modulo ? ` · ${escapeHtml(MODULOS_IDEA[s.modulo] || s.modulo)}` : ''} · ${formatearFecha(s.creado_en)} · usuario ${escapeHtml((s.user_id || '').slice(0, 8))}…</p>
             <p class="admin-item-texto">${escapeHtml(s.descripcion)}</p>
+            <div class="admin-idea-respuesta">
+                <select class="admin-idea-estado" aria-label="Estado de la idea">
+                    ${Object.entries(ESTADOS_IDEA).map(([valor, texto]) => `<option value="${valor}"${valor === s.estado ? ' selected' : ''}>${texto}</option>`).join('')}
+                </select>
+                <textarea class="admin-idea-texto" maxlength="${MAX_RESPUESTA}" rows="2"
+                    placeholder="Tu respuesta breve (la verá quien envió la idea)"
+                    aria-label="Respuesta breve">${escapeHtml(s.respuesta || '')}</textarea>
+                <div class="admin-idea-pie">
+                    <span class="admin-idea-estado-guardado" role="status"></span>
+                    <span class="admin-idea-contador">${(s.respuesta || '').length} / ${MAX_RESPUESTA}</span>
+                    <button type="button" class="admin-idea-guardar">Guardar</button>
+                </div>
+            </div>
             <button type="button" class="admin-btn-eliminar" data-id="${s.id}" aria-label="Eliminar sugerencia" title="Eliminar">🗑</button>
         </div>
     `).join('');
@@ -207,6 +239,53 @@ async function cargarSugerencias() {
     cont.querySelectorAll('.admin-btn-eliminar').forEach((btn) => {
         btn.addEventListener('click', () => eliminarSugerencia(btn.dataset.id, btn));
     });
+
+    const originales = new Map(data.map((s) => [String(s.id), s]));
+    cont.querySelectorAll('.admin-item').forEach((item) => {
+        const texto = item.querySelector('.admin-idea-texto');
+        const contador = item.querySelector('.admin-idea-contador');
+        texto.addEventListener('input', () => { contador.textContent = `${texto.value.length} / ${MAX_RESPUESTA}`; });
+        item.querySelector('.admin-idea-guardar').addEventListener('click', () => guardarRespuestaIdea(item, originales.get(item.dataset.id)));
+    });
+}
+
+async function guardarRespuestaIdea(item, original) {
+    const boton = item.querySelector('.admin-idea-guardar');
+    const aviso = item.querySelector('.admin-idea-estado-guardado');
+    const estado = item.querySelector('.admin-idea-estado').value;
+    const respuesta = item.querySelector('.admin-idea-texto').value.trim();
+
+    const cambios = { estado, respuesta: respuesta || null };
+    // La fecha de respuesta solo cambia cuando cambia el texto de la respuesta.
+    if (respuesta !== (original.respuesta || '')) {
+        cambios.respondido_en = respuesta ? new Date().toISOString() : null;
+    }
+
+    boton.disabled = true;
+    aviso.classList.remove('error');
+    aviso.textContent = 'Guardando…';
+
+    // .select() devuelve las filas realmente actualizadas: si una política RLS
+    // bloquea el UPDATE, Supabase no da error, solo actualiza 0 filas.
+    const { data, error } = await supabase.from('sugerencias').update(cambios).eq('id', original.id).select('id, estado, respuesta');
+
+    boton.disabled = false;
+    if (error || !data || data.length === 0) {
+        console.error('Error guardando respuesta de idea:', error);
+        aviso.classList.add('error');
+        aviso.textContent = error
+            ? `No se pudo guardar: ${error.message}`
+            : 'No se pudo guardar: revisa la política de UPDATE de "sugerencias" en Supabase.';
+        return;
+    }
+
+    original.estado = data[0].estado;
+    original.respuesta = data[0].respuesta;
+    const badge = item.querySelector('.admin-badge');
+    badge.className = `admin-badge admin-badge-${estado}`;
+    badge.textContent = ESTADOS_IDEA[estado] || estado;
+    aviso.textContent = 'Guardado ✓';
+    setTimeout(() => { aviso.textContent = ''; }, 2200);
 }
 
 async function eliminarSugerencia(id, btn) {

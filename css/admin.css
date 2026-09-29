@@ -684,3 +684,94 @@
     line-height: 1;
     vertical-align: middle;
 }
+
+/* ---------- Sugerencias: estado y respuesta breve (sep 2026) ---------- */
+.admin-badge-nueva {
+    background: #EEF3FF;
+    color: #2F5FD0;
+}
+
+.admin-badge-en_revision {
+    background: #FFF4CC;
+    color: #7A5600;
+}
+
+.admin-badge-implementada {
+    background: #E6F7EE;
+    color: #137A45;
+}
+
+.admin-badge-descartada {
+    background: #F1F0F4;
+    color: #5B5870;
+}
+
+.admin-idea-respuesta {
+    display: grid;
+    grid-template-columns: minmax(150px, 190px) 1fr;
+    gap: 10px;
+    align-items: start;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.12);
+}
+
+.admin-idea-estado,
+.admin-idea-texto {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 11px;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-radius: 10px;
+    background: #fff;
+    font: inherit;
+    font-size: 0.85rem;
+}
+
+.admin-idea-texto {
+    resize: vertical;
+    min-height: 56px;
+}
+
+.admin-idea-pie {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    font-size: 0.78rem;
+    color: #666;
+}
+
+.admin-idea-estado-guardado {
+    margin-right: auto;
+    font-weight: 600;
+    color: #137A45;
+}
+
+.admin-idea-estado-guardado.error {
+    color: #c2185b;
+}
+
+.admin-idea-guardar {
+    padding: 8px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: #6600CC;
+    color: #fff;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin-idea-guardar:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+@media (max-width: 640px) {
+    .admin-idea-respuesta {
+        grid-template-columns: 1fr;
+    }
+}
