@@ -4,6 +4,7 @@
 import { supabase, requerirSesion, montarNavUsuario, establecerNuevaContrasena } from './auth-siga.js?v=9';
 import { montarMiCarnet } from './mi-carnet.js';
 import { montarAyuda } from './ayuda.js';
+import { montarIdeas } from './ideas.js';
 
 const TABS_VALIDAS = ['info', 'cuenta', 'preferencias', 'faq', 'sugerencias'];
 
@@ -178,53 +179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Buscador, chips por módulo, acordeón y votos: todo en js/ayuda.js.
     montarAyuda(sesion);
 
-    // ================= SUGERENCIAS =================
-    const formSugerencia = document.getElementById('formSugerencia');
-    const sugerenciaMsg = document.getElementById('sugerenciaMsg');
-    const TEXTO_PLACEHOLDER_CATEGORIA = 'Selecciona una categoría';
-
-    // --- desplegable personalizado de Categoría ---
-    const selectCategoria = inicializarSelectPersonalizado({
-        triggerId: 'categoriaTrigger', textoId: 'categoriaTriggerTexto',
-        listaId: 'categoriaLista', valorId: 'categoriaValor',
-    });
-
-    // --- contador de caracteres ---
-    const descripcionSugerencia = document.getElementById('descripcionSugerencia');
-    const contadorDescripcion = document.getElementById('contadorDescripcion');
-
-    descripcionSugerencia.addEventListener('input', () => {
-        contadorDescripcion.textContent = `${descripcionSugerencia.value.length}/500`;
-    });
-
-    formSugerencia.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        if (!selectCategoria.valor.value) {
-            sugerenciaMsg.textContent = 'Elige una categoría antes de enviar.';
-            return;
-        }
-
-        const datos = Object.fromEntries(new FormData(formSugerencia).entries());
-
-        const { error } = await supabase
-            .from('sugerencias')
-            .insert({
-                user_id: sesion.user.id,
-                categoria: datos.categoria,
-                titulo: datos.titulo.trim(),
-                descripcion: datos.descripcion?.trim() || null,
-            });
-
-        if (error) {
-            console.error('Error enviando sugerencia:', error);
-            sugerenciaMsg.textContent = 'No se pudo enviar. Intenta de nuevo.';
-            return;
-        }
-
-        sugerenciaMsg.textContent = '¡Gracias por tu idea! La revisaremos pronto.';
-        formSugerencia.reset();
-        selectCategoria.establecer('', TEXTO_PLACEHOLDER_CATEGORIA);
-        contadorDescripcion.textContent = '0/500';
-    });
+    // ================= IDEAS (antes Sugerencias) =================
+    // Flujo de 3 pasos y "Mis ideas" con estados: todo en js/ideas.js.
+    montarIdeas(sesion);
 });
