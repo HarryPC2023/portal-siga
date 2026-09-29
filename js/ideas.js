@@ -205,7 +205,7 @@ export async function montarIdeas(sesion) {
         const hecho = el('div', 'ideas-enviada');
         hecho.setAttribute('role', 'status');
         hecho.append(sobre, el('h2', 'ideas-titulo', '¡Idea enviada!'),
-            el('p', 'ideas-sub', 'Gracias por ayudar a mejorar SIGA. Abajo podrás ver cómo avanza.'), otra);
+            el('p', 'ideas-sub', 'Gracias por ayudar a mejorar SIGA.'), otra);
         caja.replaceChildren(hecho);
     }
 
