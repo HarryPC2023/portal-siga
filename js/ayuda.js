@@ -15,15 +15,17 @@ import { supabase } from './auth-siga.js?v=9';
 const CATEGORIAS = [
     { id: 'todo', nombre: 'Todo', color: '#6600CC' },
     { id: 'siga', nombre: 'SIGA', color: '#3C7CF8' },
-    { id: 'cuenta', nombre: 'Mi cuenta', color: '#C13F94' },
-    { id: 'intranotas', nombre: 'Intranotas', color: '#7B3FC4' },
+    { id: 'asesorias', nombre: 'Asesorías', color: '#1E9E5A' },
     { id: 'horarios', nombre: 'Horarios', color: '#0FA89E' },
-    { id: 'opiniones', nombre: 'Opiniones', color: '#E5566B' },
+    { id: 'intranotas', nombre: 'Intranotas', color: '#7B3FC4' },
     { id: 'materiales', nombre: 'Materiales', color: '#E0A100' },
+    { id: 'opiniones', nombre: 'Opiniones', color: '#E5566B' },
+    { id: 'cuenta', nombre: 'Mi cuenta', color: '#C13F94' },
 ];
 
 const ICONOS = {
     siga: '<path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12.5V17c3 2 7 2 10 0v-4.5"/>',
+    asesorias: '<path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/>',
     cuenta: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2"/><path d="M6.5 16c.6-1.4 1.5-2 2.5-2s1.9.6 2.5 2M14 10h4M14 13.5h3"/>',
     intranotas: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
     horarios: '<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/>',
@@ -37,47 +39,59 @@ const PREGUNTAS = [
         id: 'que-es-siga', cat: 'siga',
         pregunta: '¿Qué es SIGA?',
         respuesta: '<p>SIGA (Sistema Integrado de Gestión Académica) es una plataforma que reúne diferentes herramientas y recursos para ayudarte a organizar, planificar y gestionar tu ciclo universitario desde un solo lugar.</p>',
-        enlace: ['Ir al inicio', 'dashboard.html'],
+        enlace: ['Ir al inicio', 'dashboard.html']
     },
     {
-        id: 'carnet-siga', cat: 'cuenta',
-        pregunta: '¿Para qué sirve mi carnet SIGA?',
-        respuesta: '<p>Tu carnet reúne tu código, cómo quieres que te llamemos y tu carrera. Con esos datos SIGA se adapta a ti: por ejemplo, tu código ya aparece listo en Intranotas y tu carnet toma el color de tu facultad. Puedes completarlo o editarlo cuando quieras, sin apuro.</p><p>El periodo y la modalidad de ingreso son opcionales, y la modalidad nunca se muestra en tu carnet.</p>',
-        enlace: ['Ver mi carnet', '#info'],
+        id: 'que-hay-en-asesorias', cat: 'asesorias',
+        pregunta: '¿Qué encuentro en Asesorías?',
+        respuesta: '<p>Asesorías reúne guías, resúmenes, monografías y material de apoyo preparado por estudiantes que ya llevaron el curso, para reforzar lo que ves en clase con explicaciones detalladas. Puedes filtrar por <strong>ciclo</strong> y por <strong>curso</strong>, y cada recurso se abre como página web o como PDF.</p>',
+        enlace: ['Ir a Asesorías', 'asesorias.html'],
     },
     {
-        id: 'que-es-intranotas', cat: 'intranotas',
-        pregunta: '¿Qué puedo hacer en Intranotas?',
-        respuesta: '<p>Intranotas te permite consultar y trabajar con tus notas de diferentes maneras. Puedes ingresar tus calificaciones manualmente. También puedes establecer una <strong>"Meta del Curso"</strong> para calcular qué calificaciones necesitas obtener en las evaluaciones restantes para alcanzar el promedio que deseas.</p>',
-        enlace: ['Ir a Intranotas', 'intranotas/index.html'],
+        id: 'proponer-asesoria', cat: 'asesorias',
+        pregunta: '¿Puedo compartir mi propia asesoría?',
+        respuesta: '<p>¡Sí! En Asesorías usa <strong>"Proponer una asesoría"</strong>: indica el título, el curso, el ciclo, un enlace (Drive, Notion, YouTube…) o el archivo (PDF, Word, PowerPoint o Excel, hasta 20 MB) y una descripción breve. Tu propuesta se revisa antes de publicarse, para que todo lo que encuentren tus compañeros sea de calidad.</p>',
+        enlace: ['Ir a Asesorías', 'asesorias.html'],
     },
     {
         id: 'generar-horario', cat: 'horarios',
         pregunta: '¿Cómo puedo generar mi horario?',
         respuesta: '<p>Para comenzar, carga el archivo de cursos y horarios proporcionado por la universidad. Luego, busca y selecciona los cursos que deseas llevar por código o nombre y revisa tu selección antes de continuar. En el siguiente paso, elige las secciones o profesores de tu preferencia y establece la cantidad de cruces que estás dispuesto a aceptar. Al generar los horarios, SIGA analizará las combinaciones disponibles respetando las restricciones establecidas y evitando los cruces que no estén permitidos. Podrás comparar las alternativas encontradas, guardarlas en <strong>Favoritos</strong> y exportarlas como <strong>Excel o imagen</strong> listo para imprimirlas o consultarlas posteriormente.</p>',
-        enlace: ['Ir a Horarios', 'horarios/index.html'],
+        enlace: ['Ir a Horarios', 'horarios/index.html']
     },
     {
-        id: 'como-funcionan-opiniones', cat: 'opiniones',
-        pregunta: '¿Cómo funcionan las opiniones sobre profesores?',
-        respuesta: '<p>Puedes compartir tu experiencia sobre un curso y su profesor para ayudar a otros estudiantes a conocer mejor la metodología, el nivel de exigencia, la forma de evaluación y otros aspectos académicos. Las opiniones deben ser respetuosas, objetivas y estar relacionadas con la experiencia académica.</p><p>Antes de publicar, revisa que tu comentario no incluya insultos, ataques personales, información privada u otro contenido que no contribuya a orientar a otros estudiantes. Las opiniones pueden ser revisadas y retiradas si no cumplen con las normas de convivencia de SIGA.</p>',
-        enlace: ['Ir a Opiniones', 'opiniones.html'],
-    },
-    {
-        id: 'opinion-anonima', cat: 'opiniones',
-        pregunta: '¿Es anónima mi opinión sobre un profesor?',
-        respuesta: '<p>Sí. Aunque inicias sesión con tu cuenta para poder opinar, tu opinión se publica sin tu nombre ni ningún dato que te identifique — ningún otro estudiante, ni siquiera navegando la web, puede saber quién la escribió. Tu cuenta solo se usa para verificar que eres estudiante y evitar opiniones duplicadas o de spam; no queda vinculada a lo que dices en ningún lugar visible de la plataforma.</p>',
-    },
-    {
-        id: 'opinion-reportada', cat: 'opiniones',
-        pregunta: '¿Qué pasa si reporto una opinión o si la mía es retirada?',
-        respuesta: '<p>Si una opinión no cumple las normas de convivencia (insultos, ataques personales, información privada), cualquier estudiante puede reportarla para que sea revisada. Si tu propia opinión es retirada, no se elimina de la base de datos — simplemente deja de ser visible para los demás estudiantes.</p>',
+        id: 'que-es-intranotas', cat: 'intranotas',
+        pregunta: '¿Qué puedo hacer en Intranotas?',
+        respuesta: '<p>Intranotas te permite consultar y trabajar con tus notas de diferentes maneras. Puedes ingresar tus calificaciones manualmente. También puedes establecer una <strong>"Meta del Curso"</strong> para calcular qué calificaciones necesitas obtener en las evaluaciones restantes para alcanzar el promedio que deseas.</p>',
+        enlace: ['Ir a Intranotas', 'intranotas/index.html']
     },
     {
         id: 'encontrar-materiales', cat: 'materiales',
         pregunta: '¿Cómo puedo encontrar materiales para mis cursos?',
         respuesta: '<p>Ingresa al módulo Materiales y selecciona el curso que deseas consultar. Allí encontrarás los recursos disponibles, organizados para facilitar su búsqueda y acceso. Puedes utilizar los filtros o categorías disponibles para encontrar más rápidamente el material que necesitas.</p><p>Si tienes materiales que puedan ser útiles para otros estudiantes, también puedes compartirlos con la comunidad de SIGA. Tu aporte puede ayudar a que más compañeros encuentren recursos para sus cursos y, de esta manera, contribuir a ampliar y mejorar el contenido disponible en la plataforma.</p>',
-        enlace: ['Ir a Materiales', 'materiales.html'],
+        enlace: ['Ir a Materiales', 'materiales.html']
+    },
+    {
+        id: 'como-funcionan-opiniones', cat: 'opiniones',
+        pregunta: '¿Cómo funcionan las opiniones sobre profesores?',
+        respuesta: '<p>Puedes compartir tu experiencia sobre un curso y su profesor para ayudar a otros estudiantes a conocer mejor la metodología, el nivel de exigencia, la forma de evaluación y otros aspectos académicos. Las opiniones deben ser respetuosas, objetivas y estar relacionadas con la experiencia académica.</p><p>Antes de publicar, revisa que tu comentario no incluya insultos, ataques personales, información privada u otro contenido que no contribuya a orientar a otros estudiantes. Las opiniones pueden ser revisadas y retiradas si no cumplen con las normas de convivencia de SIGA.</p>',
+        enlace: ['Ir a Opiniones', 'opiniones.html']
+    },
+    {
+        id: 'opinion-anonima', cat: 'opiniones',
+        pregunta: '¿Es anónima mi opinión sobre un profesor?',
+        respuesta: '<p>Sí. Aunque inicias sesión con tu cuenta para poder opinar, tu opinión se publica sin tu nombre ni ningún dato que te identifique — ningún otro estudiante, ni siquiera navegando la web, puede saber quién la escribió. Tu cuenta solo se usa para verificar que eres estudiante y evitar opiniones duplicadas o de spam; no queda vinculada a lo que dices en ningún lugar visible de la plataforma.</p>'
+    },
+    {
+        id: 'opinion-reportada', cat: 'opiniones',
+        pregunta: '¿Qué pasa si reporto una opinión o si la mía es retirada?',
+        respuesta: '<p>Si una opinión no cumple las normas de convivencia (insultos, ataques personales, información privada), cualquier estudiante puede reportarla para que sea revisada. Si tu propia opinión es retirada, no se elimina de la base de datos — simplemente deja de ser visible para los demás estudiantes.</p>'
+    },
+    {
+        id: 'carnet-siga', cat: 'cuenta',
+        pregunta: '¿Para qué sirve mi carnet SIGA?',
+        respuesta: '<p>Tu carnet reúne tu código, cómo quieres que te llamemos y tu carrera. Con esos datos SIGA se adapta a ti: por ejemplo, tu código ya aparece listo en Intranotas y tu carnet toma el color de tu facultad. Puedes completarlo o editarlo cuando quieras, sin apuro.</p><p>El periodo y la modalidad de ingreso son opcionales, y la modalidad nunca se muestra en tu carnet.</p>',
+        enlace: ['Ver mi carnet', '#info']
     },
 ];
 

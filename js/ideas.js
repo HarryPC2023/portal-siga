@@ -21,11 +21,11 @@ const TIPOS = [
 ];
 
 const MODULOS = [
-    { id: 'intranotas', nombre: 'Intranotas' },
-    { id: 'horarios', nombre: 'Horarios' },
-    { id: 'opiniones', nombre: 'Opiniones' },
-    { id: 'materiales', nombre: 'Materiales' },
     { id: 'asesorias', nombre: 'Asesorías' },
+    { id: 'horarios', nombre: 'Horarios' },
+    { id: 'intranotas', nombre: 'Intranotas' },
+    { id: 'materiales', nombre: 'Materiales' },
+    { id: 'opiniones', nombre: 'Opiniones' },
     { id: 'mi_cuenta', nombre: 'Mi cuenta' },
     { id: 'otro', nombre: 'Otro' },
 ];
