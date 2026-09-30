@@ -1,0 +1,186 @@
+/* ============================================================
+   css/nucleo-flotante.css — Botón flotante "Materiales y opiniones"
+   (Núcleo Centro Cultural). Solo se carga en dashboard.html (Inicio).
+
+   - Va en la esquina inferior IZQUIERDA: la derecha ya la usan la
+     tarjetita de preguntas del carnet, el botón "volver arriba" y la
+     firma "by Harry".
+   - Cerrado: círculo de 52 px con el isotipo de Núcleo.
+   - Abierto: tarjeta blanca con dos enlaces directos a la web de Núcleo
+     (Repositorio y Docentes), que se abren en otra pestaña.
+   - Colores de texto fijos (no variables): la tarjeta es blanca en todos
+     los temas, igual que el resto de ventanas de SIGA.
+   ============================================================ */
+
+.nucleo-flotante {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+  pointer-events: none;
+}
+
+.nucleo-flotante > * {
+  pointer-events: auto;
+}
+
+@media (max-width: 900px) {
+  .nucleo-flotante {
+    left: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ---------- Botón (círculo) ---------- */
+.nucleo-fab {
+  display: flex;
+  align-items: center;
+  height: 52px;
+  min-width: 52px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(75, 58, 154, 0.22);
+  background: #fff;
+  color: #4B3A9A;
+  box-shadow: 0 8px 22px rgba(60, 40, 120, 0.22);
+  cursor: pointer;
+  font: 600 12.5px 'Poppins', 'Segoe UI', system-ui, sans-serif;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nucleo-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(60, 40, 120, 0.3);
+}
+
+.nucleo-fab:focus-visible,
+.nucleo-cerrar:focus-visible,
+.nucleo-enlace:focus-visible {
+  outline: 3px solid #6600CC;
+  outline-offset: 3px;
+}
+
+.nucleo-fab-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex: none;
+}
+
+/* Texto que asoma unos segundos la primera vez de cada sesión */
+.nucleo-fab-txt {
+  max-width: 0;
+  opacity: 0;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: max-width 0.45s ease, opacity 0.3s ease, margin 0.45s ease;
+}
+
+.nucleo-fab.asoma .nucleo-fab-txt {
+  max-width: 190px;
+  opacity: 1;
+  margin: 0 8px 0 10px;
+}
+
+/* ---------- Tarjeta abierta ---------- */
+.nucleo-card {
+  width: min(300px, calc(100vw - 32px));
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid rgba(102, 0, 204, 0.14);
+  border-radius: 20px;
+  padding: 16px 16px 14px;
+  box-shadow: 0 16px 40px rgba(40, 20, 90, 0.28);
+  animation: nucleo-entra 0.22s ease;
+}
+
+.nucleo-card[hidden] {
+  display: none;
+}
+
+@keyframes nucleo-entra {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.nucleo-card-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.nucleo-wordmark {
+  height: 34px;
+  width: auto;
+}
+
+.nucleo-cerrar {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: #F3EAFB;
+  color: #6600CC;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.nucleo-texto {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #4A4A4A;
+}
+
+.nucleo-enlace {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nucleo-enlace:hover {
+  transform: translateY(-1px);
+}
+
+.nucleo-enlace-principal {
+  background: #6600CC;
+  color: #fff;
+}
+
+.nucleo-enlace-sec {
+  background: #F3EAFB;
+  color: #6600CC;
+}
+
+.nucleo-nota {
+  margin: 2px 0 0;
+  text-align: center;
+  font-size: 11px;
+  color: #767676;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nucleo-card { animation: none; }
+  .nucleo-fab,
+  .nucleo-enlace,
+  .nucleo-fab-txt { transition: none; }
+}

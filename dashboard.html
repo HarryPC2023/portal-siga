@@ -4,6 +4,8 @@
 <html lang="es">
 
 <head>
+  <link rel="stylesheet" href="css/carnet-siga.css">
+  <link rel="stylesheet" href="css/nucleo-flotante.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tus módulos - SIGA</title>
@@ -124,10 +126,33 @@
     <span class="harry-stamp-text">by Harry</span>
   </div>
 
+  <!-- Materiales y opiniones (Núcleo): botón flotante — css/nucleo-flotante.css y js/nucleo-flotante.js -->
+  <div class="nucleo-flotante" id="nucleoFlotante">
+    <div class="nucleo-card" id="nucleoCard" role="dialog" aria-label="Materiales y opiniones de docentes" hidden>
+      <div class="nucleo-card-cab">
+        <img src="assets/nucleo-wordmark.png" alt="Núcleo Centro Cultural" class="nucleo-wordmark">
+        <button type="button" class="nucleo-cerrar" id="nucleoCerrar" aria-label="Cerrar">✕</button>
+      </div>
+      <p class="nucleo-texto">Planchas, resúmenes y opiniones de docentes, en alianza con Núcleo Centro Cultural.</p>
+      <a class="nucleo-enlace nucleo-enlace-principal" href="https://sacu.netlify.app/" target="_blank"
+        rel="noopener noreferrer">Planchas y materiales <span aria-hidden="true">↗</span></a>
+      <a class="nucleo-enlace nucleo-enlace-sec" href="https://sacu.netlify.app/docentes" target="_blank"
+        rel="noopener noreferrer">Opiniones de docentes <span aria-hidden="true">↗</span></a>
+      <p class="nucleo-nota">Se abre en otra pestaña.</p>
+    </div>
+    <button type="button" class="nucleo-fab" id="nucleoFab" aria-expanded="false" aria-controls="nucleoCard"
+      aria-label="Materiales y opiniones de docentes">
+      <img src="assets/nucleo-icono.png" alt="" class="nucleo-fab-logo">
+      <span class="nucleo-fab-txt">Materiales y opiniones</span>
+    </button>
+  </div>
+
   <script src="js/landing.js"></script>
   <script src="js/tema-siga.js?v=1"></script>
   <script type="module" src="js/perfil-siga.js?v=8"></script>
   <script type="module" src="js/notificaciones-siga.js?v=1"></script>
+  <script type="module" src="js/notificaciones-siga.js?v=1"></script>
+  <script src="js/nucleo-flotante.js"></script>
 </body>
 
 </html>
