@@ -8,6 +8,8 @@
    - Cerrado: círculo de 52 px con el isotipo de Núcleo.
    - Abierto: tarjeta blanca con dos enlaces directos a la web de Núcleo
      (Repositorio y Docentes), que se abren en otra pestaña.
+   - Borde y sombra lila iguales a los de la tarjeta de conectar de
+     Horarios (.hi-card), pero un poco más marcados (borde de 2 px).
    - Colores de texto fijos (no variables): la tarjeta es blanca en todos
      los temas, igual que el resto de ventanas de SIGA.
    ============================================================ */
@@ -25,7 +27,7 @@
   pointer-events: none;
 }
 
-.nucleo-flotante > * {
+.nucleo-flotante>* {
   pointer-events: auto;
 }
 
@@ -42,12 +44,12 @@
   align-items: center;
   height: 52px;
   min-width: 52px;
-  padding: 0 10px;
+  padding: 0 8px;
   border-radius: 999px;
-  border: 1px solid rgba(75, 58, 154, 0.22);
+  border: 2px solid rgba(102, 0, 204, 0.45);
   background: #fff;
   color: #4B3A9A;
-  box-shadow: 0 8px 22px rgba(60, 40, 120, 0.22);
+  box-shadow: 0 12px 32px rgba(102, 0, 204, 0.26);
   cursor: pointer;
   font: 600 12.5px 'Poppins', 'Segoe UI', system-ui, sans-serif;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -55,7 +57,7 @@
 
 .nucleo-fab:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(60, 40, 120, 0.3);
+  box-shadow: 0 16px 36px rgba(102, 0, 204, 0.34);
 }
 
 .nucleo-fab:focus-visible,
@@ -95,10 +97,10 @@
   overflow-y: auto;
   box-sizing: border-box;
   background: #fff;
-  border: 1px solid rgba(102, 0, 204, 0.14);
+  border: 2px solid rgba(102, 0, 204, 0.45);
   border-radius: 20px;
   padding: 16px 16px 14px;
-  box-shadow: 0 16px 40px rgba(40, 20, 90, 0.28);
+  box-shadow: 0 12px 32px rgba(102, 0, 204, 0.26);
   animation: nucleo-entra 0.22s ease;
 }
 
@@ -107,8 +109,15 @@
 }
 
 @keyframes nucleo-entra {
-  from { opacity: 0; transform: translateY(8px) scale(0.98); }
-  to   { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .nucleo-card-cab {
@@ -179,8 +188,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nucleo-card { animation: none; }
+  .nucleo-card {
+    animation: none;
+  }
+
   .nucleo-fab,
   .nucleo-enlace,
-  .nucleo-fab-txt { transition: none; }
+  .nucleo-fab-txt {
+    transition: none;
+  }
 }
