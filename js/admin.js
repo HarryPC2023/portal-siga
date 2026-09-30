@@ -1,5 +1,5 @@
 // js/admin.js — Panel privado de administración.
-// Muestra sugerencias, propuestas de asesorías y opiniones reportadas.
+// Muestra sugerencias, propuestas de asesorías, cargas horarias, notificaciones y la vista de Intranotas.
 // La seguridad real vive en las políticas RLS de Supabase (solo el UID
 // de Harry puede leer/borrar todo) — esta verificación del lado del
 // cliente es solo para no dejar la pantalla mostrando "Cargando..."
@@ -13,9 +13,7 @@ const BUCKET_CARGAS = 'cargas-horarias';
 /* ── Globitos de novedades en las pestañas ──────────────────────
    Sugerencias, Asesorías propuestas y Cargas horarias enviadas: cuentan
    lo que llegó DESPUÉS de la última vez que abriste esa pestaña (fecha
-   guardada en este navegador). Al abrirla, el globito se va.
-   Opiniones reportadas: cuenta todas las que siguen reportadas, porque
-   esas requieren una acción tuya hasta resolverlas. */
+   guardada en este navegador). Al abrirla, el globito se va. */
 const LS_ADMIN_VISTO = 'siga_admin_visto_';
 
 function pintarGlobito(tab, n) {
@@ -63,7 +61,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     cargarSugerencias();
     cargarAsesorias();
     cargarCargasEnviadas();
-    cargarOpiniones();
     cargarNotificaciones();
     inicializarFormNotificacion();
 
@@ -76,7 +73,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('panelSugerencias').style.display = tab === 'sugerencias' ? 'flex' : 'none';
             document.getElementById('panelAsesorias').style.display = tab === 'asesorias' ? 'flex' : 'none';
             document.getElementById('panelCargas').style.display = tab === 'cargas' ? 'flex' : 'none';
-            document.getElementById('panelOpiniones').style.display = tab === 'opiniones' ? 'flex' : 'none';
             document.getElementById('panelNotificaciones').style.display = tab === 'notificaciones' ? 'flex' : 'none';
             document.getElementById('panelVistaIntranotas').style.display = tab === 'vista-intranotas' ? 'flex' : 'none';
             if (tab === 'vista-intranotas' && !viListaCargada) cargarListaVistaIntranotas();
@@ -182,6 +178,7 @@ const CATEGORIAS_IDEA = {
     algo_falla: 'Algo falla',
     otro: 'Otro',
 };
+// "materiales" y "opiniones" se conservan solo para mostrar bien las ideas antiguas.
 const MODULOS_IDEA = {
     asesorias: 'Asesorías', horarios: 'Horarios', intranotas: 'Intranotas', materiales: 'Materiales',
     opiniones: 'Opiniones', mi_cuenta: 'Mi cuenta', otro: 'Otro',
@@ -312,111 +309,6 @@ async function eliminarSugerencia(id, btn) {
     if (!data || data.length === 0) {
         btn.disabled = false;
         alert('No se pudo eliminar: no tienes permiso para esta acción. Revisa las políticas RLS de la tabla "sugerencias" en Supabase.');
-        return;
-    }
-
-    btn.closest('.admin-item').remove();
-}
-
-/* ============================================================
-   OPINIONES REPORTADAS
-   ============================================================ */
-async function cargarOpiniones() {
-    const cont = document.getElementById('listaOpiniones');
-    const { data, error } = await supabase
-        .from('opiniones')
-        .select(`
-            id, ciclo_estudiante, claridad, exigencia, carga_trabajo, evaluaciones,
-            destacado, a_tener_en_cuenta, estado, reportes, creado_en,
-            profesor_curso:profesor_curso_id (
-                profesores ( nombre ),
-                cursos ( nombre )
-            )
-        `)
-        .gt('reportes', 0)
-        .order('reportes', { ascending: false });
-
-    if (error) {
-        cont.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;
-        return;
-    }
-    pintarGlobito('opiniones', data.length);
-    if (!data.length) {
-        cont.innerHTML = '<p class="admin-vacio">No hay opiniones reportadas — todo tranquilo.</p>';
-        return;
-    }
-
-    cont.innerHTML = data.map((o) => {
-        const profesor = o.profesor_curso?.profesores?.nombre || 'Profesor desconocido';
-        const curso = o.profesor_curso?.cursos?.nombre || 'Curso desconocido';
-        const oculta = o.estado !== 'aprobado';
-        return `
-        <div class="admin-item" data-id="${o.id}">
-            <div class="admin-item-cabecera">
-                <span class="admin-item-titulo">${escapeHtml(profesor)} · ${escapeHtml(curso)}</span>
-                <span class="admin-badge admin-badge-reportes">${o.reportes} reporte${o.reportes === 1 ? '' : 's'}</span>
-            </div>
-            <p class="admin-item-meta">Ciclo del alumno: ${escapeHtml(String(o.ciclo_estudiante ?? ''))} · ${formatearFecha(o.creado_en)} · estado actual: <strong>${escapeHtml(o.estado)}</strong></p>
-            <p class="admin-item-meta">Claridad ${o.claridad} · Exigencia ${o.exigencia} · Carga ${o.carga_trabajo} · Evaluaciones ${o.evaluaciones}</p>
-            ${o.destacado ? `<p class="admin-item-texto"><strong>Destacó:</strong> ${escapeHtml(o.destacado)}</p>` : ''}
-            ${o.a_tener_en_cuenta ? `<p class="admin-item-texto"><strong>A tener en cuenta:</strong> ${escapeHtml(o.a_tener_en_cuenta)}</p>` : ''}
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button type="button" class="admin-btn-ocultar" data-op="${o.id}" ${oculta ? 'disabled' : ''}>
-                    ${oculta ? 'Ya está oculta' : 'Ocultar esta opinión'}
-                </button>
-                <button type="button" class="admin-btn-descartar" data-op="${o.id}">
-                    Descartar reporte
-                </button>
-            </div>
-        </div>`;
-    }).join('');
-
-    cont.querySelectorAll('.admin-btn-ocultar').forEach((btn) => {
-        btn.addEventListener('click', () => ocultarOpinion(btn.dataset.op, btn));
-    });
-    cont.querySelectorAll('.admin-btn-descartar').forEach((btn) => {
-        btn.addEventListener('click', () => descartarReporte(btn.dataset.op, btn));
-    });
-}
-
-// Oculta la opinión de la sección pública de Opiniones Y, de paso, la
-// saca de esta lista de "reportadas" (ya la atendiste, no necesita
-// seguir apareciendo aquí).
-async function ocultarOpinion(opinionId, btn) {
-    btn.disabled = true;
-    btn.textContent = 'Ocultando…';
-
-    const { error } = await supabase
-        .from('opiniones')
-        .update({ estado: 'rechazado', reportes: 0 })
-        .eq('id', opinionId);
-
-    if (error) {
-        btn.disabled = false;
-        btn.textContent = 'Ocultar esta opinión';
-        alert('No se pudo ocultar: ' + error.message);
-        return;
-    }
-
-    btn.closest('.admin-item').remove();
-}
-
-// La opinión se queda tal cual estaba (publicada) — solo se descarta el
-// reporte y desaparece de esta lista. Para cuando revisas y decides que
-// el reporte no tenía fundamento.
-async function descartarReporte(opinionId, btn) {
-    btn.disabled = true;
-    btn.textContent = 'Descartando…';
-
-    const { error } = await supabase
-        .from('opiniones')
-        .update({ reportes: 0 })
-        .eq('id', opinionId);
-
-    if (error) {
-        btn.disabled = false;
-        btn.textContent = 'Descartar reporte';
-        alert('No se pudo descartar: ' + error.message);
         return;
     }
 

@@ -18,8 +18,6 @@ const CATEGORIAS = [
     { id: 'asesorias', nombre: 'Asesorías', color: '#1E9E5A' },
     { id: 'horarios', nombre: 'Horarios', color: '#0FA89E' },
     { id: 'intranotas', nombre: 'Intranotas', color: '#7B3FC4' },
-    { id: 'materiales', nombre: 'Materiales', color: '#E0A100' },
-    { id: 'opiniones', nombre: 'Opiniones', color: '#E5566B' },
     { id: 'cuenta', nombre: 'Mi cuenta', color: '#C13F94' },
 ];
 
@@ -29,8 +27,6 @@ const ICONOS = {
     cuenta: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2"/><path d="M6.5 16c.6-1.4 1.5-2 2.5-2s1.9.6 2.5 2M14 10h4M14 13.5h3"/>',
     intranotas: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
     horarios: '<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/>',
-    opiniones: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/>',
-    materiales: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
 };
 
 /* Respuestas en HTML (textos de Harry). enlace: [texto, ruta]. */
@@ -66,26 +62,10 @@ const PREGUNTAS = [
         enlace: ['Ir a Intranotas', 'intranotas/index.html']
     },
     {
-        id: 'encontrar-materiales', cat: 'materiales',
-        pregunta: '¿Cómo puedo encontrar materiales para mis cursos?',
-        respuesta: '<p>Ingresa al módulo Materiales y selecciona el curso que deseas consultar. Allí encontrarás los recursos disponibles, organizados para facilitar su búsqueda y acceso. Puedes utilizar los filtros o categorías disponibles para encontrar más rápidamente el material que necesitas.</p><p>Si tienes materiales que puedan ser útiles para otros estudiantes, también puedes compartirlos con la comunidad de SIGA. Tu aporte puede ayudar a que más compañeros encuentren recursos para sus cursos y, de esta manera, contribuir a ampliar y mejorar el contenido disponible en la plataforma.</p>',
-        enlace: ['Ir a Materiales', 'materiales.html']
-    },
-    {
-        id: 'como-funcionan-opiniones', cat: 'opiniones',
-        pregunta: '¿Cómo funcionan las opiniones sobre profesores?',
-        respuesta: '<p>Puedes compartir tu experiencia sobre un curso y su profesor para ayudar a otros estudiantes a conocer mejor la metodología, el nivel de exigencia, la forma de evaluación y otros aspectos académicos. Las opiniones deben ser respetuosas, objetivas y estar relacionadas con la experiencia académica.</p><p>Antes de publicar, revisa que tu comentario no incluya insultos, ataques personales, información privada u otro contenido que no contribuya a orientar a otros estudiantes. Las opiniones pueden ser revisadas y retiradas si no cumplen con las normas de convivencia de SIGA.</p>',
-        enlace: ['Ir a Opiniones', 'opiniones.html']
-    },
-    {
-        id: 'opinion-anonima', cat: 'opiniones',
-        pregunta: '¿Es anónima mi opinión sobre un profesor?',
-        respuesta: '<p>Sí. Aunque inicias sesión con tu cuenta para poder opinar, tu opinión se publica sin tu nombre ni ningún dato que te identifique — ningún otro estudiante, ni siquiera navegando la web, puede saber quién la escribió. Tu cuenta solo se usa para verificar que eres estudiante y evitar opiniones duplicadas o de spam; no queda vinculada a lo que dices en ningún lugar visible de la plataforma.</p>'
-    },
-    {
-        id: 'opinion-reportada', cat: 'opiniones',
-        pregunta: '¿Qué pasa si reporto una opinión o si la mía es retirada?',
-        respuesta: '<p>Si una opinión no cumple las normas de convivencia (insultos, ataques personales, información privada), cualquier estudiante puede reportarla para que sea revisada. Si tu propia opinión es retirada, no se elimina de la base de datos — simplemente deja de ser visible para los demás estudiantes.</p>'
+        id: 'planchas-opiniones-nucleo', cat: 'siga',
+        pregunta: '¿Dónde encuentro planchas y opiniones de docentes?',
+        respuesta: '<p>En <strong>Inicio</strong> verás, abajo a la izquierda, un botón con el logo de Núcleo Centro Cultural. Al abrirlo puedes ir directo a sus <strong>planchas y materiales</strong> o a sus <strong>opiniones de docentes</strong>. Son recursos de Núcleo, no de SIGA, y se abren en otra pestaña.</p>',
+        enlace: ['Ir al inicio', 'dashboard.html']
     },
     {
         id: 'carnet-siga', cat: 'cuenta',
