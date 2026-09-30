@@ -307,14 +307,6 @@ h3 {
   padding: 12px 32px;
 }
 
-/* "Dejar mi referencia" (pantalla 2): mismo criterio — su contenedor
-   (generador.js) ya centra el texto, así que solo hace falta que el
-   botón deje de forzar 100% de ancho. */
-#btnReferenciaHorario {
-  width: fit-content;
-  padding: 11px 28px;
-}
-
 /* ---------- 5. BARRA "VOLVER / ENTRAR A SIGA" — fila propia ----------
    A propósito NO es position:fixed: al vivir en el flujo normal del
    documento, empuja todo lo demás hacia abajo por construcción, así
