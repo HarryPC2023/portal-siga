@@ -16,7 +16,7 @@ import { supabase } from './auth-siga.js?v=9';
 const TIPOS = [
     { id: 'nueva_funcion', emoji: '✨', titulo: 'Nueva función', texto: 'Algo que SIGA aún no hace' },
     { id: 'mejora_funcion', emoji: '🔧', titulo: 'Mejorar algo', texto: 'Algo que existe y podría ser mejor' },
-    { id: 'contenido', emoji: '📚', titulo: 'Contenido', texto: 'Materiales, cursos o datos que faltan' },
+    { id: 'contenido', emoji: '📚', titulo: 'Contenido', texto: 'Asesorías, cursos o datos que faltan' },
     { id: 'algo_falla', emoji: '🐞', titulo: 'Algo falla', texto: 'Un error o algo que no funciona' },
 ];
 
@@ -24,8 +24,6 @@ const MODULOS = [
     { id: 'asesorias', nombre: 'Asesorías' },
     { id: 'horarios', nombre: 'Horarios' },
     { id: 'intranotas', nombre: 'Intranotas' },
-    { id: 'materiales', nombre: 'Materiales' },
-    { id: 'opiniones', nombre: 'Opiniones' },
     { id: 'mi_cuenta', nombre: 'Mi cuenta' },
     { id: 'otro', nombre: 'Otro' },
 ];
@@ -33,7 +31,7 @@ const MODULOS = [
 const PISTAS = {
     nueva_funcion: ['Sería genial poder…', 'Me gustaría que SIGA me avise cuando…', 'Una idea: que se pueda…'],
     mejora_funcion: ['Cuando uso esta parte, me cuesta…', 'Sería más fácil si…', 'Mejoraría mucho si…'],
-    contenido: ['Faltan materiales de…', 'No encuentro los datos de…', 'Sería útil agregar…'],
+    contenido: ['Faltan asesorías de…', 'No encuentro los datos de…', 'Sería útil agregar…'],
     algo_falla: ['Cuando hago clic en… pasa que…', 'Esperaba que… pero en cambio…', 'Desde el celular, cuando…'],
 };
 
