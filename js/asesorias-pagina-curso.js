@@ -1,4 +1,6 @@
-// js/asesorias-curso.js — Página de un curso de Asesorías: cabecera, material
+// js/asesorias-pagina-curso.js — Página de UN curso de Asesorías (lógica de la página).
+// ⚠️ No confundir con asesorias-cursos.js (con "s"), que es el CATÁLOGO de cursos.
+// Aquí va:  cabecera, material
 // general, ruta de evaluaciones (PC1, PC2, EP, PC3, PC4, EF, ES), visor de
 // PDF y web, "Lo necesito" por evaluación y reporte de errores.
 // Se abre con asesorias-curso.html?c=<slug>  (y &abrir=<id> para abrir un recurso).
