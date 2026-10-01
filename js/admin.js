@@ -4,7 +4,7 @@
 // de Harry puede leer/borrar todo) — esta verificación del lado del
 // cliente es solo para no dejar la pantalla mostrando "Cargando..."
 // eternamente a alguien más y redirigirlo de vuelta con claridad.
-import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
+import { iniciarDemandaAsesorias } from './admin-asesorias.js?v=1';
 
 const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
@@ -41,6 +41,8 @@ function marcarPestanaVista(tab) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    inicializarFormNotificacion();
+    iniciarDemandaAsesorias({ confirmarAccion, escapeHtml, formatearFecha });
     // Pinta el correo/avatar reales en el menú de cuenta del nav (mismo
     // patrón que gate.js usa en el resto de SIGA) — sin esto, el nav se
     // quedaba mostrando el placeholder "Nombre Apellido / correo@ejemplo.com"
