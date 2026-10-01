@@ -4,13 +4,21 @@
 // de qué cursos aparecen y qué material tiene cada uno: la portada, la
 // página de cada curso y (más adelante) el botcito leen de aquí.
 //
-// Alcance actual: Ingeniería de Sistemas · malla 2018, ciclos 1 a 5 —
-// lo que Harry cursó y puede afirmar, verificado contra su Avance
-// Curricular de INTRALU (código, nombre, créditos y ciclo).
+// QUÉ CURSOS ENTRAN: solo los que Harry puede ofrecer con asesoría real
+// (con su propio dominio o preparados junto con Claude en otro chat). No
+// se listan todos los cursos de un ciclo: quien entra a un curso debe
+// poder esperar que haya material, no que "algún día" lo haya.
 //
-// Regla de crecimiento: un curso o una carrera nueva se agrega SOLO
-// cuando alguien lo confirma (un alumno de esa carrera sincroniza su
-// Avance Curricular, o Harry lo verifica con el plan de estudios).
+// DE DÓNDE SALEN LOS DATOS: código, nombre, créditos y ciclo se verificaron
+// contra el Avance Curricular de INTRALU de Harry (Ingeniería de Sistemas,
+// malla 2018). Química II no está en ese plan; sus datos salen del plan de
+// estudios oficial de Ingeniería Industrial (FB202, ciclo 2, 4 créditos) y
+// por eso lleva su propia etiqueta de plan.
+//
+// Regla de crecimiento: un curso nuevo se agrega cuando Harry decide que
+// puede ofrecerlo, y una carrera nueva solo cuando alguien la confirma
+// (un alumno de esa carrera sincroniza su Avance Curricular, o se
+// verifica con el plan de estudios oficial).
 //
 // ─── Cómo agregar material a un curso ───────────────────────────────
 // 1) Busca el curso por su `codigo` y agrega un objeto en `recursos`.
@@ -40,28 +48,26 @@ export const NOMBRE_EVALUACION = {
 
 export const CURSOS = [
     // ───────────── Ciclo 1 ─────────────
-    { codigo: 'FB101', slug: 'geometria-analitica',        nombre: 'Geometría Analítica',            ciclo: 1, creditos: 3, recursos: [] },
-    { codigo: 'BMA01', slug: 'calculo-diferencial',        nombre: 'Cálculo Diferencial',            ciclo: 1, creditos: 5, recursos: [] },
-    { codigo: 'BQU01', slug: 'quimica-i',                  nombre: 'Química I',                      ciclo: 1, creditos: 5, recursos: [] },
-    { codigo: 'BIC01', slug: 'introduccion-computacion',   nombre: 'Introducción a la Computación',  ciclo: 1, creditos: 2, recursos: [] },
-    { codigo: 'BRC01', slug: 'redaccion-comunicacion',     nombre: 'Redacción y Comunicación',       ciclo: 1, creditos: 2, recursos: [] },
+    { codigo: 'FB101', slug: 'geometria-analitica', nombre: 'Geometría Analítica', ciclo: 1, creditos: 3, recursos: [] },
+    { codigo: 'BMA01', slug: 'calculo-diferencial', nombre: 'Cálculo Diferencial', ciclo: 1, creditos: 5, recursos: [] },
+    { codigo: 'BQU01', slug: 'quimica-i', nombre: 'Química I', ciclo: 1, creditos: 5, recursos: [] },
 
     // ───────────── Ciclo 2 ─────────────
-    { codigo: 'BMA02', slug: 'calculo-integral',           nombre: 'Cálculo Integral',               ciclo: 2, creditos: 5, recursos: [] },
-    { codigo: 'BMA03', slug: 'algebra-lineal',             nombre: 'Álgebra Lineal',                 ciclo: 2, creditos: 4, recursos: [] },
-    { codigo: 'BEF01', slug: 'etica-filosofia-politica',   nombre: 'Ética y Filosofía Política',     ciclo: 2, creditos: 2, recursos: [] },
+    { codigo: 'BMA02', slug: 'calculo-integral', nombre: 'Cálculo Integral', ciclo: 2, creditos: 5, recursos: [] },
+    { codigo: 'BMA03', slug: 'algebra-lineal', nombre: 'Álgebra Lineal', ciclo: 2, creditos: 4, recursos: [] },
+    { codigo: 'SI205', slug: 'algoritmia-estructura-datos', nombre: 'Algoritmia y Estructura de Datos', ciclo: 2, creditos: 3, recursos: [] },
+    // Química II no es del plan de Sistemas: viene del plan de Ing. Industrial.
+    { codigo: 'FB202', slug: 'quimica-ii', nombre: 'Química II', ciclo: 2, creditos: 4, plan: 'Ingeniería Industrial', recursos: [] },
 
     // ───────────── Ciclo 3 ─────────────
-    { codigo: 'FB301', slug: 'matematica-discreta',        nombre: 'Matemática Discreta',            ciclo: 3, creditos: 3, recursos: [] },
-    { codigo: 'FB303', slug: 'calculo-multivariable',      nombre: 'Cálculo Multivariable',          ciclo: 3, creditos: 5, recursos: [] },
-    { codigo: 'BFI01', slug: 'fisica-i',                   nombre: 'Física I',                       ciclo: 3, creditos: 5, recursos: [] },
-    { codigo: 'FB305', slug: 'estadistica-probabilidades', nombre: 'Estadística y Probabilidades',   ciclo: 3, creditos: 3, recursos: [] },
+    { codigo: 'BFI01', slug: 'fisica-i', nombre: 'Física I', ciclo: 3, creditos: 5, recursos: [] },
+    { codigo: 'FB305', slug: 'estadistica-probabilidades', nombre: 'Estadística y Probabilidades', ciclo: 3, creditos: 3, recursos: [] },
 
     // ───────────── Ciclo 4 ─────────────
-    { codigo: 'FB401', slug: 'fisica-ii',                  nombre: 'Física II',                      ciclo: 4, creditos: 5, recursos: [] },
-    { codigo: 'FB403', slug: 'ecuaciones-diferenciales',   nombre: 'Ecuaciones Diferenciales',       ciclo: 4, creditos: 5, recursos: [] },
-    { codigo: 'FB405', slug: 'estadistica-aplicada',       nombre: 'Estadística Aplicada',           ciclo: 4, creditos: 3, recursos: [] },
-    { codigo: 'HU102', slug: 'desarrollo-personal',        nombre: 'Desarrollo Personal',            ciclo: 4, creditos: 2, recursos: [] },
+    { codigo: 'FB401', slug: 'fisica-ii', nombre: 'Física II', ciclo: 4, creditos: 5, recursos: [] },
+    { codigo: 'FB402', slug: 'calculo-numerico', nombre: 'Cálculo Numérico', ciclo: 4, creditos: 3, recursos: [] },
+    { codigo: 'FB403', slug: 'ecuaciones-diferenciales', nombre: 'Ecuaciones Diferenciales', ciclo: 4, creditos: 5, recursos: [] },
+    { codigo: 'FB405', slug: 'estadistica-aplicada', nombre: 'Estadística Aplicada', ciclo: 4, creditos: 3, recursos: [] },
     {
         codigo: 'SI405', slug: 'mcd', nombre: 'Modelado Conceptual de Datos', ciclo: 4, creditos: 3,
         recursos: [
@@ -77,8 +83,7 @@ export const CURSOS = [
     },
 
     // ───────────── Ciclo 5 ─────────────
-    { codigo: 'BEG01', slug: 'economia-general',           nombre: 'Economía General',               ciclo: 5, creditos: 3, recursos: [] },
-    { codigo: 'BRN01', slug: 'realidad-nacional',          nombre: 'Realidad Nacional, Constitución y Derechos Humanos', ciclo: 5, creditos: 3, recursos: [] },
+    { codigo: 'SI501', slug: 'investigacion-operaciones-i', nombre: 'Investigación de Operaciones I', ciclo: 5, creditos: 3, recursos: [] },
     {
         codigo: 'SI505', slug: 'dbd', nombre: 'Diseño de Base de Datos', ciclo: 5, creditos: 3,
         recursos: [
@@ -101,6 +106,9 @@ export const CURSOS = [
             },
         ],
     },
+
+    // ───────────── Ciclo 6 ─────────────
+    { codigo: 'SI601', slug: 'investigacion-operaciones-ii', nombre: 'Investigación de Operaciones II', ciclo: 6, creditos: 3, recursos: [] },
 ];
 
 // ───────────── Utilidades (solo lectura del catálogo) ─────────────
@@ -132,7 +140,17 @@ export function tieneContenido(curso) {
     return curso.recursos.some((r) => (r.estado || 'disponible') === 'disponible');
 }
 
-// "Ciclo 4" — un solo ciclo por curso, el de tu plan.
+// "Ciclo 4" — un solo ciclo por curso, el del plan indicado.
 export function etiquetaCiclo(curso) {
     return `Ciclo ${curso.ciclo}`;
+}
+
+// Plan al que corresponden el ciclo y los créditos del curso.
+export function planDelCurso(curso) {
+    return curso.plan || PLAN_DEFECTO;
+}
+
+// Ciclos que realmente tienen cursos (para armar los filtros de la portada).
+export function ciclosDisponibles() {
+    return [...new Set(CURSOS.map((c) => c.ciclo))].sort((a, b) => a - b);
 }
