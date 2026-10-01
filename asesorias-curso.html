@@ -1,0 +1,58 @@
+---
+---
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curso - Asesorías - SIGA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  {% include tema-anti-flash.html %}
+  {% include gate-anti-flash.html %}
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/tema-siga.css?v=1">
+  <link rel="stylesheet" href="css/asesorias-visor.css?v=2">
+  <link rel="stylesheet" href="css/asesorias-nueva.css?v=1">
+  <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
+  <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
+  <link rel="manifest" href="/portal-siga/manifest.json">
+  <meta name="theme-color" content="#000000">
+</head>
+
+<body>
+
+  {% include nav.html activo="asesorias" %}
+
+  <main class="an-wrap">
+    <div id="anCurso"></div>
+
+    <div id="anOtrosBox" hidden>
+      <div class="an-sec-h"><h2>Otros cursos con material</h2></div>
+      <div class="an-minis" id="anOtros"></div>
+    </div>
+  </main>
+
+  <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
+
+  <div class="harry-stamp">
+    <img src="assets/Harry.png" alt="Harry" class="harry-stamp-img">
+    <span class="harry-stamp-text">by Harry</span>
+  </div>
+
+  <script src="js/landing.js"></script>
+  <script type="module" src="js/gate.js"></script>
+  <script type="module" src="js/asesorias-curso.js?v=1"></script>
+  <script src="js/tema-siga.js?v=1"></script>
+  <script type="module" src="js/carnet-aviso.js"></script>
+
+</body>
+
+</html>
