@@ -18,6 +18,7 @@ const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const curso = cursoPorSlug(params.get('c'));
 const abrirId = params.get('abrir');
+const evParam = params.get('ev');
 const raiz = $('anCurso');
 let votos = new Set();
 
@@ -38,7 +39,7 @@ function recursoHTML(r) {
 
 function filaGeneral(r) {
     return `
-        <div class="an-ev">
+        <div class="an-ev" data-fila="mono">
             <div class="an-dot an-dot-ok">✓</div>
             <div class="an-ev-card">
                 <button type="button" class="an-ev-top" data-estado="ok" aria-expanded="true"><b>Mono</b><span class="an-t">${esc(r.titulo)}</span><span class="an-est an-est-ok">Disponible</span></button>
@@ -52,7 +53,7 @@ function filaEvaluacion(ev) {
     const recs = curso.recursos.filter((r) => r.evaluacion === ev && disponible(r));
     if (estado === 'disponible') {
         return `
-        <div class="an-ev">
+        <div class="an-ev" data-fila="${ev}">
             <div class="an-dot an-dot-ok">✓</div>
             <div class="an-ev-card">
                 <button type="button" class="an-ev-top" data-estado="ok" aria-expanded="false"><b>${ev}</b><span class="an-t">${NOMBRE_EVALUACION[ev]}</span><span class="an-est an-est-ok">Disponible</span></button>
@@ -62,13 +63,13 @@ function filaEvaluacion(ev) {
     }
     if (estado === 'preparacion') {
         return `
-        <div class="an-ev">
+        <div class="an-ev" data-fila="${ev}">
             <div class="an-dot an-dot-prep">◷</div>
             <div class="an-ev-card"><div class="an-ev-top" style="cursor:default"><b>${ev}</b><span class="an-t">${NOMBRE_EVALUACION[ev]}</span><span class="an-est an-est-prep">En preparación</span></div></div>
         </div>`;
     }
     return `
-        <div class="an-ev">
+        <div class="an-ev" data-fila="${ev}">
             <div class="an-dot an-dot-falta">+</div>
             <div class="an-ev-card">
                 <button type="button" class="an-ev-top" data-estado="falta" data-ev="${ev}"><b>${ev}</b><span class="an-t">${NOMBRE_EVALUACION[ev]}</span><span class="an-est an-est-falta" data-etq>Lo necesito</span></button>
@@ -178,6 +179,20 @@ function conectar() {
     });
 }
 
+// Abre y resalta la evaluación (o el material general) que pidió el enlace: ?ev=PC1, ?ev=mono…
+function enfocarFila(ev) {
+    if (!tieneContenido(curso) || !['mono', ...EVALUACIONES].includes(ev)) return;
+    const fila = raiz.querySelector(`.an-ev[data-fila="${ev}"]`);
+    if (!fila) return;
+    const top = fila.querySelector('.an-ev-top');
+    const det = fila.querySelector('.an-det');
+    if (top && top.dataset.estado === 'ok' && det && det.hidden) { det.hidden = false; top.setAttribute('aria-expanded', 'true'); }
+    const tarjeta = fila.querySelector('.an-ev-card');
+    fila.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    tarjeta.classList.add('an-resalta');
+    setTimeout(() => tarjeta.classList.remove('an-resalta'), 2400);
+}
+
 function pintarOtros() {
     const otros = CURSOS.filter((c) => c.slug !== curso.slug && tieneContenido(c));
     if (!otros.length) return;
@@ -185,7 +200,7 @@ function pintarOtros() {
         <a class="an-mini" style="${estiloAttr(c)}" href="asesorias-curso.html?c=${encodeURIComponent(c.slug)}">
             <span class="an-mg">${esc(estiloCurso(c).glifo)}</span>
             <span><b>${esc(c.nombre)}</b><small>Ciclo ${c.ciclo} · con material</small></span>
-        </a>`).join('') + `<a class="an-chip" href="${PORTADA}" style="text-decoration:none">Ver todos los cursos →</a>`;
+        </a>`).join('') + `<a class="an-ver-todos" href="${PORTADA}">Ver todos los cursos →</a>`;
     $('anOtrosBox').hidden = false;
 }
 
@@ -200,5 +215,6 @@ if (!curso) {
     conectar();
     pintarOtros();
     cargarMisVotos().then((set) => { votos = set; aplicarVotos(); });
+    if (evParam) setTimeout(() => enfocarFila(evParam), 200);
     if (abrirId && curso.recursos.some((r) => r.id === abrirId && disponible(r))) setTimeout(() => abrirRecurso(abrirId), 250);
 }

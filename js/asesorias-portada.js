@@ -3,7 +3,7 @@
 // cuadrícula de cursos (con "Lo necesito" en los que aún no tienen material).
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
 import {
-    CURSOS, EVALUACIONES, tieneContenido, ciclosDisponibles, planDelCurso,
+    CURSOS, EVALUACIONES, NOMBRE_EVALUACION, tieneContenido, ciclosDisponibles, planDelCurso,
     estadoEvaluacion, recursosGenerales,
 } from './asesorias-cursos.js?v=1';
 import {
@@ -75,10 +75,17 @@ function pintarFiltros() {
 }
 
 // ───────────── Cuadrícula de cursos ─────────────
+// Si el curso tiene material, cada evaluación es un enlace: lleva a la página del
+// curso con esa evaluación abierta y resaltada. Si no tiene, son solo una vista previa.
 function tira(curso) {
-    const pills = EVALUACIONES.map((e) => `<span class="an-p${estadoEvaluacion(curso, e) === 'disponible' ? ' on' : ''}">${e}</span>`).join('');
-    const mono = recursosGenerales(curso).some((r) => (r.estado || 'disponible') === 'disponible') ? '<span class="an-p on">Mono</span>' : '';
-    return pills + mono;
+    const con = tieneContenido(curso);
+    const base = `asesorias-curso.html?c=${encodeURIComponent(curso.slug)}`;
+    const pastilla = (ev, on, etiqueta, nombre) => (con
+        ? `<a class="an-p${on ? ' on' : ''}" href="${base}&ev=${ev}" title="${esc(nombre)}" aria-label="${esc(nombre)} de ${esc(curso.nombre)}">${etiqueta}</a>`
+        : `<span class="an-p">${etiqueta}</span>`);
+    const pills = EVALUACIONES.map((e) => pastilla(e, estadoEvaluacion(curso, e) === 'disponible', e, NOMBRE_EVALUACION[e])).join('');
+    const hayMono = recursosGenerales(curso).some((r) => (r.estado || 'disponible') === 'disponible');
+    return pills + (hayMono ? pastilla('mono', true, 'Mono', 'Material del curso') : '');
 }
 
 function tarjeta(curso) {
@@ -135,8 +142,25 @@ async function alternarLo(btn) {
     else { marcarLo(btn, !activar); aviso('No se pudo guardar. Intenta de nuevo en un momento.', 'error'); }
 }
 
+// ───────────── Globito del botcito: una sola vez ─────────────
+const LS_BURBUJA = 'siga_asesorias_burbuja';
+
+function mostrarBurbuja() {
+    const b = document.querySelector('.an-bubble');
+    if (!b) return;
+    let vista = false;
+    try { vista = localStorage.getItem(LS_BURBUJA) === '1'; } catch (e) { /* sin almacenamiento: se muestra */ }
+    if (vista) return;
+    try { localStorage.setItem(LS_BURBUJA, '1'); } catch (e) { /* nada */ }
+    const ocultar = () => b.classList.remove('visible');
+    setTimeout(() => b.classList.add('visible'), 700);
+    setTimeout(ocultar, 7000);
+    b.addEventListener('click', ocultar);
+}
+
 // ───────────── Arranque ─────────────
 $('anBotHero').innerHTML = botcitoSVG('an-bot');
+mostrarBurbuja();
 pintarFila();
 pintarFiltros();
 pintarCursos();
