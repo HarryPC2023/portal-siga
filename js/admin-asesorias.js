@@ -4,15 +4,20 @@
 //  1) Agrega la pestaña "Demanda de Asesorías": qué piden más los alumnos
 //     ("Lo necesito"), los pedidos de curso y los reportes de error.
 //  2) Completa la pestaña "Asesorías propuestas" con los datos nuevos del
-//     formulario (tipo de aporte, con o sin nombre, autorización).
+//     formulario (tipo de aporte, con o sin nombre, autorización) y con un
+//     botón "Avisar: ya está publicada" que le manda una notificación
+//     personal a quien la compartió.
+//  3) Exporta avisarRespuestaIdea(): admin.js la llama al guardar la respuesta
+//     a una idea, para que a quien la envió le llegue "Respondieron tu idea".
 //
 // ⚠️ No confundir con asesorias-cursos.js (el catálogo) ni con
 // asesorias-comun.js (piezas de la sección pública). Este archivo es solo
 // del Admin.
 //
 // Tablas: asesorias_demanda (lo_necesito | pedido | reporte),
-// asesorias_demanda_conteo (vista con el total por curso y evaluación) y
-// asesorias_propuestas. El SQL está en asesorias-admin.sql.
+// asesorias_demanda_conteo (vista con el total por curso y evaluación),
+// asesorias_propuestas y notificaciones (avisos personales).
+// El SQL está en asesorias-admin.sql y notificaciones-personales.sql.
 import { supabase } from './auth-siga.js?v=9';
 import { CURSOS } from './asesorias-cursos.js?v=1';
 
@@ -59,6 +64,51 @@ function quien(mapa, userId) {
     const p = mapa.get(userId);
     if (p && (p.nombre || p.codigo_estudiante)) return [p.nombre, p.codigo_estudiante].filter(Boolean).join(' · ');
     return `usuario ${String(userId || '').slice(0, 8)}…`;
+}
+
+// ───────────── Avisos personales (tabla notificaciones) ─────────────
+const recorte = (texto, max) => {
+    const t = String(texto || '').replace(/\s+/g, ' ').trim();
+    return t.length > max ? `${t.slice(0, max - 1)}…` : t;
+};
+
+// Crea UNA notificación para UNA persona. Si ese mismo aviso ya se mandó
+// (mismo destinatario y mismo origen_id), no lo repite y lo cuenta como enviado.
+// Siempre es solo web: los correos masivos no se tocan.
+async function crearAvisoPersonal({ destinatario, tipo, titulo, mensaje, enlace, origen }) {
+    if (!destinatario) return { ok: false, motivo: 'sin_destinatario' };
+    const { error } = await supabase.from('notificaciones').insert({
+        destinatario, tipo, titulo, mensaje, enlace, origen_id: origen, canal: 'solo_web',
+    });
+    if (error && error.code === '23505') return { ok: true, repetido: true };
+    if (error) { console.error('No se pudo crear el aviso personal:', error); return { ok: false, motivo: 'error' }; }
+    return { ok: true };
+}
+
+/** "Respondieron tu idea": se llama al guardar una respuesta nueva a una idea. */
+export function avisarRespuestaIdea({ idea, respuesta, respondidoEn }) {
+    return crearAvisoPersonal({
+        destinatario: idea && idea.user_id,
+        tipo: 'respuestas',
+        titulo: 'Respondieron tu idea',
+        mensaje: `«${recorte(idea && idea.titulo, 60)}»: ${recorte(respuesta, 140)}`,
+        enlace: 'perfil.html#ideas',
+        origen: `idea:${idea && idea.id}:${respondidoEn || ''}`,
+    });
+}
+
+/** "Tu asesoría quedó publicada": a quien compartió la propuesta. */
+export function avisarAsesoriaPublicada(propuesta) {
+    const nombreNormal = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const curso = CURSOS.find((c) => nombreNormal(c.nombre) === nombreNormal(propuesta.curso));
+    return crearAvisoPersonal({
+        destinatario: propuesta.autor_id,
+        tipo: 'asesorias',
+        titulo: 'Tu asesoría quedó publicada',
+        mensaje: `«${recorte(propuesta.titulo, 70)}» ya está en Asesorías. ¡Gracias por compartir!`,
+        enlace: curso ? `asesorias-curso.html?c=${curso.slug}` : 'asesorias.html',
+        origen: `propuesta:${propuesta.id}`,
+    });
 }
 
 // ───────────── Globito de novedades de la pestaña ─────────────
@@ -228,7 +278,7 @@ async function decorarPropuestas() {
     items.forEach((it) => { it.dataset.da = '1'; });
     const { data, error } = await supabase
         .from('asesorias_propuestas')
-        .select('id, tipo_aporte, mostrar_nombre, autoriza_publicar')
+        .select('id, titulo, curso, autor_id, tipo_aporte, mostrar_nombre, autoriza_publicar')
         .in('id', items.map((it) => it.dataset.id));
     decorando = false;
     if (error || !data) return;
@@ -247,6 +297,25 @@ async function decorarPropuestas() {
         linea.innerHTML = partes.join(' · ');
         const botones = it.querySelector('div[style*="display:flex"]');
         if (botones) it.insertBefore(linea, botones); else it.appendChild(linea);
+
+        // Botón: avisar a quien la compartió que ya se publicó (una sola vez por propuesta)
+        if (r.autor_id && botones) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'da-ok';
+            btn.textContent = 'Avisar: ya está publicada';
+            btn.addEventListener('click', async () => {
+                const ok = await confirmar('Se le enviará una notificación personal a quien compartió esta asesoría. Hazlo cuando ya esté publicada en SIGA.', {
+                    titulo: '¿Avisar que ya está publicada?', textoBoton: 'Sí, avisar',
+                });
+                if (!ok) return;
+                btn.disabled = true;
+                const envio = await avisarAsesoriaPublicada(r);
+                if (envio.ok) { btn.textContent = envio.repetido ? 'Ya se le avisó ✓' : 'Aviso enviado ✓'; }
+                else { btn.disabled = false; alert('No se pudo enviar el aviso. Inténtalo de nuevo.'); }
+            });
+            botones.insertBefore(btn, botones.firstChild);
+        }
     });
 }
 

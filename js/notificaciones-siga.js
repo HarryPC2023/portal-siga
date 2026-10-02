@@ -1,8 +1,16 @@
 // js/notificaciones-siga.js — Campanita de notificaciones en Inicio.
-// Las notificaciones son globales (las crea Harry directo desde el Table
-// Editor de Supabase); cada alumno tiene su propio estado de leído/no-leído
-// en notificaciones_leidas. El ícono de Sugerencias es solo un <a> al
-// hash de perfil.html, no necesita JS propio.
+// Las notificaciones pueden ser para todos (destinatario vacío) o personales
+// (destinatario = el alumno). Cada una tiene un TIPO que se corresponde con
+// un interruptor de Perfil → Avisos:
+//     asesorias     → avisos_asesorias        "Nuevas asesorías"
+//     respuestas    → avisos_respuestas       "Respuestas a lo que envías"
+//     recordatorios → recordatorios
+//     novedades     → actualizaciones_modulos "Novedades de SIGA"
+// Si el alumno apagó un tipo, esas notificaciones no se le muestran.
+// Si la notificación trae `enlace`, al tocarla se marca leída y se abre.
+// Cada alumno tiene su propio estado de leído/no-leído en
+// notificaciones_leidas. El ícono de Sugerencias es solo un <a> al hash de
+// perfil.html, no necesita JS propio.
 import { supabase, requerirSesion } from './auth-siga.js?v=9';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -21,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Si el usuario las desactivó, ni se cargan ni se muestra la campanita.
     const { data: prefs } = await supabase
         .from('preferencias_notificacion')
-        .select('notificaciones_activas')
+        .select('notificaciones_activas, avisos_asesorias, avisos_respuestas, recordatorios, actualizaciones_modulos')
         .eq('user_id', sesion.user.id)
         .maybeSingle();
 
@@ -32,6 +40,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let notificaciones = [];
     let idsLeidas = new Set();
+
+    // Tipo de notificación → columna de Perfil → Avisos que la controla.
+    const COLUMNA_POR_TIPO = {
+        asesorias: 'avisos_asesorias',
+        respuestas: 'avisos_respuestas',
+        recordatorios: 'recordatorios',
+        novedades: 'actualizaciones_modulos',
+    };
+    const tipoPermitido = (tipo) => {
+        const columna = COLUMNA_POR_TIPO[tipo];
+        return !columna || !prefs || prefs[columna] !== false;
+    };
+
+    // Los textos pueden traer lo que escribió un alumno (título de su idea): se escapan.
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+
+    // Raíz del sitio (para enlaces como "perfil.html#ideas" desde cualquier página).
+    const raiz = (() => {
+        const logo = document.querySelector('.app-nav-logo');
+        return (logo && logo.href ? logo.href : window.location.href).replace(/[^/]*$/, '');
+    })();
 
     function formatearFecha(iso) {
         const fecha = new Date(iso);
@@ -55,11 +86,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         lista.innerHTML = notificaciones.map((n) => `
-      <div class="notif-item ${idsLeidas.has(n.id) ? '' : 'no-leida'}" data-id="${n.id}">
+      <div class="notif-item ${idsLeidas.has(n.id) ? '' : 'no-leida'}" data-id="${n.id}"${n.enlace ? ` data-enlace="${esc(n.enlace)}" style="cursor:pointer"` : ''}>
         <button type="button" class="notif-item-borrar" title="Borrar notificación" aria-label="Borrar notificación">✕</button>
-        <span class="notif-item-titulo">${n.titulo}</span>
-        <span class="notif-item-mensaje">${n.mensaje}</span>
-        <span class="notif-item-fecha">${formatearFecha(n.creado_en)}</span>
+        <span class="notif-item-titulo">${esc(n.titulo)}</span>
+        <span class="notif-item-mensaje">${esc(n.mensaje)}</span>
+        <span class="notif-item-fecha">${formatearFecha(n.creado_en)}${n.destinatario ? ' · Para ti' : ''}</span>
       </div>
     `).join('');
 
@@ -71,12 +102,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         });
 
+        lista.querySelectorAll('.notif-item[data-enlace]').forEach((fila) => {
+            fila.addEventListener('click', async () => {
+                const id = fila.dataset.id;
+                const destino = fila.dataset.enlace;
+                await marcarUnaLeida(id);
+                window.location.href = new URL(destino, raiz).href;
+            });
+        });
+
         if (btnLimpiar) btnLimpiar.hidden = notificaciones.length === 0;
     }
 
     async function cargar() {
         const [{ data: notifs, error: errNotifs }, { data: leidas, error: errLeidas }, { data: ocultas, error: errOcultas }] = await Promise.all([
-            supabase.from('notificaciones').select('id, titulo, mensaje, creado_en').order('creado_en', { ascending: false }).limit(20),
+            supabase.from('notificaciones').select('id, titulo, mensaje, creado_en, tipo, destinatario, enlace').order('creado_en', { ascending: false }).limit(30),
             supabase.from('notificaciones_leidas').select('notificacion_id').eq('user_id', sesion.user.id),
             supabase.from('notificaciones_ocultas').select('notificacion_id').eq('user_id', sesion.user.id),
         ]);
@@ -92,7 +132,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Las que el usuario ya borró de su lista no vuelven a aparecer,
         // aunque sigan existiendo globalmente para los demás alumnos.
         const idsOcultas = new Set((ocultas || []).map((o) => o.notificacion_id));
-        notificaciones = (notifs || []).filter((n) => !idsOcultas.has(n.id));
+        // Además de lo que la base ya filtra por permisos, se descartan las
+        // personales ajenas y los tipos que el alumno apagó en Avisos.
+        notificaciones = (notifs || []).filter((n) => !idsOcultas.has(n.id)
+            && (!n.destinatario || n.destinatario === sesion.user.id)
+            && tipoPermitido(n.tipo));
         idsLeidas = new Set((leidas || []).map((l) => l.notificacion_id));
         pintar();
     }
@@ -130,6 +174,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             .upsert(filas, { onConflict: 'user_id,notificacion_id', ignoreDuplicates: true });
 
         if (error) console.warn('No se pudieron limpiar las notificaciones:', error);
+    }
+
+    /* Marca UNA como leída (al tocar una notificación con enlace). */
+    async function marcarUnaLeida(id) {
+        const notif = notificaciones.find((n) => String(n.id) === String(id));
+        if (!notif || idsLeidas.has(notif.id)) return;
+        idsLeidas.add(notif.id);
+        const { error } = await supabase
+            .from('notificaciones_leidas')
+            .upsert({ user_id: sesion.user.id, notificacion_id: notif.id }, { onConflict: 'user_id,notificacion_id', ignoreDuplicates: true });
+        if (error) console.warn('No se pudo marcar como leída:', error);
     }
 
     async function marcarTodasLeidas() {

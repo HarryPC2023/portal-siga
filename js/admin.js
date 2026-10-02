@@ -5,7 +5,7 @@
 // cliente es solo para no dejar la pantalla mostrando "Cargando..."
 // eternamente a alguien más y redirigirlo de vuelta con claridad.
 import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
-import { iniciarDemandaAsesorias } from './admin-asesorias.js?v=1';
+import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.js?v=2';
 
 const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
@@ -255,6 +255,9 @@ async function guardarRespuestaIdea(item, original) {
     const respuesta = item.querySelector('.admin-idea-texto').value.trim();
 
     const cambios = { estado, respuesta: respuesta || null };
+    // Solo se avisa a quien envió la idea cuando hay una respuesta NUEVA o distinta
+    // (no si solo cambias el estado, ni si guardas dos veces lo mismo).
+    const respuestaNueva = Boolean(respuesta) && respuesta !== (original.respuesta || '');
     // La fecha de respuesta solo cambia cuando cambia el texto de la respuesta.
     if (respuesta !== (original.respuesta || '')) {
         cambios.respondido_en = respuesta ? new Date().toISOString() : null;
@@ -284,7 +287,13 @@ async function guardarRespuestaIdea(item, original) {
     badge.className = `admin-badge admin-badge-${estado}`;
     badge.textContent = ESTADOS_IDEA[estado] || estado;
     aviso.textContent = 'Guardado ✓';
-    setTimeout(() => { aviso.textContent = ''; }, 2200);
+    if (respuestaNueva) {
+        // Notificación personal: "Respondieron tu idea" (le llega solo a quien la envió).
+        const envio = await avisarRespuestaIdea({ idea: original, respuesta, respondidoEn: cambios.respondido_en });
+        aviso.textContent = envio.ok ? 'Guardado ✓ · aviso enviado' : 'Guardado ✓ (no se pudo enviar el aviso)';
+        if (!envio.ok) aviso.classList.add('error');
+    }
+    setTimeout(() => { aviso.textContent = ''; aviso.classList.remove('error'); }, 2200);
 }
 
 async function eliminarSugerencia(id, btn) {
@@ -519,12 +528,21 @@ async function eliminarCargaEnviada(id, ruta, btn) {
    nunca se escribe a mano — lo decide el switch de "Enviar también
    por correo" para que no dependa de acordarse del valor exacto.
    ============================================================ */
+// Tipos de aviso (cada uno lo controla un interruptor de Perfil → Avisos).
+const ETIQUETA_TIPO_AVISO = {
+    novedades: 'Novedades de SIGA',
+    asesorias: 'Nuevas asesorías',
+    recordatorios: 'Recordatorios',
+    respuestas: 'Respuestas',
+};
+
 async function cargarNotificaciones() {
     const cont = document.getElementById('listaNotificaciones');
     const [{ data, error }, { data: ocultas, error: errOcultas }] = await Promise.all([
         supabase
             .from('notificaciones')
-            .select('id, titulo, mensaje, canal, creado_en')
+            .select('id, titulo, mensaje, canal, tipo, creado_en')
+            .is('destinatario', null) // las personales ("respondieron tu idea"…) no se listan aquí
             .order('creado_en', { ascending: false })
             .limit(20),
         // Reutiliza la misma tabla que usa la campanita de los alumnos
@@ -555,7 +573,7 @@ async function cargarNotificaciones() {
                 <span class="admin-item-titulo">${escapeHtml(n.titulo)}</span>
                 <span class="admin-badge admin-badge-${escapeHtml(n.canal)}">${esCorreo ? '📧 Web + correo' : '🌐 Solo web'}</span>
             </div>
-            <p class="admin-item-meta">${formatearFecha(n.creado_en)}</p>
+            <p class="admin-item-meta">${formatearFecha(n.creado_en)} · ${escapeHtml(ETIQUETA_TIPO_AVISO[n.tipo] || 'Novedades de SIGA')}</p>
             <p class="admin-item-texto">${escapeHtml(n.mensaje)}</p>
             <button type="button" class="admin-btn-ocultar-notif" data-id="${n.id}" aria-label="Ocultar solo para mí" title="Ocultar solo para mí (sigue visible para los alumnos)">🙈</button>
             <button type="button" class="admin-btn-eliminar" data-id="${n.id}" aria-label="Eliminar para todos" title="Eliminar para todos">🗑</button>
@@ -636,13 +654,15 @@ function inicializarFormNotificacion() {
         if (!titulo || !mensaje) return;
 
         const canal = inputCorreo.checked ? 'web_y_correo' : 'solo_web';
+        const marcado = form.querySelector('input[name="notifTipo"]:checked');
+        const tipo = marcado ? marcado.value : 'novedades';
 
         btnPublicar.disabled = true;
         btnPublicar.textContent = 'Publicando…';
         msg.textContent = '';
         msg.className = 'admin-msg';
 
-        const { error } = await supabase.from('notificaciones').insert({ titulo, mensaje, canal });
+        const { error } = await supabase.from('notificaciones').insert({ titulo, mensaje, canal, tipo });
 
         btnPublicar.disabled = false;
         btnPublicar.textContent = 'Publicar notificación';

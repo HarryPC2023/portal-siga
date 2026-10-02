@@ -80,6 +80,19 @@
                                 placeholder="Describe brevemente el aviso…"></textarea>
                         </label>
 
+                        <div class="admin-form-campo">
+                            <span>Tipo de aviso</span>
+                            <div class="da-tipos" role="radiogroup" aria-label="Tipo de aviso">
+                                <label><input type="radio" name="notifTipo" value="novedades" checked><span>Novedades de
+                                        SIGA</span></label>
+                                <label><input type="radio" name="notifTipo" value="asesorias"><span>Nuevas
+                                        asesorías</span></label>
+                                <label><input type="radio" name="notifTipo"
+                                        value="recordatorios"><span>Recordatorios</span></label>
+                            </div>
+                            <small class="da-tipos-ayuda">Cada alumno puede apagar cada tipo en Perfil → Avisos.</small>
+                        </div>
+
                         <label class="perfil-toggle admin-form-toggle">
                             <span>
                                 <strong>Enviar también por correo</strong>

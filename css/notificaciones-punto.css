@@ -1,0 +1,15 @@
+/* css/notificaciones-punto.css — Puntos de aviso del menú (js/notificaciones-punto.js). */
+.np-punto {
+  position: absolute; width: 10px; height: 10px; border-radius: 50%;
+  background: #E0336B; border: 2px solid #fff; box-sizing: content-box;
+  box-shadow: 0 0 0 0 rgba(224, 51, 107, 0.5); animation: np-latido 2.2s ease-out infinite;
+  pointer-events: none;
+}
+.np-asesorias { top: 2px; right: -2px; }
+.np-avatar { top: -3px; right: -3px; }
+@keyframes np-latido {
+  0% { box-shadow: 0 0 0 0 rgba(224, 51, 107, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(224, 51, 107, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(224, 51, 107, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .np-punto { animation: none; } }

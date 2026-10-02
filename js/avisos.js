@@ -8,29 +8,39 @@
 //
 // Tabla: preferencias_notificacion
 //   notificaciones_activas  → interruptor general
-//   avisos_materiales       → "Nuevas asesorías"  (⚠ el nombre de la columna
-//                             es de cuando esto eran "nuevos materiales";
-//                             se dejó igual para no migrar. Ver nota en
-//                             decisions-and-learnings / estado del Perfil)
+//   avisos_asesorias        → "Nuevas asesorías"  (antes se llamaba
+//                             avisos_materiales; la columna vieja se puede
+//                             borrar cuando todo esto esté publicado)
+//   avisos_respuestas       → "Respuestas a lo que envías" (respuestas a tus
+//                             ideas y aviso de que tu asesoría se publicó)
 //   recordatorios           → "Recordatorios"
 //   actualizaciones_modulos → "Novedades de SIGA"
 //
-// Hoy la campanita del menú solo respeta el interruptor GENERAL
-// (js/notificaciones-siga.js). Los interruptores por tipo ya se guardan,
-// pero aún no filtran nada porque las notificaciones no tienen "tipo".
+// Cada notificación tiene un tipo que corresponde a uno de estos interruptores
+// (ver js/notificaciones-siga.js y js/notificaciones-punto.js): si el alumno
+// apaga un tipo, esas notificaciones dejan de mostrársele.
 // ------------------------------------------------------------
 
 import { supabase } from './auth-siga.js?v=9';
 
 const TIPOS = [
     {
-        columna: 'avisos_materiales',
+        columna: 'avisos_asesorias',
         titulo: 'Nuevas asesorías',
         texto: 'Cuando se publique una asesoría nueva para tus cursos.',
         ejemplo: 'Nueva asesoría en Diseño de Base de Datos',
         color: '#1E9E5A',
         fondo: '#E6F2E9',
         icono: '<path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/>',
+    },
+    {
+        columna: 'avisos_respuestas',
+        titulo: 'Respuestas a lo que envías',
+        texto: 'Cuando respondemos una idea tuya o publicamos una asesoría que compartiste.',
+        ejemplo: 'Respondieron tu idea: «Deberían agregar…»',
+        color: '#C13F94',
+        fondo: '#FBEAF4',
+        icono: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
     },
     {
         columna: 'recordatorios',
@@ -82,14 +92,15 @@ export async function montarAvisos(sesion) {
     // Si el alumno nunca tocó nada, todo está activado (igual que antes).
     const prefs = {
         notificaciones_activas: true,
-        avisos_materiales: true,
+        avisos_asesorias: true,
+        avisos_respuestas: true,
         recordatorios: true,
         actualizaciones_modulos: true,
     };
 
     const { data, error } = await supabase
         .from('preferencias_notificacion')
-        .select('notificaciones_activas, avisos_materiales, recordatorios, actualizaciones_modulos')
+        .select('notificaciones_activas, avisos_asesorias, avisos_respuestas, recordatorios, actualizaciones_modulos')
         .eq('user_id', userId)
         .maybeSingle();
     if (error) console.error('Error cargando avisos:', error);
