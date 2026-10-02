@@ -199,6 +199,20 @@
   transform: translateX(-50%) rotate(45deg);
 }
 
+.an-botbtn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.an-botbtn:focus-visible {
+  outline: 3px solid var(--brand-morado);
+  outline-offset: 4px;
+}
+
 .an-bubble.visible {
   opacity: 1;
   transform: translate(-50%, 0);
@@ -407,6 +421,26 @@
   font-size: 40px;
   color: var(--ink2);
   line-height: 1;
+}
+
+.an-c-der {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.an-nuevo {
+  background: #E0336B;
+  color: #fff;
+  font: 700 10.5px 'Poppins', sans-serif;
+  letter-spacing: 0.03em;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.an-nuevo-sm {
+  font-size: 9.5px;
+  padding: 2px 8px;
 }
 
 .an-c-ciclo {

@@ -4,7 +4,7 @@
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
 import {
     CURSOS, EVALUACIONES, NOMBRE_EVALUACION, tieneContenido, ciclosDisponibles, planDelCurso,
-    estadoEvaluacion, recursosGenerales,
+    estadoEvaluacion, recursosGenerales, cursoTieneNovedad, recursosNuevos,
 } from './asesorias-cursos.js?v=1';
 import {
     esc, normalizar, estiloAttr, estiloCurso, botcitoSVG, cargarMisVotos, alternarVoto,
@@ -97,7 +97,7 @@ function tarjeta(curso) {
         : `<button type="button" class="an-btn an-btn-ghost" data-lo="${esc(curso.codigo)}">Lo necesito</button>`;
     return `
         <article class="an-curso" style="${estiloAttr(curso)}">
-            <div class="an-c-top"><span class="an-glifo">${esc(estiloCurso(curso).glifo)}</span><span class="an-c-ciclo">Ciclo ${curso.ciclo}</span></div>
+            <div class="an-c-top"><span class="an-glifo">${esc(estiloCurso(curso).glifo)}</span><span class="an-c-der">${cursoTieneNovedad(curso) ? '<span class="an-nuevo">Nuevo</span>' : ''}<span class="an-c-ciclo">Ciclo ${curso.ciclo}</span></span></div>
             <div class="an-c-body">
                 <h3>${esc(curso.nombre)}</h3>
                 <p class="an-c-meta">${meta}</p>
@@ -142,25 +142,110 @@ async function alternarLo(btn) {
     else { marcarLo(btn, !activar); aviso('No se pudo guardar. Intenta de nuevo en un momento.', 'error'); }
 }
 
-// ───────────── Globito del botcito: una sola vez ─────────────
-const LS_BURBUJA = 'siga_asesorias_burbuja';
+// ───────────── Botcito: bienvenida, novedades y consejos ─────────────
+// - Primera visita: saludo de bienvenida.
+// - Visitas siguientes: SOLO si hay material nuevo (publicado hace menos de 14 días
+//   y que ese navegador aún no vio anunciado). Si no hay nada que contar, no sale nada.
+// - Al tocar al botcito: un consejo distinto cada vez.
+// Todos los globitos duran 5 segundos y se pueden cerrar con un toque.
+const LS_BURBUJA = 'siga_asesorias_burbuja';          // ya vio la bienvenida
+const LS_VISTAS = 'siga_asesorias_novedades_vistas';  // ids de recursos ya anunciados
+const DURACION_MS = 5000;
 
-function mostrarBurbuja() {
-    const b = document.querySelector('.an-bubble');
-    if (!b) return;
+const CONSEJOS = [
+    'Toca una evaluación (PC1, PC2…) en una tarjeta para ir directo a ella.',
+    '¿No ves tu curso? Pídelo y te avisamos cuando haya material.',
+    'Si te falta algo, toca «Lo necesito»: así sé qué preparar primero.',
+    '¿Viste un error en una asesoría? Usa «Reportar un error».',
+    '¿Tienes una asesoría que ayudó a otros? Compártela, puede salir con tu nombre.',
+    'Lo último que abriste queda en «Continúa donde quedaste».',
+];
+
+let globito = null;
+let temporizador = null;
+let retrasoTimer = null;
+let ultimoConsejo = -1;
+
+function leerLista(clave) {
+    try { const v = JSON.parse(localStorage.getItem(clave) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+}
+
+function guardarLista(clave, lista) {
+    try { localStorage.setItem(clave, JSON.stringify(lista)); } catch (e) { /* sin almacenamiento */ }
+}
+
+function ocultarGlobito() {
+    if (globito) globito.classList.remove('visible');
+}
+
+function mostrarGlobito({ texto, href = '', retraso = 0 }) {
+    if (!globito) return;
+    clearTimeout(retrasoTimer);
+    clearTimeout(temporizador);
+    retrasoTimer = setTimeout(() => {
+        globito.textContent = texto;
+        globito.dataset.href = href;
+        globito.classList.add('visible');
+        temporizador = setTimeout(ocultarGlobito, DURACION_MS);
+    }, retraso);
+}
+
+function anunciarNovedades() {
+    const vistas = new Set(leerLista(LS_VISTAS));
+    const nuevas = recursosNuevos().filter(({ recurso }) => !vistas.has(recurso.id));
+    if (!nuevas.length) return;
+    nuevas.forEach(({ recurso }) => vistas.add(recurso.id));
+    guardarLista(LS_VISTAS, [...vistas]);
+
+    const slugs = [...new Set(nuevas.map(({ curso }) => curso.slug))];
+    if (slugs.length === 1) {
+        const { curso, recurso } = nuevas[0];
+        const unico = nuevas.length === 1;
+        const destino = `asesorias-curso.html?c=${encodeURIComponent(curso.slug)}${unico ? `&ev=${recurso.evaluacion || 'mono'}` : ''}`;
+        mostrarGlobito({
+            texto: unico ? `¡Hay material nuevo de ${curso.nombre}!` : `¡Hay ${nuevas.length} materiales nuevos de ${curso.nombre}!`,
+            href: destino, retraso: 900,
+        });
+    } else {
+        mostrarGlobito({ texto: `¡Hay ${nuevas.length} materiales nuevos en ${slugs.length} cursos! Busca la etiqueta «Nuevo».`, retraso: 900 });
+    }
+}
+
+function saludarOAnunciar() {
     let vista = false;
-    try { vista = localStorage.getItem(LS_BURBUJA) === '1'; } catch (e) { /* sin almacenamiento: se muestra */ }
-    if (vista) return;
-    try { localStorage.setItem(LS_BURBUJA, '1'); } catch (e) { /* nada */ }
-    const ocultar = () => b.classList.remove('visible');
-    setTimeout(() => b.classList.add('visible'), 700);
-    setTimeout(ocultar, 7000);
-    b.addEventListener('click', ocultar);
+    try { vista = localStorage.getItem(LS_BURBUJA) === '1'; } catch (e) { /* sin almacenamiento: tratar como primera visita */ }
+    if (!vista) {
+        try { localStorage.setItem(LS_BURBUJA, '1'); } catch (e) { /* nada */ }
+        // Quien llega por primera vez ya verá las etiquetas "Nuevo": no se le anuncia lo mismo después.
+        guardarLista(LS_VISTAS, recursosNuevos().map(({ recurso }) => recurso.id));
+        mostrarGlobito({ texto: '¡Hola! Aquí encuentras asesorías hechas por estudiantes.', retraso: 700 });
+    } else {
+        anunciarNovedades();
+    }
+}
+
+function consejoSiguiente() {
+    let i;
+    do { i = Math.floor(Math.random() * CONSEJOS.length); } while (CONSEJOS.length > 1 && i === ultimoConsejo);
+    ultimoConsejo = i;
+    mostrarGlobito({ texto: CONSEJOS[i] });
+}
+
+function iniciarBotcito() {
+    globito = document.querySelector('.an-bubble');
+    $('anBotHero').innerHTML = `<button type="button" class="an-botbtn" aria-label="Botcito: toca para un consejo">${botcitoSVG('an-bot')}</button>`;
+    if (!globito) return;
+    globito.addEventListener('click', () => {
+        const destino = globito.dataset.href;
+        ocultarGlobito();
+        if (destino) location.href = destino;
+    });
+    document.querySelector('.an-botbtn').addEventListener('click', consejoSiguiente);
+    saludarOAnunciar();
 }
 
 // ───────────── Arranque ─────────────
-$('anBotHero').innerHTML = botcitoSVG('an-bot');
-mostrarBurbuja();
+iniciarBotcito();
 pintarFila();
 pintarFiltros();
 pintarCursos();

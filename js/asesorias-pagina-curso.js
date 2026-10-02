@@ -7,7 +7,7 @@
 import { abrirVisorPDF, abrirVisorWeb } from './asesorias-visor.js?v=2';
 import {
     CURSOS, EVALUACIONES, NOMBRE_EVALUACION, cursoPorSlug, estadoEvaluacion,
-    recursosGenerales, tieneContenido, planDelCurso,
+    recursosGenerales, tieneContenido, planDelCurso, esNuevo,
 } from './asesorias-cursos.js?v=1';
 import {
     PORTADA, esc, estiloAttr, estiloCurso, cargarMisVotos, alternarVoto, claveVoto,
@@ -29,7 +29,7 @@ function recursoHTML(r) {
     return `
         <div class="an-rec">
             <div class="an-rec-tx"><b>${esc(r.titulo)}</b>${r.descripcion ? `<p>${esc(r.descripcion)}</p>` : ''}
-                <span class="an-por">Hecha por ${esc(r.por || 'Harry')}</span></div>
+                <span class="an-por">Hecha por ${esc(r.por || 'Harry')}</span>${esNuevo(r) ? ' <span class="an-nuevo an-nuevo-sm">Nuevo</span>' : ''}</div>
             <div class="an-rec-ac">
                 <button type="button" class="an-btn" data-abrir="${esc(r.id)}">${accion}</button>
                 <button type="button" class="an-link" data-reportar="${esc(r.id)}">Reportar un error</button>

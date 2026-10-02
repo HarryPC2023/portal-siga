@@ -28,6 +28,9 @@
 // 3) `tipo`: 'pdf' (archivo en assets/asesorias/) o 'web' (página HTML).
 // 4) `estado`: 'disponible' (por defecto) o 'preparacion' (ya se está
 //    trabajando, aún no se publica).
+// 5) `fecha`: 'AAAA-MM-DD' del día que lo publicas. Durante 14 días el curso
+//    y el recurso llevan la etiqueta "Nuevo", y el botcito avisa una vez en
+//    cada navegador. Los recursos de antes llevan `fecha: null` (no son nuevos).
 // Con eso la tira de evaluaciones del curso se enciende sola; no hay
 // que tocar HTML.
 
@@ -77,6 +80,7 @@ export const CURSOS = [
                 evaluacion: null,
                 titulo: 'Monografía — Modelado Conceptual de Datos',
                 descripcion: 'Fundamentos para encarar el trabajo grupal y qué espera el profesor.',
+                fecha: null,
                 src: 'assets/asesorias/monografia-mcd.pdf',
             },
         ],
@@ -93,6 +97,7 @@ export const CURSOS = [
                 evaluacion: 'PC1',
                 titulo: 'PC1 — Diseño de Base de Datos',
                 descripcion: 'Herramientas, arquitectura, componentes y checklist antes de exponer.',
+                fecha: null,
                 // Hoy vive en un repositorio aparte; se migra dentro de SIGA al final.
                 src: 'https://harrypc2023.github.io/asesoria-dbd/',
             },
@@ -102,6 +107,7 @@ export const CURSOS = [
                 evaluacion: null,
                 titulo: 'Monografía — Diseño de Base de Datos',
                 descripcion: 'Prototipado de interfaces: coherencia, detalle y datos reales por pantalla.',
+                fecha: null,
                 src: 'assets/asesorias/monografia-dbd-avanzado.pdf',
             },
         ],
@@ -153,4 +159,31 @@ export function planDelCurso(curso) {
 // Ciclos que realmente tienen cursos (para armar los filtros de la portada).
 export function ciclosDisponibles() {
     return [...new Set(CURSOS.map((c) => c.ciclo))].sort((a, b) => a - b);
+}
+
+// ───────────── Novedades ("Nuevo") ─────────────
+
+// Cuántos días un recurso publicado se considera nuevo.
+export const NOVEDAD_DIAS = 14;
+
+const MS_DIA = 24 * 60 * 60 * 1000;
+
+// ¿Este recurso se publicó hace poco (y ya está disponible)?
+export function esNuevo(recurso, hoy = new Date()) {
+    if (!recurso || !recurso.fecha || (recurso.estado || 'disponible') !== 'disponible') return false;
+    const publicado = new Date(`${recurso.fecha}T00:00:00`);
+    if (Number.isNaN(publicado.getTime())) return false;
+    const dias = Math.floor((hoy.getTime() - publicado.getTime()) / MS_DIA);
+    return dias >= 0 && dias <= NOVEDAD_DIAS;
+}
+
+export function cursoTieneNovedad(curso, hoy = new Date()) {
+    return curso.recursos.some((r) => esNuevo(r, hoy));
+}
+
+// Todos los recursos nuevos, con su curso: [{ curso, recurso }].
+export function recursosNuevos(hoy = new Date()) {
+    const lista = [];
+    CURSOS.forEach((curso) => curso.recursos.forEach((recurso) => { if (esNuevo(recurso, hoy)) lista.push({ curso, recurso }); }));
+    return lista;
 }
