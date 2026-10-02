@@ -40,13 +40,13 @@ const PREGUNTAS = [
     {
         id: 'que-hay-en-asesorias', cat: 'asesorias',
         pregunta: '¿Qué encuentro en Asesorías?',
-        respuesta: '<p>Asesorías reúne guías, resúmenes, monografías y material de apoyo preparado por estudiantes que ya llevaron el curso, para reforzar lo que ves en clase con explicaciones detalladas. Puedes filtrar por <strong>ciclo</strong> y por <strong>curso</strong>, y cada recurso se abre como página web o como PDF.</p>',
+        respuesta: '<p>Asesorías reúne guías, resúmenes, monografías y material de apoyo preparado por estudiantes que ya llevaron el curso, organizado <strong>por curso</strong> y por evaluación (PC1, PC2, EP, PC3, PC4, EF y ES). Elige tu curso, abre la evaluación que necesitas y el material se ve como página web o como PDF. Si algo todavía no está, toca <strong>"Lo necesito"</strong>: así sabemos qué preparar primero.</p>',
         enlace: ['Ir a Asesorías', 'asesorias.html'],
     },
     {
         id: 'proponer-asesoria', cat: 'asesorias',
         pregunta: '¿Puedo compartir mi propia asesoría?',
-        respuesta: '<p>¡Sí! En Asesorías usa <strong>"Proponer una asesoría"</strong>: indica el título, el curso, el ciclo, un enlace (Drive, Notion, YouTube…) o el archivo (PDF, Word, PowerPoint o Excel, hasta 20 MB) y una descripción breve. Tu propuesta se revisa antes de publicarse, para que todo lo que encuentren tus compañeros sea de calidad.</p>',
+        respuesta: '<p>¡Sí! En la portada de Asesorías usa <strong>"Comparte tu asesoría"</strong>: elige el curso, ponle un título, sube tu archivo (PDF, Word, PowerPoint o Excel, hasta 20 MB) o pega un enlace (Drive, Canva, Notion, YouTube…), y decide si quieres aparecer con tu nombre o sin él. Tu aporte se revisa antes de publicarse, para que todo lo que encuentren tus compañeros sea de calidad. Si el curso que buscas no está, ahí mismo puedes <strong>pedirlo</strong>.</p>',
         enlace: ['Ir a Asesorías', 'asesorias.html'],
     },
     {

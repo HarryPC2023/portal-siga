@@ -10,9 +10,8 @@
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
 import { CURSOS } from './asesorias-cursos.js?v=1';
 
-// Página de la portada. Al hacer el corte (asesorias-nueva.html pasa a
-// llamarse asesorias.html) este es el ÚNICO valor que hay que cambiar.
-export const PORTADA = 'asesorias-nueva.html';
+// Página de la portada de Asesorías (desde el corte del 1 oct 2026 es asesorias.html).
+export const PORTADA = 'asesorias.html';
 
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
 const TAMANO_MAXIMO_MB = 20;
