@@ -1162,40 +1162,9 @@ a.an-p:focus-visible {
     min-width: 0;
   }
 
-  /* El botcito también se ve en el celular: chiquito, arriba a la derecha, junto a "ASESORÍAS" */
+  /* En el celular el botcito del encabezado no se muestra (se veía sobrecargado) */
   .an-botwrap {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 84px;
-    padding-top: 0;
-  }
-
-  .an-bot {
-    width: 84px;
-    height: 92px;
-  }
-
-  /* El globito sale debajo del botcito, alineado a la derecha, para no taparlo */
-  .an-bubble {
-    top: calc(100% + 8px);
-    left: auto;
-    right: 0;
-    max-width: 210px;
-    transform: translateY(6px);
-  }
-
-  .an-bubble.visible {
-    transform: none;
-  }
-
-  .an-bubble::after {
-    bottom: auto;
-    top: -6px;
-    left: auto;
-    right: 34px;
-    transform: rotate(45deg);
+    display: none;
   }
 
   .an-buscar {
