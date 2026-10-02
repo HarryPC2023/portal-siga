@@ -4,12 +4,13 @@
 //   · Punto en "Asesorías": hay notificaciones SIN LEER de tipo "asesorias"
 //     (asesoría nueva, o "tu asesoría quedó publicada").
 //   · Punto en el avatar: hay notificaciones SIN LEER de tipo "respuestas"
-//     (por ejemplo, "respondieron tu idea").
+//     (por ejemplo, "respondieron tu idea"), y el mismo punto en la tarjeta
+//     "Ideas" del menú de cuenta para indicar a dónde tocar.
 //
 // Respeta Perfil → Avisos: si el alumno apagó los avisos o ese tipo, no
 // aparece el punto. El punto se va al visitar el lugar al que apunta:
 //     asesorias.html        → se marcan leídas las de tipo "asesorias"
-//     perfil.html#ideas     → se marcan leídas las de tipo "respuestas"
+//     perfil.html#sugerencias (pestaña "Ideas") → se marcan leídas las de tipo "respuestas"
 // (es el mismo estado de "leída" que usa la campanita de Inicio).
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
 
@@ -46,7 +47,12 @@ function poner(el, clase, hay, etiqueta) {
 function pintar() {
     const enlaceAsesorias = [...document.querySelectorAll('.app-nav-links a')].find((a) => /asesorias\.html$/.test(a.getAttribute('href') || ''));
     poner(enlaceAsesorias, 'np-asesorias', noLeidas.some((n) => n.tipo === 'asesorias'), 'Hay novedades en Asesorías');
-    poner(document.getElementById('avatarBtn'), 'np-avatar', noLeidas.some((n) => n.tipo === 'respuestas'), 'Tienes respuestas nuevas');
+    const hayRespuestas = noLeidas.some((n) => n.tipo === 'respuestas');
+    poner(document.getElementById('avatarBtn'), 'np-avatar', hayRespuestas, 'Tienes respuestas nuevas');
+    // La tarjeta "Ideas" del menú de cuenta (la arma menu-usuario.js al abrirse)
+    document.querySelectorAll('#avatarMenu a[href$="perfil.html#sugerencias"]').forEach((a) => {
+        poner(a, 'np-tarjeta', hayRespuestas, 'Tienes respuestas nuevas en Ideas');
+    });
 }
 
 async function marcarLeidas(tipo) {
@@ -65,7 +71,7 @@ function visitaMarcaLeidas() {
     const ruta = window.location.pathname;
     if (/\/asesorias(-curso)?\.html$/.test(ruta)) setTimeout(() => marcarLeidas('asesorias'), 1500);
     if (/\/perfil\.html$/.test(ruta)) {
-        const revisar = () => { if (window.location.hash === '#ideas') setTimeout(() => marcarLeidas('respuestas'), 1200); };
+        const revisar = () => { if (window.location.hash === '#sugerencias') setTimeout(() => marcarLeidas('respuestas'), 1200); };
         revisar();
         window.addEventListener('hashchange', revisar);
     }
@@ -99,8 +105,11 @@ async function iniciar() {
 
         cargarEstilo();
         pintar();
-        // El avatar lo termina de armar auth-siga.js: se vuelve a comprobar un instante después.
+        // El avatar lo termina de armar auth-siga.js y las tarjetas del menú las arma menu-usuario.js
+        // al abrirse: se vuelve a comprobar un instante después y cada vez que el menú cambia.
         setTimeout(pintar, 1500);
+        const menu = document.getElementById('avatarMenu');
+        if (menu) new MutationObserver(() => pintar()).observe(menu, { childList: true, subtree: true });
         visitaMarcaLeidas();
     } catch (e) {
         console.warn('Puntos de aviso no disponibles:', e);

@@ -92,7 +92,7 @@ export function avisarRespuestaIdea({ idea, respuesta, respondidoEn }) {
         tipo: 'respuestas',
         titulo: 'Respondieron tu idea',
         mensaje: `«${recorte(idea && idea.titulo, 60)}»: ${recorte(respuesta, 140)}`,
-        enlace: 'perfil.html#ideas',
+        enlace: 'perfil.html#sugerencias', // la pestaña "Ideas" del perfil se llama "sugerencias" en la URL
         origen: `idea:${idea && idea.id}:${respondidoEn || ''}`,
     });
 }

@@ -776,3 +776,7 @@
         grid-template-columns: 1fr;
     }
 }
+
+.dash-hero p {
+    max-width: none;
+}
