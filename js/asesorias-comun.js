@@ -188,7 +188,7 @@ export function abrirReporte({ codigo_curso, recurso_id, titulo }) {
 // ───────────── Ventanas (base común) ─────────────
 let ventana = null;
 
-function crearVentana(html) {
+export function crearVentana(html) {
     ventana = document.createElement('div');
     ventana.className = 'an-ov';
     ventana.innerHTML = `<div class="an-mdl" role="dialog" aria-modal="true">${html}</div>`;

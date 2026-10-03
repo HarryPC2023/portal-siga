@@ -6,6 +6,7 @@
 // ejemplo o Método) si la tiene.
 // Las preguntas NO se ven al entrar: salen al tocar "Preguntas frecuentes" (lista
 // desplegable con filas lila y blancas) o al empezar a escribir en el buscador.
+// Si no encuentra la duda, el alumno puede ENVIAR su pregunta (asesorias-pregunta-form.js).
 //
 // Lo llama asesorias-pagina-curso.js:  montarBotcito(<contenedor .an-curso-grid>, curso)
 // Si el curso no tiene preguntas publicadas (o falla la carga), NO muestra nada:
@@ -14,6 +15,7 @@
 // ⚠️ Archivo NUEVO (no confundir con asesorias-cursos.js ni asesorias-comun.js).
 import { supabase } from './auth-siga.js?v=9';
 import { esc, normalizar, botcitoSVG } from './asesorias-comun.js?v=1';
+import { estadoEnvio, abrirFormPregunta } from './asesorias-pregunta-form.js?v=1';
 
 const ETIQUETAS = { concepto: 'Concepto', caso: 'Caso de ejemplo', metodo: 'Método' };
 
@@ -148,6 +150,8 @@ export async function montarBotcito(grid, curso) {
                 <p class="an-faq-estado" id="anFaqEstado" aria-live="polite"></p>
                 <div class="an-faq-lista" id="anFaqLista"></div>
             </div>
+            <p class="an-faq-preg" id="anFaqPreg" hidden>¿No está tu duda? <button type="button" class="an-faq-env" id="anFaqEnv">Envía tu pregunta</button></p>
+            <p class="an-faq-pausa" id="anFaqPausa" hidden>Por ahora no estoy recibiendo preguntas nuevas, pero el buscador sigue disponible.</p>
         </aside>`);
 
     const $ = (id) => document.getElementById(id);
@@ -171,7 +175,7 @@ export async function montarBotcito(grid, curso) {
                 ? `Mostrando ${LIMITE_BUSQUEDA} de ${n} resultados. Escribe más palabras para afinar.`
                 : `${n} ${n === 1 ? 'resultado' : 'resultados'}`,
             parecida: 'No encontré justo eso, pero quizás te sirva alguna de estas:',
-            ninguna: 'No encontré nada con esas palabras. Prueba con otra, por ejemplo el nombre del tema.',
+            ninguna: 'No encontré nada con esas palabras. Prueba con otra, o envíame tu pregunta.',
         }[modo];
 
         $('anFaqToggle').setAttribute('aria-expanded', String(st.abierto));
@@ -210,6 +214,20 @@ export async function montarBotcito(grid, curso) {
         it.querySelector('.an-faq-r').hidden = !abrir;
         if (abrir) { st.abiertas.add(it.dataset.id); st.cerradas.delete(it.dataset.id); }
         else { st.abiertas.delete(it.dataset.id); st.cerradas.add(it.dataset.id); }
+    });
+
+    // Enviar una pregunta: se rellena con lo que el alumno estaba buscando.
+    $('anFaqEnv').addEventListener('click', () => {
+        const buscado = st.consulta.trim();
+        abrirFormPregunta({ curso, textoInicial: buscado.length >= 3 ? buscado : '' });
+    });
+
+    // Se muestra la invitación solo si el envío funciona; si hay pausa, un aviso; si falla, nada
+    // (así nunca aparece un botón roto).
+    estadoEnvio().then((e) => {
+        if (!e) return;
+        if (e.pausa && !e.puede) $('anFaqPausa').hidden = false;
+        else $('anFaqPreg').hidden = false;
     });
 
     pintar();
