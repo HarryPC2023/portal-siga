@@ -6,6 +6,7 @@
 // eternamente a alguien más y redirigirlo de vuelta con claridad.
 import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
 import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.js?v=2';
+import { iniciarFaqAsesorias } from './admin-faq.js?v=1';
 
 const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
@@ -65,6 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     cargarNotificaciones();
     inicializarFormNotificacion();
     iniciarDemandaAsesorias({ confirmarAccion, escapeHtml, formatearFecha });
+    iniciarFaqAsesorias({ confirmarAccion });
 
     document.querySelectorAll('.admin-tab').forEach((btn) => {
         btn.addEventListener('click', () => {

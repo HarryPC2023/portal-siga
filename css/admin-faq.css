@@ -1,0 +1,109 @@
+/* css/admin-faq.css — Pestaña "Preguntas frecuentes" del Admin.
+   Reutiliza admin.css (.admin-form-*, .admin-item) y admin-asesorias.css
+   (.da-btn, .da-ok, .da-tipos, .da-vacio). Aquí solo va lo propio.
+   Prefijo fq- para no chocar con nada. ⚠️ Archivo NUEVO. */
+
+#fqFormEl {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.fq-botones {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.fq-grupo+.fq-grupo {
+    margin-top: 22px;
+}
+
+.fq-grupo>h4 {
+    font-size: 0.95rem;
+    margin: 0 0 10px;
+}
+
+.fq-grupo>h4 small {
+    font-weight: 400;
+    font-size: 0.74rem;
+    color: #666;
+    margin-left: 6px;
+}
+
+.fq-item {
+    margin-bottom: 12px;
+}
+
+.fq-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.fq-chip {
+    display: inline-block;
+    font: 600 0.68rem 'Poppins', sans-serif;
+    border-radius: 999px;
+    padding: 3px 10px;
+    background: #F1F1F5;
+    color: #555;
+}
+
+.fq-etq-concepto {
+    background: #CFE0FF;
+    color: #1F4FA0;
+}
+
+.fq-etq-caso {
+    background: #F9EEB8;
+    color: #7A5200;
+}
+
+.fq-etq-metodo {
+    background: #CFF5E3;
+    color: #0B5C64;
+}
+
+.fq-est-pub {
+    background: #DDF5E8;
+    color: #137A52;
+}
+
+.fq-est-bor {
+    background: #FDE9D9;
+    color: #9A4A00;
+}
+
+.fq-preg {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0 0 4px;
+}
+
+.fq-resp {
+    font-size: 0.82rem;
+    color: #444;
+    margin: 0 0 6px;
+    white-space: pre-line;
+}
+
+.fq-claves {
+    font-size: 0.72rem;
+    color: #4B2390;
+    background: #F3EAFB;
+    border-radius: 10px;
+    padding: 4px 10px;
+    display: inline-block;
+    margin: 0 0 8px;
+}
+
+.fq-acc {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 6px;
+}
