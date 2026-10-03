@@ -75,7 +75,7 @@ export function abrirFormPregunta({ curso, textoInicial = '', alEnviar = null })
         <p class="an-pq-ayuda">Si decides compartir tu consulta de forma pública, tu pregunta y la respuesta podrán ayudar a otros estudiantes que tengan la misma duda o una situación similar. Tu nombre no se muestra y yo la reviso antes de publicarla.</p>
         <div class="an-er" id="anPqEr" role="alert"></div>
         <button type="button" class="an-btn" id="anPqEnv" style="width:100%" disabled>Enviar pregunta</button>
-        <p class="an-nota">Si no marcas la casilla, solo tú verás la respuesta, en tus preguntas.</p>
+        <p class="an-nota an-pq-nota">Si no marcas la casilla, solo tú verás la respuesta, en tus preguntas.</p>
         </div>
         <button type="button" class="an-btn an-btn-ghost" id="anPqCerrar" data-cerrar style="width:100%" hidden>Entendido</button>
     `);
