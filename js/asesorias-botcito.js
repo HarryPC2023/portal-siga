@@ -4,6 +4,8 @@
 // tildes ni mayúsculas, y sin tener que escribir la pregunta completa. Cada
 // respuesta se muestra en texto sencillo, con su etiqueta (Concepto, Caso de
 // ejemplo o Método) si la tiene.
+// Las preguntas NO se ven al entrar: salen al tocar "Preguntas frecuentes" (lista
+// desplegable con filas lila y blancas) o al empezar a escribir en el buscador.
 //
 // Lo llama asesorias-pagina-curso.js:  montarBotcito(<contenedor .an-curso-grid>, curso)
 // Si el curso no tiene preguntas publicadas (o falla la carga), NO muestra nada:
@@ -19,7 +21,6 @@ const ETIQUETAS = { concepto: 'Concepto', caso: 'Caso de ejemplo', metodo: 'Mét
 const VACIAS = new Set(('que es un una unos unas el la los las de del en y o a al se como cual '
     + 'cuales por para con lo su sus hay son ser me mi entre sobre').split(' '));
 
-const LIMITE_INICIAL = { escritorio: 6, celular: 3 };
 const LIMITE_BUSQUEDA = 10;
 
 // ───────────── Búsqueda (función pura: no toca la pantalla) ─────────────
@@ -100,8 +101,6 @@ const LUPA = '<svg class="an-faq-lupa" width="16" height="16" viewBox="0 0 24 24
     + 'stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
     + '<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>';
 
-const esCelular = () => !!(window.matchMedia && window.matchMedia('(max-width: 860px)').matches);
-
 function itemHTML(f, abierto) {
     const etq = f.etiqueta
         ? `<span class="an-faq-etq an-faq-etq-${esc(f.etiqueta)}">${esc(ETIQUETAS[f.etiqueta] || f.etiqueta)}</span>`
@@ -141,26 +140,22 @@ export async function montarBotcito(grid, curso) {
                     aria-label="Buscar en las preguntas frecuentes de ${esc(curso.nombre)}">
                 <button type="button" class="an-faq-x" id="anFaqX" aria-label="Borrar búsqueda" hidden>✕</button>
             </div>
-            <p class="an-faq-estado" id="anFaqEstado" aria-live="polite"></p>
-            <div class="an-faq-lista" id="anFaqLista"></div>
-            <button type="button" class="an-link an-faq-mas" id="anFaqMas" hidden></button>
+            <button type="button" class="an-faq-toggle" id="anFaqToggle" aria-expanded="false" aria-controls="anFaqPanel">
+                <span>Preguntas frecuentes</span>
+                <span class="an-faq-chev" aria-hidden="true">▾</span>
+            </button>
+            <div class="an-faq-panel" id="anFaqPanel" hidden>
+                <p class="an-faq-estado" id="anFaqEstado" aria-live="polite"></p>
+                <div class="an-faq-lista" id="anFaqLista"></div>
+            </div>
         </aside>`);
 
     const $ = (id) => document.getElementById(id);
-    const st = { consulta: '', clave: '', verTodas: false, abiertas: new Set(), cerradas: new Set() };
+    const st = { consulta: '', clave: '', abierto: false, abiertas: new Set(), cerradas: new Set() };
 
     function pintar() {
         const { modo, lista } = buscarFaq(faqs, st.consulta);
-        let visibles = lista;
-        let hayMas = false;
-
-        if (modo === 'todas') {
-            const lim = esCelular() ? LIMITE_INICIAL.celular : LIMITE_INICIAL.escritorio;
-            hayMas = lista.length > lim;
-            if (!st.verTodas) visibles = lista.slice(0, lim);
-        } else if (lista.length > LIMITE_BUSQUEDA) {
-            visibles = lista.slice(0, LIMITE_BUSQUEDA);
-        }
+        const visibles = lista.slice(0, modo === 'todas' ? lista.length : LIMITE_BUSQUEDA);
 
         // Con una sola coincidencia exacta, la respuesta sale abierta: un clic menos.
         const auto = modo === 'exacta' && lista.length === 1;
@@ -168,25 +163,28 @@ export async function montarBotcito(grid, curso) {
             f, st.abiertas.has(f.id) || (auto && !st.cerradas.has(f.id)),
         )).join('');
 
+        // Sin búsqueda no se muestra ningún número: el botón ya dice "Preguntas frecuentes".
         const n = lista.length;
         $('anFaqEstado').textContent = {
-            todas: `${n} ${n === 1 ? 'pregunta frecuente' : 'preguntas frecuentes'}`,
-            exacta: lista.length > LIMITE_BUSQUEDA
+            todas: '',
+            exacta: n > LIMITE_BUSQUEDA
                 ? `Mostrando ${LIMITE_BUSQUEDA} de ${n} resultados. Escribe más palabras para afinar.`
                 : `${n} ${n === 1 ? 'resultado' : 'resultados'}`,
             parecida: 'No encontré justo eso, pero quizás te sirva alguna de estas:',
             ninguna: 'No encontré nada con esas palabras. Prueba con otra, por ejemplo el nombre del tema.',
         }[modo];
 
-        const mas = $('anFaqMas');
-        mas.hidden = !hayMas;
-        mas.textContent = st.verTodas ? 'Ver menos' : `Ver las ${n} preguntas`;
+        $('anFaqToggle').setAttribute('aria-expanded', String(st.abierto));
+        $('anFaqPanel').hidden = !st.abierto;
         $('anFaqX').hidden = !st.consulta;
     }
+
+    $('anFaqToggle').addEventListener('click', () => { st.abierto = !st.abierto; pintar(); });
 
     const q = $('anFaqQ');
     q.addEventListener('input', () => {
         st.consulta = q.value;
+        st.abierto = true; // al escribir, las preguntas salen solas
         // Si el alumno cerró una respuesta, no se reabre sola mientras siga con la misma búsqueda
         // (por ejemplo, al agregar un espacio). Solo cuando cambia lo que busca.
         const clave = limpiar(q.value);
@@ -201,7 +199,6 @@ export async function montarBotcito(grid, curso) {
         q.dispatchEvent(new Event('input'));
         q.focus();
     });
-    $('anFaqMas').addEventListener('click', () => { st.verTodas = !st.verTodas; pintar(); });
 
     $('anFaqLista').addEventListener('click', (e) => {
         const btn = e.target.closest('.an-faq-q');

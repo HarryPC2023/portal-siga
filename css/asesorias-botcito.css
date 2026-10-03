@@ -130,20 +130,91 @@
 .an-faq-estado {
   font-size: 12px;
   color: var(--ink-soft);
-  margin: 12px 2px 6px;
+  margin: 4px 8px 8px;
 }
 
-/* ───── Preguntas ───── */
+.an-faq-estado:empty {
+  display: none;
+}
+
+/* ───── Botón "Preguntas frecuentes" (se ve igual que los desplegables de SIGA) ───── */
+.an-faq-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 16px;
+  background: #fff;
+  border: 1.5px solid rgba(102, 0, 204, 0.25);
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--ink);
+  font: 600 13.5px 'Poppins', sans-serif;
+  text-align: left;
+}
+
+.an-faq-toggle:hover {
+  border-color: var(--brand-morado);
+}
+
+.an-faq-toggle[aria-expanded="true"] {
+  border-color: var(--brand-morado);
+  background: #F5EEFB;
+  box-shadow: 0 0 0 3px rgba(102, 0, 204, 0.12);
+}
+
+.an-faq-toggle:focus-visible {
+  outline: 3px solid var(--brand-morado);
+  outline-offset: 2px;
+}
+
+.an-faq-toggle[aria-expanded="true"] .an-faq-chev {
+  transform: rotate(180deg);
+}
+
+/* ───── Lista desplegada: panel blanco con filas lila y blancas alternadas ───── */
+.an-faq-panel {
+  margin-top: 8px;
+  padding: 6px;
+  background: #fff;
+  border: 1.5px solid rgba(102, 0, 204, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(102, 0, 204, 0.14);
+  animation: an-faq-baja 0.18s ease both;
+}
+
+@keyframes an-faq-baja {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Con muchas preguntas la lista tiene su propio scroll, como el desplegable de periodos */
 .an-faq-lista {
   min-width: 0;
+  max-height: min(360px, 55vh);
+  overflow-y: auto;
 }
 
 .an-faq-it {
-  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 12px;
+  margin-bottom: 2px;
 }
 
-.an-faq-it:first-child {
-  border-top: 0;
+.an-faq-it:last-child {
+  margin-bottom: 0;
+}
+
+.an-faq-it:nth-child(odd) {
+  background: #F5EEFB;
 }
 
 .an-faq-q {
@@ -154,17 +225,21 @@
   width: 100%;
   border: 0;
   background: transparent;
-  padding: 11px 2px;
+  padding: 12px 12px;
   text-align: left;
   cursor: pointer;
   color: var(--ink);
   font-family: inherit;
+  border-radius: 12px;
+}
+
+.an-faq-q:hover .an-faq-qt {
+  color: var(--brand-morado);
 }
 
 .an-faq-q:focus-visible {
   outline: 3px solid var(--brand-morado);
-  outline-offset: 2px;
-  border-radius: 8px;
+  outline-offset: -3px;
 }
 
 .an-faq-txt {
@@ -200,7 +275,7 @@
   color: var(--ink-soft);
   white-space: pre-line;
   overflow-wrap: anywhere;
-  padding: 0 2px 14px;
+  padding: 0 12px 14px;
 }
 
 .an-faq-etq {
@@ -226,10 +301,6 @@
 .an-faq-etq-metodo {
   background: #CFF5E3;
   color: #0B5C64;
-}
-
-.an-faq-mas {
-  margin: 8px 2px 0;
 }
 
 /* ───── Pantallas medianas: la columna se angosta un poco ───── */
@@ -267,7 +338,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .an-faq {
+
+  .an-faq,
+  .an-faq-panel {
     animation: none;
   }
 
