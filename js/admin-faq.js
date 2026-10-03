@@ -111,7 +111,7 @@ function itemHTML(f) {
             <div class="fq-acc">
                 <button type="button" class="da-btn" data-fq="editar">Editar</button>
                 <button type="button" class="da-ok" data-fq="publicar">${f.publicada ? 'Pasar a borrador' : 'Publicar'}</button>
-                <button type="button" class="admin-btn-eliminar" data-fq="eliminar">Eliminar</button>
+                <button type="button" class="da-btn fq-eliminar" data-fq="eliminar">Eliminar</button>
             </div>
         </div>`;
 }

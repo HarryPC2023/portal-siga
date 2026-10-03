@@ -3,6 +3,18 @@
    (.da-btn, .da-ok, .da-tipos, .da-vacio). Aquí solo va lo propio.
    Prefijo fq- para no chocar con nada. ⚠️ Archivo NUEVO. */
 
+/* Tipografía: títulos con la fuente de SIGA y todo el contenido en Poppins,
+   para que la pestaña tenga contraste y no se vea todo igual. */
+#panelFaq {
+    font-family: 'Poppins', sans-serif;
+}
+
+#panelFaq h3,
+#panelFaq h4,
+#panelFaq .admin-form-titulo {
+    font-family: var(--font-heading);
+}
+
 #fqFormEl {
     display: flex;
     flex-direction: column;
@@ -106,4 +118,19 @@
     flex-wrap: wrap;
     align-items: center;
     margin-top: 6px;
+}
+
+/* Eliminar: botón de texto en rojo, igual de redondeado que Editar y Publicar.
+   (El .admin-btn-eliminar de admin.css es un círculo con ícono, pensado para otras tarjetas.) */
+.da-btn.fq-eliminar {
+    margin-left: auto;
+    border-color: #C93A3A;
+    color: #C93A3A;
+    font-size: 0.72rem;
+    padding: 5px 12px;
+}
+
+.da-btn.fq-eliminar:hover {
+    background: #C93A3A;
+    color: #fff;
 }
