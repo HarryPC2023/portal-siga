@@ -7,7 +7,7 @@
 import { abrirVisorPDF, abrirVisorWeb } from './asesorias-visor.js?v=2';
 import {
     CURSOS, EVALUACIONES, NOMBRE_EVALUACION, cursoPorSlug, estadoEvaluacion,
-    recursosGenerales, tieneContenido, planDelCurso, esNuevo,
+    recursosGenerales, tieneContenido, esNuevo,
 } from './asesorias-cursos.js?v=1';
 import {
     PORTADA, esc, estiloAttr, estiloCurso, cargarMisVotos, alternarVoto, claveVoto,
@@ -82,14 +82,14 @@ function cabecera() {
     const e = estiloCurso(curso);
     const n = curso.recursos.filter(disponible).length;
     const pct = Math.round((100 * n) / (1 + EVALUACIONES.length));
-    const plan = planDelCurso(curso);
+    const plan = curso.plan ? `<span>${esc(curso.plan)}</span>` : '';   // solo si el curso es de otro plan (Química II)
     return `
         <div class="an-migas"><a href="${PORTADA}">← Asesorías</a> / ${esc(curso.nombre)}</div>
         <section class="an-cab" style="${estiloAttr(curso)}">
             <div class="an-g">${esc(e.glifo)}</div>
             <div>
                 <h1>${esc(curso.nombre)}</h1>
-                <div class="an-chips"><span>Ciclo ${curso.ciclo}</span><span>${curso.creditos} créditos</span><span>${esc(plan)}</span></div>
+                <div class="an-chips"><span>Ciclo ${curso.ciclo}</span><span>${curso.creditos} créditos</span>${plan}</div>
             </div>
             <div class="an-prog"><b>${n} ${n === 1 ? 'recurso listo' : 'recursos listos'}</b>
                 <div class="an-barra"><i style="width:${pct}%"></i></div></div>

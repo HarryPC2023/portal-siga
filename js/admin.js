@@ -134,7 +134,7 @@ function obtenerModalConfirmacion() {
         <div class="modal-perfil-caja">
             <h2 id="modalConfirmarTitulo">¿Confirmar?</h2>
             <p class="intro" id="modalConfirmarTexto"></p>
-            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                        <div style="display:flex; gap:10px; justify-content:center;">
                 <button type="button" class="btn-secundario" id="modalConfirmarCancelar">Cancelar</button>
                 <button type="button" class="btn-peligro" id="modalConfirmarAceptar">Sí, eliminar</button>
             </div>

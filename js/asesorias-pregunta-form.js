@@ -36,7 +36,8 @@ function diaLima(iso) {
     }
 }
 
-const MSG_PAUSA = 'Por ahora no estoy recibiendo preguntas nuevas. Vuelve a intentarlo más adelante.';
+// Sin "vuelve más adelante": la pausa no tiene fecha, y eso daría a entender que basta con esperar un rato.
+const MSG_PAUSA = 'Por ahora no estoy recibiendo preguntas nuevas.';
 const msgLimite = (iso) => `Podrás volver a realizar una consulta el ${diaLima(iso)}.`;
 
 /** Qué mostrar al abrir: { texto, bloquea }. Con cupo normal NO se muestra nada. */
