@@ -411,3 +411,15 @@
   line-height: 1.5;
   color: var(--ink-soft);
 }
+
+/* Un elemento con el atributo hidden debe quedar oculto aunque su clase (.an-btn, etc.) le ponga display */
+.an-mdl [hidden],
+.an-faq [hidden] {
+  display: none !important;
+}
+
+/* Nota bajo el botón "Enviar pregunta": con aire antes y después */
+.an-mdl .an-pq-nota {
+  margin: 18px 0 8px;
+  line-height: 1.5;
+}
