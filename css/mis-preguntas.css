@@ -225,6 +225,24 @@ a.mp-curso:hover {
     cursor: wait;
 }
 
+.mp-btn-suave {
+    border-color: rgba(0, 0, 0, 0.18);
+    color: #666;
+    font-weight: 500;
+    font-size: 0.76rem;
+    padding: 5px 14px;
+}
+
+.mp-btn-suave:hover {
+    background: #C93A3A;
+    border-color: #C93A3A;
+    color: #fff;
+}
+
+.mp-limpiar {
+    margin: 0 0 14px;
+}
+
 .mp-btn-peligro {
     border-color: #C93A3A;
     color: #C93A3A;

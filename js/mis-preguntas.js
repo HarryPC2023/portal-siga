@@ -7,11 +7,13 @@
 //   respondida → "Respondida"       (con la respuesta y si quedó pública o solo para él)
 //   rechazada  → "No admitida"      ("Tu consulta no ha sido admitida en esta ocasión.")
 //   retirada   → "Retirada"
-// Puede RETIRAR una pregunta mientras siga en espera, y cambiar si la comparte de
-// forma pública mientras no esté respondida.
+// Puede RETIRAR una pregunta mientras siga en espera, cambiar si la comparte de forma pública
+// mientras no esté respondida, y ELIMINAR de su lista las que ya se cerraron (respondidas, no
+// admitidas o retiradas) para que no se le acumulen. Eliminar solo la quita de SU lista: la base
+// de datos la conserva y sigue contando para el límite semanal.
 //
-// Tabla: asesorias_preguntas (cada alumno solo ve las suyas). Retirar y cambiar la
-// privacidad pasan por funciones de la base de datos (asesorias-preguntas.sql).
+// Tabla: asesorias_preguntas (cada alumno solo ve las suyas). Retirar, cambiar la
+// privacidad y eliminar pasan por funciones de la base de datos (asesorias-preguntas.sql).
 // Lo monta js/perfil-hub.js:  montarMisPreguntas(sesion)
 //
 // ⚠️ Archivo NUEVO.
@@ -28,6 +30,8 @@ const ESTADOS = {
     retirada: { texto: 'Retirada', clase: 'retirada', nota: 'Retiraste esta pregunta.' },
 };
 const ETIQUETAS = { concepto: 'Concepto', caso: 'Caso de ejemplo', metodo: 'Método' };
+const CERRADAS = ['respondida', 'rechazada', 'retirada'];   // las que se pueden eliminar de la lista
+const SIN_RESPUESTA = ['rechazada', 'retirada'];            // las que se pueden limpiar en bloque
 
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -58,6 +62,8 @@ export async function montarMisPreguntas(sesion) {
     let filas = [];
     let cargado = false;
     let confirmando = null;           // id de la pregunta que se está por retirar
+    let quitando = null;              // id de la pregunta que se está por eliminar de la lista
+    let limpiando = false;            // se está por limpiar las no admitidas y retiradas
     const errores = new Map();        // id -> mensaje en esa tarjeta
 
     function tarjeta(f) {
@@ -100,6 +106,19 @@ export async function montarMisPreguntas(sesion) {
                    </div>`
                 : '<button type="button" class="mp-btn" data-mp="retirar">Retirar pregunta</button>';
         }
+        if (CERRADAS.includes(f.estado)) {
+            if (quitando === f.id) {
+                const aviso = f.estado === 'respondida'
+                    ? `¿Eliminar esta pregunta y su respuesta de tu lista?${f.faq_id ? ' La respuesta pública seguirá disponible para otros estudiantes.' : ''}`
+                    : '¿Eliminar esta pregunta de tu lista?';
+                acciones += `<div class="mp-conf">${aviso}
+                        <button type="button" class="mp-btn mp-btn-peligro" data-mp="si-quitar">Sí, eliminar</button>
+                        <button type="button" class="mp-btn" data-mp="no-quitar">Cancelar</button>
+                   </div>`;
+            } else {
+                acciones += '<button type="button" class="mp-btn mp-btn-suave" data-mp="quitar">Eliminar de mi lista</button>';
+            }
+        }
         const err = errores.get(f.id);
 
         return `
@@ -127,6 +146,15 @@ export async function montarMisPreguntas(sesion) {
                     <a class="mp-btn mp-btn-primario" href="asesorias.html">Ir a Asesorías</a>
                 </div>`;
         } else {
+            const sinRespuesta = filas.filter((f) => SIN_RESPUESTA.includes(f.estado)).length;
+            if (sinRespuesta) {
+                html += limpiando
+                    ? `<div class="mp-limpiar mp-conf">¿Quitar de tu lista ${sinRespuesta === 1 ? 'la pregunta no admitida o retirada' : `las ${sinRespuesta} preguntas no admitidas o retiradas`}?
+                            <button type="button" class="mp-btn mp-btn-peligro" data-mp="si-limpiar">Sí, limpiar</button>
+                            <button type="button" class="mp-btn" data-mp="no-limpiar">Cancelar</button>
+                       </div>`
+                    : '<div class="mp-limpiar"><button type="button" class="mp-btn mp-btn-suave" data-mp="limpiar">Limpiar no admitidas y retiradas</button></div>';
+            }
             html += `<div class="mp-lista">${[...filas].sort((a, b) => actividad(b) - actividad(a)).map(tarjeta).join('')}</div>`;
         }
         cont.innerHTML = html;
@@ -137,6 +165,7 @@ export async function montarMisPreguntas(sesion) {
             .from('asesorias_preguntas')
             .select('id, codigo_curso, pregunta, publica, estado, respuesta, etiqueta, faq_id, creada_en, revisada_en, respondida_en')
             .eq('user_id', sesion.user.id)
+            .eq('oculta_alumno', false)
             .order('creada_en', { ascending: false });
         if (error) {
             console.error('Mis preguntas:', error);
@@ -163,6 +192,32 @@ export async function montarMisPreguntas(sesion) {
         pintar();
     }
 
+    async function quitar(id) {
+        const { data, error } = await supabase.rpc('asesorias_ocultar_pregunta', { p_id: id });
+        quitando = null;
+        if (error || !data || !data.ok) {
+            if (error) console.error('Eliminar pregunta:', error);
+            errores.set(id, 'No se pudo eliminar. Actualicé la lista.');
+            await cargar();
+            return;
+        }
+        errores.delete(id);
+        filas = filas.filter((x) => x.id !== id);
+        pintar();
+    }
+
+    async function limpiar() {
+        const { data, error } = await supabase.rpc('asesorias_ocultar_cerradas');
+        limpiando = false;
+        if (error || !data || !data.ok) {
+            if (error) console.error('Limpiar preguntas:', error);
+            await cargar();
+            return;
+        }
+        filas = filas.filter((x) => !SIN_RESPUESTA.includes(x.estado));
+        pintar();
+    }
+
     async function cambiarPrivacidad(id, publica, check) {
         const { data, error } = await supabase.rpc('asesorias_cambiar_privacidad', { p_id: id, p_publica: publica });
         if (error || !data || !data.ok) {
@@ -180,12 +235,19 @@ export async function montarMisPreguntas(sesion) {
     cont.addEventListener('click', (e) => {
         const btn = e.target.closest('[data-mp]');
         if (!btn || btn.dataset.mp === 'privacidad') return;
+        // Limpiar en bloque (no está dentro de una tarjeta)
+        if (btn.dataset.mp === 'limpiar') { limpiando = true; pintar(); return; }
+        if (btn.dataset.mp === 'no-limpiar') { limpiando = false; pintar(); return; }
+        if (btn.dataset.mp === 'si-limpiar') { btn.disabled = true; limpiar(); return; }
         const item = btn.closest('.mp-item');
         if (!item) return;
         const id = item.dataset.id;
         if (btn.dataset.mp === 'retirar') { confirmando = id; pintar(); }
         else if (btn.dataset.mp === 'no-retirar') { confirmando = null; pintar(); }
         else if (btn.dataset.mp === 'si-retirar') { btn.disabled = true; retirar(id); }
+        else if (btn.dataset.mp === 'quitar') { quitando = id; pintar(); }
+        else if (btn.dataset.mp === 'no-quitar') { quitando = null; pintar(); }
+        else if (btn.dataset.mp === 'si-quitar') { btn.disabled = true; quitar(id); }
     });
 
     cont.addEventListener('change', (e) => {

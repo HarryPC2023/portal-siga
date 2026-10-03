@@ -45,9 +45,26 @@ const ESTILOS = {
     FB101: ['∠', 'mat'], BMA01: ['dx', 'mat'], BQU01: ['Q', 'qui'],
     BMA02: ['∫', 'mat'], BMA03: ['[ ]', 'mat'], SI205: ['{ }', 'comp'], FB202: ['Q²', 'qui'],
     BFI01: ['F', 'fis'], FB305: ['σ', 'est'],
-    FB401: ['Φ', 'fis'], FB402: ['Δ', 'mat'], FB403: ['y′', 'mat'], FB405: ['μ', 'est'], SI405: ['ER', 'mcd'],
-    SI501: ['IO', 'comp'], SI505: ['DB', 'dbd'], SI601: ['IO²', 'comp'],
+    FB401: ['Φ', 'fis'], FB402: ['Δ', 'mat'], FB403: ['y′', 'mat'], FB405: ['μ', 'est'], SI405: ['MCD', 'mcd'],
+    SI501: ['IO', 'comp'], SI505: ['DBD', 'dbd'], SI601: ['IO²', 'comp'],
 };
+
+// Nombres con los que los alumnos conocen y buscan los cursos (además del nombre completo y el código).
+// Se escriben en minúsculas y sin tildes: la búsqueda tampoco distingue mayúsculas ni tildes.
+const ALIAS_CURSO = {
+    SI405: ['mcd'],
+    SI505: ['dbd'],
+    SI501: ['io i', 'io 1', 'io1'],
+    SI601: ['io ii', 'io 2', 'io2'],
+};
+
+/** ¿La búsqueda coincide con el curso? Mira el nombre, el código y sus nombres cortos (MCD, DBD, IO I, IO II…). */
+export function coincideCurso(curso, consulta) {
+    const q = normalizar(consulta);
+    if (!q) return true;
+    const alias = (ALIAS_CURSO[curso.codigo] || []).join(' ');
+    return normalizar(`${curso.nombre} ${curso.codigo} ${alias}`).includes(q);
+}
 
 export function estiloCurso(curso) {
     const [glifo, grupo] = ESTILOS[curso.codigo] || [curso.nombre.slice(0, 2), 'est'];

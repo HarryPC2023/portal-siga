@@ -7,7 +7,7 @@ import {
     estadoEvaluacion, recursosGenerales, cursoTieneNovedad, recursosNuevos,
 } from './asesorias-cursos.js?v=1';
 import {
-    esc, normalizar, estiloAttr, estiloCurso, botcitoSVG, cargarMisVotos, alternarVoto,
+    esc, coincideCurso, estiloAttr, estiloCurso, botcitoSVG, cargarMisVotos, alternarVoto,
     claveVoto, leerUltimo, abrirFormCompartir, aviso,
 } from './asesorias-comun.js?v=1';
 
@@ -113,9 +113,7 @@ function marcarLo(btn, activo) {
 }
 
 function pintarCursos() {
-    const q = normalizar(consulta);
-    const lista = CURSOS.filter((c) => (!cicloSel || c.ciclo === cicloSel)
-        && (!q || normalizar(`${c.nombre} ${c.codigo}`).includes(q)));
+    const lista = CURSOS.filter((c) => (!cicloSel || c.ciclo === cicloSel) && coincideCurso(c, consulta));
 
     let html = lista.map(tarjeta).join('');
     if (!lista.length) {

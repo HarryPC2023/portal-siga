@@ -237,7 +237,7 @@ export async function montarBotcito(grid, curso) {
     });
 
     // "Ver mis preguntas" (en Perfil) aparece solo si el alumno ya envió alguna, de cualquier curso.
-    supabase.from('asesorias_preguntas').select('id', { count: 'exact', head: true }).then(({ count, error }) => {
+    supabase.from('asesorias_preguntas').select('id', { count: 'exact', head: true }).eq('oculta_alumno', false).then(({ count, error }) => {
         if (!error && count > 0) $('anFaqMis').hidden = false;
     }, () => { });
 

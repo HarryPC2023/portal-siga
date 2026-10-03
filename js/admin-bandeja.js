@@ -7,7 +7,7 @@
 // Además: botón "Probar como alumno" (tu cuenta tiene el mismo límite y la misma pausa que un alumno,
 // para ver exactamente lo que ellos ven), interruptor para PAUSAR las preguntas nuevas, un globito sobre la pestaña con
 // cuántas siguen en espera, y la vista "Pasaron el límite": qué alumnos intentaron preguntar
-// de más esta semana (tabla asesorias_intentos_limite).
+// de más (esta semana y las 8 anteriores; tabla asesorias_intentos_limite).
 //
 // Tablas y funciones: asesorias-preguntas.sql (asesorias_preguntas, asesorias_ajustes y
 // asesorias_responder_pregunta, que responde y publica en un solo paso).
@@ -62,7 +62,8 @@ let ajustes = { preguntas_pausadas: false, limite_semanal: 3, admin_exento: true
 let filtro = 'en_espera';
 let editandoId = null;
 let cargado = false;
-let intentos = [];       // alumnos que intentaron pasar el límite esta semana
+let intentos = [];       // intentos sobre el límite de las últimas 8 semanas (uno por alumno y semana)
+let intentosError = false; // la tabla de intentos no se pudo leer (¿falta correr el SQL?)
 let semana = new Map();   // user_id -> cuántas preguntas envió esta semana (todas cuentan)
 
 // ───────────── Utilidades ─────────────
@@ -162,8 +163,8 @@ async function cargar() {
         supabase.from('asesorias_preguntas').select('*').order('creada_en', { ascending: true }),
         supabase.from('asesorias_ajustes').select('preguntas_pausadas, limite_semanal, admin_exento').eq('id', 1),
         supabase.from('asesorias_intentos_limite')
-            .select('user_id, intentos, primer_intento, ultimo_intento, codigo_curso')
-            .eq('semana_inicio', new Date(inicioSemanaLima()).toISOString()),
+            .select('user_id, semana_inicio, intentos, primer_intento, ultimo_intento, codigo_curso')
+            .gte('semana_inicio', new Date(inicioSemanaLima() - 8 * 7 * 86400000).toISOString()),
     ]);
     if (rq.error) {
         console.error('Preguntas de alumnos:', rq.error);
@@ -173,6 +174,8 @@ async function cargar() {
     filas = rq.data || [];
     if (!ra.error && ra.data && ra.data[0]) ajustes = ra.data[0];
     // Si la tabla de intentos todavía no existe, simplemente no hay vista de intentos (nada se rompe).
+    intentosError = !!ri.error;
+    if (ri.error) console.warn('Intentos sobre el límite: no se pudo leer la tabla.', ri.error);
     intentos = !ri.error && ri.data ? [...ri.data].sort((a, b) => Date.parse(b.ultimo_intento) - Date.parse(a.ultimo_intento)) : [];
 
     const ids = [...new Set([...filas, ...intentos].map((f) => f.user_id).filter(Boolean))];
@@ -209,7 +212,7 @@ function pintarCabecera() {
     $('pbBannerAlumno').hidden = !modoAlumno;
 
     $('pbFiltros').innerHTML = `<div class="da-tipos" role="radiogroup" aria-label="Filtrar por estado">${FILTROS.map(([v, nombre]) => {
-        const n = v === 'todas' ? filas.length : (v === 'limite' ? intentos.length : cuenta(v));
+        const n = v === 'todas' ? filas.length : (v === 'limite' ? intentosSemana().length : cuenta(v));
         return `<label><input type="radio" name="pbFiltro" value="${v}"${v === filtro ? ' checked' : ''}><span>${nombre} (${n})</span></label>`;
     }).join('')}</div>`;
 }
@@ -278,7 +281,7 @@ function itemHTML(f) {
             <div class="pb-chips">
                 <span class="pb-chip pb-curso">${esc(nombreCurso(f.codigo_curso))}</span>
                 <span class="pb-chip pb-est-${esc(f.estado)}">${esc(ESTADOS[f.estado] || f.estado)}</span>
-                ${priv}${etq}${chipSemana(f)}
+                ${priv}${etq}${chipSemana(f)}${f.oculta_alumno ? '<span class="pb-chip pb-oculta">La quitó de su lista</span>' : ''}
             </div>
             <p class="pb-preg">${esc(f.pregunta)}</p>
             <p class="pb-meta">${esc(quien(f.user_id))} · ${esc(fecha(f.creada_en))}</p>
@@ -287,17 +290,29 @@ function itemHTML(f) {
         </div>`;
 }
 
+// ¿Ese registro es de la semana actual? (con un margen de 1 hora por si la base redondea)
+const esEstaSemana = (i) => Math.abs(Date.parse(i.semana_inicio) - inicioSemanaLima()) < 3600000;
+const intentosSemana = () => intentos.filter(esEstaSemana);
+
 function intentoHTML(i) {
-    const enviadas = semana.get(i.user_id) || 0;
+    const actual = esEstaSemana(i);
     const veces = i.intentos === 1 ? 'Lo intentó 1 vez' : `Lo intentó ${i.intentos} veces`;
+    const cuando = actual
+        ? 'esta semana'
+        : `la semana del ${new Date(i.semana_inicio).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', timeZone: 'America/Lima' }).replace(/\./g, '')}`;
+    // Cuántas preguntas había enviado: solo se sabe con certeza de esta semana (ya está cargada).
+    const enviadas = semana.get(i.user_id) || 0;
+    const detalle = actual
+        ? `Ya había enviado ${enviadas} ${enviadas === 1 ? 'pregunta' : 'preguntas'} esta semana · `
+        : '';
     return `
         <div class="admin-item pb-item pb-intento">
             <div class="pb-chips">
-                <span class="pb-chip pb-sem">${veces} esta semana</span>
+                <span class="pb-chip pb-sem">${veces} ${cuando}</span>
                 ${i.codigo_curso ? `<span class="pb-chip pb-curso">${esc(nombreCurso(i.codigo_curso))}</span>` : ''}
             </div>
             <p class="pb-preg">${esc(quien(i.user_id))}</p>
-            <p class="pb-meta">Ya había enviado ${enviadas} ${enviadas === 1 ? 'pregunta' : 'preguntas'} esta semana · primera vez: ${esc(fecha(i.primer_intento))} · última vez: ${esc(fecha(i.ultimo_intento))}</p>
+            <p class="pb-meta">${detalle}primera vez: ${esc(fecha(i.primer_intento))} · última vez: ${esc(fecha(i.ultimo_intento))}</p>
         </div>`;
 }
 
@@ -307,9 +322,17 @@ function pintar() {
     filas.forEach((x) => { if (Date.parse(x.creada_en) >= ini) semana.set(x.user_id, (semana.get(x.user_id) || 0) + 1); });
     pintarCabecera();
     if (filtro === 'limite') {
-        $('pbLista').innerHTML = intentos.length
-            ? `<p class="pb-aviso-lim">Alumnos que ya habían usado sus ${ajustes.limite_semanal} preguntas de la semana y aun así intentaron enviar otra.</p>${intentos.map(intentoHTML).join('')}`
-            : `<p class="da-vacio">${VACIOS.limite}</p>`;
+        if (intentosError) {
+            $('pbLista').innerHTML = '<p class="da-vacio">No pude leer los intentos: probablemente todavía no corriste asesorias-preguntas.sql en Supabase (la tabla asesorias_intentos_limite no existe). Hasta entonces, aquí siempre verás 0.</p>';
+            return;
+        }
+        const actuales = intentosSemana();
+        const anteriores = intentos.filter((i) => !esEstaSemana(i));
+        let html = `<p class="pb-aviso-lim">Alumnos que ya habían usado sus ${ajustes.limite_semanal} preguntas de la semana y aun así intentaron enviar otra.</p>`;
+        html += '<h4 class="pb-sub">Esta semana</h4>';
+        html += actuales.length ? actuales.map(intentoHTML).join('') : `<p class="da-vacio">${VACIOS.limite}</p>`;
+        if (anteriores.length) html += `<h4 class="pb-sub">Semanas anteriores</h4>${anteriores.map(intentoHTML).join('')}`;
+        $('pbLista').innerHTML = html;
         return;
     }
     let lista = filtro === 'todas' ? [...filas] : filas.filter((f) => f.estado === filtro);

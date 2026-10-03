@@ -46,21 +46,26 @@
 }
 
 .app-nav .acceso-badge {
+  /* Contador de la campanita: más grande y con más contraste para leerse de lejos, y bien asentado
+     en la esquina del botón (antes era de 16 px con letra de 10 px y se veía apretado). */
   position: absolute;
-  top: -4px;
-  right: -4px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
+  top: -8px;
+  right: -8px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 999px;
-  background: #ef4444;
+  background: #E11D48;
   color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 12px;
-  text-align: center;
+  font: 700 12px/1 'Poppins', sans-serif;
+  letter-spacing: 0;
   border: 2px solid #fff;
+  box-shadow: 0 3px 8px rgba(225, 29, 72, 0.45);
+  pointer-events: none;
 }
 
 .app-nav .acceso-badge[hidden] {
