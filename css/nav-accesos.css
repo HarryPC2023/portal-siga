@@ -67,6 +67,11 @@
   display: none;
 }
 
+/* El foquito lleva el color de "Ideas" (el mismo rosa de su pestaña en el Perfil y del menú de la cuenta) */
+.app-nav .acceso-idea {
+  color: #C13F94;
+}
+
 /* ───── Panel de notificaciones (cae debajo de la campanita) ───── */
 .app-nav .acceso-panel {
   position: absolute;
@@ -194,7 +199,7 @@
   color: var(--ink, #1d1d2b);
 }
 
-/* ───── Tema: ahora se ve siempre en el encabezado ─────
+/* ───── Tema: ahora se ve siempre en el encabezado (también en el celular) ─────
    Antes carnet-siga.css lo escondía al iniciar sesión (el tema solo se elegía dentro del menú
    de la cuenta). El menú de la cuenta conserva sus bolitas de Tema. */
 .app-nav-user.con-sesion .app-nav-tema {
@@ -206,28 +211,52 @@
   grid-column: 1 / -1;
 }
 
-/* ───── Celular: poco espacio. Queda la campanita; el foquito (Ideas) y el Tema siguen
-   disponibles dentro del menú de la cuenta, y el panel ocupa el ancho de la pantalla ───── */
+/* ───── Celular: el encabezado pasa a DOS filas ─────
+   Fila 1: el logo a la izquierda y, a la derecha, campanita, foquito, Tema y cuenta (todo a la vista).
+   Fila 2: los enlaces (Asesorías, Horarios, Intranotas, INICIO), que siguen deslizándose en una sola
+   fila, pero ahora con todo el ancho para ellos. El panel de notificaciones ocupa el ancho de la
+   pantalla y baja justo debajo del encabezado (js/notificaciones-siga.js calcula la altura). */
 @media (max-width: 640px) {
+  .app-nav {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "logo user"
+      "links links";
+    row-gap: 4px;
+    column-gap: 10px;
+    padding: 10px 14px 8px;
+  }
 
-  .app-nav .acceso-idea,
-  .app-nav-user.con-sesion .app-nav-tema,
-  .app-nav-user .app-nav-tema {
-    display: none !important;
+  .app-nav .app-nav-logo {
+    grid-area: logo;
+  }
+
+  .app-nav .app-nav-user {
+    grid-area: user;
+    justify-self: end;
+  }
+
+  .app-nav .app-nav-links {
+    grid-area: links;
+    justify-content: flex-start;
   }
 
   .app-nav .app-nav-accesos {
     gap: 8px;
   }
 
+  .app-nav-user {
+    gap: 8px;
+  }
+
   .app-nav .acceso-panel {
     position: fixed;
-    top: 64px;
+    top: 112px;
     left: 12px;
     right: 12px;
     width: auto;
     max-width: none;
-    max-height: calc(100vh - 90px);
+    max-height: calc(100vh - 130px);
   }
 }
 
