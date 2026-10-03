@@ -3,7 +3,7 @@
 // Aquí Harry crea, edita, publica (o pasa a borrador) y elimina las preguntas
 // frecuentes que el botcito busca dentro de la página de cada curso.
 //
-// Tabla: asesorias_faq (SQL en asesorias-faq.sql). Solo el UID de Harry puede
+// Tabla: asesorias_faq (SQL en asesorias-faq.sql + asesorias-faq-etiqueta-opcional.sql). Solo el UID de Harry puede
 // escribir; los alumnos leen únicamente lo publicado.
 //
 // Se carga desde admin.js, igual que admin-asesorias.js:
@@ -101,7 +101,7 @@ function itemHTML(f) {
     return `
         <div class="admin-item fq-item" data-id="${esc(f.id)}">
             <div class="fq-chips">
-                <span class="fq-chip fq-etq-${esc(f.etiqueta)}">${esc(ETIQUETAS_FAQ[f.etiqueta] || f.etiqueta)}</span>
+                ${f.etiqueta ? `<span class="fq-chip fq-etq-${esc(f.etiqueta)}">${esc(ETIQUETAS_FAQ[f.etiqueta] || f.etiqueta)}</span>` : ''}
                 ${f.evaluacion ? `<span class="fq-chip">${esc(f.evaluacion)}</span>` : ''}
                 <span class="fq-chip ${f.publicada ? 'fq-est-pub' : 'fq-est-bor'}">${f.publicada ? 'Publicada' : 'Borrador'}</span>
             </div>
@@ -148,7 +148,7 @@ function abrirForm(fila = null) {
 
     if (fila) {
         selectorCurso.establecer(fila.codigo_curso, nombreCurso(fila.codigo_curso));
-        marcarRadio('fqEtq', fila.etiqueta);
+        marcarRadio('fqEtq', fila.etiqueta || '');
         marcarRadio('fqEv', fila.evaluacion || '');
         marcarRadio('fqEst', fila.publicada ? 'publicada' : 'borrador');
         $('fqPregunta').value = fila.pregunta;
@@ -185,12 +185,11 @@ async function guardar(e) {
     const publicada = valorRadio('fqEst') === 'publicada';
 
     if (!codigo) return mostrarMsg('Elige el curso.', 'error');
-    if (!etiqueta) return mostrarMsg('Elige la etiqueta: Concepto, Caso de ejemplo o Método.', 'error');
     if (pregunta.length < 3) return mostrarMsg('Escribe la pregunta (mínimo 3 caracteres).', 'error');
     if (!respuesta) return mostrarMsg('Escribe la respuesta.', 'error');
 
     const payload = {
-        codigo_curso: codigo, evaluacion, etiqueta, pregunta, respuesta,
+        codigo_curso: codigo, evaluacion, etiqueta: etiqueta || null, pregunta, respuesta,
         palabras_clave: claves || null, publicada,
     };
 
@@ -281,9 +280,9 @@ function construirPestana() {
                 </div>
 
                 <div class="admin-form-campo">
-                    <span>Etiqueta</span>
-                    ${radios('fqEtq', Object.entries(ETIQUETAS_FAQ).map(([value, label]) => ({ value, label })), '')}
-                    <small class="da-tipos-ayuda">Concepto: qué es algo. Caso de ejemplo: un ejercicio resuelto. Método: pasos para resolver un tipo de problema.</small>
+                    <span>Etiqueta (opcional)</span>
+                    ${radios('fqEtq', [{ value: '', label: 'Sin etiqueta' }, ...Object.entries(ETIQUETAS_FAQ).map(([value, label]) => ({ value, label }))], '')}
+                    <small class="da-tipos-ayuda">Concepto: qué es algo. Caso de ejemplo: un ejercicio resuelto. Método: pasos para resolver un tipo de problema. Si no encaja claro, déjala sin etiqueta: el alumno simplemente no verá chip.</small>
                 </div>
 
                 <div class="admin-form-campo">
