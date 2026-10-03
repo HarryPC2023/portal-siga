@@ -43,10 +43,18 @@ const msgLimite = (iso) => `Podrás volver a realizar una consulta el ${diaLima(
 /** Qué mostrar al abrir: { texto, bloquea }. Con cupo normal NO se muestra nada. */
 function avisoInicial(e) {
     if (!e) return { texto: '', bloquea: false };             // no se pudo leer: que decida el servidor
-    if (e.pausa && !e.puede) return { texto: MSG_PAUSA, bloquea: true };
-    if (!e.puede) return { texto: msgLimite(e.renueva_en), bloquea: true };
+    if (e.pausa && !e.puede) return { texto: MSG_PAUSA, bloquea: true, motivo: 'pausa' };
+    if (!e.puede) return { texto: msgLimite(e.renueva_en), bloquea: true, motivo: 'limite' };
     if (e.pausa) return { texto: 'Las preguntas están en pausa, pero tú puedes enviar (administrador).', bloquea: false };
     return { texto: '', bloquea: false };
+}
+
+async function registrarIntento(codigoCurso) {
+    try {
+        await supabase.rpc('asesorias_registrar_intento_limite', { p_codigo_curso: codigoCurso });
+    } catch (e) {
+        console.warn('No se pudo anotar el intento:', e);
+    }
 }
 
 const ERRORES = {
@@ -108,6 +116,9 @@ export function abrirFormPregunta({ curso, textoInicial = '', alEnviar = null })
     estadoEnvio().then((e) => {
         const a = avisoInicial(e);
         mostrarAviso(a.texto, a.bloquea);
+        // Si ya estaba en su límite y abrió la ventana para preguntar de más, se anota el intento
+        // (Harry lo ve en Admin → Preguntas de alumnos → "Pasaron el límite"). Es solo informativo.
+        if (a.motivo === 'limite') registrarIntento(curso.codigo);
     });
 
     env.addEventListener('click', async () => {

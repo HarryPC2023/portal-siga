@@ -1,0 +1,240 @@
+/* css/nav-accesos.css — Campanita, foquito y Tema en el encabezado de TODAS las páginas.
+   Lo carga _includes/nav.html. Los estilos van acotados a .app-nav para ganarle a las reglas
+   antiguas de Inicio (dashboard.css: .inicio-accesos / .acceso-*), que ya no se usan.
+   ⚠️ Archivo NUEVO. */
+
+.app-nav .app-nav-accesos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-nav .acceso-item {
+  position: relative;
+}
+
+/* Mismo tamaño y estilo que el botón de Tema y el avatar: los tres se ven como una familia */
+.app-nav .acceso-btn {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--brand-morado, #6600CC);
+  box-shadow: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.app-nav .acceso-btn:hover,
+.app-nav .acceso-btn:focus-visible,
+.app-nav .acceso-btn[aria-expanded="true"] {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+  outline: none;
+}
+
+.app-nav .acceso-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.app-nav .acceso-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 12px;
+  text-align: center;
+  border: 2px solid #fff;
+}
+
+.app-nav .acceso-badge[hidden] {
+  display: none;
+}
+
+/* ───── Panel de notificaciones (cae debajo de la campanita) ───── */
+.app-nav .acceso-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 340px;
+  max-width: calc(100vw - 24px);
+  max-height: 420px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 40;
+  font-family: 'Poppins', sans-serif;
+  text-align: left;
+}
+
+.app-nav .acceso-panel.abierto {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.app-nav .acceso-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  font-weight: 700;
+  color: var(--ink, #1d1d2b);
+}
+
+.app-nav .acceso-panel-limpiar {
+  border: none;
+  background: none;
+  color: var(--brand-morado, #6600CC);
+  font: 600 12px 'Poppins', sans-serif;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.app-nav .acceso-panel-limpiar:hover {
+  background: var(--brand-morado-tinte, #F3EAFB);
+}
+
+.app-nav .acceso-panel-limpiar[hidden] {
+  display: none;
+}
+
+.app-nav .acceso-panel-lista {
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.app-nav .acceso-panel-vacio {
+  margin: 0;
+  padding: 24px 12px;
+  text-align: center;
+  color: var(--ink-soft, #555);
+  font-size: 13px;
+}
+
+.app-nav .notif-item {
+  position: relative;
+  padding: 10px 30px 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-nav .notif-item[data-enlace]:hover {
+  background: rgba(102, 0, 204, 0.06);
+}
+
+.app-nav .notif-item.no-leida {
+  background: var(--brand-azul-tinte, #EEF3FF);
+}
+
+.app-nav .notif-item-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink, #1d1d2b);
+}
+
+.app-nav .notif-item-mensaje {
+  font-size: 12.5px;
+  color: var(--ink-soft, #555);
+  line-height: 1.4;
+}
+
+.app-nav .notif-item-fecha {
+  font-size: 11px;
+  color: var(--ink-soft, #555);
+  opacity: 0.8;
+}
+
+.app-nav .notif-item-borrar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-soft, #555);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-nav .notif-item-borrar:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--ink, #1d1d2b);
+}
+
+/* ───── Tema: ahora se ve siempre en el encabezado ─────
+   Antes carnet-siga.css lo escondía al iniciar sesión (el tema solo se elegía dentro del menú
+   de la cuenta). El menú de la cuenta conserva sus bolitas de Tema. */
+.app-nav-user.con-sesion .app-nav-tema {
+  display: block;
+}
+
+/* ───── Menú de la cuenta: con 5 accesos, el último ocupa toda la fila ───── */
+.menu-usuario-accesos .menu-usuario-acceso:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* ───── Celular: poco espacio. Queda la campanita; el foquito (Ideas) y el Tema siguen
+   disponibles dentro del menú de la cuenta, y el panel ocupa el ancho de la pantalla ───── */
+@media (max-width: 640px) {
+
+  .app-nav .acceso-idea,
+  .app-nav-user.con-sesion .app-nav-tema,
+  .app-nav-user .app-nav-tema {
+    display: none !important;
+  }
+
+  .app-nav .app-nav-accesos {
+    gap: 8px;
+  }
+
+  .app-nav .acceso-panel {
+    position: fixed;
+    top: 64px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+    max-height: calc(100vh - 90px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .app-nav .acceso-btn,
+  .app-nav .acceso-panel {
+    transition: none;
+  }
+}

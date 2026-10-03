@@ -1,5 +1,5 @@
 // js/perfil-hub.js — Página "Mi cuenta": Mi carnet, Avisos, Ayuda, Ideas y
-// Seguridad, en una sola página con pestañas. Aquí solo viven las pestañas;
+// Seguridad y Mis preguntas, en una sola página con pestañas. Aquí solo viven las pestañas;
 // cada sección tiene su módulo (mi-carnet, avisos, ayuda, ideas, seguridad).
 import { requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
 import { montarMiCarnet } from './mi-carnet.js';
@@ -7,8 +7,9 @@ import { montarAyuda } from './ayuda.js';
 import { montarIdeas } from './ideas.js';
 import { montarAvisos } from './avisos.js';
 import { montarSeguridad } from './seguridad.js';
+import { montarMisPreguntas } from './mis-preguntas.js';
 
-const TABS_VALIDAS = ['info', 'cuenta', 'preferencias', 'faq', 'sugerencias'];
+const TABS_VALIDAS = ['info', 'cuenta', 'preferencias', 'faq', 'sugerencias', 'preguntas'];
 
 document.addEventListener('DOMContentLoaded', async () => {
     montarNavUsuario();
@@ -61,4 +62,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ================= IDEAS (antes Sugerencias) =================
     // Flujo de 3 pasos y "Mis ideas" con estados: todo en js/ideas.js.
     montarIdeas(sesion);
+
+    // ================= MIS PREGUNTAS (botcito de Asesorías) =================
+    // Las preguntas que envió desde los cursos, su estado y las respuestas: js/mis-preguntas.js.
+    montarMisPreguntas(sesion);
 });

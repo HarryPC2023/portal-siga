@@ -4,14 +4,15 @@
 //   · Punto en "Asesorías": hay notificaciones SIN LEER de tipo "asesorias"
 //     (asesoría nueva, o "tu asesoría quedó publicada").
 //   · Punto en el avatar: hay notificaciones SIN LEER de tipo "respuestas"
-//     (por ejemplo, "respondieron tu idea"), y el mismo punto en la tarjeta
-//     "Ideas" del menú de cuenta para indicar a dónde tocar.
+//     (por ejemplo, "respondieron tu idea" o "respondieron tu pregunta"), y el punto en
+//     la tarjeta del menú de cuenta a la que hay que ir: "Ideas" o "Mis preguntas".
 //
 // Respeta Perfil → Avisos: si el alumno apagó los avisos o ese tipo, no
 // aparece el punto. El punto se va al visitar el lugar al que apunta:
 //     asesorias.html        → se marcan leídas las de tipo "asesorias"
-//     perfil.html#sugerencias (pestaña "Ideas") → se marcan leídas las de tipo "respuestas"
-// (es el mismo estado de "leída" que usa la campanita de Inicio).
+//     perfil.html#sugerencias (pestaña "Ideas") → se marcan leídas las respuestas a ideas
+//     perfil.html#preguntas (pestaña "Mis preguntas") → se marcan leídas las respuestas a preguntas
+// (es el mismo estado de "leída" que usa la campanita).
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
 
 const COLUMNA_POR_TIPO = {
@@ -20,7 +21,10 @@ const COLUMNA_POR_TIPO = {
 };
 
 let sesion = null;
-let noLeidas = []; // [{ id, tipo }]
+let noLeidas = []; // [{ id, tipo, enlace }]
+
+// Las respuestas a preguntas del botcito llevan al Perfil → Mis preguntas; el resto (ideas) a Ideas.
+const esPregunta = (n) => /#preguntas$/.test(n.enlace || '');
 
 function cargarEstilo() {
     const href = new URL('../css/notificaciones-punto.css?v=1', import.meta.url).href;
@@ -47,18 +51,21 @@ function poner(el, clase, hay, etiqueta) {
 function pintar() {
     const enlaceAsesorias = [...document.querySelectorAll('.app-nav-links a')].find((a) => /asesorias\.html$/.test(a.getAttribute('href') || ''));
     poner(enlaceAsesorias, 'np-asesorias', noLeidas.some((n) => n.tipo === 'asesorias'), 'Hay novedades en Asesorías');
-    const hayRespuestas = noLeidas.some((n) => n.tipo === 'respuestas');
-    poner(document.getElementById('avatarBtn'), 'np-avatar', hayRespuestas, 'Tienes respuestas nuevas');
-    // La tarjeta "Ideas" del menú de cuenta (la arma menu-usuario.js al abrirse)
+    const respuestas = noLeidas.filter((n) => n.tipo === 'respuestas');
+    poner(document.getElementById('avatarBtn'), 'np-avatar', respuestas.length > 0, 'Tienes respuestas nuevas');
+    // Las tarjetas del menú de cuenta (las arma menu-usuario.js al abrirse)
     document.querySelectorAll('#avatarMenu a[href$="perfil.html#sugerencias"]').forEach((a) => {
-        poner(a, 'np-tarjeta', hayRespuestas, 'Tienes respuestas nuevas en Ideas');
+        poner(a, 'np-tarjeta', respuestas.some((n) => !esPregunta(n)), 'Tienes respuestas nuevas en Ideas');
+    });
+    document.querySelectorAll('#avatarMenu a[href$="perfil.html#preguntas"]').forEach((a) => {
+        poner(a, 'np-tarjeta', respuestas.some(esPregunta), 'Tienes respuestas nuevas en Mis preguntas');
     });
 }
 
-async function marcarLeidas(tipo) {
-    const ids = noLeidas.filter((n) => n.tipo === tipo).map((n) => n.id);
+async function marcarLeidas(coincide) {
+    const ids = noLeidas.filter(coincide).map((n) => n.id);
     if (!ids.length) return;
-    noLeidas = noLeidas.filter((n) => n.tipo !== tipo);
+    noLeidas = noLeidas.filter((n) => !coincide(n));
     pintar();
     const filas = ids.map((id) => ({ user_id: sesion.user.id, notificacion_id: id }));
     const { error } = await supabase
@@ -69,9 +76,13 @@ async function marcarLeidas(tipo) {
 
 function visitaMarcaLeidas() {
     const ruta = window.location.pathname;
-    if (/\/asesorias(-curso)?\.html$/.test(ruta)) setTimeout(() => marcarLeidas('asesorias'), 1500);
+    if (/\/asesorias(-curso)?\.html$/.test(ruta)) setTimeout(() => marcarLeidas((n) => n.tipo === 'asesorias'), 1500);
     if (/\/perfil\.html$/.test(ruta)) {
-        const revisar = () => { if (window.location.hash === '#sugerencias') setTimeout(() => marcarLeidas('respuestas'), 1200); };
+        const revisar = () => {
+            const hash = window.location.hash;
+            if (hash === '#sugerencias') setTimeout(() => marcarLeidas((n) => n.tipo === 'respuestas' && !esPregunta(n)), 1200);
+            if (hash === '#preguntas') setTimeout(() => marcarLeidas((n) => n.tipo === 'respuestas' && esPregunta(n)), 1200);
+        };
         revisar();
         window.addEventListener('hashchange', revisar);
     }
@@ -91,7 +102,7 @@ async function iniciar() {
         if (prefs && prefs.notificaciones_activas === false) return;
 
         const [{ data: notifs, error: e1 }, { data: leidas }, { data: ocultas }] = await Promise.all([
-            supabase.from('notificaciones').select('id, tipo, destinatario').in('tipo', ['asesorias', 'respuestas']).order('creado_en', { ascending: false }).limit(50),
+            supabase.from('notificaciones').select('id, tipo, destinatario, enlace').in('tipo', ['asesorias', 'respuestas']).order('creado_en', { ascending: false }).limit(50),
             supabase.from('notificaciones_leidas').select('notificacion_id').eq('user_id', uid),
             supabase.from('notificaciones_ocultas').select('notificacion_id').eq('user_id', uid),
         ]);
@@ -101,7 +112,7 @@ async function iniciar() {
         noLeidas = notifs.filter((n) => !vistas.has(n.id)
             && (!n.destinatario || n.destinatario === uid)
             && !(prefs && prefs[COLUMNA_POR_TIPO[n.tipo]] === false))
-            .map((n) => ({ id: n.id, tipo: n.tipo }));
+            .map((n) => ({ id: n.id, tipo: n.tipo, enlace: n.enlace || '' }));
 
         cargarEstilo();
         pintar();

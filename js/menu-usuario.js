@@ -7,7 +7,7 @@
 //   a la misma página).
 // - Si faltan piezas: el mini carnet sale punteado con su avance y el
 //   avatar lleva un puntito que late. Sin recompensas, solo invitación.
-// - Cuatro accesos: Mi carnet, Avisos, Ayuda, Ideas.
+// - Cinco accesos: Mi carnet, Avisos, Ayuda, Ideas, Mis preguntas.
 // - Tema como bolitas (sale del botón suelto del nav cuando hay sesión).
 // - Seguridad (contraseña / eliminar cuenta) discreto abajo, con el correo
 //   y "Cerrar sesión".
@@ -24,6 +24,7 @@ const ICONOS = {
     faq: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9.6 9.6a2.5 2.5 0 0 1 4.8 1c0 1.6-2.4 2-2.4 3.4M12 17h.01"/>',
     sugerencias: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>',
     cuenta: '<path d="M12 3l7 3v5c0 5-3.4 8.4-7 10-3.6-1.6-7-5-7-10V6z"/><path d="M9.5 12l1.8 1.8L15 10"/>',
+    preguntas: '<path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/>',
 };
 
 const ACCESOS = [
@@ -31,6 +32,7 @@ const ACCESOS = [
     { tab: 'preferencias', titulo: 'Avisos', texto: 'Qué quieres que te avisemos', color: '#FFF6DD', acento: '#E0A100' },
     { tab: 'faq', titulo: 'Ayuda', texto: 'Respuestas rápidas', color: '#E6F7F4', acento: '#0FA89E' },
     { tab: 'sugerencias', titulo: 'Ideas', texto: 'Mejora SIGA con nosotros', color: '#FDEAF3', acento: '#C13F94' },
+    { tab: 'preguntas', titulo: 'Mis preguntas', texto: 'Tus dudas y sus respuestas', color: '#FFEFE6', acento: '#E8590C' },
 ];
 
 const ICONO_USUARIO = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" /></svg>';

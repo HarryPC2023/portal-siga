@@ -81,6 +81,15 @@
                 </svg>
                 <span>Ideas</span>
             </button>
+            <button type="button" class="perfil-hub-tab" data-tab="preguntas"
+                style="--tab-acento:#E8590C;--tab-fondo:#FFEFE6">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    <path d="M8 9h8M8 13h5" />
+                </svg>
+                <span>Mis preguntas</span>
+            </button>
             <button type="button" class="perfil-hub-tab" data-tab="cuenta"
                 style="--tab-acento:#6600CC;--tab-fondo:#F3EAFB">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -127,6 +136,10 @@
                 <div class="ayuda" id="ayuda"></div>
             </div>
 
+            <!-- ===== MIS PREGUNTAS (botcito de Asesorías) — contenido en js/mis-preguntas.js ===== -->
+            <div class="perfil-panel" data-panel="preguntas" hidden>
+                <div class="mis-preguntas" id="misPreguntas"></div>
+            </div>
             <!-- ===== IDEAS (antes Sugerencias) — contenido en js/ideas.js ===== -->
             <div class="perfil-panel" data-panel="sugerencias" hidden>
                 <div class="ideas" id="ideas"></div>

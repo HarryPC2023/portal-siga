@@ -1,3 +1,5 @@
+<!-- Estilos de la campanita, el foquito y el botón de Tema del encabezado (css/nav-accesos.css). -->
+<link rel="stylesheet" href="{{ site.baseurl }}/css/nav-accesos.css?v=1">
 <nav class="app-nav">
     <a href="{{ site.baseurl }}/dashboard.html" class="app-nav-logo">
         <img src="{{ site.baseurl }}/assets/logo-siga.png" alt="Logo SIGA">
@@ -15,6 +17,39 @@
             %}>INICIO</a>
     </div>
     <div class="app-nav-user">
+        <!-- Accesos rápidos en TODAS las páginas: campanita de notificaciones (js/notificaciones-siga.js) y
+             foquito de ideas (lleva a perfil.html#sugerencias). Antes vivían solo en Inicio. -->
+        <div class="app-nav-accesos">
+            <div class="acceso-item">
+                <button type="button" class="acceso-btn" id="btnNotificaciones" aria-haspopup="true"
+                    aria-expanded="false" aria-label="Notificaciones" title="Notificaciones">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+                    <span class="acceso-badge" id="notifBadge" hidden>0</span>
+                </button>
+                <div class="acceso-panel" id="panelNotificaciones" role="menu" aria-label="Lista de notificaciones">
+                    <div class="acceso-panel-header">
+                        <span>Notificaciones</span>
+                        <button type="button" class="acceso-panel-limpiar" id="btnLimpiarNotifs">Limpiar todas</button>
+                    </div>
+                    <div class="acceso-panel-lista" id="listaNotificaciones">
+                        <p class="acceso-panel-vacio">Cargando…</p>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ site.baseurl }}/perfil.html#sugerencias" class="acceso-btn acceso-idea"
+                aria-label="Enviar una idea" title="Enviar una idea">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 18h6" />
+                    <path d="M10 22h4" />
+                    <path d="M12 2a6 6 0 0 0-4 10.5c.6.5 1 1.3 1 2.1V16h6v-1.4c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 2z" />
+                </svg>
+            </a>
+        </div>
         <div class="tema-selector app-nav-tema">
             <button type="button" class="tema-boton" aria-haspopup="true" aria-expanded="false"
                 aria-label="Cambiar tema de color">
@@ -62,3 +97,4 @@
     </div>
 </nav>
 <script type="module" src="{{ site.baseurl }}/js/notificaciones-punto.js?v=1"></script>
+<script type="module" src="{{ site.baseurl }}/js/notificaciones-siga.js?v=1"></script>

@@ -351,7 +351,8 @@
 
 /* ───── Enviar una pregunta (invitación en la tarjeta) ───── */
 .an-faq-preg,
-.an-faq-pausa {
+.an-faq-pausa,
+.an-faq-mis {
   margin: 14px 2px 0;
   font-size: 12.5px;
   line-height: 1.5;
@@ -359,6 +360,7 @@
 }
 
 .an-faq-env {
+  display: inline;
   border: 0;
   background: transparent;
   padding: 0;

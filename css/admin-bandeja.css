@@ -232,3 +232,14 @@
     gap: 10px;
     flex-wrap: wrap;
 }
+
+/* ───── Vista "Pasaron el límite" ───── */
+.pb-aviso-lim {
+    margin: 0 0 14px;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.pb-intento .pb-preg {
+    margin-bottom: 2px;
+}

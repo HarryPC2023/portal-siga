@@ -1,0 +1,281 @@
+/* css/mis-preguntas.css — Pestaña "Mis preguntas" de Mi cuenta (Perfil).
+   Prefijo mp- para no chocar con nada. ⚠️ Archivo NUEVO. */
+
+#misPreguntas {
+    font-family: 'Poppins', sans-serif;
+    color: #1d1d2b;
+}
+
+#misPreguntas [hidden] {
+    display: none !important;
+}
+
+.mp-titulo {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    margin: 0 0 6px;
+}
+
+.mp-intro {
+    margin: 0 0 18px;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #555;
+}
+
+.mp-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mp-item {
+    background: #fff;
+    border: 2px solid rgba(102, 0, 204, 0.18);
+    border-radius: 20px;
+    padding: 16px 18px;
+    box-shadow: 0 8px 22px rgba(102, 0, 204, 0.08);
+}
+
+.mp-cab {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.mp-curso {
+    font-size: 0.74rem;
+    font-weight: 600;
+    background: #E9E1F8;
+    color: #4B2390;
+    border-radius: 999px;
+    padding: 4px 12px;
+    text-decoration: none;
+}
+
+a.mp-curso:hover {
+    background: #DCCFF5;
+}
+
+.mp-estado {
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 4px 12px;
+    background: #F1F1F5;
+    color: #555;
+}
+
+.mp-estado-espera {
+    background: #FFEBC8;
+    color: #7A4A00;
+}
+
+.mp-estado-aceptada {
+    background: #CFE0FF;
+    color: #1F4FA0;
+}
+
+.mp-estado-respondida {
+    background: #DDF5E8;
+    color: #137A52;
+}
+
+.mp-estado-rechazada,
+.mp-estado-retirada {
+    background: #ECECF1;
+    color: #666;
+}
+
+.mp-preg {
+    margin: 0 0 4px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.mp-meta {
+    margin: 0 0 10px;
+    font-size: 0.74rem;
+    color: #888;
+}
+
+.mp-nota {
+    margin: 0;
+    font-size: 0.84rem;
+    color: #555;
+}
+
+/* Respuesta: texto sencillo, con los saltos de línea que escribió Harry */
+.mp-resp {
+    background: #F5EEFB;
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+.mp-resp p {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.mp-resp-pie {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.mp-firma {
+    font-size: 0.74rem;
+    color: #6a4a99;
+    font-weight: 500;
+}
+
+.mp-etq {
+    font-size: 0.68rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 3px 10px;
+    background: #F1F1F5;
+    color: #555;
+}
+
+.mp-etq-concepto {
+    background: #CFE0FF;
+    color: #1F4FA0;
+}
+
+.mp-etq-caso {
+    background: #F9EEB8;
+    color: #7A5200;
+}
+
+.mp-etq-metodo {
+    background: #CFF5E3;
+    color: #0B5C64;
+}
+
+.mp-alcance {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.74rem;
+    color: #777;
+}
+
+.mp-acc {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.mp-sw {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.84rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.mp-sw input {
+    width: 17px;
+    height: 17px;
+    accent-color: #6600CC;
+}
+
+.mp-ayuda {
+    margin: 0 0 4px 27px;
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: #777;
+}
+
+.mp-btn {
+    font: 600 0.8rem 'Poppins', sans-serif;
+    border: 1.5px solid #6600CC;
+    background: transparent;
+    color: #6600CC;
+    border-radius: 999px;
+    padding: 7px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.mp-btn:hover {
+    background: #6600CC;
+    color: #fff;
+}
+
+.mp-btn:disabled {
+    opacity: 0.55;
+    cursor: wait;
+}
+
+.mp-btn-peligro {
+    border-color: #C93A3A;
+    color: #C93A3A;
+}
+
+.mp-btn-peligro:hover {
+    background: #C93A3A;
+    color: #fff;
+}
+
+.mp-btn-primario {
+    background: linear-gradient(135deg, #3C7CF8, #6600CC);
+    border-color: transparent;
+    color: #fff;
+}
+
+.mp-btn-primario:hover {
+    filter: brightness(1.1);
+}
+
+.mp-conf {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 0.84rem;
+}
+
+.mp-err {
+    margin: 10px 0 0;
+    font-size: 0.8rem;
+    color: #B42318;
+}
+
+.mp-vacio {
+    margin: 0;
+    padding: 28px 20px;
+    text-align: center;
+    background: #fff;
+    border: 2px dashed rgba(102, 0, 204, 0.25);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.mp-vacio p {
+    margin: 0 0 10px;
+}
+
+@media (max-width: 600px) {
+    .mp-item {
+        padding: 14px;
+    }
+}

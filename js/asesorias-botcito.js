@@ -7,6 +7,7 @@
 // Las preguntas NO se ven al entrar: salen al tocar "Preguntas frecuentes" (lista
 // desplegable con filas lila y blancas) o al empezar a escribir en el buscador.
 // Si no encuentra la duda, el alumno puede ENVIAR su pregunta (asesorias-pregunta-form.js).
+// Si ya envió alguna, ve el enlace "Ver mis preguntas" (Perfil → Mis preguntas).
 //
 // Lo llama asesorias-pagina-curso.js:  montarBotcito(<contenedor .an-curso-grid>, curso)
 // Si el curso no tiene preguntas publicadas (o falla la carga), NO muestra nada:
@@ -152,6 +153,7 @@ export async function montarBotcito(grid, curso) {
             </div>
             <p class="an-faq-preg" id="anFaqPreg" hidden>¿No está tu duda? <button type="button" class="an-faq-env" id="anFaqEnv">Envía tu pregunta</button></p>
             <p class="an-faq-pausa" id="anFaqPausa" hidden>Por ahora no estoy recibiendo preguntas nuevas, pero el buscador sigue disponible.</p>
+            <p class="an-faq-mis" id="anFaqMis" hidden><a class="an-faq-env" href="perfil.html#preguntas">Ver mis preguntas →</a></p>
         </aside>`);
 
     const $ = (id) => document.getElementById(id);
@@ -219,7 +221,11 @@ export async function montarBotcito(grid, curso) {
     // Enviar una pregunta: se rellena con lo que el alumno estaba buscando.
     $('anFaqEnv').addEventListener('click', () => {
         const buscado = st.consulta.trim();
-        abrirFormPregunta({ curso, textoInicial: buscado.length >= 3 ? buscado : '' });
+        abrirFormPregunta({
+            curso,
+            textoInicial: buscado.length >= 3 ? buscado : '',
+            alEnviar: () => { $('anFaqMis').hidden = false; },   // ya tiene una: le sale el enlace a Mis preguntas
+        });
     });
 
     // Se muestra la invitación solo si el envío funciona; si hay pausa, un aviso; si falla, nada
@@ -229,6 +235,11 @@ export async function montarBotcito(grid, curso) {
         if (e.pausa && !e.puede) $('anFaqPausa').hidden = false;
         else $('anFaqPreg').hidden = false;
     });
+
+    // "Ver mis preguntas" (en Perfil) aparece solo si el alumno ya envió alguna, de cualquier curso.
+    supabase.from('asesorias_preguntas').select('id', { count: 'exact', head: true }).then(({ count, error }) => {
+        if (!error && count > 0) $('anFaqMis').hidden = false;
+    }, () => { });
 
     pintar();
     return true;
