@@ -13,6 +13,7 @@ import {
     PORTADA, esc, estiloAttr, estiloCurso, cargarMisVotos, alternarVoto, claveVoto,
     recordarUltimo, abrirReporte, aviso,
 } from './asesorias-comun.js?v=1';
+import { montarBotcito } from './asesorias-botcito.js?v=1';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -99,21 +100,25 @@ function pintar() {
     document.title = `${curso.nombre} - Asesorías - SIGA`;
     if (!tieneContenido(curso)) {
         raiz.innerHTML = `${cabecera()}
-            <section class="an-card an-vacio-curso">
-                <h2 style="font-size:16px">Este curso aún no tiene material</h2>
-                <p>Todavía no hay asesorías publicadas para ${esc(curso.nombre)}. Si lo necesitas, avísanos: así sabemos cuál preparar primero.</p>
-                <button type="button" class="an-btn an-btn-ghost" data-lo-curso>Lo necesito</button>
-            </section>`;
+            <div class="an-curso-grid" id="anGrid">
+                <section class="an-card an-vacio-curso">
+                    <h2 style="font-size:16px">Este curso aún no tiene material</h2>
+                    <p>Todavía no hay asesorías publicadas para ${esc(curso.nombre)}. Si lo necesitas, avísanos: así sabemos cuál preparar primero.</p>
+                    <button type="button" class="an-btn an-btn-ghost" data-lo-curso>Lo necesito</button>
+                </section>
+            </div>`;
         return;
     }
     const generales = recursosGenerales(curso).filter(disponible);
     raiz.innerHTML = `${cabecera()}
-        <section class="an-ruta">
-            <h2>Ruta de evaluaciones</h2>
-            ${generales.length ? `<div class="an-grp">Material del curso</div>${generales.map(filaGeneral).join('')}` : ''}
-            <div class="an-grp">Evaluaciones</div>
-            ${EVALUACIONES.map(filaEvaluacion).join('')}
-        </section>`;
+        <div class="an-curso-grid" id="anGrid">
+            <section class="an-ruta">
+                <h2>Ruta de evaluaciones</h2>
+                ${generales.length ? `<div class="an-grp">Material del curso</div>${generales.map(filaGeneral).join('')}` : ''}
+                <div class="an-grp">Evaluaciones</div>
+                ${EVALUACIONES.map(filaEvaluacion).join('')}
+            </section>
+        </div>`;
 }
 
 function marcarEtiqueta(btn, activo) {
@@ -212,6 +217,7 @@ if (!curso) {
         <a class="an-btn" href="${PORTADA}">Ir a Asesorías</a></section>`;
 } else {
     pintar();
+    montarBotcito($('anGrid'), curso); // solo aparece si el curso tiene preguntas frecuentes publicadas
     conectar();
     pintarOtros();
     cargarMisVotos().then((set) => { votos = set; aplicarVotos(); });

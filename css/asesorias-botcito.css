@@ -1,0 +1,277 @@
+/* css/asesorias-botcito.css — Botcito de la página de curso (preguntas frecuentes).
+   Va DESPUÉS de asesorias-nueva.css (reutiliza sus variables y la clase .an-link).
+   Prefijo an-faq- para no chocar con nada. ⚠️ Archivo NUEVO. */
+
+/* ───── Disposición ─────
+   Sin botcito, .an-curso-grid es un bloque normal y la ruta queda centrada como siempre.
+   Con botcito (.an-con-faq): ruta a la izquierda y botcito en una columna a la derecha. */
+.an-curso-grid.an-con-faq {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.an-curso-grid.an-con-faq .an-ruta {
+  max-width: none;
+  margin: 0 0 30px;
+}
+
+/* ───── Tarjeta del botcito ───── */
+.an-faq {
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  background: #fff;
+  border: 2px solid var(--an-borde);
+  border-radius: 22px;
+  box-shadow: var(--an-sombra);
+  padding: 18px;
+  font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+  color: var(--ink);
+  animation: an-faq-entra 0.35s ease both;
+}
+
+@keyframes an-faq-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.an-faq-cab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+/* .an-bot trae tamaño grande y animación de la portada: aquí va pequeño y quieto */
+.an-faq .an-faq-bot {
+  width: 52px;
+  height: 57px;
+  flex: none;
+  animation: none;
+  filter: none;
+}
+
+.an-faq-cab h2 {
+  font-size: 15px;
+  margin: 0 0 2px;
+}
+
+.an-faq-cab p {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ───── Buscador ───── */
+.an-faq-buscar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1.5px solid rgba(102, 0, 204, 0.25);
+  border-radius: 999px;
+  padding: 7px 8px 7px 14px;
+  color: var(--brand-morado);
+}
+
+.an-faq-buscar:focus-within {
+  border-color: var(--brand-morado);
+  box-shadow: 0 0 0 3px rgba(102, 0, 204, 0.14);
+}
+
+.an-faq-lupa {
+  flex: none;
+}
+
+/* width: 0 + flex: 1 → el campo nunca fuerza el ancho de la tarjeta (ni de la pantalla) */
+.an-faq-buscar input {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 500 13.5px 'Poppins', sans-serif;
+}
+
+.an-faq-buscar input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.an-faq-x {
+  flex: none;
+  border: 0;
+  background: rgba(102, 0, 204, 0.1);
+  color: var(--brand-morado);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.an-faq-x:hover {
+  background: rgba(102, 0, 204, 0.2);
+}
+
+.an-faq-estado {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: 12px 2px 6px;
+}
+
+/* ───── Preguntas ───── */
+.an-faq-lista {
+  min-width: 0;
+}
+
+.an-faq-it {
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.an-faq-it:first-child {
+  border-top: 0;
+}
+
+.an-faq-q {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 11px 2px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: inherit;
+}
+
+.an-faq-q:focus-visible {
+  outline: 3px solid var(--brand-morado);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.an-faq-txt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 0;
+}
+
+.an-faq-qt {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.an-faq-chev {
+  flex: none;
+  font-size: 13px;
+  color: var(--brand-morado);
+  transition: transform 0.2s ease;
+  margin-top: 1px;
+}
+
+.an-abierta .an-faq-chev {
+  transform: rotate(180deg);
+}
+
+/* Respuestas en texto sencillo: los saltos de línea que escribió Harry se respetan */
+.an-faq-r {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  padding: 0 2px 14px;
+}
+
+.an-faq-etq {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 2px 9px;
+  background: #F1F1F5;
+  color: #555;
+}
+
+.an-faq-etq-concepto {
+  background: #CFE0FF;
+  color: #1F4FA0;
+}
+
+.an-faq-etq-caso {
+  background: #F9EEB8;
+  color: #7A5200;
+}
+
+.an-faq-etq-metodo {
+  background: #CFF5E3;
+  color: #0B5C64;
+}
+
+.an-faq-mas {
+  margin: 8px 2px 0;
+}
+
+/* ───── Pantallas medianas: la columna se angosta un poco ───── */
+@media (max-width: 1020px) {
+  .an-curso-grid.an-con-faq {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 18px;
+  }
+}
+
+/* ───── Celular: tarjeta debajo de la cabecera del curso, antes de la ruta ───── */
+@media (max-width: 860px) {
+  .an-curso-grid.an-con-faq {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .an-curso-grid.an-con-faq .an-ruta {
+    margin-bottom: 10px;
+  }
+
+  .an-faq {
+    order: -1;
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding: 16px;
+  }
+
+  /* 16 px evita que el iPhone haga zoom al tocar el campo */
+  .an-faq-buscar input {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .an-faq {
+    animation: none;
+  }
+
+  .an-faq-chev {
+    transition: none;
+  }
+}
