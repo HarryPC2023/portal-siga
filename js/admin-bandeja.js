@@ -59,6 +59,7 @@ let ajustes = { preguntas_pausadas: false, limite_semanal: 3 };
 let filtro = 'en_espera';
 let editandoId = null;
 let cargado = false;
+let semana = new Map();   // user_id -> cuántas preguntas envió esta semana (todas cuentan)
 
 // ───────────── Utilidades ─────────────
 const esc = (v) => (ayuda.escapeHtml
@@ -95,6 +96,16 @@ function mostrarMsg(id, texto, tipo = 'exito') {
     if (!m) return;
     m.textContent = texto;
     m.className = texto ? `admin-msg ${tipo}` : 'admin-msg';
+}
+
+// ───────────── Semana de Lima (igual que la regla de la base de datos) ─────────────
+// La semana va de lunes 00:00 a domingo, hora de Lima (UTC-5, sin horario de verano).
+const OFFSET_LIMA_MS = 5 * 3600 * 1000;
+export function inicioSemanaLima(ahora = Date.now()) {
+    const lima = new Date(ahora - OFFSET_LIMA_MS);            // reloj de Lima leído como UTC
+    const dia = (lima.getUTCDay() + 6) % 7;                    // lunes = 0
+    const lunes = Date.UTC(lima.getUTCFullYear(), lima.getUTCMonth(), lima.getUTCDate() - dia);
+    return lunes + OFFSET_LIMA_MS;                             // de vuelta al instante real
 }
 
 // ───────────── Avisos personales al alumno (misma tabla y formato que admin-asesorias.js) ─────────────
@@ -178,7 +189,8 @@ function pintarCabecera() {
         : 'Todavía no ha llegado ninguna pregunta.';
 
     const pausa = !!ajustes.preguntas_pausadas;
-    $('pbPausa').textContent = pausa ? 'Reanudar preguntas' : 'Pausar preguntas';
+    $('pbPausa').textContent = pausa ? 'Reanudar para todos' : 'Pausar para todos';
+    $('pbBanner').textContent = `Pausa general activada: ningún alumno puede enviar preguntas nuevas (tú sí, para probar). El límite de ${ajustes.limite_semanal} por semana es aparte y se aplica a cada alumno por separado.`;
     $('pbBanner').hidden = !pausa;
 
     $('pbFiltros').innerHTML = `<div class="da-tipos" role="radiogroup" aria-label="Filtrar por estado">${FILTROS.map(([v, nombre]) => {
@@ -224,13 +236,22 @@ function editorHTML(f) {
                     <label class="pb-lb" for="pbPubClaves">Palabras clave (opcional): cómo lo escribiría un alumno apurado</label>
                     <input type="text" id="pbPubClaves" maxlength="300" placeholder="Ej. protocolo, transacciones, ticket">
                 </div>`
-        : `<p class="pb-nota">${f.faq_id ? 'Ya está publicada.' : 'El alumno pidió que sea privada: solo él verá la respuesta.'}</p>`}
+            : `<p class="pb-nota">${f.faq_id ? 'Ya está publicada.' : 'El alumno pidió que sea privada: solo él verá la respuesta.'}</p>`}
             <div class="pb-botones">
                 <button type="button" class="da-ok" data-pb="guardar">Guardar respuesta</button>
                 <button type="button" class="da-btn" data-pb="cancelar">Cancelar</button>
             </div>
             <p class="admin-msg" id="pbMsg"></p>
         </div>`;
+}
+
+function chipSemana(f) {
+    if (f.estado !== 'en_espera' && f.estado !== 'aceptada') return '';
+    const n = semana.get(f.user_id) || 0;
+    const lim = ajustes.limite_semanal;
+    if (n < lim) return '';
+    const texto = n === lim ? `Usó sus ${lim} de la semana` : `Pasó el límite: ${n} esta semana`;
+    return `<span class="pb-chip pb-sem">${texto}</span>`;
 }
 
 function itemHTML(f) {
@@ -242,7 +263,7 @@ function itemHTML(f) {
             <div class="pb-chips">
                 <span class="pb-chip pb-curso">${esc(nombreCurso(f.codigo_curso))}</span>
                 <span class="pb-chip pb-est-${esc(f.estado)}">${esc(ESTADOS[f.estado] || f.estado)}</span>
-                ${priv}${etq}
+                ${priv}${etq}${chipSemana(f)}
             </div>
             <p class="pb-preg">${esc(f.pregunta)}</p>
             <p class="pb-meta">${esc(quien(f.user_id))} · ${esc(fecha(f.creada_en))}</p>
@@ -252,6 +273,9 @@ function itemHTML(f) {
 }
 
 function pintar() {
+    const ini = inicioSemanaLima();
+    semana = new Map();
+    filas.forEach((x) => { if (Date.parse(x.creada_en) >= ini) semana.set(x.user_id, (semana.get(x.user_id) || 0) + 1); });
     pintarCabecera();
     let lista = filtro === 'todas' ? [...filas] : filas.filter((f) => f.estado === filtro);
     // Las que esperan: la más antigua primero (se atienden en orden). El resto: lo más reciente arriba.
@@ -390,9 +414,9 @@ function construirPestana() {
     panel.innerHTML = `
         <div class="da-cab">
             <div><h3>Preguntas de alumnos</h3><p class="da-resumen" id="pbResumen"></p></div>
-            <button type="button" class="da-btn" id="pbPausa">Pausar preguntas</button>
+            <button type="button" class="da-btn" id="pbPausa" title="Pausa general: afecta a todos los alumnos. El límite semanal es por alumno y no depende de este botón.">Pausar para todos</button>
         </div>
-        <p class="pb-banner" id="pbBanner" hidden>Las preguntas están en pausa: los alumnos no pueden enviar preguntas nuevas (tú sí, para probar).</p>
+        <p class="pb-banner" id="pbBanner" hidden></p>
         <div id="pbFiltros"></div>
         <div id="pbLista"><p class="admin-vacio">Cargando…</p></div>`;
     ultimoPanel.parentElement.appendChild(panel);
