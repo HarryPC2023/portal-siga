@@ -4,7 +4,8 @@
 //   en espera  → Aceptar (la responderá) o Rechazar ("Tu consulta no ha sido admitida en esta ocasión.")
 //   aceptada   → Responder (y, si el alumno marcó "pública", publicarla como pregunta frecuente)
 //   respondida → Editar la respuesta (si no está publicada) o dejarla como está
-// Además: interruptor para PAUSAR las preguntas nuevas, un globito sobre la pestaña con
+// Además: botón "Probar como alumno" (tu cuenta tiene el mismo límite y la misma pausa que un alumno,
+// para ver exactamente lo que ellos ven), interruptor para PAUSAR las preguntas nuevas, un globito sobre la pestaña con
 // cuántas siguen en espera, y la vista "Pasaron el límite": qué alumnos intentaron preguntar
 // de más esta semana (tabla asesorias_intentos_limite).
 //
@@ -57,7 +58,7 @@ let tabBtn = null;
 let panel = null;
 let filas = [];
 let perfiles = new Map();
-let ajustes = { preguntas_pausadas: false, limite_semanal: 3 };
+let ajustes = { preguntas_pausadas: false, limite_semanal: 3, admin_exento: true };
 let filtro = 'en_espera';
 let editandoId = null;
 let cargado = false;
@@ -159,7 +160,7 @@ async function cargar() {
     const cont = $('pbLista');
     const [rq, ra, ri] = await Promise.all([
         supabase.from('asesorias_preguntas').select('*').order('creada_en', { ascending: true }),
-        supabase.from('asesorias_ajustes').select('preguntas_pausadas, limite_semanal').eq('id', 1),
+        supabase.from('asesorias_ajustes').select('preguntas_pausadas, limite_semanal, admin_exento').eq('id', 1),
         supabase.from('asesorias_intentos_limite')
             .select('user_id, intentos, primer_intento, ultimo_intento, codigo_curso')
             .eq('semana_inicio', new Date(inicioSemanaLima()).toISOString()),
@@ -196,9 +197,16 @@ function pintarCabecera() {
         : 'Todavía no ha llegado ninguna pregunta.';
 
     const pausa = !!ajustes.preguntas_pausadas;
+    const modoAlumno = ajustes.admin_exento === false;
     $('pbPausa').textContent = pausa ? 'Reanudar para todos' : 'Pausar para todos';
-    $('pbBanner').textContent = `Pausa general activada: ningún alumno puede enviar preguntas nuevas (tú sí, para probar). El límite de ${ajustes.limite_semanal} por semana es aparte y se aplica a cada alumno por separado.`;
+    $('pbBanner').textContent = modoAlumno
+        ? `Pausa general activada: ningún alumno puede enviar preguntas nuevas, y tú tampoco mientras estés en modo alumno. Para ver el mensaje del límite, primero reanuda las preguntas.`
+        : `Pausa general activada: ningún alumno puede enviar preguntas nuevas (tú sí, para probar). El límite de ${ajustes.limite_semanal} por semana es aparte y se aplica a cada alumno por separado.`;
     $('pbBanner').hidden = !pausa;
+
+    $('pbExento').textContent = modoAlumno ? 'Volver a modo administrador' : 'Probar como alumno';
+    $('pbBannerAlumno').textContent = `Modo alumno: tu cuenta tiene el mismo límite (${ajustes.limite_semanal} por semana) y la misma pausa que un alumno, así ves exactamente lo que ellos ven. Cuando termines, vuelve a modo administrador.`;
+    $('pbBannerAlumno').hidden = !modoAlumno;
 
     $('pbFiltros').innerHTML = `<div class="da-tipos" role="radiogroup" aria-label="Filtrar por estado">${FILTROS.map(([v, nombre]) => {
         const n = v === 'todas' ? filas.length : (v === 'limite' ? intentos.length : cuenta(v));
@@ -421,6 +429,23 @@ async function alternarPausa(btn) {
     pintarCabecera();
 }
 
+async function alternarModoAlumno(btn) {
+    btn.disabled = true;
+    const nuevo = ajustes.admin_exento === false;   // si estaba en modo alumno, vuelve a administrador (exento)
+    const { data, error } = await supabase
+        .from('asesorias_ajustes')
+        .update({ admin_exento: nuevo, actualizada_en: new Date().toISOString() })
+        .eq('id', 1).select('id');
+    btn.disabled = false;
+    if (error || !data || !data.length) {
+        if (error) console.error('Modo alumno:', error);
+        alert('No se pudo cambiar el modo. Inténtalo de nuevo.');
+        return;
+    }
+    ajustes.admin_exento = nuevo;
+    pintarCabecera();
+}
+
 // ───────────── Pestaña y panel ─────────────
 function construirPestana() {
     const primera = document.querySelector('.admin-tab');
@@ -441,9 +466,13 @@ function construirPestana() {
     panel.innerHTML = `
         <div class="da-cab">
             <div><h3>Preguntas de alumnos</h3><p class="da-resumen" id="pbResumen"></p></div>
-            <button type="button" class="da-btn" id="pbPausa" title="Pausa general: afecta a todos los alumnos. El límite semanal es por alumno y no depende de este botón.">Pausar para todos</button>
+            <div class="pb-cab-btns">
+                <button type="button" class="da-btn" id="pbExento" title="Con esto tu cuenta tiene el mismo límite semanal y la misma pausa que un alumno, para que veas lo que ellos ven.">Probar como alumno</button>
+                <button type="button" class="da-btn" id="pbPausa" title="Pausa general: afecta a todos los alumnos. El límite semanal es por alumno y no depende de este botón.">Pausar para todos</button>
+            </div>
         </div>
         <p class="pb-banner" id="pbBanner" hidden></p>
+        <p class="pb-banner pb-banner-alumno" id="pbBannerAlumno" hidden></p>
         <div id="pbFiltros"></div>
         <div id="pbLista"><p class="admin-vacio">Cargando…</p></div>`;
     ultimoPanel.parentElement.appendChild(panel);
@@ -461,6 +490,7 @@ function construirPestana() {
 
 function conectar() {
     $('pbPausa').addEventListener('click', (e) => alternarPausa(e.currentTarget));
+    $('pbExento').addEventListener('click', (e) => alternarModoAlumno(e.currentTarget));
 
     $('pbFiltros').addEventListener('change', (e) => {
         if (e.target.name !== 'pbFiltro') return;

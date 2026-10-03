@@ -1,4 +1,5 @@
-// js/notificaciones-siga.js — Campanita de notificaciones en Inicio.
+// js/notificaciones-siga.js — Campanita de notificaciones, en el encabezado de TODAS las páginas
+// (el HTML está en _includes/nav.html; sus ids empiezan con "campana" para no chocar con los de Admin).
 // Las notificaciones pueden ser para todos (destinatario vacío) o personales
 // (destinatario = el alumno). Cada una tiene un TIPO que se corresponde con
 // un interruptor de Perfil → Avisos:
@@ -9,17 +10,17 @@
 // Si el alumno apagó un tipo, esas notificaciones no se le muestran.
 // Si la notificación trae `enlace`, al tocarla se marca leída y se abre.
 // Cada alumno tiene su propio estado de leído/no-leído en
-// notificaciones_leidas. El ícono de Sugerencias es solo un <a> al hash de
+// notificaciones_leidas. El foquito de Ideas es solo un <a> al hash de
 // perfil.html, no necesita JS propio.
 import { supabase, requerirSesion } from './auth-siga.js?v=9';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const item = document.querySelector('.acceso-item');
-    const btn = document.getElementById('btnNotificaciones');
-    const panel = document.getElementById('panelNotificaciones');
-    const lista = document.getElementById('listaNotificaciones');
-    const badge = document.getElementById('notifBadge');
-    const btnLimpiar = document.getElementById('btnLimpiarNotifs');
+    const btn = document.getElementById('btnCampana');
+    const panel = document.getElementById('panelCampana');
+    const lista = document.getElementById('listaCampana');
+    const badge = document.getElementById('badgeCampana');
+    const btnLimpiar = document.getElementById('btnLimpiarCampana');
     if (!item || !btn || !panel || !lista) return;
 
     const sesion = await requerirSesion('');
@@ -205,10 +206,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (error) console.warn('No se pudo marcar como leídas:', error);
     }
 
+    // En el celular el panel ocupa el ancho de la pantalla (position: fixed): se coloca justo debajo
+    // del encabezado, sea cual sea su altura (el encabezado tiene dos filas en pantallas angostas).
+    function ubicarPanel() {
+        const nav = document.querySelector('.app-nav');
+        const celular = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+        panel.style.top = celular && nav ? `${Math.max(8, Math.round(nav.getBoundingClientRect().bottom + 8))}px` : '';
+    }
+    window.addEventListener('resize', ubicarPanel);
+
     btn.addEventListener('click', () => {
         const abierto = panel.classList.toggle('abierto');
         btn.setAttribute('aria-expanded', String(abierto));
-        if (abierto) marcarTodasLeidas();
+        if (abierto) { ubicarPanel(); marcarTodasLeidas(); }
     });
 
     // BUG encontrado: este listener nunca existía — "Limpiar todas" se

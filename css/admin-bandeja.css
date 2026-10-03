@@ -25,6 +25,18 @@
     font-weight: 500;
 }
 
+.pb-cab-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.pb-banner-alumno {
+    background: #E9E1F8;
+    color: #4B2390;
+}
+
 #pbFiltros {
     margin-bottom: 16px;
 }
