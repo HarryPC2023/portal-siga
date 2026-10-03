@@ -1,0 +1,229 @@
+/* css/admin-bandeja.css — Pestaña "Preguntas de alumnos" del Admin.
+   Reutiliza admin.css (.admin-item, .admin-msg) y admin-asesorias.css (.da-btn, .da-ok, .da-tipos, .da-vacio).
+   Prefijo pb- para no chocar con nada. ⚠️ Archivo NUEVO. */
+
+/* Títulos con la fuente de SIGA y el contenido en Poppins (igual que Preguntas frecuentes) */
+#panelBandeja {
+    font-family: 'Poppins', sans-serif;
+}
+
+#panelBandeja h3 {
+    font-family: var(--font-heading);
+}
+
+#panelBandeja [hidden] {
+    display: none !important;
+}
+
+.pb-banner {
+    margin: 0 0 14px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: #FFEBC8;
+    color: #7A4A00;
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+#pbFiltros {
+    margin-bottom: 16px;
+}
+
+.pb-item {
+    margin-bottom: 14px;
+}
+
+.pb-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.pb-chip {
+    display: inline-block;
+    font: 600 0.68rem 'Poppins', sans-serif;
+    border-radius: 999px;
+    padding: 3px 10px;
+    background: #F1F1F5;
+    color: #555;
+}
+
+.pb-curso {
+    background: #E9E1F8;
+    color: #4B2390;
+}
+
+.pb-est-en_espera {
+    background: #FFEBC8;
+    color: #7A4A00;
+}
+
+.pb-est-aceptada {
+    background: #CFE0FF;
+    color: #1F4FA0;
+}
+
+.pb-est-respondida {
+    background: #DDF5E8;
+    color: #137A52;
+}
+
+.pb-est-rechazada,
+.pb-est-retirada {
+    background: #ECECF1;
+    color: #666;
+}
+
+.pb-pub-si {
+    background: #F3EAFB;
+    color: #6600CC;
+}
+
+.pb-pub-no {
+    background: #F1F1F5;
+    color: #555;
+}
+
+.pb-etq-concepto {
+    background: #CFE0FF;
+    color: #1F4FA0;
+}
+
+.pb-etq-caso {
+    background: #F9EEB8;
+    color: #7A5200;
+}
+
+.pb-etq-metodo {
+    background: #CFF5E3;
+    color: #0B5C64;
+}
+
+.pb-preg {
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin: 0 0 4px;
+    overflow-wrap: anywhere;
+}
+
+.pb-meta {
+    font-size: 0.74rem;
+    color: #777;
+    margin: 0 0 8px;
+}
+
+.pb-resp {
+    font-size: 0.82rem;
+    color: #444;
+    background: #F6F6F9;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin: 0 0 10px;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.pb-acc {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.da-btn.pb-rechazar {
+    margin-left: auto;
+    border-color: #C93A3A;
+    color: #C93A3A;
+}
+
+.da-btn.pb-rechazar:hover {
+    background: #C93A3A;
+    color: #fff;
+}
+
+.pb-nota-pub {
+    font-size: 0.76rem;
+    color: #137A52;
+}
+
+/* ───── Editor de la respuesta (dentro de la tarjeta) ───── */
+.pb-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.pb-lb {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.pb-editor textarea,
+.pb-editor input[type=text] {
+    width: 100%;
+    box-sizing: border-box;
+    font: 500 0.85rem 'Poppins', sans-serif;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(0, 0, 0, 0.12);
+    background: #fff;
+    color: #222;
+    outline: 0;
+}
+
+.pb-editor textarea {
+    resize: vertical;
+}
+
+.pb-editor textarea:focus,
+.pb-editor input[type=text]:focus {
+    border-color: #6600CC;
+}
+
+.pb-chk {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.pb-chk input {
+    margin-top: 3px;
+    accent-color: #6600CC;
+}
+
+.pb-pub {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #F5EEFB;
+    border-radius: 14px;
+}
+
+.pb-pista {
+    font-size: 0.72rem;
+    color: #7A4A00;
+}
+
+.pb-nota {
+    margin: 0;
+    font-size: 0.78rem;
+    color: #666;
+    background: #F6F6F9;
+    border-radius: 12px;
+    padding: 8px 12px;
+}
+
+.pb-botones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
