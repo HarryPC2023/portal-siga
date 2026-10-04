@@ -268,3 +268,16 @@
     font-family: var(--font-heading);
     color: #444;
 }
+
+/* Archivar: botón discreto, para que no compita con Aceptar / Responder */
+.da-btn.pb-archivar {
+    border-color: rgba(0, 0, 0, 0.2);
+    color: #666;
+    font-weight: 500;
+}
+
+.da-btn.pb-archivar:hover {
+    background: #666;
+    border-color: #666;
+    color: #fff;
+}

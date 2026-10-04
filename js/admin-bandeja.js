@@ -1,12 +1,15 @@
-// js/admin-bandeja.js — Pestaña "Preguntas de alumnos" del Admin (bandeja del botcito).
+// js/admin-bandeja.js — Pestaña "Preguntas de usuarios" del Admin (bandeja del botcito).
 //
-// Aquí Harry ve las preguntas que envían los alumnos desde el botcito y decide:
+// Aquí Harry ve las preguntas que envían los usuarios desde el botcito y decide:
 //   en espera  → Aceptar (la responderá) o Rechazar ("Tu consulta no ha sido admitida en esta ocasión.")
-//   aceptada   → Responder (y, si el alumno marcó "pública", publicarla como pregunta frecuente)
+//   aceptada   → Responder (y, si el usuario marcó "pública", publicarla como pregunta frecuente)
 //   respondida → Editar la respuesta (si no está publicada) o dejarla como está
-// Además: botón "Probar como alumno" (tu cuenta tiene el mismo límite y la misma pausa que un alumno,
+// Cuando una pregunta ya está cerrada (respondida, rechazada o retirada) la puedes ARCHIVAR para
+// que deje de verse en la bandeja ("Limpiar bandeja" archiva todas las cerradas de una vez). No se
+// borra: queda en "Archivadas" (se puede restaurar) y sigue contando para el límite semanal.
+// Además: botón "Probar como usuario" (tu cuenta tiene el mismo límite y la misma pausa que un usuario,
 // para ver exactamente lo que ellos ven), interruptor para PAUSAR las preguntas nuevas, un globito sobre la pestaña con
-// cuántas siguen en espera, y la vista "Pasaron el límite": qué alumnos intentaron preguntar
+// cuántas siguen en espera, y la vista "Pasaron el límite": qué usuarios intentaron preguntar
 // de más (esta semana y las 8 anteriores; tabla asesorias_intentos_limite).
 //
 // Tablas y funciones: asesorias-preguntas.sql (asesorias_preguntas, asesorias_ajustes y
@@ -29,14 +32,16 @@ const ESTADOS = {
 };
 const FILTROS = [
     ['en_espera', 'En espera'], ['aceptada', 'Aceptadas'], ['respondida', 'Respondidas'],
-    ['rechazada', 'Rechazadas'], ['limite', 'Pasaron el límite'], ['todas', 'Todas'],
+    ['rechazada', 'Rechazadas'], ['limite', 'Pasaron el límite'], ['archivada', 'Archivadas'], ['todas', 'Todas'],
 ];
+const CERRADAS = ['respondida', 'rechazada', 'retirada'];   // las únicas que se pueden archivar
 const VACIOS = {
     en_espera: 'No hay preguntas en espera.',
     aceptada: 'No hay preguntas aceptadas por responder.',
     respondida: 'Todavía no has respondido ninguna.',
     rechazada: 'No has rechazado ninguna.',
     limite: 'Nadie ha intentado pasar el límite esta semana.',
+    archivada: 'No hay preguntas archivadas.',
     todas: 'Todavía no ha llegado ninguna pregunta.',
 };
 const MSG_RECHAZO = 'Tu consulta no ha sido admitida en esta ocasión.';
@@ -44,11 +49,11 @@ const MSG_RECHAZO = 'Tu consulta no ha sido admitida en esta ocasión.';
 const MOTIVOS = {
     permiso: 'Solo el administrador puede responder.',
     no_existe: 'Esa pregunta ya no existe.',
-    estado: 'La pregunta cambió de estado (quizá el alumno la retiró). Recargué la lista.',
+    estado: 'La pregunta cambió de estado (quizá el usuario la retiró). Recargué la lista.',
     respuesta: 'Escribe la respuesta (máximo 4000 caracteres).',
     etiqueta: 'La etiqueta no es válida.',
     ya_publicada: 'Esa pregunta ya está publicada: su texto público se edita en la pestaña Preguntas frecuentes.',
-    privada: 'El alumno pidió que sea privada: no se puede publicar.',
+    privada: 'El usuario pidió que sea privada: no se puede publicar.',
     pregunta_publica: 'La pregunta pública debe tener entre 3 y 200 caracteres.',
     claves: 'Las palabras clave pasan de 300 caracteres.',
 };
@@ -62,7 +67,7 @@ let ajustes = { preguntas_pausadas: false, limite_semanal: 3, admin_exento: true
 let filtro = 'en_espera';
 let editandoId = null;
 let cargado = false;
-let intentos = [];       // intentos sobre el límite de las últimas 8 semanas (uno por alumno y semana)
+let intentos = [];       // intentos sobre el límite de las últimas 8 semanas (uno por usuario y semana)
 let intentosError = false; // la tabla de intentos no se pudo leer (¿falta correr el SQL?)
 let semana = new Map();   // user_id -> cuántas preguntas envió esta semana (todas cuentan)
 
@@ -113,7 +118,7 @@ export function inicioSemanaLima(ahora = Date.now()) {
     return lunes + OFFSET_LIMA_MS;                             // de vuelta al instante real
 }
 
-// ───────────── Avisos personales al alumno (misma tabla y formato que admin-asesorias.js) ─────────────
+// ───────────── Avisos personales al usuario (misma tabla y formato que admin-asesorias.js) ─────────────
 async function crearAviso({ destinatario, titulo, mensaje, origen }) {
     if (!destinatario) return { ok: false };
     const { error } = await supabase.from('notificaciones').insert({
@@ -126,7 +131,7 @@ async function crearAviso({ destinatario, titulo, mensaje, origen }) {
         canal: 'solo_web',
     });
     if (error && error.code === '23505') return { ok: true, repetido: true };   // ya se había avisado
-    if (error) { console.error('No se pudo avisar al alumno:', error); return { ok: false }; }
+    if (error) { console.error('No se pudo avisar al usuario:', error); return { ok: false }; }
     return { ok: true };
 }
 
@@ -167,7 +172,7 @@ async function cargar() {
             .gte('semana_inicio', new Date(inicioSemanaLima() - 8 * 7 * 86400000).toISOString()),
     ]);
     if (rq.error) {
-        console.error('Preguntas de alumnos:', rq.error);
+        console.error('Preguntas de usuarios:', rq.error);
         cont.innerHTML = '<p class="da-vacio">No se pudieron cargar. ¿Ya corriste asesorias-preguntas.sql en Supabase?</p>';
         return;
     }
@@ -190,31 +195,43 @@ async function cargar() {
 }
 
 // ───────────── Pantalla ─────────────
-const cuenta = (estado) => filas.filter((f) => f.estado === estado).length;
+// Las archivadas salen de todas las vistas menos de "Archivadas".
+const visibles = () => filas.filter((f) => !f.archivada_admin);
+const archivadas = () => filas.filter((f) => f.archivada_admin);
+const archivables = () => visibles().filter((f) => CERRADAS.includes(f.estado));
+const cuenta = (estado) => visibles().filter((f) => f.estado === estado).length;
 
 function pintarCabecera() {
     const espera = cuenta('en_espera');
     const acep = cuenta('aceptada');
     $('pbResumen').textContent = filas.length
-        ? `${espera} en espera · ${acep} ${acep === 1 ? 'aceptada por responder' : 'aceptadas por responder'} · límite: ${ajustes.limite_semanal} por alumno cada semana`
+        ? `${espera} en espera · ${acep} ${acep === 1 ? 'aceptada por responder' : 'aceptadas por responder'} · límite: ${ajustes.limite_semanal} por usuario cada semana`
         : 'Todavía no ha llegado ninguna pregunta.';
 
     const pausa = !!ajustes.preguntas_pausadas;
     const modoAlumno = ajustes.admin_exento === false;
     $('pbPausa').textContent = pausa ? 'Reanudar para todos' : 'Pausar para todos';
+    $('pbLimpiar').hidden = archivables().length === 0;   // solo aparece si hay algo cerrado que limpiar
     $('pbBanner').textContent = modoAlumno
-        ? `Pausa general activada: ningún alumno puede enviar preguntas nuevas, y tú tampoco mientras estés en modo alumno. Para ver el mensaje del límite, primero reanuda las preguntas.`
-        : `Pausa general activada: ningún alumno puede enviar preguntas nuevas (tú sí, para probar). El límite de ${ajustes.limite_semanal} por semana es aparte y se aplica a cada alumno por separado.`;
+        ? `Pausa general activada: ningún usuario puede enviar preguntas nuevas, y tú tampoco mientras estés en modo usuario. Para ver el mensaje del límite, primero reanuda las preguntas.`
+        : `Pausa general activada: ningún usuario puede enviar preguntas nuevas (tú sí, para probar). El límite de ${ajustes.limite_semanal} por semana es aparte y se aplica a cada usuario por separado.`;
     $('pbBanner').hidden = !pausa;
 
-    $('pbExento').textContent = modoAlumno ? 'Volver a modo administrador' : 'Probar como alumno';
-    $('pbBannerAlumno').textContent = `Modo alumno: tu cuenta tiene el mismo límite (${ajustes.limite_semanal} por semana) y la misma pausa que un alumno, así ves exactamente lo que ellos ven. Cuando termines, vuelve a modo administrador.`;
+    $('pbExento').textContent = modoAlumno ? 'Volver a modo administrador' : 'Probar como usuario';
+    $('pbBannerAlumno').textContent = `Modo usuario: tu cuenta tiene el mismo límite (${ajustes.limite_semanal} por semana) y la misma pausa que un usuario, así ves exactamente lo que ellos ven. Cuando termines, vuelve a modo administrador.`;
     $('pbBannerAlumno').hidden = !modoAlumno;
 
     $('pbFiltros').innerHTML = `<div class="da-tipos" role="radiogroup" aria-label="Filtrar por estado">${FILTROS.map(([v, nombre]) => {
-        const n = v === 'todas' ? filas.length : (v === 'limite' ? intentosSemana().length : cuenta(v));
+        const n = v === 'todas' ? visibles().length : (v === 'limite' ? intentosSemana().length : (v === 'archivada' ? archivadas().length : cuenta(v)));
         return `<label><input type="radio" name="pbFiltro" value="${v}"${v === filtro ? ' checked' : ''}><span>${nombre} (${n})</span></label>`;
     }).join('')}</div>`;
+}
+
+function botonArchivo(f) {
+    if (!CERRADAS.includes(f.estado)) return '';
+    return f.archivada_admin
+        ? '<button type="button" class="da-btn" data-pb="desarchivar">Desarchivar</button>'
+        : '<button type="button" class="da-btn pb-archivar" data-pb="archivar" title="La quita de tu bandeja. No se borra: queda en Archivadas y sigue contando para el límite semanal del usuario.">Archivar</button>';
 }
 
 function acciones(f) {
@@ -225,12 +242,15 @@ function acciones(f) {
     if (f.estado === 'aceptada') {
         return '<button type="button" class="da-ok" data-pb="responder">Responder</button>';
     }
+    // Una archivada solo se puede restaurar (así no se edita algo que ya diste por cerrado).
+    if (f.archivada_admin) return botonArchivo(f);
     if (f.estado === 'respondida') {
-        return f.faq_id
+        const base = f.faq_id
             ? '<span class="pb-nota-pub">Publicada como pregunta frecuente: su texto se edita en la pestaña Preguntas frecuentes.</span>'
             : '<button type="button" class="da-btn" data-pb="responder">Editar respuesta</button>';
+        return base + botonArchivo(f);
     }
-    return '';
+    return botonArchivo(f);
 }
 
 function editorHTML(f) {
@@ -242,19 +262,19 @@ function editorHTML(f) {
     return `
         <div class="pb-editor">
             <label class="pb-lb" for="pbRespTxt">Tu respuesta (texto sencillo; los saltos de línea se respetan)</label>
-            <textarea id="pbRespTxt" rows="7" maxlength="4000" placeholder="Escribe la respuesta tal como la verá el alumno…">${esc(f.respuesta || '')}</textarea>
+            <textarea id="pbRespTxt" rows="7" maxlength="4000" placeholder="Escribe la respuesta tal como la verá el usuario…">${esc(f.respuesta || '')}</textarea>
             <div class="pb-lb">Etiqueta (opcional)</div>
             <div class="da-tipos" role="radiogroup">${radios}</div>
             ${puedePublicar ? `
-                <label class="pb-chk"><input type="checkbox" id="pbPublicar" checked><span>Publicar también como pregunta frecuente (el alumno aceptó compartirla)</span></label>
+                <label class="pb-chk"><input type="checkbox" id="pbPublicar" checked><span>Publicar también como pregunta frecuente (el usuario aceptó compartirla)</span></label>
                 <div id="pbPubCampos" class="pb-pub">
-                    <label class="pb-lb" for="pbPubPreg">Pregunta pública (sin datos personales; no sale el nombre del alumno)</label>
+                    <label class="pb-lb" for="pbPubPreg">Pregunta pública (sin datos personales; no sale el nombre del usuario)</label>
                     <input type="text" id="pbPubPreg" maxlength="200" value="${esc(f.pregunta.slice(0, 200))}">
-                    ${larga ? `<small class="pb-pista">El alumno escribió ${f.pregunta.length} caracteres: la pública admite 200, acórtala a tu criterio.</small>` : ''}
-                    <label class="pb-lb" for="pbPubClaves">Palabras clave (opcional): cómo lo escribiría un alumno apurado</label>
+                    ${larga ? `<small class="pb-pista">El usuario escribió ${f.pregunta.length} caracteres: la pública admite 200, acórtala a tu criterio.</small>` : ''}
+                    <label class="pb-lb" for="pbPubClaves">Palabras clave (opcional): cómo lo escribiría un usuario apurado</label>
                     <input type="text" id="pbPubClaves" maxlength="300" placeholder="Ej. protocolo, transacciones, ticket">
                 </div>`
-            : `<p class="pb-nota">${f.faq_id ? 'Ya está publicada.' : 'El alumno pidió que sea privada: solo él verá la respuesta.'}</p>`}
+            : `<p class="pb-nota">${f.faq_id ? 'Ya está publicada.' : 'El usuario pidió que sea privada: solo él verá la respuesta.'}</p>`}
             <div class="pb-botones">
                 <button type="button" class="da-ok" data-pb="guardar">Guardar respuesta</button>
                 <button type="button" class="da-btn" data-pb="cancelar">Cancelar</button>
@@ -281,7 +301,7 @@ function itemHTML(f) {
             <div class="pb-chips">
                 <span class="pb-chip pb-curso">${esc(nombreCurso(f.codigo_curso))}</span>
                 <span class="pb-chip pb-est-${esc(f.estado)}">${esc(ESTADOS[f.estado] || f.estado)}</span>
-                ${priv}${etq}${chipSemana(f)}${f.oculta_alumno ? '<span class="pb-chip pb-oculta">La quitó de su lista</span>' : ''}
+                ${priv}${etq}${chipSemana(f)}${f.oculta_usuario ? '<span class="pb-chip pb-oculta">La quitó de su lista</span>' : ''}
             </div>
             <p class="pb-preg">${esc(f.pregunta)}</p>
             <p class="pb-meta">${esc(quien(f.user_id))} · ${esc(fecha(f.creada_en))}</p>
@@ -328,14 +348,17 @@ function pintar() {
         }
         const actuales = intentosSemana();
         const anteriores = intentos.filter((i) => !esEstaSemana(i));
-        let html = `<p class="pb-aviso-lim">Alumnos que ya habían usado sus ${ajustes.limite_semanal} preguntas de la semana y aun así intentaron enviar otra.</p>`;
+        let html = `<p class="pb-aviso-lim">Usuarios que ya habían usado sus ${ajustes.limite_semanal} preguntas de la semana y aun así intentaron enviar otra.</p>`;
         html += '<h4 class="pb-sub">Esta semana</h4>';
         html += actuales.length ? actuales.map(intentoHTML).join('') : `<p class="da-vacio">${VACIOS.limite}</p>`;
         if (anteriores.length) html += `<h4 class="pb-sub">Semanas anteriores</h4>${anteriores.map(intentoHTML).join('')}`;
         $('pbLista').innerHTML = html;
         return;
     }
-    let lista = filtro === 'todas' ? [...filas] : filas.filter((f) => f.estado === filtro);
+    let lista;
+    if (filtro === 'archivada') lista = archivadas();
+    else if (filtro === 'todas') lista = visibles();
+    else lista = visibles().filter((f) => f.estado === filtro);
     // Las que esperan: la más antigua primero (se atienden en orden). El resto: lo más reciente arriba.
     lista = filtro === 'en_espera'
         ? lista.sort((a, b) => Date.parse(a.creada_en) - Date.parse(b.creada_en))
@@ -347,7 +370,7 @@ function pintar() {
 
 // ───────────── Acciones ─────────────
 async function cambiarEstado(f, nuevo, extra = {}) {
-    // Solo si sigue en espera: si el alumno la retiró mientras tanto, no pisamos su decisión.
+    // Solo si sigue en espera: si el usuario la retiró mientras tanto, no pisamos su decisión.
     const { data, error } = await supabase
         .from('asesorias_preguntas')
         .update({ estado: nuevo, revisada_en: new Date().toISOString(), ...extra })
@@ -357,7 +380,7 @@ async function cambiarEstado(f, nuevo, extra = {}) {
         if (error) console.error('Cambiar estado:', error);
         alert(error
             ? 'No se pudo guardar. Inténtalo de nuevo.'
-            : 'Esa pregunta ya no está en espera (quizá el alumno la retiró). Actualicé la lista.');
+            : 'Esa pregunta ya no está en espera (quizá el usuario la retiró). Actualicé la lista.');
         await cargar();
         return false;
     }
@@ -369,12 +392,12 @@ async function aceptar(f, btn) {
     if (!(await cambiarEstado(f, 'aceptada'))) return;
     const av = await avisarAlumno(f, 'aceptada');
     await cargar();
-    if (!av.ok) alert('La pregunta quedó aceptada, pero no pude enviarle el aviso al alumno.');
+    if (!av.ok) alert('La pregunta quedó aceptada, pero no pude enviarle el aviso al usuario.');
 }
 
 async function rechazar(f, btn) {
     const ok = await confirmar(
-        `El alumno recibirá: «${MSG_RECHAZO}» Esta consulta seguirá contando para su límite semanal.`,
+        `El usuario recibirá: «${MSG_RECHAZO}» Esta consulta seguirá contando para su límite semanal.`,
         { titulo: '¿Rechazar esta consulta?', textoBoton: 'Sí, rechazar' },
     );
     if (!ok) return;
@@ -382,7 +405,7 @@ async function rechazar(f, btn) {
     if (!(await cambiarEstado(f, 'rechazada'))) return;
     const av = await avisarAlumno(f, 'rechazada');
     await cargar();
-    if (!av.ok) alert('La pregunta quedó rechazada, pero no pude enviarle el aviso al alumno.');
+    if (!av.ok) alert('La pregunta quedó rechazada, pero no pude enviarle el aviso al usuario.');
 }
 
 function abrirEditor(f) {
@@ -432,7 +455,7 @@ async function guardarRespuesta(f, btn) {
     let av = { ok: true };
     if (primera) av = await avisarAlumno(f, 'respondida', resp);
     await cargar();
-    if (!av.ok) alert('La respuesta quedó guardada, pero no pude enviarle el aviso al alumno.');
+    if (!av.ok) alert('La respuesta quedó guardada, pero no pude enviarle el aviso al usuario.');
 }
 
 async function alternarPausa(btn) {
@@ -452,16 +475,51 @@ async function alternarPausa(btn) {
     pintarCabecera();
 }
 
+async function archivar(ids, valor) {
+    // Con .in('estado', CERRADAS) y .eq('archivada_admin', ...) solo se toca lo que de verdad corresponde.
+    let consulta = supabase.from('asesorias_preguntas').update({ archivada_admin: valor });
+    consulta = ids ? consulta.in('id', ids) : consulta;
+    const { data, error } = await consulta
+        .in('estado', CERRADAS).eq('archivada_admin', !valor).select('id');
+    if (error) { console.error('Archivar:', error); return null; }
+    const tocadas = new Set((data || []).map((x) => String(x.id)));
+    filas.forEach((f) => { if (tocadas.has(String(f.id))) f.archivada_admin = valor; });
+    return tocadas.size;
+}
+
+async function archivarUna(f, btn, valor) {
+    btn.disabled = true;
+    const n = await archivar([f.id], valor);
+    if (n === null) { btn.disabled = false; alert('No se pudo guardar. Inténtalo de nuevo.'); return; }
+    if (n === 0) { alert('Esa pregunta ya no se puede archivar o restaurar. Actualicé la lista.'); await cargar(); return; }
+    pintar();
+}
+
+async function limpiarBandeja(btn) {
+    const total = archivables().length;
+    if (!total) return;
+    const ok = await confirmar(
+        `Se archivarán ${total} ${total === 1 ? 'pregunta ya cerrada' : 'preguntas ya cerradas'} (respondidas, rechazadas y retiradas). No se borran: las verás en "Archivadas" y siguen contando para el límite semanal de cada usuario.`,
+        { titulo: '¿Limpiar la bandeja?', textoBoton: 'Sí, archivar' },
+    );
+    if (!ok) return;
+    btn.disabled = true;
+    const n = await archivar(archivables().map((f) => f.id), true);
+    btn.disabled = false;
+    if (n === null) { alert('No se pudo limpiar la bandeja. Inténtalo de nuevo.'); return; }
+    pintar();
+}
+
 async function alternarModoAlumno(btn) {
     btn.disabled = true;
-    const nuevo = ajustes.admin_exento === false;   // si estaba en modo alumno, vuelve a administrador (exento)
+    const nuevo = ajustes.admin_exento === false;   // si estaba en modo usuario, vuelve a administrador (exento)
     const { data, error } = await supabase
         .from('asesorias_ajustes')
         .update({ admin_exento: nuevo, actualizada_en: new Date().toISOString() })
         .eq('id', 1).select('id');
     btn.disabled = false;
     if (error || !data || !data.length) {
-        if (error) console.error('Modo alumno:', error);
+        if (error) console.error('Modo usuario:', error);
         alert('No se pudo cambiar el modo. Inténtalo de nuevo.');
         return;
     }
@@ -479,7 +537,7 @@ function construirPestana() {
     tabBtn.type = 'button';
     tabBtn.className = 'admin-tab';
     tabBtn.dataset.tab = 'bandeja';
-    tabBtn.textContent = 'Preguntas de alumnos';
+    tabBtn.textContent = 'Preguntas de usuarios';
     primera.parentElement.appendChild(tabBtn);
 
     panel = document.createElement('div');
@@ -488,10 +546,11 @@ function construirPestana() {
     panel.style.display = 'none';
     panel.innerHTML = `
         <div class="da-cab">
-            <div><h3>Preguntas de alumnos</h3><p class="da-resumen" id="pbResumen"></p></div>
+            <div><h3>Preguntas de usuarios</h3><p class="da-resumen" id="pbResumen"></p></div>
             <div class="pb-cab-btns">
-                <button type="button" class="da-btn" id="pbExento" title="Con esto tu cuenta tiene el mismo límite semanal y la misma pausa que un alumno, para que veas lo que ellos ven.">Probar como alumno</button>
-                <button type="button" class="da-btn" id="pbPausa" title="Pausa general: afecta a todos los alumnos. El límite semanal es por alumno y no depende de este botón.">Pausar para todos</button>
+                <button type="button" class="da-btn" id="pbLimpiar" title="Archiva todas las preguntas ya cerradas (respondidas, rechazadas y retiradas) para dejar la bandeja limpia. No se borran." hidden>Limpiar bandeja</button>
+                <button type="button" class="da-btn" id="pbExento" title="Con esto tu cuenta tiene el mismo límite semanal y la misma pausa que un usuario, para que veas lo que ellos ven.">Probar como usuario</button>
+                <button type="button" class="da-btn" id="pbPausa" title="Pausa general: afecta a todos los usuarios. El límite semanal es por usuario y no depende de este botón.">Pausar para todos</button>
             </div>
         </div>
         <p class="pb-banner" id="pbBanner" hidden></p>
@@ -514,6 +573,7 @@ function construirPestana() {
 function conectar() {
     $('pbPausa').addEventListener('click', (e) => alternarPausa(e.currentTarget));
     $('pbExento').addEventListener('click', (e) => alternarModoAlumno(e.currentTarget));
+    $('pbLimpiar').addEventListener('click', (e) => limpiarBandeja(e.currentTarget));
 
     $('pbFiltros').addEventListener('change', (e) => {
         if (e.target.name !== 'pbFiltro') return;
@@ -533,6 +593,8 @@ function conectar() {
         else if (btn.dataset.pb === 'rechazar') rechazar(f, btn);
         else if (btn.dataset.pb === 'responder') abrirEditor(f);
         else if (btn.dataset.pb === 'guardar') guardarRespuesta(f, btn);
+        else if (btn.dataset.pb === 'archivar') archivarUna(f, btn, true);
+        else if (btn.dataset.pb === 'desarchivar') archivarUna(f, btn, false);
     });
 
     // El globito se actualiza cuando vuelves a la pestaña del navegador (y la lista, si la estás viendo).
