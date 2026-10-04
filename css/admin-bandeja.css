@@ -281,3 +281,30 @@
     border-color: #666;
     color: #fff;
 }
+
+/* Vista "Archivadas" */
+.pb-barra {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.pb-barra .pb-aviso-lim {
+    margin: 0;
+}
+
+.pb-nota-espera {
+    color: #7A4A00;
+}
+
+.da-btn.pb-eliminar {
+    border-color: #C93A3A;
+    color: #C93A3A;
+}
+
+.da-btn.pb-eliminar:hover {
+    background: #C93A3A;
+    color: #fff;
+}

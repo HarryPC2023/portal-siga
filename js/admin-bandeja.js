@@ -7,6 +7,10 @@
 // Cuando una pregunta ya está cerrada (respondida, rechazada o retirada) la puedes ARCHIVAR para
 // que deje de verse en la bandeja ("Limpiar bandeja" archiva todas las cerradas de una vez). No se
 // borra: queda en "Archivadas" (se puede restaurar) y sigue contando para el límite semanal.
+// Las archivadas se pueden ELIMINAR DE TU BANDEJA para siempre. Eso solo afecta a tu vista: la
+// pregunta NO se borra para el usuario, que la sigue viendo en su Mis preguntas con su estado y su
+// respuesta, y su límite semanal no cambia. (La fila se borra de verdad solo cuando los dos ya la
+// descartaron y es de una semana anterior; lo hace la base de datos.)
 // Además: botón "Probar como usuario" (tu cuenta tiene el mismo límite y la misma pausa que un usuario,
 // para ver exactamente lo que ellos ven), interruptor para PAUSAR las preguntas nuevas, un globito sobre la pestaña con
 // cuántas siguen en espera, y la vista "Pasaron el límite": qué usuarios intentaron preguntar
@@ -69,6 +73,7 @@ let editandoId = null;
 let cargado = false;
 let intentos = [];       // intentos sobre el límite de las últimas 8 semanas (uno por usuario y semana)
 let intentosError = false; // la tabla de intentos no se pudo leer (¿falta correr el SQL?)
+let todas = [];          // TODAS las filas (también las que Harry eliminó de su bandeja): cuentan para el límite
 let semana = new Map();   // user_id -> cuántas preguntas envió esta semana (todas cuentan)
 
 // ───────────── Utilidades ─────────────
@@ -176,7 +181,8 @@ async function cargar() {
         cont.innerHTML = '<p class="da-vacio">No se pudieron cargar. ¿Ya corriste asesorias-preguntas.sql en Supabase?</p>';
         return;
     }
-    filas = rq.data || [];
+    todas = rq.data || [];
+    filas = todas.filter((f) => !f.eliminada_admin);   // las que eliminaste de tu bandeja ya no se muestran
     if (!ra.error && ra.data && ra.data[0]) ajustes = ra.data[0];
     // Si la tabla de intentos todavía no existe, simplemente no hay vista de intentos (nada se rompe).
     intentosError = !!ri.error;
@@ -199,6 +205,7 @@ async function cargar() {
 const visibles = () => filas.filter((f) => !f.archivada_admin);
 const archivadas = () => filas.filter((f) => f.archivada_admin);
 const archivables = () => visibles().filter((f) => CERRADAS.includes(f.estado));
+// Eliminar de tu bandeja: cualquier archivada, sin esperar (la fila no se borra: el usuario la sigue viendo).
 const cuenta = (estado) => visibles().filter((f) => f.estado === estado).length;
 
 function pintarCabecera() {
@@ -242,8 +249,10 @@ function acciones(f) {
     if (f.estado === 'aceptada') {
         return '<button type="button" class="da-ok" data-pb="responder">Responder</button>';
     }
-    // Una archivada solo se puede restaurar (así no se edita algo que ya diste por cerrado).
-    if (f.archivada_admin) return botonArchivo(f);
+    // Una archivada se puede restaurar o, si es de una semana anterior, eliminar para siempre.
+    if (f.archivada_admin) {
+        return botonArchivo(f) + '<button type="button" class="da-btn pb-eliminar" data-pb="eliminar" title="La quita de TU bandeja para siempre. El usuario la sigue viendo en su lista.">Eliminar de mi bandeja</button>';
+    }
     if (f.estado === 'respondida') {
         const base = f.faq_id
             ? '<span class="pb-nota-pub">Publicada como pregunta frecuente: su texto se edita en la pestaña Preguntas frecuentes.</span>'
@@ -339,7 +348,7 @@ function intentoHTML(i) {
 function pintar() {
     const ini = inicioSemanaLima();
     semana = new Map();
-    filas.forEach((x) => { if (Date.parse(x.creada_en) >= ini) semana.set(x.user_id, (semana.get(x.user_id) || 0) + 1); });
+    todas.forEach((x) => { if (Date.parse(x.creada_en) >= ini) semana.set(x.user_id, (semana.get(x.user_id) || 0) + 1); });
     pintarCabecera();
     if (filtro === 'limite') {
         if (intentosError) {
@@ -356,8 +365,16 @@ function pintar() {
         return;
     }
     let lista;
-    if (filtro === 'archivada') lista = archivadas();
-    else if (filtro === 'todas') lista = visibles();
+    if (filtro === 'archivada') {
+        $('pbLista').innerHTML = archivadas().length
+            ? `<div class="pb-barra">
+                    <p class="pb-aviso-lim">Aquí quedan las preguntas que archivaste. Puedes restaurarlas o eliminarlas de tu bandeja para siempre: eso solo afecta a tu vista, así que el usuario no pierde nada y las sigue viendo en su lista.</p>
+                    <button type="button" class="da-btn pb-eliminar" data-pb="vaciar">Eliminar de mi bandeja todas las archivadas</button>
+               </div>${[...archivadas()].sort((a, b) => Date.parse(b.respondida_en || b.revisada_en || b.creada_en) - Date.parse(a.respondida_en || a.revisada_en || a.creada_en)).map(itemHTML).join('')}`
+            : `<p class="da-vacio">${VACIOS.archivada}</p>`;
+        return;
+    }
+    if (filtro === 'todas') lista = visibles();
     else lista = visibles().filter((f) => f.estado === filtro);
     // Las que esperan: la más antigua primero (se atienden en orden). El resto: lo más reciente arriba.
     lista = filtro === 'en_espera'
@@ -495,6 +512,41 @@ async function archivarUna(f, btn, valor) {
     pintar();
 }
 
+// Elimina de TU bandeja (la base de datos marca la fila; el usuario sigue viendo la suya).
+async function eliminarDeBandeja(lista, btn) {
+    const { data, error } = await supabase.rpc('asesorias_eliminar_de_bandeja', { p_ids: lista.map((f) => f.id) });
+    if (btn) btn.disabled = false;
+    if (error || !data || !data.ok) {
+        if (error) console.error('Eliminar de la bandeja:', error);
+        alert('No se pudo eliminar. Inténtalo de nuevo.');
+        return;
+    }
+    await cargar();
+}
+
+async function eliminarUna(f, btn) {
+    const aviso = [
+        `Se quitará para siempre de TU bandeja: «${recorte(f.pregunta, 80)}». No se puede deshacer desde aquí.`,
+        'El usuario la seguirá viendo en su Mis preguntas, con su estado y su respuesta, y su límite semanal no cambia.',
+        f.faq_id ? 'La pregunta frecuente publicada tampoco se toca.' : '',
+    ].filter(Boolean).join(' ');
+    if (!(await confirmar(aviso, { titulo: '¿Eliminar de tu bandeja?', textoBoton: 'Sí, eliminar' }))) return;
+    btn.disabled = true;
+    await eliminarDeBandeja([f], btn);
+}
+
+async function vaciarArchivo(btn) {
+    const lista = archivadas();
+    if (!lista.length) return;
+    const aviso = [
+        `Se quitarán para siempre de TU bandeja ${lista.length} ${lista.length === 1 ? 'pregunta archivada' : 'preguntas archivadas'}. No se puede deshacer desde aquí.`,
+        'Los usuarios las seguirán viendo en su Mis preguntas y su límite semanal no cambia.',
+    ].join(' ');
+    if (!(await confirmar(aviso, { titulo: '¿Vaciar el archivo?', textoBoton: 'Sí, eliminar' }))) return;
+    btn.disabled = true;
+    await eliminarDeBandeja(lista, btn);
+}
+
 async function limpiarBandeja(btn) {
     const total = archivables().length;
     if (!total) return;
@@ -586,6 +638,7 @@ function conectar() {
         const btn = e.target.closest('[data-pb]');
         if (!btn) return;
         if (btn.dataset.pb === 'cancelar') return cerrarEditor();
+        if (btn.dataset.pb === 'vaciar') return vaciarArchivo(btn);
         const item = btn.closest('.pb-item');
         const f = item && filas.find((x) => String(x.id) === item.dataset.id);
         if (!f) return;
@@ -595,6 +648,7 @@ function conectar() {
         else if (btn.dataset.pb === 'guardar') guardarRespuesta(f, btn);
         else if (btn.dataset.pb === 'archivar') archivarUna(f, btn, true);
         else if (btn.dataset.pb === 'desarchivar') archivarUna(f, btn, false);
+        else if (btn.dataset.pb === 'eliminar') eliminarUna(f, btn);
     });
 
     // El globito se actualiza cuando vuelves a la pestaña del navegador (y la lista, si la estás viendo).
