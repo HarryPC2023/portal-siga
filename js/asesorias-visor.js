@@ -307,6 +307,8 @@ export function abrirVisorPDF(url, titulo) {
 
     elTitulo.textContent = estado.titulo;
     elControlesPDF.hidden = false;
+    btnImprimir.hidden = false;
+    btnDescargar.hidden = false;
     elPdfPagina.hidden = false;
     elWebIframe.hidden = true;
     elWebIframe.src = 'about:blank';
@@ -324,6 +326,8 @@ export function abrirVisorWeb(url, titulo) {
 
     elTitulo.textContent = estado.titulo;
     elControlesPDF.hidden = true;
+    btnImprimir.hidden = true;
+    btnDescargar.hidden = true;
     elPdfPagina.hidden = true;
     elWebIframe.hidden = false;
     elWebIframe.src = url;

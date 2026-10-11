@@ -25,7 +25,12 @@
 // 2) `evaluacion`: una de EVALUACIONES ('PC1', 'PC2', 'EP', 'PC3', 'PC4',
 //    'EF', 'ES') si el material es de esa evaluación; `null` si es un
 //    material general del curso (monografía, teoría, guía).
-// 3) `tipo`: 'pdf' (archivo en assets/asesorias/) o 'web' (página HTML).
+// 3) `tipo`: 'web' (asesoría interactiva: carpeta con index.html). Las asesorías
+//    nuevas SIEMPRE son web; 'pdf' sigue soportado por el visor pero ya no se usa.
+//    Carpeta de cada web: assets/asesorias/<slug>/<periodo>/<evaluacion>/index.html
+//    (todo en minúsculas, sin tildes ni espacios; ej. assets/asesorias/dbd/2026-1/pc1/).
+//    El periodo es el ciclo en que se basa la asesoría; solo se crea uno nuevo
+//    cuando el contenido cambia de verdad. La carpeta se crea al hacer la asesoría.
 // 4) `estado`: 'disponible' (por defecto) o 'preparacion' (ya se está
 //    trabajando, aún no se publica).
 // 5) `fecha`: 'AAAA-MM-DD' del día que lo publicas. Durante 14 días el curso
@@ -71,20 +76,7 @@ export const CURSOS = [
     { codigo: 'FB402', slug: 'calculo-numerico', nombre: 'Cálculo Numérico', ciclo: 4, creditos: 3, recursos: [] },
     { codigo: 'FB403', slug: 'ecuaciones-diferenciales', nombre: 'Ecuaciones Diferenciales', ciclo: 4, creditos: 5, recursos: [] },
     { codigo: 'FB405', slug: 'estadistica-aplicada', nombre: 'Estadística Aplicada', ciclo: 4, creditos: 3, recursos: [] },
-    {
-        codigo: 'SI405', slug: 'mcd', nombre: 'Modelado Conceptual de Datos', ciclo: 4, creditos: 3,
-        recursos: [
-            {
-                id: 'mono-mcd',
-                tipo: 'pdf',
-                evaluacion: null,
-                titulo: 'Monografía — Modelado Conceptual de Datos',
-                descripcion: 'Fundamentos para encarar el trabajo grupal y qué espera el profesor.',
-                fecha: null,
-                src: 'assets/asesorias/monografia-mcd.pdf',
-            },
-        ],
-    },
+    { codigo: 'SI405', slug: 'mcd', nombre: 'Modelado Conceptual de Datos', ciclo: 4, creditos: 3, recursos: [] },
 
     // ───────────── Ciclo 5 ─────────────
     { codigo: 'SI501', slug: 'investigacion-operaciones-i', nombre: 'Investigación de Operaciones I', ciclo: 5, creditos: 3, recursos: [] },
@@ -98,17 +90,8 @@ export const CURSOS = [
                 titulo: 'PC1 — Diseño de Base de Datos',
                 descripcion: 'Herramientas, arquitectura, componentes y checklist antes de exponer.',
                 fecha: null,
-                // Hoy vive en un repositorio aparte; se migra dentro de SIGA al final.
-                src: 'https://harrypc2023.github.io/asesoria-dbd/',
-            },
-            {
-                id: 'mono-dbd',
-                tipo: 'pdf',
-                evaluacion: null,
-                titulo: 'Monografía — Diseño de Base de Datos',
-                descripcion: 'Prototipado de interfaces: coherencia, detalle y datos reales por pantalla.',
-                fecha: null,
-                src: 'assets/asesorias/monografia-dbd-avanzado.pdf',
+                // Carpeta: assets/asesorias/<curso>/<periodo>/<evaluacion>/  (periodo = ciclo en que se basa)
+                src: 'assets/asesorias/dbd/2026-1/pc1/index.html',
             },
         ],
     },
