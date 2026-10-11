@@ -32,7 +32,6 @@ const ICONOS = {
     zoomMenos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>',
     zoomMas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
     imprimir: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
-    descargar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
     nuevaPestana: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
     fullscreen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/></svg>',
     cerrar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
@@ -50,7 +49,7 @@ let elVistaBtn, elVistaLabel, elVistaMenu, btnVistaPagina, btnVistaContinua;
 let btnBuscar, buscadorBox, inputBuscar, contadorBuscar, btnBuscarAnt, btnBuscarSig;
 let btnPagAnt, btnPagSig, inputPagina, spanTotalPaginas;
 let btnZoomMenos, btnZoomMas, spanZoomPct;
-let btnImprimir, btnDescargar, btnNuevaPestana, btnFullscreen, btnCerrar;
+let btnImprimir, btnNuevaPestana, btnFullscreen, btnCerrar;
 
 let construido = false;
 
@@ -132,7 +131,6 @@ function construirModal() {
 
         <div class="visor-toolbar-der">
           <button type="button" class="visor-btn" data-accion="imprimir" title="Imprimir">${ICONOS.imprimir}</button>
-          <button type="button" class="visor-btn" data-accion="descargar" title="Descargar">${ICONOS.descargar}</button>
           <button type="button" class="visor-btn" data-accion="nueva-pestana" title="Abrir en pestaña nueva">${ICONOS.nuevaPestana}</button>
           <button type="button" class="visor-btn" data-accion="fullscreen" title="Pantalla completa">${ICONOS.fullscreen}</button>
           <button type="button" class="visor-btn visor-btn-cerrar" data-accion="cerrar" title="Cerrar" aria-label="Cerrar">${ICONOS.cerrar}</button>
@@ -189,7 +187,6 @@ function construirModal() {
     spanZoomPct = overlay.querySelector('[data-rol="zoom-pct"]');
 
     btnImprimir = overlay.querySelector('[data-accion="imprimir"]');
-    btnDescargar = overlay.querySelector('[data-accion="descargar"]');
     btnNuevaPestana = overlay.querySelector('[data-accion="nueva-pestana"]');
     btnFullscreen = overlay.querySelector('[data-accion="fullscreen"]');
     btnCerrar = overlay.querySelector('[data-accion="cerrar"]');
@@ -280,7 +277,6 @@ function enlazarEventos() {
 
     // --- Acciones de la derecha ---
     btnImprimir.addEventListener('click', imprimirDocumento);
-    btnDescargar.addEventListener('click', descargarDocumento);
     btnNuevaPestana.addEventListener('click', () => window.open(estado.url, '_blank', 'noopener'));
     btnFullscreen.addEventListener('click', alternarFullscreen);
 
@@ -307,8 +303,6 @@ export function abrirVisorPDF(url, titulo) {
 
     elTitulo.textContent = estado.titulo;
     elControlesPDF.hidden = false;
-    btnImprimir.hidden = false;
-    btnDescargar.hidden = false;
     elPdfPagina.hidden = false;
     elWebIframe.hidden = true;
     elWebIframe.src = 'about:blank';
@@ -326,8 +320,6 @@ export function abrirVisorWeb(url, titulo) {
 
     elTitulo.textContent = estado.titulo;
     elControlesPDF.hidden = true;
-    btnImprimir.hidden = true;
-    btnDescargar.hidden = true;
     elPdfPagina.hidden = true;
     elWebIframe.hidden = false;
     elWebIframe.src = url;
@@ -815,7 +807,7 @@ function resaltarCoincidenciasEnCapa(capa, consulta) {
     });
 }
 
-// ---------- Imprimir / Descargar / Pantalla completa ----------
+// ---------- Imprimir / Pantalla completa ----------
 function imprimirDocumento() {
     // Se imprime el PDF original (no el canvas) para no perder calidad —
     // se carga en un iframe oculto y se dispara print() sobre esa ventana.
@@ -840,15 +832,6 @@ function imprimirDocumento() {
     };
 
     document.body.appendChild(iframeImpresion);
-}
-
-function descargarDocumento() {
-    const enlace = document.createElement('a');
-    enlace.href = estado.url;
-    enlace.download = estado.titulo ? `${estado.titulo}.pdf` : '';
-    document.body.appendChild(enlace);
-    enlace.click();
-    enlace.remove();
 }
 
 function alternarFullscreen() {
