@@ -7,7 +7,7 @@
 import { abrirVisorPDF, abrirVisorWeb } from './asesorias-visor.js?v=2';
 import {
     CURSOS, EVALUACIONES, NOMBRE_EVALUACION, cursoPorSlug, estadoEvaluacion,
-    recursosGenerales, tieneContenido, esNuevo,
+    recursosGenerales, tieneContenido, esNuevo, rutaRecurso, recursosOrdenados,
 } from './asesorias-cursos.js?v=1';
 import {
     PORTADA, esc, estiloAttr, estiloCurso, cargarMisVotos, alternarVoto, claveVoto,
@@ -30,7 +30,7 @@ function recursoHTML(r) {
     return `
         <div class="an-rec">
             <div class="an-rec-tx"><b>${esc(r.titulo)}</b>${r.descripcion ? `<p>${esc(r.descripcion)}</p>` : ''}
-                <span class="an-por">Hecha por ${esc(r.por || 'Harry')}</span>${esNuevo(r) ? ' <span class="an-nuevo an-nuevo-sm">Nuevo</span>' : ''}</div>
+                <span class="an-por">Hecha por ${esc(r.por || 'Harry')}</span>${r.periodo ? ` <span class="an-periodo" title="Asesoría basada en el ciclo ${esc(r.periodo)}">Ciclo ${esc(r.periodo)}</span>` : ''}${esNuevo(r) ? ' <span class="an-nuevo an-nuevo-sm">Nuevo</span>' : ''}</div>
             <div class="an-rec-ac">
                 <button type="button" class="an-btn" data-abrir="${esc(r.id)}">${accion}</button>
                 <button type="button" class="an-link" data-reportar="${esc(r.id)}">Reportar un error</button>
@@ -51,7 +51,7 @@ function filaGeneral(r) {
 
 function filaEvaluacion(ev) {
     const estado = estadoEvaluacion(curso, ev);
-    const recs = curso.recursos.filter((r) => r.evaluacion === ev && disponible(r));
+    const recs = recursosOrdenados(curso, ev);
     if (estado === 'disponible') {
         return `
         <div class="an-ev" data-fila="${ev}">
@@ -109,7 +109,7 @@ function pintar() {
             </div>`;
         return;
     }
-    const generales = recursosGenerales(curso).filter(disponible);
+    const generales = recursosOrdenados(curso, null);
     raiz.innerHTML = `${cabecera()}
         <div class="an-curso-grid" id="anGrid">
             <section class="an-ruta">
@@ -149,8 +149,9 @@ function abrirRecurso(id) {
     const r = curso.recursos.find((x) => x.id === id);
     if (!r) return;
     recordarUltimo(curso.slug, r.id);
-    if (r.tipo === 'pdf') abrirVisorPDF(r.src, r.titulo);
-    else abrirVisorWeb(r.src, r.titulo);
+    const src = rutaRecurso(curso, r);
+    if (r.tipo === 'pdf') abrirVisorPDF(src, r.titulo);
+    else abrirVisorWeb(src, r.titulo);
 }
 
 function conectar() {

@@ -27,13 +27,18 @@
 //    material general del curso (monografía, teoría, guía).
 // 3) `tipo`: 'web' (asesoría interactiva: carpeta con index.html). Las asesorías
 //    nuevas SIEMPRE son web; 'pdf' sigue soportado por el visor pero ya no se usa.
-//    Carpeta de cada web: assets/asesorias/<slug>/<periodo>/<evaluacion>/index.html
-//    (todo en minúsculas, sin tildes ni espacios; ej. assets/asesorias/dbd/2026-1/pc1/).
-//    El periodo es el ciclo en que se basa la asesoría; solo se crea uno nuevo
-//    cuando el contenido cambia de verdad. La carpeta se crea al hacer la asesoría.
-// 4) `estado`: 'disponible' (por defecto) o 'preparacion' (ya se está
+// 4) `periodo`: ciclo en que se basa la asesoría ('2026-1'). Con él y la
+//    `evaluacion` (o `carpeta`, si es material general) el catálogo calcula solo
+//    la ruta:  assets/asesorias/<slug>/<periodo>/<evaluacion>/index.html
+//    (minúsculas, sin tildes ni espacios; ej. assets/asesorias/dbd/2026-1/pc1/).
+//    No escribas `src` salvo que el material viva en otra ruta.
+//    Varias asesorías de una misma evaluación (PC1 de 2026-1 y de 2026-2) se
+//    listan juntas, la más reciente primero. Crea un periodo nuevo solo cuando
+//    el contenido cambia de verdad; la carpeta se crea al hacer la asesoría.
+//    `id` debe ser único: '<evaluacion>-<curso>-<periodo>' (ej. 'pc1-dbd-2026-2').
+// 5) `estado`: 'disponible' (por defecto) o 'preparacion' (ya se está
 //    trabajando, aún no se publica).
-// 5) `fecha`: 'AAAA-MM-DD' del día que lo publicas. Durante 14 días el curso
+// 6) `fecha`: 'AAAA-MM-DD' del día que lo publicas. Durante 14 días el curso
 //    y el recurso llevan la etiqueta "Nuevo", y el botcito avisa una vez en
 //    cada navegador. Los recursos de antes llevan `fecha: null` (no son nuevos).
 // Con eso la tira de evaluaciones del curso se enciende sola; no hay
@@ -90,8 +95,7 @@ export const CURSOS = [
                 titulo: 'PC1 — Diseño de Base de Datos',
                 descripcion: 'Herramientas, arquitectura, componentes y checklist antes de exponer.',
                 fecha: null,
-                // Carpeta: assets/asesorias/<curso>/<periodo>/<evaluacion>/  (periodo = ciclo en que se basa)
-                src: 'assets/asesorias/dbd/2026-1/pc1/index.html',
+                periodo: '2026-1',
             },
         ],
     },
@@ -122,6 +126,22 @@ export function estadoEvaluacion(curso, evaluacion) {
 // Materiales generales del curso (monografías, teoría, guías).
 export function recursosGenerales(curso) {
     return curso.recursos.filter((r) => r.evaluacion === null);
+}
+
+// Ruta de la asesoría web: se calcula con curso + periodo + evaluación (o
+// `carpeta` en el material general). Un `src` explícito tiene prioridad.
+export function rutaRecurso(curso, recurso) {
+    if (recurso.src) return recurso.src;
+    const sub = String(recurso.evaluacion || recurso.carpeta || '').toLowerCase();
+    return `assets/asesorias/${curso.slug}/${recurso.periodo}/${sub}/index.html`;
+}
+
+// Recursos disponibles de una evaluación (o del material general si `evaluacion`
+// es null), con el periodo más reciente primero. Sin periodo van al final.
+export function recursosOrdenados(curso, evaluacion) {
+    return curso.recursos
+        .filter((r) => r.evaluacion === evaluacion && (r.estado || 'disponible') === 'disponible')
+        .sort((a, b) => String(b.periodo || '').localeCompare(String(a.periodo || '')));
 }
 
 // ¿El curso ya tiene algo publicado?
@@ -170,3 +190,16 @@ export function recursosNuevos(hoy = new Date()) {
     CURSOS.forEach((curso) => curso.recursos.forEach((recurso) => { if (esNuevo(recurso, hoy)) lista.push({ curso, recurso }); }));
     return lista;
 }
+
+// ───────────── Revisión del catálogo ─────────────
+// Solo avisa en la consola del navegador (F12); nunca rompe la página.
+(function validarCatalogo() {
+    const vistos = new Set();
+    CURSOS.forEach((c) => c.recursos.forEach((r) => {
+        if (vistos.has(r.id)) console.warn(`[Asesorías] id repetido: "${r.id}" (cada recurso necesita un id único)`);
+        vistos.add(r.id);
+        if (r.tipo === 'web' && !r.src && !(r.periodo && (r.evaluacion || r.carpeta))) {
+            console.warn(`[Asesorías] "${r.id}": falta periodo (y evaluacion o carpeta) para calcular su ruta`);
+        }
+    }));
+})();

@@ -1226,3 +1226,12 @@ a.an-p:focus-visible {
     animation: none;
   }
 }
+
+.an-periodo {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--brand-azul-tinte);
+  color: var(--brand-azul);
+}
