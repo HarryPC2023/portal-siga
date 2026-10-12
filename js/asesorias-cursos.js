@@ -38,11 +38,17 @@
 //    `id` debe ser único: '<evaluacion>-<curso>-<periodo>' (ej. 'pc1-dbd-2026-2').
 // 5) `estado`: 'disponible' (por defecto) o 'preparacion' (ya se está
 //    trabajando, aún no se publica).
-// 6) `fecha`: 'AAAA-MM-DD' del día que lo publicas. Durante 14 días el curso
-//    y el recurso llevan la etiqueta "Nuevo", y el botcito avisa una vez en
-//    cada navegador. Los recursos de antes llevan `fecha: null` (no son nuevos).
+// 6) `fecha`: NO la escribas, se calcula sola al desplegar: es el día en que
+//    la carpeta de la asesoría entró al repositorio (ver scripts/fechas_de_
+//    publicacion.py). Durante 14 días el curso y el recurso llevan la
+//    etiqueta "Nuevo" y el botcito avisa una vez en cada navegador.
+//    Solo si quieres forzarla: `fecha: null` (nunca "Nuevo") o
+//    `fecha: 'AAAA-MM-DD'` (esa manda sobre la automática). Al probar en
+//    local no hay fecha automática, porque solo se calcula en el despliegue.
 // Con eso la tira de evaluaciones del curso se enciende sola; no hay
 // que tocar HTML.
+
+import { FECHAS } from './asesorias-fechas.js?v=1';
 
 export const PLAN_DEFECTO = 'Sistemas · malla 2018';
 
@@ -70,7 +76,6 @@ export const CURSOS = [
                 evaluacion: 'PC1',
                 titulo: 'PC1 — Geometría Analítica',
                 descripcion: 'Resolución paso a paso de las 3 preguntas, tips y práctica con ejercicios nuevos.',
-                fecha: '2026-10-12',
                 periodo: '2026-1',
             },
         ],
@@ -107,7 +112,6 @@ export const CURSOS = [
                 evaluacion: 'PC1',
                 titulo: 'PC1 — Diseño de Base de Datos',
                 descripcion: 'Herramientas, arquitectura, componentes y checklist antes de exponer.',
-                fecha: '2026-10-12',
                 periodo: '2026-1',
             },
         ],
@@ -203,6 +207,24 @@ export function recursosNuevos(hoy = new Date()) {
     CURSOS.forEach((curso) => curso.recursos.forEach((recurso) => { if (esNuevo(recurso, hoy)) lista.push({ curso, recurso }); }));
     return lista;
 }
+
+// ───────────── Fecha de publicación automática ─────────────
+// Un recurso sin `fecha` toma la que calculó el despliegue para su carpeta.
+//   sin `fecha`            -> automática
+//   `fecha: null`          -> nunca se marca "Nuevo"
+//   `fecha: 'AAAA-MM-DD'`  -> manda sobre la automática
+function claveCarpeta(curso, recurso) {
+    if (recurso.tipo !== 'web' || !recurso.periodo) return null;
+    return rutaRecurso(curso, recurso)
+        .replace(/^assets\/asesorias\//, '')
+        .replace(/\/index\.html$/, '');
+}
+
+CURSOS.forEach((curso) => curso.recursos.forEach((r) => {
+    if (r.fecha !== undefined) return;
+    const clave = claveCarpeta(curso, r);
+    r.fecha = (clave && FECHAS[clave]) || null;
+}));
 
 // ───────────── Revisión del catálogo ─────────────
 // Solo avisa en la consola del navegador (F12); nunca rompe la página.

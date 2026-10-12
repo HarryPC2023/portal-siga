@@ -23,8 +23,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # fetch-depth: 0 descarga TODO el historial de Git (no solo el último
+      # commit). Hace falta para calcular desde cuándo existe cada asesoría
+      # (etiqueta "Nuevo" automática). Si se quita, el script lo detecta y
+      # no calcula fechas, pero las asesorías dejarían de marcarse "Nuevo".
       - name: Descargar el código del repositorio
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Preparar GitHub Pages
         id: pages
@@ -56,6 +62,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      # Escribe _site/js/asesorias-fechas.js con el día en que cada carpeta de
+      # asesoría entró a Git. Va ANTES de inyectar la versión. Nunca rompe el
+      # despliegue: si falla, avisa en amarillo y deja el archivo vacío.
+      - name: Calcular fechas de publicación de las asesorías
+        run: python3 scripts/fechas_de_publicacion.py ./_site
 
       # Aquí se inyecta ?v=<hash-del-commit> en todo el CSS/JS del sitio
       # ya compilado — HTML, imports de módulos ES dentro de .js, y los
