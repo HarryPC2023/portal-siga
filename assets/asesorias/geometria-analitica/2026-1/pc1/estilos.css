@@ -1,0 +1,4142 @@
+/* =========================================================================
+   Geometría Analítica · PC1 · Estilo «Prisma»
+   Todo el CSS vive bajo .asesoria-geometria-analitica (sin choques con SIGA).
+   ========================================================================= */
+
+/* ----------------------------- TEMA (único bloque de variables) ----------------------------- */
+.asesoria-geometria-analitica {
+  --pg: #E9F8FB;
+  /* fondo general: celeste agua */
+  --ink: #14233B;
+  /* tinta (texto) */
+  --ink2: #41566F;
+  /* tinta secundaria */
+  --cv: #FFD54A;
+  /* portada: girasol vivo */
+  --hdg: linear-gradient(100deg, #FF7A9C 0%, #FFA559 52%, #FFD166 100%);
+  /* cabecera: degradado lila → rosa → girasol */
+  --sgd: #4B0A99;
+  /* lila oscuro para textos y enlaces */
+  --line: #D9DDEA;
+  --paper: #FFFFFF;
+  --sg: #6600CC;
+  /* lila de SIGA (bordes de énfasis) */
+  --sl: #F7F2FC;
+  /* lila suave de SIGA (filas alternadas) */
+  --sb: #CDB4F0;
+  /* borde lila suave */
+  /* categorías (bg = fondo, bd = borde, tx = texto) */
+  --e1bg: #DCEBFF;
+  --e1bd: #3B82F6;
+  --e1tx: #12376B;
+  /* azul */
+  --e2bg: #FFE1DA;
+  --e2bd: #F26B4F;
+  --e2tx: #7A2312;
+  /* coral */
+  --e3bg: #FFF1B8;
+  --e3bd: #F2B705;
+  --e3tx: #5B4300;
+  /* girasol */
+  --e4bg: #EADFFF;
+  --e4bd: #8B5CF6;
+  --e4tx: #3E2380;
+  /* lila */
+  --e5bg: #D8F5E4;
+  --e5bd: #2DB57A;
+  --e5tx: #0F5237;
+  /* menta */
+  --e6bg: #FFDDEB;
+  --e6bd: #E0558A;
+  --e6tx: #7A1E47;
+  /* rosa */
+  --e7bg: #D3F4F4;
+  --e7bd: #14B8C4;
+  --e7tx: #0B5560;
+  /* turquesa */
+  --hf: 'Outfit', 'Sora', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --lf: 'Black Ops One', 'Outfit', 'Sora', system-ui, sans-serif;
+  /* fuente solo del logotipo */
+  --bf: 'Sora', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mf: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  --rad: 16px;
+  --rad-s: 10px;
+  --sombra: 0 6px 20px rgba(30, 42, 74, .08);
+}
+
+/* ----------------------------- Base ----------------------------- */
+.asesoria-geometria-analitica {
+  background: var(--pg);
+  color: var(--ink);
+  font-family: var(--bf);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px)
+}
+
+.asesoria-geometria-analitica *,
+.asesoria-geometria-analitica *::before,
+.asesoria-geometria-analitica *::after {
+  box-sizing: border-box
+}
+
+.asesoria-geometria-analitica h1,
+.asesoria-geometria-analitica h2,
+.asesoria-geometria-analitica h3,
+.asesoria-geometria-analitica h4 {
+  font-family: var(--hf);
+  line-height: 1.2;
+  margin: 0 0 .5rem;
+  color: var(--ink)
+}
+
+.asesoria-geometria-analitica h1 {
+  font-size: 1.9rem;
+  margin: .2rem 0 .5rem
+}
+
+.asesoria-geometria-analitica h2 {
+  font-size: 1.3rem
+}
+
+.asesoria-geometria-analitica h3 {
+  font-size: 1.1rem
+}
+
+.asesoria-geometria-analitica p {
+  margin: .5rem 0
+}
+
+.asesoria-geometria-analitica a {
+  color: var(--sgd);
+  font-weight: 700
+}
+
+.asesoria-geometria-analitica :focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 6px
+}
+
+.asesoria-geometria-analitica .sr-only {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden
+}
+
+.asesoria-geometria-analitica .muted {
+  color: var(--ink2);
+  font-size: .92rem
+}
+
+.asesoria-geometria-analitica .t5 {
+  font-weight: 700
+}
+
+.asesoria-geometria-analitica .ico {
+  width: 1.25em;
+  height: 1.25em;
+  vertical-align: -.25em;
+  flex: none
+}
+
+.asesoria-geometria-analitica .solo-print,
+.asesoria-geometria-analitica .solo-print-b {
+  display: none
+}
+
+.asesoria-geometria-analitica .cargando {
+  padding: 2rem;
+  text-align: center
+}
+
+.asesoria-geometria-analitica .intro {
+  font-size: 1.05rem;
+  color: var(--ink2)
+}
+
+.asesoria-geometria-analitica .fm {
+  overflow-x: auto;
+  max-width: 100%;
+  text-align: center
+}
+
+.asesoria-geometria-analitica .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 2px 0;
+  margin: .4em 0
+}
+
+.asesoria-geometria-analitica .chip {
+  display: inline-block;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--bd, var(--e1bd));
+  background: var(--bg, var(--e1bg));
+  color: var(--tx, var(--e1tx));
+  font-size: .82rem;
+  font-weight: 800;
+  line-height: 1.6;
+  text-decoration: none;
+  white-space: nowrap
+}
+
+.asesoria-geometria-analitica .chip.c1 {
+  --bg: var(--qb, var(--sl));
+  --bd: var(--qc, var(--sg));
+  --tx: var(--ink)
+}
+
+.asesoria-geometria-analitica .chip.c2 {
+  --bg: var(--e2bg);
+  --bd: var(--e2bd);
+  --tx: var(--e2tx)
+}
+
+.asesoria-geometria-analitica .chip.c3 {
+  --bg: var(--e3bg);
+  --bd: var(--e3bd);
+  --tx: var(--e3tx)
+}
+
+.asesoria-geometria-analitica .chip.c4 {
+  --bg: var(--e5bg);
+  --bd: var(--e5bd);
+  --tx: var(--e5tx)
+}
+
+.asesoria-geometria-analitica .chip.c5 {
+  --bg: var(--e4bg);
+  --bd: var(--e4bd);
+  --tx: var(--e4tx)
+}
+
+.asesoria-geometria-analitica .chip.c-wh {
+  --bg: #fff;
+  --bd: var(--ink);
+  --tx: var(--ink)
+}
+
+.asesoria-geometria-analitica .chips {
+  margin: .2rem 0 .8rem;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap
+}
+
+.asesoria-geometria-analitica .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-weight: 800;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.3
+}
+
+.asesoria-geometria-analitica .btn:hover {
+  background: var(--e3bg)
+}
+
+.asesoria-geometria-analitica .btn.go {
+  background: var(--sl);
+  border-color: var(--sg);
+  color: var(--sgd)
+}
+
+.asesoria-geometria-analitica .btn.go:hover {
+  background: #EADCFA
+}
+
+.asesoria-geometria-analitica .btn:disabled {
+  opacity: .5;
+  cursor: default
+}
+
+.asesoria-geometria-analitica .nav-pie {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 24px 0 0
+}
+
+/* ----------------------------- Cabecera con presencia ----------------------------- */
+.asesoria-geometria-analitica .cab {
+  position: relative;
+  top: 0;
+  z-index: 30;
+  background: var(--hdg);
+  border-bottom: 3px solid var(--ink)
+}
+
+.asesoria-geometria-analitica .cab-in {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 28px;
+  flex-wrap: wrap;
+  width: 100%
+}
+
+.asesoria-geometria-analitica .marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0
+}
+
+.asesoria-geometria-analitica .logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  background: #fff;
+  border: 3px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hf);
+  font-weight: 800;
+  font-size: 1.6rem;
+  flex: none
+}
+
+.asesoria-geometria-analitica .marca-t {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: var(--hf);
+  line-height: 1
+}
+
+.asesoria-geometria-analitica .marca-t strong {
+  font-size: 1.45rem
+}
+
+.asesoria-geometria-analitica .marca-t .chip {
+  align-self: flex-start
+}
+
+.asesoria-geometria-analitica .menu-b {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-weight: 800;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--ink);
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer
+}
+
+.asesoria-geometria-analitica .menu {
+  flex-basis: 100%;
+  order: 5
+}
+
+.asesoria-geometria-analitica .menu[hidden] {
+  display: none
+}
+
+.asesoria-geometria-analitica .menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px
+}
+
+.asesoria-geometria-analitica .menu a {
+  display: block;
+  padding: 8px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 1rem;
+  border: 2px solid transparent
+}
+
+.asesoria-geometria-analitica .menu a:hover {
+  background: rgba(255, 255, 255, .6)
+}
+
+.asesoria-geometria-analitica .menu a.act {
+  background: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  border-bottom: 4px solid var(--ink)
+}
+
+.asesoria-geometria-analitica .imp-w {
+  position: relative;
+  margin-left: auto
+}
+
+.asesoria-geometria-analitica .imp-b {
+  padding: 8px 16px
+}
+
+.asesoria-geometria-analitica .imp-p {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: 300px;
+  max-width: calc(100vw - 32px);
+  background: #fff;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 10px 26px rgba(30, 42, 74, .22);
+  z-index: 40
+}
+
+.asesoria-geometria-analitica .imp-p[hidden] {
+  display: none
+}
+
+.asesoria-geometria-analitica .imp-p h4 {
+  font-size: 1.05rem;
+  margin: 0 0 4px
+}
+
+.asesoria-geometria-analitica .imp-op {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin: 6px 0;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer
+}
+
+.asesoria-geometria-analitica .imp-op span {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3
+}
+
+.asesoria-geometria-analitica .imp-op small {
+  color: var(--ink2);
+  font-size: .82rem
+}
+
+.asesoria-geometria-analitica .imp-op.on {
+  border-color: var(--sg);
+  background: var(--sl);
+  color: var(--sgd)
+}
+
+.asesoria-geometria-analitica .imp-op.on small {
+  color: var(--sgd)
+}
+
+.asesoria-geometria-analitica .imp-n {
+  font-size: .82rem;
+  color: var(--ink2);
+  margin: 6px 0 0
+}
+
+.asesoria-geometria-analitica .imp-ok {
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--e5tx);
+  margin: 4px 0 0
+}
+
+@media (min-width:900px) {
+  .asesoria-geometria-analitica .menu-b {
+    display: none
+  }
+
+  .asesoria-geometria-analitica .menu,
+  .asesoria-geometria-analitica .menu[hidden] {
+    display: block;
+    flex: 1;
+    flex-basis: auto;
+    order: 0
+  }
+
+  .asesoria-geometria-analitica .menu ul {
+    flex-direction: row;
+    justify-content: center;
+    padding: 0
+  }
+}
+
+@media (max-width:600px) {
+  .asesoria-geometria-analitica .imp-b span {
+    display: none
+  }
+
+  .asesoria-geometria-analitica .marca-t strong {
+    font-size: 1.15rem
+  }
+
+  .asesoria-geometria-analitica .logo {
+    width: 42px;
+    height: 42px;
+    font-size: 1.3rem
+  }
+}
+
+/* ----------------------------- Contenedor ----------------------------- */
+.asesoria-geometria-analitica #vista {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 22px 16px 60px;
+  outline: none
+}
+
+.asesoria-geometria-analitica .card {
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--rad);
+  padding: 14px 18px;
+  margin: 14px 0;
+  box-shadow: var(--sombra)
+}
+
+.asesoria-geometria-analitica .res-h {
+  margin: .2rem 0 .6rem
+}
+
+.asesoria-geometria-analitica .lista,
+.asesoria-geometria-analitica .lista-s {
+  margin: .4rem 0 .4rem 1.2rem;
+  padding: 0
+}
+
+.asesoria-geometria-analitica .lista li,
+.asesoria-geometria-analitica .lista-s li {
+  margin: .35rem 0
+}
+
+/* ----------------------------- Inicio ----------------------------- */
+.asesoria-geometria-analitica .portada {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 26px;
+  align-items: center;
+  background-color: var(--cv);
+  background-image: linear-gradient(rgba(30, 42, 74, .12) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 42, 74, .12) 1px, transparent 1px);
+  background-size: 30px 30px;
+  border: 3px solid var(--ink);
+  border-radius: 26px;
+  padding: 36px 36px;
+  margin: 6px 0 12px
+}
+
+.asesoria-geometria-analitica .portada h1 {
+  font-size: clamp(2.3rem, 6.2vw, 3.6rem);
+  font-weight: 800;
+  margin: .3rem 0 .5rem;
+  letter-spacing: -.5px;
+  line-height: 1.05
+}
+
+.asesoria-geometria-analitica .kick {
+  font-weight: 800;
+  margin: 0;
+  font-size: .85rem;
+  letter-spacing: .06em
+}
+
+.asesoria-geometria-analitica .pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: .6rem 0 .8rem
+}
+
+.asesoria-geometria-analitica .pill {
+  display: inline-block;
+  padding: 1px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--ink);
+  background: #fff;
+  font-weight: 800;
+  font-size: .9rem
+}
+
+.asesoria-geometria-analitica .sub {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: .2rem 0 1.1rem
+}
+
+.asesoria-geometria-analitica .cta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap
+}
+
+.asesoria-geometria-analitica .cta .btn {
+  padding: 11px 24px;
+  font-size: 1.05rem;
+  border-width: 3px
+}
+
+.asesoria-geometria-analitica .portada-art {
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  padding: 10px
+}
+
+.asesoria-geometria-analitica .portada-art svg {
+  width: 100%;
+  height: auto;
+  display: block
+}
+
+.asesoria-geometria-analitica .draw {
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: aw-draw 2.2s ease-out .3s forwards
+}
+
+@keyframes aw-draw {
+  to {
+    stroke-dashoffset: 0
+  }
+}
+
+@media (max-width:700px) {
+  .asesoria-geometria-analitica .portada {
+    grid-template-columns: 1fr;
+    padding: 24px 20px
+  }
+}
+
+.asesoria-geometria-analitica .sec-t {
+  margin: 26px 2px 10px;
+  font-size: 1.6rem
+}
+
+.asesoria-geometria-analitica .sec-t small {
+  display: block;
+  font-family: var(--bf);
+  font-weight: 700;
+  font-size: .95rem;
+  color: var(--ink2);
+  margin-top: 2px
+}
+
+.asesoria-geometria-analitica .g3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px
+}
+
+.asesoria-geometria-analitica .qt {
+  background: #fff;
+  border: 2px solid #E3E6F0;
+  border-top: 8px solid var(--c);
+  border-radius: 20px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--sombra)
+}
+
+.asesoria-geometria-analitica .qt1 {
+  --c: #C2410C;
+  --b: #FFEDE0;
+  --t: #7C2D12
+}
+
+.asesoria-geometria-analitica .qt2 {
+  --c: #6D28D9;
+  --b: #EFE8FF;
+  --t: #3B1A80
+}
+
+.asesoria-geometria-analitica .qt3 {
+  --c: #047857;
+  --b: #DDF6EA;
+  --t: #064E3B
+}
+
+.asesoria-geometria-analitica .qt-top {
+  display: flex;
+  align-items: center;
+  gap: 10px
+}
+
+.asesoria-geometria-analitica .qt-top h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.15
+}
+
+.asesoria-geometria-analitica .qt-n {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: var(--c);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hf);
+  font-weight: 800;
+  font-size: 1.4rem;
+  flex: none
+}
+
+.asesoria-geometria-analitica .qt-pts {
+  margin-left: auto;
+  font-weight: 800;
+  font-size: .8rem;
+  background: var(--b);
+  color: var(--t);
+  border-radius: 999px;
+  padding: 0 10px;
+  white-space: nowrap
+}
+
+.asesoria-geometria-analitica .qt-idea {
+  margin: 0;
+  font-size: .92rem;
+  background: var(--b);
+  color: var(--t);
+  border-radius: 12px;
+  padding: 7px 11px
+}
+
+.asesoria-geometria-analitica .qt-acts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 4px
+}
+
+.asesoria-geometria-analitica .qt-acts a {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: .85rem;
+  text-decoration: none;
+  border: 2px solid var(--c);
+  color: var(--t);
+  background: #fff
+}
+
+.asesoria-geometria-analitica .qt-acts a.qa1 {
+  background: var(--c);
+  color: #fff
+}
+
+.asesoria-geometria-analitica .qt-acts a:hover {
+  filter: brightness(.95);
+  box-shadow: 0 2px 0 var(--c)
+}
+
+.asesoria-geometria-analitica .row2 {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+  align-items: stretch
+}
+
+@media (max-width:760px) {
+  .asesoria-geometria-analitica .row2 {
+    grid-template-columns: 1fr
+  }
+}
+
+.asesoria-geometria-analitica .warm {
+  background: #fff;
+  border: 2px solid #E3D6F5;
+  border-radius: 20px;
+  padding: 14px 16px
+}
+
+.asesoria-geometria-analitica .warm h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--sg);
+  font-size: 1.25rem;
+  margin: 0
+}
+
+.asesoria-geometria-analitica .wq {
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin: .4rem 0 .5rem
+}
+
+.asesoria-geometria-analitica .alt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-weight: 700;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 4px 0 0;
+  color: var(--ink);
+  cursor: pointer
+}
+
+.asesoria-geometria-analitica .alt.l {
+  background: var(--sl)
+}
+
+.asesoria-geometria-analitica .alt.w {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #EFE6FA
+}
+
+.asesoria-geometria-analitica .alt b {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--sg);
+  color: var(--sg);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hf);
+  flex: none
+}
+
+.asesoria-geometria-analitica .alt:hover:not(:disabled) {
+  box-shadow: -4px 0 0 var(--sg)
+}
+
+.asesoria-geometria-analitica .alt:disabled {
+  color: var(--ink);
+  cursor: default
+}
+
+.asesoria-geometria-analitica .alt.bad {
+  opacity: .6
+}
+
+.asesoria-geometria-analitica .alt.good {
+  box-shadow: 0 0 0 2px var(--e5bd);
+  opacity: 1
+}
+
+.asesoria-geometria-analitica .warm-fb {
+  margin-top: 8px;
+  font-size: .95rem;
+  min-height: 1.4em
+}
+
+.asesoria-geometria-analitica .warm-fb .okc {
+  color: var(--e5tx)
+}
+
+.asesoria-geometria-analitica .warm-fb .bad {
+  color: var(--e2tx)
+}
+
+.asesoria-geometria-analitica .otra {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font: inherit;
+  font-weight: 800;
+  font-size: .85rem;
+  border: 2px solid var(--sg);
+  border-radius: 999px;
+  padding: 2px 14px;
+  color: var(--sg);
+  background: #fff;
+  cursor: pointer
+}
+
+.asesoria-geometria-analitica .tira {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--e3bg);
+  border: 2px solid var(--e3bd);
+  border-radius: 20px;
+  padding: 14px 18px;
+  color: var(--e3tx)
+}
+
+.asesoria-geometria-analitica .tira-ic {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #fff;
+  border: 2px solid var(--e3bd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none
+}
+
+.asesoria-geometria-analitica .tira-ic .ico {
+  width: 24px;
+  height: 24px
+}
+
+.asesoria-geometria-analitica .tira-tx {
+  flex: 1;
+  min-width: 170px
+}
+
+.asesoria-geometria-analitica .tira-tx h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--e3tx)
+}
+
+.asesoria-geometria-analitica .tira-tx p {
+  margin: 2px 0 0;
+  font-size: .9rem;
+  color: var(--e3tx)
+}
+
+.asesoria-geometria-analitica .tira-b {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--e3tx);
+  background: #fff;
+  color: var(--e3tx);
+  font-weight: 800;
+  font-size: .9rem;
+  text-decoration: none;
+  white-space: nowrap
+}
+
+.asesoria-geometria-analitica .tira-b:hover {
+  background: var(--e3bd);
+  color: var(--ink)
+}
+
+.asesoria-geometria-analitica .temas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap
+}
+
+/* ----------------------------- Resolución ----------------------------- */
+.asesoria-geometria-analitica .sel {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 2px 0 14px
+}
+
+.asesoria-geometria-analitica .sel-i {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 210px;
+  padding: 8px 14px;
+  border: 2px solid var(--line);
+  border-radius: var(--rad);
+  background: var(--paper);
+  text-decoration: none;
+  color: var(--ink);
+  line-height: 1.25
+}
+
+.asesoria-geometria-analitica .qa1 {
+  --qc: #C2410C;
+  --qb: #FFEDE0
+}
+
+.asesoria-geometria-analitica .qa2 {
+  --qc: #6D28D9;
+  --qb: #EFE8FF
+}
+
+.asesoria-geometria-analitica .qa3 {
+  --qc: #047857;
+  --qb: #DDF6EA
+}
+
+.asesoria-geometria-analitica .sel-i:hover {
+  background: var(--sl)
+}
+
+.asesoria-geometria-analitica .sel-i.on {
+  border-color: var(--qc);
+  background: var(--qb);
+  color: var(--ink)
+}
+
+.asesoria-geometria-analitica .sel-i small {
+  font-weight: 400
+}
+
+.asesoria-geometria-analitica .sel-n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  background: var(--qc, var(--ink));
+  color: #fff;
+  font-family: var(--hf);
+  flex: none
+}
+
+.asesoria-geometria-analitica .enun {
+  border-top: 7px solid var(--qc, var(--sg))
+}
+
+.asesoria-geometria-analitica .enun p {
+  font-size: 1.05rem;
+  margin: .3rem 0
+}
+
+.asesoria-geometria-analitica .eq {
+  margin: 6px 0 6px 10px
+}
+
+.asesoria-geometria-analitica .plan.oculto {
+  display: none
+}
+
+.asesoria-geometria-analitica .plan {
+  background: #fff;
+  border: 1.5px solid var(--sb);
+  border-radius: 22px;
+  padding: 16px 16px 10px;
+  margin: 14px 0
+}
+
+.asesoria-geometria-analitica .plan>h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.4rem;
+  margin: 0
+}
+
+.asesoria-geometria-analitica .plan-s {
+  margin: 2px 0 10px;
+  color: var(--ink2);
+  font-size: .92rem
+}
+
+.asesoria-geometria-analitica .rw {
+  border: 1.5px solid var(--sb);
+  border-radius: var(--rad);
+  margin: 8px 0;
+  overflow: hidden
+}
+
+.asesoria-geometria-analitica .rw:nth-of-type(odd) {
+  background: var(--sl)
+}
+
+.asesoria-geometria-analitica .rw:nth-of-type(even) {
+  background: #fff
+}
+
+.asesoria-geometria-analitica .rw.op {
+  border: 2px solid var(--sg);
+  background: #fff
+}
+
+.asesoria-geometria-analitica .rw-h {
+  margin: 0;
+  font-size: 1rem
+}
+
+.asesoria-geometria-analitica .rh {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.15rem;
+  background: transparent;
+  border: 0;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: var(--ink);
+  line-height: 1.2
+}
+
+.asesoria-geometria-analitica .rh:hover {
+  background: rgba(102, 0, 204, .06)
+}
+
+.asesoria-geometria-analitica .rh .rt {
+  flex: 1
+}
+
+.asesoria-geometria-analitica .rh>.ico {
+  color: var(--ink2);
+  transition: transform .18s
+}
+
+.asesoria-geometria-analitica .rh[aria-expanded="true"]>.ico {
+  transform: rotate(180deg)
+}
+
+.asesoria-geometria-analitica .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  background: var(--qc, var(--sg));
+  color: #fff;
+  font-family: var(--hf);
+  font-size: .95rem;
+  flex: none
+}
+
+.asesoria-geometria-analitica .num .ico {
+  width: 1.2em;
+  height: 1.2em
+}
+
+.asesoria-geometria-analitica .rw-fin .num {
+  background: var(--e5tx)
+}
+
+.asesoria-geometria-analitica .rb {
+  padding: 2px 14px 16px
+}
+
+.asesoria-geometria-analitica .rb[hidden] {
+  display: none
+}
+
+.asesoria-geometria-analitica .rec-tipo {
+  background: #fff;
+  border: 2px dashed var(--sg);
+  border-radius: var(--rad-s);
+  padding: 8px 12px;
+  margin: 0 0 12px
+}
+
+.asesoria-geometria-analitica .pg {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px
+}
+
+.asesoria-geometria-analitica .apoyos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-content: start
+}
+
+@media (max-width:640px) {
+  .asesoria-geometria-analitica .apoyos {
+    grid-template-columns: 1fr
+  }
+}
+
+.asesoria-geometria-analitica .apoyos .pn:last-child:nth-child(odd) {
+  grid-column: 1/-1
+}
+
+.asesoria-geometria-analitica .pn {
+  background: var(--b);
+  border: 2px solid var(--c);
+  border-radius: 16px;
+  min-width: 0;
+  padding: 12px 16px 14px;
+  color: var(--ink)
+}
+
+.asesoria-geometria-analitica .pn h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  padding: 0;
+  background: none;
+  font-size: 1.05rem;
+  color: var(--t)
+}
+
+.asesoria-geometria-analitica .pn-c {
+  padding: 0;
+  overflow-x: auto;
+  max-width: 100%;
+  font-size: .98rem
+}
+
+.asesoria-geometria-analitica .pn-c p {
+  margin: .35rem 0
+}
+
+/* Diseño B: «Qué se hace» arriba y grande; debajo, dos filas de apoyo */
+.asesoria-geometria-analitica .p-que {
+  --c: var(--e1bd);
+  --b: var(--e1bg);
+  --t: var(--e1tx);
+  border-width: 2px;
+  padding: 16px 22px 18px
+}
+
+.asesoria-geometria-analitica .p-que h4 {
+  font-size: 1.4rem;
+  margin-bottom: 8px
+}
+
+.asesoria-geometria-analitica .p-que .pn-c {
+  font-size: 1.12rem
+}
+
+.asesoria-geometria-analitica .p-por {
+  --c: var(--e7bd);
+  --b: var(--e7bg);
+  --t: var(--e7tx)
+}
+
+.asesoria-geometria-analitica .p-cri {
+  --c: var(--e4bd);
+  --b: var(--e4bg);
+  --t: var(--e4tx)
+}
+
+.asesoria-geometria-analitica .p-res {
+  --c: var(--e5bd);
+  --b: var(--e5bg);
+  --t: var(--e5tx)
+}
+
+.asesoria-geometria-analitica .p-err {
+  --c: var(--e2bd);
+  --b: var(--e2bg);
+  --t: var(--e2tx)
+}
+
+.asesoria-geometria-analitica .que b,
+.asesoria-geometria-analitica .que strong {
+  color: var(--e1tx)
+}
+
+.asesoria-geometria-analitica .resv {
+  font-weight: 700
+}
+
+.asesoria-geometria-analitica .dev {
+  margin: 8px 0;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: var(--sl);
+  text-align: center;
+  overflow-x: auto;
+  max-width: 100%
+}
+
+.asesoria-geometria-analitica .dev .katex-display {
+  margin: .2em 0
+}
+
+.asesoria-geometria-analitica .nota {
+  border-left: 5px solid var(--e3bd);
+  background: #fff;
+  border-radius: 0 var(--rad-s) var(--rad-s) 0;
+  padding: 6px 12px;
+  margin: 12px 0 0
+}
+
+.asesoria-geometria-analitica .recd {
+  margin: 12px 0 0
+}
+
+.asesoria-geometria-analitica .recd summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: .9rem;
+  color: var(--e4tx);
+  border: 2px dashed var(--e4bd);
+  border-radius: 12px;
+  padding: 3px 14px;
+  background: #fff;
+  list-style: none
+}
+
+.asesoria-geometria-analitica .recd summary::-webkit-details-marker {
+  display: none
+}
+
+.asesoria-geometria-analitica .rec-b {
+  background: #fff;
+  border: 2px dashed var(--e4bd);
+  border-radius: var(--rad-s);
+  padding: 6px 12px;
+  margin: 8px 0 0;
+  color: var(--e4tx)
+}
+
+.asesoria-geometria-analitica .rec-t {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: .95rem
+}
+
+.asesoria-geometria-analitica .rec-b .fm {
+  color: var(--ink);
+  font-size: .95rem
+}
+
+.asesoria-geometria-analitica .lk {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px
+}
+
+.asesoria-geometria-analitica .chip-b {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-weight: 800;
+  font-size: .82rem;
+  border: 2px solid var(--sb);
+  border-radius: 999px;
+  padding: 2px 12px;
+  background: var(--sl);
+  color: var(--sgd);
+  cursor: pointer;
+  text-decoration: none
+}
+
+.asesoria-geometria-analitica .chip-b:hover {
+  background: #EADCFA
+}
+
+/* Cajas con color */
+.asesoria-geometria-analitica .e1 {
+  --bg: var(--e1bg);
+  --bd: var(--e1bd);
+  --tx: var(--e1tx)
+}
+
+.asesoria-geometria-analitica .e2 {
+  --bg: var(--e2bg);
+  --bd: var(--e2bd);
+  --tx: var(--e2tx)
+}
+
+.asesoria-geometria-analitica .e3 {
+  --bg: var(--e3bg);
+  --bd: var(--e3bd);
+  --tx: var(--e3tx)
+}
+
+.asesoria-geometria-analitica .e4 {
+  --bg: var(--e4bg);
+  --bd: var(--e4bd);
+  --tx: var(--e4tx)
+}
+
+.asesoria-geometria-analitica .e5 {
+  --bg: var(--e5bg);
+  --bd: var(--e5bd);
+  --tx: var(--e5tx)
+}
+
+.asesoria-geometria-analitica .e6 {
+  --bg: var(--e6bg);
+  --bd: var(--e6bd);
+  --tx: var(--e6tx)
+}
+
+.asesoria-geometria-analitica .bx {
+  background: var(--bg);
+  border: 2px solid var(--bd);
+  border-radius: var(--rad-s);
+  color: var(--tx);
+  padding: 10px 14px;
+  margin: 12px 0
+}
+
+.asesoria-geometria-analitica .bx a {
+  color: var(--tx)
+}
+
+.asesoria-geometria-analitica .bx-t {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--hf);
+  font-weight: 700;
+  margin-bottom: 4px
+}
+
+.asesoria-geometria-analitica .bx-c {
+  overflow-x: auto;
+  max-width: 100%
+}
+
+.asesoria-geometria-analitica .bx-c p {
+  margin: .45rem 0
+}
+
+.asesoria-geometria-analitica .res {
+  font-size: 1.15rem
+}
+
+.asesoria-geometria-analitica .fig {
+  max-width: 100%;
+  overflow-x: auto
+}
+
+.asesoria-geometria-analitica .fig svg {
+  width: 100%;
+  height: auto;
+  min-width: 420px;
+  background: #fff;
+  border-radius: var(--rad-s)
+}
+
+.asesoria-geometria-analitica .svgt text {
+  font-family: var(--bf);
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--ink)
+}
+
+.asesoria-geometria-analitica .svgt text.s {
+  font-size: 12.5px;
+  font-weight: 400;
+  fill: var(--ink2)
+}
+
+.asesoria-geometria-analitica .pruebalo {
+  margin: 12px 0 0;
+  border: 2px solid var(--e5bd);
+  border-radius: var(--rad-s);
+  background: var(--e5bg);
+  color: var(--e5tx);
+  padding: 8px 14px
+}
+
+.asesoria-geometria-analitica .pruebalo summary {
+  cursor: pointer;
+  font-family: var(--hf);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px
+}
+
+.asesoria-geometria-analitica .jxg {
+  width: 100%;
+  max-width: 560px;
+  height: 340px;
+  border: 2px solid var(--line);
+  border-radius: var(--rad-s);
+  background: #fff
+}
+
+.asesoria-geometria-analitica .jxg-in {
+  display: flex;
+  gap: 14px;
+  margin: 8px 0;
+  flex-wrap: wrap
+}
+
+.asesoria-geometria-analitica .jxg-in label {
+  font-weight: 700
+}
+
+.asesoria-geometria-analitica .jxg-in input,
+.asesoria-geometria-analitica input.fin {
+  font: inherit;
+  padding: 6px 10px;
+  border: 2px solid var(--ink2);
+  border-radius: var(--rad-s);
+  background: #fff;
+  color: var(--ink)
+}
+
+.asesoria-geometria-analitica .jxg-in input {
+  width: 5.5em
+}
+
+.asesoria-geometria-analitica input.fin {
+  width: 100%;
+  max-width: 320px;
+  font-size: 1.1rem
+}
+
+.asesoria-geometria-analitica .jxg-out {
+  font-family: var(--mf);
+  font-size: .85rem;
+  color: var(--ink);
+  overflow-wrap: anywhere
+}
+
+.asesoria-geometria-analitica .pausa {
+  background: var(--e3bg);
+  border: 2px solid var(--e3bd);
+  color: var(--e3tx);
+  border-radius: var(--rad);
+  padding: 10px 14px;
+  margin: 12px 0
+}
+
+.asesoria-geometria-analitica .pausa[hidden] {
+  display: none
+}
+
+/* ----------------------------- Estrategias ----------------------------- */
+.asesoria-geometria-analitica .lg {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 6px 0 14px
+}
+
+.asesoria-geometria-analitica .fl {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: inherit;
+  font-weight: 800;
+  font-size: .9rem;
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--c, var(--ink));
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer
+}
+
+.asesoria-geometria-analitica .fl i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c)
+}
+
+.asesoria-geometria-analitica .fl.on {
+  background: var(--b, var(--e3bg));
+  color: var(--t, var(--ink))
+}
+
+.asesoria-geometria-analitica .ct-a {
+  --c: var(--e7bd);
+  --b: var(--e7bg);
+  --t: var(--e7tx)
+}
+
+.asesoria-geometria-analitica .ct-b {
+  --c: var(--e2bd);
+  --b: var(--e2bg);
+  --t: var(--e2tx)
+}
+
+.asesoria-geometria-analitica .ct-c {
+  --c: var(--e4bd);
+  --b: var(--e4bg);
+  --t: var(--e4tx)
+}
+
+.asesoria-geometria-analitica .gt {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+  align-items: start
+}
+
+.asesoria-geometria-analitica .tj {
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-top: 7px solid var(--c);
+  border-radius: var(--rad);
+  box-shadow: var(--sombra)
+}
+
+.asesoria-geometria-analitica .tj[hidden] {
+  display: none
+}
+
+.asesoria-geometria-analitica .tj.abierta {
+  grid-column: 1/-1;
+  border-color: var(--c)
+}
+
+.asesoria-geometria-analitica .tj-b {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: var(--rad);
+  padding: 12px 14px;
+  cursor: pointer;
+  color: var(--ink)
+}
+
+.asesoria-geometria-analitica .tj-n {
+  position: absolute;
+  right: 12px;
+  top: 6px;
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--b)
+}
+
+.asesoria-geometria-analitica .tj-ic {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--b);
+  color: var(--t);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px
+}
+
+.asesoria-geometria-analitica .tj-ic .ico {
+  width: 21px;
+  height: 21px
+}
+
+.asesoria-geometria-analitica .tj-t {
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.2
+}
+
+.asesoria-geometria-analitica .tj-c {
+  font-weight: 800;
+  font-size: .85rem;
+  color: var(--t)
+}
+
+.asesoria-geometria-analitica .tj-d {
+  padding: 0 14px 12px
+}
+
+.asesoria-geometria-analitica .tj-d[hidden] {
+  display: none
+}
+
+.asesoria-geometria-analitica .tj-v {
+  background: var(--sl);
+  border: 2px solid var(--sb);
+  color: var(--sgd);
+  border-radius: var(--rad-s);
+  padding: 5px 10px;
+  font-size: .92rem
+}
+
+.asesoria-geometria-analitica .tj-v a {
+  color: var(--sgd)
+}
+
+/* ----------------------------- Práctica y Refuerza ----------------------------- */
+.asesoria-geometria-analitica .prac-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin: 10px 0
+}
+
+.asesoria-geometria-analitica .prac-c {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  font: inherit;
+  border: 2px solid #E3D6F5;
+  border-left: 9px solid var(--c);
+  background: #fff;
+  color: var(--ink);
+  border-radius: var(--rad);
+  padding: 12px 14px;
+  cursor: pointer;
+  box-shadow: var(--sombra)
+}
+
+.asesoria-geometria-analitica .pc1 {
+  --c: #C2410C
+}
+
+.asesoria-geometria-analitica .pc2 {
+  --c: #6D28D9
+}
+
+.asesoria-geometria-analitica .pc3 {
+  --c: #047857
+}
+
+.asesoria-geometria-analitica .prac-c:hover {
+  background: var(--sl)
+}
+
+.asesoria-geometria-analitica .prac-t {
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.1rem;
+  line-height: 1.2
+}
+
+.asesoria-geometria-analitica .prac-d {
+  font-size: .9rem;
+  color: var(--ink2)
+}
+
+.asesoria-geometria-analitica .prac-m {
+  font-weight: 800;
+  color: var(--sg);
+  font-size: .88rem
+}
+
+.asesoria-geometria-analitica .aviso {
+  background: var(--e5bg);
+  border: 2px solid var(--e5bd);
+  color: var(--e5tx);
+  padding: 8px 12px;
+  border-radius: var(--rad)
+}
+
+.asesoria-geometria-analitica #prac.pr-on {
+  background: #fff;
+  border: 2px solid var(--sb);
+  border-radius: 22px;
+  padding: 12px
+}
+
+.asesoria-geometria-analitica #prac.pr-on .card {
+  box-shadow: none
+}
+
+.asesoria-geometria-analitica .top-p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 4px 6px 8px
+}
+
+.asesoria-geometria-analitica .ptit {
+  font-family: var(--hf);
+  font-size: 1.2rem;
+  margin-right: 4px
+}
+
+.asesoria-geometria-analitica .pdots {
+  display: inline-flex;
+  gap: 5px;
+  margin-left: auto
+}
+
+.asesoria-geometria-analitica .pdots i {
+  width: 24px;
+  height: 8px;
+  border-radius: 5px;
+  background: #fff;
+  border: 1.5px solid var(--sg)
+}
+
+.asesoria-geometria-analitica .pdots i.d {
+  background: var(--sg)
+}
+
+.asesoria-geometria-analitica .pdots i.n {
+  background: #C7A3F2
+}
+
+.asesoria-geometria-analitica .bloque {
+  background: #fff;
+  border: 3px solid var(--sg);
+  border-radius: 18px;
+  padding: 16px 20px
+}
+
+.asesoria-geometria-analitica .bloque.plegado {
+  border: 1.5px solid var(--sb);
+  background: var(--sl);
+  border-radius: 14px;
+  padding: 0
+}
+
+.asesoria-geometria-analitica .bsum {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  font-weight: 800;
+  cursor: pointer
+}
+
+.asesoria-geometria-analitica .bsum[hidden] {
+  display: none
+}
+
+.asesoria-geometria-analitica .bsum .ico:first-child {
+  color: var(--e5tx);
+  width: 1.4em;
+  height: 1.4em
+}
+
+.asesoria-geometria-analitica .bsum .bs-t {
+  flex: 1
+}
+
+.asesoria-geometria-analitica .tg {
+  font-size: .78rem;
+  border-radius: 999px;
+  padding: 0 10px;
+  border: 1.5px solid
+}
+
+.asesoria-geometria-analitica .tg.a {
+  color: var(--e5tx);
+  border-color: var(--e5bd);
+  background: #EAF8F0
+}
+
+.asesoria-geometria-analitica .tg.b {
+  color: #8A4B00;
+  border-color: var(--e3bd);
+  background: #FFF6D6
+}
+
+.asesoria-geometria-analitica .bcont[hidden] {
+  display: none
+}
+
+.asesoria-geometria-analitica .bloque.plegado .bcont:not([hidden]) {
+  padding: 6px 20px 16px
+}
+
+.asesoria-geometria-analitica .eyebrow {
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: var(--sg);
+  text-transform: uppercase;
+  margin: 0
+}
+
+.asesoria-geometria-analitica .qq {
+  font-family: var(--hf);
+  font-weight: 800;
+  font-size: 1.65rem;
+  line-height: 1.2;
+  margin: .1rem 0 .3rem
+}
+
+.asesoria-geometria-analitica .bi {
+  color: var(--ink2);
+  font-size: .95rem;
+  margin: .1rem 0 .3rem
+}
+
+.asesoria-geometria-analitica .opts {
+  display: flex;
+  flex-direction: column
+}
+
+.asesoria-geometria-analitica .opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: #fff;
+  border: 2.5px solid var(--bc);
+  border-radius: 14px;
+  padding: 9px 14px;
+  margin: 9px 0 0;
+  color: var(--ink);
+  cursor: pointer
+}
+
+.asesoria-geometria-analitica .o-A {
+  --bc: #F97316
+}
+
+.asesoria-geometria-analitica .o-B {
+  --bc: #6600CC
+}
+
+.asesoria-geometria-analitica .o-C {
+  --bc: #14B8C4
+}
+
+.asesoria-geometria-analitica .opt .lt {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2.5px solid var(--bc);
+  color: var(--bc);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hf);
+  font-size: 1rem;
+  flex: none
+}
+
+.asesoria-geometria-analitica .opt .ot {
+  overflow-x: auto;
+  max-width: 100%
+}
+
+.asesoria-geometria-analitica .opt .st {
+  margin-left: auto;
+  font-size: 1.4rem;
+  line-height: 0
+}
+
+.asesoria-geometria-analitica .opt:hover:not(:disabled) {
+  box-shadow: -4px 0 0 var(--bc)
+}
+
+.asesoria-geometria-analitica .opt:disabled {
+  color: var(--ink);
+  cursor: default
+}
+
+.asesoria-geometria-analitica .opt.bad {
+  opacity: .62
+}
+
+.asesoria-geometria-analitica .opt.bad .st {
+  color: #C2410C
+}
+
+.asesoria-geometria-analitica .opt.good {
+  border-color: var(--e5bd);
+  box-shadow: 0 0 0 3px var(--e5bg);
+  opacity: 1
+}
+
+.asesoria-geometria-analitica .opt.good .st {
+  color: var(--e5tx)
+}
+
+.asesoria-geometria-analitica .fb {
+  margin-top: 10px;
+  min-height: 4px
+}
+
+.asesoria-geometria-analitica .fbk {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 9px 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1.5px solid #F2B7A8;
+  border-left: 4px solid var(--e2bd)
+}
+
+.asesoria-geometria-analitica .fbk>.ico {
+  color: #C2410C;
+  width: 1.6em;
+  height: 1.6em;
+  margin-top: 2px
+}
+
+.asesoria-geometria-analitica .fbk .ft {
+  font-family: var(--hf);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #C2410C
+}
+
+.asesoria-geometria-analitica .fbk p {
+  margin: .2rem 0;
+  font-size: .95rem
+}
+
+.asesoria-geometria-analitica .fbk.ok-f {
+  border-color: #9ADBB9;
+  border-left-color: var(--e5bd)
+}
+
+.asesoria-geometria-analitica .fbk.ok-f>.ico {
+  color: var(--e5tx)
+}
+
+.asesoria-geometria-analitica .fbk.ok-f .ft {
+  color: var(--e5tx)
+}
+
+.asesoria-geometria-analitica .meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: .8rem;
+  margin: 4px 0
+}
+
+.asesoria-geometria-analitica .meta span {
+  border-radius: 999px;
+  padding: 0 10px;
+  font-weight: 800;
+  background: var(--sl);
+  color: var(--sgd);
+  border: 1.5px solid var(--sb)
+}
+
+.asesoria-geometria-analitica .rvl2 {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--rad-s);
+  background: var(--e5bg);
+  color: var(--e5tx);
+  overflow-x: auto
+}
+
+.asesoria-geometria-analitica .hint {
+  display: flex;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 2px dashed var(--sg);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink)
+}
+
+.asesoria-geometria-analitica .hint>.ico {
+  color: var(--sg);
+  width: 1.5em;
+  height: 1.5em
+}
+
+.asesoria-geometria-analitica .row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  align-items: center
+}
+
+.asesoria-geometria-analitica .pista {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-weight: 800;
+  font-size: .9rem;
+  border: 2px dashed var(--sg);
+  border-radius: 12px;
+  padding: 3px 14px;
+  color: var(--sg);
+  background: #fff;
+  cursor: pointer
+}
+
+.asesoria-geometria-analitica .pista[hidden] {
+  display: none
+}
+
+.asesoria-geometria-analitica .final {
+  border: 3px solid var(--sg)
+}
+
+.asesoria-geometria-analitica .reg li {
+  margin: .25rem 0
+}
+
+.asesoria-geometria-analitica .reg-b {
+  margin: 10px 0
+}
+
+.asesoria-geometria-analitica .stmt .eq {
+  margin: 6px 0 6px 10px
+}
+
+.asesoria-geometria-analitica .ref {
+  display: none
+}
+
+
+/* =========================================================================
+   REDISEÑO «Prisma»: atardecer cálido (coral → mandarina → sol) sobre fondo azul hielo,
+   con acentos naranja quemado, violeta y esmeralda. Tipografía Sora.
+   ========================================================================= */
+.asesoria-geometria-analitica [hidden] {
+  display: none !important
+}
+
+@media (min-width:900px) {
+  .asesoria-geometria-analitica .menu[hidden] {
+    display: block !important
+  }
+}
+
+.asesoria-geometria-analitica {
+  background:
+    radial-gradient(900px 420px at 100% 0%, rgba(167, 139, 250, .18), transparent 70%),
+    radial-gradient(800px 460px at 0% 35%, rgba(56, 189, 248, .14), transparent 70%),
+    var(--pg)
+}
+
+/* ---- Cabecera con impacto ---- */
+.asesoria-geometria-analitica .cab {
+  background:
+    linear-gradient(rgba(255, 255, 255, .22) 1px, transparent 1px) 0 0/28px 28px,
+    linear-gradient(90deg, rgba(255, 255, 255, .22) 1px, transparent 1px) 0 0/28px 28px,
+    var(--hdg);
+  border-bottom: 0;
+  box-shadow: 0 14px 34px -10px rgba(234, 88, 12, .38)
+}
+
+.asesoria-geometria-analitica .cab::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .55;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 130'%3E%3Cg fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'%3E%3Ccircle cx='310' cy='65' r='48'/%3E%3Cpath d='M236 108L310 14L386 108Z'/%3E%3Cpath d='M40 100L118 34L200 88'/%3E%3Cpath d='M70 100a30 30 0 0 1 22-28'/%3E%3C/g%3E%3C/svg%3E") no-repeat right 14% center/auto 150%
+}
+
+.asesoria-geometria-analitica .cab-in {
+  position: relative;
+  z-index: 1;
+  padding: 22px 32px;
+  gap: 14px 28px
+}
+
+.asesoria-geometria-analitica .marca {
+  gap: 16px
+}
+
+.asesoria-geometria-analitica .logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  border: 0;
+  background: #fff;
+  color: var(--ink);
+  font-size: 2.1rem;
+  box-shadow: 0 8px 0 rgba(20, 35, 59, .16)
+}
+
+.asesoria-geometria-analitica .marca-t {
+  gap: 9px
+}
+
+.asesoria-geometria-analitica .marca-t strong {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.05
+}
+
+.asesoria-geometria-analitica .marca-t .chip {
+  font-size: .82rem;
+  padding: 3px 14px;
+  border: 0;
+  background: rgba(255, 255, 255, .9);
+  font-weight: 700
+}
+
+.asesoria-geometria-analitica .menu ul {
+  gap: 6px
+}
+
+.asesoria-geometria-analitica .menu a {
+  padding: 12px 16px;
+  font-size: .98rem;
+  font-weight: 700;
+  border: 0;
+  border-radius: 14px;
+  position: relative
+}
+
+.asesoria-geometria-analitica .menu a:hover {
+  background: rgba(255, 255, 255, .5)
+}
+
+.asesoria-geometria-analitica .menu a.act {
+  background: transparent;
+  border: 0
+}
+
+.asesoria-geometria-analitica .menu a.act::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 3px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--ink)
+}
+
+.asesoria-geometria-analitica .imp-b {
+  padding: 10px 18px;
+  border: 0;
+  background: #fff;
+  box-shadow: 0 6px 0 rgba(20, 35, 59, .16)
+}
+
+/* ---- Portada ---- */
+.asesoria-geometria-analitica .portada {
+  grid-template-columns: 1.1fr 1fr;
+  gap: 44px;
+  padding: 60px 58px;
+  border: 0;
+  border-radius: 38px;
+  margin: 12px 0 30px;
+  background:
+    linear-gradient(rgba(255, 255, 255, .26) 1px, transparent 1px) 0 0/34px 34px,
+    linear-gradient(90deg, rgba(255, 255, 255, .26) 1px, transparent 1px) 0 0/34px 34px,
+    radial-gradient(circle at 96% 4%, #C4B5FD 0, transparent 36%),
+    radial-gradient(circle at 100% 100%, #7DD3FC 0, transparent 38%),
+    linear-gradient(115deg, #FF7A9C 0%, #FFA559 46%, #FFD166 100%);
+  box-shadow: 0 26px 54px -22px rgba(234, 88, 12, .5)
+}
+
+.asesoria-geometria-analitica .portada h1 {
+  font-size: clamp(2.7rem, 6vw, 4.7rem);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  line-height: 1.02;
+  margin: .6rem 0 .8rem
+}
+
+.asesoria-geometria-analitica .kick {
+  display: inline-block;
+  background: rgba(255, 255, 255, .9);
+  padding: 5px 16px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  font-size: .78rem;
+  letter-spacing: .1em
+}
+
+.asesoria-geometria-analitica .pill {
+  border: 0;
+  background: #fff;
+  padding: 4px 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 0 rgba(20, 35, 59, .12)
+}
+
+.asesoria-geometria-analitica .sub {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: .6rem 0 1.6rem
+}
+
+.asesoria-geometria-analitica .cta .btn {
+  padding: 14px 28px;
+  font-size: 1.02rem;
+  border: 0;
+  background: #fff;
+  box-shadow: 0 6px 0 rgba(20, 35, 59, .2);
+  transition: transform .15s, box-shadow .15s
+}
+
+.asesoria-geometria-analitica .cta .btn.go {
+  background: #7C3AED;
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(76, 29, 149, .35)
+}
+
+.asesoria-geometria-analitica .cta .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 0 rgba(20, 35, 59, .2)
+}
+
+.asesoria-geometria-analitica .portada-art {
+  background: rgba(255, 255, 255, .92);
+  border: 0;
+  border-radius: 32px;
+  padding: 18px;
+  box-shadow: 0 24px 44px -18px rgba(20, 35, 59, .4)
+}
+
+.asesoria-geometria-analitica .sec-t {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -.025em;
+  margin: 46px 0 20px
+}
+
+.asesoria-geometria-analitica .sec-t::after {
+  content: "";
+  display: block;
+  width: 68px;
+  height: 6px;
+  border-radius: 6px;
+  margin-top: 12px;
+  background: linear-gradient(90deg, #FF7A9C, #FFD166)
+}
+
+.asesoria-geometria-analitica .sec-t small {
+  display: block;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--ink2);
+  margin-top: 8px
+}
+
+/* ---- Tarjetas de las preguntas ---- */
+.asesoria-geometria-analitica .g3 {
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr))
+}
+
+.asesoria-geometria-analitica .qt {
+  border: 1.5px solid #DAE1F3;
+  border-radius: 28px;
+  padding: 0 0 24px;
+  gap: 14px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px -20px rgba(20, 35, 59, .32);
+  transition: transform .2s, box-shadow .2s
+}
+
+.asesoria-geometria-analitica .qt::before {
+  content: "";
+  display: block;
+  height: 12px;
+  background: var(--c)
+}
+
+.asesoria-geometria-analitica .qt:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 44px -20px rgba(20, 35, 59, .4)
+}
+
+.asesoria-geometria-analitica .qt-top {
+  padding: 8px 24px 0;
+  gap: 14px
+}
+
+.asesoria-geometria-analitica .qt-n {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  font-size: 1.7rem
+}
+
+.asesoria-geometria-analitica .qt-top h3 {
+  font-size: 1.3rem;
+  font-weight: 800
+}
+
+.asesoria-geometria-analitica .qt-idea {
+  margin: 0 24px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--b);
+  color: var(--t);
+  font-size: .95rem
+}
+
+.asesoria-geometria-analitica .qt-acts {
+  padding: 0 24px;
+  gap: 10px;
+  flex-wrap: wrap
+}
+
+.asesoria-geometria-analitica .qt-acts a {
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: .92rem;
+  border: 2px solid var(--c)
+}
+
+.asesoria-geometria-analitica .qt-acts a.qa1 {
+  background: var(--c);
+  color: #fff
+}
+
+.asesoria-geometria-analitica .qt-acts a.qa2 {
+  background: #fff;
+  color: var(--t)
+}
+
+.asesoria-geometria-analitica .warm,
+.asesoria-geometria-analitica .tira {
+  border-radius: 28px;
+  box-shadow: 0 16px 36px -22px rgba(20, 35, 59, .3)
+}
+
+/* ---- Aviso de repaso ---- */
+.asesoria-geometria-analitica .tira {
+  background: linear-gradient(120deg, #FFE3EA, #FFF0CC);
+  border: 0
+}
+
+.asesoria-geometria-analitica .tira-b {
+  background: var(--ink);
+  color: #fff;
+  border: 0;
+  box-shadow: 0 5px 0 rgba(20, 35, 59, .2)
+}
+
+/* ---- Resolución ---- */
+.asesoria-geometria-analitica .sel {
+  gap: 14px
+}
+
+.asesoria-geometria-analitica .sel-i {
+  border: 1.5px solid #DAE1F3;
+  border-radius: 20px;
+  padding: 12px 18px;
+  background: #fff;
+  box-shadow: 0 10px 22px -16px rgba(20, 35, 59, .35)
+}
+
+.asesoria-geometria-analitica .sel-i.on {
+  border-color: var(--qc);
+  background: var(--qb);
+  box-shadow: 0 14px 26px -14px var(--qc)
+}
+
+.asesoria-geometria-analitica .res-h h1 {
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.15
+}
+
+.asesoria-geometria-analitica .enun {
+  border-radius: 28px;
+  padding: 26px 30px;
+  box-shadow: 0 16px 36px -22px rgba(20, 35, 59, .3)
+}
+
+.asesoria-geometria-analitica .plan {
+  background: transparent;
+  border: 0;
+  padding: 0
+}
+
+.asesoria-geometria-analitica .rw {
+  border-radius: 22px;
+  border: 1.5px solid #E1D8F3
+}
+
+.asesoria-geometria-analitica .rw.op {
+  border-color: var(--qc, var(--sg));
+  box-shadow: 0 18px 36px -22px var(--qc, var(--sg))
+}
+
+.asesoria-geometria-analitica .rw .num {
+  background: var(--qc, var(--ink));
+  color: #fff
+}
+
+/* ---- Lo esencial de esta PC ---- */
+.asesoria-geometria-analitica .gt {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 22px
+}
+
+.asesoria-geometria-analitica .tj {
+  background: #fff;
+  border: 1.5px solid #DAE1F3;
+  border-radius: 28px;
+  overflow: hidden;
+  padding: 0;
+  box-shadow: 0 16px 36px -20px rgba(20, 35, 59, .32)
+}
+
+.asesoria-geometria-analitica .tj::before {
+  content: "";
+  display: block;
+  height: 12px;
+  background: var(--c)
+}
+
+.asesoria-geometria-analitica .tj.abierta {
+  grid-column: auto
+}
+
+.asesoria-geometria-analitica .tj:last-child:nth-child(odd) {
+  grid-column: 1/-1
+}
+
+.asesoria-geometria-analitica .tj-b {
+  cursor: default;
+  padding: 18px 24px 4px
+}
+
+.asesoria-geometria-analitica .tj-t {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.25
+}
+
+.asesoria-geometria-analitica .tj-d {
+  padding: 4px 24px 22px;
+  font-size: 1rem
+}
+
+/* ---- Práctica y Refuerza ---- */
+.asesoria-geometria-analitica .pc1 {
+  --cb: #FFEDE3
+}
+
+.asesoria-geometria-analitica .pc2 {
+  --cb: #EFE8FF
+}
+
+.asesoria-geometria-analitica .pc3 {
+  --cb: #DDF6EA
+}
+
+.asesoria-geometria-analitica .prac-menu {
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+  margin: 18px 0 28px
+}
+
+.asesoria-geometria-analitica .prac-c {
+  position: relative;
+  gap: 8px;
+  padding: 26px 24px 22px;
+  border: 1.5px solid var(--c);
+  border-left: 1.5px solid var(--c);
+  border-radius: 28px;
+  background: linear-gradient(180deg, var(--cb) 0, #fff 62%);
+  box-shadow: 0 16px 34px -20px var(--c);
+  transition: transform .2s, box-shadow .2s
+}
+
+.asesoria-geometria-analitica .prac-c:hover {
+  background: linear-gradient(180deg, var(--cb) 0, #fff 62%);
+  transform: translateY(-5px);
+  box-shadow: 0 26px 40px -20px var(--c)
+}
+
+.asesoria-geometria-analitica .prac-n {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: var(--c);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.7rem
+}
+
+.asesoria-geometria-analitica .prac-q {
+  margin-top: 6px;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink2)
+}
+
+.asesoria-geometria-analitica .prac-t {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.2
+}
+
+.asesoria-geometria-analitica .prac-d {
+  font-size: .95rem;
+  line-height: 1.5
+}
+
+.asesoria-geometria-analitica .prac-f {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px
+}
+
+.asesoria-geometria-analitica .prac-m {
+  font-size: .85rem;
+  color: var(--ink2);
+  background: #fff;
+  border: 1.5px solid #DAE1F3;
+  border-radius: 999px;
+  padding: 3px 12px
+}
+
+.asesoria-geometria-analitica .prac-go {
+  font-weight: 800;
+  background: var(--c);
+  color: #fff;
+  border-radius: 999px;
+  padding: 9px 18px
+}
+
+.asesoria-geometria-analitica .prac-sec {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 22px
+}
+
+.asesoria-geometria-analitica #prac.pr-on {
+  background: transparent;
+  border: 0;
+  padding: 0
+}
+
+.asesoria-geometria-analitica #prac.pr-on .card {
+  border-radius: 28px;
+  box-shadow: 0 16px 36px -22px rgba(20, 35, 59, .3)
+}
+
+.asesoria-geometria-analitica #prac.pr-on .top-p {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  padding: 16px 22px;
+  margin-bottom: 18px;
+  background: var(--cb);
+  border: 1.5px solid var(--c);
+  border-radius: 24px
+}
+
+.asesoria-geometria-analitica #prac.pr-on .ptit {
+  font-size: 1.1rem;
+  font-weight: 800;
+  flex: 1 1 260px
+}
+
+.asesoria-geometria-analitica #prac.pr-on .volver {
+  padding: 7px 16px;
+  font-size: .9rem;
+  border: 0;
+  background: #fff
+}
+
+.asesoria-geometria-analitica #prac.pr-on .pchip {
+  background: #fff;
+  border: 0;
+  font-weight: 700
+}
+
+/* barra de progreso: círculos numerados unidos por una línea */
+.asesoria-geometria-analitica .pdots {
+  display: flex;
+  align-items: center;
+  counter-reset: s
+}
+
+.asesoria-geometria-analitica .pdots i {
+  counter-increment: s;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #C9D2E8;
+  color: var(--ink2);
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  font-weight: 800;
+  font-size: .85rem;
+  position: relative;
+  flex: none
+}
+
+.asesoria-geometria-analitica .pdots i::before {
+  content: counter(s)
+}
+
+.asesoria-geometria-analitica .pdots i+i {
+  margin-left: 26px
+}
+
+.asesoria-geometria-analitica .pdots i+i::after {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: 26px;
+  height: 3px;
+  margin-top: -1.5px;
+  background: #C9D2E8
+}
+
+.asesoria-geometria-analitica .pdots i.d {
+  background: var(--c);
+  border-color: var(--c);
+  color: #fff
+}
+
+.asesoria-geometria-analitica .pdots i.d::before {
+  content: "✓"
+}
+
+.asesoria-geometria-analitica .pdots i.n {
+  border-color: var(--c);
+  color: var(--ink);
+  box-shadow: 0 0 0 5px var(--cb)
+}
+
+.asesoria-geometria-analitica .pdots i.d::after,
+.asesoria-geometria-analitica .pdots i.n::after {
+  background: var(--c)
+}
+
+/* el problema */
+.asesoria-geometria-analitica #prac.pr-on .card.enun {
+  border: 1.5px solid var(--c);
+  border-top: 1.5px solid var(--c);
+  padding: 24px 28px
+}
+
+.asesoria-geometria-analitica #prac.pr-on .card.enun h2 {
+  display: inline-block;
+  margin: 0 0 12px;
+  padding: 3px 14px;
+  border-radius: 999px;
+  background: var(--c);
+  color: #fff;
+  font-size: .78rem;
+  letter-spacing: .1em;
+  text-transform: uppercase
+}
+
+.asesoria-geometria-analitica #prac.pr-on .stmt {
+  font-size: 1.1rem;
+  line-height: 1.8
+}
+
+/* la decisión: la pregunta es la protagonista */
+.asesoria-geometria-analitica .bloque {
+  border: 1.5px solid var(--c, var(--sg));
+  border-radius: 28px;
+  padding: 26px 30px 24px;
+  background: #fff;
+  box-shadow: 0 22px 44px -26px var(--c, var(--sg))
+}
+
+.asesoria-geometria-analitica .eyebrow {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 999px;
+  background: var(--cb, var(--sl));
+  color: var(--ink);
+  font-size: .78rem
+}
+
+.asesoria-geometria-analitica .qq {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.18;
+  margin: .5rem 0 .5rem
+}
+
+.asesoria-geometria-analitica .bi {
+  font-size: 1.05rem;
+  margin: 0 0 .6rem
+}
+
+.asesoria-geometria-analitica .opt {
+  padding: 14px 18px;
+  margin: 12px 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.45;
+  border: 2px solid var(--bc);
+  border-radius: 20px;
+  transition: transform .15s, box-shadow .15s
+}
+
+.asesoria-geometria-analitica .opt .lt {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  background: var(--bg2);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 1.1rem
+}
+
+.asesoria-geometria-analitica .o-A {
+  --bc: #F97316;
+  --bg2: #FFE2CC
+}
+
+.asesoria-geometria-analitica .o-B {
+  --bc: #8B3FD9;
+  --bg2: #EADCFA
+}
+
+.asesoria-geometria-analitica .o-C {
+  --bc: #0EA5A4;
+  --bg2: #CFF3F2
+}
+
+.asesoria-geometria-analitica .opt:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px -14px var(--bc)
+}
+
+.asesoria-geometria-analitica .opt.good {
+  background: #F1FBF6
+}
+
+.asesoria-geometria-analitica .fbk {
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1px solid #F2B7A8;
+  border-left: 3px solid var(--e2bd);
+  background: #FFF8F6
+}
+
+.asesoria-geometria-analitica .fbk.ok-f {
+  border-color: #9ADBB9;
+  border-left-color: var(--e5bd);
+  background: #F3FCF7
+}
+
+.asesoria-geometria-analitica .fbk p {
+  font-size: 1rem;
+  line-height: 1.6
+}
+
+.asesoria-geometria-analitica .row .btn.go {
+  padding: 12px 24px;
+  background: var(--ink);
+  color: #fff;
+  border: 0;
+  box-shadow: 0 5px 0 rgba(20, 35, 59, .22)
+}
+
+.asesoria-geometria-analitica .pista {
+  padding: 8px 16px;
+  border-radius: 999px
+}
+
+.asesoria-geometria-analitica .final {
+  border: 1.5px solid var(--c, var(--sg));
+  box-shadow: 0 22px 44px -26px var(--c, var(--sg))
+}
+
+.asesoria-geometria-analitica input.fin {
+  font-size: 1.4rem;
+  padding: 14px 18px;
+  border-radius: 18px
+}
+
+.asesoria-geometria-analitica .sol-c {
+  border-radius: 28px
+}
+
+
+@media (min-width:900px) {
+  .asesoria-geometria-analitica .cab-in {
+    flex-wrap: nowrap
+  }
+
+  .asesoria-geometria-analitica .menu {
+    flex: 1 1 0;
+    min-width: 0
+  }
+
+  .asesoria-geometria-analitica .menu a,
+  .asesoria-geometria-analitica .marca-t strong,
+  .asesoria-geometria-analitica .imp-b {
+    white-space: nowrap
+  }
+}
+
+@media (max-width:899px) {
+  .asesoria-geometria-analitica .cab-in {
+    flex-wrap: wrap;
+    gap: 8px 10px
+  }
+
+  .asesoria-geometria-analitica .marca {
+    flex: 1 1 0;
+    min-width: 0;
+    gap: 10px
+  }
+
+  .asesoria-geometria-analitica .marca-t strong {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+  }
+
+  .asesoria-geometria-analitica .menu-b span {
+    display: none
+  }
+
+  .asesoria-geometria-analitica .menu-b,
+  .asesoria-geometria-analitica .imp-b {
+    padding: 10px 12px
+  }
+
+  .asesoria-geometria-analitica .imp-b .ico:last-child {
+    display: none
+  }
+
+  .asesoria-geometria-analitica .imp-w {
+    margin-left: 0
+  }
+}
+
+@media (max-width:700px) {
+  .asesoria-geometria-analitica .cab-in {
+    padding: 14px 16px
+  }
+
+  .asesoria-geometria-analitica .logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    font-size: 1.5rem
+  }
+
+  .asesoria-geometria-analitica .marca-t strong {
+    font-size: 1.1rem
+  }
+
+  .asesoria-geometria-analitica .portada {
+    grid-template-columns: 1fr;
+    padding: 30px 20px;
+    gap: 24px;
+    border-radius: 28px
+  }
+
+  .asesoria-geometria-analitica .portada-art {
+    padding: 10px;
+    border-radius: 24px
+  }
+
+  .asesoria-geometria-analitica .qq {
+    font-size: 1.45rem
+  }
+
+  .asesoria-geometria-analitica .bloque {
+    padding: 20px 16px
+  }
+
+  .asesoria-geometria-analitica .opt {
+    font-size: 1rem;
+    padding: 12px 14px
+  }
+
+  .asesoria-geometria-analitica .pdots i {
+    width: 30px;
+    height: 30px
+  }
+
+  .asesoria-geometria-analitica .pdots i+i {
+    margin-left: 18px
+  }
+
+  .asesoria-geometria-analitica .pdots i+i::after {
+    width: 18px
+  }
+}
+
+
+/* =========================================================================
+   AJUSTES TRAS REVISIÓN (header tipo DBD, ancho, tarjetas, calentamiento, tips)
+   ========================================================================= */
+.asesoria-geometria-analitica #vista {
+  max-width: 1360px;
+  padding: 28px 32px 80px
+}
+
+/* ---- Header: más compacto y con letras más grandes ---- */
+.asesoria-geometria-analitica .cab-in {
+  padding: 13px 32px;
+  gap: 12px 30px
+}
+
+.asesoria-geometria-analitica .logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  font-size: 1.9rem
+}
+
+.asesoria-geometria-analitica .marca {
+  gap: 14px
+}
+
+.asesoria-geometria-analitica .marca-t {
+  gap: 1px
+}
+
+.asesoria-geometria-analitica .marca-t strong {
+  font-size: 1.5rem;
+  letter-spacing: -.02em
+}
+
+.asesoria-geometria-analitica .marca-s {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2
+}
+
+.asesoria-geometria-analitica .menu a {
+  font-size: 1.12rem;
+  padding: 12px 18px
+}
+
+.asesoria-geometria-analitica .menu a.act::after {
+  display: none
+}
+
+.asesoria-geometria-analitica .menu ul {
+  position: relative
+}
+
+.asesoria-geometria-analitica .menu-ind {
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  height: 4px;
+  width: 0;
+  border-radius: 4px;
+  background: #6D28D9;
+  list-style: none;
+  pointer-events: none;
+  transition: transform .3s cubic-bezier(.3, .7, .2, 1), width .3s cubic-bezier(.3, .7, .2, 1), opacity .2s
+}
+
+.asesoria-geometria-analitica .imp-b {
+  background: #FFF6E8;
+  border: 1.5px solid #F0C36D;
+  box-shadow: 0 4px 0 rgba(240, 195, 109, .6);
+  color: var(--ink);
+  font-size: 1.02rem;
+  padding: 10px 20px
+}
+
+@media (min-width:900px) and (max-width:1180px) {
+  .asesoria-geometria-analitica .cab-in {
+    padding: 12px 20px;
+    gap: 12px 18px
+  }
+
+  .asesoria-geometria-analitica .menu a {
+    font-size: 1rem;
+    padding: 10px 11px
+  }
+
+  .asesoria-geometria-analitica .marca-t strong {
+    font-size: 1.3rem
+  }
+
+  .asesoria-geometria-analitica .imp-b span {
+    display: none
+  }
+}
+
+@media (max-width:899px) {
+  .asesoria-geometria-analitica .menu-ind {
+    display: none
+  }
+
+  .asesoria-geometria-analitica .menu a.act {
+    background: rgba(255, 255, 255, .6);
+    border-radius: 12px
+  }
+
+  .asesoria-geometria-analitica .marca-t strong {
+    font-size: 1.1rem
+  }
+
+  .asesoria-geometria-analitica .marca-s {
+    font-size: .85rem
+  }
+}
+
+/* ---- Flecha flotante para volver arriba ---- */
+.asesoria-geometria-analitica .subir {
+  position: fixed;
+  right: 22px;
+  bottom: 24px;
+  z-index: 40;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 1.5px solid #F0C36D;
+  background: #FFF6E8;
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 0 rgba(240, 195, 109, .55), 0 14px 26px -8px rgba(20, 35, 59, .35);
+  transition: transform .15s
+}
+
+.asesoria-geometria-analitica .subir svg {
+  width: 26px;
+  height: 26px
+}
+
+.asesoria-geometria-analitica .subir:hover {
+  transform: translateY(-3px)
+}
+
+/* ---- Tarjetas de las preguntas: sin franja superior, contorno de color luminoso ---- */
+.asesoria-geometria-analitica .qt::before {
+  display: none
+}
+
+.asesoria-geometria-analitica .qt1 {
+  --neon: #F97316
+}
+
+.asesoria-geometria-analitica .qt2 {
+  --neon: #A855F7
+}
+
+.asesoria-geometria-analitica .qt3 {
+  --neon: #22C55E
+}
+
+.asesoria-geometria-analitica .qt {
+  border: 2px solid var(--neon);
+  box-shadow: 0 0 16px -3px var(--neon), 0 16px 34px -22px rgba(20, 35, 59, .3)
+}
+
+.asesoria-geometria-analitica .qt:hover {
+  box-shadow: 0 0 24px -2px var(--neon), 0 24px 40px -22px rgba(20, 35, 59, .35)
+}
+
+.asesoria-geometria-analitica .qt-top {
+  padding-top: 24px
+}
+
+/* ---- Calentamiento con más color ---- */
+.asesoria-geometria-analitica .warm {
+  background: linear-gradient(155deg, #EADFFF 0%, #D6C2FF 100%);
+  border: 2px solid #A78BFA;
+  border-radius: 28px;
+  padding: 24px 26px;
+  box-shadow: 0 0 22px -6px #A78BFA, 0 16px 36px -22px rgba(20, 35, 59, .3)
+}
+
+.asesoria-geometria-analitica .warm h3 {
+  color: #3B1A80;
+  font-size: 1.4rem
+}
+
+.asesoria-geometria-analitica .wq {
+  font-size: 1.2rem;
+  margin: .6rem 0 .8rem
+}
+
+.asesoria-geometria-analitica .alt {
+  padding: 13px 16px;
+  font-size: 1.05rem;
+  border-radius: 16px;
+  margin: 8px 0 0
+}
+
+.asesoria-geometria-analitica .alt.l {
+  background: #C6AEFF;
+  box-shadow: none
+}
+
+.asesoria-geometria-analitica .alt.w {
+  background: #fff;
+  box-shadow: none
+}
+
+.asesoria-geometria-analitica .alt b {
+  width: 32px;
+  height: 32px;
+  border-color: #6D28D9;
+  color: #3B1A80
+}
+
+.asesoria-geometria-analitica .alt.good {
+  background: #E6F8EE;
+  box-shadow: 0 0 0 2px var(--e5bd)
+}
+
+.asesoria-geometria-analitica .otra {
+  background: #fff;
+  border: 2px solid #6D28D9;
+  color: #3B1A80;
+  padding: 7px 16px
+}
+
+/* ---- Resolución ---- */
+.asesoria-geometria-analitica .sel {
+  gap: 24px;
+  margin-bottom: 10px
+}
+
+.asesoria-geometria-analitica .p-id {
+  --c: var(--e3bd);
+  --b: var(--e3bg);
+  --t: var(--e3tx)
+}
+
+.asesoria-geometria-analitica .relc {
+  background: #fff;
+  border: 1.5px solid var(--c, var(--sb));
+  border-radius: 16px;
+  max-width: 820px;
+  width: 100%
+}
+
+.asesoria-geometria-analitica .relc summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: .92rem;
+  padding: 9px 16px;
+  color: var(--t, var(--sgd));
+  list-style: none
+}
+
+.asesoria-geometria-analitica .relc summary::-webkit-details-marker {
+  display: none
+}
+
+.asesoria-geometria-analitica .relc[open] {
+  background: var(--b, #fff)
+}
+
+.asesoria-geometria-analitica .relc-b {
+  padding: 2px 16px 14px
+}
+
+.asesoria-geometria-analitica .relc-k {
+  margin: 0 0 4px;
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--t, var(--ink2))
+}
+
+.asesoria-geometria-analitica .relc-b p {
+  margin: .3rem 0
+}
+
+/* ---- Práctica y Refuerza ---- */
+.asesoria-geometria-analitica #prac {
+  margin-top: 28px
+}
+
+.asesoria-geometria-analitica .pista {
+  background: #EFE6FF;
+  border: 2px solid #B79CFF;
+  color: #3B1A80;
+  padding: 9px 18px
+}
+
+.asesoria-geometria-analitica .hint {
+  background: #F1E8FF;
+  border: 1.5px solid #B79CFF;
+  border-radius: 18px;
+  padding: 14px 18px
+}
+
+.asesoria-geometria-analitica .bloque .row {
+  margin-top: 28px
+}
+
+.asesoria-geometria-analitica .final .row {
+  margin-top: 22px
+}
+
+@media (prefers-reduced-motion:reduce) {
+
+  .asesoria-geometria-analitica .menu-ind,
+  .asesoria-geometria-analitica .subir,
+  .asesoria-geometria-analitica .qt {
+    transition: none
+  }
+}
+
+
+/* =========================================================================
+   AJUSTES 2: fondo celeste agua, jerarquía tipográfica, portada más ligera,
+   bloques de Inicio con mejor proporción, coherencia de contornos
+   ========================================================================= */
+.asesoria-geometria-analitica {
+  background:
+    radial-gradient(900px 480px at 100% 0%, rgba(167, 243, 208, .38), transparent 70%),
+    radial-gradient(900px 520px at 0% 42%, rgba(125, 226, 240, .34), transparent 70%),
+    #E9F8FB
+}
+
+/* ---- «G» con el mismo fondo que el botón Imprimir ---- */
+.asesoria-geometria-analitica .logo {
+  background: #FFF6E8;
+  border: 1.5px solid #F0C36D;
+  box-shadow: 0 4px 0 rgba(240, 195, 109, .6);
+  color: var(--ink)
+}
+
+/* ---- Jerarquía tipográfica: títulos, subtítulos, etiquetas y cuerpo se distinguen ---- */
+.asesoria-geometria-analitica {
+  font-weight: 400
+}
+
+.asesoria-geometria-analitica .chip,
+.asesoria-geometria-analitica .pill,
+.asesoria-geometria-analitica .eyebrow,
+.asesoria-geometria-analitica .qt-pts,
+.asesoria-geometria-analitica .prac-q,
+.asesoria-geometria-analitica .prac-m,
+.asesoria-geometria-analitica .relc-k,
+.asesoria-geometria-analitica .tj-c,
+.asesoria-geometria-analitica .tema-n,
+.asesoria-geometria-analitica .tira-k {
+  font-family: var(--mf);
+  font-weight: 700;
+  letter-spacing: .06em
+}
+
+.asesoria-geometria-analitica .chip,
+.asesoria-geometria-analitica .pill,
+.asesoria-geometria-analitica .qt-pts,
+.asesoria-geometria-analitica .prac-m {
+  font-size: .78rem
+}
+
+.asesoria-geometria-analitica .sec-t {
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -.03em
+}
+
+.asesoria-geometria-analitica .sec-t small,
+.asesoria-geometria-analitica .intro,
+.asesoria-geometria-analitica .bi {
+  font-weight: 400;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--ink2)
+}
+
+.asesoria-geometria-analitica .sub {
+  font-weight: 500;
+  color: var(--ink)
+}
+
+/* ---- Portada: el título manda; la ilustración acompaña ---- */
+.asesoria-geometria-analitica .portada {
+  grid-template-columns: 1.55fr .75fr;
+  gap: 36px;
+  padding: 50px 54px
+}
+
+.asesoria-geometria-analitica .portada h1 {
+  font-size: clamp(3rem, 6.4vw, 5.3rem);
+  margin: 0 0 .7rem
+}
+
+.asesoria-geometria-analitica .portada-art {
+  max-width: 290px;
+  justify-self: end;
+  padding: 12px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, .55);
+  box-shadow: none
+}
+
+/* ---- Inicio: más aire y mejor proporción entre bloques ---- */
+.asesoria-geometria-analitica .row2 {
+  grid-template-columns: 1fr 1.3fr;
+  gap: 28px;
+  margin-top: 52px;
+  align-items: stretch
+}
+
+.asesoria-geometria-analitica .warm {
+  display: flex;
+  flex-direction: column
+}
+
+.asesoria-geometria-analitica .warm-ops {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px
+}
+
+.asesoria-geometria-analitica .warm-ops .alt {
+  flex: 1 1 0;
+  margin: 0;
+  max-height: 86px;
+  font-size: 1.08rem
+}
+
+.asesoria-geometria-analitica .warm-fb {
+  margin: 12px 0 12px
+}
+
+.asesoria-geometria-analitica .warm .otra {
+  margin-top: auto;
+  align-self: flex-start
+}
+
+.asesoria-geometria-analitica .warm {
+  background: #fff;
+  border: 2px solid #6600CC;
+  border-radius: 26px;
+  padding: 22px 24px;
+  box-shadow: 0 16px 34px -24px rgba(102, 0, 204, .6)
+}
+
+.asesoria-geometria-analitica .warm h3 {
+  color: #6600CC;
+  font-size: 1.25rem
+}
+
+.asesoria-geometria-analitica .wq {
+  font-size: 1.12rem;
+  margin: .5rem 0 .7rem
+}
+
+.asesoria-geometria-analitica .alt {
+  padding: 11px 14px;
+  font-size: 1rem;
+  border: 1px solid #E1D3F5;
+  border-radius: 14px;
+  margin: 6px 0 0
+}
+
+.asesoria-geometria-analitica .alt.l {
+  background: #F7F2FC;
+  box-shadow: none
+}
+
+.asesoria-geometria-analitica .alt.w {
+  background: #fff;
+  box-shadow: none
+}
+
+.asesoria-geometria-analitica .alt b {
+  width: 30px;
+  height: 30px;
+  background: #6600CC;
+  border: 0;
+  color: #fff
+}
+
+.asesoria-geometria-analitica .alt.good {
+  background: #E6F8EE;
+  border-color: var(--e5bd);
+  box-shadow: none
+}
+
+.asesoria-geometria-analitica .alt.bad {
+  background: #FFF3EF;
+  border-color: #F2B7A8
+}
+
+.asesoria-geometria-analitica .otra {
+  margin-top: 10px;
+  border-color: #6600CC;
+  color: #6600CC
+}
+
+/* Repaso rápido: ahora es útil, con los 5 tips como accesos directos */
+.asesoria-geometria-analitica .tira {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 24px 26px;
+  background: linear-gradient(150deg, #FFE9EF 0%, #FFF1D6 100%);
+  border: 2px solid #F0C36D;
+  border-radius: 26px;
+  box-shadow: none
+}
+
+.asesoria-geometria-analitica .tira-h {
+  display: flex;
+  align-items: center;
+  gap: 12px
+}
+
+.asesoria-geometria-analitica .tira-ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #FFF6E8;
+  border: 1.5px solid #F0C36D;
+  display: grid;
+  place-items: center;
+  flex: none
+}
+
+.asesoria-geometria-analitica .tira-h h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -.02em
+}
+
+.asesoria-geometria-analitica .tira-p {
+  margin: 0;
+  font-size: .98rem;
+  color: var(--ink2)
+}
+
+.asesoria-geometria-analitica .tira-l {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px
+}
+
+.asesoria-geometria-analitica .tira-c {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 9px 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1.5px solid var(--c);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform .15s
+}
+
+.asesoria-geometria-analitica .tira-c:hover {
+  transform: translateX(4px)
+}
+
+.asesoria-geometria-analitica .tira-k {
+  font-size: .68rem;
+  text-transform: uppercase;
+  color: var(--t);
+  min-width: 118px
+}
+
+.asesoria-geometria-analitica .tira-t {
+  font-weight: 700;
+  font-size: .95rem
+}
+
+.asesoria-geometria-analitica .tira-b {
+  margin-top: 4px;
+  background: #7C3AED;
+  color: #fff;
+  border: 0;
+  padding: 10px 20px;
+  box-shadow: 0 5px 0 rgba(76, 29, 149, .3)
+}
+
+/* ¿Qué evalúa esta PC? tres tarjetas con presencia */
+.asesoria-geometria-analitica .temas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 24px
+}
+
+.asesoria-geometria-analitica .tm1 {
+  --neon: #F97316;
+  --b: #FFEDE0
+}
+
+.asesoria-geometria-analitica .tm2 {
+  --neon: #A855F7;
+  --b: #F1E8FF
+}
+
+.asesoria-geometria-analitica .tm3 {
+  --neon: #22C55E;
+  --b: #E2F8EA
+}
+
+.asesoria-geometria-analitica .tema {
+  background: var(--b);
+  border: 2px solid var(--neon);
+  border-radius: 24px;
+  padding: 24px 26px;
+  box-shadow: 0 0 14px -4px var(--neon)
+}
+
+.asesoria-geometria-analitica .tema-n {
+  font-size: .74rem;
+  text-transform: uppercase;
+  color: var(--ink2)
+}
+
+.asesoria-geometria-analitica .tema h3 {
+  margin: .5rem 0 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -.02em
+}
+
+/* ---- Aire alrededor del título de cada pregunta ---- */
+.asesoria-geometria-analitica .res-h {
+  margin-top: 26px
+}
+
+.asesoria-geometria-analitica .res-h .chips {
+  margin: 14px 0 22px
+}
+
+/* ---- Coherencia: sin franjas superiores de color (como en las preguntas) ---- */
+.asesoria-geometria-analitica .enun {
+  border: 2px solid var(--qc, var(--sg));
+  border-top: 2px solid var(--qc, var(--sg))
+}
+
+.asesoria-geometria-analitica .tj::before {
+  display: none
+}
+
+.asesoria-geometria-analitica .tj {
+  border: 2px solid var(--c)
+}
+
+@media (max-width:760px) {
+  .asesoria-geometria-analitica .portada {
+    grid-template-columns: 1fr;
+    padding: 30px 20px
+  }
+
+  .asesoria-geometria-analitica .portada-art {
+    max-width: 230px;
+    justify-self: center
+  }
+
+  .asesoria-geometria-analitica .row2 {
+    grid-template-columns: 1fr;
+    margin-top: 36px
+  }
+
+  .asesoria-geometria-analitica .tira-k {
+    min-width: 0
+  }
+}
+
+
+/* =========================================================================
+   AJUSTES 3: tipografía (Outfit para títulos, Unbounded para la «G»),
+   «Qué se hace» en celeste bebé, respiros en la Resolución y calentamiento compacto
+   ========================================================================= */
+.asesoria-geometria-analitica .logo {
+  width: 60px;
+  height: 60px;
+  font-family: var(--lf);
+  font-weight: 400;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: #6D28D9
+}
+
+/* títulos: Outfit luce sin necesidad de negrita */
+.asesoria-geometria-analitica .portada h1 {
+  font-weight: 600;
+  letter-spacing: -.035em
+}
+
+.asesoria-geometria-analitica .res-h h1 {
+  font-size: clamp(1.45rem, 2.3vw, 2.15rem);
+  font-weight: 500;
+  letter-spacing: -.01em;
+  line-height: 1.25;
+  text-wrap: balance
+}
+
+.asesoria-geometria-analitica .sec-t,
+.asesoria-geometria-analitica .qq,
+.asesoria-geometria-analitica .prac-t,
+.asesoria-geometria-analitica .tema h3,
+.asesoria-geometria-analitica .tira-h h3,
+.asesoria-geometria-analitica .qt-top h3,
+.asesoria-geometria-analitica .tj-t,
+.asesoria-geometria-analitica .marca-t strong {
+  font-weight: 600
+}
+
+.asesoria-geometria-analitica .sec-t,
+.asesoria-geometria-analitica .qq {
+  letter-spacing: -.02em
+}
+
+/* «Qué se hace»: celeste bebé, suave */
+.asesoria-geometria-analitica .p-que {
+  --c: #9CCBEA;
+  --b: #E6F3FC;
+  --t: #14456E;
+  border-width: 2px
+}
+
+.asesoria-geometria-analitica .que b,
+.asesoria-geometria-analitica .que strong {
+  color: #14456E
+}
+
+.asesoria-geometria-analitica .p-que .dev {
+  background: #fff
+}
+
+/* respiros entre el enunciado, el plan y los pasos */
+.asesoria-geometria-analitica .plan {
+  margin: 38px 0 14px
+}
+
+.asesoria-geometria-analitica .plan>h2 {
+  margin-bottom: 6px
+}
+
+.asesoria-geometria-analitica .plan-s {
+  margin: 4px 0 18px
+}
+
+/* calentamiento compacto: crece solo lo que su contenido necesita */
+.asesoria-geometria-analitica .row2 {
+  align-items: stretch
+}
+
+.asesoria-geometria-analitica .warm {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 24px
+}
+
+.asesoria-geometria-analitica .warm-ops {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px
+}
+
+.asesoria-geometria-analitica .warm-ops .alt {
+  flex: 0 0 auto;
+  max-height: none;
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 1.02rem
+}
+
+.asesoria-geometria-analitica .warm .otra {
+  margin-top: 12px
+}
+
+.asesoria-geometria-analitica .warm-fb {
+  margin: 12px 0 0
+}
+
+.asesoria-geometria-analitica .tira {
+  gap: 10px;
+  padding: 22px 26px
+}
+
+.asesoria-geometria-analitica .tira-c {
+  padding: 7px 14px
+}
+
+/* ---- Títulos de «Calentamiento» y «Repaso rápido» con más presencia ---- */
+.asesoria-geometria-analitica .warm h3,
+.asesoria-geometria-analitica .tira-h h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -.02em
+}
+
+.asesoria-geometria-analitica .tira-ic {
+  width: 48px;
+  height: 48px
+}
+
+/* ---- AJUSTES 5: más aire en el título, las etiquetas y los pasos de la Resolución (solo en pantalla) ---- */
+@media screen {
+  .asesoria-geometria-analitica .res-h {
+    margin-top: 48px
+  }
+
+  .asesoria-geometria-analitica .res-h .chips {
+    gap: 12px;
+    margin: 18px 0 26px
+  }
+
+  .asesoria-geometria-analitica .res-h .chip {
+    padding: 5px 16px;
+    line-height: 1.5
+  }
+
+  .asesoria-geometria-analitica .rw {
+    margin: 14px 0
+  }
+
+  .asesoria-geometria-analitica .rh {
+    padding: 18px 24px;
+    gap: 16px
+  }
+
+  .asesoria-geometria-analitica .rb {
+    padding: 8px 20px 26px
+  }
+}
+
+@media screen and (max-width:700px) {
+  .asesoria-geometria-analitica .res-h {
+    margin-top: 34px
+  }
+
+  .asesoria-geometria-analitica .rh {
+    padding: 14px 16px
+  }
+
+  .asesoria-geometria-analitica .rb {
+    padding: 6px 14px 20px
+  }
+}
+
+/* ---- AJUSTES 6: final de la práctica con color (solución, registro y botones) ---- */
+@media screen {
+
+  .asesoria-geometria-analitica #prac.pr-on .sol-c,
+  .asesoria-geometria-analitica #prac.pr-on .reg-c {
+    border: 2px solid var(--c);
+    box-shadow: 0 16px 34px -24px var(--c)
+  }
+
+  .asesoria-geometria-analitica .row .btn.go {
+    background: #7C3AED;
+    color: #fff;
+    border: 0;
+    box-shadow: 0 5px 0 rgba(76, 29, 149, .35)
+  }
+
+  .asesoria-geometria-analitica .row .btn:not(.go) {
+    background: #fff;
+    border: 2px solid #7C3AED;
+    color: #4C1D95
+  }
+
+  .asesoria-geometria-analitica .row .btn.bt-rep {
+    border-color: #7C3AED;
+    color: #4C1D95
+  }
+
+  .asesoria-geometria-analitica .row .btn.bt-otra {
+    border-color: #14B8C4;
+    color: #0B5560
+  }
+
+  .asesoria-geometria-analitica .row .btn.bt-fin {
+    border-color: #F97316;
+    color: #9A3412
+  }
+}
+
+/* ----------------------------- Pantallas angostas ----------------------------- */
+@media (max-width:560px) {
+  .asesoria-geometria-analitica h1 {
+    font-size: 1.55rem
+  }
+
+  .asesoria-geometria-analitica .card,
+  .asesoria-geometria-analitica .bloque {
+    padding-left: 12px;
+    padding-right: 12px
+  }
+
+  .asesoria-geometria-analitica .qq {
+    font-size: 1.35rem
+  }
+
+  .asesoria-geometria-analitica .rh {
+    font-size: 1.02rem
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .asesoria-geometria-analitica * {
+    animation: none !important;
+    transition: none !important
+  }
+
+  .asesoria-geometria-analitica .draw {
+    stroke-dashoffset: 0
+  }
+}
+
+/* ============================ IMPRESIÓN (sin encabezados ni pies) ============================ */
+@page {
+  size: A4;
+  margin: 0
+}
+
+@media print {
+  .asesoria-geometria-analitica {
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 10.5pt;
+    line-height: 1.45;
+    min-height: 0;
+    padding: 0
+  }
+
+  .asesoria-geometria-analitica .cab,
+  .asesoria-geometria-analitica #vista,
+  .asesoria-geometria-analitica .live,
+  .asesoria-geometria-analitica [data-noprint],
+  .asesoria-geometria-analitica .nav-pie,
+  .asesoria-geometria-analitica button,
+  .asesoria-geometria-analitica a.btn {
+    display: none !important
+  }
+
+  .asesoria-geometria-analitica .solo-print {
+    display: block !important
+  }
+
+  .asesoria-geometria-analitica .solo-print-b.ver {
+    display: block !important
+  }
+
+  .asesoria-geometria-analitica .print-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    border: 0
+  }
+
+  .asesoria-geometria-analitica .print-tabla thead {
+    display: table-header-group
+  }
+
+  .asesoria-geometria-analitica .print-tabla tfoot {
+    display: table-footer-group
+  }
+
+  .asesoria-geometria-analitica .print-tabla thead td,
+  .asesoria-geometria-analitica .print-tabla tfoot td {
+    padding: 0;
+    border: 0
+  }
+
+  .asesoria-geometria-analitica .print-tabla .esp {
+    height: 12mm
+  }
+
+  .asesoria-geometria-analitica .print-tabla tbody>tr>td {
+    padding: 0 12mm;
+    border: 0;
+    vertical-align: top
+  }
+
+  .asesoria-geometria-analitica * {
+    box-shadow: none !important;
+    transition: none !important;
+    animation: none !important
+  }
+
+  .asesoria-geometria-analitica .draw {
+    stroke-dashoffset: 0
+  }
+
+  .asesoria-geometria-analitica .print-pag {
+    break-before: page
+  }
+
+  .asesoria-geometria-analitica .print-pag:first-child {
+    break-before: auto
+  }
+
+  .asesoria-geometria-analitica .print-q {
+    break-inside: avoid-page;
+    margin-bottom: 12px
+  }
+
+  .asesoria-geometria-analitica .ref {
+    display: block !important;
+    font-size: 7.5pt;
+    color: #8A93AD;
+    margin: 0
+  }
+
+  .asesoria-geometria-analitica .bx,
+  .asesoria-geometria-analitica .pn,
+  .asesoria-geometria-analitica .card,
+  .asesoria-geometria-analitica .fig,
+  .asesoria-geometria-analitica .fm,
+  .asesoria-geometria-analitica .katex-display,
+  .asesoria-geometria-analitica .portada,
+  .asesoria-geometria-analitica .tj,
+  .asesoria-geometria-analitica .rec-b,
+  .asesoria-geometria-analitica .dev {
+    break-inside: avoid
+  }
+
+  .asesoria-geometria-analitica h1,
+  .asesoria-geometria-analitica h2,
+  .asesoria-geometria-analitica h3 {
+    break-after: avoid
+  }
+
+  .asesoria-geometria-analitica .rw {
+    break-inside: auto;
+    margin: 10px 0;
+    border-color: var(--sg)
+  }
+
+  .asesoria-geometria-analitica .rh {
+    break-after: avoid;
+    padding: 6px 10px
+  }
+
+  .asesoria-geometria-analitica .rh>.ico:last-child {
+    display: none
+  }
+
+  .asesoria-geometria-analitica .rb {
+    display: block !important
+  }
+
+  .asesoria-geometria-analitica .plan {
+    background: #fff;
+    padding: 10px
+  }
+
+  .asesoria-geometria-analitica .pg {
+    grid-template-columns: 1fr;
+    gap: 8px
+  }
+
+  .asesoria-geometria-analitica .apoyos {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px
+  }
+
+  .asesoria-geometria-analitica .fig svg {
+    min-width: 0
+  }
+
+  .asesoria-geometria-analitica .portada {
+    grid-template-columns: 1.3fr 1fr;
+    padding: 18px
+  }
+
+  .asesoria-geometria-analitica .portada h1 {
+    font-size: 30pt
+  }
+
+  .asesoria-geometria-analitica .gt-print {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    align-items: start
+  }
+
+  .asesoria-geometria-analitica .tj-d {
+    display: block !important
+  }
+
+  .asesoria-geometria-analitica .tj-b {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px
+  }
+
+  .asesoria-geometria-analitica .pn-c,
+  .asesoria-geometria-analitica .bx-c {
+    overflow: visible
+  }
+
+  /* ahorro de tinta: fondos blancos con borde de color */
+  .asesoria-geometria-analitica.tinta .bx,
+  .asesoria-geometria-analitica.tinta .card,
+  .asesoria-geometria-analitica.tinta .portada,
+  .asesoria-geometria-analitica.tinta .pn,
+  .asesoria-geometria-analitica.tinta .pn h4,
+  .asesoria-geometria-analitica.tinta .rec-b,
+  .asesoria-geometria-analitica.tinta .tj-ic,
+  .asesoria-geometria-analitica.tinta .chip,
+  .asesoria-geometria-analitica.tinta .pill,
+  .asesoria-geometria-analitica.tinta .tj-v,
+  .asesoria-geometria-analitica.tinta .rvl2,
+  .asesoria-geometria-analitica.tinta .plan,
+  .asesoria-geometria-analitica.tinta .dev {
+    background: #fff !important;
+    background-image: none !important;
+    color: var(--ink) !important
+  }
+
+  .asesoria-geometria-analitica.tinta .num {
+    background: #fff !important;
+    color: var(--ink) !important;
+    border: 1.5px solid var(--e1bd)
+  }
+}

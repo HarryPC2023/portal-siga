@@ -61,7 +61,20 @@ export const NOMBRE_EVALUACION = {
 
 export const CURSOS = [
     // ───────────── Ciclo 1 ─────────────
-    { codigo: 'FB101', slug: 'geometria-analitica', nombre: 'Geometría Analítica', ciclo: 1, creditos: 3, recursos: [] },
+    {
+        codigo: 'FB101', slug: 'geometria-analitica', nombre: 'Geometría Analítica', ciclo: 1, creditos: 3,
+        recursos: [
+            {
+                id: 'pc1-geometria-2026-1',
+                tipo: 'web',
+                evaluacion: 'PC1',
+                titulo: 'PC1 — Geometría Analítica',
+                descripcion: 'Resolución paso a paso de las 3 preguntas, tips y práctica con ejercicios nuevos.',
+                fecha: '2026-10-12',
+                periodo: '2026-1',
+            },
+        ],
+    },
     { codigo: 'BMA01', slug: 'calculo-diferencial', nombre: 'Cálculo Diferencial', ciclo: 1, creditos: 5, recursos: [] },
     { codigo: 'BQU01', slug: 'quimica-i', nombre: 'Química I', ciclo: 1, creditos: 5, recursos: [] },
 
