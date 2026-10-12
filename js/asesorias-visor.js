@@ -352,7 +352,6 @@ function resetEstado() {
 
 function mostrarOverlay() {
     document.body.style.overflow = 'hidden';
-    document.body.classList.add('visor-abierto');
     // rAF para que el navegador registre el estado inicial (opacity 0) antes
     // de añadir la clase — si no, la primera apertura (justo tras crear el
     // modal) salta directo al estado final sin animar la transición.
@@ -362,7 +361,6 @@ function mostrarOverlay() {
 function cerrarVisor() {
     overlay.classList.remove('visible');
     document.body.style.overflow = '';
-    document.body.classList.remove('visor-abierto');
 
     if (document.fullscreenElement === caja) document.exitFullscreen();
 
