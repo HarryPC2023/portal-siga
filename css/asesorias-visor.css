@@ -468,3 +468,14 @@
         flex: 1 1 100%;
     }
 }
+
+/* Mientras el visor está abierto, la página de atrás queda cubierta: se pausan
+   sus animaciones para que no compitan con la asesoría (mismo hilo del navegador). */
+body.visor-abierto * {
+    animation-play-state: paused !important;
+}
+
+body.visor-abierto .visor-overlay,
+body.visor-abierto .visor-overlay * {
+    animation-play-state: running !important;
+}
