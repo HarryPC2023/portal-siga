@@ -107,7 +107,7 @@ export const CURSOS = [
                 evaluacion: 'PC1',
                 titulo: 'PC1 — Diseño de Base de Datos',
                 descripcion: 'Herramientas, arquitectura, componentes y checklist antes de exponer.',
-                fecha: null,
+                fecha: '2026-10-12',
                 periodo: '2026-1',
             },
         ],
