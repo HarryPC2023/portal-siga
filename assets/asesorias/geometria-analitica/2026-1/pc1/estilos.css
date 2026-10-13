@@ -4140,3 +4140,118 @@
     border: 1.5px solid var(--e1bd)
   }
 }
+
+/* ==========================================================================
+   Móvil (12 oct 2026): encabezado como el de DBD.
+   - Las secciones quedan siempre visibles en una fila que se desplaza
+     (se acabó el botón "Menú").
+   - El nombre de la asesoría ya no queda tapado por el botón de imprimir.
+   - En horizontal (pantalla baja) todo cabe en una sola fila compacta.
+   ========================================================================== */
+.asesoria-geometria-analitica .marca-t {
+  min-width: 0
+}
+
+.asesoria-geometria-analitica .marca-s {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+@media (max-width:899px) {
+  .asesoria-geometria-analitica .menu-b {
+    display: none
+  }
+
+  .asesoria-geometria-analitica .menu,
+  .asesoria-geometria-analitica .menu[hidden] {
+    display: block !important;
+    flex: 1 1 100%;
+    min-width: 0;
+    order: 5
+  }
+
+  .asesoria-geometria-analitica .menu ul {
+    position: relative;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    gap: 4px;
+    padding: 2px 0 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch
+  }
+
+  .asesoria-geometria-analitica .menu ul::-webkit-scrollbar {
+    display: none
+  }
+
+  .asesoria-geometria-analitica .menu a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 9px 14px;
+    font-size: .95rem
+  }
+
+  .asesoria-geometria-analitica .menu a.act::after {
+    left: 14px;
+    right: 14px
+  }
+}
+
+@media (max-height:520px) and (orientation:landscape) {
+  .asesoria-geometria-analitica .cab-in {
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding: 8px 16px
+  }
+
+  .asesoria-geometria-analitica .logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    font-size: 1.25rem
+  }
+
+  .asesoria-geometria-analitica .marca {
+    flex: 0 0 auto;
+    gap: 10px
+  }
+
+  .asesoria-geometria-analitica .marca-t {
+    gap: 2px
+  }
+
+  .asesoria-geometria-analitica .marca-t strong {
+    font-size: 1.02rem
+  }
+
+  .asesoria-geometria-analitica .marca-s {
+    font-size: .78rem
+  }
+
+  .asesoria-geometria-analitica .menu,
+  .asesoria-geometria-analitica .menu[hidden] {
+    flex: 1 1 0;
+    order: 0
+  }
+
+  .asesoria-geometria-analitica .menu ul {
+    padding: 0
+  }
+
+  .asesoria-geometria-analitica .menu a {
+    padding: 8px 12px;
+    font-size: .9rem
+  }
+
+  .asesoria-geometria-analitica .menu a.act::after {
+    left: 12px;
+    right: 12px
+  }
+
+  .asesoria-geometria-analitica .imp-b span {
+    display: none
+  }
+}

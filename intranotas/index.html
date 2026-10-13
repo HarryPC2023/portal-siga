@@ -141,6 +141,26 @@
             cursor: pointer;
         }
 
+        /* Móvil: con "Conectando..." y "Cancelar" a la vez, los botones se
+           salían de la tarjeta. Se compactan un poco y, si aun así no caben
+           (pantallas muy angostas), se acomodan en dos filas en vez de
+           desbordarse. */
+        @media (max-width: 480px) {
+            .fila-botones-sync {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .fila-botones-sync .btn-sincronizar {
+                padding: 14px 16px;
+                min-width: 150px;
+            }
+
+            .fila-botones-sync .btn-cancelar-sync {
+                padding: 14px 14px;
+            }
+        }
+
         .aviso-sin-intralu {
             text-align: center;
             font-size: 11px;

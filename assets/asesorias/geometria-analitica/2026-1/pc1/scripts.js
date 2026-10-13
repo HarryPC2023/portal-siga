@@ -981,7 +981,7 @@
     else if (id === 'resolucion') postResolucion(q, opt);
     else if (id === 'estrategias') postEstrategias(opt);
     else if (id === 'practica') { practicaMenu($('#prac', vista)); if (opt.p) { const tpl = PLANTILLAS.filter(function (t) { return t.id === opt.p })[0]; if (tpl) iniciarPractica($('#prac', vista), tpl, semillaNueva(tpl, -1), null) } }
-    $$('.menu a', raiz).forEach(function (l) { const on = l.getAttribute('data-id') === id; l.classList.toggle('act', on); if (on) l.setAttribute('aria-current', 'page'); else l.removeAttribute('aria-current') });
+    $$('.menu a', raiz).forEach(function (l) { const on = l.getAttribute('data-id') === id; l.classList.toggle('act', on); if (on) { l.setAttribute('aria-current', 'page'); const ul = l.parentNode && l.parentNode.parentNode; if (ul && ul.scrollWidth > ul.clientWidth) ul.scrollLeft = l.offsetLeft - (ul.clientWidth - l.offsetWidth) / 2 } else l.removeAttribute('aria-current') });
     posMenu();
     const menu = $('.menu', raiz); if (menu && window.matchMedia && !window.matchMedia('(min-width:900px)').matches) { menu.hidden = true; $('.menu-b', raiz).setAttribute('aria-expanded', 'false') }
     cerrarPanelImp();
