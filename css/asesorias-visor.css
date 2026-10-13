@@ -469,3 +469,63 @@
         flex: 1 1 100%;
     }
 }
+
+/* ==========================================================================
+   Webs interactivas dentro del visor (12 oct 2026)
+   - "Una página / Desplazamiento continuo" es solo para PDFs: en una web
+     descuadraba el contenido, por eso se oculta cuando el visor muestra
+     una web (el JS marca la caja con data-modo="web").
+   - En celular la asesoría ocupa todo el ancho (sin el margen de 22 px) y la
+     barra superior cabe en una sola fila.
+   - Mientras el visor está abierto se pausa el fondo animado de SIGA, que
+     repinta toda la pantalla sin parar y le quita fluidez a la asesoría.
+   ========================================================================== */
+.visor-caja[data-modo="web"] .visor-vista-selector {
+    display: none;
+}
+
+body.visor-abierto {
+    animation-play-state: paused;
+}
+
+@media (max-width: 720px),
+(max-height: 520px) {
+    .visor-caja[data-modo="web"] .visor-contenido {
+        padding: 0;
+    }
+}
+
+@media (max-width: 720px) {
+    .visor-caja[data-modo="web"] .visor-toolbar {
+        flex-wrap: nowrap;
+        padding: 8px 12px;
+    }
+
+    .visor-caja[data-modo="web"] .visor-toolbar-izq {
+        flex: 1 1 0;
+        justify-content: flex-start;
+    }
+
+    .visor-caja[data-modo="web"] .visor-titulo {
+        flex-basis: auto;
+        order: 0;
+        text-align: left;
+        margin-bottom: 0;
+    }
+}
+
+@media (max-height: 520px) {
+    .visor-overlay {
+        padding: 0;
+    }
+
+    .visor-caja {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .visor-caja[data-modo="web"] .visor-toolbar {
+        padding: 6px 12px;
+    }
+}

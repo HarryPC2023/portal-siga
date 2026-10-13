@@ -774,3 +774,12 @@ body {
     padding: 12px 20px 0;
   }
 }
+
+/* Celular (12 oct 2026): el fondo animado repinta toda la pantalla sin parar;
+   en pantallas táctiles eso le quita fluidez al scroll y gasta batería, así
+   que ahí el fondo se queda quieto. */
+@media (hover: none) and (pointer: coarse) {
+  body {
+    animation: none;
+  }
+}
