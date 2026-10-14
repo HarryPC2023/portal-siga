@@ -16,6 +16,7 @@
    10. Visor de imágenes (lightbox)
    11. Inicio
    12. Imprimir / guardar PDF
+   13. Recordar la posición (al abrir en pestaña nueva o pantalla completa)
    ════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -784,7 +785,7 @@
         '<div class="pp-actions"><button class="pp-btn sec" type="button" data-pp="repeat">Repetir este mismo</button>' +
         '<button class="pp-btn sec" type="button" data-pp="menu">Elegir otra pregunta</button>' +
         '<button class="pp-btn go" type="button" data-pp="finish">Terminar por hoy</button></div>';
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (!ex.silencio) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // Solucionario para imprimir: la sección interactiva no se imprime
@@ -829,7 +830,16 @@
       el.addEventListener('click', onClick);
     }
 
-    return { init: init };
+    // Para recordar la posición: devolver y recuperar la pregunta y la decisión en que estabas
+    function estado() { return ex ? { qi: ex.qi, i: ex.i } : null; }
+
+    function resume(qi, i) {
+      if (!el || !PRUEBA[qi]) return;
+      ex = { qi: qi, i: i, res: [], silencio: true };
+      pintar();
+    }
+
+    return { init: init, resume: resume, estado: estado };
   })();
 
   /* ── 09. VOLVER ARRIBA ───────────────────────────────────────────── */
@@ -1236,6 +1246,116 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { actualizar(); centrar(); });
   }
 
+  /* ── 13. RECORDAR LA POSICIÓN ────────────────────────────────────────
+     Al abrir la asesoría en una pestaña nueva o en pantalla completa, la página se vuelve a cargar.
+     Para no perder el lugar, guardamos en este navegador dónde estabas (página, componente,
+     punto de la pantalla y, en Ponte a prueba, la pregunta y la decisión). Si la asesoría se abre de
+     nuevo en los siguientes 20 segundos, vuelve a ese lugar; si pasó más tiempo, empieza desde el inicio.
+     El punto de la pantalla se guarda como «el texto que veías arriba», no como píxeles, porque el
+     ancho de la pantalla cambia al ampliar y los píxeles ya no coincidirían. */
+  var posicion = (function () {
+    var VENTANA = 20000;   // ms: tiempo máximo entre guardar y volver a abrir
+    var LATIDO = 3000;     // ms: cada cuánto se renueva la marca de tiempo mientras la lees
+    var activo = false, hayScroll = null, usuarioSeMovio = false;
+
+    function visible(e) { return e.offsetParent !== null && e.getBoundingClientRect().height > 0; }
+
+    // Primer texto visible cerca del borde superior de la pantalla
+    function ancla() {
+      if (window.pageYOffset < 40) return null;
+      var sec = $('.page.active');
+      if (!sec) return null;
+      var els = sec.querySelectorAll('h1,h2,h3,h4,p,li,figcaption');
+      for (var i = 0; i < els.length; i++) {
+        var txt = (els[i].textContent || '').replace(/\s+/g, ' ').trim();
+        if (txt.length < 8) continue;
+        var r = els[i].getBoundingClientRect();
+        if (r.top >= 0 && r.top < window.innerHeight && visible(els[i])) {
+          return { tag: els[i].tagName, txt: txt.slice(0, 60), off: Math.round(r.top) };
+        }
+      }
+      return null;
+    }
+
+    function buscar(a) {
+      var sec = $('.page.active');
+      if (!sec || !a) return null;
+      var els = sec.querySelectorAll(a.tag.toLowerCase());
+      for (var i = 0; i < els.length; i++) {
+        var txt = (els[i].textContent || '').replace(/\s+/g, ' ').trim();
+        if (txt.slice(0, 60) === a.txt && visible(els[i])) return els[i];
+      }
+      return null;
+    }
+
+    function guardar() {
+      if (!activo) return;
+      store.set('pos', {
+        t: Date.now(), page: state.page, comp: state.comp, y: Math.round(window.pageYOffset),
+        a: ancla(), pp: prueba.estado()
+      });
+    }
+
+    function leer() {
+      var p = store.get('pos', null);
+      var dt = p && p.t ? Date.now() - p.t : -1;
+      return (dt >= 0 && dt <= VENTANA) ? p : null;
+    }
+
+    function irA(y) {
+      try { window.scrollTo({ top: y, left: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); }
+    }
+
+    function aplicarScroll(p) {
+      function una() {
+        if (usuarioSeMovio) return;
+        var el = buscar(p.a);
+        if (el) irA(Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - p.a.off));
+        else irA(p.y || 0);
+      }
+      una();
+      // las imágenes y las fuentes pueden cambiar la altura: se reintenta un momento
+      window.addEventListener('load', una);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(una);
+      setTimeout(una, 500);
+      setTimeout(una, 1200);
+    }
+
+    function arrancar() {
+      activo = true;
+      guardar();
+      window.addEventListener('scroll', function () {
+        if (hayScroll) return;
+        hayScroll = setTimeout(function () { hayScroll = null; guardar(); }, 500);
+      }, { passive: true });
+      setInterval(function () { if (document.visibilityState === 'visible') guardar(); }, LATIDO);
+      document.addEventListener('visibilitychange', guardar);
+      window.addEventListener('pagehide', guardar);
+    }
+
+    // Se llama después de armar la asesoría, con lo que leyó antes de que routeFromHash() la moviera
+    function restaurar(p) {
+      if (p) {
+        var hash = (window.location.hash || '').replace('#', '').split('/');
+        var conHash = hash[0] !== '';
+        // Un enlace con #página explícito manda: solo se recupera el punto si coincide
+        if (!conHash || (hash[0] === p.page && (hash[1] || null) === (p.comp || null))) {
+          if (!conHash) go(p.page, { comp: p.comp, scroll: false });
+          if (p.pp) prueba.resume(p.pp.qi, p.pp.i);
+          ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (ev) {
+            window.addEventListener(ev, function () { usuarioSeMovio = true; }, { passive: true, once: true });
+          });
+          aplicarScroll(p);
+          setTimeout(arrancar, 1300);
+          return;
+        }
+      }
+      arrancar();
+    }
+
+    return { leer: leer, restaurar: restaurar };
+  })();
+
   /* ── ARRANQUE ────────────────────────────────────────────────────── */
   function init() {
     if (root.dataset.apReady) return; // evita inicializar dos veces (p. ej. al integrarlo en SIGA)
@@ -1254,7 +1374,9 @@
     watchEvaluationSection();
     renderProgress();
     refreshTabs();
+    var pos = posicion.leer();   // dónde estabas, si abriste la asesoría hace instantes
     routeFromHash();
+    posicion.restaurar(pos);
 
     // Para integrarlo en SIGA: document.getElementById('asesoria-pc1').asesoriaPC1.go('componentes', {comp:'kpis'})
     root.asesoriaPC1 = { go: go, setSystem: setSystem };
