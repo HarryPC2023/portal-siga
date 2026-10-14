@@ -1257,6 +1257,9 @@
     var VENTANA = 20000;   // ms: tiempo máximo entre guardar y volver a abrir
     var LATIDO = 3000;     // ms: cada cuánto se renueva la marca de tiempo mientras la lees
     var activo = false, hayScroll = null, usuarioSeMovio = false;
+    // Si hay varias ventanas de la asesoría abiertas, solo guarda la que tuviste en uso más recientemente.
+    // Una ventana quieta que dejaste abierta no puede pisar a la que estás usando.
+    var miActividad = Date.now();
 
     function visible(e) { return e.offsetParent !== null && e.getBoundingClientRect().height > 0; }
 
@@ -1290,8 +1293,10 @@
 
     function guardar() {
       if (!activo) return;
+      var previo = store.get('pos', null);
+      if (previo && previo.ta && previo.ta > miActividad) return;   // otra ventana tuvo actividad más reciente
       store.set('pos', {
-        t: Date.now(), page: state.page, comp: state.comp, y: Math.round(window.pageYOffset),
+        t: Date.now(), ta: miActividad, page: state.page, comp: state.comp, y: Math.round(window.pageYOffset),
         a: ancla(), pp: prueba.estado()
       });
     }
@@ -1323,6 +1328,9 @@
 
     function arrancar() {
       activo = true;
+      ['scroll', 'wheel', 'touchstart', 'keydown', 'mousedown', 'mousemove'].forEach(function (ev) {
+        window.addEventListener(ev, function () { miActividad = Date.now(); }, { passive: true, capture: true });
+      });
       guardar();
       window.addEventListener('scroll', function () {
         if (hayScroll) return;
