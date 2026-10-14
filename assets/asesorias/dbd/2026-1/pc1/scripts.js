@@ -11,7 +11,7 @@
    05. Pestañas por sistema de ejemplo
    06. Revelar ❌ / ✅ y pines explicativos
    07. Checklist de Tips
-   08. Simulador de defensa oral
+   08. Ponte a prueba (práctica interactiva sin nota)
    09. Botón "volver arriba"
    10. Visor de imágenes (lightbox)
    11. Inicio
@@ -28,8 +28,7 @@
     // true  → la URL cambia (#componentes/kpis): funciona el botón "atrás" y los enlaces directos.
     // false → úsalo al integrar en SIGA si SIGA ya maneja su propia URL.
     useHash: true,
-    storagePrefix: 'asesoria:dbd:2026-1:pc1:',
-    simSeconds: 90 // tiempo por pregunta del simulador
+    storagePrefix: 'asesoria:dbd:2026-1:pc1:'
   };
 
   var PAGES = ['inicio', 'antes', 'concepto', 'arquitectura', 'componentes', 'defensa', 'tips'];
@@ -39,7 +38,7 @@
     concepto: 'Concepto',
     arquitectura: 'Arquitectura',
     componentes: 'Componentes',
-    defensa: 'Defensa oral',
+    defensa: 'Ponte a prueba',
     tips: 'Tips'
   };
 
@@ -56,16 +55,213 @@
   // Pasos de la ruta de estudio (barra de avance de la cabecera)
   var ROUTE_STEPS = [1, 2, 3, 4, 5];
 
-  // Preguntas del simulador. Para agregar una: nueva línea con su pregunta y dónde repasarla.
-  var SIM_QUESTIONS = [
-    { q: '¿Cómo definieron su protocolo y cómo funciona en su sistema?', comp: 'protocolos' },
-    { q: 'Explícame el control de accesos. ¿Qué puede hacer el perfil [X] y por qué tiene acceso a esos módulos?', comp: 'perfiles' },
-    { q: '¿Esta interfaz realmente funciona o está correctamente planteada para su sistema?', page: 'concepto', anchor: 'que-se-evalua' },
-    { q: 'Explícame cómo funciona el catálogo y el proceso principal de su sistema.', comp: 'catalogos' },
-    { q: '¿Para qué sirve este KPI o gráfica en su sistema? ¿Cómo se calcula?', comp: 'kpis' },
-    { q: '¿Por qué eligieron ese método adicional de acceso y cómo funciona en su sistema?', comp: 'login' },
-    { q: 'Explícame cómo funciona este catálogo. ¿Qué pasa si agrego un nuevo registro?', comp: 'catalogos' },
-    { q: 'Explícame paso a paso cómo funciona el proceso principal de su sistema.', comp: 'proceso' }
+  // Ponte a prueba: práctica sin nota. Una pregunta del profesor = un ejercicio FIJO con decisiones de 3 alternativas.
+  //   ok:1 + explica        → la correcta y por qué
+  //   err + msg + ver       → etiqueta del error, explicación y a dónde ir a repasar:
+  //                           {comp:'protocolos'} abre un componente · {page:'concepto', anchor:'que-es'} abre una sección
+  //   pista                 → 1.ª pista orienta; la 2.ª descarta una alternativa incorrecta
+  // Las alternativas pueden ser texto o imagen (<span class="pp-img"><img ...></span>).
+  // Solo se usan errores y criterios que ya se explican en esta asesoría.
+  var IMG_LOGIN_MAL = '<span class="pp-img"><img src="imagenes/login_contabilidad.jpg" alt="Pantalla de inicio de sesión con selector de empresa, contraseña, botón Ingresar y enlaces para registrarse u olvidar la contraseña"></span>';
+  var IMG_LOGIN_BIEN = '<span class="pp-img"><img src="imagenes/login_cobranza.png" alt="Pantalla de control de acceso con URL, DNI, contraseña, botón Ingresar, código QR y registro facial"></span>';
+  var IMG_CAT_MAL = '<span class="pp-img"><img src="imagenes/catalogo_transporte.png" alt="Catálogo de Transporte que muestra solo una lista de registros"></span>';
+  var IMG_CAT_BIEN = '<span class="pp-img"><img src="imagenes/catalogo_cobranza.png" alt="Catálogo de Servicios de Cobranzas con lista, detalle, campos y opciones de agregar, modificar y eliminar"></span>';
+
+  var PRUEBA = [
+    {
+      id: 'protocolo', mod: 'ger', titulo: 'Protocolo',
+      q: '¿Cómo definieron su protocolo y cómo funciona en su sistema?',
+      bloques: [
+        {
+          chip: ['ger', 'Protocolos'], titulo: '¿Qué define un protocolo?',
+          intro: 'Antes de elegir, piensa a qué componente corresponde cada idea.',
+          ops: [
+            { ok: 1, html: 'Las reglas y condiciones bajo las cuales el sistema ejecuta su proceso central.', explica: 'Un protocolo define qué acción tomar según el estado del caso.' },
+            { html: 'Los datos base que el sistema necesita cargados antes de empezar a operar.', err: 'Confunde con catálogo', msg: 'Eso describe a los catálogos, no a un protocolo.', ver: { comp: 'catalogos' } },
+            { html: 'El indicador que mide qué tan bien funciona el sistema frente a una meta.', err: 'Confunde con KPI', msg: 'Eso es un KPI, no un protocolo.', ver: { comp: 'kpis' } }
+          ],
+          pista: 'La asesoría lo resume con dos palabras: reglas y condiciones.'
+        },
+        {
+          chip: ['ger', 'Protocolos'], titulo: 'Tu protocolo organiza el proceso en etapas. ¿Qué lo convierte en un protocolo y no en una simple lista de pasos?',
+          ops: [
+            { ok: 1, html: 'Cada etapa se alcanza solo cuando se cumplió la anterior, y una condición define cuándo se pasa a la siguiente.', explica: 'Es un escalamiento: no se salta ni se invierte el orden. Por ejemplo, en Transporte el servicio avanza solo cuando el pago es confirmado.' },
+            { html: 'Las etapas pueden hacerse en cualquier orden, según lo que decida el usuario.', err: 'Orden ignorado', msg: 'En un protocolo cada etapa depende de la anterior.', ver: { comp: 'protocolos' } },
+            { html: 'Basta con nombrar las etapas en orden, sin decir qué hace pasar de una a otra.', err: 'Sin condiciones definidas', msg: 'Es el primer error frecuente de los protocolos: ¿cuándo cambia de etapa?', ver: { comp: 'protocolos' } }
+          ],
+          pista: 'Piensa en una escalera: no llegas al tercer escalón sin pasar por el segundo. ¿Y quién decide cuándo subes?'
+        },
+        {
+          chip: ['ger', 'Protocolos'], titulo: 'Un protocolo con etapas y condiciones claras aparece en una pantalla suelta, sin relación con el proceso central. ¿Cuál es el problema?',
+          ops: [
+            { ok: 1, html: 'Está desconectado del proceso central: debe verse la conexión entre ambos.', explica: 'Es uno de los tres errores frecuentes que señala la asesoría.' },
+            { html: 'Falta el historial de cambios.', err: 'Otro error, no el de este caso', msg: 'El caso ya tiene etapas y condiciones; lo que falla es la conexión.', ver: { comp: 'protocolos' } },
+            { html: 'El protocolo debería vivir solo en BATCH y no en la parte gerencial.', err: 'Confunde dónde vive', msg: 'Según la arquitectura, el protocolo está en ON-LINE · Gerencial y también en BATCH · Aplicativo.', ver: { page: 'arquitectura' } }
+          ],
+          pista: 'Mira qué elementos sí tiene el caso y cuál de los tres errores frecuentes queda.'
+        }
+      ],
+      solucion: '<p>Un protocolo define las reglas y condiciones bajo las cuales el sistema ejecuta su proceso central. Organiza el proceso en etapas que se alcanzan en orden (escalamiento): cada una exige la anterior y una condición decide cuándo se pasa a la siguiente. Un protocolo bien diseñado muestra las etapas, las condiciones que activan cada una, el historial de cambios (fecha y motivo) y su conexión clara con el proceso central.</p>',
+      llevate: 'Al defender tu protocolo, explica qué condición hace pasar un caso de una etapa a la siguiente y cómo se conecta con el proceso central.'
+    },
+    {
+      id: 'accesos', mod: 'seg', titulo: 'Control de accesos',
+      q: 'Explícame el control de accesos. ¿Qué puede hacer el perfil [X] y por qué tiene acceso a esos módulos?',
+      bloques: [
+        {
+          chip: ['seg', 'Control de acceso'], titulo: 'Diseñaste una pantalla de ingreso completa (usuario, contraseña y un método adicional). ¿Con eso queda cubierto el control de accesos?',
+          ops: [
+            { ok: 1, html: 'No: el login controla quién entra; los perfiles controlan qué puede hacer cada usuario. Son dos pantallas distintas.', explica: 'Diseñar solo el login es un error frecuente.' },
+            { html: 'Sí: quien logra ingresar ya queda autorizado a todos los módulos.', err: 'Un solo control', msg: 'Entrar no decide qué puede hacer cada usuario.', ver: { comp: 'perfiles' } },
+            { html: 'Sí, siempre que el método adicional sea muy seguro.', err: 'Seguridad mal entendida', msg: 'Más seguridad al ingresar no define qué módulos ve cada perfil.', ver: { comp: 'perfiles' } }
+          ],
+          pista: 'Pregúntate: ¿qué pasa después de entrar?'
+        },
+        {
+          chip: ['seg', 'Login'], titulo: '¿Cuál pantalla de ingreso cumple el criterio del profesor?',
+          ops: [
+            { html: IMG_LOGIN_MAL, err: 'Le faltan elementos', msg: 'No tiene URL visible, nombre del sistema ni método adicional.', ver: { comp: 'login' } },
+            { ok: 1, html: IMG_LOGIN_BIEN, explica: 'Tiene URL coherente, campos de acceso, botón y métodos adicionales (QR y registro facial).' },
+            { html: 'Las dos sirven: con las credenciales de acceso ya basta.', err: 'Basta con las credenciales', msg: 'El profesor exige al menos un método adicional (QR, huella, reconocimiento facial, PIN…).', ver: { comp: 'login' } }
+          ],
+          pista: 'Cuenta qué elementos de la lista del profesor tiene cada pantalla.'
+        },
+        {
+          chip: ['seg', 'Login'], titulo: 'El profesor te pregunta por qué elegiste QR (o reconocimiento facial). ¿Qué respuesta defiende mejor tu decisión?',
+          ops: [
+            { ok: 1, html: 'Da más seguridad que solo usuario y contraseña, y puedo explicar cómo funciona en mi sistema.', explica: 'El método adicional no es decorativo: el profesor preguntará por qué lo elegiste y cómo funciona.' },
+            { html: 'Porque se ve más moderno y completo en la pantalla.', err: 'Método decorativo', msg: 'El método adicional no es decorativo.', ver: { comp: 'login' } },
+            { html: 'Porque el profesor lo pide, así que no necesito explicar cómo funciona.', err: 'No sabe defenderlo', msg: 'Te preguntarán cómo funciona en tu sistema.', ver: { comp: 'login' } }
+          ],
+          pista: 'Piensa en lo que el profesor va a preguntar: por qué lo elegiste y cómo funciona.'
+        },
+        {
+          chip: ['seg', 'Perfiles y permisos'], titulo: 'El profesor pide: «¿Qué puede hacer el perfil Gerente y por qué tiene acceso a esos módulos?». ¿Qué debe poder mostrar tu pantalla de perfiles?',
+          ops: [
+            { ok: 1, html: 'Los módulos a los que accede ese perfil y el detalle de sus permisos, con ejemplos propios de tu sistema.', explica: 'La asesoría pide módulos por perfil, detalle de permisos y ejemplos de los controles de acceso.' },
+            { html: 'Solo la lista de perfiles con los botones de agregar, modificar y eliminar.', err: 'Lista sin permisos', msg: 'Falta mostrar qué módulos y parámetros internos tiene cada perfil.', ver: { comp: 'perfiles' } },
+            { html: 'La pantalla de login con su método adicional.', err: 'Confunde login con perfiles', msg: 'Son dos pantallas distintas.', ver: { comp: 'perfiles' } }
+          ],
+          pista: 'Piensa en todo lo que el profesor necesita ver para saber qué hace ese perfil.'
+        }
+      ],
+      solucion: '<p>El control de accesos tiene dos pantallas. El <strong>login</strong> controla quién entra: URL visible, nombre del sistema, usuario o DNI, contraseña, botón y al menos un método adicional que puedas defender. Los <strong>perfiles</strong> controlan qué puede hacer cada usuario: lista de perfiles, módulos accesibles, agregar, modificar y eliminar, y detalle de permisos con ejemplos de tu sistema.</p>',
+      llevate: 'Defiende el método adicional con el «por qué» y el «cómo funciona», y para cada perfil explica qué módulos ve y por qué.'
+    },
+    {
+      id: 'interfaz', mod: 'gen', titulo: '¿La interfaz funciona?',
+      q: '¿Esta interfaz realmente funciona o está correctamente planteada para su sistema?',
+      bloques: [
+        {
+          chip: ['gen', 'Diseño externo'], titulo: 'El profesor pregunta si tu interfaz «realmente funciona». Tu grupo solo tiene mockups, sin programar. ¿Cómo lo enfrentas?',
+          ops: [
+            { ok: 1, html: 'Explico que se evalúa la calidad del diseño externo: la pantalla está bien planteada, con datos representativos, flujos definidos y coherencia con la arquitectura.', explica: 'Implementar el sistema no garantiza mejor nota; lo que se evalúa es la calidad del diseño externo.' },
+            { html: 'Muestro el código fuente de la pantalla para probar que funciona.', err: 'Código fuera del alcance', msg: 'El diseño externo no incluye código fuente ni programación.', ver: { page: 'concepto', anchor: 'que-es' } },
+            { html: 'Prometo implementarlo para demostrarlo.', err: 'Implementación fuera del alcance', msg: 'Implementar el sistema no mejora la nota.', ver: { page: 'concepto', anchor: 'que-es' } }
+          ],
+          pista: 'Fíjate en qué incluye el diseño externo y qué no incluye.'
+        },
+        {
+          chip: ['gen', 'Diseño externo'], titulo: '¿Qué espera ver el profesor en cada pantalla?',
+          ops: [
+            { ok: 1, html: 'Datos representativos, URL visible y coherente con el sistema, botones, menús y flujos definidos, y todos los componentes del módulo.', explica: 'Es la lista de «lo que se espera».' },
+            { html: 'Cajas con la estructura de la pantalla; el contenido real se completa después.', err: 'Cajas vacías sin contenido real', msg: 'Es de lo que se considera insuficiente.', ver: { page: 'concepto', anchor: 'que-se-evalua' } },
+            { html: 'Una sola pantalla muy detallada por módulo, aunque no haya navegación entre ellas.', err: 'Sin navegación ni componentes completos', msg: '«Solo una pantalla por módulo» y «sin navegación» también son insuficientes.', ver: { page: 'concepto', anchor: 'que-se-evalua' } }
+          ],
+          pista: 'Compara con la lista ❌ insuficiente: ¿cuál de esos errores aparece?'
+        },
+        {
+          chip: ['gen', 'Diseño externo'], titulo: 'Tu pantalla muestra datos que no tienen relación con el sistema que diseñaste. ¿Cuál es el problema?',
+          ops: [
+            { ok: 1, html: 'Es insuficiente: los datos deben ser representativos y coherentes con el sistema y con la arquitectura presentada.', explica: '«Datos sin coherencia con el sistema» aparece como insuficiente.' },
+            { html: 'Ninguno: el profesor evalúa solo lo visual, no los datos.', err: 'Solo importa lo visual', msg: 'El diseño visual incluye la coherencia entre arquitectura y diseño.', ver: { page: 'concepto', anchor: 'que-se-evalua' } },
+            { html: 'Basta con corregir la URL; los datos pueden quedar así.', err: 'Corrección parcial', msg: 'La URL coherente es solo una parte de lo que se espera.', ver: { page: 'concepto', anchor: 'que-se-evalua' } }
+          ],
+          pista: 'Relee la lista ❌ insuficiente: ¿qué dice sobre los datos?'
+        }
+      ],
+      solucion: '<p>Una interfaz «funciona» en la PC1 cuando está bien planteada: datos representativos y coherentes con el sistema, URL visible, botones, menús y flujos definidos, todos los componentes del módulo y coherencia con la arquitectura. No se evalúa código ni implementación.</p>',
+      llevate: 'Antes de exponer, revisa cada pantalla con la lista de «lo que se espera».'
+    },
+    {
+      id: 'catalogo', mod: 'ope', titulo: 'Catálogo y proceso central',
+      q: 'Explícame cómo funciona el catálogo y el proceso principal de su sistema.',
+      bloques: [
+        {
+          chip: ['ger', 'Catálogos'], titulo: '¿Cómo identificas cuáles son los catálogos de tu sistema?',
+          ops: [
+            { ok: 1, html: 'Preguntándome qué datos necesito tener cargados antes de que el sistema empiece a operar.', explica: 'Esos datos son tus catálogos.' },
+            { html: 'Son las pantallas donde se muestran los resultados del sistema.', err: 'Confunde con consultas y reportes', msg: 'Los catálogos son datos base, no resultados.', ver: { comp: 'catalogos' } },
+            { html: 'Son los pasos del flujo del proceso principal.', err: 'Confunde con el proceso central', msg: 'El proceso central es el flujo para el que existe el sistema; los catálogos son los datos que necesita para operar.', ver: { comp: 'catalogos' } }
+          ],
+          pista: 'Piensa en lo que el sistema necesita ya cargado antes de empezar a operar.'
+        },
+        {
+          chip: ['ger', 'Catálogos'], titulo: '¿Cuál catálogo está bien diseñado?',
+          ops: [
+            { html: IMG_CAT_MAL, err: 'Solo lista, sin detalle', msg: 'No muestra vista de detalle ni estados de edición.', ver: { comp: 'catalogos' } },
+            { ok: 1, html: IMG_CAT_BIEN, explica: 'Tiene lista, detalle, campos completos y opciones de agregar, modificar y eliminar visibles.' },
+            { html: 'Los dos sirven: ambos muestran una lista de registros.', err: 'Basta con la lista', msg: 'Un catálogo siempre permite ver la lista, agregar, modificar, eliminar, buscar y ver el detalle.', ver: { comp: 'catalogos' } }
+          ],
+          pista: 'Cuenta cuántas de las 6 acciones de un catálogo permite cada pantalla.'
+        },
+        {
+          chip: ['ope', 'Proceso central'], titulo: '¿Qué debe mostrar el proceso central?',
+          ops: [
+            { ok: 1, html: 'El flujo completo paso a paso, con pantallas intermedias, confirmaciones y conexión visible con los catálogos.', explica: 'Es lo que debe mostrar el proceso central según tu asesoría.' },
+            { html: 'Solo la pantalla inicial del proceso, muy bien detallada.', err: 'Sin el flujo completo', msg: 'Es el primer error frecuente del proceso central.', ver: { comp: 'proceso' } },
+            { html: 'El flujo completo, pero sin confirmaciones ni mensajes de éxito o error.', err: 'Sin confirmaciones', msg: 'Es otro error frecuente: faltan los mensajes de estado.', ver: { comp: 'proceso' } }
+          ],
+          pista: 'Compara con la lista de errores frecuentes del proceso central.'
+        },
+        {
+          chip: ['ope', 'Proceso central'], titulo: 'Tu proceso central usa datos (por ejemplo, tipos de servicio) que no aparecen en ningún catálogo de tu sistema. ¿Cuál es el problema?',
+          ops: [
+            { ok: 1, html: 'Está desconectado de los catálogos: debe verse la conexión, porque sin catálogos el proceso principal no puede funcionar.', explica: 'Es el tercer error frecuente del proceso central.' },
+            { html: 'Ninguno: el proceso puede tener sus propios datos, independientes de los catálogos.', err: 'Proceso independiente', msg: 'Sin catálogos el proceso principal no puede funcionar.', ver: { comp: 'catalogos' } },
+            { html: 'Que faltan las confirmaciones del flujo.', err: 'Otro error, no el de este caso', msg: 'El problema aquí es la conexión con los catálogos.', ver: { comp: 'proceso' } }
+          ],
+          pista: 'Pregúntate: ¿de dónde salen los datos que usa el proceso?'
+        }
+      ],
+      solucion: '<p>Los catálogos son los datos base que el sistema necesita cargados antes de operar; siempre permiten ver la lista, agregar, modificar, eliminar, buscar y ver el detalle, y se diseñan con sus estados (vacío, agregar, con datos y edición). El proceso central es el motivo por el que existe el sistema y muestra el flujo completo paso a paso, con pantallas intermedias, confirmaciones y conexión visible con los catálogos.</p>',
+      llevate: 'Al explicar un catálogo, muestra la lista, el detalle y las acciones; al explicar el proceso, recorre el flujo completo y señala qué catálogos usa.'
+    },
+    {
+      id: 'kpi', mod: 'apl', titulo: 'KPI',
+      q: '¿Para qué sirve este KPI o gráfica en su sistema? ¿Cómo se calcula?',
+      bloques: [
+        {
+          chip: ['apl', 'BATCH → ON-LINE'], titulo: '¿Dónde vive el KPI?',
+          ops: [
+            { ok: 1, html: 'Se calcula en BATCH (Estadísticas) y se visualiza en ON-LINE (Consultas › KPIs).', explica: 'En la parte gerencial solo se entra a ver el resultado.' },
+            { html: 'Se calcula y se visualiza en ON-LINE, cada vez que el usuario entra.', err: 'Cálculo en el lugar equivocado', msg: 'El cálculo ocurre en BATCH.', ver: { comp: 'kpis' } },
+            { html: 'Se calcula y se visualiza en BATCH; el gerente lo consulta allí.', err: 'Visualización en el lugar equivocado', msg: 'El gerente lo ve en ON-LINE (Consultas › KPIs).', ver: { comp: 'kpis' } }
+          ],
+          pista: 'Uno de los dos lados calcula y el otro solo muestra el resultado.'
+        },
+        {
+          chip: ['ger', 'KPIs'], titulo: 'Para responder «¿cómo se calcula y quién es responsable?», ¿qué debe incluir tu KPI?',
+          ops: [
+            { ok: 1, html: 'Nombre, fórmula, unidad de medida, valor actual, valor meta, período, fuente de los datos y responsable del análisis.', explica: 'Es la lista de un KPI bien diseñado.' },
+            { html: 'Solo el nombre y el valor actual.', err: 'Un número sin contexto', msg: 'Un KPI es un número con contexto, no solo un número.', ver: { comp: 'kpis' } },
+            { html: 'Nombre, valor actual y un gráfico; la fórmula y el responsable se explican de palabra.', err: 'Faltan fórmula y responsable', msg: 'Deben estar definidos en el propio KPI.', ver: { comp: 'kpis' } }
+          ],
+          pista: 'El profesor pregunta por la fórmula y por el responsable: ¿dónde deberían estar?'
+        },
+        {
+          chip: ['ger', 'KPI vs. gráfica'], titulo: 'El profesor pregunta en qué se diferencia un KPI de una gráfica. ¿Qué respondes?',
+          ops: [
+            { ok: 1, html: 'El KPI muestra un valor puntual con su meta; la gráfica muestra una tendencia o distribución visual.', explica: 'Por ejemplo: «tasa de respuesta 72% (meta 80%)» frente a «evolución de la tasa en 6 meses».' },
+            { html: 'Son lo mismo: la gráfica es un KPI con colores.', err: 'Los confunde', msg: 'Cumplen funciones distintas: un valor con meta frente a una tendencia.', ver: { comp: 'graficas' } },
+            { html: 'El KPI muestra la tendencia en el tiempo y la gráfica un valor puntual.', err: 'Invertido', msg: 'Es al revés: el KPI es el valor puntual con meta; la gráfica, la tendencia.', ver: { comp: 'graficas' } }
+          ],
+          pista: 'Piensa en un valor con su meta frente a una línea de tiempo.'
+        }
+      ],
+      solucion: '<p>Un KPI es un número con contexto: mide qué tan bien funciona el sistema respecto a un objetivo. Incluye nombre, fórmula, unidad, valor actual, meta, período, fuente de datos y responsable. Se calcula en BATCH (Estadísticas) y se visualiza en ON-LINE (Consultas › KPIs). El KPI muestra un valor puntual con meta; la gráfica, una tendencia o distribución.</p>',
+      llevate: 'Para defender un KPI explica para qué sirve, cómo se calcula (fórmula y fuente) y quién lo analiza.'
+    }
   ];
 
   function $(sel, ctx) { return (ctx || root).querySelector(sel); }
@@ -111,14 +307,12 @@
   function go(page, opts) {
     opts = opts || {};
     if (PAGES.indexOf(page) === -1) page = 'inicio';
-    var leaving = state.page;
     state.page = page;
 
     $$('.page').forEach(function (p) { p.classList.toggle('active', p.dataset.page === page); });
     $$('.ap-nav-btn').forEach(function (b) { b.classList.toggle('active', b.dataset.go === page); });
 
     if (page === 'componentes') showComp(opts.comp || null); else state.comp = null;
-    if (leaving === 'defensa' && page !== 'defensa') sim.stop();
 
     markStepsForPage(page);
     refreshTabs();
@@ -202,7 +396,7 @@
       html += '<button class="btn btn-back" data-comp-grid type="button">☰ Volver al listado</button>';
       html += i < ids.length - 1
         ? '<button class="btn btn-nav next" data-comp="' + ids[i + 1] + '"><span><small>Siguiente</small>' + names[ids[i + 1]] + '</span> →</button>'
-        : '<button class="btn btn-nav next" data-go="defensa"><span><small>Siguiente</small>Defensa oral</span> →</button>';
+        : '<button class="btn btn-nav next" data-go="defensa"><span><small>Siguiente</small>Ponte a prueba</span> →</button>';
       foot.innerHTML = html;
 
       // Botón "Volver al listado" también ARRIBA (queda pegado al borde al hacer scroll)
@@ -396,9 +590,21 @@
     if (party) party.classList.toggle('show', items.length > 0 && done === items.length);
   }
 
-  /* ── 08. SIMULADOR DE DEFENSA ORAL ───────────────────────────────── */
-  var sim = (function () {
-    var el, queue = [], idx = 0, good = 0, redo = [], timerId = null, left = 0;
+  /* ── 08. PONTE A PRUEBA ──────────────────────────────────────────────
+     Práctica sin nota. Eliges la respuesta que defenderías (texto o imagen):
+       · Si fallas: «No es la mejor opción» + explicación + enlace «Ver dónde se explicó».
+       · Segundo fallo: te muestra la correcta y la decisión queda «con ayuda».
+       · «No sé cuál elegir»: la pista 1 orienta; la 2 descarta una alternativa.
+       · Si aciertas: aparece «Continuar».
+     El registro es privado (se guarda en este navegador) y no tiene puntajes.
+     Al imprimir, esta sección se reemplaza por un solucionario (#prueba-print). */
+  var prueba = (function () {
+    var el, printEl, ex = null;
+    var LETRAS = ['A', 'B', 'C'];
+
+    function esc(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
 
     function shuffle(a) {
       a = a.slice();
@@ -409,124 +615,221 @@
       return a;
     }
 
-    function fmt(s) {
-      var m = Math.floor(s / 60), r = s % 60;
-      return (m < 10 ? '0' : '') + m + ':' + (r < 10 ? '0' : '') + r;
+    // Lleva a un componente ({comp}) o a una sección ({page, anchor}) de la asesoría
+    function irA(v) {
+      if (!v) return;
+      if (v.comp) go('componentes', { comp: v.comp });
+      else go(v.page || 'componentes', { anchor: v.anchor });
     }
 
-    function compName(id) {
-      var c = $('.comp-card[data-comp="' + id + '"] .comp-name');
-      return c ? c.textContent : id;
+    function regUpd(qid, fn) {
+      var r = store.get('prueba', {});
+      r[qid] = r[qid] || { b: 0, p: 0, a: 0, e: {} };
+      fn(r[qid]);
+      store.set('prueba', r);
     }
 
-    function stop() {
-      if (timerId) { clearInterval(timerId); timerId = null; }
+    function chip(c) {
+      return '<span class="pp-chip" data-mod="' + c[0] + '">' + esc(c[1]) + '</span>';
     }
 
-    function startTimer() {
-      stop();
-      left = CONFIG.simSeconds;
-      paintTimer();
-      timerId = setInterval(function () {
-        if (left > 0) left--;
-        paintTimer();
-        if (left === 0) stop();
-      }, 1000);
+    /* — Menú: una tarjeta por pregunta del profesor — */
+    function menu() {
+      ex = null;
+      var h = '<h2 class="pp-h2">¿Qué quieres practicar?</h2><div class="pp-grid">';
+      PRUEBA.forEach(function (q, i) {
+        h += '<button class="pp-card" type="button" data-mod="' + q.mod + '" data-pp="start" data-q="' + i + '">' +
+          '<span class="pp-num">' + (i + 1) + '</span>' +
+          '<span class="pp-card-t">' + esc(q.titulo) + '</span>' +
+          '<span class="pp-card-q">“' + esc(q.q) + '”</span>' +
+          '<span class="pp-card-m">' + q.bloques.length + ' decisiones</span>' +
+          '<span class="pp-card-go">Empezar →</span></button>';
+      });
+      el.innerHTML = h + '</div>' + registro();
     }
 
-    function paintTimer() {
-      var t = $('.sim-timer', el);
-      if (!t) return;
-      t.textContent = '⏱ ' + fmt(left);
-      t.classList.toggle('low', left <= 15);
+    function registro() {
+      var r = store.get('prueba', {}), h = '', any = false;
+      PRUEBA.forEach(function (q) {
+        var x = r[q.id];
+        if (!x || !x.b) return;
+        any = true;
+        h += '<p><strong>' + esc(q.titulo) + '</strong> · ' + x.b + ' decisiones · ' + x.p + ' al primer intento · ' + x.a + ' con ayuda</p>';
+        var errs = Object.keys(x.e || {});
+        if (errs.length) {
+          h += '<ul>';
+          errs.forEach(function (k) {
+            h += '<li>' + esc(k) + ' (' + x.e[k].n + ')' +
+              (x.e[k].ver ? ' <button class="pp-ver" type="button" data-pp="regver" data-id="' + q.id + '" data-e="' + esc(k) + '">Ver dónde se explicó</button>' : '') + '</li>';
+          });
+          h += '</ul>';
+        }
+      });
+      return '<div class="pp-reg"><h3>Tu registro privado <small>(sin puntajes)</small></h3>' +
+        (any ? h + '<button class="pp-btn sec" type="button" data-pp="clear">Borrar mi registro</button>'
+          : '<p class="muted">Aún no hay práctica registrada. Elige una pregunta cuando quieras.</p>') + '</div>';
     }
 
-    function paint(html) { $('.sim-body', el).innerHTML = html; }
-
-    function idle() {
-      stop();
-      $('.sim-count', el).textContent = SIM_QUESTIONS.length + ' preguntas';
-      var t = $('.sim-timer', el);
-      if (t) { t.textContent = '⏱ ' + fmt(CONFIG.simSeconds); t.classList.remove('low'); }
-      paint('<p class="muted">Simula la exposición: te hago una pregunta al azar y tienes ' + CONFIG.simSeconds +
-        ' segundos para responderla en voz alta, como frente al profesor.</p>' +
-        '<div class="sim-actions"><button class="btn btn-sim-start" data-sim="start">🎲 Empezar simulacro</button></div>');
+    /* — Ejercicio — */
+    function start(qi) {
+      ex = { qi: qi, i: 0, res: [] };
+      pintar();
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function ask() {
-      var item = queue[idx];
-      $('.sim-count', el).textContent = 'Pregunta ' + (idx + 1) + ' de ' + queue.length;
-      paint('<div class="sim-question">“' + item.q + '”</div>' +
-        '<div class="sim-actions">' +
-        '<button class="btn btn-sim-hint" data-sim="hint">💡 Pista</button>' +
-        '<button class="btn btn-sim-ok" data-sim="good">✅ Me salió bien</button>' +
-        '<button class="btn btn-sim-redo" data-sim="redo">🔁 Repasar</button>' +
-        '<button class="btn btn-ghost" style="background:#EEF2FF;color:#4338CA;border-color:#C7D2FE" data-sim="skip">Otra →</button>' +
-        '</div><div class="sim-hint-slot"></div>');
-      startTimer();
+    function barra(q) {
+      var dots = '';
+      q.bloques.forEach(function (_, i) {
+        var c = ex.res[i] === 'p' ? ' hecho' : ex.res[i] === 'a' ? ' ayuda' : (i === ex.i ? ' act' : '');
+        dots += '<span class="pp-dot' + c + '">' + (i + 1) + '</span>';
+      });
+      return '<div class="pp-bar" data-mod="' + q.mod + '"><button class="pp-back" type="button" data-pp="menu">← Elegir otra pregunta</button>' +
+        '<span class="pp-bar-t">' + esc(q.titulo) + '</span><span class="pp-dots" role="img" aria-label="Progreso de la pregunta">' + dots + '</span></div>' +
+        '<div class="pp-prof" data-mod="' + q.mod + '"><span class="pp-prof-l">🎤 Pregunta del profesor</span><p>“' + esc(q.q) + '”</p></div>';
     }
 
-    function hint() {
-      var item = queue[idx];
-      var slot = $('.sim-hint-slot', el);
-      if (!slot) return;
-      if (item.comp) {
-        slot.innerHTML = '<div class="sim-hint">Repasa el componente <strong>' + compName(item.comp) +
-          '</strong><button data-comp="' + item.comp + '">Abrir →</button></div>';
+    function pintar() {
+      var q = PRUEBA[ex.qi];
+      if (ex.i >= q.bloques.length) return final(q);
+      var b = q.bloques[ex.i];
+      ex.st = { fails: 0, hint: false, nivel: 0, done: false, ops: shuffle(b.ops) };
+      var alts = '';
+      ex.st.ops.forEach(function (o, k) {
+        alts += '<button class="pp-alt ' + LETRAS[k] + '" type="button" data-pp="alt" data-k="' + k + '"><span class="pp-L">' + LETRAS[k] +
+          '</span><span class="pp-alt-b">' + o.html + '</span></button>';
+      });
+      el.innerHTML = barra(q) +
+        '<div class="pp-dec" data-mod="' + q.mod + '">' + chip(b.chip) + '<h3>' + esc(b.titulo) + '</h3>' +
+        (b.intro ? '<p class="pp-intro">' + b.intro + '</p>' : '') +
+        '<div class="pp-alts">' + alts + '</div>' +
+        '<div class="pp-fb" aria-live="polite"></div>' +
+        '<div class="pp-actions"><button class="pp-hint" type="button" data-pp="hint">💡 No sé cuál elegir</button>' +
+        '<button class="pp-btn go pp-cont" type="button" data-pp="next" hidden>Continuar →</button></div></div>';
+    }
+
+    function fb(tipo, html) {
+      var f = $('.pp-fb', el);
+      f.className = 'pp-fb ' + tipo;
+      f.innerHTML = html;
+    }
+
+    function fin(res) {
+      var q = PRUEBA[ex.qi], st = ex.st;
+      st.done = true;
+      ex.res[ex.i] = res;
+      $$('.pp-alt', el).forEach(function (a) { a.disabled = true; });
+      $('.pp-hint', el).hidden = true;
+      var c = $('.pp-cont', el); c.hidden = false; c.focus();
+      regUpd(q.id, function (r) { r.b++; if (res === 'p') r.p++; else r.a++; });
+    }
+
+    function elegir(k) {
+      var q = PRUEBA[ex.qi], st = ex.st;
+      if (st.done) return;
+      var btn = $$('.pp-alt', el)[k], o = st.ops[k];
+      if (!btn || btn.disabled) return;
+      if (o.ok) {
+        btn.classList.add('good');
+        var res = (st.fails === 0 && !st.hint) ? 'p' : 'a';
+        fb('ok', '<strong class="pp-fbt">Correcto</strong><p>' + o.explica + '</p>' +
+          (res === 'a' ? '<p>Esta decisión queda anotada como «con ayuda».</p>' : ''));
+        fin(res);
+        return;
+      }
+      st.fails++;
+      btn.classList.add('bad');
+      btn.disabled = true;
+      regUpd(q.id, function (r) {
+        var e = r.e[o.err] = r.e[o.err] || { n: 0 };
+        e.n++; e.ver = o.ver || null;
+      });
+      var etq = '<span class="pp-etq">' + esc(o.err) + '</span>';
+      var ver = o.ver ? ' <button class="pp-ver" type="button" data-pp="ver" data-k="' + k + '">Ver dónde se explicó</button>' : '';
+      if (st.fails === 1) {
+        btn.classList.add('dim');
+        fb('bad', '<strong class="pp-fbt">No es la mejor opción</strong>' + etq + '<p>' + o.msg + ver + '</p><p>Puedes intentarlo otra vez.</p>');
       } else {
-        slot.innerHTML = '<div class="sim-hint">Repasa la sección <strong>¿Qué espera ver el profesor?</strong>' +
-          '<button data-go="' + item.page + '" data-anchor="' + (item.anchor || '') + '">Abrir →</button></div>';
+        var ok = st.ops.filter(function (x) { return x.ok; })[0];
+        $$('.pp-alt', el)[st.ops.indexOf(ok)].classList.add('good');
+        fb('bad', '<strong class="pp-fbt">Tampoco</strong>' + etq + '<p>' + o.msg + ver + '</p>' +
+          '<p><strong>Te muestro la opción correcta:</strong> ' + ok.explica + '</p><p>Esta decisión queda anotada como «con ayuda».</p>');
+        fin('a');
       }
     }
 
-    function next() {
-      idx++;
-      if (idx >= queue.length) return finish();
-      ask();
+    // Pista 1: orienta. Pista 2: descarta una alternativa incorrecta y ofrece ir a la explicación.
+    function pista() {
+      var st = ex.st, b = PRUEBA[ex.qi].bloques[ex.i];
+      if (st.done) return;
+      st.hint = true; st.nivel++;
+      var hb = $('.pp-hint', el);
+      if (st.nivel === 1) {
+        fb('hint', '<strong class="pp-fbt">Pista</strong><p>' + esc(b.pista || 'Piensa qué criterio debe cumplir la decisión.') + '</p><p>Pedir una pista cuenta como ayuda en tu registro.</p>');
+        hb.textContent = '💡 Otra pista';
+        return;
+      }
+      var btns = $$('.pp-alt', el);
+      var malas = btns.filter(function (x, i) { return !x.disabled && !st.ops[i].ok; });
+      if (malas.length > 1) { malas[0].classList.add('dim'); malas[0].disabled = true; }
+      var dest = b.ops.filter(function (o) { return o.ver; })[0];
+      fb('hint', '<strong class="pp-fbt">Descarté una alternativa</strong><p>' + (malas.length > 1 ? 'Quedan dos. ' : 'Ya solo quedan dos alternativas. ') +
+        'Si lo prefieres, repasa la explicación.' + (dest ? ' <button class="pp-ver" type="button" data-pp="verhint">Ver dónde se explicó</button>' : '') + '</p>');
+      hb.hidden = true;
     }
 
-    function finish() {
-      stop();
-      $('.sim-count', el).textContent = 'Simulacro terminado';
-      var list = '';
-      if (redo.length) {
-        var seen = {};
-        list = '<div class="callout callout-warn"><div class="callout-icon">🔁</div><div class="callout-body"><h4>Para repasar</h4><ul>';
-        redo.forEach(function (it) {
-          var key = it.comp || it.page;
-          if (seen[key]) return;
-          seen[key] = true;
-          list += it.comp
-            ? '<li><button class="chip-link" data-comp="' + it.comp + '" style="border:none;background:none;color:#C2410C;font-weight:700;text-decoration:underline;padding:0">' + compName(it.comp) + '</button></li>'
-            : '<li><button data-go="concepto" data-anchor="que-se-evalua" style="border:none;background:none;color:#C2410C;font-weight:700;text-decoration:underline;padding:0">¿Qué espera ver el profesor?</button></li>';
+    function final(q) {
+      el.innerHTML = barra(q) +
+        '<div class="pp-sol"><h3>Solución completa</h3>' + q.solucion +
+        (q.llevate ? '<h3 class="pp-sol-2">Lo que debes llevarte</h3><p>' + q.llevate + '</p>' : '') + '</div>' +
+        '<div class="pp-actions"><button class="pp-btn sec" type="button" data-pp="repeat">Repetir este mismo</button>' +
+        '<button class="pp-btn sec" type="button" data-pp="menu">Elegir otra pregunta</button>' +
+        '<button class="pp-btn go" type="button" data-pp="finish">Terminar por hoy</button></div>';
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Solucionario para imprimir: la sección interactiva no se imprime
+    function buildPrint() {
+      var h = '<h2 class="pp-print-h">Solucionario de Ponte a prueba</h2>';
+      PRUEBA.forEach(function (q, i) {
+        h += '<div class="pp-pq"><h3>' + (i + 1) + '. ' + esc(q.titulo) + '</h3><p class="pp-pq-q">“' + esc(q.q) + '”</p>';
+        q.bloques.forEach(function (b) {
+          var ok = b.ops.filter(function (o) { return o.ok; })[0];
+          h += '<div class="pp-pb"><p><strong>' + esc(b.titulo) + '</strong></p><div class="pp-pb-r">' + ok.html + '<p>' + ok.explica + '</p></div></div>';
         });
-        list += '</ul></div></div>';
-      }
-      paint('<div class="sim-summary"><div class="sim-score">' + good + ' / ' + queue.length + '</div>' +
-        '<p style="text-align:center">respondidas con seguridad</p>' + list + '</div>' +
-        '<div class="sim-actions"><button class="btn btn-sim-start" data-sim="start">🎲 Otro simulacro</button></div>');
+        h += '<div class="pp-sol">' + q.solucion + (q.llevate ? '<p><strong>Lo que debes llevarte:</strong> ' + q.llevate + '</p>' : '') + '</div></div>';
+      });
+      printEl.innerHTML = h;
     }
 
-    function start() {
-      queue = shuffle(SIM_QUESTIONS);
-      idx = 0; good = 0; redo = [];
-      ask();
-    }
-
-    function act(action) {
-      if (action === 'start') start();
-      else if (action === 'hint') hint();
-      else if (action === 'good') { good++; next(); }
-      else if (action === 'redo') { redo.push(queue[idx]); next(); }
-      else if (action === 'skip') { redo.push(queue[idx]); next(); }
+    function onClick(e) {
+      var t = e.target.closest('[data-pp]');
+      if (!t || !el.contains(t)) return;
+      var a = t.dataset.pp;
+      if (a === 'start') start(+t.dataset.q);
+      else if (a === 'menu') { menu(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      else if (a === 'alt') elegir(+t.dataset.k);
+      else if (a === 'hint') pista();
+      else if (a === 'next') { ex.i++; pintar(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      else if (a === 'repeat') start(ex.qi);
+      else if (a === 'finish') go('inicio');
+      else if (a === 'ver') irA(ex.st.ops[+t.dataset.k].ver);
+      else if (a === 'verhint') irA((PRUEBA[ex.qi].bloques[ex.i].ops.filter(function (o) { return o.ver; })[0] || {}).ver);
+      else if (a === 'regver') {
+        var x = (store.get('prueba', {})[t.dataset.id] || { e: {} }).e[t.dataset.e];
+        if (x) irA(x.ver);
+      } else if (a === 'clear') { store.set('prueba', {}); menu(); }
     }
 
     function init() {
-      el = $('#sim');
-      if (el) idle();
+      el = $('#prueba');
+      printEl = $('#prueba-print');
+      if (!el) return;
+      menu();
+      if (printEl) buildPrint();
+      el.addEventListener('click', onClick);
     }
 
-    return { init: init, act: act, stop: stop };
+    return { init: init };
   })();
 
   /* ── 09. VOLVER ARRIBA ───────────────────────────────────────────── */
@@ -817,9 +1120,6 @@
         return;
       }
 
-      var simBtn = t.closest('[data-sim]');
-      if (simBtn) { sim.act(simBtn.dataset.sim); return; }
-
       var revealBtn = t.closest('[data-reveal]');
       if (revealBtn) { reveal(revealBtn); return; }
 
@@ -945,7 +1245,7 @@
     buildCompPagers();
     bindEvents();
     initChecklist();
-    sim.init();
+    prueba.init();
     initScrollTop();
     initHeaderAutoHide();
     lightbox.init();

@@ -3325,3 +3325,541 @@ print {
     display: none !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   PONTE A PRUEBA (práctica interactiva sin nota)
+   Usa los colores de módulo ya definidos: data-mod = seg | ger | ope | apl
+   ══════════════════════════════════════════════════════════════════════ */
+.asesoria-pc1 .pp {
+  --mod: var(--indigo);
+  --mod-l: var(--indigo-l);
+  --mod-d: var(--indigo-d);
+  margin: 1.6rem 0 2.4rem;
+}
+
+.asesoria-pc1 .pp-h2 {
+  font-size: 1.5rem;
+  margin: 0 0 1rem;
+  color: var(--ink);
+}
+
+.asesoria-pc1 .pp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 1.1rem;
+}
+
+.asesoria-pc1 .pp-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-top: 4px solid var(--mod);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.2rem 1.2rem;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.asesoria-pc1 .pp-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.asesoria-pc1 .pp-num {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 10px;
+  background: var(--mod-d);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.asesoria-pc1 .pp-card-t {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--mod-d);
+}
+
+.asesoria-pc1 .pp-card-q {
+  font-style: italic;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.asesoria-pc1 .pp-card-m {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.asesoria-pc1 .pp-card-go {
+  margin-top: auto;
+  padding-top: 0.4rem;
+  font-weight: 700;
+  color: var(--mod-d);
+}
+
+/* Barra de la pregunta + progreso */
+.asesoria-pc1 .pp-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  background: var(--card);
+  border: 1.5px solid var(--mod);
+  border-radius: var(--radius);
+  padding: 0.8rem 1.1rem;
+  margin-bottom: 1.1rem;
+}
+
+.asesoria-pc1 .pp-back {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.asesoria-pc1 .pp-bar-t {
+  flex: 1 1 180px;
+  font-weight: 700;
+  color: var(--mod-d);
+}
+
+.asesoria-pc1 .pp-dots {
+  display: flex;
+  align-items: center;
+}
+
+.asesoria-pc1 .pp-dot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.asesoria-pc1 .pp-dot+.pp-dot {
+  margin-left: 22px;
+}
+
+.asesoria-pc1 .pp-dot+.pp-dot::before {
+  content: "";
+  position: absolute;
+  left: -23px;
+  top: 50%;
+  width: 22px;
+  height: 2px;
+  background: var(--line);
+}
+
+.asesoria-pc1 .pp-dot.act {
+  border-color: var(--mod);
+  background: var(--mod-l);
+  color: var(--mod-d);
+}
+
+.asesoria-pc1 .pp-dot.hecho {
+  border-color: var(--green);
+  background: var(--green-l);
+  color: #14532D;
+}
+
+.asesoria-pc1 .pp-dot.ayuda {
+  border-color: var(--yellow);
+  background: var(--yellow-l);
+  color: #7A3E00;
+}
+
+/* Pregunta del profesor */
+.asesoria-pc1 .pp-prof {
+  background: var(--mod-l);
+  border: 1.5px solid var(--mod);
+  border-radius: var(--radius);
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.asesoria-pc1 .pp-prof-l {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mod-d);
+  margin-bottom: 0.2rem;
+}
+
+.asesoria-pc1 .pp-prof p {
+  margin: 0;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+
+/* Decisión */
+.asesoria-pc1 .pp-chip {
+  --mod: var(--indigo);
+  --mod-l: var(--indigo-l);
+  --mod-d: var(--indigo-d);
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  background: var(--mod-l);
+  color: var(--mod-d);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.asesoria-pc1 .pp-dec h3 {
+  font-size: 1.6rem;
+  line-height: 1.25;
+  margin: 0 0 0.7rem;
+  color: var(--ink);
+}
+
+.asesoria-pc1 .pp-intro {
+  color: var(--muted);
+  margin: 0 0 1.1rem;
+}
+
+.asesoria-pc1 .pp-alts {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.1rem;
+}
+
+.asesoria-pc1 .pp-alt {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.95rem;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background: #fff;
+  border: 2px solid;
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  cursor: pointer;
+}
+
+.asesoria-pc1 .pp-alt:disabled {
+  cursor: default;
+}
+
+.asesoria-pc1 .pp-L {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+}
+
+.asesoria-pc1 .pp-alt-b {
+  flex: 1;
+  min-width: 0;
+  align-self: center;
+}
+
+.asesoria-pc1 .pp-alt.A {
+  border-color: #F97316;
+}
+
+.asesoria-pc1 .pp-alt.A .pp-L {
+  background: #C2410C;
+}
+
+.asesoria-pc1 .pp-alt.B {
+  border-color: #8B5CF6;
+}
+
+.asesoria-pc1 .pp-alt.B .pp-L {
+  background: #6D28D9;
+}
+
+.asesoria-pc1 .pp-alt.C {
+  border-color: #0EA5A4;
+}
+
+.asesoria-pc1 .pp-alt.C .pp-L {
+  background: #0F766E;
+}
+
+.asesoria-pc1 .pp-alt.dim {
+  opacity: 0.45;
+}
+
+.asesoria-pc1 .pp-alt.good {
+  background: var(--green-l);
+  border-color: var(--green);
+  opacity: 1;
+}
+
+.asesoria-pc1 .pp-alt.bad {
+  background: var(--red-l);
+  border-color: var(--red);
+}
+
+.asesoria-pc1 .pp-img img {
+  display: block;
+  max-width: 100%;
+  max-height: 240px;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* Pista y botón «No sé cuál elegir» (debajo de las alternativas y del feedback) */
+.asesoria-pc1 .pp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 1.3rem;
+}
+
+.asesoria-pc1 .pp-hint {
+  font: inherit;
+  font-weight: 700;
+  color: var(--purple);
+  background: var(--purple-l);
+  border: 1.5px solid var(--purple);
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  cursor: pointer;
+}
+
+.asesoria-pc1 .pp-hint[hidden],
+.asesoria-pc1 .pp-cont[hidden] {
+  display: none;
+}
+
+.asesoria-pc1 .pp-fb {
+  margin-top: 1.2rem;
+  border: 1.5px solid;
+  border-radius: 14px;
+  padding: 0.9rem 1.15rem;
+}
+
+.asesoria-pc1 .pp-fb:empty {
+  display: none;
+}
+
+.asesoria-pc1 .pp-fb p {
+  margin: 0.35rem 0 0;
+}
+
+.asesoria-pc1 .pp-fb.ok {
+  background: var(--green-l);
+  border-color: var(--green);
+  color: #14532D;
+}
+
+.asesoria-pc1 .pp-fb.bad {
+  background: var(--red-l);
+  border-color: var(--red);
+  color: #7F1D1D;
+}
+
+.asesoria-pc1 .pp-fb.hint {
+  background: var(--purple-l);
+  border-color: var(--purple);
+  color: #3E2380;
+}
+
+.asesoria-pc1 .pp-fbt {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.asesoria-pc1 .pp-etq {
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0.1rem 0.65rem;
+  border: 1.5px solid var(--red);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.asesoria-pc1 .pp-ver {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* Botones */
+.asesoria-pc1 .pp-btn {
+  font: inherit;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.7rem 1.5rem;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.asesoria-pc1 .pp-btn.go {
+  background: #C2410C;
+  border-color: #C2410C;
+  color: #fff;
+  box-shadow: 0 8px 18px -8px #C2410C;
+}
+
+/* Solución y registro */
+.asesoria-pc1 .pp-sol {
+  background: var(--card);
+  border: 1.5px solid var(--green);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.4rem;
+  margin: 0 0 1.2rem;
+}
+
+.asesoria-pc1 .pp-sol h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+  color: var(--ink);
+}
+
+.asesoria-pc1 .pp-sol .pp-sol-2 {
+  margin-top: 1rem;
+}
+
+.asesoria-pc1 .pp-reg {
+  margin-top: 2.2rem;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.4rem;
+}
+
+.asesoria-pc1 .pp-reg h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+}
+
+.asesoria-pc1 .pp-reg h3 small {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.asesoria-pc1 .pp-reg ul {
+  margin: 0.2rem 0 0.8rem;
+  padding-left: 1.2rem;
+}
+
+@media (max-width: 700px) {
+  .asesoria-pc1 .pp-dec h3 {
+    font-size: 1.3rem;
+  }
+
+  .asesoria-pc1 .pp-alt {
+    padding: 0.8rem 0.9rem;
+    gap: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asesoria-pc1 .pp-card {
+    transition: none;
+  }
+
+  .asesoria-pc1 .pp-card:hover {
+    transform: none;
+  }
+}
+
+/* Impresión: la práctica interactiva no se imprime; sale un solucionario */
+.asesoria-pc1 .pp-print {
+  display: none;
+}
+
+@media print {
+  .asesoria-pc1 .pp {
+    display: none !important;
+  }
+
+  .asesoria-pc1 .pp-print {
+    display: block;
+  }
+
+  .asesoria-pc1 .pp-print-h {
+    font-size: 1.3rem;
+    margin: 0 0 0.6rem;
+  }
+
+  .asesoria-pc1 .pp-pq {
+    margin: 0 0 0.9rem;
+    break-inside: avoid;
+  }
+
+  .asesoria-pc1 .pp-pq h3 {
+    margin: 0 0 0.2rem;
+    font-size: 1.1rem;
+  }
+
+  .asesoria-pc1 .pp-pq-q {
+    font-style: italic;
+    margin: 0 0 0.4rem;
+  }
+
+  .asesoria-pc1 .pp-pb {
+    margin: 0 0 0.4rem;
+    break-inside: avoid;
+  }
+
+  .asesoria-pc1 .pp-pb p {
+    margin: 0.15rem 0;
+  }
+
+  .asesoria-pc1 .pp-pb-r {
+    padding-left: 0.7rem;
+    border-left: 3px solid var(--green);
+  }
+
+  .asesoria-pc1 .pp-img img {
+    max-width: 45%;
+    max-height: 120px;
+  }
+
+  .asesoria-pc1 .pp-pq .pp-sol {
+    padding: 0.5rem 0.8rem;
+    margin: 0.4rem 0 0;
+  }
+}
