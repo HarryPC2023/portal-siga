@@ -29,7 +29,7 @@
         <button class="ap-nav-btn" data-go="concepto" type="button">Concepto</button>
         <button class="ap-nav-btn" data-go="arquitectura" type="button">Arquitectura</button>
         <button class="ap-nav-btn" data-go="componentes" type="button">Componentes</button>
-        <button class="ap-nav-btn" data-go="defensa" type="button">Defensa oral</button>
+        <button class="ap-nav-btn" data-go="defensa" type="button">Ponte a prueba</button>
         <button class="ap-nav-btn" data-go="tips" type="button">Tips</button>
       </nav>
 
@@ -46,7 +46,7 @@
           title="Imprimir o guardar como PDF">🖨️ <span>Imprimir / PDF</span></button>
         <div class="ap-print-menu" hidden>
           <p><strong>Se imprime TODO:</strong> todas las páginas, todas las pestañas de sistemas, los ❌ y ✅ juntos y
-            los pines con su lista.</p>
+            los pines con su lista. Ponte a prueba sale como solucionario.</p>
           <button data-print="color" type="button">🎨 Con colores <small>recomendado para PDF</small></button>
           <button data-print="ink" type="button">💧 Ahorro de tinta <small>blanco y negro, fondos
               limpios</small></button>
@@ -78,7 +78,7 @@
           <div class="hero-stats">
             <div class="stat-chip"><b>6</b>sistemas de ejemplo</div>
             <div class="stat-chip"><b>11</b>componentes</div>
-            <div class="stat-chip"><b>🎤</b>simulador de defensa</div>
+            <div class="stat-chip"><b>🎯</b>Ponte a prueba</div>
           </div>
           <div class="signature">
             <img src="imagenes/Harry.jpg" alt="Harry">
@@ -99,7 +99,7 @@
             <li><button class="route-step" data-go="componentes" data-step="4" type="button">
                 <span class="route-dot">4</span><span class="route-label">Componentes</span></button></li>
             <li><button class="route-step" data-go="defensa" data-step="5" type="button">
-                <span class="route-dot">5</span><span class="route-label">Defensa oral</span></button></li>
+                <span class="route-dot">5</span><span class="route-label">Ponte a prueba</span></button></li>
           </ol>
         </div>
 
@@ -1257,6 +1257,9 @@
           <div class="comp-body">
             <p class="muted italic">Un protocolo define las reglas y condiciones bajo las cuales el sistema ejecuta su
               proceso central.</p>
+            <p class="muted italic">💡 Un protocolo funciona como un escalamiento: cada etapa se alcanza cuando se
+              cumplió la
+              anterior, y una condición define cuándo se pasa a la siguiente.</p>
             <div class="compare-grid">
               <div class="must-have">
                 <h4>✅ Un protocolo bien diseñado muestra:</h4>
@@ -1504,55 +1507,20 @@
       </section><!-- /componentes -->
 
       <!-- ════════════════════════════════════════════════════════════ -->
-      <!-- 6 · DEFENSA ORAL -->
+      <!-- 6 · PONTE A PRUEBA -->
       <!-- ════════════════════════════════════════════════════════════ -->
       <section class="page" data-page="defensa">
         <div class="page-head">
-          <span class="page-tag">Defensa oral</span>
+          <span class="page-tag">Ponte a prueba</span>
           <h1 class="page-title">Lo que el profesor siempre pregunta</h1>
-          <p class="page-lead">No es suficiente diseñarlo bien. Debes poder explicarlo con claridad cuando el profesor
-            te pregunte.</p>
+          <p class="page-lead">Mide cómo vas antes de tu práctica o de tu presentación. Elige la respuesta que
+            defenderías; si dudas, pide una pista, y si te equivocas verás dónde se explicó. Es práctica sin nota:
+            nadie ve tus respuestas.</p>
         </div>
 
-        <div class="q-row">
-          <div class="q-num">1</div>
-          <div class="q-text">“¿Cómo definieron su protocolo y cómo funciona en su sistema?”</div>
-        </div>
-        <div class="q-row">
-          <div class="q-num">2</div>
-          <div class="q-text">“Explícame el control de accesos. ¿Qué puede hacer el perfil [X] y por qué tiene acceso a
-            esos módulos?”</div>
-        </div>
-        <div class="q-row">
-          <div class="q-num">3</div>
-          <div class="q-text">“¿Esta interfaz realmente funciona o está correctamente planteada para su sistema?”</div>
-        </div>
-        <div class="q-row">
-          <div class="q-num">4</div>
-          <div class="q-text">“Explícame cómo funciona el catálogo y el proceso principal de su sistema.”</div>
-        </div>
-        <div class="q-row">
-          <div class="q-num">5</div>
-          <div class="q-text">“¿Para qué sirve este KPI o gráfica en su sistema? ¿Cómo se calcula?”</div>
-        </div>
-
-        <div class="callout callout-danger">
-          <div class="callout-icon">⚠️</div>
-          <div class="callout-body">
-            <p>El profesor pregunta al azar a cualquier integrante. No hay uno que “sabe más” — <strong>todos deben
-                saber todo</strong>.</p>
-          </div>
-        </div>
-
-        <!-- Simulador: la lógica está en scripts.js (sección 08). Las preguntas se editan en SIM_QUESTIONS -->
-        <div class="sim" id="sim">
-          <div class="sim-head">
-            <h3>🎲 Simulador de defensa oral</h3>
-            <span class="sim-count"></span>
-            <span class="sim-timer"></span>
-          </div>
-          <div class="sim-body"></div>
-        </div>
+        <!-- Ponte a prueba: la lógica está en scripts.js (sección 08). Las preguntas se editan en PRUEBA -->
+        <div class="pp" id="prueba"></div>
+        <div class="pp-print" id="prueba-print" aria-hidden="true"></div>
 
         <nav class="page-pager" data-pager></nav>
       </section>
