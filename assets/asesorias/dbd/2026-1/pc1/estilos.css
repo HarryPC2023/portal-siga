@@ -3281,3 +3281,47 @@
     display: none !important;
   }
 }
+
+/* ── MENÚ DE LA CABECERA: deslizable con flechas cuando no cabe ──────── */
+.asesoria-pc1 .ap-nav {
+  position: relative;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fi, 0px), #000 calc(100% - var(--fd, 0px)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--fi, 0px), #000 calc(100% - var(--fd, 0px)), transparent 100%);
+}
+
+.asesoria-pc1 .ap-nav-flecha {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  padding: 0 0 3px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.asesoria-pc1 .ap-nav-flecha[hidden] {
+  display: none;
+}
+
+.asesoria-pc1 .ap-nav-flecha:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.asesoria-pc1 .ap-nav-flecha.off {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@media (max-width: 700px),
+print {
+  .asesoria-pc1 .ap-nav-flecha {
+    display: none !important;
+  }
+}

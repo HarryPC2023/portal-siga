@@ -890,6 +890,52 @@
     return { init: init };
   })();
 
+  /* ── MENÚ DE LA CABECERA: deslizable con flechas cuando no cabe ───── */
+  function initNavScroll() {
+    var nav = $('.ap-nav');
+    if (!nav) return;
+    var izq = document.createElement('button');
+    var der = document.createElement('button');
+    [izq, der].forEach(function (b, i) {
+      b.type = 'button';
+      b.className = 'ap-nav-flecha';
+      b.hidden = true;
+      b.setAttribute('aria-label', i === 0 ? 'Ver secciones anteriores' : 'Ver más secciones');
+      b.textContent = i === 0 ? '‹' : '›';
+    });
+    nav.parentNode.insertBefore(izq, nav);
+    nav.parentNode.insertBefore(der, nav.nextSibling);
+
+    function actualizar() {
+      var extra = izq.hidden ? 0 : izq.offsetWidth + der.offsetWidth + 32; // ancho que ocupan las flechas
+      var hay = nav.scrollWidth > nav.clientWidth + extra + 2;
+      izq.hidden = der.hidden = !hay;
+      if (!hay) { nav.style.setProperty('--fi', '0px'); nav.style.setProperty('--fd', '0px'); return; }
+      var x = nav.scrollLeft, max = nav.scrollWidth - nav.clientWidth;
+      izq.classList.toggle('off', x < 2);
+      der.classList.toggle('off', x > max - 2);
+      nav.style.setProperty('--fi', x < 2 ? '0px' : '22px');
+      nav.style.setProperty('--fd', x > max - 2 ? '0px' : '22px');
+    }
+    function centrar() {
+      var a = nav.querySelector('.ap-nav-btn.active');
+      if (!a) return;
+      nav.scrollTo({ left: Math.max(0, a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2), behavior: 'smooth' });
+    }
+    izq.addEventListener('click', function () { nav.scrollBy({ left: -nav.clientWidth * 0.7, behavior: 'smooth' }); });
+    der.addEventListener('click', function () { nav.scrollBy({ left: nav.clientWidth * 0.7, behavior: 'smooth' }); });
+    nav.addEventListener('scroll', actualizar, { passive: true });
+    nav.addEventListener('wheel', function (e) { // la rueda del mouse también mueve el menú
+      if (nav.scrollWidth > nav.clientWidth + 2 && Math.abs(e.deltaY) > Math.abs(e.deltaX)) { nav.scrollLeft += e.deltaY; e.preventDefault(); }
+    }, { passive: false });
+    window.addEventListener('resize', actualizar);
+    if (window.ResizeObserver) new ResizeObserver(actualizar).observe(nav);
+    if (window.MutationObserver) new MutationObserver(centrar).observe(nav, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    actualizar();
+    centrar();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { actualizar(); centrar(); });
+  }
+
   /* ── ARRANQUE ────────────────────────────────────────────────────── */
   function init() {
     if (root.dataset.apReady) return; // evita inicializar dos veces (p. ej. al integrarlo en SIGA)
@@ -904,6 +950,7 @@
     initHeaderAutoHide();
     lightbox.init();
     printer.init();
+    initNavScroll();
     watchEvaluationSection();
     renderProgress();
     refreshTabs();
