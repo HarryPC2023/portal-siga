@@ -1046,6 +1046,7 @@
 
   /* ============================ PRÁCTICA Y REFUERZA: interfaz ============================ */
   const VNAME = { 1: 'AP', 2: 'DC', 3: 'DF' };
+  let practicaS = null;   // ejercicio de práctica en curso (para recordar la posición)
   function registro() { const r = jget('registro', {}); return (r && typeof r === 'object') ? r : {} }
   function guardarRegistro(tpl, log, intentosFinal) {
     const r = registro(); const t = r[tpl.id] || { n: 0, primer: 0, ayuda: 0, errs: {} };
@@ -1067,6 +1068,7 @@
   }
   function semillaNueva(tpl, idxActual) { let s, t = 0; do { s = 1000 + Math.floor(Math.random() * 9000); t++ } while (pick(tpl.pool, s).idx === idxActual && t < 30); return s }
   function practicaMenu(cont, mensaje) {
+    practicaS = null;
     cont.classList.remove('pr-on', 'pc1', 'pc2', 'pc3');
     cont.innerHTML = M('<p class="intro">¿Qué quieres practicar? Elige una pregunta; tú decides cuántos ejercicios hacer. Es práctica sin nota.</p>' + (mensaje ? '<p class="aviso">' + mensaje + '</p>' : '') +
       '<div class="prac-menu">' + PLANTILLAS.map(function (tpl) { return '<button class="prac-c pc' + tpl.id + '" data-tpl="' + tpl.id + '"><span class="prac-n" aria-hidden="true">' + tpl.id + '</span><span class="prac-q">Pregunta ' + tpl.id + '</span><span class="prac-t">' + esc(tpl.nombre) + '</span><span class="prac-d">' + esc(tpl.resumen) + '</span><span class="prac-f"><span class="prac-m">≈ ' + tpl.min + ' min</span><span class="prac-go">Empezar →</span></span></button>' }).join('') + '</div>' +
@@ -1085,6 +1087,7 @@
     const k = pick(tpl.pool, seed);
     const S = { cont: cont, tpl: tpl, seed: seed, inst: k.i, idx: k.idx, bloques: tpl.bloques(k.i, k.r), att: 0, helpF: false, ctx: ctx || {}, cerrado: false, solMostrada: false, errsF: [] };
     S.log = S.bloques.map(function () { return { fails: 0, hint: false, done: false, res: '', errs: [] } });
+    practicaS = S;
     cont.classList.remove('pc1', 'pc2', 'pc3'); cont.classList.add('pr-on', 'pc' + tpl.id);
     cont.innerHTML = '';
     const top = el('div', 'top-p', M('<button class="btn volver">← Volver al menú</button><strong class="ptit">Pregunta ' + tpl.id + ' · ' + esc(tpl.nombre) + '</strong>' + (S.ctx.repaso ? '<span class="chip c1">Repaso ' + (S.ctx.repaso.k + 1) + ' de ' + S.ctx.repaso.orden.length + '</span>' : '') + '<span class="chip c1 pchip">Decisión 1 de ' + S.bloques.length + '</span><span class="pdots" aria-hidden="true">' + S.bloques.map(function () { return '<i></i>' }).join('') + '</span>'));
@@ -1250,6 +1253,120 @@
   function prepararImpresion() { if (!impresionLista) construirImpresion(); raiz.classList.add('imprimiendo') }
   function terminarImpresion() { raiz.classList.remove('imprimiendo') }
 
+  /* ============================ RECORDAR LA POSICIÓN ============================
+     Al abrir la asesoría en una pestaña nueva o en pantalla completa, la página se vuelve a cargar y empezaría en
+     el inicio. Se guarda en este navegador dónde estabas: la página y la pregunta, los pasos y tips abiertos, el
+     filtro de Tips, el texto que veías arriba y, en Practica y Refuerza, el ejercicio (pregunta + semilla) con la
+     decisión en que ibas. Si se abre de nuevo en los siguientes 20 s, vuelve a ese lugar; si pasó más tiempo,
+     empieza en el inicio. El punto de la pantalla se guarda como «el texto que veías arriba», no como píxeles,
+     porque el ancho cambia al ampliar. Con varias ventanas abiertas, solo guarda la que estás usando. */
+  const POS_VENTANA = 20000, POS_LATIDO = 3000;
+  let posActiva = false, posEspera = null, posMovio = false, posActividad = Date.now();
+  const POS_SEL = 'h1,h2,h3,h4,p,li,summary,.eyebrow';
+  function posTexto(e) { return (e.textContent || '').replace(/\s+/g, ' ').trim() }
+  function posVisible(e) { return e.offsetParent !== null && e.getBoundingClientRect().height > 0 }
+  function posAncla() {
+    if (window.pageYOffset < 40 || !vista) return null;
+    const els = $$(POS_SEL, vista);
+    for (let i = 0; i < els.length; i++) {
+      const t = posTexto(els[i]); if (t.length < 8) continue;
+      const r = els[i].getBoundingClientRect();
+      if (r.top >= 0 && r.top < window.innerHeight && posVisible(els[i])) return { tag: els[i].tagName, txt: t.slice(0, 60), off: Math.round(r.top) };
+    }
+    return null;
+  }
+  function posBuscar(a) {
+    if (!a || !vista) return null;
+    return $$(a.tag.toLowerCase(), vista).filter(function (e) { return posTexto(e).slice(0, 60) === a.txt && posVisible(e) })[0] || null;
+  }
+  function posEstado() {
+    const s = { t: Date.now(), ta: posActividad, page: actual, q: actualQ, y: Math.round(window.pageYOffset), a: posAncla() };
+    if (!vista) return s;
+    if (actual === 'resolucion') {
+      s.pasos = []; $$('.rw', vista).forEach(function (r, i) { if ($('.rh', r).getAttribute('aria-expanded') === 'true') s.pasos.push(i) });
+      s.rel = []; $$('.relc', vista).forEach(function (d, i) { if (d.open) s.rel.push(i) });
+    }
+    if (actual === 'estrategias') {
+      const on = $('.fl.on', vista); s.f = on ? on.getAttribute('data-f') : 'todo';
+      s.cerradas = []; $$('.tj', vista).forEach(function (c, i) { if ($('.tj-b', c).getAttribute('aria-expanded') !== 'true') s.cerradas.push(i) });
+    }
+    if (actual === 'practica' && practicaS && !practicaS.cerrado && !(practicaS.ctx && practicaS.ctx.repaso)) {
+      const S = practicaS, k = S.log.findIndex(function (x) { return !x.done });
+      s.pr = {
+        tid: S.tpl.id, seed: S.seed, k: k < 0 ? S.bloques.length : k, att: S.att, helpF: S.helpF, errsF: S.errsF,
+        log: S.log.map(function (x) { return { fails: x.fails, hint: x.hint, res: x.res, errs: x.errs } })
+      };
+    }
+    return s;
+  }
+  function posGuardar() {
+    if (!posActiva) return;
+    const prev = jget('pos', null);
+    if (prev && prev.ta && prev.ta > posActividad) return;   // otra ventana tuvo actividad más reciente
+    jset('pos', posEstado());
+  }
+  function posLeer() {
+    const p = jget('pos', null), dt = p && p.t ? Date.now() - p.t : -1;
+    return dt >= 0 && dt <= POS_VENTANA ? p : null;
+  }
+  function posArrancar() {
+    posActiva = true;
+    ['scroll', 'wheel', 'touchstart', 'keydown', 'mousedown', 'mousemove'].forEach(function (ev) {
+      window.addEventListener(ev, function () { posActividad = Date.now() }, { passive: true, capture: true });
+    });
+    posGuardar();
+    window.addEventListener('scroll', function () {
+      if (posEspera) return;
+      posEspera = setTimeout(function () { posEspera = null; posGuardar() }, 500);
+    }, { passive: true });
+    setInterval(function () { if (document.visibilityState === 'visible') posGuardar() }, POS_LATIDO);
+    document.addEventListener('visibilitychange', posGuardar);
+    window.addEventListener('pagehide', posGuardar);
+  }
+  // Vuelve a armar el ejercicio (misma pregunta y misma semilla = mismos números) hasta la decisión en que ibas
+  function posReanudarPractica(pr) {
+    const tpl = PLANTILLAS.filter(function (t) { return t.id === pr.tid })[0], cont = $('#prac', vista);
+    if (!tpl || !cont) return;
+    iniciarPractica(cont, tpl, pr.seed, null);
+    const S = practicaS;
+    for (let j = 0; j < pr.k && j < S.bloques.length; j++) {
+      const i = S.bloques[j].opciones.findIndex(function (o) { return o.ok });
+      S.bloques[j].opciones[i].btn.click();                     // responde bien para llegar a la decisión en que ibas
+      const g = pr.log[j] || {}, st = S.log[j];
+      st.fails = g.fails || 0; st.hint = !!g.hint; st.res = g.res || st.res; st.errs = g.errs || [];   // conserva «con ayuda» y los errores
+      const card = $$('.card.bloque', cont)[j], cb = card && $('.btn.go', card);
+      if (cb) cb.click();
+    }
+    S.att = pr.att || 0; S.helpF = !!pr.helpF; S.errsF = pr.errsF || [];
+  }
+  function posRestaurar(p) {
+    if (USE_HASH) { try { history.replaceState(null, '', rutaDe(p.page, { q: p.q })) } catch (e) { } }
+    if (p.page === 'resolucion') {
+      const pc = $('.pc', vista);
+      if ((p.pasos || []).length && pc) pc.click();             // la pausa de la figura nunca es obligatoria
+      (p.pasos || []).forEach(function (i) { const r = $$('.rw', vista)[i]; if (r && $('.rh', r).getAttribute('aria-expanded') !== 'true') $('.rh', r).click() });
+      (p.rel || []).forEach(function (i) { const d = $$('.relc', vista)[i]; if (d) d.open = true });
+    }
+    if (p.page === 'estrategias') {
+      if (p.f && p.f !== 'todo') { const b = $('.fl[data-f="' + p.f + '"]', vista); if (b) b.click() }
+      (p.cerradas || []).forEach(function (i) { const c = $$('.tj', vista)[i]; if (c) $('.tj-b', c).click() });
+    }
+    if (p.page === 'practica' && p.pr) posReanudarPractica(p.pr);
+    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (ev) {
+      window.addEventListener(ev, function () { posMovio = true }, { passive: true, once: true });
+    });
+    function una() {
+      if (posMovio) return;
+      const el = posBuscar(p.a), y = el ? Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - p.a.off) : (p.y || 0);
+      try { window.scrollTo({ top: y, left: 0, behavior: 'instant' }) } catch (e) { window.scrollTo(0, y) }
+    }
+    una();
+    window.addEventListener('load', una);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(una);   // imágenes, fuentes y fórmulas pueden cambiar la altura
+    setTimeout(una, 500); setTimeout(una, 1200);
+    setTimeout(posArrancar, 1300);
+  }
+
   /* ============================ Inicio ============================ */
   function iniciarApp() {
     raiz = document.getElementById('asesoria');
@@ -1258,7 +1375,11 @@
     function arrancar() {
       construirImpresion();
       const primera = parseHash();
-      mostrar(USE_HASH ? primera.id : 'inicio', { q: primera.q, paso: primera.paso, f: primera.f, c: primera.c, p: primera.p, sinFoco: true });
+      const pos = posLeer();                                    // dónde estabas, si abriste la asesoría hace instantes
+      const sinHash = !(window.location.hash || '').replace(/^#\/?/, '');
+      const recuperar = !!pos && USE_HASH && (sinHash || (primera.id === pos.page && primera.q === pos.q));   // un enlace con otra página manda
+      if (recuperar) { mostrar(pos.page, { q: pos.q, sinFoco: true }); posRestaurar(pos) }
+      else { mostrar(USE_HASH ? primera.id : 'inicio', { q: primera.q, paso: primera.paso, f: primera.f, c: primera.c, p: primera.p, sinFoco: true }); posArrancar() }
       if (USE_HASH) window.addEventListener('hashchange', function () { const h = parseHash(); mostrar(h.id, { q: h.q, paso: h.paso, f: h.f, c: h.c, p: h.p }) });
       const listo = [];
       if (document.fonts && document.fonts.ready) listo.push(document.fonts.ready);
