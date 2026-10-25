@@ -85,19 +85,30 @@ En `js/asesorias-cursos.js`, dentro de `recursos: [ ... ]` del curso:
     tipo: 'web',
     evaluacion: 'PC1',
     titulo: 'PC1 — <Nombre del curso>',
-    descripcion: '<una frase de qué trae>',
+    descripcion: 'REEMPLAZAR-DESCRIPCION',
     periodo: '<periodo>',
 },
 ```
 
 - `id` único (ej. `pc1-geometria-2026-1`). Si repites uno, la consola del
   navegador (F12) avisa.
+- **`descripcion` es lo que lee el alumno, tal cual.** Cambia
+  `REEMPLAZAR-DESCRIPCION` por una frase real de lo que trae esta
+  evaluación (unas 15 a 20 palabras). Ejemplo real: `'Diccionario semántico
+  ontológico: qué entregar, cómo atomizar y 6 ejemplos resueltos.'`
 - **No escribas `fecha` ni `src`.** La ruta se calcula sola y la fecha de
-  publicación también (día en que la carpeta entró a Git; durante 14 días
+  publicación también (día en que la carpeta entró a Git; durante 5 días
   sale "Nuevo" y el botcito la anuncia). `fecha: null` solo si NO quieres
   etiqueta "Nuevo".
 
 ## 6. Publicar
+
+Antes del commit, comprueba que no quedó el texto de relleno. Si el
+comando no muestra nada, está bien:
+
+```
+Select-String -Path "js\asesorias-cursos.js" -Pattern "REEMPLAZAR-DESCRIPCION"
+```
 
 ```
 git add -A
@@ -114,6 +125,7 @@ git push
 Abre `asesorias-curso.html?c=<slug>` y verifica:
 
 - Aparece el chip "Ciclo <periodo>" y la etiqueta "Nuevo".
+- La descripción es la real (no un texto de ejemplo ni `REEMPLAZAR-DESCRIPCION`).
 - Abre en el visor; se ven fórmulas, gráficos e imágenes.
 - Imprimir funciona (en el visor, con el botón de imprimir de SIGA).
 - El progreso se guarda al cerrar y volver a abrir.
