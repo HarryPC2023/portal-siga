@@ -142,7 +142,7 @@ async function alternarLo(btn) {
 
 // ───────────── Botcito: bienvenida, novedades y consejos ─────────────
 // - Primera visita: saludo de bienvenida.
-// - Visitas siguientes: SOLO si hay material nuevo (publicado hace menos de 14 días
+// - Visitas siguientes: SOLO si hay material nuevo (publicado hace menos de 5 días
 //   y que ese navegador aún no vio anunciado). Si no hay nada que contar, no sale nada.
 // - Al tocar al botcito: un consejo distinto cada vez.
 // Todos los globitos duran 5 segundos y se pueden cerrar con un toque.

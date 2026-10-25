@@ -184,7 +184,7 @@ export function ciclosDisponibles() {
 // ───────────── Novedades ("Nuevo") ─────────────
 
 // Cuántos días un recurso publicado se considera nuevo.
-export const NOVEDAD_DIAS = 14;
+export const NOVEDAD_DIAS = 5;
 
 const MS_DIA = 24 * 60 * 60 * 1000;
 
@@ -194,7 +194,7 @@ export function esNuevo(recurso, hoy = new Date()) {
     const publicado = new Date(`${recurso.fecha}T00:00:00`);
     if (Number.isNaN(publicado.getTime())) return false;
     const dias = Math.floor((hoy.getTime() - publicado.getTime()) / MS_DIA);
-    return dias >= 0 && dias <= NOVEDAD_DIAS;
+    return dias >= 0 && dias < NOVEDAD_DIAS;
 }
 
 export function cursoTieneNovedad(curso, hoy = new Date()) {
