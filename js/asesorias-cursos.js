@@ -106,7 +106,6 @@ export const CURSOS = [
                 tipo: 'web',
                 evaluacion: 'PC3',
                 titulo: 'PC3 - Modelado Conceptual de Datos',
-                descripcion: 'Diccionario semántico ontológico: qué entregar, cómo atomizar y 6 ejemplos resueltos, con Ponte a prueba.',
                 periodo: '2026-2',
             },
         ],
