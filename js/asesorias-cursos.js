@@ -99,7 +99,19 @@ export const CURSOS = [
     { codigo: 'FB402', slug: 'calculo-numerico', nombre: 'Cálculo Numérico', ciclo: 4, creditos: 3, recursos: [] },
     { codigo: 'FB403', slug: 'ecuaciones-diferenciales', nombre: 'Ecuaciones Diferenciales', ciclo: 4, creditos: 5, recursos: [] },
     { codigo: 'FB405', slug: 'estadistica-aplicada', nombre: 'Estadística Aplicada', ciclo: 4, creditos: 3, recursos: [] },
-    { codigo: 'SI405', slug: 'mcd', nombre: 'Modelado Conceptual de Datos', ciclo: 4, creditos: 3, recursos: [] },
+    {
+        codigo: 'SI405', slug: 'mcd', nombre: 'Modelado Conceptual de Datos', ciclo: 4, creditos: 3,
+        recursos: [
+            {
+                id: 'pc3-mcd-2026-2',
+                tipo: 'web',
+                evaluacion: 'PC3',
+                titulo: 'PC3 — Modelado Conceptual de Datos',
+                descripcion: 'Escribe aquí en una frase qué trae esta PC3.',
+                periodo: '2026-2',
+            },
+        ],
+    },
 
     // ───────────── Ciclo 5 ─────────────
     { codigo: 'SI501', slug: 'investigacion-operaciones-i', nombre: 'Investigación de Operaciones I', ciclo: 5, creditos: 3, recursos: [] },
