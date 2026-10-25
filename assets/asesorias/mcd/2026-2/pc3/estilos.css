@@ -1,0 +1,3219 @@
+/* =====================================================================
+   BASE · Asesoría web interactiva (teoría) · estilos.css
+   Todo el CSS vive bajo .asesoria-mcd (el slug lo cambia preparar_asesoria.py).
+   El primer bloque es el TEMA: paleta, fuentes y radios. Es lo único que cambia entre asesorías.
+   ===================================================================== */
+
+/* ---------- TEMA (cambia por asesoría) ---------- */
+.asesoria-mcd {
+  /* Fuentes: títulos, cuerpo, etiquetas y atributos, logo. La «G» queda siempre en Black Ops One (peso 400). */
+  --hf: 'Syne', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --bf: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mf: 'DM Mono', ui-monospace, Menlo, Consolas, monospace;
+  --lf: 'Black Ops One', Impact, 'Arial Black', sans-serif;
+
+  /* Paleta de marca (estilo B · Fichero) */
+  --ink: #2A1B1B;
+  --ink2: #5F4A46;
+  --pg: linear-gradient(160deg, #E2FBE8 0%, #FFF1DC 55%, #FFDFD0 100%), #FFF1DC;
+  --card: #FFFFFF;
+  --line: #E8CFC3;
+  --hdg: linear-gradient(100deg, #0F5F4A 0%, #17714F 55%, #A8480B 100%);
+  --por: linear-gradient(120deg, #0F5F4A 0%, #17714F 58%, #A8480B 100%);
+  --acento: #FFE08A;
+  /* segunda línea del título de la portada */
+  --cta: #B4410A;
+  --cta-tx: #FFFFFF;
+  /* botón principal: nunca negro */
+  --crema: #FFF6E8;
+  --crema-bd: #F0C36D;
+  --logo: #0F5F4A;
+
+  /* Categorías: una categoría = un color. k1..k6 son las 6 columnas del diccionario; k7, el contenido general. */
+  --k1: #7A2E8E;
+  --k1-bg: #F3E1F8;
+  --k1-tx: #4F1560;
+  /* Atributo */
+  --k2: #3E7D1F;
+  --k2-bg: #E3F4D4;
+  --k2-tx: #265010;
+  /* Valores */
+  --k3: #D2461C;
+  --k3-bg: #FFE3D8;
+  --k3-tx: #7E2509;
+  /* Formato */
+  --k4: #A36200;
+  --k4-bg: #FFF0C9;
+  --k4-tx: #664000;
+  /* Naturaleza */
+  --k5: #00796B;
+  --k5-bg: #D2F3EE;
+  --k5-tx: #00473F;
+  /* Semántica */
+  --k6: #B3195B;
+  --k6-bg: #FFDFEC;
+  --k6-tx: #6E0A37;
+  /* Ontología */
+  --k7: #2F5BB7;
+  --k7-bg: #E8F0FE;
+  --k7-tx: #1B3F85;
+  /* General */
+  --obs: #8A6D4B;
+  --obs-bg: #F6EEE3;
+  --obs-tx: #4B3A27;
+  --ok: #16A34A;
+  --ok-bg: #DCFCE7;
+  --ok-tx: #14532D;
+  --bad: #C62828;
+  --bad-bg: #FDE2E2;
+  --bad-tx: #7A1414;
+  --hint-bg: #EDE7FF;
+  --hint-bd: #8B5CF6;
+  --hint-tx: #3E2380;
+  --oA: #F97316;
+  --oB: #8B5CF6;
+  --oC: #0EA5A4;
+  /* borde de las alternativas A, B, C */
+
+  --r: 12px;
+  --r-hero: 14px;
+  /* esquinas: rectangulares, ligeramente redondeadas; nunca óvalos */
+  --sombra: 0 6px 22px -10px rgba(70, 30, 15, .3);
+  --neon: 0 0 16px -3px;
+}
+
+/* ---------- Base ---------- */
+.asesoria-mcd,
+.asesoria-mcd * {
+  box-sizing: border-box;
+}
+
+.asesoria-mcd {
+  font-family: var(--bf);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--pg);
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+.asesoria-mcd h1,
+.asesoria-mcd h2,
+.asesoria-mcd h3,
+.asesoria-mcd h4 {
+  font-family: var(--hf);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.asesoria-mcd p {
+  margin: 0 0 .7em;
+}
+
+.asesoria-mcd img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.asesoria-mcd button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.asesoria-mcd :focus-visible {
+  outline: 3px solid var(--hint-bd);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.asesoria-mcd .muted {
+  color: var(--ink2);
+}
+
+.asesoria-mcd .wrap {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 28px 32px 64px;
+}
+
+.asesoria-mcd .sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Header (NO fijo: se queda arriba de la página y solo se ve al subir) ---------- */
+.asesoria-mcd .cab {
+  background: var(--hdg);
+  color: #fff;
+  box-shadow: 0 4px 18px -6px rgba(30, 27, 75, .4);
+  position: relative;
+  z-index: 5;
+}
+
+.asesoria-mcd .cab-in {
+  max-width: 1360px;
+  margin: 0 auto;
+  min-height: 84px;
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.asesoria-mcd .marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.asesoria-mcd .logo {
+  width: 60px;
+  height: 60px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--crema);
+  border: 1.5px solid var(--crema-bd);
+  border-radius: var(--r);
+  font-family: var(--lf);
+  font-weight: 400;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--logo);
+}
+
+.asesoria-mcd .marca-t {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.asesoria-mcd .marca-t b {
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asesoria-mcd .marca-t span {
+  font-size: .88rem;
+  opacity: .95;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asesoria-mcd .menu {
+  position: relative;
+  display: flex;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-bottom: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fi, 0px), #000 calc(100% - var(--fd, 0px)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--fi, 0px), #000 calc(100% - var(--fd, 0px)), transparent 100%);
+}
+
+.asesoria-mcd .menu::-webkit-scrollbar {
+  display: none;
+}
+
+/* Centrado seguro: si el menú no cabe, empieza en el primer elemento y se desliza (nunca queda cortado) */
+.asesoria-mcd .menu button:first-of-type {
+  margin-left: auto;
+}
+
+.asesoria-mcd .menu button:last-of-type {
+  margin-right: auto;
+}
+
+.asesoria-mcd .menu-flecha {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0 0 3px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, .75);
+  background: rgba(255, 255, 255, .2);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.asesoria-mcd .menu-flecha[hidden] {
+  display: none;
+}
+
+.asesoria-mcd .menu-flecha:hover {
+  background: rgba(255, 255, 255, .34);
+}
+
+.asesoria-mcd .menu-flecha.off {
+  opacity: .35;
+  pointer-events: none;
+}
+
+.asesoria-mcd .menu button {
+  flex: none;
+  background: none;
+  border: 0;
+  color: #fff;
+  font-family: var(--hf);
+  font-size: 1.12rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.asesoria-mcd .menu button[aria-current="page"] {
+  background: #fff;
+  color: var(--logo);
+}
+
+.asesoria-mcd .menu-ind {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 0;
+  border-radius: 4px;
+  background: var(--acento);
+  transition: left .25s ease, width .25s ease;
+  pointer-events: none;
+}
+
+.asesoria-mcd .imp {
+  position: relative;
+  flex: none;
+}
+
+.asesoria-mcd .imp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--crema);
+  color: var(--ink);
+  border: 1.5px solid var(--crema-bd);
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 700;
+}
+
+.asesoria-mcd .imp-emo {
+  font-style: normal;
+}
+
+.asesoria-mcd .imp-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  width: 372px;
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--sombra);
+  padding: 20px 22px;
+  z-index: 20;
+}
+
+.asesoria-mcd .imp-panel[hidden] {
+  display: none;
+}
+
+.asesoria-mcd .imp-intro {
+  margin: 0 0 14px;
+  font-size: .98rem;
+  line-height: 1.6;
+}
+
+.asesoria-mcd .imp-op {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  margin: 0 0 12px;
+}
+
+.asesoria-mcd .imp-op b {
+  display: block;
+  font-family: var(--hf);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.asesoria-mcd .imp-op small {
+  display: block;
+  font-size: .88rem;
+  color: var(--ink2);
+}
+
+.asesoria-mcd .imp-op .imp-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .imp-op[aria-pressed="true"] {
+  border-color: var(--k1);
+  background: var(--k1-bg);
+}
+
+.asesoria-mcd .imp-panel .nota {
+  font-size: .86rem;
+  color: var(--ink2);
+  margin: 6px 0 0;
+  line-height: 1.55;
+}
+
+/* ---------- Páginas ---------- */
+.asesoria-mcd .pagina {
+  display: none;
+}
+
+.asesoria-mcd .pagina.activa {
+  display: block;
+}
+
+.asesoria-mcd .sec-t {
+  font-size: 2.1rem;
+  margin: 0 0 18px;
+}
+
+.asesoria-mcd .sec-intro {
+  font-size: 1.05rem;
+  color: var(--ink2);
+  max-width: 78ch;
+  margin: 0 0 26px;
+}
+
+.asesoria-mcd .bloque {
+  margin: 0 0 48px;
+}
+
+.asesoria-mcd .bloque>h2 {
+  font-size: 1.6rem;
+  margin: 0 0 18px;
+}
+
+.asesoria-mcd .etq {
+  display: inline-block;
+  font-family: var(--mf);
+  font-weight: 700;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.asesoria-mcd .k1 .etq,
+.asesoria-mcd .etq.k1 {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .k2 .etq,
+.asesoria-mcd .etq.k2 {
+  background: var(--k2-bg);
+  color: var(--k2-tx);
+}
+
+.asesoria-mcd .k3 .etq,
+.asesoria-mcd .etq.k3 {
+  background: var(--k3-bg);
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd .k4 .etq,
+.asesoria-mcd .etq.k4 {
+  background: var(--k4-bg);
+  color: var(--k4-tx);
+}
+
+/* Botones */
+.asesoria-mcd .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-weight: 700;
+  border: 1.5px solid transparent;
+  background: #fff;
+  color: var(--ink);
+}
+
+.asesoria-mcd .btn.go {
+  background: var(--cta);
+  color: var(--cta-tx);
+  box-shadow: 0 8px 18px -8px var(--cta);
+}
+
+.asesoria-mcd .btn.sec {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.asesoria-mcd .btn:hover {
+  filter: brightness(1.05);
+}
+
+/* ---------- Portada (tarjeta grande, identidad de la primera asesoría) ---------- */
+.asesoria-mcd .portada {
+  position: relative;
+  overflow: hidden;
+  background: var(--por);
+  color: #fff;
+  border-radius: var(--r-hero);
+  padding: 52px 56px 48px;
+  margin: 0 0 52px;
+  box-shadow: var(--sombra);
+}
+
+.asesoria-mcd .portada::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  top: -70px;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, .32), transparent 70%);
+  pointer-events: none;
+}
+
+.asesoria-mcd .portada-in {
+  position: relative;
+  z-index: 1;
+  max-width: 880px;
+}
+
+.asesoria-mcd .portada h1 {
+  font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.asesoria-mcd .portada h1 span {
+  display: block;
+  color: var(--acento);
+}
+
+.asesoria-mcd .portada .lema {
+  font-size: 1.15rem;
+  margin: 18px 0 0;
+  max-width: 60ch;
+  color: #fff;
+}
+
+.asesoria-mcd .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.asesoria-mcd .chips li {
+  background: rgba(255, 255, 255, .2);
+  border: 1.5px solid rgba(255, 255, 255, .55);
+  border-radius: var(--r);
+  padding: 8px 16px;
+  font-size: .95rem;
+  font-weight: 600;
+}
+
+.asesoria-mcd .portada .acc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 30px 0 0;
+}
+
+.asesoria-mcd .portada .btn.sec {
+  background: rgba(255, 255, 255, .18);
+  color: #fff;
+  border-color: rgba(255, 255, 255, .7);
+}
+
+.asesoria-mcd .arte {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 290px;
+  opacity: .5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- Tarjetas ---------- */
+.asesoria-mcd .tarjetas {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: 22px;
+}
+
+.asesoria-mcd .card {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.asesoria-mcd .card .etq {
+  align-self: flex-start;
+}
+
+.asesoria-mcd .card h3 {
+  font-size: 1.2rem;
+}
+
+.asesoria-mcd .card p {
+  margin: 0;
+}
+
+.asesoria-mcd .card .mas {
+  margin-top: auto;
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.asesoria-mcd .card.k1 {
+  border-color: var(--k1);
+  box-shadow: var(--neon) var(--k1);
+}
+
+.asesoria-mcd .card.k2 {
+  border-color: var(--k2);
+  box-shadow: var(--neon) var(--k2);
+}
+
+.asesoria-mcd .card.k3 {
+  border-color: var(--k3);
+  box-shadow: var(--neon) var(--k3);
+}
+
+.asesoria-mcd .card.k4 {
+  border-color: var(--k4);
+  box-shadow: var(--neon) var(--k4);
+}
+
+.asesoria-mcd .k1 h3 {
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .k2 h3 {
+  color: var(--k2-tx);
+}
+
+.asesoria-mcd .k3 h3 {
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd .k4 h3 {
+  color: var(--k4-tx);
+}
+
+/* ---------- Acordeón: cada elemento abre y cierra por separado, en la MISMA página ---------- */
+.asesoria-mcd .acc-lista {
+  display: grid;
+  gap: 14px;
+}
+
+.asesoria-mcd .acc-item {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.asesoria-mcd .acc-item.k1 {
+  border-color: var(--k1);
+}
+
+.asesoria-mcd .acc-item.k2 {
+  border-color: var(--k2);
+}
+
+.asesoria-mcd .acc-item.k3 {
+  border-color: var(--k3);
+}
+
+.asesoria-mcd .acc-item.k4 {
+  border-color: var(--k4);
+}
+
+.asesoria-mcd .acc-h {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  background: none;
+  border: 0;
+  text-align: left;
+  font-family: var(--hf);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.asesoria-mcd .acc-h .etq {
+  margin-left: auto;
+}
+
+.asesoria-mcd .acc-h .chev {
+  width: 12px;
+  height: 12px;
+  border-right: 2.5px solid currentColor;
+  border-bottom: 2.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform .2s;
+  flex: none;
+  margin-left: 6px;
+}
+
+.asesoria-mcd .acc-h[aria-expanded="true"] .chev {
+  transform: rotate(225deg);
+}
+
+.asesoria-mcd .acc-b {
+  padding: 8px 26px 22px;
+  border-top: 1.5px solid var(--line);
+}
+
+.asesoria-mcd .acc-b[hidden] {
+  display: none;
+}
+
+/* ---------- Pestañas ---------- */
+.asesoria-mcd .tabs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.asesoria-mcd .tabs-bar button {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.asesoria-mcd .tabs-bar button[aria-selected="true"] {
+  background: var(--k1-bg);
+  border-color: var(--k1);
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .tab-panel {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 24px;
+}
+
+.asesoria-mcd .tab-panel[hidden] {
+  display: none;
+}
+
+/* ---------- Tabla ---------- */
+.asesoria-mcd .tabla-wrap {
+  overflow-x: auto;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+}
+
+.asesoria-mcd table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .98rem;
+}
+
+.asesoria-mcd th {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  text-align: left;
+  font-family: var(--hf);
+  font-weight: 600;
+  padding: 12px 16px;
+}
+
+.asesoria-mcd td {
+  padding: 11px 16px;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.asesoria-mcd tbody tr:nth-child(even) td {
+  background: #F7F8FF;
+}
+
+/* ---------- Imagen con visor ---------- */
+.asesoria-mcd .fig {
+  margin: 0;
+}
+
+.asesoria-mcd .zoom-b {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: #fff;
+  cursor: zoom-in;
+}
+
+.asesoria-mcd .fig figcaption {
+  font-size: .92rem;
+  color: var(--ink2);
+  margin-top: 8px;
+}
+
+.asesoria-mcd .visor {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(20, 18, 50, .88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.asesoria-mcd .visor[hidden] {
+  display: none;
+}
+
+.asesoria-mcd .visor img {
+  max-width: 100%;
+  max-height: calc(100vh - 110px);
+  border-radius: var(--r);
+  background: #fff;
+}
+
+.asesoria-mcd .visor-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  text-align: center;
+  color: #fff;
+  font-size: .95rem;
+  padding: 0 70px;
+}
+
+.asesoria-mcd .visor button {
+  position: absolute;
+  background: var(--crema);
+  color: var(--ink);
+  border: 1.5px solid var(--crema-bd);
+  border-radius: 10px;
+  width: 46px;
+  height: 46px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.asesoria-mcd .visor .v-x {
+  right: 18px;
+  top: 18px;
+}
+
+.asesoria-mcd .visor .v-p {
+  left: 16px;
+  top: 50%;
+}
+
+.asesoria-mcd .visor .v-n {
+  right: 16px;
+  top: 50%;
+}
+
+/* ---------- Avisos ---------- */
+.asesoria-mcd .aviso {
+  border: 1.5px solid;
+  border-radius: var(--r);
+  padding: 16px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.asesoria-mcd .aviso svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+.asesoria-mcd .aviso b {
+  display: block;
+  font-family: var(--hf);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.asesoria-mcd .aviso p:last-child {
+  margin: 0;
+}
+
+.asesoria-mcd .aviso.tip {
+  background: var(--k3-bg);
+  border-color: var(--k3);
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd .aviso.error {
+  background: var(--bad-bg);
+  border-color: var(--bad);
+  color: var(--bad-tx);
+}
+
+.asesoria-mcd .aviso.obs {
+  background: var(--k1-bg);
+  border-color: var(--k1);
+  color: var(--k1-tx);
+}
+
+/* Destello de una sola vez al llegar a un punto desde «Ver dónde se explicó» */
+.asesoria-mcd .flash {
+  animation: flash 1.6s ease-out 1;
+}
+
+@keyframes flash {
+  0% {
+    box-shadow: 0 0 0 6px var(--hint-bd);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* ---------- Ponte a prueba (cierre evaluativo) ---------- */
+.asesoria-mcd .pq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.asesoria-mcd .pq {
+  text-align: left;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--ink);
+}
+
+.asesoria-mcd .pq .n {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r);
+  display: grid;
+  place-items: center;
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+.asesoria-mcd .pq h3 {
+  font-size: 1.3rem;
+}
+
+.asesoria-mcd .pq .go-t {
+  margin-top: auto;
+  font-weight: 700;
+}
+
+.asesoria-mcd .pq.k1 {
+  border-color: var(--k1);
+  box-shadow: var(--neon) var(--k1);
+}
+
+.asesoria-mcd .pq.k1 .n {
+  background: var(--k1-tx);
+}
+
+.asesoria-mcd .pq.k2 {
+  border-color: var(--k2);
+  box-shadow: var(--neon) var(--k2);
+}
+
+.asesoria-mcd .pq.k2 .n {
+  background: var(--k2-tx);
+}
+
+.asesoria-mcd .pq.k3 {
+  border-color: var(--k3);
+  box-shadow: var(--neon) var(--k3);
+}
+
+.asesoria-mcd .pq.k3 .n {
+  background: var(--k3-tx);
+}
+
+.asesoria-mcd .pq.k4 {
+  border-color: var(--k4);
+  box-shadow: var(--neon) var(--k4);
+}
+
+.asesoria-mcd .pq.k4 .n {
+  background: var(--k4-tx);
+}
+
+.asesoria-mcd .pbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  border: 1.5px solid;
+  border-radius: var(--r);
+  background: var(--card);
+  margin: 0 0 26px;
+}
+
+.asesoria-mcd .pbar.k1 {
+  border-color: var(--k1);
+}
+
+.asesoria-mcd .pbar.k2 {
+  border-color: var(--k2);
+}
+
+.asesoria-mcd .pbar.k3 {
+  border-color: var(--k3);
+}
+
+.asesoria-mcd .pbar.k4 {
+  border-color: var(--k4);
+}
+
+.asesoria-mcd .pbar .volver {
+  background: none;
+  border: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.asesoria-mcd .pbar h3 {
+  font-size: 1.1rem;
+  flex: 1 1 200px;
+}
+
+.asesoria-mcd .dots {
+  display: flex;
+  align-items: center;
+}
+
+.asesoria-mcd .dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: .9rem;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  color: var(--ink2);
+}
+
+.asesoria-mcd .dot+.dot {
+  margin-left: 22px;
+  position: relative;
+}
+
+.asesoria-mcd .dot+.dot::before {
+  content: "";
+  position: absolute;
+  left: -23px;
+  top: 50%;
+  width: 22px;
+  height: 2px;
+  background: var(--line);
+}
+
+.asesoria-mcd .dot.act {
+  border-color: var(--hint-bd);
+  color: var(--hint-tx);
+  background: var(--hint-bg);
+}
+
+.asesoria-mcd .dot.hecho {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+  color: var(--ok-tx);
+}
+
+.asesoria-mcd .dot.ayuda {
+  background: var(--k3-bg);
+  border-color: var(--k3);
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd .prob {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  margin: 0 0 26px;
+}
+
+.asesoria-mcd .prob .etq {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  margin-bottom: 8px;
+}
+
+.asesoria-mcd .dec h3 {
+  font-size: 2rem;
+  margin: 0 0 12px;
+}
+
+.asesoria-mcd .dec .intro {
+  color: var(--ink2);
+  font-size: 1.05rem;
+  margin: 0 0 22px;
+}
+
+.asesoria-mcd .alts {
+  display: grid;
+  gap: 14px;
+}
+
+.asesoria-mcd .alt {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  background: #fff;
+  color: var(--ink);
+  border: 2px solid;
+  border-radius: var(--r);
+  padding: 16px 20px;
+  font-size: 1.02rem;
+}
+
+.asesoria-mcd .alt .L {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+}
+
+.asesoria-mcd .alt.A {
+  border-color: var(--oA);
+}
+
+.asesoria-mcd .alt.A .L {
+  background: #C2410C;
+}
+
+.asesoria-mcd .alt.B {
+  border-color: var(--oB);
+}
+
+.asesoria-mcd .alt.B .L {
+  background: #6D28D9;
+}
+
+.asesoria-mcd .alt.C {
+  border-color: var(--oC);
+}
+
+.asesoria-mcd .alt.C .L {
+  background: #0F766E;
+}
+
+.asesoria-mcd .alt.dim {
+  opacity: .45;
+}
+
+.asesoria-mcd .alt.good {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+}
+
+.asesoria-mcd .alt.bad {
+  background: var(--bad-bg);
+  border-color: var(--bad);
+}
+
+.asesoria-mcd .alt:disabled {
+  cursor: default;
+}
+
+.asesoria-mcd .acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin: 22px 0 0;
+}
+
+.asesoria-mcd .pista {
+  background: var(--hint-bg);
+  color: var(--hint-tx);
+  border: 1.5px solid var(--hint-bd);
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 700;
+}
+
+.asesoria-mcd .fb {
+  margin: 22px 0 0;
+  border: 1.5px solid;
+  border-radius: var(--r);
+  padding: 16px 20px;
+}
+
+.asesoria-mcd .fb:empty {
+  display: none;
+}
+
+.asesoria-mcd .fb.ok {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+  color: var(--ok-tx);
+}
+
+.asesoria-mcd .fb.bad {
+  background: var(--bad-bg);
+  border-color: var(--bad);
+  color: var(--bad-tx);
+}
+
+.asesoria-mcd .fb.hint {
+  background: var(--hint-bg);
+  border-color: var(--hint-bd);
+  color: var(--hint-tx);
+}
+
+.asesoria-mcd .fb b.t {
+  display: block;
+  font-family: var(--hf);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.asesoria-mcd .fb .etq {
+  background: #fff;
+  color: var(--bad-tx);
+  border: 1.5px solid var(--bad);
+  margin: 4px 0 8px;
+}
+
+.asesoria-mcd .fb .ver {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.asesoria-mcd .fb p:last-child {
+  margin-bottom: 0;
+}
+
+.asesoria-mcd .fb-continuar {
+  margin-top: 28px;
+}
+
+.asesoria-mcd .sol {
+  background: var(--card);
+  border: 1.5px solid var(--ok);
+  border-radius: var(--r);
+  padding: 22px 26px;
+  box-shadow: var(--neon) var(--ok);
+  margin: 0 0 22px;
+}
+
+.asesoria-mcd .sol h3 {
+  margin: 0 0 10px;
+  font-size: 1.4rem;
+}
+
+.asesoria-mcd .reg {
+  margin: 48px 0 0;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 24px;
+}
+
+.asesoria-mcd .reg h3 {
+  font-size: 1.2rem;
+  margin: 0 0 6px;
+}
+
+.asesoria-mcd .reg ul {
+  margin: 8px 0 14px;
+  padding-left: 20px;
+}
+
+.asesoria-mcd .reg .ver {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.asesoria-mcd .reg .borrar {
+  background: none;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 16px;
+  color: var(--ink2);
+}
+
+/* Solo para impresión: el solucionario nace oculto y @media print lo muestra */
+.asesoria-mcd .solucionario {
+  display: none;
+}
+
+/* Flecha flotante para volver arriba (aparece pasando los 420 px) */
+.asesoria-mcd .flecha {
+  position: fixed;
+  right: 18px;
+  bottom: 22px;
+  z-index: 30;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r);
+  background: var(--crema);
+  border: 1.5px solid var(--crema-bd);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--sombra);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+
+.asesoria-mcd .flecha.ver {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .asesoria-mcd .arte {
+    display: none;
+  }
+
+  .asesoria-mcd .tarjetas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .asesoria-mcd .cab-in {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 10px 16px 0;
+    min-height: 0;
+  }
+
+  .asesoria-mcd .marca {
+    flex: 1 1 0;
+  }
+
+  .asesoria-mcd .menu {
+    order: 3;
+    flex: 1 1 100%;
+    padding-bottom: 8px;
+  }
+
+  .asesoria-mcd .menu-flecha {
+    display: none !important;
+  }
+
+  .asesoria-mcd .menu button {
+    padding: 8px 14px;
+    font-size: 1.02rem;
+  }
+
+  .asesoria-mcd .imp-btn span {
+    display: none;
+  }
+
+  .asesoria-mcd .imp-btn {
+    padding: 10px 14px;
+  }
+
+  .asesoria-mcd .wrap {
+    padding: 20px 16px 56px;
+  }
+
+  .asesoria-mcd .portada {
+    padding: 32px 24px;
+  }
+
+  .asesoria-mcd .tarjetas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .asesoria-mcd .imp-panel {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    top: 76px;
+    width: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .asesoria-mcd .logo {
+    width: 48px;
+    height: 48px;
+    font-size: 1.9rem;
+  }
+
+  .asesoria-mcd .marca-t b {
+    font-size: 1.05rem;
+  }
+
+  .asesoria-mcd .sec-t {
+    font-size: 1.7rem;
+  }
+
+  .asesoria-mcd .dec h3 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-height: 520px) and (max-width: 900px) {
+  .asesoria-mcd .cab-in {
+    flex-wrap: nowrap;
+    padding: 6px 14px;
+    gap: 10px;
+  }
+
+  .asesoria-mcd .marca-t span {
+    display: none;
+  }
+
+  .asesoria-mcd .menu {
+    order: 0;
+    flex: 1 1 auto;
+    padding-bottom: 6px;
+  }
+
+  .asesoria-mcd .logo {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .asesoria-mcd *,
+  .asesoria-mcd *::before,
+  .asesoria-mcd *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Impresión ---------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  .asesoria-mcd {
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 11pt;
+  }
+
+  .asesoria-mcd .cab,
+  .asesoria-mcd .flecha,
+  .asesoria-mcd .visor,
+  .asesoria-mcd .no-print,
+  .asesoria-mcd .portada .acc,
+  .asesoria-mcd .card .mas,
+  .asesoria-mcd .reg {
+    display: none !important;
+  }
+
+  .asesoria-mcd .wrap {
+    padding: 0;
+    max-width: none;
+  }
+
+  .asesoria-mcd .pagina {
+    display: block !important;
+    margin: 0 0 18pt;
+  }
+
+  .asesoria-mcd .pagina[data-tipo="cierre"] {
+    display: none !important;
+  }
+
+  .asesoria-mcd .acc-b[hidden],
+  .asesoria-mcd .tab-panel[hidden] {
+    display: block !important;
+  }
+
+  .asesoria-mcd .acc-h .chev {
+    display: none;
+  }
+
+  .asesoria-mcd .tab-panel::before {
+    content: attr(data-t);
+    display: block;
+    font-family: var(--hf);
+    font-weight: 600;
+    margin-bottom: 6pt;
+  }
+
+  .asesoria-mcd .tabs-bar {
+    display: none;
+  }
+
+  .asesoria-mcd .tab-panel {
+    margin-bottom: 8pt;
+  }
+
+  .asesoria-mcd .solucionario {
+    display: block;
+    page-break-before: always;
+  }
+
+  .asesoria-mcd .solucionario h2 {
+    font-size: 1.5rem;
+    margin: 0 0 10pt;
+  }
+
+  .asesoria-mcd .acc-item,
+  .asesoria-mcd .card,
+  .asesoria-mcd .fig,
+  .asesoria-mcd .aviso,
+  .asesoria-mcd .sol,
+  .asesoria-mcd tr,
+  .asesoria-mcd .sol-q,
+  .asesoria-mcd .sol-b {
+    break-inside: avoid;
+  }
+
+  .asesoria-mcd h1,
+  .asesoria-mcd h2,
+  .asesoria-mcd h3 {
+    break-after: avoid;
+  }
+
+  .asesoria-mcd .portada {
+    box-shadow: none;
+    padding: 20pt;
+  }
+
+  .asesoria-mcd .card,
+  .asesoria-mcd .acc-item {
+    box-shadow: none;
+  }
+
+  .asesoria-mcd.ahorro .portada {
+    background: #fff !important;
+    color: var(--ink);
+    border: 1.5px solid var(--k1);
+  }
+
+  .asesoria-mcd.ahorro .portada h1 span {
+    color: var(--k1-tx);
+  }
+
+  .asesoria-mcd.ahorro .chips li {
+    background: #fff;
+    border-color: var(--k1);
+    color: var(--ink);
+  }
+
+  .asesoria-mcd.ahorro .portada .lema {
+    color: var(--ink);
+  }
+
+  .asesoria-mcd.ahorro th,
+  .asesoria-mcd.ahorro .aviso,
+  .asesoria-mcd.ahorro .etq,
+  .asesoria-mcd.ahorro tbody tr:nth-child(even) td {
+    background: #fff !important;
+    border-color: currentColor;
+  }
+}
+
+/* =====================================================================
+   EXTENSIÓN DEL CURSO · PC3 MCD (estilo B · Fichero)
+   Se añade al final; no modifica las reglas de la base. Las 6 columnas del diccionario son las categorías:
+   k1 Atributo · k2 Valores · k3 Formato · k4 Naturaleza · k5 Semántica · k6 Ontología · k7 contenido general.
+   ===================================================================== */
+.asesoria-mcd .k5 .etq,
+.asesoria-mcd .etq.k5 {
+  background: var(--k5-bg);
+  color: var(--k5-tx);
+}
+
+.asesoria-mcd .k6 .etq,
+.asesoria-mcd .etq.k6 {
+  background: var(--k6-bg);
+  color: var(--k6-tx);
+}
+
+.asesoria-mcd .k7 .etq,
+.asesoria-mcd .etq.k7 {
+  background: var(--k7-bg);
+  color: var(--k7-tx);
+}
+
+.asesoria-mcd .card.k5 {
+  border-color: var(--k5);
+  box-shadow: var(--neon) var(--k5);
+}
+
+.asesoria-mcd .card.k6 {
+  border-color: var(--k6);
+  box-shadow: var(--neon) var(--k6);
+}
+
+.asesoria-mcd .card.k7 {
+  border-color: var(--k7);
+  box-shadow: var(--neon) var(--k7);
+}
+
+.asesoria-mcd .k5 h3 {
+  color: var(--k5-tx);
+}
+
+.asesoria-mcd .k6 h3 {
+  color: var(--k6-tx);
+}
+
+.asesoria-mcd .k7 h3 {
+  color: var(--k7-tx);
+}
+
+.asesoria-mcd .acc-item.k5 {
+  border-color: var(--k5);
+}
+
+.asesoria-mcd .acc-item.k6 {
+  border-color: var(--k6);
+}
+
+.asesoria-mcd .acc-item.k7 {
+  border-color: var(--k7);
+}
+
+.asesoria-mcd .pbar.k1,
+.asesoria-mcd .pbar.k2,
+.asesoria-mcd .pbar.k3,
+.asesoria-mcd .pbar.k4 {
+  border-color: var(--k7);
+}
+
+/* Las tarjetas de Ponte a prueba toman el color de la columna que practican */
+.asesoria-mcd .pq-grid .pq {
+  border-color: var(--pk, var(--k7));
+  box-shadow: var(--neon) var(--pk, var(--k7));
+}
+
+.asesoria-mcd .pq-grid .pq .n {
+  background: var(--pkt, var(--k7-tx));
+}
+
+.asesoria-mcd .pq-grid .pq h3 {
+  color: var(--pkt, var(--k7-tx));
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(1) {
+  --pk: var(--k1);
+  --pkt: var(--k1-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(2) {
+  --pk: var(--k2);
+  --pkt: var(--k2-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(3) {
+  --pk: var(--k4);
+  --pkt: var(--k4-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(4) {
+  --pk: var(--k5);
+  --pkt: var(--k5-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(5) {
+  --pk: var(--k6);
+  --pkt: var(--k6-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(6) {
+  --pk: var(--k2);
+  --pkt: var(--k2-tx);
+}
+
+/* Avisos: tip en el color general; obs en tono papel (no repiten colores de columnas) */
+.asesoria-mcd .aviso.tip {
+  background: var(--k7-bg);
+  border-color: var(--k7);
+  color: var(--k7-tx);
+}
+
+.asesoria-mcd .aviso.obs {
+  background: var(--obs-bg);
+  border-color: var(--obs);
+  color: var(--obs-tx);
+}
+
+/* Tablas: encabezado general y filas alternadas cálidas */
+.asesoria-mcd th {
+  background: var(--k7-bg);
+  color: var(--k7-tx);
+}
+
+.asesoria-mcd tbody tr:nth-child(even) td {
+  background: #FFF8F1;
+}
+
+.asesoria-mcd table.dic {
+  min-width: 940px;
+}
+
+.asesoria-mcd table.dic.gl {
+  min-width: 0;
+}
+
+.asesoria-mcd table.dic th {
+  border-bottom: 3px solid var(--k7);
+}
+
+.asesoria-mcd table.dic th.c1 {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  border-bottom-color: var(--k1);
+}
+
+.asesoria-mcd table.dic th.c2 {
+  background: var(--k2-bg);
+  color: var(--k2-tx);
+  border-bottom-color: var(--k2);
+}
+
+.asesoria-mcd table.dic th.c3 {
+  background: var(--k3-bg);
+  color: var(--k3-tx);
+  border-bottom-color: var(--k3);
+}
+
+.asesoria-mcd table.dic th.c4 {
+  background: var(--k4-bg);
+  color: var(--k4-tx);
+  border-bottom-color: var(--k4);
+}
+
+.asesoria-mcd table.dic th.c5 {
+  background: var(--k5-bg);
+  color: var(--k5-tx);
+  border-bottom-color: var(--k5);
+}
+
+.asesoria-mcd table.dic th.c6 {
+  background: var(--k6-bg);
+  color: var(--k6-tx);
+  border-bottom-color: var(--k6);
+}
+
+.asesoria-mcd table.dic th.c7 {
+  background: var(--k7-bg);
+  color: var(--k7-tx);
+  border-bottom-color: var(--k7);
+}
+
+.asesoria-mcd table.dic td+td,
+.asesoria-mcd table.dic th+th {
+  border-left: 1px solid var(--line);
+}
+
+.asesoria-mcd .mono,
+.asesoria-mcd code {
+  font-family: var(--mf);
+  font-weight: 500;
+  font-size: .92em;
+}
+
+.asesoria-mcd code {
+  background: #FFF6EC;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  overflow-wrap: anywhere;
+}
+
+.asesoria-mcd td.mono {
+  overflow-wrap: anywhere;
+}
+
+.asesoria-mcd table.dic:not(.gl) td:nth-child(-n+3) {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* Header: Syne es ancha; el título no se recorta y el menú queda holgado en escritorio */
+@media (min-width: 861px) {
+  .asesoria-mcd .cab-in {
+    gap: 12px;
+  }
+
+  .asesoria-mcd .marca {
+    flex: none;
+  }
+
+  .asesoria-mcd .marca-t b {
+    font-size: 1rem;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .asesoria-mcd .menu {
+    gap: 2px;
+  }
+
+  .asesoria-mcd .menu button {
+    font-size: .9rem;
+    padding: 10px 8px;
+  }
+
+  .asesoria-mcd .imp-btn {
+    padding: 9px 12px;
+  }
+}
+
+.asesoria-mcd table:not(.dic) td code {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* Pestañas: cada columna conserva su color */
+.asesoria-mcd .tabs-bar button[aria-selected="true"] {
+  background: var(--k7-bg);
+  border-color: var(--k7);
+  color: var(--k7-tx);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(1) {
+  border-color: var(--k1);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(1)[aria-selected="true"] {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(2) {
+  border-color: var(--k2);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(2)[aria-selected="true"] {
+  background: var(--k2-bg);
+  color: var(--k2-tx);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(3) {
+  border-color: var(--k3);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(3)[aria-selected="true"] {
+  background: var(--k3-bg);
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(4) {
+  border-color: var(--k4);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(4)[aria-selected="true"] {
+  background: var(--k4-bg);
+  color: var(--k4-tx);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(5) {
+  border-color: var(--k5);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(5)[aria-selected="true"] {
+  background: var(--k5-bg);
+  color: var(--k5-tx);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(6) {
+  border-color: var(--k6);
+}
+
+.asesoria-mcd [data-pag="columnas"] .tabs-bar button:nth-child(6)[aria-selected="true"] {
+  background: var(--k6-bg);
+  color: var(--k6-tx);
+}
+
+/* Fichas de «Las 6 columnas» */
+.asesoria-mcd .fc {
+  display: grid;
+  gap: 16px;
+}
+
+.asesoria-mcd .fc.c1 {
+  --fk: var(--k1);
+  --fbg: var(--k1-bg);
+  --ftx: var(--k1-tx);
+}
+
+.asesoria-mcd .fc.c2 {
+  --fk: var(--k2);
+  --fbg: var(--k2-bg);
+  --ftx: var(--k2-tx);
+}
+
+.asesoria-mcd .fc.c3 {
+  --fk: var(--k3);
+  --fbg: var(--k3-bg);
+  --ftx: var(--k3-tx);
+}
+
+.asesoria-mcd .fc.c4 {
+  --fk: var(--k4);
+  --fbg: var(--k4-bg);
+  --ftx: var(--k4-tx);
+}
+
+.asesoria-mcd .fc.c5 {
+  --fk: var(--k5);
+  --fbg: var(--k5-bg);
+  --ftx: var(--k5-tx);
+}
+
+.asesoria-mcd .fc.c6 {
+  --fk: var(--k6);
+  --fbg: var(--k6-bg);
+  --ftx: var(--k6-tx);
+}
+
+.asesoria-mcd .fc-q {
+  margin: 0;
+  font-size: 1.12rem;
+  color: var(--ftx);
+}
+
+.asesoria-mcd .fc-g {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.asesoria-mcd .fc-b {
+  border: 1.5px solid var(--fk);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  background: #fff;
+}
+
+.asesoria-mcd .fc-b h4 {
+  font-family: var(--hf);
+  font-size: 1.02rem;
+  margin: 0 0 6px;
+  color: var(--ftx);
+}
+
+.asesoria-mcd .fc-b ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.asesoria-mcd .fc-b li {
+  margin: 0 0 .45em;
+}
+
+.asesoria-mcd .fc-b li:last-child {
+  margin-bottom: 0;
+}
+
+.asesoria-mcd .fc-b.er {
+  border-color: var(--bad);
+  background: #FFF6F4;
+}
+
+.asesoria-mcd .fc-b.er h4 {
+  color: var(--bad-tx);
+}
+
+.asesoria-mcd .fc-b.ej {
+  background: var(--fbg);
+  color: var(--ftx);
+  line-height: 1.9;
+}
+
+.asesoria-mcd .fc-b.nt {
+  background: var(--obs-bg);
+  border-color: var(--obs);
+  color: var(--obs-tx);
+}
+
+.asesoria-mcd .fc-b.nt h4 {
+  color: var(--obs-tx);
+}
+
+.asesoria-mcd .fc-b.nt p:last-child {
+  margin: 0;
+}
+
+.asesoria-mcd .fc .tabla-wrap {
+  margin: 0;
+}
+
+/* Ejemplos por sistema */
+.asesoria-mcd .sis-lead {
+  margin: 0 0 14px;
+  font-size: 1.02rem;
+}
+
+.asesoria-mcd .sis-h {
+  font-size: 1.25rem;
+  margin: 28px 0 8px;
+}
+
+.asesoria-mcd .sis-nota {
+  color: var(--ink2);
+  margin: 0 0 12px;
+  font-size: .96rem;
+}
+
+.asesoria-mcd .tabs-val {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.asesoria-mcd .tab-caja {
+  border: 1.5px solid var(--k7);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  background: #fff;
+}
+
+.asesoria-mcd .tab-caja h4 {
+  font-family: var(--hf);
+  font-size: 1.05rem;
+  margin: 0 0 4px;
+}
+
+.asesoria-mcd .tab-caja .usa {
+  font-size: .88rem;
+  color: var(--ink2);
+  margin: 0 0 8px;
+}
+
+.asesoria-mcd .tab-caja table {
+  font-size: .94rem;
+}
+
+.asesoria-mcd .tab-caja th,
+.asesoria-mcd .tab-caja td {
+  padding: 8px 10px;
+}
+
+.asesoria-mcd .pal {
+  background: none;
+  border: 0;
+  border-bottom: 2px dotted var(--k5);
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.asesoria-mcd .pal:hover {
+  background: var(--k5-bg);
+}
+
+.asesoria-mcd .casc {
+  margin: 14px 0 0;
+  border: 1.5px dashed var(--k5);
+  border-radius: var(--r);
+  background: var(--k5-bg);
+  color: var(--k5-tx);
+  padding: 12px 16px;
+  min-height: 64px;
+}
+
+.asesoria-mcd .casc-vacio {
+  margin: 0;
+}
+
+.asesoria-mcd .casc-mig {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 0 0 8px;
+}
+
+.asesoria-mcd .casc-c {
+  background: #fff;
+  border: 1.5px solid var(--k5);
+  border-radius: 6px;
+  padding: 2px 10px;
+  font-weight: 700;
+  color: var(--k5-tx);
+}
+
+.asesoria-mcd .casc-x {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  color: inherit;
+  font-weight: 700;
+}
+
+.asesoria-mcd .casc-def {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.asesoria-mcd .casc .pal {
+  border-bottom-color: var(--k5-tx);
+}
+
+.asesoria-mcd .xl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 28px 0 0;
+}
+
+.asesoria-mcd .xl-t {
+  color: var(--ink2);
+}
+
+.asesoria-mcd .xl-nota {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: .92rem;
+  color: var(--ink2);
+}
+
+.asesoria-mcd .cascada,
+.asesoria-mcd .cascada ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 22px;
+  border-left: 1.5px solid var(--k7);
+}
+
+.asesoria-mcd .cascada {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.asesoria-mcd .cascada li {
+  margin: 10px 0;
+}
+
+/* Checklist de revisión */
+.asesoria-mcd .chk {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0;
+  display: grid;
+  gap: 10px;
+}
+
+.asesoria-mcd .chk li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 12px 16px;
+}
+
+.asesoria-mcd .chk label {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex: 1 1 320px;
+  cursor: pointer;
+}
+
+.asesoria-mcd .chk input {
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  accent-color: var(--k2);
+  flex: none;
+}
+
+.asesoria-mcd .chk li:has(input:checked) {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+}
+
+.asesoria-mcd .chk-ver {
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 2px 0;
+}
+
+.asesoria-mcd .chk-prog {
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.asesoria-mcd .chk-ok {
+  border: 1.5px solid var(--ok);
+  background: var(--ok-bg);
+  color: var(--ok-tx);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .asesoria-mcd .fc-g {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media print {
+  .asesoria-mcd .pal {
+    border-bottom: 0;
+    text-decoration: underline dotted;
+  }
+
+  .asesoria-mcd .fc-b,
+  .asesoria-mcd .tab-caja,
+  .asesoria-mcd .chk li {
+    break-inside: avoid;
+  }
+
+  .asesoria-mcd .tabla-wrap {
+    overflow: visible;
+  }
+
+  .asesoria-mcd table.dic {
+    min-width: 0;
+    font-size: 7.5pt;
+  }
+
+  .asesoria-mcd table.dic:not(.gl) td:nth-child(-n+3) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .asesoria-mcd table.dic:not(.gl) td:nth-child(1) {
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+
+  .asesoria-mcd [data-pag="columnas"] .tab-panel {
+    break-inside: avoid;
+  }
+
+  .asesoria-mcd [data-pag="ejemplos"] .tab-panel+.tab-panel {
+    break-before: page;
+  }
+
+  .asesoria-mcd .tab-panel::before {
+    break-after: avoid;
+  }
+
+  .asesoria-mcd table.dic th,
+  .asesoria-mcd table.dic td {
+    padding: 5pt 6pt;
+  }
+
+  .asesoria-mcd .fc-g {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .asesoria-mcd.ahorro table.dic th,
+  .asesoria-mcd.ahorro .fc-b.ej,
+  .asesoria-mcd.ahorro .fc-b.er,
+  .asesoria-mcd.ahorro .fc-b.nt,
+  .asesoria-mcd.ahorro .chk li {
+    background: #fff !important;
+  }
+}
+
+/* =====================================================================
+   AJUSTES DE REVISIÓN (v2) · contornos neón que se alternan, acordeones con franja, fichas de hojas
+   ===================================================================== */
+.asesoria-mcd {
+  --n1: #E6007E;
+  --n1-bg: #FCE0F0;
+  --n1-tx: #960052;
+  --n2: #009AAB;
+  --n2-bg: #E0F3F5;
+  --n2-tx: #00555E;
+  --n3: #F26A00;
+  --n3-bg: #FDEDE0;
+  --n3-tx: #853A00;
+  --n4: #7C3AED;
+  --n4-bg: #EFE7FD;
+  --n4-tx: #5D2CB2;
+  --n5: #1F9E00;
+  --n5-bg: #E4F3E0;
+  --n5-tx: #115700;
+  --n6: #1E6BFF;
+  --n6-bg: #E4EDFF;
+  --n6-tx: #1446A6;
+  --n7: #BF8400;
+  --n7-bg: #F7F0E0;
+  --n7-tx: #694900;
+  --n8: #5BA000;
+  --n8-bg: #EBF4E0;
+  --n8-tx: #325800;
+}
+
+.asesoria-mcd .sec-intro {
+  max-width: none;
+}
+
+.asesoria-mcd .portada .lema {
+  max-width: none;
+}
+
+.asesoria-mcd .portada-in {
+  max-width: none;
+}
+
+.asesoria-mcd .portada h1 {
+  font-size: clamp(2.3rem, 4.4vw, 3.8rem);
+}
+
+@media (min-width: 1101px) {
+  .asesoria-mcd .portada-in {
+    padding-right: 320px;
+  }
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+1) {
+  border: 2px solid var(--n1);
+  box-shadow: 0 0 14px -4px var(--n1);
+  background: #fff;
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+1) h3 {
+  color: var(--n1-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+1) .etq {
+  background: var(--n1-bg);
+  color: var(--n1-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+2) {
+  border: 2px solid var(--n2);
+  box-shadow: 0 0 14px -4px var(--n2);
+  background: #fff;
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+2) h3 {
+  color: var(--n2-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+2) .etq {
+  background: var(--n2-bg);
+  color: var(--n2-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+3) {
+  border: 2px solid var(--n3);
+  box-shadow: 0 0 14px -4px var(--n3);
+  background: #fff;
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+3) h3 {
+  color: var(--n3-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+3) .etq {
+  background: var(--n3-bg);
+  color: var(--n3-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+4) {
+  border: 2px solid var(--n4);
+  box-shadow: 0 0 14px -4px var(--n4);
+  background: #fff;
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+4) h3 {
+  color: var(--n4-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+4) .etq {
+  background: var(--n4-bg);
+  color: var(--n4-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+5) {
+  border: 2px solid var(--n5);
+  box-shadow: 0 0 14px -4px var(--n5);
+  background: #fff;
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+5) h3 {
+  color: var(--n5-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+5) .etq {
+  background: var(--n5-bg);
+  color: var(--n5-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+6) {
+  border: 2px solid var(--n6);
+  box-shadow: 0 0 14px -4px var(--n6);
+  background: #fff;
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+6) h3 {
+  color: var(--n6-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+6) .etq {
+  background: var(--n6-bg);
+  color: var(--n6-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+7) {
+  border: 2px solid var(--n7);
+  box-shadow: 0 0 14px -4px var(--n7);
+  background: #fff;
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+7) h3 {
+  color: var(--n7-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+7) .etq {
+  background: var(--n7-bg);
+  color: var(--n7-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+8) {
+  border: 2px solid var(--n8);
+  box-shadow: 0 0 14px -4px var(--n8);
+  background: #fff;
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+8) h3 {
+  color: var(--n8-tx);
+}
+
+.asesoria-mcd .tarjetas .card:nth-child(8n+8) .etq {
+  background: var(--n8-bg);
+  color: var(--n8-tx);
+}
+
+.asesoria-mcd .acc-item {
+  background: #fff;
+  border-width: 2px;
+  border-left-width: 5px;
+}
+
+.asesoria-mcd .acc-b {
+  padding: 12px 26px 16px;
+}
+
+.asesoria-mcd .acc-b p:last-child {
+  margin-bottom: 0;
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+1) {
+  border-color: var(--n1);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+1) .acc-h .chev {
+  color: var(--n1);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+1) .acc-b {
+  border-top-color: var(--n1);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+1):has(.acc-h[aria-expanded="true"]) {
+  background: var(--n1-bg);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+2) {
+  border-color: var(--n2);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+2) .acc-h .chev {
+  color: var(--n2);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+2) .acc-b {
+  border-top-color: var(--n2);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+2):has(.acc-h[aria-expanded="true"]) {
+  background: var(--n2-bg);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+3) {
+  border-color: var(--n3);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+3) .acc-h .chev {
+  color: var(--n3);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+3) .acc-b {
+  border-top-color: var(--n3);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+3):has(.acc-h[aria-expanded="true"]) {
+  background: var(--n3-bg);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+4) {
+  border-color: var(--n4);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+4) .acc-h .chev {
+  color: var(--n4);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+4) .acc-b {
+  border-top-color: var(--n4);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+4):has(.acc-h[aria-expanded="true"]) {
+  background: var(--n4-bg);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+5) {
+  border-color: var(--n5);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+5) .acc-h .chev {
+  color: var(--n5);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+5) .acc-b {
+  border-top-color: var(--n5);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+5):has(.acc-h[aria-expanded="true"]) {
+  background: var(--n5-bg);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+6) {
+  border-color: var(--n6);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+6) .acc-h .chev {
+  color: var(--n6);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+6) .acc-b {
+  border-top-color: var(--n6);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+6):has(.acc-h[aria-expanded="true"]) {
+  background: var(--n6-bg);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+7) {
+  border-color: var(--n7);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+7) .acc-h .chev {
+  color: var(--n7);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+7) .acc-b {
+  border-top-color: var(--n7);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+7):has(.acc-h[aria-expanded="true"]) {
+  background: var(--n7-bg);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+8) {
+  border-color: var(--n8);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+8) .acc-h .chev {
+  color: var(--n8);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+8) .acc-b {
+  border-top-color: var(--n8);
+}
+
+.asesoria-mcd .acc-item:nth-child(8n+8):has(.acc-h[aria-expanded="true"]) {
+  background: var(--n8-bg);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+1) {
+  border: 2px solid var(--n1);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+1) .etq {
+  background: var(--n1-bg);
+  color: var(--n1-tx);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+2) {
+  border: 2px solid var(--n2);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+2) .etq {
+  background: var(--n2-bg);
+  color: var(--n2-tx);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+3) {
+  border: 2px solid var(--n3);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+3) .etq {
+  background: var(--n3-bg);
+  color: var(--n3-tx);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+4) {
+  border: 2px solid var(--n4);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+4) .etq {
+  background: var(--n4-bg);
+  color: var(--n4-tx);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+5) {
+  border: 2px solid var(--n5);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+5) .etq {
+  background: var(--n5-bg);
+  color: var(--n5-tx);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+6) {
+  border: 2px solid var(--n6);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+6) .etq {
+  background: var(--n6-bg);
+  color: var(--n6-tx);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+7) {
+  border: 2px solid var(--n7);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+7) .etq {
+  background: var(--n7-bg);
+  color: var(--n7-tx);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+8) {
+  border: 2px solid var(--n8);
+}
+
+.asesoria-mcd .tabs-val .tab-caja:nth-child(8n+8) .etq {
+  background: var(--n8-bg);
+  color: var(--n8-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(1) {
+  --pk: var(--n1);
+  --pkt: var(--n1-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(2) {
+  --pk: var(--n2);
+  --pkt: var(--n2-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(3) {
+  --pk: var(--n3);
+  --pkt: var(--n3-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(4) {
+  --pk: var(--n4);
+  --pkt: var(--n4-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(5) {
+  --pk: var(--n5);
+  --pkt: var(--n5-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(6) {
+  --pk: var(--n6);
+  --pkt: var(--n6-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(7) {
+  --pk: var(--n7);
+  --pkt: var(--n7-tx);
+}
+
+.asesoria-mcd .pq-grid .pq:nth-child(8) {
+  --pk: var(--n8);
+  --pkt: var(--n8-tx);
+}
+
+.asesoria-mcd .pq-grid .pq {
+  border-width: 2px;
+  background: #fff;
+}
+
+.asesoria-mcd .hojas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  padding-top: 14px;
+}
+
+.asesoria-mcd .hoja {
+  position: relative;
+  background: #fff;
+  border: 2px solid var(--hk);
+  border-radius: var(--r);
+  padding: 34px 22px 22px;
+  box-shadow: 0 14px 28px -16px rgba(70, 30, 15, .5), 0 0 16px -4px var(--hk);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.asesoria-mcd .hoja-t {
+  position: absolute;
+  top: -17px;
+  left: 18px;
+  background: var(--hbg);
+  color: var(--htx);
+  border: 2px solid var(--hk);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  padding: 4px 14px 5px;
+  font-weight: 700;
+  font-size: .9rem;
+}
+
+.asesoria-mcd .hoja svg {
+  width: 38px;
+  height: 38px;
+  color: var(--hk);
+}
+
+.asesoria-mcd .hoja h3 {
+  font-size: 1.2rem;
+  color: var(--htx);
+}
+
+.asesoria-mcd .hoja p {
+  margin: 0;
+}
+
+.asesoria-mcd .hoja ul {
+  list-style: none;
+  margin: auto 0 0;
+  padding: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.asesoria-mcd .hoja li {
+  border: 1.5px solid var(--hk);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-weight: 700;
+  font-size: .88rem;
+  background: var(--hbg);
+  color: var(--htx);
+}
+
+.asesoria-mcd .hoja:nth-child(1) {
+  --hk: var(--n1);
+  --hbg: var(--n1-bg);
+  --htx: var(--n1-tx);
+}
+
+.asesoria-mcd .hoja:nth-child(2) {
+  --hk: var(--n2);
+  --hbg: var(--n2-bg);
+  --htx: var(--n2-tx);
+}
+
+.asesoria-mcd .hoja:nth-child(3) {
+  --hk: var(--n3);
+  --hbg: var(--n3-bg);
+  --htx: var(--n3-tx);
+}
+
+.asesoria-mcd .hoja ul li.c1 {
+  border-color: var(--k1);
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .hoja ul li.c2 {
+  border-color: var(--k2);
+  background: var(--k2-bg);
+  color: var(--k2-tx);
+}
+
+.asesoria-mcd .hoja ul li.c3 {
+  border-color: var(--k3);
+  background: var(--k3-bg);
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd .hoja ul li.c4 {
+  border-color: var(--k4);
+  background: var(--k4-bg);
+  color: var(--k4-tx);
+}
+
+.asesoria-mcd .hoja ul li.c5 {
+  border-color: var(--k5);
+  background: var(--k5-bg);
+  color: var(--k5-tx);
+}
+
+.asesoria-mcd .hoja ul li.c6 {
+  border-color: var(--k6);
+  background: var(--k6-bg);
+  color: var(--k6-tx);
+}
+
+.asesoria-mcd table.dic.dif {
+  min-width: 0;
+}
+
+.asesoria-mcd table.dif tbody tr td {
+  vertical-align: top;
+}
+
+.asesoria-mcd .leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin: 14px 0 0;
+}
+
+.asesoria-mcd .leyenda .lg-t {
+  font-weight: 700;
+}
+
+.asesoria-mcd .leyenda .lg {
+  border: 2px solid var(--lk);
+  background: var(--lbg);
+  color: var(--ltx);
+  border-radius: 6px;
+  padding: 3px 12px;
+  font-weight: 700;
+  font-size: .92rem;
+}
+
+.asesoria-mcd table.dif tr.sx1 td {
+  background: var(--n3-bg);
+}
+
+.asesoria-mcd .leyenda .sx1 {
+  --lk: var(--n3);
+  --lbg: var(--n3-bg);
+  --ltx: var(--n3-tx);
+}
+
+.asesoria-mcd table.dif tr.sx2 td {
+  background: var(--n2-bg);
+}
+
+.asesoria-mcd .leyenda .sx2 {
+  --lk: var(--n2);
+  --lbg: var(--n2-bg);
+  --ltx: var(--n2-tx);
+}
+
+.asesoria-mcd table.dif tr.sx3 td {
+  background: var(--n4-bg);
+}
+
+.asesoria-mcd .leyenda .sx3 {
+  --lk: var(--n4);
+  --lbg: var(--n4-bg);
+  --ltx: var(--n4-tx);
+}
+
+@media (max-width: 860px) {
+  .asesoria-mcd .hojas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media print {
+
+  .asesoria-mcd .hoja,
+  .asesoria-mcd .leyenda {
+    break-inside: avoid;
+  }
+
+  .asesoria-mcd .hojas {
+    gap: 16pt;
+  }
+
+  .asesoria-mcd .portada-in {
+    padding-right: 0;
+  }
+
+  .asesoria-mcd.ahorro .acc-item,
+  .asesoria-mcd.ahorro .acc-item:has(.acc-h[aria-expanded="true"]),
+  .asesoria-mcd.ahorro .hoja li,
+  .asesoria-mcd.ahorro .hoja-t,
+  .asesoria-mcd.ahorro table.dif tr td,
+  .asesoria-mcd.ahorro .leyenda .lg {
+    background: #fff !important;
+  }
+}
+
+.asesoria-mcd table.dif td {
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+}
+
+.asesoria-mcd .tab-caja {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.asesoria-mcd .tab-caja.ancha {
+  grid-column: span 2;
+}
+
+@media (max-width: 860px) {
+  .asesoria-mcd .tab-caja.ancha {
+    grid-column: auto;
+  }
+}
+
+/* Cajas TAB: ocupan todo el ancho de cada fila (las anchas, el doble) */
+.asesoria-mcd .tabs-val {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.asesoria-mcd .tabs-val .tab-caja {
+  flex: 1 1 260px;
+  grid-column: auto;
+}
+
+.asesoria-mcd .tabs-val .tab-caja.ancha {
+  flex: 2 1 520px;
+}
+
+/* ---------- Ajustes v3 ---------- */
+.asesoria-mcd .acc-item:has(.acc-h[aria-expanded="true"]) {
+  background: #fff !important;
+}
+
+.asesoria-mcd .casc {
+  position: sticky;
+  bottom: 14px;
+  z-index: 15;
+  margin-right: 62px;
+  background: #fff;
+  border: 2px solid var(--k5);
+  box-shadow: 0 10px 28px -10px rgba(70, 30, 15, .55);
+}
+
+.asesoria-mcd .casc[hidden] {
+  display: none;
+}
+
+.asesoria-mcd .casc-def {
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+
+/* ---------- Ajustes v4: estilo Fichero en la portada y en la ficha de una fila ---------- */
+.asesoria-mcd .arte {
+  opacity: 1;
+  width: 330px;
+  right: 56px;
+}
+
+.asesoria-mcd .fich {
+  position: relative;
+  height: 282px;
+}
+
+.asesoria-mcd .fich .fi {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 150px;
+  padding: 24px 16px 10px;
+  background-color: #fff;
+  background-image: repeating-linear-gradient(#fff 0 25px, #EFD9CF 25px 26px);
+  border: 2px solid rgba(60, 30, 20, .35);
+  border-radius: var(--r);
+  font-family: var(--mf);
+  font-size: .84rem;
+  color: var(--ink2);
+  box-shadow: 0 14px 26px -12px rgba(0, 0, 0, .55);
+}
+
+.asesoria-mcd .fich .fi .t {
+  position: absolute;
+  top: -17px;
+  left: 14px;
+  padding: 4px 12px 5px;
+  border: 2px solid;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  font-family: var(--bf);
+  font-weight: 700;
+  font-size: .85rem;
+}
+
+.asesoria-mcd .fich .fi1 {
+  top: 0;
+}
+
+.asesoria-mcd .fich .fi2 {
+  top: 62px;
+  left: 14px;
+  right: -14px;
+}
+
+.asesoria-mcd .fich .fi3 {
+  top: 124px;
+  left: 28px;
+  right: -28px;
+}
+
+.asesoria-mcd .fich .fi1 .t {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  border-color: var(--k1);
+}
+
+.asesoria-mcd .fich .fi2 .t {
+  background: var(--k5-bg);
+  color: var(--k5-tx);
+  border-color: var(--k5);
+}
+
+.asesoria-mcd .fich .fi3 .t {
+  background: var(--k6-bg);
+  color: var(--k6-tx);
+  border-color: var(--k6);
+}
+
+@media (min-width: 1101px) {
+  .asesoria-mcd .portada-in {
+    padding-right: 420px;
+  }
+}
+
+.asesoria-mcd .fch {
+  position: relative;
+  background: #fff;
+  border: 2px solid var(--k1);
+  border-radius: var(--r);
+  padding: 30px 22px 12px;
+  box-shadow: 0 14px 28px -16px rgba(70, 30, 15, .5), 0 0 16px -4px var(--k1);
+  margin-top: 18px;
+}
+
+.asesoria-mcd .fch-t {
+  position: absolute;
+  top: -17px;
+  left: 16px;
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  border: 2px solid var(--k1);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  padding: 4px 14px 5px;
+  font-weight: 700;
+  font-size: .9rem;
+}
+
+.asesoria-mcd .fch-r {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 14px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1.5px dashed var(--line);
+}
+
+.asesoria-mcd .fch-r:last-child {
+  border-bottom: 0;
+}
+
+.asesoria-mcd .fch-l {
+  justify-self: start;
+  border: 1.5px solid;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-weight: 700;
+  font-size: .88rem;
+}
+
+.asesoria-mcd .fch-l.c1 {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  border-color: var(--k1);
+}
+
+.asesoria-mcd .fch-l.c2 {
+  background: var(--k2-bg);
+  color: var(--k2-tx);
+  border-color: var(--k2);
+}
+
+.asesoria-mcd .fch-l.c3 {
+  background: var(--k3-bg);
+  color: var(--k3-tx);
+  border-color: var(--k3);
+}
+
+.asesoria-mcd .fch-l.c4 {
+  background: var(--k4-bg);
+  color: var(--k4-tx);
+  border-color: var(--k4);
+}
+
+.asesoria-mcd .fch-l.c5 {
+  background: var(--k5-bg);
+  color: var(--k5-tx);
+  border-color: var(--k5);
+}
+
+.asesoria-mcd .fch-l.c6 {
+  background: var(--k6-bg);
+  color: var(--k6-tx);
+  border-color: var(--k6);
+}
+
+@media (max-width: 860px) {
+  .asesoria-mcd .fch-r {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+}
+
+@media print {
+  .asesoria-mcd .fch {
+    break-inside: avoid;
+  }
+
+  .asesoria-mcd .fich .fi {
+    box-shadow: none;
+  }
+
+  .asesoria-mcd .portada-in {
+    padding-right: 0;
+  }
+
+  .asesoria-mcd.ahorro .fch-l,
+  .asesoria-mcd.ahorro .fch-t {
+    background: #fff !important;
+  }
+}
