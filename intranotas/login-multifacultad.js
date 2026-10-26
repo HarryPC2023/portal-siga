@@ -552,19 +552,9 @@ function numeroOMulo(valor) {
 async function guardarResultadoSync(userId, periodo, cursos) {
     if (!cursos.length) return;
 
-    const filasFormulas = cursos.map((c) => ({
-        codigo_curso: c.codigo,
-        seccion: c.seccion,
-        periodo,
-        formula_practicas: c.formula_practicas,
-        formula_nota_final: c.formula_nota_final,
-        creditos: c.creditos,
-    }));
-    const { error: errorFormulas } = await supabase
-        .from('formulas_curso')
-        .upsert(filasFormulas, { onConflict: 'codigo_curso,seccion,periodo' });
-    if (errorFormulas) throw errorFormulas;
-
+    // Primero las notas del alumno y DESPUÉS las fórmulas: la política de seguridad
+    // de formulas_curso solo deja escribir la fórmula de un curso que el alumno ya
+    // tiene guardado en notas_curso, así que las notas tienen que ir antes.
     const filasNotas = cursos.map((c) => ({
         user_id: userId,
         periodo,
@@ -580,6 +570,19 @@ async function guardarResultadoSync(userId, periodo, cursos) {
         .from('notas_curso')
         .upsert(filasNotas, { onConflict: 'user_id,periodo,codigo_curso' });
     if (errorNotas) throw errorNotas;
+
+    const filasFormulas = cursos.map((c) => ({
+        codigo_curso: c.codigo,
+        seccion: c.seccion,
+        periodo,
+        formula_practicas: c.formula_practicas,
+        formula_nota_final: c.formula_nota_final,
+        creditos: c.creditos,
+    }));
+    const { error: errorFormulas } = await supabase
+        .from('formulas_curso')
+        .upsert(filasFormulas, { onConflict: 'codigo_curso,seccion,periodo' });
+    if (errorFormulas) throw errorFormulas;
 }
 
 /* Extrae el texto del PDF (pdf.js) y lo pasa por el parser + guardado
