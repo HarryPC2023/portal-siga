@@ -260,3 +260,65 @@
     font-style: normal;
     font-weight: 600;
 }
+
+
+/* Avisar y eliminar pedidos (dentro de cada fila desplegada) */
+.da-quienes li.da-acc {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(102, 0, 204, 0.15);
+}
+
+.da-acc-btns {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.da-nota {
+    font-size: 0.72rem;
+    color: #666;
+}
+
+.da-av {
+    color: #137A52;
+    font-weight: 600;
+}
+
+.da-del {
+    font: 600 0.72rem 'Poppins', sans-serif;
+    border: 1.5px solid #B3261E;
+    color: #B3261E;
+    background: #fff;
+    border-radius: 999px;
+    padding: 5px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.da-del:hover {
+    background: #B3261E;
+    color: #fff;
+}
+
+.da-ok:disabled,
+.da-del:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.da-estado {
+    margin: 0 0 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #137A52;
+}
+
+.da-estado:empty {
+    display: none;
+}

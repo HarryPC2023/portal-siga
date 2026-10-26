@@ -2,7 +2,9 @@
 //
 // Hace dos cosas, sin tocar el resto de Admin:
 //  1) Agrega la pestaña "Demanda de Asesorías": qué piden más los alumnos
-//     ("Lo necesito"), los pedidos de curso y los reportes de error.
+//     ("Lo necesito", con quién lo pidió), los pedidos de curso y los reportes
+//     de error. En cada fila de "Lo que más piden" puedes AVISAR a quienes lo
+//     pidieron cuando ya esté publicado, o ELIMINAR esos pedidos.
 //  2) Completa la pestaña "Asesorías propuestas" con los datos nuevos del
 //     formulario (tipo de aporte, con o sin nombre, autorización) y con un
 //     botón "Avisar: ya está publicada" que le manda una notificación
@@ -20,7 +22,7 @@
 // asesorias_propuestas y notificaciones (avisos personales).
 // El SQL está en asesorias-admin.sql y notificaciones-personales.sql.
 import { supabase } from './auth-siga.js?v=9';
-import { CURSOS } from './asesorias-cursos.js?v=1';
+import { CURSOS, EVALUACIONES, estadoEvaluacion } from './asesorias-cursos.js?v=1';
 
 const LS_VISTO = 'siga_admin_visto_demanda';
 const $ = (id) => document.getElementById(id);
@@ -29,6 +31,7 @@ let ayuda = { escapeHtml: null, formatearFecha: null, confirmarAccion: null };
 let panel = null;
 let tabBtn = null;
 let cargado = false;
+let estadoTimer = null;
 
 // ───────────── Utilidades ─────────────
 const esc = (v) => (ayuda.escapeHtml ? ayuda.escapeHtml(v) : String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
@@ -146,8 +149,53 @@ function marcarVista() {
     pintarGlobito(0);
 }
 
-// ───────────── Bloque 1: lo que más piden (y quién lo pidió) ─────────────
-async function pintarConteo() {
+// ───────────── Bloque 1: lo que más piden (quién, avisar y eliminar) ─────────────
+const ETQ_SIN_EV = 'Sin evaluación específica';
+
+// Mensajito de resultado debajo de la ayuda del bloque (se borra solo).
+function estado(texto) {
+    const el = $('daEstado');
+    if (!el) return;
+    el.textContent = texto || '';
+    clearTimeout(estadoTimer);
+    if (texto) estadoTimer = setTimeout(() => { el.textContent = ''; }, 7000);
+}
+
+// Claves de las filas que están desplegadas (para reabrirlas después de avisar o eliminar).
+function filasAbiertas() {
+    return new Set([...$('daConteo').querySelectorAll('.da-fila.abierta')].map((x) => x.dataset.clave));
+}
+
+// ¿Ya está publicado lo que pidieron? Si sí, arma el aviso que se les manda.
+//  - Con evaluación: avisa de esa evaluación (un solo aviso por persona).
+//  - Sin evaluación (votos de cuando no se podía elegir): avisa por curso, con la
+//    lista de lo que ya hay. Si después publicas algo más, la lista cambia y se
+//    puede volver a avisar (el origen del aviso incluye la lista).
+function infoAviso(codigo, evaluacion) {
+    const curso = CURSOS.find((c) => c.codigo === codigo);
+    if (!curso) return { publicada: false };
+    if (evaluacion) {
+        if (estadoEvaluacion(curso, evaluacion) !== 'disponible') return { publicada: false };
+        return {
+            publicada: true,
+            origen: `demanda:${codigo}:${evaluacion}`,
+            titulo: 'Ya está la asesoría que pediste',
+            mensaje: `«${evaluacion} · ${recorte(curso.nombre, 70)}» ya está en Asesorías.`,
+            enlace: `asesorias-curso.html?c=${curso.slug}&ev=${evaluacion}`,
+        };
+    }
+    const lista = EVALUACIONES.filter((e) => estadoEvaluacion(curso, e) === 'disponible');
+    if (!lista.length) return { publicada: false };
+    return {
+        publicada: true,
+        origen: `demanda:${codigo}:general:${lista.join('-')}`,
+        titulo: 'Ya hay asesorías de un curso que pediste',
+        mensaje: `Ya hay asesorías de ${recorte(curso.nombre, 70)}: ${lista.join(', ')}.`,
+        enlace: `asesorias-curso.html?c=${curso.slug}`,
+    };
+}
+
+async function pintarConteo(abrir = new Set()) {
     const cont = $('daConteo');
     const { data, error } = await supabase
         .from('asesorias_demanda')
@@ -157,48 +205,140 @@ async function pintarConteo() {
     if (error) { cont.innerHTML = `<p class="da-vacio">No se pudo cargar: ${esc(error.message)}</p>`; return 0; }
     if (!data.length) { cont.innerHTML = '<p class="da-vacio">Todavía nadie tocó "Lo necesito".</p>'; return 0; }
 
-    // Agrupa por curso + evaluación (evaluacion null = curso completo).
+    // Agrupa por curso + evaluación (evaluacion null = voto de cuando no se podía elegir).
     const grupos = new Map();
     data.forEach((r) => {
-        const k = `${r.codigo_curso}|${r.evaluacion || ''}`;
-        if (!grupos.has(k)) grupos.set(k, { codigo_curso: r.codigo_curso, evaluacion: r.evaluacion, filas: [] });
-        grupos.get(k).filas.push(r);
+        const clave = `${r.codigo_curso}|${r.evaluacion || ''}`;
+        if (!grupos.has(clave)) grupos.set(clave, { clave, codigo_curso: r.codigo_curso, evaluacion: r.evaluacion, filas: [] });
+        grupos.get(clave).filas.push(r);
     });
     const filas = [...grupos.values()]
-        .map((g) => ({ ...g, personas: new Set(g.filas.map((f) => f.user_id)).size }))
-        .sort((a, b) => b.personas - a.personas || nombreCurso(a.codigo_curso).localeCompare(nombreCurso(b.codigo_curso), 'es'));
+        .map((g) => ({
+            ...g,
+            ids: [...new Set(g.filas.map((f) => f.user_id))],
+            aviso: infoAviso(g.codigo_curso, g.evaluacion),
+        }))
+        .sort((a, b) => b.ids.length - a.ids.length || nombreCurso(a.codigo_curso).localeCompare(nombreCurso(b.codigo_curso), 'es'));
+
+    // Quiénes ya recibieron cada aviso (para "Avisados X de Y"). Tú puedes leer
+    // todas las notificaciones (política notif_select); si no se pudiera, se oculta ese dato.
+    const origenes = [...new Set(filas.map((f) => f.aviso.origen).filter(Boolean))];
+    const avisados = new Map();
+    let leyoAvisos = true;
+    if (origenes.length) {
+        const { data: ns, error: errN } = await supabase.from('notificaciones').select('destinatario, origen_id').in('origen_id', origenes);
+        if (errN || !ns) leyoAvisos = false;
+        else ns.forEach((n) => {
+            if (!avisados.has(n.origen_id)) avisados.set(n.origen_id, new Set());
+            avisados.get(n.origen_id).add(n.destinatario);
+        });
+    }
+    filas.forEach((f) => {
+        const ya = avisados.get(f.aviso.origen) || new Set();
+        f.yaAvisados = f.ids.filter((id) => ya.has(id));
+        f.pendientes = f.ids.filter((id) => !ya.has(id));
+    });
 
     const [mapa, yo] = await Promise.all([cargarQuien(data.map((r) => r.user_id)), miId()]);
-    const max = Math.max(...filas.map((f) => f.personas));
+    const max = Math.max(...filas.map((f) => f.ids.length));
     cont.innerHTML = filas.map((f, i) => {
+        const etiqueta = f.evaluacion
+            ? esc(f.evaluacion)
+            : `<span title="Votos de cuando no se podía elegir una evaluación">${ETQ_SIN_EV}</span>`;
         const quienes = [...f.filas]
             .sort((a, b) => (Date.parse(b.creado_en) || 0) - (Date.parse(a.creado_en) || 0))
-            .map((r) => `<li><b>${esc(quien(mapa, r.user_id))}</b>${r.user_id === yo ? ' <em>(tú)</em>' : ''} <span>· ${esc(fecha(r.creado_en))}</span></li>`)
+            .map((r) => {
+                const av = leyoAvisos && f.aviso.origen && f.yaAvisados.includes(r.user_id) ? ' <span class="da-av">· avisado ✓</span>' : '';
+                return `<li><b>${esc(quien(mapa, r.user_id))}</b>${r.user_id === yo ? ' <em>(tú)</em>' : ''} <span>· ${esc(fecha(r.creado_en))}</span>${av}</li>`;
+            })
             .join('');
+
+        let nota = '';
+        let botonAvisar = '';
+        if (!f.aviso.publicada) {
+            nota = '<span class="da-nota">Aún no está publicada: cuando la publiques podrás avisar aquí.</span>';
+        } else {
+            if (leyoAvisos) nota = `<span class="da-nota">Avisados ${f.yaAvisados.length} de ${f.ids.length}</span>`;
+            if (f.pendientes.length) {
+                botonAvisar = `<button type="button" class="da-ok" data-avisar="${i}">Avisar que ya está${leyoAvisos ? ` (${f.pendientes.length})` : ''}</button>`;
+            }
+        }
+        const acciones = `<li class="da-acc">${nota}<span class="da-acc-btns">${botonAvisar}<button type="button" class="da-del" data-eliminar="${i}">Eliminar</button></span></li>`;
+
         return `
-        <div class="da-fila" role="button" tabindex="0" aria-expanded="false" data-quienes="daQ${i}">
-            <div class="da-nombre">${esc(nombreCurso(f.codigo_curso))} <small>· ${f.evaluacion ? esc(f.evaluacion) : 'curso completo'}</small></div>
-            <div class="da-num">${f.personas} ${f.personas === 1 ? 'persona' : 'personas'} <span class="da-flecha">▾</span></div>
-            <div class="da-barra"><i style="width:${Math.max(6, Math.round((100 * f.personas) / max))}%"></i></div>
+        <div class="da-fila" role="button" tabindex="0" aria-expanded="false" data-clave="${esc(f.clave)}" data-quienes="daQ${i}">
+            <div class="da-nombre">${esc(nombreCurso(f.codigo_curso))} <small>· ${etiqueta}</small></div>
+            <div class="da-num">${f.ids.length} ${f.ids.length === 1 ? 'persona' : 'personas'} <span class="da-flecha">▾</span></div>
+            <div class="da-barra"><i style="width:${Math.max(6, Math.round((100 * f.ids.length) / max))}%"></i></div>
         </div>
-        <ul class="da-quienes" id="daQ${i}" hidden>${quienes}</ul>`;
+        <ul class="da-quienes" id="daQ${i}" hidden>${quienes}${acciones}</ul>`;
     }).join('');
 
     // Al tocar una fila se despliega la lista de quiénes lo pidieron.
     cont.querySelectorAll('.da-fila').forEach((fila) => {
         const alternar = () => {
             const lista = $(fila.dataset.quienes);
-            const abrir = lista.hidden;
-            lista.hidden = !abrir;
-            fila.setAttribute('aria-expanded', String(abrir));
-            fila.classList.toggle('abierta', abrir);
+            const abrirla = lista.hidden;
+            lista.hidden = !abrirla;
+            fila.setAttribute('aria-expanded', String(abrirla));
+            fila.classList.toggle('abierta', abrirla);
         };
         fila.addEventListener('click', alternar);
         fila.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternar(); }
         });
+        if (abrir.has(fila.dataset.clave)) alternar();
     });
-    return filas.reduce((s, f) => s + f.personas, 0);
+    cont.querySelectorAll('[data-avisar]').forEach((b) => b.addEventListener('click', () => avisarGrupo(filas[Number(b.dataset.avisar)], b)));
+    cont.querySelectorAll('[data-eliminar]').forEach((b) => b.addEventListener('click', () => eliminarGrupo(filas[Number(b.dataset.eliminar)], b)));
+    return filas.reduce((s, f) => s + f.ids.length, 0);
+}
+
+// Avisa (notificación personal) a quienes pidieron esto y aún no recibieron el aviso.
+async function avisarGrupo(f, btn) {
+    const a = f.aviso;
+    const n = f.pendientes.length;
+    const ok = await confirmar(
+        `${a.mensaje} Se enviará a ${n} ${n === 1 ? 'persona' : 'personas'}.`,
+        { titulo: '¿Avisar que ya está?', textoBoton: 'Sí, avisar' },
+    );
+    if (!ok) return;
+    btn.disabled = true;
+    let enviados = 0;
+    let fallidos = 0;
+    for (const id of f.pendientes) {
+        const r = await crearAvisoPersonal({
+            destinatario: id, tipo: 'asesorias', titulo: a.titulo, mensaje: a.mensaje, enlace: a.enlace, origen: a.origen,
+        });
+        if (r.ok) enviados += 1; else fallidos += 1;
+    }
+    estado(fallidos
+        ? `Avisé a ${enviados}; ${fallidos} no se pudo (mira la consola con F12).`
+        : `Aviso enviado a ${enviados} ${enviados === 1 ? 'persona' : 'personas'}.`);
+    await pintarConteo(filasAbiertas());
+}
+
+// Borra TODOS los pedidos de esa fila. No se puede deshacer.
+async function eliminarGrupo(f, btn) {
+    const n = f.filas.length;
+    const que = f.evaluacion ? `${f.evaluacion} · ${nombreCurso(f.codigo_curso)}` : `${nombreCurso(f.codigo_curso)} (${ETQ_SIN_EV.toLowerCase()})`;
+    const ok = await confirmar(
+        `Se borrarán ${n} ${n === 1 ? 'pedido' : 'pedidos'} de «${que}». No se puede deshacer.`,
+        { titulo: '¿Eliminar estos pedidos?', textoBoton: 'Sí, eliminar' },
+    );
+    if (!ok) return;
+    btn.disabled = true;
+    let consulta = supabase.from('asesorias_demanda').delete()
+        .eq('tipo', 'lo_necesito').eq('codigo_curso', f.codigo_curso);
+    consulta = f.evaluacion ? consulta.eq('evaluacion', f.evaluacion) : consulta.is('evaluacion', null);
+    const { data, error } = await consulta.select('id');
+    if (error || !data || !data.length) {
+        btn.disabled = false;
+        alert('No se pudo eliminar: ' + (error ? error.message : 'no se borró ninguna fila'));
+        return;
+    }
+    estado(`Se eliminaron ${data.length} ${data.length === 1 ? 'pedido' : 'pedidos'}.`);
+    await pintarConteo(filasAbiertas());
 }
 
 // ───────────── Bloques 2 y 3: pedidos y reportes ─────────────
@@ -293,7 +433,8 @@ function construirPestana() {
             <button type="button" class="da-btn" id="daActualizar">Actualizar</button>
         </div>
         <div class="da-bloque"><h3>Lo que más piden</h3>
-            <p class="da-sub">Personas que tocaron "Lo necesito", por curso y evaluación. Toca una fila para ver quiénes son y cuándo lo pidieron.</p>
+            <p class="da-sub">Personas que tocaron "Lo necesito", por curso y evaluación. Toca una fila para ver quiénes son, avisarles cuando ya esté publicada o eliminar sus pedidos.</p>
+            <p class="da-estado" id="daEstado" role="status"></p>
             <div id="daConteo"></div></div>
         <div class="da-bloque"><h3>Reportes de error</h3>
             <p class="da-sub">Lo que los alumnos encontraron mal en una asesoría. Corrige y marca "Resuelto".</p>
@@ -383,7 +524,7 @@ export function iniciarDemandaAsesorias(ayudantes = {}) {
     ayuda = { ...ayuda, ...ayudantes };
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = 'css/admin-asesorias.css?v=2';
+    css.href = 'css/admin-asesorias.css?v=3';
     document.head.appendChild(css);
     if (construirPestana()) refrescarGlobito();
     observarPropuestas();
