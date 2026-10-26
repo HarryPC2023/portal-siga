@@ -1,7 +1,7 @@
 // js/asesorias-portada.js — Portada de Asesorías: saludo, buscador de cursos,
 // "Continúa donde quedaste", "Comparte tu asesoría", filtros por ciclo y la
-// cuadrícula de cursos (con "Lo necesito" en los que aún no tienen material y
-// pastillas PC1, PC2… tocables para pedir una evaluación concreta).
+// cuadrícula de cursos (con pastillas PC1, PC2… tocables para pedir una evaluación
+// concreta; los cursos sin material llevan a la lista de evaluaciones del curso).
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
 import {
     CURSOS, EVALUACIONES, NOMBRE_EVALUACION, tieneContenido, ciclosDisponibles, planDelCurso,
@@ -104,7 +104,7 @@ function tarjeta(curso) {
     const meta = `${curso.creditos} créditos${plan}${con ? '' : ' · <span class="an-sinmat">aún sin material</span>'}`;
     const accion = con
         ? `<a class="an-btn" href="asesorias-curso.html?c=${encodeURIComponent(curso.slug)}">Abrir curso →</a>`
-        : `<button type="button" class="an-btn an-btn-ghost" data-lo="${esc(curso.codigo)}">Lo necesito</button>`;
+        : `<a class="an-btn an-btn-ghost" href="asesorias-curso.html?c=${encodeURIComponent(curso.slug)}">Ver evaluaciones →</a>`;
     return `
         <article class="an-curso" style="${estiloAttr(curso)}">
             <div class="an-c-top"><span class="an-glifo">${esc(estiloCurso(curso).glifo)}</span><span class="an-c-der">${cursoTieneNovedad(curso) ? '<span class="an-nuevo">Nuevo</span>' : ''}<span class="an-c-ciclo">Ciclo ${curso.ciclo}</span></span></div>
@@ -117,11 +117,6 @@ function tarjeta(curso) {
         </article>`;
 }
 
-function marcarLo(btn, activo) {
-    btn.textContent = activo ? 'Anotado ✓' : 'Lo necesito';
-    btn.classList.toggle('an-on', activo);
-}
-
 // Pastilla de evaluación pedida: verde y con ✓ (como "Anotado ✓" de la página del curso).
 function marcarPastilla(btn, activo) {
     const ev = btn.dataset.pv.split('|')[1];
@@ -130,10 +125,9 @@ function marcarPastilla(btn, activo) {
     btn.setAttribute('aria-pressed', String(activo));
 }
 
-// Pinta en la cuadrícula lo que este usuario ya pidió (curso completo y evaluaciones).
+// Pinta en la cuadrícula las evaluaciones que este usuario ya pidió.
 function marcarVotosEnGrid() {
     const grid = $('anGrid');
-    grid.querySelectorAll('[data-lo]').forEach((b) => marcarLo(b, votos.has(claveVoto(b.dataset.lo, null))));
     grid.querySelectorAll('[data-pv]').forEach((b) => {
         const [codigo, ev] = b.dataset.pv.split('|');
         marcarPastilla(b, votos.has(claveVoto(codigo, ev)));
@@ -154,18 +148,6 @@ function pintarCursos() {
     }
     $('anGrid').innerHTML = html;
     marcarVotosEnGrid();
-}
-
-async function alternarLo(btn) {
-    const codigo = btn.dataset.lo;
-    const k = claveVoto(codigo, null);
-    const activar = !votos.has(k);
-    marcarLo(btn, activar);
-    btn.disabled = true;
-    const ok = await alternarVoto(codigo, null, activar);
-    btn.disabled = false;
-    if (ok) { if (activar) votos.add(k); else votos.delete(k); }
-    else { marcarLo(btn, !activar); aviso('No se pudo guardar. Intenta de nuevo en un momento.', 'error'); }
 }
 
 async function alternarPastilla(btn) {
@@ -292,8 +274,6 @@ saludar();
 $('anBuscar').addEventListener('input', (e) => { consulta = e.target.value; pintarCursos(); });
 $('anBuscarBtn').addEventListener('click', () => { pintarCursos(); $('anGrid').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 $('anGrid').addEventListener('click', (e) => {
-    const lo = e.target.closest('[data-lo]');
-    if (lo) { alternarLo(lo); return; }
     const pv = e.target.closest('[data-pv]');
     if (pv) { alternarPastilla(pv); return; }
     const pedir = e.target.closest('[data-pedir]');

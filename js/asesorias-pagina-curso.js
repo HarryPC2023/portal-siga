@@ -99,12 +99,14 @@ function cabecera() {
 function pintar() {
     document.title = `${curso.nombre} - Asesorías - SIGA`;
     if (!tieneContenido(curso)) {
+        // Curso sin material: se muestra la misma lista de evaluaciones, cada una con su "Lo necesito".
         raiz.innerHTML = `${cabecera()}
             <div class="an-curso-grid" id="anGrid">
-                <section class="an-card an-vacio-curso">
-                    <h2 style="font-size:16px">Este curso aún no tiene material</h2>
-                    <p>Todavía no hay asesorías publicadas para ${esc(curso.nombre)}. Si lo necesitas, avísanos: así sabemos cuál preparar primero.</p>
-                    <button type="button" class="an-btn an-btn-ghost" data-lo-curso>Lo necesito</button>
+                <section class="an-ruta">
+                    <h2>Ruta de evaluaciones</h2>
+                    <p class="an-ruta-nota">Este curso aún no tiene material. Toca «Lo necesito» en la evaluación que quieras: así sabemos cuál preparar primero.</p>
+                    <div class="an-grp">Evaluaciones</div>
+                    ${EVALUACIONES.map(filaEvaluacion).join('')}
                 </section>
             </div>`;
         return;
@@ -130,8 +132,6 @@ function marcarEtiqueta(btn, activo) {
 
 function aplicarVotos() {
     raiz.querySelectorAll('[data-estado="falta"]').forEach((b) => marcarEtiqueta(b, votos.has(claveVoto(curso.codigo, b.dataset.ev))));
-    const lc = raiz.querySelector('[data-lo-curso]');
-    if (lc) { const on = votos.has(claveVoto(curso.codigo, null)); lc.textContent = on ? 'Anotado ✓' : 'Lo necesito'; lc.classList.toggle('an-on', on); }
 }
 
 async function alternarVotoUI(evaluacion, pintarEstado, boton) {
@@ -163,12 +163,6 @@ function conectar() {
         if (rep) {
             const r = curso.recursos.find((x) => x.id === rep.dataset.reportar);
             if (r) abrirReporte({ codigo_curso: curso.codigo, recurso_id: r.id, titulo: r.titulo });
-            return;
-        }
-
-        const lc = e.target.closest('[data-lo-curso]');
-        if (lc) {
-            alternarVotoUI(null, (on) => { lc.textContent = on ? 'Anotado ✓' : 'Lo necesito'; lc.classList.toggle('an-on', on); }, lc);
             return;
         }
 

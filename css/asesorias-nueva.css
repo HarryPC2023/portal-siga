@@ -1276,3 +1276,11 @@ button.an-p-pedir.an-pedida:hover {
   background: var(--brand-azul-tinte);
   color: var(--brand-azul);
 }
+
+
+/* Nota de la página de un curso sin material */
+.an-ruta-nota {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
