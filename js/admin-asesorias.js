@@ -416,8 +416,6 @@ async function cargarTodo() {
 // ───────────── Uso de las asesorías (tabla asesorias_eventos) ─────────────
 // Quién abrió, imprimió o descargó el Excel de cada asesoría web. Solo lo lees tú
 // (la política RLS de la tabla). Tus propias pruebas se ocultan por defecto.
-const ACCIONES_USO = { abrio: 'Abrió', imprimio: 'Imprimió / PDF', excel: 'Descargó Excel' };
-const MAX_EVENTOS_POR_FILA = 200;
 let usoIncluirYo = false;
 let usoTimer = null;
 
@@ -494,21 +492,35 @@ async function pintarUso(abrir = new Set()) {
     const mapa = await cargarQuien(eventos.map((r) => r.user_id));
     const max = Math.max(...filas.map((f) => f.personas));
 
+    // Una sección por acción, con una línea por persona (cuántas veces y la última vez).
+    const seccionUso = (titulo, evs, conEjemplos) => {
+        const porPersona = new Map();
+        evs.forEach((e) => { // los eventos vienen del más nuevo al más antiguo
+            if (!porPersona.has(e.user_id)) porPersona.set(e.user_id, { id: e.user_id, veces: 0, ultima: e.creado_en, ejemplos: [] });
+            const p = porPersona.get(e.user_id);
+            p.veces += 1;
+            if (e.detalle && !p.ejemplos.includes(e.detalle)) p.ejemplos.push(e.detalle);
+        });
+        const personas = [...porPersona.values()];
+        const cab = `<li style="margin-top:8px;font-weight:700;color:#4B2390">${titulo} — ${plural(personas.length, 'persona', 'personas')} <span style="font-weight:400">(${plural(evs.length, 'vez', 'veces')})</span></li>`;
+        if (!personas.length) return `${cab}<li><span>Nadie todavía.</span></li>`;
+        return cab + personas.map((p) => `<li><b>${esc(quien(mapa, p.id))}</b>${p.id === yo ? ' <em>(tú)</em>' : ''} <span>· ${plural(p.veces, 'vez', 'veces')}${conEjemplos && p.ejemplos.length ? ` · ${esc(p.ejemplos.join(', '))}` : ''} · última: ${esc(fecha(p.ultima))}</span></li>`).join('');
+    };
+
     cont.innerHTML = filas.map((f, i) => {
-        const resumen = [
-            `<li><span>Abrieron: <b>${plural(f.abrieron, 'persona', 'personas')}</b> (${plural(f.abrioVeces, 'vez', 'veces')}) · Imprimieron: <b>${plural(f.imprimieron, 'persona', 'personas')}</b> (${plural(f.imprimioVeces, 'vez', 'veces')}) · Excel: <b>${plural(f.excelPersonas, 'persona', 'personas')}</b> (${plural(f.excelVeces, 'descarga', 'descargas')})</span></li>`,
-            f.porEjemplo.length ? `<li><span>Excel por ejemplo: ${f.porEjemplo.map(([k, n]) => `${esc(k)} (${n})`).join(', ')}</span></li>` : '',
+        const de = (a) => f.eventos.filter((e) => e.accion === a);
+        const detalle = [
+            seccionUso('👁 Abrieron', de('abrio'), false),
+            seccionUso('🖨️ Imprimieron / PDF', de('imprimio'), false),
+            seccionUso('📊 Descargaron Excel', de('excel'), true),
         ].join('');
-        const mostrados = f.eventos.slice(0, MAX_EVENTOS_POR_FILA);
-        const lista = mostrados.map((e) => `<li><b>${esc(quien(mapa, e.user_id))}</b>${e.user_id === yo ? ' <em>(tú)</em>' : ''} <span>· ${ACCIONES_USO[e.accion] || esc(e.accion)}${e.detalle ? ` (${esc(e.detalle)})` : ''} · ${esc(fecha(e.creado_en))}</span></li>`).join('');
-        const resto = f.eventos.length > mostrados.length ? `<li><span>… y ${f.eventos.length - mostrados.length} registros más antiguos.</span></li>` : '';
         return `
         <div class="da-fila" role="button" tabindex="0" aria-expanded="false" data-clave="${esc(f.clave)}" data-quienes="daU${i}">
             <div class="da-nombre">${esc(nombreCursoPorSlug(f.curso))} <small>· ${esc(String(f.evaluacion).toUpperCase())} · ${esc(f.periodo)}</small></div>
             <div class="da-num">${plural(f.personas, 'persona', 'personas')} <span class="da-flecha">▾</span></div>
             <div class="da-barra"><i style="width:${Math.max(6, Math.round((100 * f.personas) / max))}%"></i></div>
         </div>
-        <ul class="da-quienes" id="daU${i}" hidden>${resumen}${lista}${resto}</ul>`;
+        <ul class="da-quienes" id="daU${i}" hidden>${detalle}</ul>`;
     }).join('');
 
     // Al tocar una fila se despliega el detalle de quién hizo qué.
