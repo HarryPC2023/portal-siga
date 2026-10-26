@@ -5,7 +5,7 @@
 // cliente es solo para no dejar la pantalla mostrando "Cargando..."
 // eternamente a alguien más y redirigirlo de vuelta con claridad.
 import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
-import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.js?v=3';
+import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.js?v=4';
 import { iniciarFaqAsesorias } from './admin-faq.js?v=1';
 import { iniciarBandejaPreguntas } from './admin-bandeja.js?v=1';
 
