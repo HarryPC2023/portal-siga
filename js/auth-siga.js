@@ -16,8 +16,52 @@ export async function obtenerSesion() {
   return data.session;
 }
 
+// ───────────── Contraseñas: largo mínimo y contraseñas filtradas ─────────────
+// El proyecto está en el plan Free de Supabase, que no incluye "Leaked password
+// protection". Para compensarlo, antes de crear o cambiar una contraseña se
+// consulta la API pública Pwned Passwords (Have I Been Pwned) con "k-anonymity":
+// al servidor solo viajan 5 caracteres del hash SHA-1; la contraseña nunca sale
+// del navegador. Si la API no responde, NO se bloquea al usuario.
+// Ojo: esto protege a quien usa el formulario. A quien llame a la API de Supabase
+// a mano solo le aplica el largo mínimo configurado en Authentication.
+const LARGO_MINIMO_CONTRASENA = 8;
+
+async function contrasenaFiltrada(contrasena) {
+  const control = new AbortController();
+  const plazo = setTimeout(() => control.abort(), 4000);
+  try {
+    const hash = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(contrasena));
+    const hex = [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    const resp = await fetch(`https://api.pwnedpasswords.com/range/${hex.slice(0, 5)}`, { signal: control.signal });
+    if (!resp.ok) return false;
+    const resto = hex.slice(5);
+    return (await resp.text()).split('\n').some((linea) => {
+      const [sufijo, veces] = linea.trim().split(':');
+      return sufijo === resto && Number(veces) > 0;
+    });
+  } catch (e) {
+    console.warn('No se pudo revisar la contraseña contra filtraciones:', e);
+    return false;
+  } finally {
+    clearTimeout(plazo);
+  }
+}
+
+// Devuelve null si la contraseña sirve; si no, un error con { codigo, message }.
+async function revisarContrasenaNueva(contrasena) {
+  if (!contrasena || contrasena.length < LARGO_MINIMO_CONTRASENA) {
+    return { codigo: 'contrasena_corta', message: `La contraseña debe tener al menos ${LARGO_MINIMO_CONTRASENA} caracteres.` };
+  }
+  if (await contrasenaFiltrada(contrasena)) {
+    return { codigo: 'contrasena_filtrada', message: 'Esa contraseña aparece en filtraciones públicas. Elige otra, por favor.' };
+  }
+  return null;
+}
+
 /** Crea una cuenta nueva con correo + contraseña. */
 export async function registrarConCorreo(correo, contrasena) {
+  const problema = await revisarContrasenaNueva(contrasena);
+  if (problema) return { ok: false, error: problema, requiereConfirmacion: false };
   const { data, error } = await supabase.auth.signUp({ email: correo, password: contrasena });
   return {
     ok: !error,
@@ -52,6 +96,8 @@ export async function recuperarContrasena(correo) {
 
 /** Establece una nueva contraseña (se usa durante el flujo de recuperación). */
 export async function establecerNuevaContrasena(nuevaContrasena) {
+  const problema = await revisarContrasenaNueva(nuevaContrasena);
+  if (problema) return { ok: false, error: problema };
   const { error } = await supabase.auth.updateUser({ password: nuevaContrasena });
   return { ok: !error, error };
 }

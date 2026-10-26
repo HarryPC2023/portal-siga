@@ -11,7 +11,7 @@
 
 import { supabase, establecerNuevaContrasena } from './auth-siga.js?v=9';
 
-const MIN_CONTRASENA = 6;
+const MIN_CONTRASENA = 8;
 
 const ICONOS = {
     candado: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/>',
@@ -175,7 +175,7 @@ export function montarSeguridad(sesion) {
             boton.textContent = 'Actualizar contraseña';
             if (!ok) {
                 console.error('Error al cambiar contraseña:', error);
-                mensaje.textContent = 'No se pudo actualizar. Intenta de nuevo.';
+                mensaje.textContent = error?.codigo ? error.message : 'No se pudo actualizar. Intenta de nuevo.';
                 mensaje.classList.add('error');
                 boton.disabled = false;
                 return;

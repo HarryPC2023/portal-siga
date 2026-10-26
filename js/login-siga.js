@@ -135,6 +135,7 @@ async function manejarCrear(e) {
   }
   const { ok, error, requiereConfirmacion } = await registrarConCorreo(datos.correo, datos.contrasena);
   if (!ok) {
+    if (error?.codigo) { mostrarMsg(error.message); return; }
     mostrarMsg(error?.message?.toLowerCase().includes('already registered')
       ? 'Ese correo ya tiene una cuenta. Prueba iniciar sesión.'
       : 'No se pudo crear la cuenta. Intenta de nuevo.');
@@ -157,12 +158,12 @@ async function manejarRecuperar(e) {
 async function manejarNuevaContrasena(e) {
   e.preventDefault();
   const datos = Object.fromEntries(new FormData(e.target).entries());
-  const { ok } = await establecerNuevaContrasena(datos.nueva);
+  const { ok, error } = await establecerNuevaContrasena(datos.nueva);
   if (ok) {
     mostrarMsg('¡Contraseña actualizada! Entrando...');
     setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
   } else {
-    mostrarMsg('No se pudo actualizar. Intenta de nuevo.');
+    mostrarMsg(error?.codigo ? error.message : 'No se pudo actualizar. Intenta de nuevo.');
   }
 }
 
