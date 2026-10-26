@@ -104,7 +104,7 @@ function tarjeta(curso) {
     const meta = `${curso.creditos} créditos${plan}${con ? '' : ' · <span class="an-sinmat">aún sin material</span>'}`;
     const accion = con
         ? `<a class="an-btn" href="asesorias-curso.html?c=${encodeURIComponent(curso.slug)}">Abrir curso →</a>`
-        : `<a class="an-btn an-btn-ghost" href="asesorias-curso.html?c=${encodeURIComponent(curso.slug)}">Ver evaluaciones →</a>`;
+        : `<a class="an-btn an-btn-ghost" href="asesorias-curso.html?c=${encodeURIComponent(curso.slug)}">Abrir curso →</a>`;
     return `
         <article class="an-curso" style="${estiloAttr(curso)}">
             <div class="an-c-top"><span class="an-glifo">${esc(estiloCurso(curso).glifo)}</span><span class="an-c-der">${cursoTieneNovedad(curso) ? '<span class="an-nuevo">Nuevo</span>' : ''}<span class="an-c-ciclo">Ciclo ${curso.ciclo}</span></span></div>
