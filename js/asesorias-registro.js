@@ -32,7 +32,23 @@ const VENTANA_MS = {
 
 if (RUTA) {
     const [, curso, periodo, evaluacion] = RUTA;
-    let token = null;
+    // Lee el token de la sesión guardada en el navegador de forma SÍNCRONA. Así, si se imprime
+    // desde el botón del visor (que carga la asesoría en un iframe oculto y llama a print()
+    // apenas termina de cargar), el token ya está listo aunque getSession() aún no responda.
+    function tokenGuardado() {
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (!/^sb-.+-auth-token$/.test(k)) continue;
+                const v = JSON.parse(localStorage.getItem(k));
+                const ses = v && (v.access_token ? v : v.currentSession);
+                if (ses && ses.access_token && (!ses.expires_at || ses.expires_at * 1000 > Date.now() + 10000)) return ses.access_token;
+            }
+        } catch (e) { /* sin almacenamiento o formato distinto: se usará getSession() */ }
+        return null;
+    }
+
+    let token = tokenGuardado();
 
     const guardarSesion = (s) => { token = (s && s.access_token) || null; };
 
