@@ -135,7 +135,8 @@ export async function cargarMisVotos() {
         const { data, error } = await supabase
             .from('asesorias_demanda')
             .select('codigo_curso, evaluacion')
-            .eq('tipo', 'lo_necesito');
+            .eq('tipo', 'lo_necesito')
+            .eq('user_id', sesion.user.id);
         if (error) { console.warn('No se pudieron leer tus "Lo necesito":', error); return new Set(); }
         return new Set((data || []).map((r) => clave(r.codigo_curso, r.evaluacion)));
     } catch (e) {
@@ -156,7 +157,7 @@ export async function alternarVoto(codigo, evaluacion, activar) {
         return true;
     }
     let consulta = supabase.from('asesorias_demanda').delete()
-        .eq('tipo', 'lo_necesito').eq('codigo_curso', codigo);
+        .eq('tipo', 'lo_necesito').eq('user_id', sesion.user.id).eq('codigo_curso', codigo);
     consulta = evaluacion ? consulta.eq('evaluacion', evaluacion) : consulta.is('evaluacion', null);
     const { error } = await consulta;
     if (error) { console.error('Quitar Lo necesito:', error); return false; }
