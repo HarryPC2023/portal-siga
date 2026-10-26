@@ -65,6 +65,32 @@ const RUTA_LIB = '../../../../libs/';
 El periodo en el prefijo evita que dos ciclos de la misma evaluación se
 pisen el progreso guardado en el navegador.)
 
+## 3 bis. Activar el registro de uso (una línea)
+
+Para que Admin → «Actividad de Asesorías» sepa quién abre, imprime o
+descarga la asesoría, agrega **una línea** en su `index.html`, justo debajo
+de la etiqueta `<script src="scripts.js...">`:
+
+```
+<script type="module" src="../../../../../js/asesorias-registro.js"></script>
+```
+
+- Son 5 `../` porque el `index.html` vive en
+  `assets/asesorias/<curso>/<periodo>/<evaluacion>/` y `js/` está en la raíz.
+- El curso, el periodo y la evaluación salen solos de la ruta de la carpeta:
+  no hay nada más que configurar.
+- Registra tres cosas: **abrió**, **imprimió / PDF** (se abrió el diálogo de
+  impresión; el navegador no avisa si al final se imprimió) y **Excel**.
+- Si la asesoría tiene botón de descarga en Excel, agrega esta línea en la
+  función que descarga, justo antes del `setTimeout` que libera el archivo
+  (cambia `id` por el nombre del ejemplo descargado):
+
+```
+try { window.dispatchEvent(new CustomEvent('siga:asesoria-evento', { detail: { accion: 'excel', detalle: id } })); } catch (e) { /* el registro nunca debe romper la descarga */ }
+```
+
+- Sin sesión iniciada no se anota nada.
+
 ## 4. Probar en local
 
 Con Go Live de VS Code, abre:
@@ -74,6 +100,10 @@ http://127.0.0.1:5500/assets/asesorias/<curso>/<periodo>/<evaluacion>/index.html
 ```
 
 Revisa fórmulas, gráficos y navegación entre secciones.
+
+**Ojo:** en local (Go Live, `127.0.0.1`) el registro de uso NO se prueba,
+porque ahí no hay sesión de SIGA (la sesión no pasa de una dirección a otra).
+Se comprueba en producción, en el paso 7.
 
 ## 5. Entrada en el catálogo
 
@@ -118,6 +148,9 @@ Abre `asesorias-curso.html?c=<slug>` y verifica:
 - Aparece el chip "Ciclo <periodo>" y la etiqueta "Nuevo".
 - Abre en el visor; se ven fórmulas, gráficos e imágenes.
 - Imprimir funciona (en el visor, con el botón de imprimir de SIGA).
+- Con tu sesión iniciada, abre la asesoría (y prueba imprimir o el Excel si lo
+  tiene) y mira que aparezca en Admin → «Actividad de Asesorías». Después usa
+  «Borrar mis pruebas» para que tus clics no cuenten.
 - El progreso se guarda al cerrar y volver a abrir.
 - En el celular se ve bien.
 
@@ -136,5 +169,7 @@ git push
 
 - Una carpeta de periodo nueva solo cuando el contenido cambia de verdad.
 - Asesorías siempre en web (nada de PDF).
+- Toda asesoría nueva lleva la línea de `asesorias-registro.js` (paso 3 bis);
+  sin ella no aparece en «Actividad de Asesorías».
 - No borres el visor de PDF (`vendor-pdfjs`): Intranotas también lo usa.
 - Una asesoría solo se edita dentro de `assets/asesorias/...` en este repo.

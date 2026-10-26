@@ -16,8 +16,8 @@
 // asesorias-comun.js (piezas de la sección pública). Este archivo es solo
 // del Admin.
 //
-//  4) Bloque "Uso de las asesorías": quién abrió, imprimió o descargó el Excel de cada
-//     asesoría web (tabla asesorias_eventos, que llena js/asesorias-registro.js).
+//  4) Pestaña propia "Actividad de Asesorías": quién abrió, imprimió o descargó el Excel
+//     de cada asesoría web (tabla asesorias_eventos, que llena js/asesorias-registro.js).
 //
 // Tablas: asesorias_demanda (lo_necesito | pedido | reporte), asesorias_eventos (uso),
 // asesorias_demanda_conteo (vista, ya no la usa este panel: el conteo se calcula
@@ -406,7 +406,6 @@ async function cargarTodo() {
     $('daResumen').textContent = 'Cargando…';
     await Promise.all([
         pintarConteo(),
-        pintarUso(),
         pintarLista('reporte', 'daReportes', 'No hay reportes pendientes.'),
         pintarLista('pedido', 'daPedidos', 'No hay pedidos pendientes.'),
     ]);
@@ -421,6 +420,12 @@ const ACCIONES_USO = { abrio: 'Abrió', imprimio: 'Imprimió / PDF', excel: 'Des
 const MAX_EVENTOS_POR_FILA = 200;
 let usoIncluirYo = false;
 let usoTimer = null;
+
+// Nombre de la pestaña. Si algún día prefieres otro, cámbialo solo aquí.
+const TITULO_ACTIVIDAD = 'Actividad de Asesorías';
+let tabAct = null;
+let panelAct = null;
+let cargadoAct = false;
 
 function nombreCursoPorSlug(slug) {
     const c = CURSOS.find((x) => x.slug === slug);
@@ -452,6 +457,12 @@ async function pintarUso(abrir = new Set()) {
 
     const yo = await miId();
     const eventos = usoIncluirYo ? data : data.filter((r) => r.user_id !== yo);
+    const resumenEl = $('daUsoResumen');
+    if (resumenEl) {
+        resumenEl.textContent = eventos.length
+            ? `${plural(new Set(eventos.map((r) => r.user_id)).size, 'persona', 'personas')} con actividad · ${plural(eventos.length, 'acción', 'acciones')}`
+            : 'Sin actividad todavía';
+    }
     if (!eventos.length) {
         cont.innerHTML = `<p class="da-vacio">${data.length ? 'Solo hay registros tuyos (activa «Incluir mis pruebas» para verlos).' : 'Todavía nadie abrió, imprimió ni descargó nada.'}</p>`;
         return;
@@ -558,14 +569,6 @@ function construirPestana() {
             <p class="da-sub">Personas que tocaron "Lo necesito", por curso y evaluación. Toca una fila para ver quiénes son, avisarles cuando ya esté publicada o eliminar sus pedidos.</p>
             <p class="da-estado" id="daEstado" role="status"></p>
             <div id="daConteo"></div></div>
-        <div class="da-bloque"><h3>Uso de las asesorías</h3>
-            <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió).</p>
-            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 10px;font-family:'Poppins',sans-serif;font-size:0.8rem">
-                <label><input type="checkbox" id="daUsoYo"> Incluir mis propias pruebas</label>
-                <button type="button" class="da-del" id="daUsoBorrar">Borrar mis pruebas</button>
-            </div>
-            <p class="da-estado" id="daUsoEstado" role="status"></p>
-            <div id="daUso"></div></div>
         <div class="da-bloque"><h3>Reportes de error</h3>
             <p class="da-sub">Lo que los alumnos encontraron mal en una asesoría. Corrige y marca "Resuelto".</p>
             <div id="daReportes"></div></div>
@@ -586,6 +589,46 @@ function construirPestana() {
         if (b !== tabBtn) b.addEventListener('click', () => { panel.style.display = 'none'; });
     });
     $('daActualizar').addEventListener('click', cargarTodo);
+
+    // ── Segunda pestaña: Actividad de Asesorías (quién abre, imprime o descarga) ──
+    tabAct = document.createElement('button');
+    tabAct.type = 'button';
+    tabAct.className = 'admin-tab';
+    tabAct.dataset.tab = 'actividad';
+    tabAct.textContent = TITULO_ACTIVIDAD;
+    primera.parentElement.appendChild(tabAct);
+
+    panelAct = document.createElement('div');
+    panelAct.id = 'panelActividad';
+    panelAct.className = 'admin-panel';
+    panelAct.style.display = 'none';
+    panelAct.innerHTML = `
+        <div class="da-cab">
+            <div><h3>${TITULO_ACTIVIDAD}</h3><p class="da-resumen" id="daUsoResumen"></p></div>
+            <button type="button" class="da-btn" id="daUsoActualizar">Actualizar</button>
+        </div>
+        <div class="da-bloque"><h3>Por asesoría</h3>
+            <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió).</p>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 10px;font-family:'Poppins',sans-serif;font-size:0.8rem">
+                <label><input type="checkbox" id="daUsoYo"> Incluir mis propias pruebas</label>
+                <button type="button" class="da-del" id="daUsoBorrar">Borrar mis pruebas</button>
+            </div>
+            <p class="da-estado" id="daUsoEstado" role="status"></p>
+            <div id="daUso"></div></div>`;
+    ultimoPanel.parentElement.appendChild(panelAct);
+
+    tabAct.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach((b) => b.classList.toggle('activo', b === tabAct));
+        document.querySelectorAll('.admin-panel').forEach((p) => { p.style.display = p === panelAct ? 'flex' : 'none'; });
+        if (!cargadoAct) { cargadoAct = true; pintarUso(); }
+    });
+    // Ocultarla cuando se elige cualquier otra pestaña (delegado, sirve también para las que se crean después)
+    const barraTabs = primera.parentElement;
+    barraTabs.addEventListener('click', (e) => {
+        const b = e.target.closest('.admin-tab');
+        if (b && b !== tabAct) panelAct.style.display = 'none';
+    });
+    $('daUsoActualizar').addEventListener('click', () => pintarUso(usoAbiertas()));
     $('daUsoYo').addEventListener('change', (e) => { usoIncluirYo = e.target.checked; pintarUso(usoAbiertas()); });
     $('daUsoBorrar').addEventListener('click', borrarMisPruebasUso);
     return true;
