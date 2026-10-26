@@ -105,7 +105,7 @@ export const CURSOS = [
                 id: 'pc3-mcd-2026-2',
                 tipo: 'web',
                 evaluacion: 'PC3',
-                titulo: 'PC3 - Modelado Conceptual de Datos',
+                titulo: 'PC3 — Modelado Conceptual de Datos',
                 periodo: '2026-2',
             },
         ],
