@@ -235,6 +235,7 @@
 
 .da-quienes {
     list-style: none;
+    font-family: 'Poppins', sans-serif;
     margin: 2px 0 10px;
     padding: 8px 12px;
     background: #FAF5FF;
@@ -248,6 +249,10 @@
 
 .da-quienes li span {
     color: #666;
+}
+
+.da-quienes li b {
+    font-weight: 600;
 }
 
 .da-quienes em {
