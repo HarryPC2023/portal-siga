@@ -15,7 +15,8 @@
 // del Admin.
 //
 // Tablas: asesorias_demanda (lo_necesito | pedido | reporte),
-// asesorias_demanda_conteo (vista con el total por curso y evaluación),
+// asesorias_demanda_conteo (vista, ya no la usa este panel: el conteo se calcula
+// con las filas de asesorias_demanda para poder mostrar quién pidió cada cosa),
 // asesorias_propuestas y notificaciones (avisos personales).
 // El SQL está en asesorias-admin.sql y notificaciones-personales.sql.
 import { supabase } from './auth-siga.js?v=9';
@@ -120,11 +121,24 @@ function pintarGlobito(n) {
     g.textContent = n > 99 ? '99+' : String(n);
 }
 
+// Id del usuario logueado (para no contar ni marcar como ajenos tus propios votos).
+async function miId() {
+    try {
+        const { data } = await supabase.auth.getSession();
+        return data?.session?.user?.id || null;
+    } catch (e) {
+        return null;
+    }
+}
+
 async function refrescarGlobito() {
-    const { data, error } = await supabase.from('asesorias_demanda').select('creado_en').in('tipo', ['pedido', 'reporte']);
+    const [{ data, error }, yo] = await Promise.all([
+        supabase.from('asesorias_demanda').select('creado_en, user_id').in('tipo', ['pedido', 'reporte', 'lo_necesito']),
+        miId(),
+    ]);
     if (error || !data) return;
     const visto = Date.parse(localStorage.getItem(LS_VISTO) || '') || 0;
-    pintarGlobito(data.filter((r) => (Date.parse(r.creado_en) || 0) > visto).length);
+    pintarGlobito(data.filter((r) => r.user_id !== yo && (Date.parse(r.creado_en) || 0) > visto).length);
 }
 
 function marcarVista() {
@@ -132,20 +146,58 @@ function marcarVista() {
     pintarGlobito(0);
 }
 
-// ───────────── Bloque 1: lo que más piden ─────────────
+// ───────────── Bloque 1: lo que más piden (y quién lo pidió) ─────────────
 async function pintarConteo() {
     const cont = $('daConteo');
-    const { data, error } = await supabase.from('asesorias_demanda_conteo').select('codigo_curso, evaluacion, personas');
+    const { data, error } = await supabase
+        .from('asesorias_demanda')
+        .select('user_id, codigo_curso, evaluacion, creado_en')
+        .eq('tipo', 'lo_necesito')
+        .limit(2000);
     if (error) { cont.innerHTML = `<p class="da-vacio">No se pudo cargar: ${esc(error.message)}</p>`; return 0; }
     if (!data.length) { cont.innerHTML = '<p class="da-vacio">Todavía nadie tocó "Lo necesito".</p>'; return 0; }
-    const filas = [...data].sort((a, b) => b.personas - a.personas || nombreCurso(a.codigo_curso).localeCompare(nombreCurso(b.codigo_curso), 'es'));
+
+    // Agrupa por curso + evaluación (evaluacion null = curso completo).
+    const grupos = new Map();
+    data.forEach((r) => {
+        const k = `${r.codigo_curso}|${r.evaluacion || ''}`;
+        if (!grupos.has(k)) grupos.set(k, { codigo_curso: r.codigo_curso, evaluacion: r.evaluacion, filas: [] });
+        grupos.get(k).filas.push(r);
+    });
+    const filas = [...grupos.values()]
+        .map((g) => ({ ...g, personas: new Set(g.filas.map((f) => f.user_id)).size }))
+        .sort((a, b) => b.personas - a.personas || nombreCurso(a.codigo_curso).localeCompare(nombreCurso(b.codigo_curso), 'es'));
+
+    const [mapa, yo] = await Promise.all([cargarQuien(data.map((r) => r.user_id)), miId()]);
     const max = Math.max(...filas.map((f) => f.personas));
-    cont.innerHTML = filas.map((f) => `
-        <div class="da-fila">
+    cont.innerHTML = filas.map((f, i) => {
+        const quienes = [...f.filas]
+            .sort((a, b) => (Date.parse(b.creado_en) || 0) - (Date.parse(a.creado_en) || 0))
+            .map((r) => `<li><b>${esc(quien(mapa, r.user_id))}</b>${r.user_id === yo ? ' <em>(tú)</em>' : ''} <span>· ${esc(fecha(r.creado_en))}</span></li>`)
+            .join('');
+        return `
+        <div class="da-fila" role="button" tabindex="0" aria-expanded="false" data-quienes="daQ${i}">
             <div class="da-nombre">${esc(nombreCurso(f.codigo_curso))} <small>· ${f.evaluacion ? esc(f.evaluacion) : 'curso completo'}</small></div>
-            <div class="da-num">${f.personas} ${f.personas === 1 ? 'persona' : 'personas'}</div>
+            <div class="da-num">${f.personas} ${f.personas === 1 ? 'persona' : 'personas'} <span class="da-flecha">▾</span></div>
             <div class="da-barra"><i style="width:${Math.max(6, Math.round((100 * f.personas) / max))}%"></i></div>
-        </div>`).join('');
+        </div>
+        <ul class="da-quienes" id="daQ${i}" hidden>${quienes}</ul>`;
+    }).join('');
+
+    // Al tocar una fila se despliega la lista de quiénes lo pidieron.
+    cont.querySelectorAll('.da-fila').forEach((fila) => {
+        const alternar = () => {
+            const lista = $(fila.dataset.quienes);
+            const abrir = lista.hidden;
+            lista.hidden = !abrir;
+            fila.setAttribute('aria-expanded', String(abrir));
+            fila.classList.toggle('abierta', abrir);
+        };
+        fila.addEventListener('click', alternar);
+        fila.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternar(); }
+        });
+    });
     return filas.reduce((s, f) => s + f.personas, 0);
 }
 
@@ -241,7 +293,7 @@ function construirPestana() {
             <button type="button" class="da-btn" id="daActualizar">Actualizar</button>
         </div>
         <div class="da-bloque"><h3>Lo que más piden</h3>
-            <p class="da-sub">Personas que tocaron "Lo necesito", por curso y evaluación. Te dice qué preparar primero.</p>
+            <p class="da-sub">Personas que tocaron "Lo necesito", por curso y evaluación. Toca una fila para ver quiénes son y cuándo lo pidieron.</p>
             <div id="daConteo"></div></div>
         <div class="da-bloque"><h3>Reportes de error</h3>
             <p class="da-sub">Lo que los alumnos encontraron mal en una asesoría. Corrige y marca "Resuelto".</p>
@@ -331,7 +383,7 @@ export function iniciarDemandaAsesorias(ayudantes = {}) {
     ayuda = { ...ayuda, ...ayudantes };
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = 'css/admin-asesorias.css?v=1';
+    css.href = 'css/admin-asesorias.css?v=2';
     document.head.appendChild(css);
     if (construirPestana()) refrescarGlobito();
     observarPropuestas();

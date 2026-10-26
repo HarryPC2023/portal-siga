@@ -206,3 +206,52 @@
     font-size: 0.72rem;
     color: #666;
 }
+
+
+/* Quién pidió cada asesoría (se despliega al tocar la fila) */
+.da-fila[role="button"] {
+    cursor: pointer;
+}
+
+.da-fila[role="button"]:hover .da-nombre {
+    color: #6600CC;
+}
+
+.da-fila[role="button"]:focus-visible {
+    outline: 2px solid #6600CC;
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+.da-flecha {
+    display: inline-block;
+    margin-left: 4px;
+    transition: transform 0.2s;
+}
+
+.da-fila.abierta .da-flecha {
+    transform: rotate(180deg);
+}
+
+.da-quienes {
+    list-style: none;
+    margin: 2px 0 10px;
+    padding: 8px 12px;
+    background: #FAF5FF;
+    border-radius: 10px;
+    font-size: 0.78rem;
+}
+
+.da-quienes li {
+    padding: 3px 0;
+}
+
+.da-quienes li span {
+    color: #666;
+}
+
+.da-quienes em {
+    color: #6600CC;
+    font-style: normal;
+    font-weight: 600;
+}
