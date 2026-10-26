@@ -1499,7 +1499,7 @@
     ['Cada atributo sale de mi parque de datos; si agregué uno, también está en el parque.', 'entregable', 'ent-parque'],
     ['Los nombres van en minúsculas, con guion bajo y sin conectores.', 'columnas', 'col-atributo'],
     ['Ningún atributo junta varios datos: todo está atomizado.', 'columnas', 'col-atributo'],
-    ['Los valores numéricos son rangos cerrados, con mínimo y máximo; nunca un mayor que solo.', 'columnas', 'col-valores'],
+    ['Los valores numéricos son rangos cerrados, con mínimo y máximo; nunca un “mayor que” (&gt;) solo sin un tope.', 'columnas', 'col-valores'],
     ['Cada formato lleva su extensión y cuadra con la naturaleza y con los valores.', 'columnas', 'col-formato'],
     ['La naturaleza usa los nombres del libro.', 'columnas', 'col-naturaleza'],
     ['La semántica dice qué es el dato, sin explicar para qué sirve.', 'columnas', 'col-semantica'],
@@ -2026,6 +2026,8 @@
   const $ = function (s, c) { return (c || root).querySelector(s); };
   const $$ = function (s, c) { return Array.prototype.slice.call((c || root).querySelectorAll(s)); };
   const esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    /* Como esc(), pero deja pasar solo <code> y </code> (los demás signos siguen escapados). */
+  const escCode = function (s) { return esc(s).replace(/&lt;code&gt;/g, '<code>').replace(/&lt;\/code&gt;/g, '</code>'); };
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function lsGet(k) { try { return localStorage.getItem(PREF + k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(PREF + k, v); } catch (e) { } }
@@ -2293,7 +2295,7 @@
     if (ex.i >= q.bloques.length) return final(q);
     const b = q.bloques[ex.i];
     u.appendChild(barra(q)); u.appendChild(problema(q));
-    const w = h('div', 'dec'); w.innerHTML = '<h3>' + esc(b.titulo) + '</h3>' + (b.intro ? '<p class="intro">' + b.intro + '</p>' : '');
+    const w = h('div', 'dec'); w.innerHTML = '<h3>' + escCode(b.titulo) + '</h3>' + (b.intro ? '<p class="intro">' + b.intro + '</p>' : '');
     const alts = h('div', 'alts'); const ops = shuffle(b.ops.slice());
     const st = { fails: 0, hint: false, done: false };
     const fb = h('div', 'fb'); fb.setAttribute('aria-live', 'polite');
@@ -2364,7 +2366,7 @@
       const w = h('div', 'sol-q'); w.innerHTML = '<h3>' + (i + 1) + '. ' + esc(q.titulo) + '</h3>' + q.enunciado;
       q.bloques.forEach(function (b) {
         const ok = b.ops.filter(function (o) { return o.ok; })[0];
-        w.appendChild(h('div', 'sol-b', '<p><b>' + esc(b.titulo) + '</b><br>' + ok.html + ' — ' + (ok.explica || '') + '</p>'));
+        w.appendChild(h('div', 'sol-b', '<p><b>' + escCode(b.titulo) + '</b><br>' + ok.html + ' — ' + (ok.explica || '') + '</p>'));
       });
       w.appendChild(h('div', 'sol', q.solucion + (q.llevate ? '<p><b>Lo que debes llevarte:</b> ' + q.llevate + '</p>' : '')));
       s.appendChild(w);
