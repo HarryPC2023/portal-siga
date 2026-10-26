@@ -2026,7 +2026,7 @@
   const $ = function (s, c) { return (c || root).querySelector(s); };
   const $$ = function (s, c) { return Array.prototype.slice.call((c || root).querySelectorAll(s)); };
   const esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-    /* Como esc(), pero deja pasar solo <code> y </code> (los demás signos siguen escapados). */
+  /* Como esc(), pero deja pasar solo <code> y </code> (los demás signos siguen escapados). */
   const escCode = function (s) { return esc(s).replace(/&lt;code&gt;/g, '<code>').replace(/&lt;\/code&gt;/g, '</code>'); };
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function lsGet(k) { try { return localStorage.getItem(PREF + k); } catch (e) { return null; } }

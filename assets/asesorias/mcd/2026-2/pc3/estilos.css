@@ -3217,3 +3217,9 @@
     background: #fff !important;
   }
 }
+
+/* Semántica y ontología lado a lado: el nombre del atributo no se parte en dos líneas */
+.asesoria-mcd table.dif td:first-child code {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
