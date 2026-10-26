@@ -1,6 +1,7 @@
 // js/asesorias-portada.js — Portada de Asesorías: saludo, buscador de cursos,
 // "Continúa donde quedaste", "Comparte tu asesoría", filtros por ciclo y la
-// cuadrícula de cursos (con "Lo necesito" en los que aún no tienen material).
+// cuadrícula de cursos (con "Lo necesito" en los que aún no tienen material y
+// pastillas PC1, PC2… tocables para pedir una evaluación concreta).
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
 import {
     CURSOS, EVALUACIONES, NOMBRE_EVALUACION, tieneContenido, ciclosDisponibles, planDelCurso,
@@ -75,17 +76,26 @@ function pintarFiltros() {
 }
 
 // ───────────── Cuadrícula de cursos ─────────────
-// Si el curso tiene material, cada evaluación es un enlace: lleva a la página del
-// curso con esa evaluación abierta y resaltada. Si no tiene, son solo una vista previa.
+// Cada evaluación de la tarjeta es una pastilla:
+//  - con material ('disponible'): enlace a la página del curso, abierta en esa evaluación.
+//  - sin material ('falta'): botón para PEDIRLA. Al tocarla queda pedida (verde con ✓)
+//    y al tocarla otra vez se quita. Es el mismo "Lo necesito" de la página del curso.
+//  - en preparación: enlace si el curso ya tiene material; si no, solo vista previa.
 function tira(curso) {
     const con = tieneContenido(curso);
     const base = `asesorias-curso.html?c=${encodeURIComponent(curso.slug)}`;
-    const pastilla = (ev, on, etiqueta, nombre) => (con
-        ? `<a class="an-p${on ? ' on' : ''}" href="${base}&ev=${ev}" title="${esc(nombre)}" aria-label="${esc(nombre)} de ${esc(curso.nombre)}">${etiqueta}</a>`
-        : `<span class="an-p">${etiqueta}</span>`);
-    const pills = EVALUACIONES.map((e) => pastilla(e, estadoEvaluacion(curso, e) === 'disponible', e, NOMBRE_EVALUACION[e])).join('');
+    const enlace = (ev, on, etiqueta, nombre) => `<a class="an-p${on ? ' on' : ''}" href="${base}&ev=${ev}" title="${esc(nombre)}" aria-label="${esc(nombre)} de ${esc(curso.nombre)}">${etiqueta}</a>`;
+    const pills = EVALUACIONES.map((ev) => {
+        const estado = estadoEvaluacion(curso, ev);
+        const nombre = NOMBRE_EVALUACION[ev];
+        if (estado === 'disponible') return enlace(ev, true, ev, nombre);
+        if (estado === 'falta') {
+            return `<button type="button" class="an-p an-p-pedir" data-pv="${esc(curso.codigo)}|${ev}" aria-pressed="false" title="Pedir: ${esc(nombre)}" aria-label="Pedir ${esc(nombre)} de ${esc(curso.nombre)}">${ev}</button>`;
+        }
+        return con ? enlace(ev, false, ev, nombre) : `<span class="an-p">${ev}</span>`;
+    }).join('');
     const hayMono = recursosGenerales(curso).some((r) => (r.estado || 'disponible') === 'disponible');
-    return pills + (hayMono ? pastilla('mono', true, 'Mono', 'Material del curso') : '');
+    return pills + (hayMono ? enlace('mono', true, 'Mono', 'Material del curso') : '');
 }
 
 function tarjeta(curso) {
@@ -112,6 +122,24 @@ function marcarLo(btn, activo) {
     btn.classList.toggle('an-on', activo);
 }
 
+// Pastilla de evaluación pedida: verde y con ✓ (como "Anotado ✓" de la página del curso).
+function marcarPastilla(btn, activo) {
+    const ev = btn.dataset.pv.split('|')[1];
+    btn.textContent = activo ? `${ev} ✓` : ev;
+    btn.classList.toggle('an-pedida', activo);
+    btn.setAttribute('aria-pressed', String(activo));
+}
+
+// Pinta en la cuadrícula lo que este usuario ya pidió (curso completo y evaluaciones).
+function marcarVotosEnGrid() {
+    const grid = $('anGrid');
+    grid.querySelectorAll('[data-lo]').forEach((b) => marcarLo(b, votos.has(claveVoto(b.dataset.lo, null))));
+    grid.querySelectorAll('[data-pv]').forEach((b) => {
+        const [codigo, ev] = b.dataset.pv.split('|');
+        marcarPastilla(b, votos.has(claveVoto(codigo, ev)));
+    });
+}
+
 function pintarCursos() {
     const lista = CURSOS.filter((c) => (!cicloSel || c.ciclo === cicloSel) && coincideCurso(c, consulta));
 
@@ -125,7 +153,7 @@ function pintarCursos() {
             <button type="button" class="an-btn an-btn-ghost" data-pedir="">Comparte o pide un curso</button></article>`;
     }
     $('anGrid').innerHTML = html;
-    $('anGrid').querySelectorAll('[data-lo]').forEach((b) => marcarLo(b, votos.has(claveVoto(b.dataset.lo, null))));
+    marcarVotosEnGrid();
 }
 
 async function alternarLo(btn) {
@@ -140,6 +168,18 @@ async function alternarLo(btn) {
     else { marcarLo(btn, !activar); aviso('No se pudo guardar. Intenta de nuevo en un momento.', 'error'); }
 }
 
+async function alternarPastilla(btn) {
+    const [codigo, ev] = btn.dataset.pv.split('|');
+    const k = claveVoto(codigo, ev);
+    const activar = !votos.has(k);
+    marcarPastilla(btn, activar);
+    btn.disabled = true;
+    const ok = await alternarVoto(codigo, ev, activar);
+    btn.disabled = false;
+    if (ok) { if (activar) votos.add(k); else votos.delete(k); }
+    else { marcarPastilla(btn, !activar); aviso('No se pudo guardar. Intenta de nuevo en un momento.', 'error'); }
+}
+
 // ───────────── Botcito: bienvenida, novedades y consejos ─────────────
 // - Primera visita: saludo de bienvenida.
 // - Visitas siguientes: SOLO si hay material nuevo (publicado hace menos de 5 días
@@ -151,7 +191,7 @@ const LS_VISTAS = 'siga_asesorias_novedades_vistas';  // ids de recursos ya anun
 const DURACION_MS = 5000;
 
 const CONSEJOS = [
-    'Toca una evaluación (PC1, PC2…) en una tarjeta para ir directo a ella.',
+    'Toca una evaluación con color para ir directo a ella; si aún no tiene material, tócala para pedirla.',
     '¿No ves tu curso? Pídelo y te avisamos cuando haya material.',
     'Si te falta algo, toca «Lo necesito»: así sé qué preparar primero.',
     '¿Viste un error en una asesoría? Usa «Reportar un error».',
@@ -254,11 +294,13 @@ $('anBuscarBtn').addEventListener('click', () => { pintarCursos(); $('anGrid').s
 $('anGrid').addEventListener('click', (e) => {
     const lo = e.target.closest('[data-lo]');
     if (lo) { alternarLo(lo); return; }
+    const pv = e.target.closest('[data-pv]');
+    if (pv) { alternarPastilla(pv); return; }
     const pedir = e.target.closest('[data-pedir]');
     if (pedir) abrirFormCompartir({ tab: 'pedir', texto: pedir.dataset.pedir || '' });
 });
 
 cargarMisVotos().then((set) => {
     votos = set;
-    $('anGrid').querySelectorAll('[data-lo]').forEach((b) => marcarLo(b, votos.has(claveVoto(b.dataset.lo, null))));
+    marcarVotosEnGrid();
 });

@@ -531,6 +531,47 @@ a.an-p:focus-visible {
   outline-offset: 2px;
 }
 
+
+/* Pastillas de evaluación sin material: se tocan para pedirlas */
+button.an-p-pedir {
+  font-family: inherit;
+  line-height: inherit;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+button.an-p-pedir:hover {
+  transform: translateY(-1px);
+  border-style: solid;
+  color: var(--brand-morado);
+  box-shadow: 0 3px 8px rgba(102, 0, 204, 0.18);
+}
+
+button.an-p-pedir:focus-visible {
+  outline: 3px solid var(--brand-morado);
+  outline-offset: 2px;
+}
+
+button.an-p-pedir:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+button.an-p-pedir.an-pedida,
+button.an-p-pedir.an-pedida:hover {
+  background: #DDF6EA;
+  color: #137A52;
+  border: 1px solid #137A52;
+}
+
+/* En celular los dedos necesitan más área: pastillas un poco más grandes */
+@media (pointer: coarse) {
+  .an-p {
+    padding: 6px 11px;
+  }
+}
+
 .an-curso.an-vacio {
   background: rgba(255, 255, 255, 0.55);
   border: 2px dashed rgba(102, 0, 204, 0.35);
