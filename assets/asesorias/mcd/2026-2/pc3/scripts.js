@@ -1745,6 +1745,7 @@
       const blob = new Blob([crearXlsx(s)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = URL.createObjectURL(blob), a = document.createElement('a');
       a.href = url; a.download = 'diccionario_' + id + '_ejemplo.xlsx'; document.body.appendChild(a); a.click();
+      try { window.dispatchEvent(new CustomEvent('siga:asesoria-evento', { detail: { accion: 'excel', detalle: id } })); } catch (e) { /* el registro nunca debe romper la descarga */ }
       setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
       const nota = boton.parentNode.querySelector('.xl-nota'); if (nota) nota.hidden = false;
     }
