@@ -16,7 +16,10 @@
 // asesorias-comun.js (piezas de la sección pública). Este archivo es solo
 // del Admin.
 //
-// Tablas: asesorias_demanda (lo_necesito | pedido | reporte),
+//  4) Bloque "Uso de las asesorías": quién abrió, imprimió o descargó el Excel de cada
+//     asesoría web (tabla asesorias_eventos, que llena js/asesorias-registro.js).
+//
+// Tablas: asesorias_demanda (lo_necesito | pedido | reporte), asesorias_eventos (uso),
 // asesorias_demanda_conteo (vista, ya no la usa este panel: el conteo se calcula
 // con las filas de asesorias_demanda para poder mostrar quién pidió cada cosa),
 // asesorias_propuestas y notificaciones (avisos personales).
@@ -403,11 +406,130 @@ async function cargarTodo() {
     $('daResumen').textContent = 'Cargando…';
     await Promise.all([
         pintarConteo(),
+        pintarUso(),
         pintarLista('reporte', 'daReportes', 'No hay reportes pendientes.'),
         pintarLista('pedido', 'daPedidos', 'No hay pedidos pendientes.'),
     ]);
     actualizarResumen();
     cargado = true;
+}
+
+// ───────────── Uso de las asesorías (tabla asesorias_eventos) ─────────────
+// Quién abrió, imprimió o descargó el Excel de cada asesoría web. Solo lo lees tú
+// (la política RLS de la tabla). Tus propias pruebas se ocultan por defecto.
+const ACCIONES_USO = { abrio: 'Abrió', imprimio: 'Imprimió / PDF', excel: 'Descargó Excel' };
+const MAX_EVENTOS_POR_FILA = 200;
+let usoIncluirYo = false;
+let usoTimer = null;
+
+function nombreCursoPorSlug(slug) {
+    const c = CURSOS.find((x) => x.slug === slug);
+    return c ? c.nombre : slug;
+}
+
+function estadoUso(texto) {
+    const el = $('daUsoEstado');
+    if (!el) return;
+    el.textContent = texto || '';
+    clearTimeout(usoTimer);
+    if (texto) usoTimer = setTimeout(() => { el.textContent = ''; }, 7000);
+}
+
+function usoAbiertas() {
+    return new Set([...$('daUso').querySelectorAll('.da-fila.abierta')].map((x) => x.dataset.clave));
+}
+
+const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
+
+async function pintarUso(abrir = new Set()) {
+    const cont = $('daUso');
+    const { data, error } = await supabase
+        .from('asesorias_eventos')
+        .select('user_id, curso, periodo, evaluacion, accion, detalle, creado_en')
+        .order('creado_en', { ascending: false })
+        .limit(5000);
+    if (error) { cont.innerHTML = `<p class="da-vacio">No se pudo cargar: ${esc(error.message)}</p>`; return; }
+
+    const yo = await miId();
+    const eventos = usoIncluirYo ? data : data.filter((r) => r.user_id !== yo);
+    if (!eventos.length) {
+        cont.innerHTML = `<p class="da-vacio">${data.length ? 'Solo hay registros tuyos (activa «Incluir mis pruebas» para verlos).' : 'Todavía nadie abrió, imprimió ni descargó nada.'}</p>`;
+        return;
+    }
+
+    // Agrupa por asesoría: curso + periodo + evaluación.
+    const grupos = new Map();
+    eventos.forEach((r) => {
+        const clave = `${r.curso}|${r.periodo}|${r.evaluacion}`;
+        if (!grupos.has(clave)) grupos.set(clave, { clave, curso: r.curso, periodo: r.periodo, evaluacion: r.evaluacion, eventos: [] });
+        grupos.get(clave).eventos.push(r);
+    });
+    const filas = [...grupos.values()].map((g) => {
+        const de = (a) => g.eventos.filter((e) => e.accion === a);
+        const personas = (lista) => new Set(lista.map((e) => e.user_id)).size;
+        const abrio = de('abrio'); const imprimio = de('imprimio'); const excel = de('excel');
+        const porEjemplo = new Map();
+        excel.forEach((e) => { const k = e.detalle || '(sin detalle)'; porEjemplo.set(k, (porEjemplo.get(k) || 0) + 1); });
+        return {
+            ...g,
+            personas: personas(g.eventos),
+            abrieron: personas(abrio), abrioVeces: abrio.length,
+            imprimieron: personas(imprimio), imprimioVeces: imprimio.length,
+            excelPersonas: personas(excel), excelVeces: excel.length,
+            porEjemplo: [...porEjemplo.entries()].sort((a, b) => b[1] - a[1]),
+        };
+    }).sort((a, b) => b.personas - a.personas || b.imprimieron - a.imprimieron || nombreCursoPorSlug(a.curso).localeCompare(nombreCursoPorSlug(b.curso), 'es'));
+
+    const mapa = await cargarQuien(eventos.map((r) => r.user_id));
+    const max = Math.max(...filas.map((f) => f.personas));
+
+    cont.innerHTML = filas.map((f, i) => {
+        const resumen = [
+            `<li><span>Abrieron: <b>${plural(f.abrieron, 'persona', 'personas')}</b> (${plural(f.abrioVeces, 'vez', 'veces')}) · Imprimieron: <b>${plural(f.imprimieron, 'persona', 'personas')}</b> (${plural(f.imprimioVeces, 'vez', 'veces')}) · Excel: <b>${plural(f.excelPersonas, 'persona', 'personas')}</b> (${plural(f.excelVeces, 'descarga', 'descargas')})</span></li>`,
+            f.porEjemplo.length ? `<li><span>Excel por ejemplo: ${f.porEjemplo.map(([k, n]) => `${esc(k)} (${n})`).join(', ')}</span></li>` : '',
+        ].join('');
+        const mostrados = f.eventos.slice(0, MAX_EVENTOS_POR_FILA);
+        const lista = mostrados.map((e) => `<li><b>${esc(quien(mapa, e.user_id))}</b>${e.user_id === yo ? ' <em>(tú)</em>' : ''} <span>· ${ACCIONES_USO[e.accion] || esc(e.accion)}${e.detalle ? ` (${esc(e.detalle)})` : ''} · ${esc(fecha(e.creado_en))}</span></li>`).join('');
+        const resto = f.eventos.length > mostrados.length ? `<li><span>… y ${f.eventos.length - mostrados.length} registros más antiguos.</span></li>` : '';
+        return `
+        <div class="da-fila" role="button" tabindex="0" aria-expanded="false" data-clave="${esc(f.clave)}" data-quienes="daU${i}">
+            <div class="da-nombre">${esc(nombreCursoPorSlug(f.curso))} <small>· ${esc(String(f.evaluacion).toUpperCase())} · ${esc(f.periodo)}</small></div>
+            <div class="da-num">${plural(f.personas, 'persona', 'personas')} <span class="da-flecha">▾</span></div>
+            <div class="da-barra"><i style="width:${Math.max(6, Math.round((100 * f.personas) / max))}%"></i></div>
+        </div>
+        <ul class="da-quienes" id="daU${i}" hidden>${resumen}${lista}${resto}</ul>`;
+    }).join('');
+
+    // Al tocar una fila se despliega el detalle de quién hizo qué.
+    cont.querySelectorAll('.da-fila').forEach((fila) => {
+        const alternar = () => {
+            const lista = $(fila.dataset.quienes);
+            const abrirla = lista.hidden;
+            lista.hidden = !abrirla;
+            fila.setAttribute('aria-expanded', String(abrirla));
+            fila.classList.toggle('abierta', abrirla);
+        };
+        fila.addEventListener('click', alternar);
+        fila.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternar(); }
+        });
+        if (abrir.has(fila.dataset.clave)) alternar();
+    });
+}
+
+// Borra SOLO los registros hechos con tu cuenta (tus pruebas). Los de los alumnos no se tocan.
+async function borrarMisPruebasUso() {
+    const yo = await miId();
+    if (!yo) { estadoUso('No encontré tu sesión. Vuelve a iniciar sesión.'); return; }
+    const ok = await confirmar(
+        'Se borrarán TODOS los registros de uso (abrió, imprimió, Excel) hechos con tu cuenta. Los de los alumnos no se tocan. No se puede deshacer.',
+        { titulo: '¿Borrar tus pruebas?', textoBoton: 'Sí, borrar' },
+    );
+    if (!ok) return;
+    const { error } = await supabase.from('asesorias_eventos').delete().eq('user_id', yo);
+    if (error) { estadoUso(`No se pudo borrar: ${error.message}`); return; }
+    estadoUso('Listo: borré tus pruebas.');
+    await pintarUso(usoAbiertas());
 }
 
 // ───────────── Pestaña y panel ─────────────
@@ -436,6 +558,14 @@ function construirPestana() {
             <p class="da-sub">Personas que tocaron "Lo necesito", por curso y evaluación. Toca una fila para ver quiénes son, avisarles cuando ya esté publicada o eliminar sus pedidos.</p>
             <p class="da-estado" id="daEstado" role="status"></p>
             <div id="daConteo"></div></div>
+        <div class="da-bloque"><h3>Uso de las asesorías</h3>
+            <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió).</p>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 10px;font-family:'Poppins',sans-serif;font-size:0.8rem">
+                <label><input type="checkbox" id="daUsoYo"> Incluir mis propias pruebas</label>
+                <button type="button" class="da-del" id="daUsoBorrar">Borrar mis pruebas</button>
+            </div>
+            <p class="da-estado" id="daUsoEstado" role="status"></p>
+            <div id="daUso"></div></div>
         <div class="da-bloque"><h3>Reportes de error</h3>
             <p class="da-sub">Lo que los alumnos encontraron mal en una asesoría. Corrige y marca "Resuelto".</p>
             <div id="daReportes"></div></div>
@@ -456,6 +586,8 @@ function construirPestana() {
         if (b !== tabBtn) b.addEventListener('click', () => { panel.style.display = 'none'; });
     });
     $('daActualizar').addEventListener('click', cargarTodo);
+    $('daUsoYo').addEventListener('change', (e) => { usoIncluirYo = e.target.checked; pintarUso(usoAbiertas()); });
+    $('daUsoBorrar').addEventListener('click', borrarMisPruebasUso);
     return true;
 }
 
