@@ -544,27 +544,36 @@ async function pintarUso(abrir = new Set()) {
     const mapa = await cargarQuien(eventos.map((r) => r.user_id));
     const max = Math.max(...filas.map((f) => f.personas));
 
-    // Una sección por acción, con una línea por persona (cuántas veces y la última vez).
-    const seccionUso = (titulo, evs, conEjemplos) => {
+    // Una sección por acción, con una línea por persona: cuántas veces lo hizo, la primera y la última vez.
+    // Las personas van en ORDEN ALFABÉTICO: primero las que tienen nombre, luego las que solo tienen
+    // código y al final las cuentas sin perfil («usuario 3ca3deb3…»).
+    const rangoPersona = (id) => {
+        const p = mapa.get(id);
+        return p && p.nombre ? 0 : (p && p.codigo_estudiante ? 1 : 2);
+    };
+    const seccionUso = (titulo, evs, conEjemplos, repite) => {
         const porPersona = new Map();
         evs.forEach((e) => { // los eventos vienen del más nuevo al más antiguo
-            if (!porPersona.has(e.user_id)) porPersona.set(e.user_id, { id: e.user_id, veces: 0, ultima: e.creado_en, ejemplos: [] });
+            if (!porPersona.has(e.user_id)) porPersona.set(e.user_id, { id: e.user_id, veces: 0, ultima: e.creado_en, primera: e.creado_en, ejemplos: [] });
             const p = porPersona.get(e.user_id);
             p.veces += 1;
+            p.primera = e.creado_en; // el último evento que se recorre es el más antiguo
             if (e.detalle && !p.ejemplos.includes(e.detalle)) p.ejemplos.push(e.detalle);
         });
-        const personas = [...porPersona.values()];
-        const cab = `<li style="margin-top:8px;font-weight:700;color:#4B2390">${titulo} — ${plural(personas.length, 'persona', 'personas')} <span style="font-weight:400">(${plural(evs.length, 'vez', 'veces')})</span></li>`;
+        const personas = [...porPersona.values()].sort((a, b) => rangoPersona(a.id) - rangoPersona(b.id)
+            || quien(mapa, a.id).localeCompare(quien(mapa, b.id), 'es', { sensitivity: 'base' }));
+        const repiten = personas.filter((p) => p.veces > 1).length;
+        const cab = `<li style="margin-top:8px;font-weight:700;color:#4B2390">${titulo} — ${plural(personas.length, 'persona', 'personas')} <span style="font-weight:400">(${plural(evs.length, 'vez', 'veces')}${repiten ? ` · ${repiten} ${repite}` : ''})</span></li>`;
         if (!personas.length) return `${cab}<li><span>Nadie todavía.</span></li>`;
-        return cab + personas.map((p) => `<li><b>${esc(quien(mapa, p.id))}</b>${p.id === yo ? ' <em>(tú)</em>' : ''} <span>· ${plural(p.veces, 'vez', 'veces')}${conEjemplos && p.ejemplos.length ? ` · ${esc(p.ejemplos.join(', '))}` : ''} · última: ${esc(fecha(p.ultima))}</span></li>`).join('');
+        return cab + personas.map((p) => `<li><b>${esc(quien(mapa, p.id))}</b>${p.id === yo ? ' <em>(tú)</em>' : ''} <span>· ${plural(p.veces, 'vez', 'veces')}${conEjemplos && p.ejemplos.length ? ` · ${esc(p.ejemplos.join(', '))}` : ''}${p.veces > 1 ? ` · primera: ${esc(fecha(p.primera))}` : ''} · última: ${esc(fecha(p.ultima))}</span></li>`).join('');
     };
 
     cont.innerHTML = filas.map((f, i) => {
         const de = (a) => f.eventos.filter((e) => e.accion === a);
         const detalle = [
-            seccionUso('👁 Abrieron', de('abrio'), false),
-            seccionUso('🖨️ Imprimieron / PDF', de('imprimio'), false),
-            seccionUso('📊 Descargaron Excel', de('excel'), true),
+            seccionUso('👁 Abrieron', de('abrio'), false, 'volvieron a abrirla'),
+            seccionUso('🖨️ Imprimieron / PDF', de('imprimio'), false, 'imprimieron más de una vez'),
+            seccionUso('📊 Descargaron Excel', de('excel'), true, 'descargaron más de una vez'),
         ].join('');
         return `
         <div class="da-fila" role="button" tabindex="0" aria-expanded="false" data-clave="${esc(f.clave)}" data-quienes="daU${i}">

@@ -96,5 +96,11 @@ if (RUTA) {
         registrar(d.accion, d.detalle);
     });
 
-    registrar('abrio');
+    // El visor de SIGA carga la asesoría en un iframe OCULTO (0×0) solo para imprimirla. Esa carga no es
+    // una persona abriendo la asesoría, así que no se anota como «abrió» (el «imprimió» sí se anota).
+    // Cada visita real se anota como un «abrió»; las repeticiones dentro de la ventana de 30 minutos
+    // (recargas, volver a la pestaña) cuentan como la misma visita. Para cambiarlo: VENTANA_MS.abrio.
+    let cargaOcultaParaImprimir = false;
+    try { cargaOcultaParaImprimir = window.self !== window.top && window.innerWidth === 0 && window.innerHeight === 0; } catch (e) { /* sin acceso: se anota normal */ }
+    if (!cargaOcultaParaImprimir) registrar('abrio');
 }
