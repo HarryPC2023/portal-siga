@@ -1035,7 +1035,9 @@
     $$('.imp-op', raiz).forEach(function (o) {
       o.addEventListener('click', function () {
         lsSet('tinta', o.getAttribute('data-m') === 'tinta' ? '1' : '0'); aplicarTinta(); marcarModoImp();
-        if (soloPagina) { cerrarPanelImp(); setTimeout(function () { window.print() }, 60) }
+        let btnVisor = null; if (!soloPagina) { try { btnVisor = window.parent.document.querySelector('[data-accion="imprimir"]') } catch (e) { } }
+        if (btnVisor) { cerrarPanelImp(); btnVisor.click() }
+        else if (soloPagina) { cerrarPanelImp(); setTimeout(function () { window.print() }, 60) }
         else { $('.imp-ok', raiz).textContent = 'Listo: modo «' + (o.getAttribute('data-m') === 'tinta' ? 'ahorro de tinta' : 'con colores') + '». Ahora usa el botón de imprimir de SIGA.' }
       })
     });

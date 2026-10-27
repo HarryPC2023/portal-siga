@@ -20,1379 +20,1379 @@
   const RUTA_LIB = '../../../../libs/';
 
   // Ilustración de la portada: tres fichas de archivo con pestaña.
-    const ARTE = '<div class="fich"><div class="fi fi1"><span class="t">Atributo</span>cantidad_paquete</div><div class="fi fi2"><span class="t">Semántica</span>Número de paquetes…</div><div class="fi fi3"><span class="t">Ontología</span>Indica cuántos paquetes…</div></div>';
+  const ARTE = '<div class="fich"><div class="fi fi1"><span class="t">Atributo</span>cantidad_paquete</div><div class="fi fi2"><span class="t">Semántica</span>Número de paquetes…</div><div class="fi fi3"><span class="t">Ontología</span>Indica cuántos paquetes…</div></div>';
 
   /* ---------- Ejemplos: una sola fuente (validada con código) para la web y para el Excel ---------- */
   const SISTEMAS = [
- {
-  "id": "almacenamiento",
-  "nombre": "Almacenamiento",
-  "empresa": "Una empresa tercerizada que guarda la mercancía de sus clientes en los contenedores de un almacén hasta su despacho. El cliente es quien la contrata.",
-  "filas": [
-   {
-    "a": "altura_mercancia",
-    "v": "[0.01, 50.00]",
-    "f": "NUM(4,2)",
-    "n": "NÚMERO",
-    "s": "Medida real, en metros, de la [[mercancía]] desde su base hasta su punto más alto.",
-    "o": "Permite conocer la altura real para separar la longitud vertical que ocupará en el [[contenedor]]."
-   },
-   {
-    "a": "altura_mercancia_programada",
-    "v": "[0.01, 50.00]",
-    "f": "NUM(4,2)",
-    "n": "NÚMERO",
-    "s": "Medida esperada, en metros, de la [[mercancía]] desde su base hasta su punto más alto.",
-    "o": "Indica la altura que el [[cliente]] programó en el [[ticket]], base para separar el espacio del [[contenedor]]."
-   },
-   {
-    "a": "ancho_mercancia",
-    "v": "[0.01, 50.00]",
-    "f": "NUM(4,2)",
-    "n": "NÚMERO",
-    "s": "Medida real, en metros, de la [[mercancía]] de un costado al otro.",
-    "o": "Permite conocer el ancho real para separar la longitud horizontal que ocupará en el [[contenedor]]."
-   },
-   {
-    "a": "ancho_mercancia_programada",
-    "v": "[0.01, 50.00]",
-    "f": "NUM(4,2)",
-    "n": "NÚMERO",
-    "s": "Medida esperada, en metros, de la [[mercancía]] de un costado al otro.",
-    "o": "Indica el ancho que el [[cliente]] programó en el [[ticket]], base para separar el espacio horizontal del [[contenedor]]."
-   },
-   {
-    "a": "cantidad_contenedor",
-    "v": "[1, 100]",
-    "f": "NUM(3)",
-    "n": "NÚMERO",
-    "s": "Número de [[contenedor|contenedores]] reservados en el [[ticket]].",
-    "o": "Indica cuántos contenedores se necesitan para almacenar la [[mercancía]]."
-   },
-   {
-    "a": "cantidad_mercancia",
-    "v": "[1, 99999]",
-    "f": "NUM(5)",
-    "n": "NÚMERO",
-    "s": "Número de unidades reales de [[mercancía]].",
-    "o": "Indica cuántas unidades de mercancía llegaron al [[almacén]]."
-   },
-   {
-    "a": "cantidad_mercancia_paquete",
-    "v": "[1, 999]",
-    "f": "NUM(3)",
-    "n": "NÚMERO",
-    "s": "Número de unidades de [[mercancía]] que contiene un [[paquete]] embalado.",
-    "o": "Permite calcular cuántos paquetes se necesitan para embalar la mercancía."
-   },
-   {
-    "a": "cantidad_mercancia_programada",
-    "v": "[1, 99999]",
-    "f": "NUM(5)",
-    "n": "NÚMERO",
-    "s": "Número de unidades esperadas de [[mercancía]].",
-    "o": "Indica cuántas unidades de mercancía se programaron en el [[ticket]] para llegar al [[almacén]]."
-   },
-   {
-    "a": "cantidad_paquete",
-    "v": "[1, 99999]",
-    "f": "NUM(5)",
-    "n": "NÚMERO",
-    "s": "Número de [[paquete|paquetes]] embalados de una [[mercancía]].",
-    "o": "Indica cuántos paquetes se usaron para embalar la mercancía."
-   },
-   {
-    "a": "categoria_contenedor",
-    "v": "TAB1",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "[[clase|Clase]] de [[contenedor]] que resulta de clasificarlo según su material.",
-    "o": "Identifica el tipo de contenedor donde se almacenará una [[mercancía]]."
-   },
-   {
-    "a": "categoria_empaque_programada",
-    "v": "TAB2",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "[[clase|Clase]] de [[empaque]] esperada, que resulta de clasificarlo según su material.",
-    "o": "Identifica el empaque que el [[cliente]] programó en el [[ticket]], para diferenciar una [[mercancía]] de otra."
-   },
-   {
-    "a": "categoria_empaque_real",
-    "v": "TAB2",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "[[clase|Clase]] de [[empaque]] real, que resulta de clasificarlo según su material.",
-    "o": "Identifica el empaque con que llegó la [[mercancía]], para contrastarlo con el programado."
-   },
-   {
-    "a": "categoria_mercancia",
-    "v": "TAB3",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "[[clase|Clase]] de [[mercancía]] que resulta de clasificarla según sus características.",
-    "o": "Identifica la categoría de una mercancía para definir su [[embalaje]] y su almacenamiento."
-   }
-  ],
-  "glosario": [
-   {
-    "t": "almacén",
-    "d": "Lugar donde se ubican los [[contenedor|contenedores]] y se movilizan [[autómata|autómatas]] para custodiar la mercancía."
-   },
-   {
-    "t": "autómata",
-    "d": "Máquina programada para mover o manipular [[mercancía]]."
-   },
-   {
-    "t": "clase",
-    "d": "Grupo que resulta de clasificar según un criterio y que indica una jerarquía."
-   },
-   {
-    "t": "cliente",
-    "d": "Empresa que contrata el servicio de almacenamiento."
-   },
-   {
-    "t": "contenedor",
-    "d": "Espacio físico con estanterías donde se conserva la [[mercancía]]."
-   },
-   {
-    "t": "embalaje",
-    "d": "Protección exterior que reúne varias unidades de [[mercancía]] para su manejo y traslado."
-   },
-   {
-    "t": "empaque",
-    "d": "Envoltura inmediata que contiene o protege una unidad de [[mercancía]]."
-   },
-   {
-    "t": "mercancía",
-    "d": "Bien mueble que el [[cliente]] entrega para su custodia."
-   },
-   {
-    "t": "paquete",
-    "d": "Conjunto de unidades de [[mercancía]] reunidas con su [[embalaje]]."
-   },
-   {
-    "t": "ticket",
-    "d": "Registro único del servicio que contrata el [[cliente]], con lo programado para su ejecución."
-   }
-  ],
-  "tablas": [
-   {
-    "n": 1,
-    "titulo": "Categoría de contenedor",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Cartón"
-     ],
-     [
-      "2",
-      "Plástico"
-     ],
-     [
-      "3",
-      "Tecnopor"
-     ],
-     [
-      "4",
-      "Plomo"
-     ],
-     [
-      "5",
-      "Madera"
-     ],
-     [
-      "6",
-      "Acero"
-     ]
-    ],
-    "atributos": [
-     "categoria_contenedor"
-    ]
-   },
-   {
-    "n": 2,
-    "titulo": "Categoría de empaque",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Madera"
-     ],
-     [
-      "2",
-      "Plástico"
-     ],
-     [
-      "3",
-      "Cartón"
-     ],
-     [
-      "4",
-      "Papel"
-     ],
-     [
-      "5",
-      "Aluminio"
-     ],
-     [
-      "6",
-      "Plomo"
-     ]
-    ],
-    "atributos": [
-     "categoria_empaque_programada",
-     "categoria_empaque_real"
-    ]
-   },
-   {
-    "n": 3,
-    "titulo": "Categoría de mercancía",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Perecible"
-     ],
-     [
-      "2",
-      "Gas"
-     ],
-     [
-      "3",
-      "Inflamable"
-     ],
-     [
-      "4",
-      "Normal"
-     ],
-     [
-      "5",
-      "Radiactivo"
-     ],
-     [
-      "6",
-      "Frágil"
-     ],
-     [
-      "7",
-      "Tóxico"
-     ]
-    ],
-    "atributos": [
-     "categoria_mercancia"
-    ]
-   }
-  ]
- },
- {
-  "id": "cobranza",
-  "nombre": "Cobranza",
-  "empresa": "Una empresa tercerizada que gestiona el cobro de los morosos de otra empresa, su sponsor, que es quien la contrata. El moroso es un tercero: no es el cliente.",
-  "filas": [
-   {
-    "a": "codigo_sponsor",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se incrementa en 1 y se asigna a un [[sponsor]].",
-    "o": "Identifica de manera única al sponsor que contrata el servicio de [[cobranza]]."
-   },
-   {
-    "a": "correo_garante",
-    "v": "A…Z a…z 0…9 @ . _",
-    "f": "CHAR(100)",
-    "n": "NOMBRE",
-    "s": "Dirección de correo electrónico del [[garante]].",
-    "o": "Permite comunicarse con el garante mediante el [[canal]] Correo."
-   },
-   {
-    "a": "correo_moroso",
-    "v": "A…Z a…z 0…9 @ . _",
-    "f": "CHAR(100)",
-    "n": "NOMBRE",
-    "s": "Dirección de correo electrónico del [[moroso]].",
-    "o": "Permite comunicarse con el moroso mediante el [[canal]] Correo en la [[cobranza]] prejudicial."
-   },
-   {
-    "a": "correo_sponsor",
-    "v": "A…Z a…z 0…9 @ . _",
-    "f": "CHAR(100)",
-    "n": "NOMBRE",
-    "s": "Dirección de correo electrónico del [[sponsor]].",
-    "o": "Permite informar al sponsor el estado de la [[cobranza]] de sus morosos."
-   },
-   {
-    "a": "dias_mora",
-    "v": "[1, 9999]",
-    "f": "NUM(4)",
-    "n": "NÚMERO",
-    "s": "Número de días transcurridos desde el vencimiento de la [[deuda]], mientras sigue impaga.",
-    "o": "Permite determinar el tipo de [[mora]] y, con él, el producto de cobranza que corresponde aplicar."
-   },
-   {
-    "a": "direccion_moroso",
-    "v": "A…Z a…z 0…9",
-    "f": "CHAR(100)",
-    "n": "NOMBRE",
-    "s": "Ubicación física en la que reside el [[moroso]].",
-    "o": "Permite entregar al moroso las comunicaciones presenciales o jurídicas, como la [[carta notarial]]."
-   },
-   {
-    "a": "estado_cobranza",
-    "v": "TAB1",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Condición actual del proceso de [[cobranza]] respecto a una [[deuda]] determinada.",
-    "o": "Refleja el progreso operativo de la gestión de cobranza."
-   },
-   {
-    "a": "estado_entrega_dron",
-    "v": "TAB2",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Condición actual de la entrega de la [[carta notarial]] mediante [[dron]].",
-    "o": "Permite rastrear la ejecución de la entrega automatizada."
-   },
-   {
-    "a": "fecha_vencimiento_deuda",
-    "v": "fecha lógica y válida",
-    "f": "AAAA-MM-DD",
-    "n": "FECHA",
-    "s": "Fecha límite en la que la [[deuda]] debía pagarse.",
-    "o": "Permite calcular los días de [[mora]] del [[moroso]]."
-   },
-   {
-    "a": "monto_deuda",
-    "v": "[0.01, 9999999999.9999]",
-    "f": "NUM(14,4)",
-    "n": "MONTO",
-    "s": "Cantidad de dinero, en soles, que el [[moroso]] debe al [[sponsor]].",
-    "o": "Permite clasificar la [[deuda]] según su saldo y priorizar la gestión de cobranza."
-   },
-   {
-    "a": "nombre_moroso",
-    "v": "A…Z a…z",
-    "f": "CHAR(50)",
-    "n": "NOMBRE",
-    "s": "Nombre y apellidos con los que se conoce al [[moroso]].",
-    "o": "Permite dirigir al moroso cada comunicación de [[cobranza]]."
-   },
-   {
-    "a": "tipo_mora",
-    "v": "TAB3",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "[[clase|Clase]] de [[mora]] que resulta de clasificarla según los días transcurridos sin pago.",
-    "o": "Indica el producto de cobranza que corresponde aplicar al moroso."
-   }
-  ],
-  "glosario": [
-   {
-    "t": "canal",
-    "d": "Medio o vía por la que se transmite información."
-   },
-   {
-    "t": "carta notarial",
-    "d": "Comunicación formal, certificada ante notario, que se entrega al [[moroso]]."
-   },
-   {
-    "t": "clase",
-    "d": "Grupo que resulta de clasificar según un criterio y que indica una jerarquía."
-   },
-   {
-    "t": "cobranza",
-    "d": "Gestión que notifica, recuerda y presiona al [[moroso]] para que cumpla su [[deuda]]."
-   },
-   {
-    "t": "deuda",
-    "d": "Obligación de pago que una persona o entidad debe cumplir."
-   },
-   {
-    "t": "dron",
-    "d": "Aeronave no tripulada que ejecuta tareas de entrega de forma automática."
-   },
-   {
-    "t": "garante",
-    "d": "Persona que respalda con su compromiso el pago de la [[deuda]] del [[moroso]]."
-   },
-   {
-    "t": "mora",
-    "d": "Retraso en el cumplimiento de una obligación de pago."
-   },
-   {
-    "t": "moroso",
-    "d": "Persona o entidad que mantiene con el [[sponsor]] una [[deuda]] vencida."
-   },
-   {
-    "t": "sponsor",
-    "d": "Empresa que contrata el servicio de cobranza para recuperar lo que le deben."
-   }
-  ],
-  "tablas": [
-   {
-    "n": 1,
-    "titulo": "Estado de cobranza",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Programada"
-     ],
-     [
-      "2",
-      "En ejecución"
-     ],
-     [
-      "3",
-      "Concluida"
-     ]
-    ],
-    "atributos": [
-     "estado_cobranza"
-    ]
-   },
-   {
-    "n": 2,
-    "titulo": "Estado de entrega por dron",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Programada"
-     ],
-     [
-      "2",
-      "En ruta"
-     ],
-     [
-      "3",
-      "Entregada"
-     ]
-    ],
-    "atributos": [
-     "estado_entrega_dron"
-    ]
-   },
-   {
-    "n": 3,
-    "titulo": "Tipo de mora",
-    "cabecera": [
-     "Código",
-     "Tipo",
-     "Mora desde"
-    ],
-    "filas": [
-     [
-      "1",
-      "Leve",
-      "3 días"
-     ],
-     [
-      "2",
-      "Intermedia",
-      "5 días"
-     ],
-     [
-      "3",
-      "Prejudicial",
-      "10 días"
-     ],
-     [
-      "4",
-      "Judicial",
-      "15 días"
-     ]
-    ],
-    "atributos": [
-     "tipo_mora"
-    ]
-   }
-  ]
- },
- {
-  "id": "publicidad",
-  "nombre": "Publicidad",
-  "empresa": "Una empresa tercerizada que planifica y difunde campañas publicitarias en vehículos como televisión, radio, web o impresos. El cliente es quien contrata la campaña.",
-  "filas": [
-   {
-    "a": "alcance_total",
-    "v": "[0, 999999999]",
-    "f": "NUM(9)",
-    "n": "NÚMERO",
-    "s": "Número total de personas que consumieron el [[anuncio]] durante toda la [[transmisión]].",
-    "o": "Permite determinar la efectividad de la [[campaña]] publicitaria."
-   },
-   {
-    "a": "alcance_transmision",
-    "v": "[0, 999999999]",
-    "f": "NUM(9)",
-    "n": "NÚMERO",
-    "s": "Número de personas que consumieron el [[anuncio]] durante una [[transmisión]].",
-    "o": "Indica la capacidad del anuncio para atraer a quienes lo consumen."
-   },
-   {
-    "a": "audiencia_total",
-    "v": "[0, 999999999]",
-    "f": "NUM(9)",
-    "n": "NÚMERO",
-    "s": "Número total de personas que consumieron el [[vehículo publicitario]] durante toda la [[transmisión]].",
-    "o": "Permite conocer la influencia del vehículo publicitario."
-   },
-   {
-    "a": "audiencia_vehiculo",
-    "v": "[0, 999999999]",
-    "f": "NUM(9)",
-    "n": "NÚMERO",
-    "s": "[[audiencia|Audiencia]] promedio del [[vehículo publicitario]].",
-    "o": "Sirve de base para calcular la tarifa del vehículo publicitario."
-   },
-   {
-    "a": "cantidad_vehiculo",
-    "v": "[1, 9999]",
-    "f": "NUM(4)",
-    "n": "NÚMERO",
-    "s": "Número de [[vehículo publicitario|vehículos publicitarios]] asignados a una [[campaña]].",
-    "o": "Sirve de base para calcular el costo de la campaña."
-   },
-   {
-    "a": "codigo_anuncio",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se asigna a un [[anuncio]].",
-    "o": "Permite distinguir un anuncio de otro y reportar sus resultados por separado."
-   },
-   {
-    "a": "codigo_campania",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se asigna a una [[campaña]] publicitaria.",
-    "o": "Permite agrupar los anuncios y los vehículos de una misma campaña."
-   },
-   {
-    "a": "codigo_cliente",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se asigna a un [[cliente]].",
-    "o": "Permite asociar cada campaña con el cliente que la contrató."
-   },
-   {
-    "a": "codigo_producto",
-    "v": "[0, 99999999]",
-    "f": "NUM(8)",
-    "n": "CÓDIGO",
-    "s": "Número de 8 dígitos que identifica a un [[producto]] del catálogo.",
-    "o": "Permite asociar el vehículo publicitario con el producto que se promociona."
-   },
-   {
-    "a": "codigo_reporte_campania",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se asigna al informe final de una [[campaña]].",
-    "o": "Permite entregar al [[cliente]] los resultados finales de su campaña."
-   },
-   {
-    "a": "contenido_vehiculo",
-    "v": "TAB1",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Tema principal del contenido que difunde el [[vehículo publicitario]].",
-    "o": "Permite ubicar el [[anuncio]] en un contenido afín al público al que se dirige."
-   },
-   {
-    "a": "medio_vehiculo",
-    "v": "TAB2",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Tipo de soporte por el que el [[vehículo publicitario]] difunde el [[anuncio]].",
-    "o": "Permite calcular la tarifa y el alcance según el soporte utilizado."
-   }
-  ],
-  "glosario": [
-   {
-    "t": "anuncio",
-    "d": "Mensaje publicitario que promociona un [[producto]]."
-   },
-   {
-    "t": "audiencia",
-    "d": "Conjunto de personas que consumen un [[vehículo publicitario]] en un momento dado."
-   },
-   {
-    "t": "campaña",
-    "d": "Conjunto de [[anuncio|anuncios]] y [[vehículo publicitario|vehículos publicitarios]] planificados para promocionar un [[producto]] durante un periodo."
-   },
-   {
-    "t": "cliente",
-    "d": "Empresa que contrata la campaña publicitaria."
-   },
-   {
-    "t": "producto",
-    "d": "Bien o servicio que el [[cliente]] ofrece al público."
-   },
-   {
-    "t": "transmisión",
-    "d": "Emisión de un [[anuncio]] a través de un [[vehículo publicitario]]."
-   },
-   {
-    "t": "vehículo publicitario",
-    "d": "Medio que difunde un [[anuncio]] al público, como la televisión, la radio, la web o un impreso."
-   }
-  ],
-  "tablas": [
-   {
-    "n": 1,
-    "titulo": "Contenido del vehículo",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Deportes"
-     ],
-     [
-      "2",
-      "Educación"
-     ],
-     [
-      "3",
-      "Entretenimiento"
-     ],
-     [
-      "4",
-      "Infantil"
-     ]
-    ],
-    "atributos": [
-     "contenido_vehiculo"
-    ]
-   },
-   {
-    "n": 2,
-    "titulo": "Medio del vehículo",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Televisión"
-     ],
-     [
-      "2",
-      "Radio"
-     ],
-     [
-      "3",
-      "Web"
-     ],
-     [
-      "4",
-      "Impreso"
-     ]
-    ],
-    "atributos": [
-     "medio_vehiculo"
-    ]
-   }
-  ]
- },
- {
-  "id": "transporte",
-  "nombre": "Transporte",
-  "empresa": "Una empresa tercerizada que traslada la carga de su cliente, el remitente que la contrata. El destinatario recibe la carga, pero no es el cliente.",
-  "filas": [
-   {
-    "a": "alcance_maximo",
-    "v": "[0.01, 9999.99]",
-    "f": "NUM(6,2)",
-    "n": "NÚMERO",
-    "s": "Distancia máxima, en kilómetros, que una [[unidad de transporte]] recorre sin reabastecer energía.",
-    "o": "Permite saber si la unidad puede cubrir la [[ruta]] asignada sin detenerse a reabastecer."
-   },
-   {
-    "a": "alto_carga_detectado",
-    "v": "[0.01, 99.99]",
-    "f": "NUM(4,2)",
-    "n": "NÚMERO",
-    "s": "Medida real, en metros, de la [[carga]] desde su base hasta su punto más alto.",
-    "o": "Permite verificar si la carga cabe en la unidad de transporte asignada."
-   },
-   {
-    "a": "ancho_carga_detectado",
-    "v": "[0.01, 99.99]",
-    "f": "NUM(4,2)",
-    "n": "NÚMERO",
-    "s": "Medida real, en metros, de la [[carga]] de un costado al otro.",
-    "o": "Permite verificar si la carga cabe a lo ancho en la unidad de transporte asignada."
-   },
-   {
-    "a": "cantidad_entregada",
-    "v": "[0, 999999]",
-    "f": "NUM(6)",
-    "n": "NÚMERO",
-    "s": "Número de unidades de [[carga]] que la [[unidad de transporte]] entregó.",
-    "o": "Indica cuántas unidades dio por entregadas el transporte al cerrar el servicio."
-   },
-   {
-    "a": "cantidad_recibida",
-    "v": "[0, 999999]",
-    "f": "NUM(6)",
-    "n": "NÚMERO",
-    "s": "Número de unidades de [[carga]] que el [[destinatario]] contó al recibirla.",
-    "o": "Permite contrastar lo recibido con lo entregado para verificar el cumplimiento del servicio."
-   },
-   {
-    "a": "capacidad_disponible",
-    "v": "[0, 999999]",
-    "f": "NUM(6)",
-    "n": "NÚMERO",
-    "s": "Espacio o peso que aún puede llevar una [[unidad de transporte]].",
-    "o": "Determina si la unidad puede asignarse a un traslado según su capacidad restante."
-   },
-   {
-    "a": "codigo_cliente",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se asigna a un [[cliente]].",
-    "o": "Permite asociar cada traslado con el remitente que lo contrató."
-   },
-   {
-    "a": "condicion_climatica",
-    "v": "TAB1",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Estado del tiempo atmosférico, actual o previsto, en la [[ruta]].",
-    "o": "Permite anticipar variables ambientales que alteren la seguridad o el rendimiento del traslado."
-   },
-   {
-    "a": "consumo_energia_estimado",
-    "v": "[0.01, 9999.99]",
-    "f": "NUM(6,2)",
-    "n": "NÚMERO",
-    "s": "Cantidad proyectada de energía que se espera consumir en una [[ruta]].",
-    "o": "Indica la demanda de energía calculada según la distancia, la carga y el tipo de unidad."
-   },
-   {
-    "a": "distancia_tramo",
-    "v": "[0.01, 9999.99]",
-    "f": "NUM(6,2)",
-    "n": "NÚMERO",
-    "s": "Longitud, en kilómetros, de un [[tramo]] de la [[ruta]].",
-    "o": "Permite conocer la distancia que se recorrerá en un tramo específico."
-   },
-   {
-    "a": "estado_carga",
-    "v": "TAB2",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Condición logística actual de la [[carga]].",
-    "o": "Indica la fase del traslado en que se encuentra la carga."
-   },
-   {
-    "a": "estado_unidad_transporte",
-    "v": "TAB3",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Condición actual de una [[unidad de transporte]].",
-    "o": "Determina si la unidad puede asignarse a un servicio de traslado."
-   },
-   {
-    "a": "largo_carga_detectado",
-    "v": "[0.01, 99.99]",
-    "f": "NUM(4,2)",
-    "n": "NÚMERO",
-    "s": "Medida real, en metros, de la [[carga]] desde su parte delantera hasta la trasera.",
-    "o": "Permite verificar si la carga cabe a lo largo en la unidad de transporte asignada."
-   }
-  ],
-  "glosario": [
-   {
-    "t": "carga",
-    "d": "Conjunto de [[mercancía|mercancías]] que se traslada."
-   },
-   {
-    "t": "cliente",
-    "d": "Remitente que contrata el servicio de traslado de su [[carga]]."
-   },
-   {
-    "t": "destinatario",
-    "d": "Persona o entidad a quien va dirigida la [[carga]]; no contrata el servicio."
-   },
-   {
-    "t": "mercancía",
-    "d": "Bien mueble que se compra, se vende o se traslada."
-   },
-   {
-    "t": "nodo",
-    "d": "Punto de la [[ruta]] en el que se inicia, se detiene o termina un recorrido."
-   },
-   {
-    "t": "ruta",
-    "d": "Vía o trayecto que se sigue para ir de un lugar a otro."
-   },
-   {
-    "t": "tramo",
-    "d": "Parte de una [[ruta]] comprendida entre dos [[nodo|nodos]] adyacentes."
-   },
-   {
-    "t": "unidad de transporte",
-    "d": "Vehículo, tripulado o autónomo, que traslada la [[carga]] por una [[ruta]]."
-   }
-  ],
-  "tablas": [
-   {
-    "n": 1,
-    "titulo": "Condición climática",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Despejado"
-     ],
-     [
-      "2",
-      "Nublado"
-     ],
-     [
-      "3",
-      "Lluvia intensa"
-     ],
-     [
-      "4",
-      "Temperatura extrema"
-     ]
-    ],
-    "atributos": [
-     "condicion_climatica"
-    ]
-   },
-   {
-    "n": 2,
-    "titulo": "Estado de la carga",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Verificada"
-     ],
-     [
-      "2",
-      "En tránsito"
-     ],
-     [
-      "3",
-      "Recibida"
-     ]
-    ],
-    "atributos": [
-     "estado_carga"
-    ]
-   },
-   {
-    "n": 3,
-    "titulo": "Estado de la unidad de transporte",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Operativa"
-     ],
-     [
-      "2",
-      "En mantenimiento"
-     ],
-     [
-      "3",
-      "Fuera de servicio"
-     ]
-    ],
-    "atributos": [
-     "estado_unidad_transporte"
-    ]
-   }
-  ]
- },
- {
-  "id": "capacitacion",
-  "nombre": "Capacitación",
-  "empresa": "Una empresa tercerizada que capacita al personal de otras empresas mediante planes formativos. El cliente es la empresa que la contrata; los participantes capacitados son terceros.",
-  "filas": [
-   {
-    "a": "codigo_competencia",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se incrementa en 1 y se asigna a una [[competencia]].",
-    "o": "Permite asociar cada [[evaluación]] con la competencia que mide."
-   },
-   {
-    "a": "codigo_evaluacion",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se incrementa en 1 y se asigna a una [[evaluación]].",
-    "o": "Permite registrar y consultar los resultados de cada evaluación por separado."
-   },
-   {
-    "a": "codigo_evaluador",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se incrementa en 1 y se asigna a un [[evaluador]].",
-    "o": "Permite saber quién emitió el juicio de cada evaluación."
-   },
-   {
-    "a": "codigo_modulo",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se incrementa en 1 y se asigna a un [[módulo]].",
-    "o": "Permite organizar el plan de capacitación en módulos y seguir el avance de cada uno."
-   },
-   {
-    "a": "codigo_participante",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se incrementa en 1 y se asigna a un [[participante]].",
-    "o": "Permite asociar cada evidencia y cada resultado con la persona capacitada."
-   },
-   {
-    "a": "codigo_plan_capacitacion",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se incrementa en 1 y se asigna a un [[plan de capacitación]].",
-    "o": "Permite agrupar los módulos y las actividades que el [[cliente]] contrató."
-   },
-   {
-    "a": "criterio_evaluacion",
-    "v": "TAB1",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Aspecto que se toma como referencia para valorar el resultado de una [[evaluación]].",
-    "o": "Permite emitir cada evaluación con parámetros uniformes para toda la empresa."
-   },
-   {
-    "a": "descripcion_competencia",
-    "v": "A…Z a…z 0…9",
-    "f": "CHAR(200)",
-    "n": "NOMBRE",
-    "s": "Texto que explica las capacidades que abarca una [[competencia]].",
-    "o": "Permite al [[evaluador]] y al [[participante]] conocer qué se espera lograr con la capacitación."
-   },
-   {
-    "a": "duracion_real_actividad",
-    "v": "[0.01, 9999.99]",
-    "f": "NUM(6,2)",
-    "n": "NÚMERO",
-    "s": "Tiempo real, en horas, que se invirtió en ejecutar una [[actividad]].",
-    "o": "Permite contrastar el tiempo real con el programado para medir el cumplimiento del plan."
-   },
-   {
-    "a": "duracion_real_uso",
-    "v": "[0.01, 9999.99]",
-    "f": "NUM(6,2)",
-    "n": "NÚMERO",
-    "s": "Tiempo real, en horas, durante el cual se utilizó un [[recurso]].",
-    "o": "Permite evaluar el uso real frente al planificado y optimizar la gestión de recursos."
-   },
-   {
-    "a": "escala_calificacion",
-    "v": "TAB2",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Marco de valores con el que se califica una [[evaluación]].",
-    "o": "Define los valores y los límites con que se emite cada calificación."
-   },
-   {
-    "a": "estado_acceso",
-    "v": "TAB3",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Condición actual del [[acceso]] de un [[participante]].",
-    "o": "Indica si el participante puede ingresar a sus módulos y actividades."
-   },
-   {
-    "a": "estado_aprobacion_actividad",
-    "v": "TAB4",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Resultado de aprobación de una [[actividad]].",
-    "o": "Indica la situación académica del participante en la actividad."
-   }
-  ],
-  "glosario": [
-   {
-    "t": "acceso",
-    "d": "Permiso de un [[participante]] para ingresar a los contenidos de su capacitación."
-   },
-   {
-    "t": "actividad",
-    "d": "Tarea formativa que ejecuta el [[participante]]."
-   },
-   {
-    "t": "cliente",
-    "d": "Empresa que contrata la capacitación de su personal."
-   },
-   {
-    "t": "competencia",
-    "d": "Capacidad para realizar una tarea con eficacia."
-   },
-   {
-    "t": "evaluación",
-    "d": "Proceso que mide el logro de una [[competencia]] por parte de un [[participante]]."
-   },
-   {
-    "t": "evaluador",
-    "d": "Persona que emite un juicio en una [[evaluación]]."
-   },
-   {
-    "t": "módulo",
-    "d": "Unidad formativa que reúne [[actividad|actividades]] de un mismo tema."
-   },
-   {
-    "t": "participante",
-    "d": "Persona que recibe la capacitación; no contrata el servicio."
-   },
-   {
-    "t": "plan de capacitación",
-    "d": "Conjunto organizado de [[módulo|módulos]] que el [[cliente]] contrata para su personal."
-   },
-   {
-    "t": "recurso",
-    "d": "Material, sala o equipo que se usa en una [[actividad]]."
-   }
-  ],
-  "tablas": [
-   {
-    "n": 1,
-    "titulo": "Criterio de evaluación",
-    "cabecera": [
-     "Código",
-     "Nombre",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Calidad del trabajo",
-      "Grado de excelencia, precisión y atención al detalle en la ejecución"
-     ],
-     [
-      "2",
-      "Cumplimiento de objetivos",
-      "Logro de las metas y resultados establecidos al inicio"
-     ],
-     [
-      "3",
-      "Comunicación",
-      "Claridad y efectividad en la expresión oral y escrita"
-     ],
-     [
-      "4",
-      "Trabajo en equipo",
-      "Habilidad para colaborar y contribuir en grupo"
-     ],
-     [
-      "5",
-      "Creatividad",
-      "Originalidad e innovación en la solución de problemas"
-     ]
-    ],
-    "atributos": [
-     "criterio_evaluacion"
-    ]
-   },
-   {
-    "n": 2,
-    "titulo": "Escala de calificación",
-    "cabecera": [
-     "Código",
-     "Nombre",
-     "Valor mínimo",
-     "Valor máximo"
-    ],
-    "filas": [
-     [
-      "1",
-      "Numérica",
-      "0",
-      "20"
-     ],
-     [
-      "2",
-      "Letras",
-      "A",
-      "F"
-     ],
-     [
-      "3",
-      "Porcentaje",
-      "0 %",
-      "100 %"
-     ],
-     [
-      "4",
-      "Puntos",
-      "0",
-      "100"
-     ]
-    ],
-    "atributos": [
-     "escala_calificacion"
-    ]
-   },
-   {
-    "n": 3,
-    "titulo": "Estado de acceso",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Habilitado"
-     ],
-     [
-      "2",
-      "Deshabilitado"
-     ],
-     [
-      "3",
-      "Bloqueado"
-     ],
-     [
-      "4",
-      "Suspendido"
-     ],
-     [
-      "5",
-      "Vencido"
-     ],
-     [
-      "6",
-      "Pendiente"
-     ]
-    ],
-    "atributos": [
-     "estado_acceso"
-    ]
-   },
-   {
-    "n": 4,
-    "titulo": "Estado de aprobación de la actividad",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Pendiente"
-     ],
-     [
-      "2",
-      "Aprobada"
-     ],
-     [
-      "3",
-      "Desaprobada"
-     ]
-    ],
-    "atributos": [
-     "estado_aprobacion_actividad"
-    ]
-   }
-  ]
- },
- {
-  "id": "compras",
-  "nombre": "Compras",
-  "empresa": "Una empresa tercerizada que compra productos a proveedores en nombre de su cliente, que es quien la contrata. El proveedor es un tercero: no es el cliente.",
-  "filas": [
-   {
-    "a": "cantidad_pedida",
-    "v": "[1, 99999]",
-    "f": "NUM(5)",
-    "n": "NÚMERO",
-    "s": "Número de [[unidad|unidades]] de [[producto]] que se solicita en un [[pedido]].",
-    "o": "Permite calcular el monto de la [[orden de compra]] y compararlo con lo que se recibe."
-   },
-   {
-    "a": "cantidad_recibida",
-    "v": "[0, 99999]",
-    "f": "NUM(5)",
-    "n": "NÚMERO",
-    "s": "Número de [[unidad|unidades]] de [[producto]] que el [[proveedor]] entregó.",
-    "o": "Permite verificar que el pedido se cumplió y detectar faltantes."
-   },
-   {
-    "a": "codigo_cliente",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se asigna a un [[cliente]].",
-    "o": "Permite asociar cada compra con quien la solicitó y la paga."
-   },
-   {
-    "a": "codigo_producto",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se asigna a un [[producto]] del catálogo.",
-    "o": "Permite pedir y recibir el producto exacto que el cliente necesita."
-   },
-   {
-    "a": "codigo_proveedor",
-    "v": "[1, 999999999]",
-    "f": "NUM(9)",
-    "n": "CÓDIGO",
-    "s": "Número correlativo que se asigna a un [[proveedor]].",
-    "o": "Permite asociar cada orden de compra con quien surte el producto."
-   },
-   {
-    "a": "estado_orden_compra",
-    "v": "TAB1",
-    "f": "CHAR(1)",
-    "n": "INDICADOR",
-    "s": "Condición actual de una [[orden de compra]].",
-    "o": "Indica en qué etapa del abastecimiento se encuentra el pedido."
-   },
-   {
-    "a": "fecha_emision_orden",
-    "v": "fecha lógica y válida",
-    "f": "AAAA-MM-DD",
-    "n": "FECHA",
-    "s": "Fecha en la que se emite una [[orden de compra]].",
-    "o": "Permite medir el tiempo de abastecimiento junto con la fecha de recepción."
-   },
-   {
-    "a": "fecha_recepcion_producto",
-    "v": "fecha lógica y válida",
-    "f": "AAAA-MM-DD",
-    "n": "FECHA",
-    "s": "Fecha en la que el [[proveedor]] entrega el [[producto]].",
-    "o": "Permite calcular el plazo real de entrega y evaluar al proveedor."
-   },
-   {
-    "a": "monto_orden_compra",
-    "v": "[0.01, 9999999999.9999]",
-    "f": "NUM(14,4)",
-    "n": "MONTO",
-    "s": "Cantidad de dinero, en soles, que cuesta una [[orden de compra]].",
-    "o": "Permite informar al [[cliente]] el costo de su abastecimiento."
-   },
-   {
-    "a": "plazo_entrega_programado",
-    "v": "[1, 365]",
-    "f": "NUM(3)",
-    "n": "NÚMERO",
-    "s": "Número de días que el [[proveedor]] se compromete a tardar en entregar un [[pedido]].",
-    "o": "Permite comparar lo prometido con lo real y calificar el cumplimiento del proveedor."
-   },
-   {
-    "a": "precio_unitario",
-    "v": "[0.01, 9999999999.9999]",
-    "f": "NUM(14,4)",
-    "n": "MONTO",
-    "s": "Cantidad de dinero, en soles, que cuesta una [[unidad]] de [[producto]].",
-    "o": "Permite calcular el monto de la orden de compra."
-   }
-  ],
-  "glosario": [
-   {
-    "t": "cliente",
-    "d": "Empresa que contrata el servicio de compras."
-   },
-   {
-    "t": "orden de compra",
-    "d": "Documento que formaliza un [[pedido]] a un [[proveedor]] con un precio acordado."
-   },
-   {
-    "t": "pedido",
-    "d": "Solicitud de [[producto]] que se hace a un [[proveedor]]."
-   },
-   {
-    "t": "producto",
-    "d": "Bien que el [[cliente]] necesita adquirir."
-   },
-   {
-    "t": "proveedor",
-    "d": "Empresa o persona que suministra los productos solicitados; no contrata el servicio."
-   },
-   {
-    "t": "unidad",
-    "d": "Cada ejemplar individual de un [[producto]]."
-   }
-  ],
-  "tablas": [
-   {
-    "n": 1,
-    "titulo": "Estado de la orden de compra",
-    "cabecera": [
-     "Código",
-     "Descripción"
-    ],
-    "filas": [
-     [
-      "1",
-      "Emitida"
-     ],
-     [
-      "2",
-      "Confirmada"
-     ],
-     [
-      "3",
-      "Recibida"
-     ],
-     [
-      "4",
-      "Cerrada"
-     ]
-    ],
-    "atributos": [
-     "estado_orden_compra"
-    ]
-   }
-  ]
- }
-];
+    {
+      "id": "almacenamiento",
+      "nombre": "Almacenamiento",
+      "empresa": "Una empresa tercerizada que guarda la mercancía de sus clientes en los contenedores de un almacén hasta su despacho. El cliente es quien la contrata.",
+      "filas": [
+        {
+          "a": "altura_mercancia",
+          "v": "[0.01, 50.00]",
+          "f": "NUM(4,2)",
+          "n": "NÚMERO",
+          "s": "Medida real, en metros, de la [[mercancía]] desde su base hasta su punto más alto.",
+          "o": "Permite conocer la altura real para separar la longitud vertical que ocupará en el [[contenedor]]."
+        },
+        {
+          "a": "altura_mercancia_programada",
+          "v": "[0.01, 50.00]",
+          "f": "NUM(4,2)",
+          "n": "NÚMERO",
+          "s": "Medida esperada, en metros, de la [[mercancía]] desde su base hasta su punto más alto.",
+          "o": "Indica la altura que el [[cliente]] programó en el [[ticket]], base para separar el espacio del [[contenedor]]."
+        },
+        {
+          "a": "ancho_mercancia",
+          "v": "[0.01, 50.00]",
+          "f": "NUM(4,2)",
+          "n": "NÚMERO",
+          "s": "Medida real, en metros, de la [[mercancía]] de un costado al otro.",
+          "o": "Permite conocer el ancho real para separar la longitud horizontal que ocupará en el [[contenedor]]."
+        },
+        {
+          "a": "ancho_mercancia_programada",
+          "v": "[0.01, 50.00]",
+          "f": "NUM(4,2)",
+          "n": "NÚMERO",
+          "s": "Medida esperada, en metros, de la [[mercancía]] de un costado al otro.",
+          "o": "Indica el ancho que el [[cliente]] programó en el [[ticket]], base para separar el espacio horizontal del [[contenedor]]."
+        },
+        {
+          "a": "cantidad_contenedor",
+          "v": "[1, 100]",
+          "f": "NUM(3)",
+          "n": "NÚMERO",
+          "s": "Número de [[contenedor|contenedores]] reservados en el [[ticket]].",
+          "o": "Indica cuántos contenedores se necesitan para almacenar la [[mercancía]]."
+        },
+        {
+          "a": "cantidad_mercancia",
+          "v": "[1, 99999]",
+          "f": "NUM(5)",
+          "n": "NÚMERO",
+          "s": "Número de unidades reales de [[mercancía]].",
+          "o": "Indica cuántas unidades de mercancía llegaron al [[almacén]]."
+        },
+        {
+          "a": "cantidad_mercancia_paquete",
+          "v": "[1, 999]",
+          "f": "NUM(3)",
+          "n": "NÚMERO",
+          "s": "Número de unidades de [[mercancía]] que contiene un [[paquete]] embalado.",
+          "o": "Permite calcular cuántos paquetes se necesitan para embalar la mercancía."
+        },
+        {
+          "a": "cantidad_mercancia_programada",
+          "v": "[1, 99999]",
+          "f": "NUM(5)",
+          "n": "NÚMERO",
+          "s": "Número de unidades esperadas de [[mercancía]].",
+          "o": "Indica cuántas unidades de mercancía se programaron en el [[ticket]] para llegar al [[almacén]]."
+        },
+        {
+          "a": "cantidad_paquete",
+          "v": "[1, 99999]",
+          "f": "NUM(5)",
+          "n": "NÚMERO",
+          "s": "Número de [[paquete|paquetes]] embalados de una [[mercancía]].",
+          "o": "Indica cuántos paquetes se usaron para embalar la mercancía."
+        },
+        {
+          "a": "categoria_contenedor",
+          "v": "TAB1",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "[[clase|Clase]] de [[contenedor]] que resulta de clasificarlo según su material.",
+          "o": "Identifica el tipo de contenedor donde se almacenará una [[mercancía]]."
+        },
+        {
+          "a": "categoria_empaque_programada",
+          "v": "TAB2",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "[[clase|Clase]] de [[empaque]] esperada, que resulta de clasificarlo según su material.",
+          "o": "Identifica el empaque que el [[cliente]] programó en el [[ticket]], para diferenciar una [[mercancía]] de otra."
+        },
+        {
+          "a": "categoria_empaque_real",
+          "v": "TAB2",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "[[clase|Clase]] de [[empaque]] real, que resulta de clasificarlo según su material.",
+          "o": "Identifica el empaque con que llegó la [[mercancía]], para contrastarlo con el programado."
+        },
+        {
+          "a": "categoria_mercancia",
+          "v": "TAB3",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "[[clase|Clase]] de [[mercancía]] que resulta de clasificarla según sus características.",
+          "o": "Identifica la categoría de una mercancía para definir su [[embalaje]] y su almacenamiento."
+        }
+      ],
+      "glosario": [
+        {
+          "t": "almacén",
+          "d": "Lugar donde se ubican los [[contenedor|contenedores]] y se movilizan [[autómata|autómatas]] para custodiar la mercancía."
+        },
+        {
+          "t": "autómata",
+          "d": "Máquina programada para mover o manipular [[mercancía]]."
+        },
+        {
+          "t": "clase",
+          "d": "Grupo que resulta de clasificar según un criterio y que indica una jerarquía."
+        },
+        {
+          "t": "cliente",
+          "d": "Empresa que contrata el servicio de almacenamiento."
+        },
+        {
+          "t": "contenedor",
+          "d": "Espacio físico con estanterías donde se conserva la [[mercancía]]."
+        },
+        {
+          "t": "embalaje",
+          "d": "Protección exterior que reúne varias unidades de [[mercancía]] para su manejo y traslado."
+        },
+        {
+          "t": "empaque",
+          "d": "Envoltura inmediata que contiene o protege una unidad de [[mercancía]]."
+        },
+        {
+          "t": "mercancía",
+          "d": "Bien mueble que el [[cliente]] entrega para su custodia."
+        },
+        {
+          "t": "paquete",
+          "d": "Conjunto de unidades de [[mercancía]] reunidas con su [[embalaje]]."
+        },
+        {
+          "t": "ticket",
+          "d": "Registro único del servicio que contrata el [[cliente]], con lo programado para su ejecución."
+        }
+      ],
+      "tablas": [
+        {
+          "n": 1,
+          "titulo": "Categoría de contenedor",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Cartón"
+            ],
+            [
+              "2",
+              "Plástico"
+            ],
+            [
+              "3",
+              "Tecnopor"
+            ],
+            [
+              "4",
+              "Plomo"
+            ],
+            [
+              "5",
+              "Madera"
+            ],
+            [
+              "6",
+              "Acero"
+            ]
+          ],
+          "atributos": [
+            "categoria_contenedor"
+          ]
+        },
+        {
+          "n": 2,
+          "titulo": "Categoría de empaque",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Madera"
+            ],
+            [
+              "2",
+              "Plástico"
+            ],
+            [
+              "3",
+              "Cartón"
+            ],
+            [
+              "4",
+              "Papel"
+            ],
+            [
+              "5",
+              "Aluminio"
+            ],
+            [
+              "6",
+              "Plomo"
+            ]
+          ],
+          "atributos": [
+            "categoria_empaque_programada",
+            "categoria_empaque_real"
+          ]
+        },
+        {
+          "n": 3,
+          "titulo": "Categoría de mercancía",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Perecible"
+            ],
+            [
+              "2",
+              "Gas"
+            ],
+            [
+              "3",
+              "Inflamable"
+            ],
+            [
+              "4",
+              "Normal"
+            ],
+            [
+              "5",
+              "Radiactivo"
+            ],
+            [
+              "6",
+              "Frágil"
+            ],
+            [
+              "7",
+              "Tóxico"
+            ]
+          ],
+          "atributos": [
+            "categoria_mercancia"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cobranza",
+      "nombre": "Cobranza",
+      "empresa": "Una empresa tercerizada que gestiona el cobro de los morosos de otra empresa, su sponsor, que es quien la contrata. El moroso es un tercero: no es el cliente.",
+      "filas": [
+        {
+          "a": "codigo_sponsor",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se incrementa en 1 y se asigna a un [[sponsor]].",
+          "o": "Identifica de manera única al sponsor que contrata el servicio de [[cobranza]]."
+        },
+        {
+          "a": "correo_garante",
+          "v": "A…Z a…z 0…9 @ . _",
+          "f": "CHAR(100)",
+          "n": "NOMBRE",
+          "s": "Dirección de correo electrónico del [[garante]].",
+          "o": "Permite comunicarse con el garante mediante el [[canal]] Correo."
+        },
+        {
+          "a": "correo_moroso",
+          "v": "A…Z a…z 0…9 @ . _",
+          "f": "CHAR(100)",
+          "n": "NOMBRE",
+          "s": "Dirección de correo electrónico del [[moroso]].",
+          "o": "Permite comunicarse con el moroso mediante el [[canal]] Correo en la [[cobranza]] prejudicial."
+        },
+        {
+          "a": "correo_sponsor",
+          "v": "A…Z a…z 0…9 @ . _",
+          "f": "CHAR(100)",
+          "n": "NOMBRE",
+          "s": "Dirección de correo electrónico del [[sponsor]].",
+          "o": "Permite informar al sponsor el estado de la [[cobranza]] de sus morosos."
+        },
+        {
+          "a": "dias_mora",
+          "v": "[1, 9999]",
+          "f": "NUM(4)",
+          "n": "NÚMERO",
+          "s": "Número de días transcurridos desde el vencimiento de la [[deuda]], mientras sigue impaga.",
+          "o": "Permite determinar el tipo de [[mora]] y, con él, el producto de cobranza que corresponde aplicar."
+        },
+        {
+          "a": "direccion_moroso",
+          "v": "A…Z a…z 0…9",
+          "f": "CHAR(100)",
+          "n": "NOMBRE",
+          "s": "Ubicación física en la que reside el [[moroso]].",
+          "o": "Permite entregar al moroso las comunicaciones presenciales o jurídicas, como la [[carta notarial]]."
+        },
+        {
+          "a": "estado_cobranza",
+          "v": "TAB1",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Condición actual del proceso de [[cobranza]] respecto a una [[deuda]] determinada.",
+          "o": "Refleja el progreso operativo de la gestión de cobranza."
+        },
+        {
+          "a": "estado_entrega_dron",
+          "v": "TAB2",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Condición actual de la entrega de la [[carta notarial]] mediante [[dron]].",
+          "o": "Permite rastrear la ejecución de la entrega automatizada."
+        },
+        {
+          "a": "fecha_vencimiento_deuda",
+          "v": "fecha lógica y válida",
+          "f": "AAAA-MM-DD",
+          "n": "FECHA",
+          "s": "Fecha límite en la que la [[deuda]] debía pagarse.",
+          "o": "Permite calcular los días de [[mora]] del [[moroso]]."
+        },
+        {
+          "a": "monto_deuda",
+          "v": "[0.01, 9999999999.9999]",
+          "f": "NUM(14,4)",
+          "n": "MONTO",
+          "s": "Cantidad de dinero, en soles, que el [[moroso]] debe al [[sponsor]].",
+          "o": "Permite clasificar la [[deuda]] según su saldo y priorizar la gestión de cobranza."
+        },
+        {
+          "a": "nombre_moroso",
+          "v": "A…Z a…z",
+          "f": "CHAR(50)",
+          "n": "NOMBRE",
+          "s": "Nombre y apellidos con los que se conoce al [[moroso]].",
+          "o": "Permite dirigir al moroso cada comunicación de [[cobranza]]."
+        },
+        {
+          "a": "tipo_mora",
+          "v": "TAB3",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "[[clase|Clase]] de [[mora]] que resulta de clasificarla según los días transcurridos sin pago.",
+          "o": "Indica el producto de cobranza que corresponde aplicar al moroso."
+        }
+      ],
+      "glosario": [
+        {
+          "t": "canal",
+          "d": "Medio o vía por la que se transmite información."
+        },
+        {
+          "t": "carta notarial",
+          "d": "Comunicación formal, certificada ante notario, que se entrega al [[moroso]]."
+        },
+        {
+          "t": "clase",
+          "d": "Grupo que resulta de clasificar según un criterio y que indica una jerarquía."
+        },
+        {
+          "t": "cobranza",
+          "d": "Gestión que notifica, recuerda y presiona al [[moroso]] para que cumpla su [[deuda]]."
+        },
+        {
+          "t": "deuda",
+          "d": "Obligación de pago que una persona o entidad debe cumplir."
+        },
+        {
+          "t": "dron",
+          "d": "Aeronave no tripulada que ejecuta tareas de entrega de forma automática."
+        },
+        {
+          "t": "garante",
+          "d": "Persona que respalda con su compromiso el pago de la [[deuda]] del [[moroso]]."
+        },
+        {
+          "t": "mora",
+          "d": "Retraso en el cumplimiento de una obligación de pago."
+        },
+        {
+          "t": "moroso",
+          "d": "Persona o entidad que mantiene con el [[sponsor]] una [[deuda]] vencida."
+        },
+        {
+          "t": "sponsor",
+          "d": "Empresa que contrata el servicio de cobranza para recuperar lo que le deben."
+        }
+      ],
+      "tablas": [
+        {
+          "n": 1,
+          "titulo": "Estado de cobranza",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Programada"
+            ],
+            [
+              "2",
+              "En ejecución"
+            ],
+            [
+              "3",
+              "Concluida"
+            ]
+          ],
+          "atributos": [
+            "estado_cobranza"
+          ]
+        },
+        {
+          "n": 2,
+          "titulo": "Estado de entrega por dron",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Programada"
+            ],
+            [
+              "2",
+              "En ruta"
+            ],
+            [
+              "3",
+              "Entregada"
+            ]
+          ],
+          "atributos": [
+            "estado_entrega_dron"
+          ]
+        },
+        {
+          "n": 3,
+          "titulo": "Tipo de mora",
+          "cabecera": [
+            "Código",
+            "Tipo",
+            "Mora desde"
+          ],
+          "filas": [
+            [
+              "1",
+              "Leve",
+              "3 días"
+            ],
+            [
+              "2",
+              "Intermedia",
+              "5 días"
+            ],
+            [
+              "3",
+              "Prejudicial",
+              "10 días"
+            ],
+            [
+              "4",
+              "Judicial",
+              "15 días"
+            ]
+          ],
+          "atributos": [
+            "tipo_mora"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "publicidad",
+      "nombre": "Publicidad",
+      "empresa": "Una empresa tercerizada que planifica y difunde campañas publicitarias en vehículos como televisión, radio, web o impresos. El cliente es quien contrata la campaña.",
+      "filas": [
+        {
+          "a": "alcance_total",
+          "v": "[0, 999999999]",
+          "f": "NUM(9)",
+          "n": "NÚMERO",
+          "s": "Número total de personas que consumieron el [[anuncio]] durante toda la [[transmisión]].",
+          "o": "Permite determinar la efectividad de la [[campaña]] publicitaria."
+        },
+        {
+          "a": "alcance_transmision",
+          "v": "[0, 999999999]",
+          "f": "NUM(9)",
+          "n": "NÚMERO",
+          "s": "Número de personas que consumieron el [[anuncio]] durante una [[transmisión]].",
+          "o": "Indica la capacidad del anuncio para atraer a quienes lo consumen."
+        },
+        {
+          "a": "audiencia_total",
+          "v": "[0, 999999999]",
+          "f": "NUM(9)",
+          "n": "NÚMERO",
+          "s": "Número total de personas que consumieron el [[vehículo publicitario]] durante toda la [[transmisión]].",
+          "o": "Permite conocer la influencia del vehículo publicitario."
+        },
+        {
+          "a": "audiencia_vehiculo",
+          "v": "[0, 999999999]",
+          "f": "NUM(9)",
+          "n": "NÚMERO",
+          "s": "[[audiencia|Audiencia]] promedio del [[vehículo publicitario]].",
+          "o": "Sirve de base para calcular la tarifa del vehículo publicitario."
+        },
+        {
+          "a": "cantidad_vehiculo",
+          "v": "[1, 9999]",
+          "f": "NUM(4)",
+          "n": "NÚMERO",
+          "s": "Número de [[vehículo publicitario|vehículos publicitarios]] asignados a una [[campaña]].",
+          "o": "Sirve de base para calcular el costo de la campaña."
+        },
+        {
+          "a": "codigo_anuncio",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se asigna a un [[anuncio]].",
+          "o": "Permite distinguir un anuncio de otro y reportar sus resultados por separado."
+        },
+        {
+          "a": "codigo_campania",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se asigna a una [[campaña]] publicitaria.",
+          "o": "Permite agrupar los anuncios y los vehículos de una misma campaña."
+        },
+        {
+          "a": "codigo_cliente",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se asigna a un [[cliente]].",
+          "o": "Permite asociar cada campaña con el cliente que la contrató."
+        },
+        {
+          "a": "codigo_producto",
+          "v": "[0, 99999999]",
+          "f": "NUM(8)",
+          "n": "CÓDIGO",
+          "s": "Número de 8 dígitos que identifica a un [[producto]] del catálogo.",
+          "o": "Permite asociar el vehículo publicitario con el producto que se promociona."
+        },
+        {
+          "a": "codigo_reporte_campania",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se asigna al informe final de una [[campaña]].",
+          "o": "Permite entregar al [[cliente]] los resultados finales de su campaña."
+        },
+        {
+          "a": "contenido_vehiculo",
+          "v": "TAB1",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Tema principal del contenido que difunde el [[vehículo publicitario]].",
+          "o": "Permite ubicar el [[anuncio]] en un contenido afín al público al que se dirige."
+        },
+        {
+          "a": "medio_vehiculo",
+          "v": "TAB2",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Tipo de soporte por el que el [[vehículo publicitario]] difunde el [[anuncio]].",
+          "o": "Permite calcular la tarifa y el alcance según el soporte utilizado."
+        }
+      ],
+      "glosario": [
+        {
+          "t": "anuncio",
+          "d": "Mensaje publicitario que promociona un [[producto]]."
+        },
+        {
+          "t": "audiencia",
+          "d": "Conjunto de personas que consumen un [[vehículo publicitario]] en un momento dado."
+        },
+        {
+          "t": "campaña",
+          "d": "Conjunto de [[anuncio|anuncios]] y [[vehículo publicitario|vehículos publicitarios]] planificados para promocionar un [[producto]] durante un periodo."
+        },
+        {
+          "t": "cliente",
+          "d": "Empresa que contrata la campaña publicitaria."
+        },
+        {
+          "t": "producto",
+          "d": "Bien o servicio que el [[cliente]] ofrece al público."
+        },
+        {
+          "t": "transmisión",
+          "d": "Emisión de un [[anuncio]] a través de un [[vehículo publicitario]]."
+        },
+        {
+          "t": "vehículo publicitario",
+          "d": "Medio que difunde un [[anuncio]] al público, como la televisión, la radio, la web o un impreso."
+        }
+      ],
+      "tablas": [
+        {
+          "n": 1,
+          "titulo": "Contenido del vehículo",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Deportes"
+            ],
+            [
+              "2",
+              "Educación"
+            ],
+            [
+              "3",
+              "Entretenimiento"
+            ],
+            [
+              "4",
+              "Infantil"
+            ]
+          ],
+          "atributos": [
+            "contenido_vehiculo"
+          ]
+        },
+        {
+          "n": 2,
+          "titulo": "Medio del vehículo",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Televisión"
+            ],
+            [
+              "2",
+              "Radio"
+            ],
+            [
+              "3",
+              "Web"
+            ],
+            [
+              "4",
+              "Impreso"
+            ]
+          ],
+          "atributos": [
+            "medio_vehiculo"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "transporte",
+      "nombre": "Transporte",
+      "empresa": "Una empresa tercerizada que traslada la carga de su cliente, el remitente que la contrata. El destinatario recibe la carga, pero no es el cliente.",
+      "filas": [
+        {
+          "a": "alcance_maximo",
+          "v": "[0.01, 9999.99]",
+          "f": "NUM(6,2)",
+          "n": "NÚMERO",
+          "s": "Distancia máxima, en kilómetros, que una [[unidad de transporte]] recorre sin reabastecer energía.",
+          "o": "Permite saber si la unidad puede cubrir la [[ruta]] asignada sin detenerse a reabastecer."
+        },
+        {
+          "a": "alto_carga_detectado",
+          "v": "[0.01, 99.99]",
+          "f": "NUM(4,2)",
+          "n": "NÚMERO",
+          "s": "Medida real, en metros, de la [[carga]] desde su base hasta su punto más alto.",
+          "o": "Permite verificar si la carga cabe en la unidad de transporte asignada."
+        },
+        {
+          "a": "ancho_carga_detectado",
+          "v": "[0.01, 99.99]",
+          "f": "NUM(4,2)",
+          "n": "NÚMERO",
+          "s": "Medida real, en metros, de la [[carga]] de un costado al otro.",
+          "o": "Permite verificar si la carga cabe a lo ancho en la unidad de transporte asignada."
+        },
+        {
+          "a": "cantidad_entregada",
+          "v": "[0, 999999]",
+          "f": "NUM(6)",
+          "n": "NÚMERO",
+          "s": "Número de unidades de [[carga]] que la [[unidad de transporte]] entregó.",
+          "o": "Indica cuántas unidades dio por entregadas el transporte al cerrar el servicio."
+        },
+        {
+          "a": "cantidad_recibida",
+          "v": "[0, 999999]",
+          "f": "NUM(6)",
+          "n": "NÚMERO",
+          "s": "Número de unidades de [[carga]] que el [[destinatario]] contó al recibirla.",
+          "o": "Permite contrastar lo recibido con lo entregado para verificar el cumplimiento del servicio."
+        },
+        {
+          "a": "capacidad_disponible",
+          "v": "[0, 999999]",
+          "f": "NUM(6)",
+          "n": "NÚMERO",
+          "s": "Espacio o peso que aún puede llevar una [[unidad de transporte]].",
+          "o": "Determina si la unidad puede asignarse a un traslado según su capacidad restante."
+        },
+        {
+          "a": "codigo_cliente",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se asigna a un [[cliente]].",
+          "o": "Permite asociar cada traslado con el remitente que lo contrató."
+        },
+        {
+          "a": "condicion_climatica",
+          "v": "TAB1",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Estado del tiempo atmosférico, actual o previsto, en la [[ruta]].",
+          "o": "Permite anticipar variables ambientales que alteren la seguridad o el rendimiento del traslado."
+        },
+        {
+          "a": "consumo_energia_estimado",
+          "v": "[0.01, 9999.99]",
+          "f": "NUM(6,2)",
+          "n": "NÚMERO",
+          "s": "Cantidad proyectada de energía que se espera consumir en una [[ruta]].",
+          "o": "Indica la demanda de energía calculada según la distancia, la carga y el tipo de unidad."
+        },
+        {
+          "a": "distancia_tramo",
+          "v": "[0.01, 9999.99]",
+          "f": "NUM(6,2)",
+          "n": "NÚMERO",
+          "s": "Longitud, en kilómetros, de un [[tramo]] de la [[ruta]].",
+          "o": "Permite conocer la distancia que se recorrerá en un tramo específico."
+        },
+        {
+          "a": "estado_carga",
+          "v": "TAB2",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Condición logística actual de la [[carga]].",
+          "o": "Indica la fase del traslado en que se encuentra la carga."
+        },
+        {
+          "a": "estado_unidad_transporte",
+          "v": "TAB3",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Condición actual de una [[unidad de transporte]].",
+          "o": "Determina si la unidad puede asignarse a un servicio de traslado."
+        },
+        {
+          "a": "largo_carga_detectado",
+          "v": "[0.01, 99.99]",
+          "f": "NUM(4,2)",
+          "n": "NÚMERO",
+          "s": "Medida real, en metros, de la [[carga]] desde su parte delantera hasta la trasera.",
+          "o": "Permite verificar si la carga cabe a lo largo en la unidad de transporte asignada."
+        }
+      ],
+      "glosario": [
+        {
+          "t": "carga",
+          "d": "Conjunto de [[mercancía|mercancías]] que se traslada."
+        },
+        {
+          "t": "cliente",
+          "d": "Remitente que contrata el servicio de traslado de su [[carga]]."
+        },
+        {
+          "t": "destinatario",
+          "d": "Persona o entidad a quien va dirigida la [[carga]]; no contrata el servicio."
+        },
+        {
+          "t": "mercancía",
+          "d": "Bien mueble que se compra, se vende o se traslada."
+        },
+        {
+          "t": "nodo",
+          "d": "Punto de la [[ruta]] en el que se inicia, se detiene o termina un recorrido."
+        },
+        {
+          "t": "ruta",
+          "d": "Vía o trayecto que se sigue para ir de un lugar a otro."
+        },
+        {
+          "t": "tramo",
+          "d": "Parte de una [[ruta]] comprendida entre dos [[nodo|nodos]] adyacentes."
+        },
+        {
+          "t": "unidad de transporte",
+          "d": "Vehículo, tripulado o autónomo, que traslada la [[carga]] por una [[ruta]]."
+        }
+      ],
+      "tablas": [
+        {
+          "n": 1,
+          "titulo": "Condición climática",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Despejado"
+            ],
+            [
+              "2",
+              "Nublado"
+            ],
+            [
+              "3",
+              "Lluvia intensa"
+            ],
+            [
+              "4",
+              "Temperatura extrema"
+            ]
+          ],
+          "atributos": [
+            "condicion_climatica"
+          ]
+        },
+        {
+          "n": 2,
+          "titulo": "Estado de la carga",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Verificada"
+            ],
+            [
+              "2",
+              "En tránsito"
+            ],
+            [
+              "3",
+              "Recibida"
+            ]
+          ],
+          "atributos": [
+            "estado_carga"
+          ]
+        },
+        {
+          "n": 3,
+          "titulo": "Estado de la unidad de transporte",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Operativa"
+            ],
+            [
+              "2",
+              "En mantenimiento"
+            ],
+            [
+              "3",
+              "Fuera de servicio"
+            ]
+          ],
+          "atributos": [
+            "estado_unidad_transporte"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "capacitacion",
+      "nombre": "Capacitación",
+      "empresa": "Una empresa tercerizada que capacita al personal de otras empresas mediante planes formativos. El cliente es la empresa que la contrata; los participantes capacitados son terceros.",
+      "filas": [
+        {
+          "a": "codigo_competencia",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se incrementa en 1 y se asigna a una [[competencia]].",
+          "o": "Permite asociar cada [[evaluación]] con la competencia que mide."
+        },
+        {
+          "a": "codigo_evaluacion",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se incrementa en 1 y se asigna a una [[evaluación]].",
+          "o": "Permite registrar y consultar los resultados de cada evaluación por separado."
+        },
+        {
+          "a": "codigo_evaluador",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se incrementa en 1 y se asigna a un [[evaluador]].",
+          "o": "Permite saber quién emitió el juicio de cada evaluación."
+        },
+        {
+          "a": "codigo_modulo",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se incrementa en 1 y se asigna a un [[módulo]].",
+          "o": "Permite organizar el plan de capacitación en módulos y seguir el avance de cada uno."
+        },
+        {
+          "a": "codigo_participante",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se incrementa en 1 y se asigna a un [[participante]].",
+          "o": "Permite asociar cada evidencia y cada resultado con la persona capacitada."
+        },
+        {
+          "a": "codigo_plan_capacitacion",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se incrementa en 1 y se asigna a un [[plan de capacitación]].",
+          "o": "Permite agrupar los módulos y las actividades que el [[cliente]] contrató."
+        },
+        {
+          "a": "criterio_evaluacion",
+          "v": "TAB1",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Aspecto que se toma como referencia para valorar el resultado de una [[evaluación]].",
+          "o": "Permite emitir cada evaluación con parámetros uniformes para toda la empresa."
+        },
+        {
+          "a": "descripcion_competencia",
+          "v": "A…Z a…z 0…9",
+          "f": "CHAR(200)",
+          "n": "NOMBRE",
+          "s": "Texto que explica las capacidades que abarca una [[competencia]].",
+          "o": "Permite al [[evaluador]] y al [[participante]] conocer qué se espera lograr con la capacitación."
+        },
+        {
+          "a": "duracion_real_actividad",
+          "v": "[0.01, 9999.99]",
+          "f": "NUM(6,2)",
+          "n": "NÚMERO",
+          "s": "Tiempo real, en horas, que se invirtió en ejecutar una [[actividad]].",
+          "o": "Permite contrastar el tiempo real con el programado para medir el cumplimiento del plan."
+        },
+        {
+          "a": "duracion_real_uso",
+          "v": "[0.01, 9999.99]",
+          "f": "NUM(6,2)",
+          "n": "NÚMERO",
+          "s": "Tiempo real, en horas, durante el cual se utilizó un [[recurso]].",
+          "o": "Permite evaluar el uso real frente al planificado y optimizar la gestión de recursos."
+        },
+        {
+          "a": "escala_calificacion",
+          "v": "TAB2",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Marco de valores con el que se califica una [[evaluación]].",
+          "o": "Define los valores y los límites con que se emite cada calificación."
+        },
+        {
+          "a": "estado_acceso",
+          "v": "TAB3",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Condición actual del [[acceso]] de un [[participante]].",
+          "o": "Indica si el participante puede ingresar a sus módulos y actividades."
+        },
+        {
+          "a": "estado_aprobacion_actividad",
+          "v": "TAB4",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Resultado de aprobación de una [[actividad]].",
+          "o": "Indica la situación académica del participante en la actividad."
+        }
+      ],
+      "glosario": [
+        {
+          "t": "acceso",
+          "d": "Permiso de un [[participante]] para ingresar a los contenidos de su capacitación."
+        },
+        {
+          "t": "actividad",
+          "d": "Tarea formativa que ejecuta el [[participante]]."
+        },
+        {
+          "t": "cliente",
+          "d": "Empresa que contrata la capacitación de su personal."
+        },
+        {
+          "t": "competencia",
+          "d": "Capacidad para realizar una tarea con eficacia."
+        },
+        {
+          "t": "evaluación",
+          "d": "Proceso que mide el logro de una [[competencia]] por parte de un [[participante]]."
+        },
+        {
+          "t": "evaluador",
+          "d": "Persona que emite un juicio en una [[evaluación]]."
+        },
+        {
+          "t": "módulo",
+          "d": "Unidad formativa que reúne [[actividad|actividades]] de un mismo tema."
+        },
+        {
+          "t": "participante",
+          "d": "Persona que recibe la capacitación; no contrata el servicio."
+        },
+        {
+          "t": "plan de capacitación",
+          "d": "Conjunto organizado de [[módulo|módulos]] que el [[cliente]] contrata para su personal."
+        },
+        {
+          "t": "recurso",
+          "d": "Material, sala o equipo que se usa en una [[actividad]]."
+        }
+      ],
+      "tablas": [
+        {
+          "n": 1,
+          "titulo": "Criterio de evaluación",
+          "cabecera": [
+            "Código",
+            "Nombre",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Calidad del trabajo",
+              "Grado de excelencia, precisión y atención al detalle en la ejecución"
+            ],
+            [
+              "2",
+              "Cumplimiento de objetivos",
+              "Logro de las metas y resultados establecidos al inicio"
+            ],
+            [
+              "3",
+              "Comunicación",
+              "Claridad y efectividad en la expresión oral y escrita"
+            ],
+            [
+              "4",
+              "Trabajo en equipo",
+              "Habilidad para colaborar y contribuir en grupo"
+            ],
+            [
+              "5",
+              "Creatividad",
+              "Originalidad e innovación en la solución de problemas"
+            ]
+          ],
+          "atributos": [
+            "criterio_evaluacion"
+          ]
+        },
+        {
+          "n": 2,
+          "titulo": "Escala de calificación",
+          "cabecera": [
+            "Código",
+            "Nombre",
+            "Valor mínimo",
+            "Valor máximo"
+          ],
+          "filas": [
+            [
+              "1",
+              "Numérica",
+              "0",
+              "20"
+            ],
+            [
+              "2",
+              "Letras",
+              "A",
+              "F"
+            ],
+            [
+              "3",
+              "Porcentaje",
+              "0 %",
+              "100 %"
+            ],
+            [
+              "4",
+              "Puntos",
+              "0",
+              "100"
+            ]
+          ],
+          "atributos": [
+            "escala_calificacion"
+          ]
+        },
+        {
+          "n": 3,
+          "titulo": "Estado de acceso",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Habilitado"
+            ],
+            [
+              "2",
+              "Deshabilitado"
+            ],
+            [
+              "3",
+              "Bloqueado"
+            ],
+            [
+              "4",
+              "Suspendido"
+            ],
+            [
+              "5",
+              "Vencido"
+            ],
+            [
+              "6",
+              "Pendiente"
+            ]
+          ],
+          "atributos": [
+            "estado_acceso"
+          ]
+        },
+        {
+          "n": 4,
+          "titulo": "Estado de aprobación de la actividad",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Pendiente"
+            ],
+            [
+              "2",
+              "Aprobada"
+            ],
+            [
+              "3",
+              "Desaprobada"
+            ]
+          ],
+          "atributos": [
+            "estado_aprobacion_actividad"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compras",
+      "nombre": "Compras",
+      "empresa": "Una empresa tercerizada que compra productos a proveedores en nombre de su cliente, que es quien la contrata. El proveedor es un tercero: no es el cliente.",
+      "filas": [
+        {
+          "a": "cantidad_pedida",
+          "v": "[1, 99999]",
+          "f": "NUM(5)",
+          "n": "NÚMERO",
+          "s": "Número de [[unidad|unidades]] de [[producto]] que se solicita en un [[pedido]].",
+          "o": "Permite calcular el monto de la [[orden de compra]] y compararlo con lo que se recibe."
+        },
+        {
+          "a": "cantidad_recibida",
+          "v": "[0, 99999]",
+          "f": "NUM(5)",
+          "n": "NÚMERO",
+          "s": "Número de [[unidad|unidades]] de [[producto]] que el [[proveedor]] entregó.",
+          "o": "Permite verificar que el pedido se cumplió y detectar faltantes."
+        },
+        {
+          "a": "codigo_cliente",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se asigna a un [[cliente]].",
+          "o": "Permite asociar cada compra con quien la solicitó y la paga."
+        },
+        {
+          "a": "codigo_producto",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se asigna a un [[producto]] del catálogo.",
+          "o": "Permite pedir y recibir el producto exacto que el cliente necesita."
+        },
+        {
+          "a": "codigo_proveedor",
+          "v": "[1, 999999999]",
+          "f": "NUM(9)",
+          "n": "CÓDIGO",
+          "s": "Número correlativo que se asigna a un [[proveedor]].",
+          "o": "Permite asociar cada orden de compra con quien surte el producto."
+        },
+        {
+          "a": "estado_orden_compra",
+          "v": "TAB1",
+          "f": "CHAR(1)",
+          "n": "INDICADOR",
+          "s": "Condición actual de una [[orden de compra]].",
+          "o": "Indica en qué etapa del abastecimiento se encuentra el pedido."
+        },
+        {
+          "a": "fecha_emision_orden",
+          "v": "fecha lógica y válida",
+          "f": "AAAA-MM-DD",
+          "n": "FECHA",
+          "s": "Fecha en la que se emite una [[orden de compra]].",
+          "o": "Permite medir el tiempo de abastecimiento junto con la fecha de recepción."
+        },
+        {
+          "a": "fecha_recepcion_producto",
+          "v": "fecha lógica y válida",
+          "f": "AAAA-MM-DD",
+          "n": "FECHA",
+          "s": "Fecha en la que el [[proveedor]] entrega el [[producto]].",
+          "o": "Permite calcular el plazo real de entrega y evaluar al proveedor."
+        },
+        {
+          "a": "monto_orden_compra",
+          "v": "[0.01, 9999999999.9999]",
+          "f": "NUM(14,4)",
+          "n": "MONTO",
+          "s": "Cantidad de dinero, en soles, que cuesta una [[orden de compra]].",
+          "o": "Permite informar al [[cliente]] el costo de su abastecimiento."
+        },
+        {
+          "a": "plazo_entrega_programado",
+          "v": "[1, 365]",
+          "f": "NUM(3)",
+          "n": "NÚMERO",
+          "s": "Número de días que el [[proveedor]] se compromete a tardar en entregar un [[pedido]].",
+          "o": "Permite comparar lo prometido con lo real y calificar el cumplimiento del proveedor."
+        },
+        {
+          "a": "precio_unitario",
+          "v": "[0.01, 9999999999.9999]",
+          "f": "NUM(14,4)",
+          "n": "MONTO",
+          "s": "Cantidad de dinero, en soles, que cuesta una [[unidad]] de [[producto]].",
+          "o": "Permite calcular el monto de la orden de compra."
+        }
+      ],
+      "glosario": [
+        {
+          "t": "cliente",
+          "d": "Empresa que contrata el servicio de compras."
+        },
+        {
+          "t": "orden de compra",
+          "d": "Documento que formaliza un [[pedido]] a un [[proveedor]] con un precio acordado."
+        },
+        {
+          "t": "pedido",
+          "d": "Solicitud de [[producto]] que se hace a un [[proveedor]]."
+        },
+        {
+          "t": "producto",
+          "d": "Bien que el [[cliente]] necesita adquirir."
+        },
+        {
+          "t": "proveedor",
+          "d": "Empresa o persona que suministra los productos solicitados; no contrata el servicio."
+        },
+        {
+          "t": "unidad",
+          "d": "Cada ejemplar individual de un [[producto]]."
+        }
+      ],
+      "tablas": [
+        {
+          "n": 1,
+          "titulo": "Estado de la orden de compra",
+          "cabecera": [
+            "Código",
+            "Descripción"
+          ],
+          "filas": [
+            [
+              "1",
+              "Emitida"
+            ],
+            [
+              "2",
+              "Confirmada"
+            ],
+            [
+              "3",
+              "Recibida"
+            ],
+            [
+              "4",
+              "Cerrada"
+            ]
+          ],
+          "atributos": [
+            "estado_orden_compra"
+          ]
+        }
+      ]
+    }
+  ];
 
   const MARCA = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
   const COLS = [['a', 'Atributo', 'c1'], ['v', 'Valores', 'c2'], ['f', 'Formato', 'c3'], ['n', 'Naturaleza', 'c4'], ['s', 'Semántica', 'c5'], ['o', 'Ontología', 'c6']];
@@ -1532,34 +1532,40 @@
       {
         id: 'inicio', nombre: 'Inicio', tipo: 'inicio',
         bloques: [
-          { t: 'tarjetas', id: 'inicio-mapa', titulo: 'Qué vas a encontrar', cols: 3, items: [
-            { k: 7, etq: 'Página 1', titulo: 'Entregable', html: 'Qué se entrega, cuántos atributos lleva y de dónde salen.', ir: ['entregable'] },
-            { k: 7, etq: 'Página 2', titulo: 'Diccionario', html: 'Qué responde cada columna, sus reglas y sus errores frecuentes.', ir: ['columnas'] },
-            { k: 7, etq: 'Página 3', titulo: 'Atomización y tablas', html: 'Cómo se define cada palabra y cómo se arman las TAB.', ir: ['atomizacion'] },
-            { k: 7, etq: 'Página 4', titulo: 'Ejemplos', html: 'Seis sistemas con su diccionario, sus definiciones y sus tablas, y un Excel de cada uno.', ir: ['ejemplos'] },
-            { k: 7, etq: 'Página 5', titulo: 'Ponte a prueba', html: 'Ocho preguntas, una por tema, con decisiones guiadas.', ir: ['prueba'] }
-          ] }
+          {
+            t: 'tarjetas', id: 'inicio-mapa', titulo: 'Qué vas a encontrar', cols: 3, items: [
+              { k: 7, etq: 'Página 1', titulo: 'Entregable', html: 'Qué se entrega, cuántos atributos lleva y de dónde salen.', ir: ['entregable'] },
+              { k: 7, etq: 'Página 2', titulo: 'Diccionario', html: 'Qué responde cada columna, sus reglas y sus errores frecuentes.', ir: ['columnas'] },
+              { k: 7, etq: 'Página 3', titulo: 'Atomización y tablas', html: 'Cómo se define cada palabra y cómo se arman las TAB.', ir: ['atomizacion'] },
+              { k: 7, etq: 'Página 4', titulo: 'Ejemplos', html: 'Seis sistemas con su diccionario, sus definiciones y sus tablas, y un Excel de cada uno.', ir: ['ejemplos'] },
+              { k: 7, etq: 'Página 5', titulo: 'Ponte a prueba', html: 'Ocho preguntas, una por tema, con decisiones guiadas.', ir: ['prueba'] }
+            ]
+          }
         ]
       },
       {
         id: 'entregable', nombre: 'Entregable', tipo: 'contenido', titulo: 'Qué se entrega',
         intro: '<b>Un diccionario semántico ontológico</b> es el documento donde cada atributo del sistema queda definido: su significado (semántica) y su razón de ser para el negocio (ontología), junto con su formato y los valores que puede tomar.',
         bloques: [
-          { t: 'tarjetas', id: 'ent-que', titulo: 'Qué debe tener tu trabajo', cols: 3, items: [
-            { k: 7, etq: 'Excel', titulo: 'Tres hojas', html: 'Diccionario semántico ontológico, Definiciones y Tablas de valores.' },
-            { id: 'ent-ppt', k: 7, etq: 'PPT', titulo: 'Presentación aparte', html: 'El profesor aprecia, y ha pedido, un PPT independiente del Excel con las mismas tablas para exponer.' },
-            { k: 7, etq: 'Tamaño', titulo: 'De 40 a 80 atributos', html: 'Solo los más relevantes del parque de datos; no van todos.', ir: ['entregable', 'ent-atributos'] },
-            { k: 7, etq: 'Formato', titulo: 'Siempre en tablas', html: 'Lo indispensable es que el trabajo esté en tablas y no en un texto corrido.' },
-            { k: 7, etq: 'Atomización', titulo: 'Cada palabra, definida', html: 'Cada palabra importante de la semántica y de la ontología se define en su propio apartado.', ir: ['atomizacion', 'ato-que'] },
-            { k: 7, etq: 'Exposición', titulo: 'Parque de datos a mano', html: 'Según lo visto en ciclos anteriores, 7 de cada 10 grupos que exponen sus diccionarios vuelven a presentar el parque de datos. Llévalo listo.' }
-          ] },
+          {
+            t: 'tarjetas', id: 'ent-que', titulo: 'Qué debe tener tu trabajo', cols: 3, items: [
+              { k: 7, etq: 'Excel', titulo: 'Tres hojas', html: 'Diccionario semántico ontológico, Definiciones y Tablas de valores.' },
+              { id: 'ent-ppt', k: 7, etq: 'PPT', titulo: 'Presentación aparte', html: 'El profesor aprecia, y ha pedido, un PPT independiente del Excel con las mismas tablas para exponer.' },
+              { k: 7, etq: 'Tamaño', titulo: 'De 40 a 80 atributos', html: 'Solo los más relevantes del parque de datos; no van todos.', ir: ['entregable', 'ent-atributos'] },
+              { k: 7, etq: 'Formato', titulo: 'Siempre en tablas', html: 'Lo indispensable es que el trabajo esté en tablas y no en un texto corrido.' },
+              { k: 7, etq: 'Atomización', titulo: 'Cada palabra, definida', html: 'Cada palabra importante de la semántica y de la ontología se define en su propio apartado.', ir: ['atomizacion', 'ato-que'] },
+              { k: 7, etq: 'Exposición', titulo: 'Parque de datos a mano', html: 'Según lo visto en ciclos anteriores, 7 de cada 10 grupos que exponen sus diccionarios vuelven a presentar el parque de datos. Llévalo listo.' }
+            ]
+          },
           { t: 'texto', id: 'ent-hojas', html: htmlHojas() },
-          { t: 'acordeon', id: 'ent-atributos', titulo: 'Los atributos del diccionario', items: [
-            { id: 'ent-parque', k: 7, titulo: 'De dónde salen', html: '<p>Los atributos son los datos que se impactan durante las transacciones y salen de tu parque de datos. Si cambias o agregas atributos en el diccionario que no estaban en el parque, también debes incluirlos en el parque de datos.</p>' },
-            { id: 'ent-filtro', k: 7, titulo: 'Cuáles entran: el filtro semántico', html: '<p>Un número grande de atributos vuelve complejo cualquier sistema, y podrían entrar datos que no corresponden. El límite lo marca la misión: entran los datos que hacen posible la misión del sistema, sin que sobren ni falten.</p><p><span class="etq k7">Ejemplo · Cobranza</span> <code>dias_mora</code> entra porque define qué producto de cobranza corresponde aplicar. El tipo de sangre del moroso no hace posible la misión y se descarta.</p>' },
-            { id: 'ent-orden', k: 7, titulo: 'Orden alfabético, siempre', html: '<p>En la hoja del diccionario los atributos van siempre en orden alfabético. Si agregas uno después, vuelve a ordenar la hoja.</p>' },
-            { id: 'ent-cantidad', k: 7, titulo: 'Cuántos: de 40 a 80', html: '<p>Se recomienda mantenerse dentro de ese rango, porque el diccionario reúne los atributos más relevantes y no todos los del parque de datos.</p>' }
-          ] }
+          {
+            t: 'acordeon', id: 'ent-atributos', titulo: 'Los atributos del diccionario', items: [
+              { id: 'ent-parque', k: 7, titulo: 'De dónde salen', html: '<p>Los atributos son los datos que se impactan durante las transacciones y salen de tu parque de datos. Si cambias o agregas atributos en el diccionario que no estaban en el parque, también debes incluirlos en el parque de datos.</p>' },
+              { id: 'ent-filtro', k: 7, titulo: 'Cuáles entran: el filtro semántico', html: '<p>Un número grande de atributos vuelve complejo cualquier sistema, y podrían entrar datos que no corresponden. El límite lo marca la misión: entran los datos que hacen posible la misión del sistema, sin que sobren ni falten.</p><p><span class="etq k7">Ejemplo · Cobranza</span> <code>dias_mora</code> entra porque define qué producto de cobranza corresponde aplicar. El tipo de sangre del moroso no hace posible la misión y se descarta.</p>' },
+              { id: 'ent-orden', k: 7, titulo: 'Orden alfabético, siempre', html: '<p>En la hoja del diccionario los atributos van siempre en orden alfabético. Si agregas uno después, vuelve a ordenar la hoja.</p>' },
+              { id: 'ent-cantidad', k: 7, titulo: 'Cuántos: de 40 a 80', html: '<p>Se recomienda mantenerse dentro de ese rango, porque el diccionario reúne los atributos más relevantes y no todos los del parque de datos.</p>' }
+            ]
+          }
         ]
       },
       {
@@ -1567,74 +1573,96 @@
         intro: 'Cada atributo ocupa una fila, y cada columna responde una pregunta distinta. Cada columna conserva su color en toda la asesoría.',
         bloques: [
           { t: 'texto', id: 'col-ficha', html: htmlFicha() },
-          { t: 'pestanas', id: 'col-tabs', titulo: 'Una columna a la vez', items: [
-            { id: 'col-atributo', titulo: 'Atributo',
-              html: fc('c1', '¿Cómo se llama el dato?',
-                ['Todo en minúsculas, también la primera letra.', 'Las palabras se unen con guion bajo (<code>_</code>).', 'Sin conectores como de, la, el, lo, los, las, del, para o por.', 'Un atributo guarda un solo dato: si junta varios, se atomiza en varios atributos.', 'En la hoja del diccionario van en orden alfabético.', '<i>Recomendación:</i> sin tildes, sin ñ y sin abreviaturas, para que cada palabra pueda definirse.'],
-                ['<code>Cantidad_Paquete</code>: mayúsculas.', '<code>cantidad-paquete</code>: guion medio en lugar de guion bajo.', '<code>cantidad_de_paquetes</code>: lleva un conector.', '<code>dimensiones_detectadas</code> guardando largo, ancho y alto juntos.'],
-                '<span class="etq k7">Ejemplo · Transporte</span> En lugar de <code>dimensiones_detectadas</code> se escriben tres atributos: <code>largo_carga_detectado</code>, <code>ancho_carga_detectado</code> y <code>alto_carga_detectado</code>.<br><span class="etq k7">Ejemplo · Publicidad</span> La campaña se escribe <code>codigo_campania</code>, sin ñ.') },
-            { id: 'col-valores', titulo: 'Valores',
-              html: fc('c2', '¿Qué valores puede tomar el dato?',
-                ['Si es numérico, va un rango matemático cerrado, con mínimo y máximo: <code>[1, 100]</code>.', 'Nunca un <code>&gt;0</code> solo: debe decir mayor a cero y también menor a qué.', 'Si el atributo se explica con una tabla, solo se escribe TAB y su número: <code>TAB2</code>.', 'Las tablas se numeran 1, 2, 3… según el orden en que aparecen en el diccionario alfabético.', 'El máximo debe caber en el formato: <code>NUM(3)</code> llega hasta 999.', 'Si es una fecha, se escribe <code>fecha lógica y válida</code>.'],
-                ['<code>&gt;0</code> o <code>&gt;=0</code> sin tope superior.', '<code>1 a 100</code>: sin notación de rango.', 'Escribir los códigos dentro de la celda en lugar de usar TAB.', 'Tablas repetidas o con saltos, como TAB1 y TAB3 sin TAB2.'],
-                '<span class="etq k7">Ejemplo · Almacenamiento</span> <code>cantidad_contenedor</code> lleva <code>[1, 100]</code> y <code>categoria_mercancia</code> lleva <code>TAB3</code>.',
-                '<p>El libro del profesor escribe <code>&gt;0</code> como valor implícito, a modo de referencia. En el trabajo, el profesor pide poner siempre el límite superior.</p>') },
-            { id: 'col-formato', titulo: 'Formato',
-              html: fc('c3', '¿Cómo se guarda el dato?',
-                ['<code>CHAR(n)</code> para texto y <code>NUM(n)</code> o <code>NUM(n,d)</code> para números, con la extensión máxima entre paréntesis.', '<code>NUM(5,2)</code> significa 5 dígitos en total, 2 de ellos decimales.', 'La fecha se escribe <code>AAAA-MM-DD</code>.', 'El formato debe cuadrar con la naturaleza y con los valores.'],
-                ['<code>NUM</code> o <code>CHAR</code> sin la extensión.', '<code>CHAR(20)</code> para un estado que se guarda con un solo carácter.', 'Guardar una fecha como número.'],
-                '<span class="etq k7">Ejemplo · Cobranza</span> <code>fecha_vencimiento_deuda</code> lleva <code>AAAA-MM-DD</code> y <code>estado_cobranza</code> lleva <code>CHAR(1)</code>.') },
-            { id: 'col-naturaleza', titulo: 'Naturaleza',
-              html: '<div class="fc c4"><p class="fc-q"><b>Responde:</b> ¿qué tipo de dato es, según cómo se presenta en el mundo real?</p>' +
-                '<div class="tabla-wrap"><table class="dic"><thead><tr><th scope="col" class="c4">Naturaleza</th><th scope="col" class="c4">Qué es</th><th scope="col" class="c4">Formato típico</th><th scope="col" class="c4">Ejemplo</th></tr></thead><tbody>' +
-                '<tr><td><b>CÓDIGO</b></td><td>Identifica a un elemento.</td><td class="mono">NUM(9) o CHAR(n)</td><td class="mono">codigo_sponsor</td></tr>' +
-                '<tr><td><b>NOMBRE</b></td><td>Nombre o descripción.</td><td class="mono">CHAR(50)</td><td class="mono">nombre_moroso</td></tr>' +
-                '<tr><td><b>MONTO</b></td><td>Cantidad de dinero.</td><td class="mono">NUM(14,4)</td><td class="mono">monto_deuda</td></tr>' +
-                '<tr><td><b>NÚMERO</b></td><td>Cantidad o medida.</td><td class="mono">NUM(n) o NUM(n,d)</td><td class="mono">dias_mora</td></tr>' +
-                '<tr><td><b>FECHA</b></td><td>Día del calendario.</td><td class="mono">AAAA-MM-DD</td><td class="mono">fecha_vencimiento_deuda</td></tr>' +
-                '<tr><td><b>INDICADOR</b></td><td>Estado, tipo o categoría que se explica con una tabla.</td><td class="mono">CHAR(1)</td><td class="mono">estado_cobranza</td></tr>' +
-                '</tbody></table></div>' +
-                '<div class="fc-g"><div class="fc-b"><h4>Reglas</h4><ul><li>Usa estos nombres exactos. Al profesor le queda claro si escribes otro, pero conviene no depender de eso.</li><li>La extensión de <code>NOMBRE</code> y de <code>CÓDIGO</code> puede variar según el dato: <code>CHAR(100)</code> para un correo.</li></ul></div>' +
-                '<div class="fc-b er"><h4>Errores frecuentes</h4><ul><li><b>CÓDIGO</b> para un estado: un código identifica, un estado indica una condición.</li><li><b>NÚMERO</b> para dinero: un monto va como <b>MONTO</b>, con decimales.</li></ul></div></div>' +
-                '<div class="fc-b nt"><h4>Nota</h4><p>Las seis naturalezas son las del libro del profesor (2020). El libro usa <code>CHAR(1)</code> en los indicadores porque el carácter es el identificador del estado, y tenía entre 1 y 9 estados.</p></div></div>' },
-            { id: 'col-semantica', titulo: 'Semántica',
-              html: fc('c5', '¿qué es el dato?',
-                ['Dice el significado universal del dato: sirve para cualquier sistema y no depende del tuyo.', 'Empieza por lo que el dato es: «Número de…», «Medida real de…», «Número correlativo que se asigna a…».', 'No dice para qué sirve: eso es la ontología.', 'No repite el nombre del atributo para definirse.', 'Cada palabra importante se define aparte (atomización).', 'Para definir las palabras, la fuente es primero el Diccionario de la lengua española y, si no alcanza, textos técnicos adaptados a tu sistema.'],
-                ['Mezclar el para qué: «Permite determinar la efectividad de la campaña».', 'Repetir el nombre: «Alcance total del anuncio».', 'Definir con lo que cada integrante entiende por la palabra.'],
-                '<span class="etq k7">Ejemplo · Publicidad</span> <code>alcance_total</code>: «Número total de personas que consumieron el anuncio durante toda la transmisión».') },
-            { id: 'col-ontologia', titulo: 'Ontología',
-              html: fc('c6', '¿para qué necesita mi sistema este dato?',
-                ['Dice la razón de ser del dato en tu sistema: qué operación, cálculo o decisión permite.', 'Se deduce de la semántica, pero ya depende del sistema: el mismo dato puede servir para algo distinto en otro.', 'Puede empezar con «Permite conocer…», porque el profesor lo acepta. Conviene variar con identifica, indica, genera, define o determina.', 'No repite la semántica con otras palabras ni es una tautología.'],
-                ['Copiar la semántica: «Fecha límite en la que la deuda debía pagarse».', 'Tautología: «Identifica la fecha de vencimiento de la deuda».', 'Una ontología que no dice qué operación del sistema habilita.'],
-                '<span class="etq k7">Ejemplo · Cobranza</span> <code>fecha_vencimiento_deuda</code>: «Permite calcular los días de mora del moroso».') }
-          ] },
+          {
+            t: 'pestanas', id: 'col-tabs', titulo: 'Una columna a la vez', items: [
+              {
+                id: 'col-atributo', titulo: 'Atributo',
+                html: fc('c1', '¿Cómo se llama el dato?',
+                  ['Todo en minúsculas, también la primera letra.', 'Las palabras se unen con guion bajo (<code>_</code>).', 'Sin conectores como de, la, el, lo, los, las, del, para o por.', 'Un atributo guarda un solo dato: si junta varios, se atomiza en varios atributos.', 'En la hoja del diccionario van en orden alfabético.', '<i>Recomendación:</i> sin tildes, sin ñ y sin abreviaturas, para que cada palabra pueda definirse.'],
+                  ['<code>Cantidad_Paquete</code>: mayúsculas.', '<code>cantidad-paquete</code>: guion medio en lugar de guion bajo.', '<code>cantidad_de_paquetes</code>: lleva un conector.', '<code>dimensiones_detectadas</code> guardando largo, ancho y alto juntos.'],
+                  '<span class="etq k7">Ejemplo · Transporte</span> En lugar de <code>dimensiones_detectadas</code> se escriben tres atributos: <code>largo_carga_detectado</code>, <code>ancho_carga_detectado</code> y <code>alto_carga_detectado</code>.<br><span class="etq k7">Ejemplo · Publicidad</span> La campaña se escribe <code>codigo_campania</code>, sin ñ.')
+              },
+              {
+                id: 'col-valores', titulo: 'Valores',
+                html: fc('c2', '¿Qué valores puede tomar el dato?',
+                  ['Si es numérico, va un rango matemático cerrado, con mínimo y máximo: <code>[1, 100]</code>.', 'Nunca un <code>&gt;0</code> solo: debe decir mayor a cero y también menor a qué.', 'Si el atributo se explica con una tabla, solo se escribe TAB y su número: <code>TAB2</code>.', 'Las tablas se numeran 1, 2, 3… según el orden en que aparecen en el diccionario alfabético.', 'El máximo debe caber en el formato: <code>NUM(3)</code> llega hasta 999.', 'Si es una fecha, se escribe <code>fecha lógica y válida</code>.'],
+                  ['<code>&gt;0</code> o <code>&gt;=0</code> sin tope superior.', '<code>1 a 100</code>: sin notación de rango.', 'Escribir los códigos dentro de la celda en lugar de usar TAB.', 'Tablas repetidas o con saltos, como TAB1 y TAB3 sin TAB2.'],
+                  '<span class="etq k7">Ejemplo · Almacenamiento</span> <code>cantidad_contenedor</code> lleva <code>[1, 100]</code> y <code>categoria_mercancia</code> lleva <code>TAB3</code>.',
+                  '<p>El libro del profesor escribe <code>&gt;0</code> como valor implícito, a modo de referencia. En el trabajo, el profesor pide poner siempre el límite superior.</p>')
+              },
+              {
+                id: 'col-formato', titulo: 'Formato',
+                html: fc('c3', '¿Cómo se guarda el dato?',
+                  ['<code>CHAR(n)</code> para texto y <code>NUM(n)</code> o <code>NUM(n,d)</code> para números, con la extensión máxima entre paréntesis.', '<code>NUM(5,2)</code> significa 5 dígitos en total, 2 de ellos decimales.', 'La fecha se escribe <code>AAAA-MM-DD</code>.', 'El formato debe cuadrar con la naturaleza y con los valores.'],
+                  ['<code>NUM</code> o <code>CHAR</code> sin la extensión.', '<code>CHAR(20)</code> para un estado que se guarda con un solo carácter.', 'Guardar una fecha como número.'],
+                  '<span class="etq k7">Ejemplo · Cobranza</span> <code>fecha_vencimiento_deuda</code> lleva <code>AAAA-MM-DD</code> y <code>estado_cobranza</code> lleva <code>CHAR(1)</code>.')
+              },
+              {
+                id: 'col-naturaleza', titulo: 'Naturaleza',
+                html: '<div class="fc c4"><p class="fc-q"><b>Responde:</b> ¿qué tipo de dato es, según cómo se presenta en el mundo real?</p>' +
+                  '<div class="tabla-wrap"><table class="dic"><thead><tr><th scope="col" class="c4">Naturaleza</th><th scope="col" class="c4">Qué es</th><th scope="col" class="c4">Formato típico</th><th scope="col" class="c4">Ejemplo</th></tr></thead><tbody>' +
+                  '<tr><td><b>CÓDIGO</b></td><td>Identifica a un elemento.</td><td class="mono">NUM(9) o CHAR(n)</td><td class="mono">codigo_sponsor</td></tr>' +
+                  '<tr><td><b>NOMBRE</b></td><td>Nombre o descripción.</td><td class="mono">CHAR(50)</td><td class="mono">nombre_moroso</td></tr>' +
+                  '<tr><td><b>MONTO</b></td><td>Cantidad de dinero.</td><td class="mono">NUM(14,4)</td><td class="mono">monto_deuda</td></tr>' +
+                  '<tr><td><b>NÚMERO</b></td><td>Cantidad o medida.</td><td class="mono">NUM(n) o NUM(n,d)</td><td class="mono">dias_mora</td></tr>' +
+                  '<tr><td><b>FECHA</b></td><td>Día del calendario.</td><td class="mono">AAAA-MM-DD</td><td class="mono">fecha_vencimiento_deuda</td></tr>' +
+                  '<tr><td><b>INDICADOR</b></td><td>Estado, tipo o categoría que se explica con una tabla.</td><td class="mono">CHAR(1)</td><td class="mono">estado_cobranza</td></tr>' +
+                  '</tbody></table></div>' +
+                  '<div class="fc-g"><div class="fc-b"><h4>Reglas</h4><ul><li>Usa estos nombres exactos. Al profesor le queda claro si escribes otro, pero conviene no depender de eso.</li><li>La extensión de <code>NOMBRE</code> y de <code>CÓDIGO</code> puede variar según el dato: <code>CHAR(100)</code> para un correo.</li></ul></div>' +
+                  '<div class="fc-b er"><h4>Errores frecuentes</h4><ul><li><b>CÓDIGO</b> para un estado: un código identifica, un estado indica una condición.</li><li><b>NÚMERO</b> para dinero: un monto va como <b>MONTO</b>, con decimales.</li></ul></div></div>' +
+                  '<div class="fc-b nt"><h4>Nota</h4><p>Las seis naturalezas son las del libro del profesor (2020). El libro usa <code>CHAR(1)</code> en los indicadores porque el carácter es el identificador del estado, y tenía entre 1 y 9 estados.</p></div></div>'
+              },
+              {
+                id: 'col-semantica', titulo: 'Semántica',
+                html: fc('c5', '¿qué es el dato?',
+                  ['Dice el significado universal del dato: sirve para cualquier sistema y no depende del tuyo.', 'Empieza por lo que el dato es: «Número de…», «Medida real de…», «Número correlativo que se asigna a…».', 'No dice para qué sirve: eso es la ontología.', 'No repite el nombre del atributo para definirse.', 'Cada palabra importante se define aparte (atomización).', 'Para definir las palabras, la fuente es primero el Diccionario de la lengua española y, si no alcanza, textos técnicos adaptados a tu sistema.'],
+                  ['Mezclar el para qué: «Permite determinar la efectividad de la campaña».', 'Repetir el nombre: «Alcance total del anuncio».', 'Definir con lo que cada integrante entiende por la palabra.'],
+                  '<span class="etq k7">Ejemplo · Publicidad</span> <code>alcance_total</code>: «Número total de personas que consumieron el anuncio durante toda la transmisión».')
+              },
+              {
+                id: 'col-ontologia', titulo: 'Ontología',
+                html: fc('c6', '¿para qué necesita mi sistema este dato?',
+                  ['Dice la razón de ser del dato en tu sistema: qué operación, cálculo o decisión permite.', 'Se deduce de la semántica, pero ya depende del sistema: el mismo dato puede servir para algo distinto en otro.', 'Puede empezar con «Permite conocer…», porque el profesor lo acepta. Conviene variar con identifica, indica, genera, define o determina.', 'No repite la semántica con otras palabras ni es una tautología.'],
+                  ['Copiar la semántica: «Fecha límite en la que la deuda debía pagarse».', 'Tautología: «Identifica la fecha de vencimiento de la deuda».', 'Una ontología que no dice qué operación del sistema habilita.'],
+                  '<span class="etq k7">Ejemplo · Cobranza</span> <code>fecha_vencimiento_deuda</code>: «Permite calcular los días de mora del moroso».')
+              }
+            ]
+          },
           { t: 'texto', id: 'col-diferencia', html: htmlDif() },
-          { t: 'acordeon', id: 'col-repaso', titulo: 'Para repasar con tu grupo', items: [
-            { k: 7, titulo: '¿Por qué este atributo está en el diccionario?', html: '<p>Porque hace posible la misión del sistema (filtro semántico) y sale del parque de datos.</p>' },
-            { k: 7, titulo: '¿Qué cambia si llevas este atributo a otro sistema?', html: '<p>La semántica no cambia, porque es universal. Lo que cambia es la ontología: el para qué de ese sistema.</p>' },
-            { k: 7, titulo: '¿Por qué esos valores y no otros?', html: '<p>El rango o la tabla salen de la regla de negocio, y el máximo debe caber en el formato.</p>' },
-            { k: 7, titulo: '¿Qué palabra de la semántica no definiste?', html: '<p>Cada palabra importante debe estar en la hoja Definiciones. Si falta una, se agrega, junto con las palabras con que se explica.</p>' },
-            { k: 7, titulo: '¿Por qué esa naturaleza y ese formato?', html: '<p>La naturaleza dice cómo se presenta el dato en el mundo real, y de ella sale el formato.</p>' }
-          ] }
+          {
+            t: 'acordeon', id: 'col-repaso', titulo: 'Para repasar con tu grupo', items: [
+              { k: 7, titulo: '¿Por qué este atributo está en el diccionario?', html: '<p>Porque hace posible la misión del sistema (filtro semántico) y sale del parque de datos.</p>' },
+              { k: 7, titulo: '¿Qué cambia si llevas este atributo a otro sistema?', html: '<p>La semántica no cambia, porque es universal. Lo que cambia es la ontología: el para qué de ese sistema.</p>' },
+              { k: 7, titulo: '¿Por qué esos valores y no otros?', html: '<p>El rango o la tabla salen de la regla de negocio, y el máximo debe caber en el formato.</p>' },
+              { k: 7, titulo: '¿Qué palabra de la semántica no definiste?', html: '<p>Cada palabra importante debe estar en la hoja Definiciones. Si falta una, se agrega, junto con las palabras con que se explica.</p>' },
+              { k: 7, titulo: '¿Por qué esa naturaleza y ese formato?', html: '<p>La naturaleza dice cómo se presenta el dato en el mundo real, y de ella sale el formato.</p>' }
+            ]
+          }
         ]
       },
       {
         id: 'atomizacion', nombre: 'Atomización y tablas', tipo: 'contenido', titulo: 'Atomización y tablas',
         intro: 'Atomizar es preguntarse qué significa cada palabra que usas y definirla en su propio apartado.',
         bloques: [
-          { t: 'aviso', id: 'ato-que', tipo: 'obs', titulo: 'Qué es atomizar',
-            html: '<p>Cada palabra importante de la semántica y de la ontología se define aparte, en la hoja Definiciones. El libro lo presenta como una cascada: una definición se detalla con otras palabras, y estas con otras, hasta lograr la claridad necesaria.</p><p>Los conectores (de, la, el, un…) no necesitan definición.</p>' },
+          {
+            t: 'aviso', id: 'ato-que', tipo: 'obs', titulo: 'Qué es atomizar',
+            html: '<p>Cada palabra importante de la semántica y de la ontología se define aparte, en la hoja Definiciones. El libro lo presenta como una cascada: una definición se detalla con otras palabras, y estas con otras, hasta lograr la claridad necesaria.</p><p>Los conectores (de, la, el, un…) no necesitan definición.</p>'
+          },
           { t: 'texto', id: 'ato-cascada', html: '<h2>La cascada de una palabra</h2><p class="muted"><span class="etq k7">Ejemplo · Cobranza</span> La semántica de <code>correo_garante</code> usa la palabra <b>garante</b>. Fíjate cómo cada definición lleva a otras, hasta llegar a palabras que ya se entienden por sí solas.</p><ul class="cascada">' + arbol('cobranza', 'garante', []) + '</ul>' },
-          { t: 'acordeon', id: 'ato-tablas', titulo: 'Las tablas de valores (TAB)', items: [
-            { id: 'ato-tab-num', k: 7, titulo: 'Numeración', html: '<p>Las TAB se numeran TAB1, TAB2, TAB3… según el orden en que aparecen en el diccionario alfabético. Si dos atributos usan la misma tabla, comparten el mismo número.</p><p><span class="etq k7">Ejemplo · Almacenamiento</span> <code>categoria_empaque_programada</code> y <code>categoria_empaque_real</code> usan la misma tabla, <code>TAB2</code>.</p>' },
-            { id: 'ato-tab-forma', k: 7, titulo: 'Qué lleva una TAB', html: '<p>Un código y una descripción por fila. Los estados y las categorías llevan códigos de un solo carácter (1, 2, 3…), y el atributo se escribe con <code>CHAR(1)</code>. Las palabras clave de las descripciones también se definen.</p>' },
-            { id: 'ato-tab-ej', k: 7, titulo: 'Cómo se ve una TAB', html: '<p><span class="etq k7">Ejemplo · Compras</span> El atributo <code>estado_orden_compra</code> lleva en Valores <code>TAB1</code>, y la hoja de tablas dice:</p><div class="tabs-val"><div class="tab-caja"><h4><span class="etq k7">TAB 1</span> Estado de la orden de compra</h4><table><thead><tr><th scope="col">Código</th><th scope="col">Descripción</th></tr></thead><tbody><tr><td>1</td><td>Emitida</td></tr><tr><td>2</td><td>Confirmada</td></tr><tr><td>3</td><td>Recibida</td></tr><tr><td>4</td><td>Cerrada</td></tr></tbody></table></div></div>' }
-          ] },
-          { t: 'acordeon', id: 'ato-errores', titulo: 'Errores frecuentes al definir', items: [
-            { id: 'ato-err-circular', k: 7, titulo: 'Definiciones circulares', html: '<p>«Mercancía: lo que se guarda en el almacén» y «almacén: lugar donde se guarda la mercancía» se explican una a otra y no aclaran nada. Cada definición necesita palabras que se entiendan sin volver a la anterior.</p>' },
-            { id: 'ato-err-faltan', k: 7, titulo: 'Palabras que quedan sin definir', html: '<p>Si una definición usa una palabra clave que no está en la hoja, se agrega. Así la cascada no queda incompleta.</p>' },
-            { id: 'ato-err-fuente', k: 7, titulo: 'Definir con el significado real de la palabra', html: '<p>Cada palabra se define con su significado real: el que tiene en la lengua y en el contexto técnico de tu sistema. Ese significado sale primero del Diccionario de la lengua española y, si no alcanza, de textos técnicos adaptados a tu sistema; no sale de lo que un integrante crea ni de lo que escribió otro grupo.</p>'}
-          ] }
+          {
+            t: 'acordeon', id: 'ato-tablas', titulo: 'Las tablas de valores (TAB)', items: [
+              { id: 'ato-tab-num', k: 7, titulo: 'Numeración', html: '<p>Las TAB se numeran TAB1, TAB2, TAB3… según el orden en que aparecen en el diccionario alfabético. Si dos atributos usan la misma tabla, comparten el mismo número.</p><p><span class="etq k7">Ejemplo · Almacenamiento</span> <code>categoria_empaque_programada</code> y <code>categoria_empaque_real</code> usan la misma tabla, <code>TAB2</code>.</p>' },
+              { id: 'ato-tab-forma', k: 7, titulo: 'Qué lleva una TAB', html: '<p>Un código y una descripción por fila. Los estados y las categorías llevan códigos de un solo carácter (1, 2, 3…), y el atributo se escribe con <code>CHAR(1)</code>. Las palabras clave de las descripciones también se definen.</p>' },
+              { id: 'ato-tab-ej', k: 7, titulo: 'Cómo se ve una TAB', html: '<p><span class="etq k7">Ejemplo · Compras</span> El atributo <code>estado_orden_compra</code> lleva en Valores <code>TAB1</code>, y la hoja de tablas dice:</p><div class="tabs-val"><div class="tab-caja"><h4><span class="etq k7">TAB 1</span> Estado de la orden de compra</h4><table><thead><tr><th scope="col">Código</th><th scope="col">Descripción</th></tr></thead><tbody><tr><td>1</td><td>Emitida</td></tr><tr><td>2</td><td>Confirmada</td></tr><tr><td>3</td><td>Recibida</td></tr><tr><td>4</td><td>Cerrada</td></tr></tbody></table></div></div>' }
+            ]
+          },
+          {
+            t: 'acordeon', id: 'ato-errores', titulo: 'Errores frecuentes al definir', items: [
+              { id: 'ato-err-circular', k: 7, titulo: 'Definiciones circulares', html: '<p>«Mercancía: lo que se guarda en el almacén» y «almacén: lugar donde se guarda la mercancía» se explican una a otra y no aclaran nada. Cada definición necesita palabras que se entiendan sin volver a la anterior.</p>' },
+              { id: 'ato-err-faltan', k: 7, titulo: 'Palabras que quedan sin definir', html: '<p>Si una definición usa una palabra clave que no está en la hoja, se agrega. Así la cascada no queda incompleta.</p>' },
+              { id: 'ato-err-fuente', k: 7, titulo: 'Definir con el significado real de la palabra', html: '<p>Cada palabra se define con su significado real: el que tiene en la lengua y en el contexto técnico de tu sistema. Ese significado sale primero del Diccionario de la lengua española y, si no alcanza, de textos técnicos adaptados a tu sistema; no sale de lo que un integrante crea ni de lo que escribió otro grupo.</p>' }
+            ]
+          }
         ]
       },
       {
@@ -1794,24 +1822,30 @@
         id: 'q1', titulo: 'Nombrar atributos', desc: 'Escribe bien los nombres de atributos de transporte y de publicidad.', tiempo: '3 min',
         enunciado: '<p>Sistema de transporte: una empresa tercerizada que traslada la carga de su cliente, el remitente. Nombra los atributos como los pondrías en tu diccionario.</p>',
         bloques: [
-          { titulo: '¿Cómo se escribe el nombre del atributo que guarda el número de unidades de carga que el destinatario contó al recibirla?',
+          {
+            titulo: '¿Cómo se escribe el nombre del atributo que guarda el número de unidades de carga que el destinatario contó al recibirla?',
             intro: 'Fíjate en la primera letra y en las palabras que unen el nombre.',
             ops: [opOk('<code>cantidad_recibida</code>', 'Va en minúsculas, con guion bajo y sin conectores.'),
-              opEr('<code>Cantidad_recibida</code>', 'Mayúscula inicial', 'Todo va en minúsculas, también la primera letra.', ['columnas', 'col-atributo']),
-              opEr('<code>cantidad_de_carga_recibida</code>', 'Lleva un conector', 'Los nombres no llevan conectores como «de».', ['columnas', 'col-atributo'])],
-            pista: 'Busca el nombre que está todo en minúsculas y que no usa palabras de enlace.' },
-          { titulo: 'La carga tiene largo, ancho y alto. ¿Cómo registras las medidas reales?',
+            opEr('<code>Cantidad_recibida</code>', 'Mayúscula inicial', 'Todo va en minúsculas, también la primera letra.', ['columnas', 'col-atributo']),
+            opEr('<code>cantidad_de_carga_recibida</code>', 'Lleva un conector', 'Los nombres no llevan conectores como «de».', ['columnas', 'col-atributo'])],
+            pista: 'Busca el nombre que está todo en minúsculas y que no usa palabras de enlace.'
+          },
+          {
+            titulo: 'La carga tiene largo, ancho y alto. ¿Cómo registras las medidas reales?',
             intro: 'Un atributo guarda un solo dato.',
             ops: [opOk('Tres atributos: <code>largo_carga_detectado</code>, <code>ancho_carga_detectado</code> y <code>alto_carga_detectado</code>.', 'Cada medida es un dato distinto: se atomiza para validarla y usarla por separado.'),
-              opEr('Un atributo <code>dimensiones_detectadas</code> con largo, ancho y alto juntos.', 'Tres datos en uno', 'Un atributo guarda un solo dato; juntar tres impide validarlos y usarlos por separado.', ['columnas', 'col-atributo']),
-              opEr('Dos atributos, largo y ancho; el alto se deduce del tamaño de la unidad de transporte.', 'Dato omitido', 'El alto es un dato real de la carga: no se deduce de otro dato.', ['columnas', 'col-atributo'])],
-            pista: 'Pregúntate cuántos datos distintos hay en esas medidas.' },
-          { titulo: 'Sistema de publicidad: ¿cómo se escribe el atributo del código de campaña?',
+            opEr('Un atributo <code>dimensiones_detectadas</code> con largo, ancho y alto juntos.', 'Tres datos en uno', 'Un atributo guarda un solo dato; juntar tres impide validarlos y usarlos por separado.', ['columnas', 'col-atributo']),
+            opEr('Dos atributos, largo y ancho; el alto se deduce del tamaño de la unidad de transporte.', 'Dato omitido', 'El alto es un dato real de la carga: no se deduce de otro dato.', ['columnas', 'col-atributo'])],
+            pista: 'Pregúntate cuántos datos distintos hay en esas medidas.'
+          },
+          {
+            titulo: 'Sistema de publicidad: ¿cómo se escribe el atributo del código de campaña?',
             intro: 'Recuerda la recomendación sobre ñ, tildes y abreviaturas.',
             ops: [opOk('<code>codigo_campania</code>', 'Sin ñ y sin abreviaturas: cada palabra puede definirse.'),
-              opEr('<code>codigo_campaña</code>', 'Lleva ñ', 'La asesoría recomienda evitar la ñ y las tildes en los nombres.', ['columnas', 'col-atributo']),
-              opEr('<code>cod_campania</code>', 'Abreviatura', 'Una abreviatura no se puede definir como palabra: se escribe completa.', ['columnas', 'col-atributo'])],
-            pista: 'Cada palabra del nombre debe poder definirse después en la hoja Definiciones.' }
+            opEr('<code>codigo_campaña</code>', 'Lleva ñ', 'La asesoría recomienda evitar la ñ y las tildes en los nombres.', ['columnas', 'col-atributo']),
+            opEr('<code>cod_campania</code>', 'Abreviatura', 'Una abreviatura no se puede definir como palabra: se escribe completa.', ['columnas', 'col-atributo'])],
+            pista: 'Cada palabra del nombre debe poder definirse después en la hoja Definiciones.'
+          }
         ],
         solucion: '<p>Los nombres van en minúsculas, unidos por guion bajo, sin conectores y con un solo dato cada uno: <code>cantidad_recibida</code>; <code>largo_carga_detectado</code>, <code>ancho_carga_detectado</code> y <code>alto_carga_detectado</code>; y <code>codigo_campania</code>.</p>',
         llevate: 'Un nombre claro: minúsculas, guion bajo, sin conectores y con un solo dato.'
@@ -1820,24 +1854,30 @@
         id: 'q2', titulo: 'Valores y formato', desc: 'Cierra rangos, elige formatos y numera tablas en almacenamiento.', tiempo: '4 min',
         enunciado: '<p>Sistema de almacenamiento: una empresa tercerizada que guarda la mercancía de su cliente. En el diccionario alfabético, <code>categoria_contenedor</code> usa TAB1 y <code>categoria_empaque_real</code> usa TAB2.</p>',
         bloques: [
-          { titulo: '<code>cantidad_contenedor</code> reserva entre 1 y 100 contenedores por ticket. ¿Qué escribes en Valores?',
+          {
+            titulo: '<code>cantidad_contenedor</code> reserva entre 1 y 100 contenedores por ticket. ¿Qué escribes en Valores?',
             intro: 'Piensa qué debe decir un rango numérico.',
             ops: [opOk('<code>[1, 100]</code>', 'Es un rango cerrado: lleva mínimo y máximo.'),
-              opEr('<code>&gt;0</code>', 'Sin límite superior', 'Dice mayor a qué, pero no menor a qué: falta el tope.', ['columnas', 'col-valores']),
-              opEr('<code>1 a 100</code>', 'Sin notación de rango', 'Los valores numéricos se escriben como rango matemático.', ['columnas', 'col-valores'])],
-            pista: 'Busca la opción que escribe los dos extremos con la notación de rango.' },
-          { titulo: '¿Qué formato corresponde a ese atributo?',
+            opEr('<code>&gt;0</code>', 'Sin límite superior', 'Dice mayor a qué, pero no menor a qué: falta el tope.', ['columnas', 'col-valores']),
+            opEr('<code>1 a 100</code>', 'Sin notación de rango', 'Los valores numéricos se escriben como rango matemático.', ['columnas', 'col-valores'])],
+            pista: 'Busca la opción que escribe los dos extremos con la notación de rango.'
+          },
+          {
+            titulo: '¿Qué formato corresponde a ese atributo?',
             intro: 'El formato lleva la extensión máxima del dato.',
             ops: [opOk('<code>NUM(3)</code>', 'Es un número de hasta tres dígitos: llega hasta 999.'),
-              opEr('<code>CHAR(3)</code>', 'Formato de texto', 'Un número se guarda como NUM, no como CHAR.', ['columnas', 'col-formato']),
-              opEr('<code>NUM</code>', 'Sin extensión', 'El formato lleva entre paréntesis la extensión que puede llegar a tener.', ['columnas', 'col-formato'])],
-            pista: 'Mira si el dato es número o texto y si el formato dice su extensión.' },
-          { titulo: '<code>categoria_mercancia</code> se explica con una tabla de 7 categorías. ¿Qué escribes en Valores?',
+            opEr('<code>CHAR(3)</code>', 'Formato de texto', 'Un número se guarda como NUM, no como CHAR.', ['columnas', 'col-formato']),
+            opEr('<code>NUM</code>', 'Sin extensión', 'El formato lleva entre paréntesis la extensión que puede llegar a tener.', ['columnas', 'col-formato'])],
+            pista: 'Mira si el dato es número o texto y si el formato dice su extensión.'
+          },
+          {
+            titulo: '<code>categoria_mercancia</code> se explica con una tabla de 7 categorías. ¿Qué escribes en Valores?',
             intro: 'Recuerda cómo se numeran las tablas.',
             ops: [opOk('<code>TAB3</code>', 'Es la tercera tabla que aparece en el diccionario alfabético.'),
-              opEr('<code>TAB5</code>', 'Salta la numeración', 'La numeración es correlativa: 1, 2, 3… sin saltos.', ['atomizacion', 'ato-tab-num']),
-              opEr('<code>TAB2</code>', 'Repite una tabla', 'TAB2 ya explica la categoría de empaque: cada concepto tiene su propia tabla.', ['atomizacion', 'ato-tab-num'])],
-            pista: 'Cuenta las tablas que ya aparecieron antes en el diccionario.' }
+            opEr('<code>TAB5</code>', 'Salta la numeración', 'La numeración es correlativa: 1, 2, 3… sin saltos.', ['atomizacion', 'ato-tab-num']),
+            opEr('<code>TAB2</code>', 'Repite una tabla', 'TAB2 ya explica la categoría de empaque: cada concepto tiene su propia tabla.', ['atomizacion', 'ato-tab-num'])],
+            pista: 'Cuenta las tablas que ya aparecieron antes en el diccionario.'
+          }
         ],
         solucion: '<p><code>cantidad_contenedor</code> lleva <code>[1, 100]</code> en Valores y <code>NUM(3)</code> en Formato. <code>categoria_mercancia</code> lleva <code>TAB3</code> y <code>CHAR(1)</code>, porque es la tercera tabla del diccionario alfabético.</p>',
         llevate: 'Rango cerrado con mínimo y máximo, formato con su extensión y TAB correlativas.'
@@ -1846,30 +1886,38 @@
         id: 'q3', titulo: 'Naturaleza', desc: 'Elige naturaleza y formato de atributos de cobranza.', tiempo: '4 min',
         enunciado: '<p>Sistema de cobranza: una empresa tercerizada que gestiona el cobro de los morosos de su sponsor. Elige la naturaleza y el formato de cada atributo.</p>',
         bloques: [
-          { titulo: '<code>fecha_vencimiento_deuda</code>',
+          {
+            titulo: '<code>fecha_vencimiento_deuda</code>',
             intro: 'Piensa en qué es el dato en el mundo real.',
             ops: [opOk('FECHA · <code>AAAA-MM-DD</code>', 'Es un día del calendario.'),
-              opEr('NÚMERO · <code>NUM(8)</code>', 'Fecha como número', 'Una fecha no es una cantidad: va como FECHA, que exige una fecha lógica y válida.', ['columnas', 'col-naturaleza']),
-              opEr('CÓDIGO · <code>CHAR(10)</code>', 'Fecha como código', 'Un código identifica a un elemento; una fecha indica un día.', ['columnas', 'col-naturaleza'])],
-            pista: 'Pregúntate si el dato identifica, cuenta o señala un día.' },
-          { titulo: '<code>monto_deuda</code>, la cantidad de dinero que debe el moroso',
+            opEr('NÚMERO · <code>NUM(8)</code>', 'Fecha como número', 'Una fecha no es una cantidad: va como FECHA, que exige una fecha lógica y válida.', ['columnas', 'col-naturaleza']),
+            opEr('CÓDIGO · <code>CHAR(10)</code>', 'Fecha como código', 'Un código identifica a un elemento; una fecha indica un día.', ['columnas', 'col-naturaleza'])],
+            pista: 'Pregúntate si el dato identifica, cuenta o señala un día.'
+          },
+          {
+            titulo: '<code>monto_deuda</code>, la cantidad de dinero que debe el moroso',
             intro: 'El dinero tiene su propia naturaleza.',
             ops: [opOk('MONTO · <code>NUM(14,4)</code>', 'Es dinero: MONTO, con decimales.'),
-              opEr('NÚMERO · <code>NUM(9)</code>', 'Dinero como número', 'Un monto es dinero y lleva decimales: se escribe como MONTO.', ['columnas', 'col-naturaleza']),
-              opEr('NOMBRE · <code>CHAR(50)</code>', 'Cantidad como texto', 'Un monto es una cantidad de dinero, no un texto.', ['columnas', 'col-naturaleza'])],
-            pista: 'Busca la naturaleza pensada para cantidades de dinero.' },
-          { titulo: '<code>estado_cobranza</code>, con tres estados que salen de una tabla',
+            opEr('NÚMERO · <code>NUM(9)</code>', 'Dinero como número', 'Un monto es dinero y lleva decimales: se escribe como MONTO.', ['columnas', 'col-naturaleza']),
+            opEr('NOMBRE · <code>CHAR(50)</code>', 'Cantidad como texto', 'Un monto es una cantidad de dinero, no un texto.', ['columnas', 'col-naturaleza'])],
+            pista: 'Busca la naturaleza pensada para cantidades de dinero.'
+          },
+          {
+            titulo: '<code>estado_cobranza</code>, con tres estados que salen de una tabla',
             intro: 'Un estado indica una condición.',
             ops: [opOk('INDICADOR · <code>CHAR(1)</code>', 'Los estados con tabla son indicadores y se guardan con un solo carácter.'),
-              opEr('CÓDIGO · <code>NUM(9)</code>', 'Estado como código', 'Un código identifica; un estado indica una condición y se guarda con un solo carácter.', ['columnas', 'col-naturaleza']),
-              opEr('NOMBRE · <code>CHAR(50)</code>', 'Estado como nombre libre', 'Los valores de un estado salen de una tabla, no de un texto libre.', ['columnas', 'col-naturaleza'])],
-            pista: 'Piensa en la naturaleza que usa CHAR(1) y una tabla.' },
-          { titulo: '<code>dias_mora</code>, el número de días transcurridos sin pago',
+            opEr('CÓDIGO · <code>NUM(9)</code>', 'Estado como código', 'Un código identifica; un estado indica una condición y se guarda con un solo carácter.', ['columnas', 'col-naturaleza']),
+            opEr('NOMBRE · <code>CHAR(50)</code>', 'Estado como nombre libre', 'Los valores de un estado salen de una tabla, no de un texto libre.', ['columnas', 'col-naturaleza'])],
+            pista: 'Piensa en la naturaleza que usa CHAR(1) y una tabla.'
+          },
+          {
+            titulo: '<code>dias_mora</code>, el número de días transcurridos sin pago',
             intro: 'Es una cantidad, pero no es dinero.',
             ops: [opOk('NÚMERO · <code>NUM(4)</code>', 'Cuenta días: es una cantidad.'),
-              opEr('MONTO · <code>NUM(14,4)</code>', 'Días como dinero', 'Son días, no dinero: MONTO es solo para cantidades de dinero.', ['columnas', 'col-naturaleza']),
-              opEr('CÓDIGO · <code>NUM(9)</code>', 'Cantidad como código', 'No identifica a nadie: mide una cantidad de días.', ['columnas', 'col-naturaleza'])],
-            pista: 'Pregúntate si el dato identifica o mide.' }
+            opEr('MONTO · <code>NUM(14,4)</code>', 'Días como dinero', 'Son días, no dinero: MONTO es solo para cantidades de dinero.', ['columnas', 'col-naturaleza']),
+            opEr('CÓDIGO · <code>NUM(9)</code>', 'Cantidad como código', 'No identifica a nadie: mide una cantidad de días.', ['columnas', 'col-naturaleza'])],
+            pista: 'Pregúntate si el dato identifica o mide.'
+          }
         ],
         solucion: '<p><code>fecha_vencimiento_deuda</code> es FECHA con <code>AAAA-MM-DD</code>; <code>monto_deuda</code> es MONTO con <code>NUM(14,4)</code>; <code>estado_cobranza</code> es INDICADOR con <code>CHAR(1)</code> y su tabla; <code>dias_mora</code> es NÚMERO con <code>NUM(4)</code>.</p>',
         llevate: 'La naturaleza sale de cómo se presenta el dato en el mundo real, y de ella sale el formato.'
@@ -1878,24 +1926,30 @@
         id: 'q4', titulo: 'Semántica', desc: 'Redacta y define la semántica de un atributo de publicidad.', tiempo: '3 min',
         enunciado: '<p>Sistema de publicidad: una empresa tercerizada que planifica y difunde campañas publicitarias para su cliente.</p>',
         bloques: [
-          { titulo: '¿Cuál es la mejor semántica de <code>alcance_total</code>?',
+          {
+            titulo: '¿Cuál es la mejor semántica de <code>alcance_total</code>?',
             intro: 'La semántica dice qué es el dato.',
             ops: [opOk('Número total de personas que consumieron el anuncio durante toda la transmisión.', 'Dice qué es el dato, sin explicar para qué sirve.'),
-              opEr('Permite determinar la efectividad de la campaña publicitaria.', 'Es una ontología', 'Eso dice para qué sirve el dato: es la ontología, no la semántica.', ['columnas', 'col-semantica']),
-              opEr('Alcance total del anuncio.', 'Repite el nombre', 'Repetir el nombre no explica qué es el dato.', ['columnas', 'col-semantica'])],
-            pista: 'Busca la opción que describe el dato sin decir para qué se usa.' },
-          { titulo: 'En esa semántica aparece la palabra «transmisión». ¿Qué haces con ella?',
+            opEr('Permite determinar la efectividad de la campaña publicitaria.', 'Es una ontología', 'Eso dice para qué sirve el dato: es la ontología, no la semántica.', ['columnas', 'col-semantica']),
+            opEr('Alcance total del anuncio.', 'Repite el nombre', 'Repetir el nombre no explica qué es el dato.', ['columnas', 'col-semantica'])],
+            pista: 'Busca la opción que describe el dato sin decir para qué se usa.'
+          },
+          {
+            titulo: 'En esa semántica aparece la palabra «transmisión». ¿Qué haces con ella?',
             intro: 'Piensa en la atomización.',
             ops: [opOk('La defino aparte, en la hoja Definiciones.', 'Atomizar es definir cada palabra importante en su propio apartado.'),
-              opEr('La dejo sin definir, porque se entiende.', 'Palabra sin definir', 'Cada palabra importante se define aparte, aunque parezca conocida.', ['atomizacion', 'ato-que']),
-              opEr('La explico dentro de la misma celda de semántica.', 'Definición en la celda', 'La definición va en su propio apartado, no dentro de la celda.', ['atomizacion', 'ato-que'])],
-            pista: 'La hoja Definiciones existe para esto.' },
-          { titulo: '¿De dónde sale el significado de una palabra para definirla?',
+            opEr('La dejo sin definir, porque se entiende.', 'Palabra sin definir', 'Cada palabra importante se define aparte, aunque parezca conocida.', ['atomizacion', 'ato-que']),
+            opEr('La explico dentro de la misma celda de semántica.', 'Definición en la celda', 'La definición va en su propio apartado, no dentro de la celda.', ['atomizacion', 'ato-que'])],
+            pista: 'La hoja Definiciones existe para esto.'
+          },
+          {
+            titulo: '¿De dónde sale el significado de una palabra para definirla?',
             intro: 'Hay un orden de fuentes.',
             ops: [opOk('Primero del Diccionario de la lengua española y, si no alcanza, de textos técnicos adaptados a mi sistema.', 'Son fuentes formales, y se adaptan al sistema para evitar ambigüedad.'),
-              opEr('De lo que cada integrante entiende por la palabra.', 'Criterio personal', 'El significado no depende de cada integrante: sale de fuentes formales.', ['atomizacion', 'ato-err-fuente']),
-              opEr('De la definición que escribió otro grupo para un sistema parecido.', 'Copiar a otro grupo', 'El trabajo de otro grupo no es una fuente de significado.', ['atomizacion', 'ato-err-fuente'])],
-            pista: 'Descarta las opciones que dependen de personas y no de fuentes formales.' }
+            opEr('De lo que cada integrante entiende por la palabra.', 'Criterio personal', 'El significado no depende de cada integrante: sale de fuentes formales.', ['atomizacion', 'ato-err-fuente']),
+            opEr('De la definición que escribió otro grupo para un sistema parecido.', 'Copiar a otro grupo', 'El trabajo de otro grupo no es una fuente de significado.', ['atomizacion', 'ato-err-fuente'])],
+            pista: 'Descarta las opciones que dependen de personas y no de fuentes formales.'
+          }
         ],
         solucion: '<p>La semántica de <code>alcance_total</code> es «Número total de personas que consumieron el anuncio durante toda la transmisión». La palabra «transmisión» se define aparte en la hoja Definiciones, a partir del Diccionario de la lengua española y, si no alcanza, de textos técnicos adaptados al sistema.</p>',
         llevate: 'La semántica dice qué es el dato, y cada palabra importante se define aparte.'
@@ -1904,30 +1958,38 @@
         id: 'q5', titulo: 'Ontología', desc: 'Distingue la ontología de la semántica en atributos de cobranza.', tiempo: '4 min',
         enunciado: '<p>Sistema de cobranza: una empresa tercerizada que gestiona el cobro de los morosos de su sponsor.</p>',
         bloques: [
-          { titulo: '¿Cuál es la mejor ontología de <code>fecha_vencimiento_deuda</code>?',
+          {
+            titulo: '¿Cuál es la mejor ontología de <code>fecha_vencimiento_deuda</code>?',
             intro: 'La ontología dice para qué sirve el dato en tu sistema.',
             ops: [opOk('Permite calcular los días de mora del moroso.', 'Dice qué cálculo del sistema habilita el dato.'),
-              opEr('Fecha límite en la que la deuda debía pagarse.', 'Es la semántica', 'Eso dice qué es el dato: es la semántica.', ['columnas', 'col-ontologia']),
-              opEr('Identifica la fecha de vencimiento de la deuda.', 'Tautología', 'Repite el nombre del atributo y no dice para qué sirve.', ['columnas', 'col-ontologia'])],
-            pista: 'Busca la opción que conecta la fecha con algo que el sistema calcula.' },
-          { titulo: 'La ontología responde a una pregunta. ¿Cuál?',
+            opEr('Fecha límite en la que la deuda debía pagarse.', 'Es la semántica', 'Eso dice qué es el dato: es la semántica.', ['columnas', 'col-ontologia']),
+            opEr('Identifica la fecha de vencimiento de la deuda.', 'Tautología', 'Repite el nombre del atributo y no dice para qué sirve.', ['columnas', 'col-ontologia'])],
+            pista: 'Busca la opción que conecta la fecha con algo que el sistema calcula.'
+          },
+          {
+            titulo: 'La ontología responde a una pregunta. ¿Cuál?',
             intro: 'Cada columna responde una pregunta distinta.',
             ops: [opOk('¿Para qué necesita mi sistema este dato?', 'Es la pregunta de la ontología.'),
-              opEr('¿Qué significa el dato en el Diccionario de la lengua española?', 'Pregunta de la semántica', 'Esa es la pregunta de la semántica.', ['columnas', 'col-semantica']),
-              opEr('¿Cómo se guarda el dato?', 'Pregunta del formato', 'Esa es la pregunta del formato.', ['columnas', 'col-formato'])],
-            pista: 'La ontología es la única columna que depende de tu sistema.' },
-          { titulo: '¿Cuál es la mejor ontología de <code>correo_garante</code>?',
+            opEr('¿Qué significa el dato en el Diccionario de la lengua española?', 'Pregunta de la semántica', 'Esa es la pregunta de la semántica.', ['columnas', 'col-semantica']),
+            opEr('¿Cómo se guarda el dato?', 'Pregunta del formato', 'Esa es la pregunta del formato.', ['columnas', 'col-formato'])],
+            pista: 'La ontología es la única columna que depende de tu sistema.'
+          },
+          {
+            titulo: '¿Cuál es la mejor ontología de <code>correo_garante</code>?',
             intro: 'Debe decir qué operación habilita el dato.',
             ops: [opOk('Permite comunicarse con el garante mediante el canal Correo.', 'Dice qué operación habilita: la comunicación por correo.'),
-              opEr('Dirección de correo electrónico del garante.', 'Es la semántica', 'Dice qué es el dato; falta decir para qué sirve.', ['columnas', 'col-ontologia']),
-              opEr('Permite conocer la dirección de correo del garante.', 'Repite la semántica', 'Solo cambia las palabras de la semántica: no dice qué operación habilita.', ['columnas', 'col-ontologia'])],
-            pista: 'Pregúntate qué hace el sistema con ese correo.' },
-          { titulo: '¿Puede una ontología empezar con «Permite conocer…»?',
+            opEr('Dirección de correo electrónico del garante.', 'Es la semántica', 'Dice qué es el dato; falta decir para qué sirve.', ['columnas', 'col-ontologia']),
+            opEr('Permite conocer la dirección de correo del garante.', 'Repite la semántica', 'Solo cambia las palabras de la semántica: no dice qué operación habilita.', ['columnas', 'col-ontologia'])],
+            pista: 'Pregúntate qué hace el sistema con ese correo.'
+          },
+          {
+            titulo: '¿Puede una ontología empezar con «Permite conocer…»?',
             intro: 'Piensa en lo que acepta el profesor.',
             ops: [opOk('Sí, el profesor lo acepta, siempre que diga para qué sirve el dato en el sistema.', 'Lo importante es lo que dice el resto de la frase.'),
-              opEr('No: está prohibido repetir esa expresión.', 'Prohibición inventada', 'El profesor acepta que se repita; lo importante es el para qué.', ['columnas', 'col-ontologia']),
-              opEr('Sí, y puede ser lo único que dice.', 'Frase incompleta', '«Permite conocer» solo abre la frase: debe completarse con el para qué.', ['columnas', 'col-ontologia'])],
-            pista: 'La expresión se acepta, pero no alcanza sola.' }
+            opEr('No: está prohibido repetir esa expresión.', 'Prohibición inventada', 'El profesor acepta que se repita; lo importante es el para qué.', ['columnas', 'col-ontologia']),
+            opEr('Sí, y puede ser lo único que dice.', 'Frase incompleta', '«Permite conocer» solo abre la frase: debe completarse con el para qué.', ['columnas', 'col-ontologia'])],
+            pista: 'La expresión se acepta, pero no alcanza sola.'
+          }
         ],
         solucion: '<p>La ontología dice para qué necesita el sistema el dato: <code>fecha_vencimiento_deuda</code> permite calcular los días de mora, y <code>correo_garante</code> permite comunicarse con el garante mediante el canal Correo. Puede empezar con «Permite conocer…» si se completa con el para qué.</p>',
         llevate: 'La ontología responde para qué necesita tu sistema el dato, sin repetir la semántica.'
@@ -1936,30 +1998,38 @@
         id: 'q6', titulo: 'Tablas TAB', desc: 'Ordena y numera las tablas de valores de capacitación.', tiempo: '4 min',
         enunciado: '<p>Sistema de capacitación: una empresa tercerizada que capacita al personal de otras empresas. Estos atributos se explican con una tabla: <code>criterio_evaluacion</code>, <code>escala_calificacion</code>, <code>estado_acceso</code> y <code>estado_aprobacion_actividad</code>.</p>',
         bloques: [
-          { titulo: '¿En qué orden van los atributos en la hoja del diccionario?',
+          {
+            titulo: '¿En qué orden van los atributos en la hoja del diccionario?',
             intro: 'Hay un solo orden válido.',
             ops: [opOk('En orden alfabético: <code>criterio_evaluacion</code> antes que <code>escala_calificacion</code>.', 'Los atributos van siempre en orden alfabético.'),
-              opEr('Por importancia: primero los que más se usan.', 'Orden por importancia', 'Los atributos van siempre en orden alfabético.', ['entregable', 'ent-orden']),
-              opEr('Por el orden en que se te ocurrieron.', 'Orden de aparición', 'El orden no depende de cuándo se pensó el atributo: es alfabético.', ['entregable', 'ent-orden'])],
-            pista: 'Piensa en cómo se ordena un diccionario.' },
-          { titulo: '<code>criterio_evaluacion</code> usa TAB1, <code>escala_calificacion</code> usa TAB2 y <code>estado_acceso</code> usa TAB3. ¿Qué escribes en Valores de <code>estado_aprobacion_actividad</code>?',
+            opEr('Por importancia: primero los que más se usan.', 'Orden por importancia', 'Los atributos van siempre en orden alfabético.', ['entregable', 'ent-orden']),
+            opEr('Por el orden en que se te ocurrieron.', 'Orden de aparición', 'El orden no depende de cuándo se pensó el atributo: es alfabético.', ['entregable', 'ent-orden'])],
+            pista: 'Piensa en cómo se ordena un diccionario.'
+          },
+          {
+            titulo: '<code>criterio_evaluacion</code> usa TAB1, <code>escala_calificacion</code> usa TAB2 y <code>estado_acceso</code> usa TAB3. ¿Qué escribes en Valores de <code>estado_aprobacion_actividad</code>?',
             intro: 'Las tablas se numeran por orden de aparición.',
             ops: [opOk('<code>TAB4</code>', 'Es la cuarta tabla distinta del diccionario alfabético.'),
-              opEr('<code>TAB3</code>', 'Repite una tabla', 'TAB3 ya explica el estado de acceso: cada concepto tiene su propia tabla.', ['atomizacion', 'ato-tab-num']),
-              opEr('<code>TAB6</code>', 'Salta la numeración', 'La numeración es correlativa, sin saltos.', ['atomizacion', 'ato-tab-num'])],
-            pista: 'Cuenta cuántas tablas distintas ya aparecieron.' },
-          { titulo: '<code>estado_acceso</code> tiene 6 estados. ¿Cómo se escriben sus códigos y su formato?',
+            opEr('<code>TAB3</code>', 'Repite una tabla', 'TAB3 ya explica el estado de acceso: cada concepto tiene su propia tabla.', ['atomizacion', 'ato-tab-num']),
+            opEr('<code>TAB6</code>', 'Salta la numeración', 'La numeración es correlativa, sin saltos.', ['atomizacion', 'ato-tab-num'])],
+            pista: 'Cuenta cuántas tablas distintas ya aparecieron.'
+          },
+          {
+            titulo: '<code>estado_acceso</code> tiene 6 estados. ¿Cómo se escriben sus códigos y su formato?',
             intro: 'Recuerda cómo se guardan los estados.',
             ops: [opOk('Códigos de un carácter (1 a 6) y formato <code>CHAR(1)</code>.', 'El carácter es el identificador del estado.'),
-              opEr('Siglas de tres letras (HAB, DES, BLO…) y formato <code>CHAR(3)</code>.', 'Siglas largas', 'Los estados llevan un carácter identificador: <code>CHAR(1)</code>.', ['columnas', 'col-naturaleza']),
-              opEr('Los códigos van escritos dentro de la celda Valores.', 'Códigos en Valores', 'En Valores solo va TAB y su número; los códigos van en la tabla.', ['columnas', 'col-valores'])],
-            pista: 'Piensa cuántos caracteres usa el libro para identificar un estado.' },
-          { titulo: '¿Qué columnas lleva cada tabla de valores?',
+            opEr('Siglas de tres letras (HAB, DES, BLO…) y formato <code>CHAR(3)</code>.', 'Siglas largas', 'Los estados llevan un carácter identificador: <code>CHAR(1)</code>.', ['columnas', 'col-naturaleza']),
+            opEr('Los códigos van escritos dentro de la celda Valores.', 'Códigos en Valores', 'En Valores solo va TAB y su número; los códigos van en la tabla.', ['columnas', 'col-valores'])],
+            pista: 'Piensa cuántos caracteres usa el libro para identificar un estado.'
+          },
+          {
+            titulo: '¿Qué columnas lleva cada tabla de valores?',
             intro: 'Piensa en lo que una tabla debe permitir.',
             ops: [opOk('Código y descripción.', 'El código identifica el valor y la descripción dice qué significa.'),
-              opEr('Solo la descripción.', 'Falta el código', 'Sin código no se puede guardar ni identificar el valor.', ['atomizacion', 'ato-tab-forma']),
-              opEr('El atributo y su formato.', 'Datos del diccionario', 'Eso está en el diccionario; la tabla lista los valores posibles.', ['atomizacion', 'ato-tab-forma'])],
-            pista: 'La tabla lista valores: ¿qué necesitas para identificarlos y entenderlos?' }
+            opEr('Solo la descripción.', 'Falta el código', 'Sin código no se puede guardar ni identificar el valor.', ['atomizacion', 'ato-tab-forma']),
+            opEr('El atributo y su formato.', 'Datos del diccionario', 'Eso está en el diccionario; la tabla lista los valores posibles.', ['atomizacion', 'ato-tab-forma'])],
+            pista: 'La tabla lista valores: ¿qué necesitas para identificarlos y entenderlos?'
+          }
         ],
         solucion: '<p>Los atributos van en orden alfabético; <code>estado_aprobacion_actividad</code> usa <code>TAB4</code> porque es la cuarta tabla distinta; los estados llevan códigos de un carácter y <code>CHAR(1)</code>; y cada tabla lleva código y descripción.</p>',
         llevate: 'Orden alfabético, TAB correlativas, estados con un carácter y tablas con código y descripción.'
@@ -1968,24 +2038,30 @@
         id: 'q7', titulo: 'Atomización', desc: 'Decide qué palabras se definen y cómo se encadenan en almacenamiento.', tiempo: '4 min',
         enunciado: '<p>Sistema de almacenamiento: una empresa tercerizada que guarda la mercancía de su cliente. La semántica de <code>cantidad_paquete</code> es «Número de paquetes embalados de una mercancía».</p>',
         bloques: [
-          { titulo: '¿Qué palabras de esa semántica defines aparte?',
+          {
+            titulo: '¿Qué palabras de esa semántica defines aparte?',
             intro: 'Se definen las palabras clave.',
             ops: [opOk('Paquete, embalaje y mercancía, que son las palabras clave.', 'Son las palabras que aportan el significado del dato.'),
-              opEr('Todas, incluidas «de» y «una».', 'Conectores', 'Los conectores no necesitan definición.', ['atomizacion', 'ato-que']),
-              opEr('Ninguna: la semántica ya define el atributo.', 'Sin atomizar', 'La semántica usa palabras clave que también deben definirse.', ['atomizacion', 'ato-que'])],
-            pista: 'Descarta las palabras de enlace y quédate con las que dan significado.' },
-          { titulo: 'La definición de «almacén» es «Lugar donde se ubican los contenedores y se movilizan autómatas». ¿Qué sigue?',
+            opEr('Todas, incluidas «de» y «una».', 'Conectores', 'Los conectores no necesitan definición.', ['atomizacion', 'ato-que']),
+            opEr('Ninguna: la semántica ya define el atributo.', 'Sin atomizar', 'La semántica usa palabras clave que también deben definirse.', ['atomizacion', 'ato-que'])],
+            pista: 'Descarta las palabras de enlace y quédate con las que dan significado.'
+          },
+          {
+            titulo: 'La definición de «almacén» es «Lugar donde se ubican los contenedores y se movilizan autómatas». ¿Qué sigue?',
             intro: 'Piensa en la cascada.',
             ops: [opOk('Definir también «contenedor» y «autómata», que aparecen en esa definición.', 'Es la cascada: cada palabra clave nueva se define.'),
-              opEr('Nada: «almacén» ya quedó definido.', 'Cascada incompleta', 'Las palabras clave de una definición también se definen.', ['atomizacion', 'ato-err-faltan']),
-              opEr('Definir «almacén» de nuevo con otras palabras.', 'Reescribir', 'Reescribir no completa la cascada: faltan las palabras de la definición.', ['atomizacion', 'ato-err-faltan'])],
-            pista: 'Busca las palabras de la definición que todavía no tienen su propio apartado.' },
-          { titulo: '¿Cuál de estas definiciones de «mercancía» evita la circularidad?',
+            opEr('Nada: «almacén» ya quedó definido.', 'Cascada incompleta', 'Las palabras clave de una definición también se definen.', ['atomizacion', 'ato-err-faltan']),
+            opEr('Definir «almacén» de nuevo con otras palabras.', 'Reescribir', 'Reescribir no completa la cascada: faltan las palabras de la definición.', ['atomizacion', 'ato-err-faltan'])],
+            pista: 'Busca las palabras de la definición que todavía no tienen su propio apartado.'
+          },
+          {
+            titulo: '¿Cuál de estas definiciones de «mercancía» evita la circularidad?',
             intro: 'Una definición no debe volver a lo que explica.',
             ops: [opOk('«Bien mueble que el cliente entrega para su custodia.»', 'Usa palabras que se definen sin volver a «mercancía».'),
-              opEr('«Lo que se guarda en el almacén», si «almacén» es «lugar donde se guarda la mercancía».', 'Definición circular', 'Se explican una a otra y no aclaran nada.', ['atomizacion', 'ato-err-circular']),
-              opEr('«Mercancía del cliente.»', 'Repite el término', 'Repite la palabra que quiere definir y no aclara su significado.', ['atomizacion', 'ato-err-circular'])],
-            pista: 'Descarta la definición que usa la misma palabra que define.' }
+            opEr('«Lo que se guarda en el almacén», si «almacén» es «lugar donde se guarda la mercancía».', 'Definición circular', 'Se explican una a otra y no aclaran nada.', ['atomizacion', 'ato-err-circular']),
+            opEr('«Mercancía del cliente.»', 'Repite el término', 'Repite la palabra que quiere definir y no aclara su significado.', ['atomizacion', 'ato-err-circular'])],
+            pista: 'Descarta la definición que usa la misma palabra que define.'
+          }
         ],
         solucion: '<p>De «Número de paquetes embalados de una mercancía» se definen paquete, embalaje y mercancía. De cada definición salen nuevas palabras clave que también se definen (almacén lleva a contenedor y autómata), y ninguna definición vuelve a la que explica.</p>',
         llevate: 'Se definen las palabras clave, en cascada y sin circularidad.'
@@ -1994,24 +2070,30 @@
         id: 'q8', titulo: 'Filtro y parque de datos', desc: 'Decide qué atributos entran al diccionario de cobranza.', tiempo: '3 min',
         enunciado: '<p>Sistema de cobranza: una empresa tercerizada que gestiona el cobro de los morosos de su sponsor.</p>',
         bloques: [
-          { titulo: '¿Cuántos atributos lleva tu diccionario?',
+          {
+            titulo: '¿Cuántos atributos lleva tu diccionario?',
             intro: 'Hay un rango para el trabajo.',
             ops: [opOk('Entre 40 y 80, los más relevantes del parque de datos.', 'Se eligen los relevantes: no van todos.'),
-              opEr('Todos los del parque de datos, sin límite.', 'Sin filtrar', 'No van todos: solo los más relevantes.', ['entregable', 'ent-cantidad']),
-              opEr('Entre 10 y 20.', 'Por debajo del mínimo', 'Es menos de lo que pide el trabajo: de 40 a 80.', ['entregable', 'ent-cantidad'])],
-            pista: 'Recuerda el rango mínimo y máximo del trabajo.' },
-          { titulo: '¿Cuál de estos atributos entra al diccionario de cobranza?',
+            opEr('Todos los del parque de datos, sin límite.', 'Sin filtrar', 'No van todos: solo los más relevantes.', ['entregable', 'ent-cantidad']),
+            opEr('Entre 10 y 20.', 'Por debajo del mínimo', 'Es menos de lo que pide el trabajo: de 40 a 80.', ['entregable', 'ent-cantidad'])],
+            pista: 'Recuerda el rango mínimo y máximo del trabajo.'
+          },
+          {
+            titulo: '¿Cuál de estos atributos entra al diccionario de cobranza?',
             intro: 'Entran los datos que hacen posible la misión.',
             ops: [opOk('<code>dias_mora</code>', 'Define el producto de cobranza que corresponde: hace posible la misión.'),
-              opEr('<code>color_favorito_moroso</code>', 'No aporta a la misión', 'No hace posible la misión: el filtro semántico lo descarta.', ['entregable', 'ent-filtro']),
-              opEr('<code>tipo_sangre_moroso</code>', 'Fuera del dominio', 'No es un dato del dominio de la información de cobranza.', ['entregable', 'ent-filtro'])],
-            pista: 'Pregúntate qué dato usa la cobranza para decidir qué hacer con el moroso.' },
-          { titulo: 'Agregaste <code>correo_garante</code> al diccionario, pero no estaba en tu parque de datos. ¿Qué haces?',
+            opEr('<code>color_favorito_moroso</code>', 'No aporta a la misión', 'No hace posible la misión: el filtro semántico lo descarta.', ['entregable', 'ent-filtro']),
+            opEr('<code>tipo_sangre_moroso</code>', 'Fuera del dominio', 'No es un dato del dominio de la información de cobranza.', ['entregable', 'ent-filtro'])],
+            pista: 'Pregúntate qué dato usa la cobranza para decidir qué hacer con el moroso.'
+          },
+          {
+            titulo: 'Agregaste <code>correo_garante</code> al diccionario, pero no estaba en tu parque de datos. ¿Qué haces?',
             intro: 'Diccionario y parque deben coincidir.',
             ops: [opOk('Lo agrego también al parque de datos.', 'Todo atributo del diccionario debe estar en el parque.'),
-              opEr('Lo dejo solo en el diccionario.', 'Parque desactualizado', 'Los atributos del diccionario deben estar también en el parque de datos.', ['entregable', 'ent-parque']),
-              opEr('Lo quito del diccionario para que coincidan.', 'Descartar el dato', 'La regla es incluirlo también en el parque de datos.', ['entregable', 'ent-parque'])],
-            pista: 'El parque de datos es el origen de los atributos.' }
+            opEr('Lo dejo solo en el diccionario.', 'Parque desactualizado', 'Los atributos del diccionario deben estar también en el parque de datos.', ['entregable', 'ent-parque']),
+            opEr('Lo quito del diccionario para que coincidan.', 'Descartar el dato', 'La regla es incluirlo también en el parque de datos.', ['entregable', 'ent-parque'])],
+            pista: 'El parque de datos es el origen de los atributos.'
+          }
         ],
         solucion: '<p>El diccionario lleva de 40 a 80 atributos relevantes, como <code>dias_mora</code>, y deja fuera datos que no hacen posible la misión. Si agregas un atributo que no estaba en el parque, como <code>correo_garante</code>, también lo incluyes en el parque de datos.</p>',
         llevate: 'Solo entran los atributos que hacen posible la misión, y el parque de datos siempre coincide con el diccionario.'
@@ -2390,7 +2472,12 @@
   ops.forEach(function (o) {
     o.addEventListener('click', function () {
       modoActual = o.getAttribute('data-modo'); lsSet('modo', modoActual); aplicarModo();
-      if (enIframe) { nota.textContent = 'Modo guardado. Estás dentro del visor: imprime con el botón de imprimir del visor.'; return; }
+      if (enIframe) {
+        let btnVisor = null;
+        try { btnVisor = window.parent.document.querySelector('[data-accion="imprimir"]'); } catch (e) { /* otro origen: se usa el aviso */ }
+        if (btnVisor) { ip.hidden = true; ib.setAttribute('aria-expanded', 'false'); btnVisor.click(); return; }
+        nota.textContent = 'Modo guardado. Estás dentro del visor: imprime con el botón de imprimir del visor.'; return;
+      }
       ip.hidden = true; ib.setAttribute('aria-expanded', 'false'); imprimir();
     });
   });
