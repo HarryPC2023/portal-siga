@@ -221,7 +221,10 @@ async function pintarConteo(abrir = new Set()) {
             ids: [...new Set(g.filas.map((f) => f.user_id))],
             aviso: infoAviso(g.codigo_curso, g.evaluacion),
         }))
-        .sort((a, b) => b.ids.length - a.ids.length || nombreCurso(a.codigo_curso).localeCompare(nombreCurso(b.codigo_curso), 'es'));
+        // Orden alfabético por curso y, dentro del curso, por el orden de las evaluaciones (PC1, PC2, EP, PC3…).
+        // La barra de cada fila sigue mostrando cuánta demanda tiene, comparada con la más pedida.
+        .sort((a, b) => nombreCurso(a.codigo_curso).localeCompare(nombreCurso(b.codigo_curso), 'es', { sensitivity: 'base' })
+            || EVALUACIONES.indexOf(String(a.evaluacion || '').toUpperCase()) - EVALUACIONES.indexOf(String(b.evaluacion || '').toUpperCase()));
 
     // Quiénes ya recibieron cada aviso (para "Avisados X de Y"). Tú puedes leer
     // todas las notificaciones (política notif_select); si no se pudiera, se oculta ese dato.
@@ -532,7 +535,11 @@ async function pintarUso(abrir = new Set()) {
             excelPersonas: personas(excel), excelVeces: excel.length,
             porEjemplo: [...porEjemplo.entries()].sort((a, b) => b[1] - a[1]),
         };
-    }).sort((a, b) => b.personas - a.personas || b.imprimieron - a.imprimieron || nombreCursoPorSlug(a.curso).localeCompare(nombreCursoPorSlug(b.curso), 'es'));
+    // Orden alfabético por curso; dentro del curso, por evaluación (PC1, PC2, EP, PC3…) y luego periodo (el más reciente primero).
+    // La barra de cada fila sigue mostrando cuánta gente tuvo, comparada con la asesoría más usada.
+    }).sort((a, b) => nombreCursoPorSlug(a.curso).localeCompare(nombreCursoPorSlug(b.curso), 'es', { sensitivity: 'base' })
+        || EVALUACIONES.indexOf(String(a.evaluacion).toUpperCase()) - EVALUACIONES.indexOf(String(b.evaluacion).toUpperCase())
+        || String(b.periodo).localeCompare(String(a.periodo)));
 
     const mapa = await cargarQuien(eventos.map((r) => r.user_id));
     const max = Math.max(...filas.map((f) => f.personas));
