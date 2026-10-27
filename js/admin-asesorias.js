@@ -62,8 +62,11 @@ async function cargarQuien(userIds) {
     const mapa = new Map();
     const ids = [...new Set(userIds.filter(Boolean))];
     if (!ids.length) return mapa;
-    const { data, error } = await supabase.from('perfiles_usuario').select('user_id, nombre, codigo_estudiante').in('user_id', ids);
-    if (!error && data) data.forEach((p) => mapa.set(p.user_id, p));
+    // En tandas de 80 para que la dirección de la consulta no se haga demasiado larga cuando haya muchos usuarios.
+    const tandas = [];
+    for (let i = 0; i < ids.length; i += 80) tandas.push(ids.slice(i, i + 80));
+    const respuestas = await Promise.all(tandas.map((t) => supabase.from('perfiles_usuario').select('user_id, nombre, codigo_estudiante').in('user_id', t)));
+    respuestas.forEach(({ data, error }) => { if (!error && data) data.forEach((p) => mapa.set(p.user_id, p)); });
     return mapa;
 }
 
@@ -421,6 +424,11 @@ async function cargarTodo() {
 // (la política RLS de la tabla). Tus propias pruebas se ocultan por defecto.
 let usoIncluirYo = false;
 let usoTimer = null;
+let usoRango = 'todo';      // periodo que se muestra: 'todo' | 'hoy' | '7' | '30'
+let usoBusqueda = '';       // texto para buscar a una persona (nombre o código)
+let usoCache = null;        // { data, mapa } de la última carga: filtrar o escribir en el buscador no vuelve a pedir nada a Supabase
+let usoBuscarTimer = null;
+const RANGOS_USO = { todo: 'Todo el tiempo', hoy: 'Hoy', '7': 'Últimos 7 días', '30': 'Últimos 30 días' };
 
 // Nombre de la pestaña. Si algún día prefieres otro, cámbialo solo aquí.
 const TITULO_ACTIVIDAD = 'Actividad de Asesorías';
@@ -492,25 +500,82 @@ async function pintarSinRegistro() {
     cont.innerHTML = lineas.join('');
 }
 
-async function pintarUso(abrir = new Set()) {
-    const cont = $('daUso');
-    const { data, error } = await supabase
-        .from('asesorias_eventos')
-        .select('user_id, curso, periodo, evaluacion, accion, detalle, creado_en')
-        .order('creado_en', { ascending: false })
-        .limit(5000);
-    if (error) { cont.innerHTML = `<p class="da-vacio">No se pudo cargar: ${esc(error.message)}</p>`; return; }
+// Minúsculas y sin tildes, para que «alvaro» encuentre a «Álvaro».
+const sinTildes = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 
+// Desde cuándo (en milisegundos) se muestran los registros según el periodo elegido. 0 = sin límite.
+function inicioDeRango(rango) {
+    const ahora = new Date();
+    if (rango === 'hoy') return new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate()).getTime();
+    if (rango === '7') return ahora.getTime() - 7 * 86400000;
+    if (rango === '30') return ahora.getTime() - 30 * 86400000;
+    return 0;
+}
+
+// Las 4 tarjetas de resumen de arriba. Se calculan con los registros YA filtrados (periodo, búsqueda, tus pruebas).
+function pintarTarjetasUso(eventos, filas) {
+    const cont = $('daUsoTarjetas');
+    if (!cont) return;
+    const de = (a) => eventos.filter((e) => e.accion === a);
+    const personas = new Set(eventos.map((e) => e.user_id));
+    const abrieron = new Set(de('abrio').map((e) => e.user_id));
+    const imprimieron = new Set(de('imprimio').map((e) => e.user_id));
+    // «Volvieron»: personas con 2 o más aperturas de la MISMA asesoría.
+    const aperturas = new Map();
+    de('abrio').forEach((e) => {
+        const k = `${e.user_id}|${e.curso}|${e.periodo}|${e.evaluacion}`;
+        aperturas.set(k, (aperturas.get(k) || 0) + 1);
+    });
+    const volvieron = new Set([...aperturas.entries()].filter(([, n]) => n > 1).map(([k]) => k.split('|')[0]));
+    const masUsada = [...filas].sort((a, b) => b.personas - a.personas || b.abrioVeces - a.abrioVeces
+        || nombreCursoPorSlug(a.curso).localeCompare(nombreCursoPorSlug(b.curso), 'es', { sensitivity: 'base' }))[0];
+
+    const tarjeta = (clase, icono, titulo, valor, sub, esTexto) => `
+        <div class="da-tarjeta ${clase}">
+            <div class="da-t-top"><span class="da-t-ico" aria-hidden="true">${icono}</span><span class="da-t-tit">${titulo}</span></div>
+            <div class="${esTexto ? 'da-t-txt' : 'da-t-num'}">${valor}</div>
+            <div class="da-t-sub">${sub}</div>
+        </div>`;
+    cont.innerHTML = [
+        tarjeta('da-t-morado', '👥', 'Personas con actividad', personas.size, plural(eventos.length, 'acción', 'acciones')),
+        tarjeta('da-t-azul', '🏆', 'Asesoría más usada',
+            masUsada ? esc(`${nombreCursoPorSlug(masUsada.curso)} · ${String(masUsada.evaluacion).toUpperCase()}`) : '—',
+            masUsada ? plural(masUsada.personas, 'persona', 'personas') : 'sin datos', true),
+        tarjeta('da-t-naranja', '🔁', 'Volvieron a abrirla', volvieron.size,
+            abrieron.size ? `de ${plural(abrieron.size, 'persona que abrió', 'personas que abrieron')}` : 'nadie abrió todavía'),
+        tarjeta('da-t-verde', '🖨️', 'Imprimieron / PDF', imprimieron.size, plural(de('imprimio').length, 'impresión', 'impresiones')),
+    ].join('');
+}
+
+async function pintarUso(abrir = new Set(), { recargar = true } = {}) {
+    const cont = $('daUso');
+    if (recargar || !usoCache) {
+        const { data, error } = await supabase
+            .from('asesorias_eventos')
+            .select('user_id, curso, periodo, evaluacion, accion, detalle, creado_en')
+            .order('creado_en', { ascending: false })
+            .limit(5000);
+        if (error) { cont.innerHTML = `<p class="da-vacio">No se pudo cargar: ${esc(error.message)}</p>`; return; }
+        usoCache = { data, mapa: await cargarQuien(data.map((r) => r.user_id)) };
+    }
+    const { data, mapa } = usoCache;
     const yo = await miId();
-    const eventos = usoIncluirYo ? data : data.filter((r) => r.user_id !== yo);
+
+    // Filtros: tus pruebas, periodo y búsqueda por persona (nombre o código, sin importar tildes ni mayúsculas).
+    const desde = inicioDeRango(usoRango);
+    const q = sinTildes(usoBusqueda);
+    const eventos = data.filter((r) => (usoIncluirYo || r.user_id !== yo)
+        && (!desde || (Date.parse(r.creado_en) || 0) >= desde)
+        && (!q || sinTildes(quien(mapa, r.user_id)).includes(q)));
+
     const resumenEl = $('daUsoResumen');
     if (resumenEl) {
-        resumenEl.textContent = eventos.length
-            ? `${plural(new Set(eventos.map((r) => r.user_id)).size, 'persona', 'personas')} con actividad · ${plural(eventos.length, 'acción', 'acciones')}`
-            : 'Sin actividad todavía';
+        resumenEl.textContent = `Mostrando: ${RANGOS_USO[usoRango]}${q ? ` · «${usoBusqueda.trim()}»` : ''}${usoIncluirYo ? ' · con tus pruebas' : ''}`;
     }
     if (!eventos.length) {
-        cont.innerHTML = `<p class="da-vacio">${data.length ? 'Solo hay registros tuyos (activa «Incluir mis pruebas» para verlos).' : 'Todavía nadie abrió, imprimió ni descargó nada.'}</p>`;
+        pintarTarjetasUso([], []);
+        const hayFiltros = !!q || usoRango !== 'todo';
+        cont.innerHTML = `<p class="da-vacio">${!data.length ? 'Todavía nadie abrió, imprimió ni descargó nada.' : (hayFiltros ? 'Nadie coincide con estos filtros.' : 'Solo hay registros tuyos (activa «Incluir mis propias pruebas» para verlos).')}</p>`;
         return;
     }
 
@@ -541,7 +606,7 @@ async function pintarUso(abrir = new Set()) {
         || EVALUACIONES.indexOf(String(a.evaluacion).toUpperCase()) - EVALUACIONES.indexOf(String(b.evaluacion).toUpperCase())
         || String(b.periodo).localeCompare(String(a.periodo)));
 
-    const mapa = await cargarQuien(eventos.map((r) => r.user_id));
+    pintarTarjetasUso(eventos, filas);
     const max = Math.max(...filas.map((f) => f.personas));
 
     // Una sección por acción, con una línea por persona: cuántas veces lo hizo, la primera y la última vez.
@@ -592,6 +657,12 @@ async function pintarUso(abrir = new Set()) {
 
     cont.innerHTML = filas.map((f, i) => {
         const de = (a) => f.eventos.filter((e) => e.accion === a);
+        // Mini-contadores de la fila (personas distintas): 👁 abrieron · 🖨 imprimieron · 📊 descargaron Excel. En gris si es 0.
+        const chips = [
+            ['ojo', '👁', f.abrieron, 'abrió', 'abrieron'],
+            ['imp', '🖨️', f.imprimieron, 'imprimió', 'imprimieron'],
+            ['xls', '📊', f.excelPersonas, 'descargó Excel', 'descargaron Excel'],
+        ].map(([clase, icono, n, uno, varios]) => `<span class="da-chip da-chip-${clase}${n ? '' : ' cero'}" title="${plural(n, 'persona', 'personas')} ${n === 1 ? uno : varios}">${icono} ${n}</span>`).join('');
         const detalle = [
             seccionUso('👁 Abrieron', de('abrio'), false, 'volvieron a abrirla'),
             seccionUso('🖨️ Imprimieron / PDF', de('imprimio'), false, 'imprimieron más de una vez'),
@@ -599,7 +670,7 @@ async function pintarUso(abrir = new Set()) {
         ].join('');
         return `
         <div class="da-fila" role="button" tabindex="0" aria-expanded="false" data-clave="${esc(f.clave)}" data-quienes="daU${i}">
-            <div class="da-nombre">${esc(nombreCursoPorSlug(f.curso))} <small>· ${esc(String(f.evaluacion).toUpperCase())} · ${esc(f.periodo)}</small></div>
+            <div class="da-nombre">${esc(nombreCursoPorSlug(f.curso))} <small>· ${esc(String(f.evaluacion).toUpperCase())} · ${esc(f.periodo)}</small> <span class="da-chips">${chips}</span></div>
             <div class="da-num">${plural(f.personas, 'persona', 'personas')} <span class="da-flecha">▾</span></div>
             <div class="da-barra"><i style="width:${Math.max(6, Math.round((100 * f.personas) / max))}%"></i></div>
         </div>
@@ -619,7 +690,7 @@ async function pintarUso(abrir = new Set()) {
         fila.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternar(); }
         });
-        if (abrir.has(fila.dataset.clave)) alternar();
+        if (q || abrir.has(fila.dataset.clave)) alternar(); // con una búsqueda activa se abren todas, para ver a la persona
     });
 }
 
@@ -702,16 +773,21 @@ function construirPestana() {
             <div><h3>${TITULO_ACTIVIDAD}</h3><p class="da-resumen" id="daUsoResumen"></p></div>
             <button type="button" class="da-btn" id="daUsoActualizar">Actualizar</button>
         </div>
+        <div class="da-filtros">
+            <label class="da-buscar"><span aria-hidden="true">🔎</span><input type="search" id="daUsoBuscar" placeholder="Buscar persona (nombre o código)" autocomplete="off"></label>
+            <select id="daUsoRango" aria-label="Periodo">
+                ${Object.entries(RANGOS_USO).map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}
+            </select>
+            <label class="da-yo"><input type="checkbox" id="daUsoYo"> Incluir mis propias pruebas</label>
+            <button type="button" class="da-del" id="daUsoBorrar">Borrar mis pruebas</button>
+        </div>
+        <p class="da-estado" id="daUsoEstado" role="status"></p>
+        <div class="da-tarjetas" id="daUsoTarjetas"></div>
         <div class="da-bloque"><h3>Asesorías publicadas y registro de uso</h3>
             <p class="da-sub">Comprueba que cada asesoría web del catálogo lleve la línea que registra quién la abre, imprime o descarga. Si alguna no la tiene, aquí te avisa.</p>
             <div id="daSinReg"></div></div>
         <div class="da-bloque"><h3>Por asesoría</h3>
-            <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió). Si alguien volvió varias veces, toca su número para ver la fecha de cada vez.</p>
-            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 10px;font-family:'Poppins',sans-serif;font-size:0.8rem">
-                <label><input type="checkbox" id="daUsoYo"> Incluir mis propias pruebas</label>
-                <button type="button" class="da-del" id="daUsoBorrar">Borrar mis pruebas</button>
-            </div>
-            <p class="da-estado" id="daUsoEstado" role="status"></p>
+            <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Los números de colores de cada fila son personas distintas: 👁 abrieron, 🖨️ imprimieron, 📊 descargaron Excel. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió). Si alguien volvió varias veces, toca su número para ver la fecha de cada vez. Si buscas a una persona, las filas se abren solas.</p>
             <div id="daUso"></div></div>`;
     ultimoPanel.parentElement.appendChild(panelAct);
 
@@ -737,7 +813,14 @@ function construirPestana() {
         detalle.hidden = !abrir;
         boton.setAttribute('aria-expanded', String(abrir));
     });
-    $('daUsoYo').addEventListener('change', (e) => { usoIncluirYo = e.target.checked; pintarUso(usoAbiertas()); });
+    // Filtros: se vuelven a pintar con lo que ya está cargado (sin pedir nada otra vez a Supabase).
+    $('daUsoYo').addEventListener('change', (e) => { usoIncluirYo = e.target.checked; pintarUso(usoAbiertas(), { recargar: false }); });
+    $('daUsoRango').addEventListener('change', (e) => { usoRango = e.target.value; pintarUso(usoAbiertas(), { recargar: false }); });
+    $('daUsoBuscar').addEventListener('input', (e) => {
+        clearTimeout(usoBuscarTimer);
+        const texto = e.target.value;
+        usoBuscarTimer = setTimeout(() => { usoBusqueda = texto; pintarUso(usoAbiertas(), { recargar: false }); }, 200);
+    });
     $('daUsoBorrar').addEventListener('click', borrarMisPruebasUso);
     return true;
 }
