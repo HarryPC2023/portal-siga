@@ -94,6 +94,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    document.querySelectorAll('.vi-orden-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.vi-orden-btn').forEach((b) => b.classList.toggle('activo', b === btn));
+            viOrden = btn.dataset.orden;
+            pintarRankingVi();
+        });
+    });
+
+    document.getElementById('viBuscarCurso').addEventListener('input', (e) => {
+        viBuscarCursoTexto = e.target.value;
+        pintarRankingVi();
+    });
+
+    document.getElementById('viFacultad').addEventListener('change', (e) => {
+        viFacultad = e.target.value;
+        refrescarVistaVi();
+    });
+
+    document.getElementById('viRanking').addEventListener('click', (e) => {
+        if (!e.target.closest('.vi-ver-todos')) return;
+        viVerTodos = !viVerTodos;
+        pintarRankingVi();
+    });
+
     document.getElementById('viBuscar').addEventListener('input', (e) => {
         const q = normalizarTexto(e.target.value);
         document.querySelectorAll('#viUsuarioLista li').forEach((li) => {
@@ -711,6 +735,12 @@ let viAlumnos = [];         // lista del selector, ya ordenada
 let viModoRanking = 'actual';
 let viPeriodoActual = null; // periodo más reciente presente en notas_curso (ej. "20262")
 let viAlumnoActual = null;  // { alumno, notas, avance }
+let viOrden = 'todos';      // orden de la tabla de cursos: 'todos' | 'desaprobados' | 'promedio'
+let viFacultad = '';        // '' = todas | nombre de la facultad | SIN_FACULTAD_VI = sin facultad aún
+let viBuscarCursoTexto = '';
+let viVerTodos = false;     // false = solo los primeros TOP_RANKING_VI cursos
+let viPerfilesLista = [];   // perfiles completos (sin filtrar)
+let viNotasFiltradas = [];  // notas de la facultad elegida (lo que alimenta tarjetas y tabla)
 
 // Quita tildes y pasa a minúsculas para que la búsqueda no dependa
 // de que el admin tipee los acentos exactos.
@@ -803,9 +833,10 @@ async function cargarListaVistaIntranotas() {
     viNotasResumen = notas;
     viPeriodoActual = notas.reduce((max, f) => (String(f.periodo) > (max || '') ? String(f.periodo) : max), null);
 
-    pintarMetricasVi(perfiles, notas);
+    viPerfilesLista = perfiles;
+    prepararFiltroFacultadVi(perfiles);
     pintarFacultadesVi(perfiles);
-    pintarRankingVi();
+    refrescarVistaVi();
     construirSelectorAlumnosVi(perfiles, notas);
 }
 
@@ -817,11 +848,16 @@ function pintarMetricasVi(perfiles, notas) {
     const tarjeta = (etiqueta, valor) =>
         `<div class="vi-metrica"><span>${etiqueta}</span><strong>${valor}</strong></div>`;
 
+    // Semáforo: verde hasta 2 días, ámbar hasta 7, rojo si pasó más de una semana.
+    const dias = ultima ? (Date.now() - new Date(ultima).getTime()) / 86400000 : null;
+    const estadoSync = dias === null ? '' : (dias <= 2 ? 'vi-sync-ok' : (dias <= 7 ? 'vi-sync-ambar' : 'vi-sync-rojo'));
+    const tarjetaSync = `<div class="vi-metrica ${estadoSync}" title="Verde: hasta 2 días · Ámbar: hasta 7 días · Rojo: más de 7 días"><span>Última sincronización</span><strong>${estadoSync ? '<i class="vi-punto"></i>' : ''}${haceCuanto(ultima)}</strong></div>`;
+
     document.getElementById('viMetricas').innerHTML =
         tarjeta('Perfiles completos', perfiles.length) +
         tarjeta('Alumnos con notas', alumnosConNotas) +
         tarjeta('Periodos sincronizados', periodos) +
-        tarjeta('Última sincronización', haceCuanto(ultima));
+        tarjetaSync;
 }
 
 function pintarBarras(contenedorId, filas, textoVacio) {
@@ -851,47 +887,152 @@ function pintarFacultadesVi(perfiles) {
     pintarBarras('viFacultades', filas, 'Todavía no hay perfiles.');
 }
 
+// ───────────── Filtro por facultad ─────────────
+const SIN_FACULTAD_VI = '__sin__';
+
+function facultadDeUsuarioVi(userId) {
+    const p = viPerfiles[userId];
+    return (p && p.facultad) || '';
+}
+
+// El selector solo aparece cuando hay algo que elegir (2 o más grupos de facultad).
+function prepararFiltroFacultadVi(perfiles) {
+    const caja = document.getElementById('viFiltros');
+    const sel = document.getElementById('viFacultad');
+    const nombres = [...new Set(perfiles.map((p) => p.facultad).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+    const haySin = perfiles.some((p) => !p.facultad);
+    const opciones = [['', 'Todas'], ...nombres.map((n) => [n, n]), ...(haySin ? [[SIN_FACULTAD_VI, 'Sin facultad aún']] : [])];
+    caja.hidden = opciones.length < 3;
+    sel.innerHTML = opciones.map(([v, t]) => `<option value="${escaparHtml(v)}">${escaparHtml(t)}</option>`).join('');
+    sel.value = viFacultad;
+}
+
+// Recalcula tarjetas y tabla con la facultad elegida. «Usuarios por facultad» y «Ver un alumno» no se filtran.
+function refrescarVistaVi() {
+    const coincide = (userId) => !viFacultad
+        || (viFacultad === SIN_FACULTAD_VI ? !facultadDeUsuarioVi(userId) : facultadDeUsuarioVi(userId) === viFacultad);
+    const perfilesF = viPerfilesLista.filter((p) => coincide(p.user_id));
+    viNotasFiltradas = viNotasResumen.filter((f) => coincide(f.user_id));
+    viVerTodos = false;
+    pintarMetricasVi(perfilesF, viNotasFiltradas);
+    pintarRankingVi();
+}
+
+// Los nombres vienen de INTRALU en MAYÚSCULAS: se muestran como frase («Ecuaciones diferenciales»),
+// dejando en mayúsculas los números romanos («Química II»).
+function nombreLegibleVi(txt) {
+    const t = String(txt || '').trim().toLowerCase();
+    if (!t) return '';
+    const romanos = new Set(['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']);
+    const frase = t.split(/\s+/).map((w) => (romanos.has(w) ? w.toUpperCase() : w)).join(' ');
+    return frase.charAt(0).toUpperCase() + frase.slice(1);
+}
+
+// Tabla de cursos. «Desaprobado» = nota menor a 10 (si el curso sigue en proceso, se usa el promedio de prácticas).
+// «En riesgo» = alumno que desaprobó el MISMO curso 2 o más veces y todavía no lo aprueba; esa columna
+// solo aparece cuando hay al menos un caso.
 function pintarRankingVi() {
     const esActual = viModoRanking === 'actual';
-    const filas = esActual
-        ? viNotasResumen.filter((f) => String(f.periodo) === viPeriodoActual)
-        : viNotasResumen;
+    const todas = viNotasFiltradas;
+    const filas = esActual ? todas.filter((f) => String(f.periodo) === viPeriodoActual) : todas;
 
-    document.getElementById('viRankingNota').textContent = esActual
-        ? `Periodo ${periodoConGuionVi(viPeriodoActual) || '—'} · ordenado por alumnos en riesgo (nota < ${UMBRAL_APROBACION_VI})`
-        : 'Todos los periodos · ordenado por cantidad de alumnos';
+    const historial = new Map();
+    todas.forEach((f) => {
+        const k = `${f.user_id}|${f.codigo_curso}`;
+        if (!historial.has(k)) historial.set(k, []);
+        historial.get(k).push({ periodo: String(f.periodo), ref: notaReferencia(f) });
+    });
+    const enRiesgo = (userId, codigo) => {
+        const intentos = historial.get(`${userId}|${codigo}`) || [];
+        const malos = intentos.filter((x) => x.ref !== null && x.ref < UMBRAL_APROBACION_VI);
+        if (malos.length < 2) return false;
+        const ultimoMalo = malos.reduce((m, x) => (x.periodo > m ? x.periodo : m), '');
+        return !intentos.some((x) => x.ref !== null && x.ref >= UMBRAL_APROBACION_VI && x.periodo > ultimoMalo);
+    };
 
     const porCurso = {};
     filas.forEach((f) => {
         const c = porCurso[f.codigo_curso] || (porCurso[f.codigo_curso] = {
-            codigo: f.codigo_curso, nombre: '', alumnos: new Set(), notas: [], bajo: 0,
+            codigo: f.codigo_curso, nombre: '', alumnos: new Set(), conNota: new Set(),
+            desaprobados: new Set(), riesgo: new Set(), notas: [],
         });
         if (!c.nombre && f.nombre_curso) c.nombre = f.nombre_curso;
         c.alumnos.add(f.user_id);
         const ref = notaReferencia(f);
         if (ref !== null) {
+            c.conNota.add(f.user_id);
             c.notas.push(ref);
-            if (ref < UMBRAL_APROBACION_VI) c.bajo += 1;
+            if (ref < UMBRAL_APROBACION_VI) c.desaprobados.add(f.user_id);
         }
+        if (enRiesgo(f.user_id, f.codigo_curso)) c.riesgo.add(f.user_id);
     });
 
-    const cursos = Object.values(porCurso).map((c) => ({
-        ...c,
+    let cursos = Object.values(porCurso).map((c) => ({
+        codigo: c.codigo,
+        nombre: nombreLegibleVi(c.nombre),
         nAlumnos: c.alumnos.size,
+        nConNota: c.conNota.size,
+        bajo: c.desaprobados.size,
+        riesgo: c.riesgo.size,
         promedio: c.notas.length ? c.notas.reduce((a, b) => a + b, 0) / c.notas.length : null,
     }));
-    cursos.sort(esActual
-        ? (a, b) => (b.bajo - a.bajo) || (b.nAlumnos - a.nAlumnos)
-        : (a, b) => (b.nAlumnos - a.nAlumnos) || (b.bajo - a.bajo));
 
-    const etiquetaBajo = esActual ? 'en riesgo' : 'desaprob.';
-    pintarBarras('viRanking', cursos.slice(0, TOP_RANKING_VI).map((c) => ({
-        etiqueta: `${c.codigo} ${c.nombre}`,
-        titulo: `${c.codigo} — ${c.nombre}`,
-        valor: c.nAlumnos,
-        detalle: `${c.nAlumnos} alum. · prom ${c.promedio === null ? '—' : c.promedio.toFixed(1)}`
-            + (c.bajo ? ` · <span class="vi-riesgo">${c.bajo} ${etiquetaBajo}</span>` : ''),
-    })), 'Todavía no hay notas en este periodo.');
+    const q = normalizarTexto(viBuscarCursoTexto.trim());
+    if (q) cursos = cursos.filter((c) => normalizarTexto(`${c.codigo} ${c.nombre}`).includes(q));
+
+    const porNombre = (a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' });
+    const tasa = (c) => (c.nConNota ? c.bajo / c.nConNota : 0);
+    const criterios = {
+        todos: (a, b) => (b.nAlumnos - a.nAlumnos) || (b.bajo - a.bajo) || porNombre(a, b),
+        desaprobados: (a, b) => (b.bajo - a.bajo) || (tasa(b) - tasa(a)) || (b.nAlumnos - a.nAlumnos) || porNombre(a, b),
+        promedio: (a, b) => ((a.promedio === null) - (b.promedio === null)) || (a.promedio - b.promedio) || porNombre(a, b),
+    };
+    cursos.sort(criterios[viOrden] || criterios.todos);
+
+    document.getElementById('viRankingNota').textContent = esActual
+        ? `Periodo ${periodoConGuionVi(viPeriodoActual) || '—'} · desaprobado = nota menor a ${UMBRAL_APROBACION_VI}; si el curso sigue en proceso se usa el promedio de prácticas.`
+        : `Todos los periodos · desaprobado = nota menor a ${UMBRAL_APROBACION_VI}.`;
+
+    const cont = document.getElementById('viRanking');
+    if (!cursos.length) {
+        cont.innerHTML = `<p class="admin-vacio" style="padding:12px 0;">${q ? 'Ningún curso coincide con esa búsqueda.' : 'Todavía no hay notas en este periodo.'}</p>`;
+        return;
+    }
+
+    const hayRiesgo = cursos.some((c) => c.riesgo > 0);
+    const max = Math.max(...cursos.map((c) => c.nAlumnos));
+    const visibles = viVerTodos ? cursos : cursos.slice(0, TOP_RANKING_VI);
+    const pct = (n, d) => (d ? `${Math.round((100 * n) / d)}%` : '—');
+
+    const filasHtml = visibles.map((c) => `
+        <tr>
+            <td>
+                <div class="vi-curso-nombre" title="${escaparHtml(c.codigo)} — ${escaparHtml(c.nombre)}">${escaparHtml(c.nombre) || '(sin nombre)'}${c.nAlumnos < 5 ? ' <span class="vi-tag" title="Con menos de 5 alumnos el promedio y los porcentajes no son representativos">muestra chica</span>' : ''}</div>
+                <div class="vi-curso-cod">${escaparHtml(c.codigo)}</div>
+                <div class="vi-barra-pista vi-barra-fina"><div class="vi-barra-relleno" style="width:${Math.max(4, Math.round((c.nAlumnos / max) * 100))}%"></div></div>
+            </td>
+            <td class="vi-num">${c.nAlumnos}</td>
+            <td class="vi-num">${c.promedio === null ? '—' : c.promedio.toFixed(1)}</td>
+            <td class="vi-num">${c.bajo ? `<span class="vi-riesgo">${c.bajo}</span> <span class="vi-pct">(${pct(c.bajo, c.nConNota)})</span>` : '<span class="vi-cero">0</span>'}</td>
+            ${hayRiesgo ? `<td class="vi-num">${c.riesgo ? `<span class="vi-riesgo">${c.riesgo}</span>` : '<span class="vi-cero">0</span>'}</td>` : ''}
+        </tr>`).join('');
+
+    cont.innerHTML = `
+        <div class="vi-tabla-scroll">
+            <table class="vi-tabla vi-tabla-cursos">
+                <thead><tr>
+                    <th>Curso</th>
+                    <th class="vi-num">Alumnos</th>
+                    <th class="vi-num">Promedio</th>
+                    <th class="vi-num">Desaprobados</th>
+                    ${hayRiesgo ? '<th class="vi-num" title="Desaprobó este mismo curso 2 o más veces y aún no lo aprueba">En riesgo</th>' : ''}
+                </tr></thead>
+                <tbody>${filasHtml}</tbody>
+            </table>
+        </div>
+        ${hayRiesgo ? '<p class="vi-nota" style="margin:8px 0 0">En riesgo: alumnos que desaprobaron este mismo curso 2 o más veces y todavía no lo aprueban.</p>' : ''}
+        ${cursos.length > TOP_RANKING_VI ? `<button type="button" class="vi-ver-todos">${viVerTodos ? `Ver solo los primeros ${TOP_RANKING_VI}` : `Ver todos (${cursos.length} cursos)`}</button>` : ''}`;
 }
 
 function construirSelectorAlumnosVi(perfiles, notas) {
@@ -1083,5 +1224,26 @@ function limpiarSeleccionVista() {
     }).observe(barra, { childList: true });
 
     reordenar();
+})();
+
+// ───────────── Botón «subir» ─────────────
+// Aparece al bajar la página y lleva de vuelta al inicio (útil en las listas largas de Admin).
+(function botonSubirAdmin() {
+    const boton = document.createElement('button');
+    boton.type = 'button';
+    boton.className = 'admin-subir';
+    boton.setAttribute('aria-label', 'Subir al inicio');
+    boton.title = 'Subir al inicio';
+    boton.textContent = '↑';
+    boton.hidden = true;
+    document.body.appendChild(boton);
+
+    const actualizar = () => { boton.hidden = window.scrollY < 400; };
+    window.addEventListener('scroll', actualizar, { passive: true });
+    boton.addEventListener('click', () => {
+        const reducir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reducir ? 'auto' : 'smooth' });
+    });
+    actualizar();
 })();
 

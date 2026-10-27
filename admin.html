@@ -117,6 +117,12 @@
             </div>
 
             <div id="panelVistaIntranotas" class="admin-panel" style="display:none;">
+                <div class="vi-filtros" id="viFiltros" hidden>
+                    <label class="vi-filtro-campo">Facultad
+                        <select id="viFacultad"></select>
+                    </label>
+                </div>
+
                 <div class="vi-metricas" id="viMetricas">
                     <p class="admin-vacio" style="padding:12px 0;">Cargando resumen…</p>
                 </div>
@@ -129,6 +135,14 @@
                                 <button type="button" class="vi-modo activo" data-modo="actual">Periodo actual</button>
                                 <button type="button" class="vi-modo" data-modo="historico">Histórico</button>
                             </div>
+                        </div>
+                        <div class="vi-barra-herramientas">
+                            <div class="vi-modos" id="viOrden" role="group" aria-label="Ordenar cursos">
+                                <button type="button" class="vi-orden-btn activo" data-orden="todos">Todos</button>
+                                <button type="button" class="vi-orden-btn" data-orden="desaprobados">Desaprobados</button>
+                                <button type="button" class="vi-orden-btn" data-orden="promedio">Promedio más bajo</button>
+                            </div>
+                            <input type="search" id="viBuscarCurso" class="vi-buscar-curso" placeholder="Buscar curso" autocomplete="off">
                         </div>
                         <p class="vi-nota" id="viRankingNota"></p>
                         <div id="viRanking"></div>

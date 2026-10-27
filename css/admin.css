@@ -517,6 +517,7 @@
 }
 
 .vi-modo,
+.vi-orden-btn,
 .vi-chip {
     border: 1px solid rgba(0, 0, 0, 0.12);
     background: transparent;
@@ -529,6 +530,7 @@
 }
 
 .vi-modo.activo,
+.vi-orden-btn.activo,
 .vi-chip.activo {
     background: var(--brand-morado-tinte);
     border-color: var(--brand-morado);
@@ -801,3 +803,164 @@
 .dash-hero p {
     max-width: none;
 }
+
+/* ---------- Letra de lectura en Admin ----------
+   Toda la web usa Orbitron como letra base (la del logo). En Admin, los datos y textos se leen mejor en
+   Poppins; Orbitron queda solo en los títulos y en los números grandes (--font-heading). */
+#contenidoAdmin {
+    font-family: 'Poppins', system-ui, sans-serif;
+}
+
+#contenidoAdmin button,
+#contenidoAdmin input,
+#contenidoAdmin select,
+#contenidoAdmin textarea {
+    font-family: inherit;
+}
+
+/* ---------- Vista Intranotas: filtros, tabla de cursos y semáforo ---------- */
+.vi-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    align-items: center;
+    margin: 0 0 4px;
+}
+
+.vi-filtro-campo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+
+.vi-filtro-campo select {
+    padding: 7px 12px;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.vi-barra-herramientas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin: 0 0 10px;
+}
+
+.vi-buscar-curso {
+    flex: 1 1 160px;
+    min-width: 0;
+    padding: 6px 12px;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+}
+
+.vi-tabla-cursos .vi-num {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.vi-tabla-cursos td {
+    vertical-align: top;
+}
+
+.vi-curso-nombre {
+    font-weight: 500;
+}
+
+.vi-curso-cod {
+    font-size: 12px;
+    color: var(--ink-soft);
+}
+
+.vi-barra-fina {
+    height: 5px;
+    max-width: 260px;
+    margin-top: 5px;
+}
+
+.vi-tag {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 1px 7px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #8A5300;
+    background: #FFF1D6;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.vi-pct,
+.vi-cero {
+    color: var(--ink-soft);
+}
+
+.vi-ver-todos {
+    margin-top: 10px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--brand-morado);
+    background: #fff;
+    border: 1.5px solid var(--brand-morado);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.vi-ver-todos:hover {
+    background: var(--brand-morado-tinte);
+}
+
+.vi-punto {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: #9A9A9A;
+}
+
+.vi-sync-ok .vi-punto {
+    background: #137A52;
+}
+
+.vi-sync-ambar .vi-punto {
+    background: #E39A00;
+}
+
+.vi-sync-rojo .vi-punto {
+    background: #B91C1C;
+}
+
+/* ---------- Botón «subir» ---------- */
+.admin-subir {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 50;
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    line-height: 1;
+    color: #fff;
+    background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.admin-subir[hidden] {
+    display: none;
+}
+
