@@ -1051,3 +1051,37 @@ function limpiarSeleccionVista() {
     document.getElementById('viVacio').style.display = 'block';
     viAlumnoActual = null;
 }
+
+// ───────────── Pestañas en orden alfabético ─────────────
+// Las pestañas nacen de varios archivos (admin.html, admin-asesorias.js, admin-faq.js, admin-bandeja.js)
+// y llegan en momentos distintos, así que se vigila la barra y se reordena sola cada vez que aparece
+// una nueva. El orden se calcula con el texto de la pestaña SIN el globito de novedades, y con el
+// criterio del español (las tildes no cambian el orden). Reordenar no cambia cuál pestaña está activa.
+(function ordenarPestanasAlfabeticamente() {
+    const barra = document.querySelector('.admin-tabs');
+    if (!barra) return;
+
+    const etiqueta = (pestana) => {
+        const copia = pestana.cloneNode(true);
+        copia.querySelectorAll('.admin-tab-globito').forEach((g) => g.remove());
+        return copia.textContent.trim();
+    };
+
+    let pendiente = false;
+    function reordenar() {
+        pendiente = false;
+        const actuales = [...barra.querySelectorAll(':scope > .admin-tab')];
+        const ordenadas = [...actuales].sort((a, b) => etiqueta(a).localeCompare(etiqueta(b), 'es', { sensitivity: 'base' }));
+        if (ordenadas.every((t, i) => t === actuales[i])) return; // ya están en orden: no se toca nada
+        ordenadas.forEach((t) => barra.appendChild(t));
+    }
+
+    new MutationObserver(() => {
+        if (pendiente) return;
+        pendiente = true;
+        requestAnimationFrame(reordenar);
+    }).observe(barra, { childList: true });
+
+    reordenar();
+})();
+

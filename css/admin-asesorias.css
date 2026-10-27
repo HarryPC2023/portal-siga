@@ -25,7 +25,7 @@
     border: 1.5px solid #6600CC;
     background: #fff;
     color: #6600CC;
-    border-radius: 999px;
+    border-radius: 10px;
     padding: 7px 16px;
     font: 600 0.78rem 'Poppins', sans-serif;
     cursor: pointer;
@@ -38,7 +38,7 @@
 
 .da-bloque {
     background: #fff;
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 16px 18px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
@@ -91,7 +91,7 @@
 .da-barra {
     grid-column: 1 / -1;
     height: 6px;
-    border-radius: 999px;
+    border-radius: 4px;
     background: #F3EAFB;
     overflow: hidden;
 }
@@ -99,7 +99,7 @@
 .da-barra i {
     display: block;
     height: 100%;
-    border-radius: 999px;
+    border-radius: 4px;
     background: linear-gradient(90deg, #3C7CF8, #6600CC);
 }
 
@@ -134,7 +134,7 @@
     border: 1.5px solid #137A52;
     color: #137A52;
     background: #fff;
-    border-radius: 999px;
+    border-radius: 10px;
     padding: 5px 12px;
     cursor: pointer;
     white-space: nowrap;
@@ -182,7 +182,7 @@
 .da-tipos span {
     display: inline-block;
     border: 1.5px solid rgba(102, 0, 204, 0.3);
-    border-radius: 999px;
+    border-radius: 6px;
     padding: 6px 14px;
     font: 600 0.78rem 'Poppins', sans-serif;
     background: #fff;
@@ -295,7 +295,7 @@
     border: 1.5px solid #B3261E;
     color: #B3261E;
     background: #fff;
-    border-radius: 999px;
+    border-radius: 10px;
     padding: 5px 12px;
     cursor: pointer;
     white-space: nowrap;
