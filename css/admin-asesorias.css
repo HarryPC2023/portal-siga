@@ -322,3 +322,85 @@
 .da-estado:empty {
     display: none;
 }
+
+/* ---------- Tabla de personas dentro de cada asesoría (pestaña Actividad) ---------- */
+.da-quienes li.da-tabla-li {
+    padding: 4px 0 2px;
+}
+
+.da-tabla-caja {
+    overflow-x: auto;
+    background: #fff;
+    border: 1px solid #E5D5F7;
+    border-radius: 10px;
+}
+
+.da-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.76rem;
+}
+
+.da-tabla th {
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 700;
+    color: #4B2390;
+    background: #F3EAFB;
+    white-space: nowrap;
+}
+
+.da-tabla td {
+    padding: 7px 10px;
+    border-top: 1px solid #F0E6FA;
+    vertical-align: top;
+}
+
+.da-tabla tr.da-alt td {
+    background: #FBF7FE;
+}
+
+.da-tabla .da-col-num {
+    width: 1%;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.da-ver-visitas {
+    font: 600 0.75rem 'Poppins', sans-serif;
+    color: #6600CC;
+    background: #fff;
+    border: 1.5px solid #6600CC;
+    border-radius: 6px;
+    padding: 1px 8px;
+    cursor: pointer;
+}
+
+.da-ver-visitas:hover,
+.da-ver-visitas[aria-expanded="true"] {
+    background: #F3EAFB;
+}
+
+.da-ver-visitas[aria-expanded="true"] .da-flecha {
+    display: inline-block;
+    transform: rotate(180deg);
+}
+
+.da-tabla tr.da-visitas td {
+    background: #F8F0FE;
+}
+
+.da-visitas-t {
+    margin-right: 6px;
+    font-weight: 700;
+    color: #4B2390;
+}
+
+.da-visita {
+    display: inline-block;
+    margin: 2px 6px 2px 0;
+    padding: 2px 8px;
+    background: #fff;
+    border: 1px solid #E5D5F7;
+    border-radius: 6px;
+}

@@ -553,19 +553,41 @@ async function pintarUso(abrir = new Set()) {
     };
     const seccionUso = (titulo, evs, conEjemplos, repite) => {
         const porPersona = new Map();
-        evs.forEach((e) => { // los eventos vienen del más nuevo al más antiguo
-            if (!porPersona.has(e.user_id)) porPersona.set(e.user_id, { id: e.user_id, veces: 0, ultima: e.creado_en, primera: e.creado_en, ejemplos: [] });
+        evs.forEach((e) => {
+            if (!porPersona.has(e.user_id)) porPersona.set(e.user_id, { id: e.user_id, veces: 0, ejemplos: [], fechas: [] });
             const p = porPersona.get(e.user_id);
             p.veces += 1;
-            p.primera = e.creado_en; // el último evento que se recorre es el más antiguo
+            p.fechas.push(e.creado_en);
             if (e.detalle && !p.ejemplos.includes(e.detalle)) p.ejemplos.push(e.detalle);
         });
-        const personas = [...porPersona.values()].sort((a, b) => rangoPersona(a.id) - rangoPersona(b.id)
+        const personas = [...porPersona.values()].map((p) => {
+            // Las fechas se ordenan de la más antigua a la más nueva (no se depende del orden en que lleguen).
+            p.fechas.sort((a, b) => (Date.parse(a) || 0) - (Date.parse(b) || 0));
+            p.primera = p.fechas[0];
+            p.ultima = p.fechas[p.fechas.length - 1];
+            return p;
+        }).sort((a, b) => rangoPersona(a.id) - rangoPersona(b.id)
             || quien(mapa, a.id).localeCompare(quien(mapa, b.id), 'es', { sensitivity: 'base' }));
         const repiten = personas.filter((p) => p.veces > 1).length;
         const cab = `<li style="margin-top:8px;font-weight:700;color:#4B2390">${titulo} — ${plural(personas.length, 'persona', 'personas')} <span style="font-weight:400">(${plural(evs.length, 'vez', 'veces')}${repiten ? ` · ${repiten} ${repite}` : ''})</span></li>`;
         if (!personas.length) return `${cab}<li><span>Nadie todavía.</span></li>`;
-        return cab + personas.map((p) => `<li><b>${esc(quien(mapa, p.id))}</b>${p.id === yo ? ' <em>(tú)</em>' : ''} <span>· ${plural(p.veces, 'vez', 'veces')}${conEjemplos && p.ejemplos.length ? ` · ${esc(p.ejemplos.join(', '))}` : ''}${p.veces > 1 ? ` · primera: ${esc(fecha(p.primera))}` : ''} · última: ${esc(fecha(p.ultima))}</span></li>`).join('');
+
+        // Una tabla por sección: persona, veces, (ejemplos), primera y última vez. Quien repitió tiene un
+        // botón con su número de veces que despliega la fecha de CADA visita, de la más antigua a la más nueva.
+        const columnas = conEjemplos ? 5 : 4;
+        const filasTabla = personas.map((p, i) => {
+            const nombre = `<b>${esc(quien(mapa, p.id))}</b>${p.id === yo ? ' <em>(tú)</em>' : ''}`;
+            const veces = p.veces > 1
+                ? `<button type="button" class="da-ver-visitas" aria-expanded="false" title="Ver la fecha de cada vez">${p.veces} <span class="da-flecha">▾</span></button>`
+                : '1';
+            const celdaEjemplos = conEjemplos ? `<td>${esc(p.ejemplos.join(', ') || '—')}</td>` : '';
+            const fila = `<tr class="${i % 2 ? 'da-alt' : ''}"><td>${nombre}</td><td class="da-col-num">${veces}</td>${celdaEjemplos}<td>${esc(fecha(p.primera))}</td><td>${esc(fecha(p.ultima))}</td></tr>`;
+            if (p.veces < 2) return fila;
+            const visitas = p.fechas.map((f, n) => `<span class="da-visita"><b>${n + 1}.ª</b> ${esc(fecha(f))}</span>`).join('');
+            return `${fila}<tr class="da-visitas" hidden><td colspan="${columnas}"><span class="da-visitas-t">Fechas:</span>${visitas}</td></tr>`;
+        }).join('');
+        const encabezado = `<tr><th>Persona</th><th class="da-col-num">Veces</th>${conEjemplos ? '<th>Ejemplos</th>' : ''}<th>Primera vez</th><th>Última vez</th></tr>`;
+        return `${cab}<li class="da-tabla-li"><div class="da-tabla-caja"><table class="da-tabla"><thead>${encabezado}</thead><tbody>${filasTabla}</tbody></table></div></li>`;
     };
 
     cont.innerHTML = filas.map((f, i) => {
@@ -684,7 +706,7 @@ function construirPestana() {
             <p class="da-sub">Comprueba que cada asesoría web del catálogo lleve la línea que registra quién la abre, imprime o descarga. Si alguna no la tiene, aquí te avisa.</p>
             <div id="daSinReg"></div></div>
         <div class="da-bloque"><h3>Por asesoría</h3>
-            <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió).</p>
+            <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió). Si alguien volvió varias veces, toca su número para ver la fecha de cada vez.</p>
             <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 10px;font-family:'Poppins',sans-serif;font-size:0.8rem">
                 <label><input type="checkbox" id="daUsoYo"> Incluir mis propias pruebas</label>
                 <button type="button" class="da-del" id="daUsoBorrar">Borrar mis pruebas</button>
@@ -705,6 +727,16 @@ function construirPestana() {
         if (b && b !== tabAct) panelAct.style.display = 'none';
     });
     $('daUsoActualizar').addEventListener('click', () => { pintarUso(usoAbiertas()); pintarSinRegistro(); });
+    // Despliega / oculta las fechas de cada visita de una persona (un solo listener, aunque se vuelva a pintar).
+    $('daUso').addEventListener('click', (e) => {
+        const boton = e.target.closest('.da-ver-visitas');
+        if (!boton) return;
+        const detalle = boton.closest('tr')?.nextElementSibling;
+        if (!detalle || !detalle.classList.contains('da-visitas')) return;
+        const abrir = detalle.hidden;
+        detalle.hidden = !abrir;
+        boton.setAttribute('aria-expanded', String(abrir));
+    });
     $('daUsoYo').addEventListener('change', (e) => { usoIncluirYo = e.target.checked; pintarUso(usoAbiertas()); });
     $('daUsoBorrar').addEventListener('click', borrarMisPruebasUso);
     return true;
