@@ -18,6 +18,9 @@
 //   esta pestaña/sesión del navegador).
 // - Completo el carnet, nunca más vuelve a aparecer.
 // - Sin recompensas: la gracia es lo novedoso de la interacción.
+// - Si la cuenta es de Google y todavía no tiene nombre, se toma el nombre de Google en
+//   silencio (sin preguntar). NO cambia el reloj de los 2 días: la tarjetita sigue pidiendo
+//   la siguiente pieza (el código) como siempre. Se puede corregir en Mi cuenta.
 // ------------------------------------------------------------
 
 import { supabase } from './auth-siga.js?v=9';
@@ -38,6 +41,31 @@ function recordarAhoraNo() {
     try { sessionStorage.setItem(CLAVE_AHORA_NO, '1'); } catch { /* sin storage: no pasa nada */ }
 }
 
+// Nombre que trae la cuenta de Google (full_name o name), limpio y de máximo 40 caracteres
+// (el mismo tope que guardarPieza). Las cuentas con correo y contraseña no lo traen: devuelve null.
+function nombreDeGoogle(session) {
+    const meta = session?.user?.user_metadata || {};
+    const crudo = String(meta.full_name || meta.name || '').trim().replace(/\s+/g, ' ');
+    if (crudo.length < 2) return null;
+    return crudo.slice(0, 40).trim();
+}
+
+// Si al perfil le falta el nombre y la cuenta de Google lo trae, se guarda sin preguntar.
+// Solo se escribe `nombre` (NO ultima_pieza_at), así no se retrasa la siguiente pregunta.
+async function precargarNombreDeGoogle(session, perfil) {
+    if (perfil.nombre) return;
+    const nombre = nombreDeGoogle(session);
+    if (!nombre) return;
+    const { error } = await supabase
+        .from('perfiles_usuario')
+        .upsert({ user_id: session.user.id, nombre }, { onConflict: 'user_id' });
+    if (error) {
+        console.warn('No se pudo precargar el nombre de Google:', error);
+        return;
+    }
+    perfil.nombre = nombre;
+}
+
 async function iniciar() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return; // sin cuenta no hay carnet que completar
@@ -54,6 +82,7 @@ async function iniciar() {
     }
 
     const perfil = data || {};
+    await precargarNombreDeGoogle(session, perfil);
     const faltan = piezasFaltantes(perfil);
     if (!faltan.length || !puedePreguntarHoy(perfil) || dijoAhoraNo()) return;
 

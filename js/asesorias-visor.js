@@ -130,6 +130,7 @@ function construirModal() {
         </div>
 
         <div class="visor-toolbar-der">
+          <!-- OJO: las plantillas de asesorías buscan este botón por [data-accion="imprimir"] (ver el comentario en construirModal). -->
           <button type="button" class="visor-btn" data-accion="imprimir" title="Imprimir">${ICONOS.imprimir}</button>
           <button type="button" class="visor-btn" data-accion="nueva-pestana" title="Abrir en pestaña nueva">${ICONOS.nuevaPestana}</button>
           <button type="button" class="visor-btn" data-accion="fullscreen" title="Pantalla completa">${ICONOS.fullscreen}</button>
@@ -186,6 +187,11 @@ function construirModal() {
     btnZoomMas = overlay.querySelector('[data-accion="zoom-mas"]');
     spanZoomPct = overlay.querySelector('[data-rol="zoom-pct"]');
 
+    // ⚠️ Las plantillas de asesorías (ciencias y teoría) y los scripts.js de MCD y Geometría pulsan este
+    // botón desde DENTRO del iframe, con window.parent.document.querySelector('[data-accion="imprimir"]'),
+    // para abrir el cuadro de impresión (window.print() no sirve desde un iframe). Si algún día cambias
+    // este atributo, actualiza también esas plantillas; si no, las asesorías vuelven al aviso
+    // "imprime con el botón de imprimir del visor" (no se rompen, pero ya no imprimen solas).
     btnImprimir = overlay.querySelector('[data-accion="imprimir"]');
     btnNuevaPestana = overlay.querySelector('[data-accion="nueva-pestana"]');
     btnFullscreen = overlay.querySelector('[data-accion="fullscreen"]');
@@ -812,7 +818,34 @@ function resaltarCoincidenciasEnCapa(capa, consulta) {
 }
 
 // ---------- Imprimir / Pantalla completa ----------
+// Se carga la asesoría ENTERA en un iframe oculto antes de imprimir, y eso puede tardar unos
+// segundos. Mientras tanto se muestra «Preparando la impresión…» y se ignoran los clics repetidos
+// (cada clic extra abría otro iframe y otro cuadro de impresión).
+let imprimiendo = false;
+let elAvisoImpresion = null;
+
+function mostrarAvisoImpresion(texto) {
+    if (!elAvisoImpresion) {
+        elAvisoImpresion = document.createElement('div');
+        elAvisoImpresion.className = 'visor-aviso';
+        elAvisoImpresion.setAttribute('role', 'status');
+        elAvisoImpresion.setAttribute('aria-live', 'polite');
+        caja.appendChild(elAvisoImpresion);
+    }
+    elAvisoImpresion.textContent = texto;
+    // Un frame después, para que la transición de entrada se vea.
+    requestAnimationFrame(() => elAvisoImpresion.classList.add('visible'));
+}
+
+function ocultarAvisoImpresion() {
+    if (elAvisoImpresion) elAvisoImpresion.classList.remove('visible');
+}
+
 function imprimirDocumento() {
+    if (imprimiendo) return;
+    imprimiendo = true;
+    mostrarAvisoImpresion('Preparando la impresión… puede tardar unos segundos');
+
     // Se imprime el PDF original (no el canvas) para no perder calidad —
     // se carga en un iframe oculto y se dispara print() sobre esa ventana.
     const iframeImpresion = document.createElement('iframe');
@@ -824,7 +857,17 @@ function imprimirDocumento() {
     iframeImpresion.style.border = '0';
     iframeImpresion.src = estado.url;
 
+    // Seguro: si algo impide que el iframe cargue, el botón no se queda bloqueado.
+    const seguro = setTimeout(() => {
+        imprimiendo = false;
+        ocultarAvisoImpresion();
+    }, 30000);
+
     iframeImpresion.onload = () => {
+        clearTimeout(seguro);
+        ocultarAvisoImpresion();
+        // Se libera el botón poco después (print() puede bloquear hasta que se cierre el cuadro).
+        setTimeout(() => { imprimiendo = false; }, 1500);
         try {
             iframeImpresion.contentWindow.focus();
             iframeImpresion.contentWindow.print();

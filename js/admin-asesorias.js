@@ -25,7 +25,7 @@
 // asesorias_propuestas y notificaciones (avisos personales).
 // El SQL está en asesorias-admin.sql y notificaciones-personales.sql.
 import { supabase } from './auth-siga.js?v=9';
-import { CURSOS, EVALUACIONES, estadoEvaluacion } from './asesorias-cursos.js?v=1';
+import { CURSOS, EVALUACIONES, estadoEvaluacion, rutaRecurso } from './asesorias-cursos.js?v=1';
 
 const LS_VISTO = 'siga_admin_visto_demanda';
 const $ = (id) => document.getElementById(id);
@@ -444,6 +444,51 @@ function usoAbiertas() {
 
 const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
 
+// Revisa cada asesoría web publicada en el catálogo y comprueba que su index.html lleve la línea
+// de js/asesorias-registro.js. Sin esa línea la asesoría funciona, pero no aparece en esta pestaña
+// (nadie sabría que se abrió o se imprimió). Lee el HTML publicado, así que refleja lo que ven los alumnos.
+async function pintarSinRegistro() {
+    const cont = $('daSinReg');
+    if (!cont) return;
+
+    const web = [];
+    CURSOS.forEach((c) => (c.recursos || []).forEach((r) => {
+        if (r.tipo === 'web' && (r.estado || 'disponible') === 'disponible') web.push({ curso: c, r });
+    }));
+    if (!web.length) { cont.innerHTML = '<p class="da-vacio">No hay asesorías web publicadas en el catálogo.</p>'; return; }
+
+    cont.innerHTML = '<p class="da-vacio">Revisando las asesorías publicadas…</p>';
+    const resultados = await Promise.all(web.map(async ({ curso, r }) => {
+        const etiqueta = `${curso.nombre} · ${String(r.evaluacion || '').toUpperCase()} · ${r.periodo || ''}`;
+        try {
+            const resp = await fetch(rutaRecurso(curso, r), { cache: 'no-store' });
+            if (!resp.ok) return { etiqueta, estado: 'error', detalle: `no se pudo leer (error ${resp.status})` };
+            const html = await resp.text();
+            return { etiqueta, estado: html.includes('asesorias-registro.js') ? 'ok' : 'falta' };
+        } catch (e) {
+            return { etiqueta, estado: 'error', detalle: 'no se pudo leer (sin conexión)' };
+        }
+    }));
+
+    const faltan = resultados.filter((x) => x.estado === 'falta');
+    const errores = resultados.filter((x) => x.estado === 'error');
+    const ok = resultados.length - faltan.length - errores.length;
+    const lineas = [];
+    if (faltan.length) {
+        lineas.push(`<p class="da-estado" style="color:#B3261E">⚠️ ${plural(faltan.length, 'asesoría publicada NO tiene', 'asesorías publicadas NO tienen')} la línea del registro de uso:</p>`);
+        lineas.push(`<ul class="da-quienes">${faltan.map((x) => `<li><b>${esc(x.etiqueta)}</b> <span>· agrega <code>&lt;script type="module" src="../../../../../js/asesorias-registro.js"&gt;</code> debajo de scripts.js en su index.html</span></li>`).join('')}</ul>`);
+    }
+    if (errores.length) {
+        lineas.push(`<ul class="da-quienes">${errores.map((x) => `<li><b>${esc(x.etiqueta)}</b> <span>· ${esc(x.detalle)}</span></li>`).join('')}</ul>`);
+    }
+    if (!faltan.length && !errores.length) {
+        lineas.push(`<p class="da-estado">✅ Las ${resultados.length} asesorías web publicadas registran su uso.</p>`);
+    } else if (ok) {
+        lineas.push(`<p class="da-sub">${ok === 1 ? 'La otra asesoría sí registra' : `Las otras ${ok} asesorías sí registran`} su uso.</p>`);
+    }
+    cont.innerHTML = lineas.join('');
+}
+
 async function pintarUso(abrir = new Set()) {
     const cont = $('daUso');
     const { data, error } = await supabase
@@ -619,6 +664,9 @@ function construirPestana() {
             <div><h3>${TITULO_ACTIVIDAD}</h3><p class="da-resumen" id="daUsoResumen"></p></div>
             <button type="button" class="da-btn" id="daUsoActualizar">Actualizar</button>
         </div>
+        <div class="da-bloque"><h3>Asesorías publicadas y registro de uso</h3>
+            <p class="da-sub">Comprueba que cada asesoría web del catálogo lleve la línea que registra quién la abre, imprime o descarga. Si alguna no la tiene, aquí te avisa.</p>
+            <div id="daSinReg"></div></div>
         <div class="da-bloque"><h3>Por asesoría</h3>
             <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió).</p>
             <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 10px;font-family:'Poppins',sans-serif;font-size:0.8rem">
@@ -632,7 +680,7 @@ function construirPestana() {
     tabAct.addEventListener('click', () => {
         document.querySelectorAll('.admin-tab').forEach((b) => b.classList.toggle('activo', b === tabAct));
         document.querySelectorAll('.admin-panel').forEach((p) => { p.style.display = p === panelAct ? 'flex' : 'none'; });
-        if (!cargadoAct) { cargadoAct = true; pintarUso(); }
+        if (!cargadoAct) { cargadoAct = true; pintarUso(); pintarSinRegistro(); }
     });
     // Ocultarla cuando se elige cualquier otra pestaña (delegado, sirve también para las que se crean después)
     const barraTabs = primera.parentElement;
@@ -640,7 +688,7 @@ function construirPestana() {
         const b = e.target.closest('.admin-tab');
         if (b && b !== tabAct) panelAct.style.display = 'none';
     });
-    $('daUsoActualizar').addEventListener('click', () => pintarUso(usoAbiertas()));
+    $('daUsoActualizar').addEventListener('click', () => { pintarUso(usoAbiertas()); pintarSinRegistro(); });
     $('daUsoYo').addEventListener('change', (e) => { usoIncluirYo = e.target.checked; pintarUso(usoAbiertas()); });
     $('daUsoBorrar').addEventListener('click', borrarMisPruebasUso);
     return true;
