@@ -36,7 +36,7 @@
         </div>
     </section>
 
-    <section class="dash-detalle" style="padding-top:30px;">
+    <section class="dash-detalle admin-ancho" style="padding-top:30px;">
         <div id="estadoAcceso" class="admin-estado">Verificando acceso…</div>
 
         <div id="contenidoAdmin" style="display:none;">
@@ -127,31 +127,29 @@
                     <p class="admin-vacio" style="padding:12px 0;">Cargando resumen…</p>
                 </div>
 
-                <div class="vi-dos-columnas">
-                    <div class="admin-form-caja">
-                        <div class="vi-caja-cabecera">
-                            <h2 class="admin-form-titulo" style="margin:0;">Cursos más cargados</h2>
-                            <div class="vi-modos">
-                                <button type="button" class="vi-modo activo" data-modo="actual">Periodo actual</button>
-                                <button type="button" class="vi-modo" data-modo="historico">Histórico</button>
-                            </div>
-                        </div>
-                        <div class="vi-barra-herramientas">
-                            <div class="vi-modos" id="viOrden" role="group" aria-label="Ordenar cursos">
-                                <button type="button" class="vi-orden-btn activo" data-orden="todos">Todos</button>
-                                <button type="button" class="vi-orden-btn" data-orden="desaprobados">Desaprobados</button>
-                                <button type="button" class="vi-orden-btn" data-orden="promedio">Promedio más bajo</button>
-                            </div>
-                            <input type="search" id="viBuscarCurso" class="vi-buscar-curso" placeholder="Buscar curso" autocomplete="off">
-                        </div>
-                        <p class="vi-nota" id="viRankingNota"></p>
-                        <div id="viRanking"></div>
-                    </div>
+                <div class="admin-form-caja">
+                    <h2 class="admin-form-titulo">Usuarios por facultad</h2>
+                    <div id="viFacultades" class="vi-facultades"></div>
+                </div>
 
-                    <div class="admin-form-caja">
-                        <h2 class="admin-form-titulo">Usuarios por facultad</h2>
-                        <div id="viFacultades"></div>
+                <div class="admin-form-caja">
+                    <div class="vi-caja-cabecera">
+                        <h2 class="admin-form-titulo" style="margin:0;">Cursos más cargados</h2>
+                        <div class="vi-modos">
+                            <button type="button" class="vi-modo activo" data-modo="actual">Periodo actual</button>
+                            <button type="button" class="vi-modo" data-modo="historico">Histórico</button>
+                        </div>
                     </div>
+                    <div class="vi-barra-herramientas">
+                        <div class="vi-modos" id="viOrden" role="group" aria-label="Ordenar cursos">
+                            <button type="button" class="vi-orden-btn activo" data-orden="todos">Todos</button>
+                            <button type="button" class="vi-orden-btn" data-orden="desaprobados">Desaprobados</button>
+                            <button type="button" class="vi-orden-btn" data-orden="promedio">Promedio más bajo</button>
+                        </div>
+                        <input type="search" id="viBuscarCurso" class="vi-buscar-curso" placeholder="Buscar curso" autocomplete="off">
+                    </div>
+                    <p class="vi-nota" id="viRankingNota"></p>
+                    <div id="viRanking"></div>
                 </div>
 
                 <div class="admin-form-caja">

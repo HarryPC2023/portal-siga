@@ -922,7 +922,8 @@ function refrescarVistaVi() {
 // Los nombres vienen de INTRALU en MAYÚSCULAS: se muestran como frase («Ecuaciones diferenciales»),
 // dejando en mayúsculas los números romanos («Química II»).
 function nombreLegibleVi(txt) {
-    const t = String(txt || '').trim().toLowerCase();
+    // INTRALU manda algunos nombres con un guion o punto al final («ANALITICA DE DATOS-»): se quita.
+    const t = String(txt || '').trim().toLowerCase().replace(/[\s\-\u2013\u2014_.:;,]+$/, '');
     if (!t) return '';
     const romanos = new Set(['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']);
     const frase = t.split(/\s+/).map((w) => (romanos.has(w) ? w.toUpperCase() : w)).join(' ');
