@@ -201,6 +201,27 @@ function infoAviso(codigo, evaluacion) {
     };
 }
 
+// Estado de la lista de Demanda: una caja por curso. `demCursoAbierto` recuerda lo que tú abriste o cerraste;
+// si no tocaste un curso, se abre solo cuando tiene pedidos POR AVISAR (asesoría ya publicada y gente sin avisar).
+const demCursoAbierto = new Map();   // código de curso -> true / false
+let demBusqueda = '';
+let demSoloPorAvisar = false;
+
+// Muestra u oculta cajas según el buscador y el filtro «Solo por avisar» (sin volver a pedir datos).
+function aplicarFiltroDemanda() {
+    const cont = $('daConteo');
+    if (!cont) return;
+    const q = sinTildes(demBusqueda);
+    let visibles = 0;
+    cont.querySelectorAll('.da-curso').forEach((caja) => {
+        const ok = (!q || caja.dataset.n.includes(q)) && (!demSoloPorAvisar || caja.dataset.avisar === '1');
+        caja.hidden = !ok;
+        if (ok) visibles += 1;
+    });
+    const vacio = $('daConteoVacio');
+    if (vacio) vacio.hidden = visibles > 0;
+}
+
 async function pintarConteo(abrir = new Set()) {
     const cont = $('daConteo');
     const { data, error } = await supabase
@@ -250,7 +271,9 @@ async function pintarConteo(abrir = new Set()) {
 
     const [mapa, yo] = await Promise.all([cargarQuien(data.map((r) => r.user_id)), miId()]);
     const max = Math.max(...filas.map((f) => f.ids.length));
-    cont.innerHTML = filas.map((f, i) => {
+
+    // HTML de una fila (evaluación) con su lista desplegable de personas. `i` es su posición en `filas`.
+    const filaHTML = (f, i) => {
         const etiqueta = f.evaluacion
             ? esc(f.evaluacion)
             : `<span title="Votos de cuando no se podía elegir una evaluación">${ETQ_SIN_EV}</span>`;
@@ -276,12 +299,38 @@ async function pintarConteo(abrir = new Set()) {
 
         return `
         <div class="da-fila" role="button" tabindex="0" aria-expanded="false" data-clave="${esc(f.clave)}" data-quienes="daQ${i}">
-            <div class="da-nombre">${esc(nombreCurso(f.codigo_curso))} <small>· ${etiqueta}</small></div>
+            <div class="da-nombre">${etiqueta}</div>
             <div class="da-num">${f.ids.length} ${f.ids.length === 1 ? 'persona' : 'personas'} <span class="da-flecha">▾</span></div>
             <div class="da-barra"><i style="width:${Math.max(6, Math.round((100 * f.ids.length) / max))}%"></i></div>
         </div>
         <ul class="da-quienes" id="daQ${i}" hidden>${quienes}${acciones}</ul>`;
-    }).join('');
+    };
+
+    // Una caja por curso (las filas ya vienen en orden alfabético), con sus evaluaciones adentro.
+    const porCurso = new Map();
+    filas.forEach((f, i) => {
+        if (!porCurso.has(f.codigo_curso)) porCurso.set(f.codigo_curso, []);
+        porCurso.get(f.codigo_curso).push({ f, i });
+    });
+    cont.innerHTML = [...porCurso.entries()].map(([codigo, items]) => {
+        const nombre = nombreCurso(codigo);
+        const personas = new Set(items.flatMap(({ f }) => f.ids)).size;
+        // Personas sin avisar en evaluaciones ya publicadas (cada persona cuenta una sola vez).
+        const porAvisar = new Set(items.filter(({ f }) => f.aviso.publicada).flatMap(({ f }) => f.pendientes)).size;
+        const abierto = demCursoAbierto.has(codigo) ? demCursoAbierto.get(codigo) : porAvisar > 0;
+        const chips = items.map(({ f }) => `<span class="da-chip-ev" title="${esc(f.evaluacion || ETQ_SIN_EV)}: ${plural(f.ids.length, 'persona', 'personas')}">${esc(f.evaluacion || 'Sin eval.')} ${f.ids.length}</span>`).join('');
+        return `
+        <div class="da-curso" data-codigo="${esc(codigo)}" data-n="${esc(sinTildes(nombre))}" data-avisar="${porAvisar ? '1' : '0'}">
+            <button type="button" class="da-curso-cab" aria-expanded="${abierto}">
+                <span class="da-curso-flecha" aria-hidden="true">▾</span>
+                <span class="da-curso-nombre">${esc(nombre)}</span>
+                ${porAvisar ? `<span class="da-tag-avisar" title="${plural(porAvisar, 'persona pidió', 'personas pidieron')} una asesoría que ya está publicada y aún no se les avisó">Por avisar ${porAvisar}</span>` : ''}
+                <span class="da-chips-ev">${chips}</span>
+                <span class="da-curso-total">${plural(personas, 'persona', 'personas')}</span>
+            </button>
+            <div class="da-curso-cuerpo"${abierto ? '' : ' hidden'}>${items.map(({ f, i }) => filaHTML(f, i)).join('')}</div>
+        </div>`;
+    }).join('') + '<p class="da-vacio" id="daConteoVacio" hidden>Ningún curso coincide con estos filtros.</p>';
 
     // Al tocar una fila se despliega la lista de quiénes lo pidieron.
     cont.querySelectorAll('.da-fila').forEach((fila) => {
@@ -300,6 +349,15 @@ async function pintarConteo(abrir = new Set()) {
     });
     cont.querySelectorAll('[data-avisar]').forEach((b) => b.addEventListener('click', () => avisarGrupo(filas[Number(b.dataset.avisar)], b)));
     cont.querySelectorAll('[data-eliminar]').forEach((b) => b.addEventListener('click', () => eliminarGrupo(filas[Number(b.dataset.eliminar)], b)));
+    cont.querySelectorAll('.da-curso-cab').forEach((cab) => cab.addEventListener('click', () => {
+        const caja = cab.closest('.da-curso');
+        const cuerpo = caja.querySelector('.da-curso-cuerpo');
+        const abrirla = cuerpo.hidden;
+        cuerpo.hidden = !abrirla;
+        cab.setAttribute('aria-expanded', String(abrirla));
+        demCursoAbierto.set(caja.dataset.codigo, abrirla);
+    }));
+    aplicarFiltroDemanda();
     return filas.reduce((s, f) => s + f.ids.length, 0);
 }
 
@@ -732,7 +790,15 @@ function construirPestana() {
             <button type="button" class="da-btn" id="daActualizar">Actualizar</button>
         </div>
         <div class="da-bloque"><h3>Lo que más piden</h3>
-            <p class="da-sub">Personas que tocaron "Lo necesito", por curso y evaluación. Toca una fila para ver quiénes son, avisarles cuando ya esté publicada o eliminar sus pedidos.</p>
+            <p class="da-sub">Personas que tocaron "Lo necesito", agrupadas por curso (de la A a la Z). Abre un curso para ver sus evaluaciones; toca una evaluación para ver quiénes son, avisarles cuando ya esté publicada o eliminar sus pedidos. Los cursos con pedidos por avisar se abren solos.</p>
+            <div class="da-filtros">
+                <label class="da-buscar"><span aria-hidden="true">🔎</span><input type="search" id="daDemBuscar" placeholder="Buscar curso" autocomplete="off"></label>
+                <select id="daDemFiltro" aria-label="Filtrar pedidos">
+                    <option value="todos">Todos los pedidos</option>
+                    <option value="avisar">Solo por avisar</option>
+                </select>
+                <button type="button" class="da-btn" id="daDemTodo">Expandir todo</button>
+            </div>
             <p class="da-estado" id="daEstado" role="status"></p>
             <div id="daConteo"></div></div>
         <div class="da-bloque"><h3>Reportes de error</h3>
@@ -755,6 +821,18 @@ function construirPestana() {
         if (b !== tabBtn) b.addEventListener('click', () => { panel.style.display = 'none'; });
     });
     $('daActualizar').addEventListener('click', cargarTodo);
+    $('daDemBuscar').addEventListener('input', (e) => { demBusqueda = e.target.value; aplicarFiltroDemanda(); });
+    $('daDemFiltro').addEventListener('change', (e) => { demSoloPorAvisar = e.target.value === 'avisar'; aplicarFiltroDemanda(); });
+    $('daDemTodo').addEventListener('click', (e) => {
+        const cajas = [...$('daConteo').querySelectorAll('.da-curso:not([hidden])')];
+        const abrir = cajas.some((c) => c.querySelector('.da-curso-cuerpo').hidden);   // si alguna está cerrada se abren todas; si no, se cierran
+        cajas.forEach((c) => {
+            c.querySelector('.da-curso-cuerpo').hidden = !abrir;
+            c.querySelector('.da-curso-cab').setAttribute('aria-expanded', String(abrir));
+            demCursoAbierto.set(c.dataset.codigo, abrir);
+        });
+        e.target.textContent = abrir ? 'Contraer todo' : 'Expandir todo';
+    });
 
     // ── Segunda pestaña: Actividad de Asesorías (quién abre, imprime o descarga) ──
     tabAct = document.createElement('button');

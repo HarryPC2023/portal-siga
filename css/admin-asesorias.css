@@ -585,3 +585,93 @@
     background: #F5F5F5;
     border-color: #EBEBEB;
 }
+
+/* ---------- Demanda: una caja por curso ---------- */
+.da-curso {
+    margin: 0 0 8px;
+    background: #fff;
+    border: 1px solid #E5D5F7;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.da-curso-cab {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    width: 100%;
+    padding: 10px 14px;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    background: #FAF5FF;
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.da-curso-cab:hover {
+    background: #F3EAFB;
+}
+
+.da-curso-flecha {
+    display: inline-block;
+    font-size: 0.8rem;
+    color: #6600CC;
+    transition: transform 0.15s ease;
+}
+
+.da-curso-cab[aria-expanded="true"] .da-curso-flecha {
+    transform: rotate(180deg);
+}
+
+.da-curso-nombre {
+    flex: 1 1 220px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.da-chips-ev {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.da-chip-ev {
+    padding: 1px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6600CC;
+    background: #fff;
+    border: 1px solid #E5D5F7;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.da-tag-avisar {
+    padding: 1px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #B35900;
+    background: #FFF1E0;
+    border: 1px solid #FFDDB3;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.da-curso-total {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6600CC;
+    white-space: nowrap;
+}
+
+.da-curso-cuerpo {
+    padding: 4px 14px 10px;
+    border-top: 1px solid #E5D5F7;
+}
+
+.da-curso-cuerpo[hidden] {
+    display: none;
+}

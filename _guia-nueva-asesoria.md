@@ -91,6 +91,25 @@ try { window.dispatchEvent(new CustomEvent('siga:asesoria-evento', { detail: { a
 
 - Sin sesión iniciada no se anota nada.
 
+**Si la asesoría sale de las plantillas base (ciencias o teoría):** esa línea ya la agrega
+sola `empaquetar_entrega.py` en el `index.html` de la entrega. Solo verifica que esté
+(debajo de `<script src="scripts.js">`). Si armaste la asesoría a mano, sin ese script,
+agrégala tú.
+
+### Impresión dentro del visor (cómo funciona)
+
+- Dentro del visor la asesoría vive en un iframe y `window.print()` desde ahí no abre nada.
+  Por eso las plantillas, al elegir *Con colores* o *Ahorro de tinta*, pulsan por el alumno el
+  botón de imprimir del visor (`[data-accion="imprimir"]`, mismo origen). Ese botón carga la
+  asesoría en un iframe oculto y llama a `print()`: el registro anota ahí el «Imprimió».
+- DBD imprime directo desde su propio botón; también queda registrado, porque todas las vías
+  disparan `beforeprint`.
+- Si algún día cambia ese selector en el visor (`js/asesorias-visor.js`), las asesorías vuelven
+  al aviso «imprime con el botón de imprimir del visor»: nada se rompe, pero hay que actualizar
+  el selector en las plantillas.
+- Las asesorías largas (30 a 45 páginas) tardan unos 20 a 25 segundos en mostrar la vista
+  previa de Chrome. Es normal: arma todas las páginas antes de mostrarla.
+
 ## 4. Probar en local
 
 Con Go Live de VS Code, abre:
@@ -148,9 +167,11 @@ Abre `asesorias-curso.html?c=<slug>` y verifica:
 - Aparece el chip "Ciclo <periodo>" y la etiqueta "Nuevo".
 - Abre en el visor; se ven fórmulas, gráficos e imágenes.
 - Imprimir funciona (en el visor, con el botón de imprimir de SIGA).
-- Con tu sesión iniciada, abre la asesoría (y prueba imprimir o el Excel si lo
-  tiene) y mira que aparezca en Admin → «Actividad de Asesorías». Después usa
-  «Borrar mis pruebas» para que tus clics no cuenten.
+- Ya publicada, con tu sesión iniciada: abre la asesoría en el visor, elige *Con colores*
+  (debe abrirse el cuadro de impresión; ciérralo) y, si tiene Excel, descárgalo. Luego mira
+  Admin → «Actividad de Asesorías» → Actualizar → «Incluir mis propias pruebas»: deben salir
+  Abrió, Imprimió / PDF y Excel. Al terminar usa «Borrar mis pruebas» para que tus clics
+  no cuenten.
 - El progreso se guarda al cerrar y volver a abrir.
 - En el celular se ve bien.
 

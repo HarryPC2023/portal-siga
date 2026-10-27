@@ -883,7 +883,7 @@ function pintarFacultadesVi(perfiles) {
     });
     const filas = Object.entries(conteo)
         .sort((a, b) => b[1] - a[1])
-        .map(([facultad, n]) => ({ etiqueta: facultad, valor: n, detalle: String(n) }));
+        .map(([facultad, n]) => ({ etiqueta: facultad, valor: n, detalle: `${n} · ${Math.round((100 * n) / (perfiles.length || 1))}%` }));
     pintarBarras('viFacultades', filas, 'Todavía no hay perfiles.');
 }
 

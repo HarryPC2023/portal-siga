@@ -28,20 +28,68 @@
     flex-wrap: wrap;
 }
 
-.fq-grupo+.fq-grupo {
-    margin-top: 22px;
+/* Preguntas frecuentes: una caja plegable por curso (de la A a la Z). Los filtros usan .da-filtros / .da-buscar
+   de admin-asesorias.css, que se carga en la misma página. */
+.fq-grupo {
+    margin: 0 0 8px;
+    background: #fff;
+    border: 1px solid #E5D5F7;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
-.fq-grupo>h4 {
+.fq-grupo-cab {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    width: 100%;
+    padding: 10px 14px;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    background: #FAF5FF;
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.fq-grupo-cab:hover {
+    background: #F3EAFB;
+}
+
+.fq-flecha {
+    display: inline-block;
+    font-size: 0.8rem;
+    color: #6600CC;
+    transition: transform 0.15s ease;
+}
+
+.fq-grupo-cab[aria-expanded="true"] .fq-flecha {
+    transform: rotate(180deg);
+}
+
+.fq-grupo-nombre {
+    flex: 1 1 220px;
+    font-family: var(--font-heading);
     font-size: 0.95rem;
-    margin: 0 0 10px;
+    font-weight: 600;
 }
 
-.fq-grupo>h4 small {
-    font-weight: 400;
-    font-size: 0.74rem;
-    color: #666;
-    margin-left: 6px;
+.fq-grupo-cuerpo {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 12px;
+    padding: 12px 14px 14px;
+    border-top: 1px solid #E5D5F7;
+}
+
+.fq-grupo-cuerpo[hidden] {
+    display: none;
+}
+
+.fq-grupo-cuerpo .fq-item {
+    margin-bottom: 0;
 }
 
 .fq-item {

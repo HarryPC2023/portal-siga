@@ -29,6 +29,9 @@ let filas = [];
 let cargado = false;
 let editandoId = null;
 let selectorCurso = null;
+let fqBusqueda = '';
+let fqEstado = 'todas';        // 'todas' | 'publicadas' | 'borradores'
+const fqAbiertos = new Set();  // códigos de los cursos cuya caja está abierta
 
 // ───────────── Utilidades ─────────────
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => (
@@ -39,6 +42,9 @@ const recorte = (texto, max) => {
     const t = String(texto || '').trim();
     return t.length > max ? `${t.slice(0, max - 1)}…` : t;
 };
+
+// Minúsculas y sin tildes, para que «dinamica» encuentre «Dinámica».
+const sinTildes = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 
 function nombreCurso(codigo) {
     const c = CURSOS.find((x) => x.codigo === codigo);
@@ -123,20 +129,45 @@ function pintarLista() {
         cont.innerHTML = '<p class="da-vacio">Aún no hay preguntas frecuentes. Toca "Nueva pregunta" para crear la primera.</p>';
         return;
     }
-    // Orden del catálogo primero; si hay códigos fuera del catálogo, al final.
-    const codigos = [...new Set(filas.map((f) => f.codigo_curso))];
-    const orden = (c) => { const i = CURSOS.findIndex((x) => x.codigo === c); return i === -1 ? 999 : i; };
-    codigos.sort((a, b) => orden(a) - orden(b));
+    // Una caja por curso, de la A a la Z. Cerradas por defecto; con una búsqueda activa se abren las que coinciden.
+    const q = sinTildes(fqBusqueda);
+    const cumpleEstado = (p) => fqEstado === 'todas' || (fqEstado === 'publicadas' ? p.publicada : !p.publicada);
+    const codigos = [...new Set(filas.map((p) => p.codigo_curso))]
+        .sort((a, b) => nombreCurso(a).localeCompare(nombreCurso(b), 'es', { sensitivity: 'base' }));
 
-    cont.innerHTML = codigos.map((cod) => {
-        const delCurso = filas.filter((f) => f.codigo_curso === cod);
-        const pub = delCurso.filter((f) => f.publicada).length;
+    const cajas = codigos.map((cod) => {
+        const delCurso = filas.filter((p) => p.codigo_curso === cod);
+        const nombre = nombreCurso(cod);
+        const coincideCurso = !q || sinTildes(nombre).includes(q);
+        const visibles = delCurso.filter((p) => cumpleEstado(p)
+            && (coincideCurso || sinTildes(`${p.pregunta} ${p.respuesta} ${p.palabras_clave || ''}`).includes(q)));
+        if (!visibles.length) return '';
+        const pub = delCurso.filter((p) => p.publicada).length;
+        const bor = delCurso.length - pub;
+        const abierta = fqAbiertos.has(cod) || !!q;
         return `
-            <section class="fq-grupo">
-                <h4>${esc(nombreCurso(cod))} <small>${pub} publicadas · ${delCurso.length - pub} borradores</small></h4>
-                ${delCurso.map(itemHTML).join('')}
+            <section class="fq-grupo fq-caja" data-codigo="${esc(cod)}">
+                <button type="button" class="fq-grupo-cab" aria-expanded="${abierta}">
+                    <span class="fq-flecha" aria-hidden="true">▾</span>
+                    <span class="fq-grupo-nombre">${esc(nombre)}</span>
+                    <span class="fq-chip fq-est-pub">${pub} ${pub === 1 ? 'publicada' : 'publicadas'}</span>
+                    <span class="fq-chip ${bor ? 'fq-est-bor' : ''}">${bor} ${bor === 1 ? 'borrador' : 'borradores'}</span>
+                </button>
+                <div class="fq-grupo-cuerpo"${abierta ? '' : ' hidden'}>${visibles.map(itemHTML).join('')}</div>
             </section>`;
-    }).join('');
+    }).filter(Boolean);
+
+    cont.innerHTML = cajas.length ? cajas.join('') : '<p class="da-vacio">Ninguna pregunta coincide con estos filtros.</p>';
+}
+
+// Abre o cierra la caja de un curso y recuerda lo que decidiste.
+function alternarCaja(cab) {
+    const caja = cab.closest('.fq-caja');
+    const cuerpo = caja.querySelector('.fq-grupo-cuerpo');
+    const abrir = cuerpo.hidden;
+    cuerpo.hidden = !abrir;
+    cab.setAttribute('aria-expanded', String(abrir));
+    if (abrir) fqAbiertos.add(caja.dataset.codigo); else fqAbiertos.delete(caja.dataset.codigo);
 }
 
 // ───────────── Formulario ─────────────
@@ -207,6 +238,7 @@ async function guardar(e) {
         console.error('Guardar pregunta frecuente:', error);
         return mostrarMsg('No se pudo guardar. Revisa tu conexión y que seas el administrador.', 'error');
     }
+    fqAbiertos.add(codigo);
     cerrarForm();
     await cargar();
 }
@@ -319,6 +351,16 @@ function construirPestana() {
             </form>
         </div>
 
+        <div class="da-filtros">
+            <label class="da-buscar"><span aria-hidden="true">🔎</span><input type="search" id="fqBuscar" placeholder="Buscar curso o pregunta" autocomplete="off"></label>
+            <select id="fqEstadoFiltro" aria-label="Estado de las preguntas">
+                <option value="todas">Todas</option>
+                <option value="publicadas">Publicadas</option>
+                <option value="borradores">Borradores</option>
+            </select>
+            <button type="button" class="da-btn" id="fqTodo">Expandir todo</button>
+        </div>
+
         <div id="fqLista"><p class="admin-vacio">Cargando…</p></div>`;
     ultimoPanel.parentElement.appendChild(panel);
 
@@ -345,7 +387,22 @@ function conectar() {
     $('fqCancelar').addEventListener('click', cerrarForm);
     $('fqFormEl').addEventListener('submit', guardar);
 
+    $('fqBuscar').addEventListener('input', (e) => { fqBusqueda = e.target.value; pintarLista(); });
+    $('fqEstadoFiltro').addEventListener('change', (e) => { fqEstado = e.target.value; pintarLista(); });
+    $('fqTodo').addEventListener('click', (e) => {
+        const cajas = [...$('fqLista').querySelectorAll('.fq-caja')];
+        const abrir = cajas.some((c) => c.querySelector('.fq-grupo-cuerpo').hidden);   // si alguna está cerrada se abren todas; si no, se cierran
+        cajas.forEach((c) => {
+            c.querySelector('.fq-grupo-cuerpo').hidden = !abrir;
+            c.querySelector('.fq-grupo-cab').setAttribute('aria-expanded', String(abrir));
+            if (abrir) fqAbiertos.add(c.dataset.codigo); else fqAbiertos.delete(c.dataset.codigo);
+        });
+        e.target.textContent = abrir ? 'Contraer todo' : 'Expandir todo';
+    });
+
     $('fqLista').addEventListener('click', (e) => {
+        const cab = e.target.closest('.fq-grupo-cab');
+        if (cab) { alternarCaja(cab); return; }
         const btn = e.target.closest('[data-fq]');
         if (!btn) return;
         const fila = filas.find((f) => String(f.id) === btn.closest('.fq-item').dataset.id);

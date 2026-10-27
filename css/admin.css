@@ -964,3 +964,36 @@
     display: none;
 }
 
+/* ---------- Admin más ancho y Vista Intranotas a todo lo ancho ---------- */
+/* El contenedor de las páginas de detalle mide 820 px; Admin aprovecha el ancho del encabezado (1160 px). */
+.dash-detalle.admin-ancho {
+    max-width: 1160px;
+}
+
+.vi-metricas {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* «Usuarios por facultad»: ahora va arriba, a todo lo ancho, con las facultades una al lado de otra. */
+.vi-facultades {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 6px 32px;
+}
+
+.vi-barra-fina {
+    max-width: 480px;
+}
+
+@media (max-width: 900px) {
+    .vi-metricas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .vi-metricas {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
