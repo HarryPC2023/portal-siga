@@ -214,7 +214,7 @@ function aplicarFiltroDemanda() {
     const q = sinTildes(demBusqueda);
     let visibles = 0;
     cont.querySelectorAll('.da-curso').forEach((caja) => {
-        const ok = (!q || caja.dataset.n.includes(q)) && (!demSoloPorAvisar || caja.dataset.avisar === '1');
+        const ok = (!q || caja.dataset.n.includes(q)) && (!demSoloPorAvisar || caja.dataset.porAvisar === '1');
         caja.hidden = !ok;
         if (ok) visibles += 1;
     });
@@ -320,7 +320,7 @@ async function pintarConteo(abrir = new Set()) {
         const abierto = demCursoAbierto.has(codigo) ? demCursoAbierto.get(codigo) : porAvisar > 0;
         const chips = items.map(({ f }) => `<span class="da-chip-ev" title="${esc(f.evaluacion || ETQ_SIN_EV)}: ${plural(f.ids.length, 'persona', 'personas')}">${esc(f.evaluacion || 'Sin eval.')} ${f.ids.length}</span>`).join('');
         return `
-        <div class="da-curso" data-codigo="${esc(codigo)}" data-n="${esc(sinTildes(nombre))}" data-avisar="${porAvisar ? '1' : '0'}">
+        <div class="da-curso" data-codigo="${esc(codigo)}" data-n="${esc(sinTildes(nombre))}" data-por-avisar="${porAvisar ? '1' : '0'}">
             <button type="button" class="da-curso-cab" aria-expanded="${abierto}">
                 <span class="da-curso-flecha" aria-hidden="true">▾</span>
                 <span class="da-curso-nombre">${esc(nombre)}</span>
