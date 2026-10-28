@@ -330,7 +330,7 @@ async function pintarConteo(abrir = new Set()) {
             </button>
             <div class="da-curso-cuerpo"${abierto ? '' : ' hidden'}>${items.map(({ f, i }) => filaHTML(f, i)).join('')}</div>
         </div>`;
-    }).join('') + '<p class="da-vacio" id="daConteoVacio" hidden>Ningún curso coincide con estos filtros.</p>';
+    }).join('') + '<p class="da-vacio" id="daConteoVacio" hidden>Ningún curso con pedidos coincide con estos filtros. Aquí solo aparecen los cursos que alguien pidió con «Lo necesito».</p>';
 
     // Al tocar una fila se despliega la lista de quiénes lo pidieron.
     cont.querySelectorAll('.da-fila').forEach((fila) => {
@@ -624,7 +624,7 @@ async function pintarUso(abrir = new Set(), { recargar = true } = {}) {
     const q = sinTildes(usoBusqueda);
     const eventos = data.filter((r) => (usoIncluirYo || r.user_id !== yo)
         && (!desde || (Date.parse(r.creado_en) || 0) >= desde)
-        && (!q || sinTildes(quien(mapa, r.user_id)).includes(q)));
+        && (!q || sinTildes(quien(mapa, r.user_id)).includes(q) || sinTildes(`${nombreCursoPorSlug(r.curso)} ${r.evaluacion} ${r.periodo}`).includes(q)));
 
     const resumenEl = $('daUsoResumen');
     if (resumenEl) {
@@ -793,7 +793,7 @@ function construirPestana() {
             <p class="da-sub">Personas que tocaron "Lo necesito", agrupadas por curso (de la A a la Z). Abre un curso para ver sus evaluaciones; toca una evaluación para ver quiénes son, avisarles cuando ya esté publicada o eliminar sus pedidos. Los cursos con pedidos por avisar se abren solos.</p>
             <div class="da-filtros">
                 <label class="da-buscar"><span aria-hidden="true">🔎</span><input type="search" id="daDemBuscar" placeholder="Buscar curso" autocomplete="off"></label>
-                <select id="daDemFiltro" aria-label="Filtrar pedidos">
+                <select id="daDemFiltro" aria-label="Filtrar pedidos" autocomplete="off">
                     <option value="todos">Todos los pedidos</option>
                     <option value="avisar">Solo por avisar</option>
                 </select>
@@ -852,11 +852,11 @@ function construirPestana() {
             <button type="button" class="da-btn" id="daUsoActualizar">Actualizar</button>
         </div>
         <div class="da-filtros">
-            <label class="da-buscar"><span aria-hidden="true">🔎</span><input type="search" id="daUsoBuscar" placeholder="Buscar persona (nombre o código)" autocomplete="off"></label>
-            <select id="daUsoRango" aria-label="Periodo">
+            <label class="da-buscar"><span aria-hidden="true">🔎</span><input type="search" id="daUsoBuscar" placeholder="Buscar persona o asesoría" autocomplete="off"></label>
+            <select id="daUsoRango" aria-label="Periodo" autocomplete="off">
                 ${Object.entries(RANGOS_USO).map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}
             </select>
-            <label class="da-yo"><input type="checkbox" id="daUsoYo"> Incluir mis propias pruebas</label>
+            <label class="da-yo"><input type="checkbox" id="daUsoYo" autocomplete="off"> Incluir mis propias pruebas</label>
             <button type="button" class="da-del" id="daUsoBorrar">Borrar mis pruebas</button>
         </div>
         <p class="da-estado" id="daUsoEstado" role="status"></p>
@@ -865,14 +865,22 @@ function construirPestana() {
             <p class="da-sub">Comprueba que cada asesoría web del catálogo lleve la línea que registra quién la abre, imprime o descarga. Si alguna no la tiene, aquí te avisa.</p>
             <div id="daSinReg"></div></div>
         <div class="da-bloque"><h3>Por asesoría</h3>
-            <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Los números de colores de cada fila son personas distintas: 👁 abrieron, 🖨️ imprimieron, 📊 descargaron Excel. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió). Si alguien volvió varias veces, toca su número para ver la fecha de cada vez. Si buscas a una persona, las filas se abren solas.</p>
+            <p class="da-sub">Quién abrió, imprimió o descargó el Excel de cada asesoría web, desde que se activó el registro. Los números de colores de cada fila son personas distintas: 👁 abrieron, 🖨️ imprimieron, 📊 descargaron Excel. Toca una fila para ver los nombres, códigos y fechas. «Imprimió» significa que se abrió el diálogo de impresión o PDF (el navegador no avisa si al final se imprimió). Si alguien volvió varias veces, toca su número para ver la fecha de cada vez. Puedes buscar a una persona (nombre o código) o una asesoría (por ejemplo «modelado» o «pc3»); al buscar, las filas se abren solas.</p>
             <div id="daUso"></div></div>`;
     ultimoPanel.parentElement.appendChild(panelAct);
 
     tabAct.addEventListener('click', () => {
         document.querySelectorAll('.admin-tab').forEach((b) => b.classList.toggle('activo', b === tabAct));
         document.querySelectorAll('.admin-panel').forEach((p) => { p.style.display = p === panelAct ? 'flex' : 'none'; });
-        if (!cargadoAct) { cargadoAct = true; pintarUso(); pintarSinRegistro(); }
+        if (!cargadoAct) {
+            cargadoAct = true;
+            // El navegador puede restaurar al recargar lo que habías escrito o elegido; se alinea con el estado real.
+            $('daUsoRango').value = usoRango;
+            $('daUsoBuscar').value = usoBusqueda;
+            $('daUsoYo').checked = usoIncluirYo;
+            pintarUso();
+            pintarSinRegistro();
+        }
     });
     // Ocultarla cuando se elige cualquier otra pestaña (delegado, sirve también para las que se crean después)
     const barraTabs = primera.parentElement;

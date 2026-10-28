@@ -353,7 +353,7 @@ function construirPestana() {
 
         <div class="da-filtros">
             <label class="da-buscar"><span aria-hidden="true">🔎</span><input type="search" id="fqBuscar" placeholder="Buscar curso o pregunta" autocomplete="off"></label>
-            <select id="fqEstadoFiltro" aria-label="Estado de las preguntas">
+            <select id="fqEstadoFiltro" aria-label="Estado de las preguntas" autocomplete="off">
                 <option value="todas">Todas</option>
                 <option value="publicadas">Publicadas</option>
                 <option value="borradores">Borradores</option>

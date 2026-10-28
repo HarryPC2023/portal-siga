@@ -9,6 +9,7 @@ import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.
 import { iniciarFaqAsesorias } from './admin-faq.js?v=1';
 import { iniciarBandejaPreguntas } from './admin-bandeja.js?v=1';
 import { nombreCursoLegible } from './nombres-curso.js?v=1';
+import { FACULTADES } from '../intranotas/facultades-datos.js';
 
 const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
@@ -731,6 +732,7 @@ let viAlumnos = [];         // lista del selector, ya ordenada
 let viModoRanking = 'actual';
 let viPeriodoActual = null; // periodo más reciente presente en notas_curso (ej. "20262")
 let viAlumnoActual = null;  // { alumno, notas, avance }
+const SIN_FACULTAD_VI = '__sin__';
 let viOrden = 'todos';      // orden de la tabla de cursos: 'todos' | 'desaprobados' | 'promedio'
 let viFacultad = '';        // '' = todas | nombre de la facultad | SIN_FACULTAD_VI = sin facultad aún
 let viBuscarCursoTexto = '';
@@ -864,42 +866,61 @@ function pintarBarras(contenedorId, filas, textoVacio) {
     }
     const max = Math.max(...filas.map((f) => f.valor));
     cont.innerHTML = filas.map((f) => `
-        <div class="vi-barra-fila">
+        <div class="vi-barra-fila${f.valor === 0 ? ' vi-barra-cero' : ''}">
             <span class="vi-barra-etiqueta" title="${escaparHtml(f.titulo || f.etiqueta)}">${escaparHtml(f.etiqueta)}</span>
-            <div class="vi-barra-pista"><div class="vi-barra-relleno" style="width:${Math.max(4, Math.round((f.valor / max) * 100))}%"></div></div>
+            <div class="vi-barra-pista"><div class="vi-barra-relleno" style="width:${f.valor === 0 ? 0 : Math.max(4, Math.round((f.valor / max) * 100))}%"></div></div>
             <span class="vi-barra-detalle">${f.detalle}</span>
         </div>`).join('');
 }
 
-function pintarFacultadesVi(perfiles) {
+// Cuenta de perfiles por facultad. Siempre salen las 11 facultades de la UNI (intranotas/facultades-datos.js),
+// aunque todavía no tengan a nadie, más «Sin facultad aún» y, si algún perfil trae una sigla que no está en
+// la lista, también esa. Con usuarios primero (de mayor a menor) y las vacías después, de la A a la Z.
+function conteoPorFacultadVi(perfiles) {
     const conteo = {};
     perfiles.forEach((p) => {
-        const clave = p.facultad || 'Sin facultad aún';
+        const clave = p.facultad || SIN_FACULTAD_VI;
         conteo[clave] = (conteo[clave] || 0) + 1;
     });
-    const filas = Object.entries(conteo)
-        .sort((a, b) => b[1] - a[1])
-        .map(([facultad, n]) => ({ etiqueta: facultad, valor: n, detalle: `${n} · ${Math.round((100 * n) / (perfiles.length || 1))}%` }));
+    const conocidas = FACULTADES.map((f) => ({ sigla: f.sigla, nombre: f.nombre, n: conteo[f.sigla] || 0 }));
+    const extrañas = Object.keys(conteo)
+        .filter((k) => k !== SIN_FACULTAD_VI && !FACULTADES.some((f) => f.sigla === k))
+        .map((k) => ({ sigla: k, nombre: k, n: conteo[k] }));
+    const lista = [...conocidas, ...extrañas]
+        .sort((a, b) => (b.n - a.n) || a.sigla.localeCompare(b.sigla, 'es', { sensitivity: 'base' }));
+    if (conteo[SIN_FACULTAD_VI]) lista.push({ sigla: SIN_FACULTAD_VI, nombre: 'Sin facultad aún', n: conteo[SIN_FACULTAD_VI] });
+    return lista;
+}
+
+function pintarFacultadesVi(perfiles) {
+    const total = perfiles.length || 1;
+    const filas = conteoPorFacultadVi(perfiles).map((f) => ({
+        etiqueta: f.sigla === SIN_FACULTAD_VI ? 'Sin facultad aún' : f.sigla,
+        titulo: f.nombre,
+        valor: f.n,
+        detalle: `${f.n} · ${Math.round((100 * f.n) / total)}%`,
+    }));
     pintarBarras('viFacultades', filas, 'Todavía no hay perfiles.');
 }
 
 // ───────────── Filtro por facultad ─────────────
-const SIN_FACULTAD_VI = '__sin__';
 
 function facultadDeUsuarioVi(userId) {
     const p = viPerfiles[userId];
     return (p && p.facultad) || '';
 }
 
-// El selector solo aparece cuando hay algo que elegir (2 o más grupos de facultad).
+// El selector lista las 11 facultades de la UNI con su sigla y cuántos perfiles tiene cada una, para que ya estén
+// disponibles cuando lleguen alumnos de otras facultades. «Sin facultad aún» aparece si hay perfiles sin elegirla.
 function prepararFiltroFacultadVi(perfiles) {
     const caja = document.getElementById('viFiltros');
     const sel = document.getElementById('viFacultad');
-    const nombres = [...new Set(perfiles.map((p) => p.facultad).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
-    const haySin = perfiles.some((p) => !p.facultad);
-    const opciones = [['', 'Todas'], ...nombres.map((n) => [n, n]), ...(haySin ? [[SIN_FACULTAD_VI, 'Sin facultad aún']] : [])];
-    caja.hidden = opciones.length < 3;
+    const lista = conteoPorFacultadVi(perfiles);
+    const opciones = [['', `Todas (${perfiles.length})`], ...lista.map((f) => [
+        f.sigla,
+        `${f.sigla === SIN_FACULTAD_VI ? 'Sin facultad aún' : f.sigla} (${f.n})`,
+    ])];
+    caja.hidden = false;
     sel.innerHTML = opciones.map(([v, t]) => `<option value="${escaparHtml(v)}">${escaparHtml(t)}</option>`).join('');
     sel.value = viFacultad;
 }
@@ -988,7 +1009,7 @@ function pintarRankingVi() {
 
     const cont = document.getElementById('viRanking');
     if (!cursos.length) {
-        cont.innerHTML = `<p class="admin-vacio" style="padding:12px 0;">${q ? 'Ningún curso coincide con esa búsqueda.' : 'Todavía no hay notas en este periodo.'}</p>`;
+        cont.innerHTML = `<p class="admin-vacio" style="padding:12px 0;">${q ? 'Ningún curso coincide con esa búsqueda.' : (viFacultad ? 'Todavía no hay notas de esta facultad.' : 'Todavía no hay notas en este periodo.')}</p>`;
         return;
     }
 

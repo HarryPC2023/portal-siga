@@ -1077,3 +1077,8 @@
     color: var(--ink-soft);
 }
 
+/* Facultades sin usuarios todavía: se ven apagadas y sin barra */
+.vi-barra-cero {
+    opacity: 0.55;
+}
+
