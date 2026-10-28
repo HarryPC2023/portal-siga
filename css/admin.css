@@ -1082,3 +1082,83 @@
     opacity: 0.55;
 }
 
+/* ---------- «Usuarios por facultad»: una tarjeta de color por facultad ---------- */
+.vi-facultades {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+}
+
+.vi-fac {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #F7F4FB;
+    background: color-mix(in srgb, var(--fc) 8%, #fff);
+    border: 1px solid #E5D5F7;
+    border: 1px solid color-mix(in srgb, var(--fc) 30%, #fff);
+    border-left: 5px solid var(--fc);
+    border-radius: 12px;
+}
+
+.vi-fac-icono {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.vi-fac-sin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #fff;
+    background: #8A8A8A;
+}
+
+.vi-fac-cuerpo {
+    flex: 1;
+    min-width: 0;
+}
+
+.vi-fac-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.vi-fac-sigla {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.vi-fac-n {
+    font-size: 13px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+}
+
+.vi-fac-pista {
+    height: 6px;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 4px;
+}
+
+.vi-fac-relleno {
+    height: 100%;
+    background: var(--fc);
+    border-radius: 4px;
+}
+
+.vi-fac-cero {
+    opacity: 0.6;
+}
+
+.vi-fac-cero .vi-fac-icono {
+    filter: grayscale(1);
+}

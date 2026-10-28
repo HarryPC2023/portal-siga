@@ -900,7 +900,29 @@ function pintarFacultadesVi(perfiles) {
         valor: f.n,
         detalle: `${f.n} · ${Math.round((100 * f.n) / total)}%`,
     }));
-    pintarBarras('viFacultades', filas, 'Todavía no hay perfiles.');
+    // Cada facultad es una tarjeta con su ícono y su color oficial (los de intranotas/facultades-datos.js).
+    const cont = document.getElementById('viFacultades');
+    if (!filas.length) {
+        cont.innerHTML = '<p class="admin-vacio" style="padding:12px 0;">Todavía no hay perfiles.</p>';
+        return;
+    }
+    const max = Math.max(...filas.map((f) => f.valor));
+    cont.innerHTML = filas.map((f) => {
+        const fac = FACULTADES.find((x) => x.sigla === f.etiqueta);
+        const color = fac ? fac.color : '#8A8A8A';
+        const icono = fac
+            ? `<img class="vi-fac-icono" src="intranotas/${escaparHtml(fac.icono)}" alt="" loading="lazy">`
+            : '<span class="vi-fac-icono vi-fac-sin" aria-hidden="true">?</span>';
+        const ancho = f.valor === 0 ? 0 : Math.max(4, Math.round((f.valor / max) * 100));
+        return `
+        <div class="vi-fac${f.valor === 0 ? ' vi-fac-cero' : ''}" style="--fc:${color}" title="${escaparHtml(f.titulo || f.etiqueta)}">
+            ${icono}
+            <div class="vi-fac-cuerpo">
+                <div class="vi-fac-fila"><span class="vi-fac-sigla">${escaparHtml(f.etiqueta)}</span><span class="vi-fac-n">${f.detalle}</span></div>
+                <div class="vi-fac-pista"><div class="vi-fac-relleno" style="width:${ancho}%"></div></div>
+            </div>
+        </div>`;
+    }).join('');
 }
 
 // ───────────── Filtro por facultad ─────────────
@@ -1099,7 +1121,7 @@ function pintarComboVi() {
 
     lista.innerHTML = mostrados.length
         ? mostrados.map((it, n) => `<li role="option" id="viOp${it.i}" data-i="${it.i}" class="vi-op${n === 0 ? ' activa' : ''}${String(it.i) === elegido ? ' elegida' : ''}" aria-selected="${String(it.i) === elegido}"><b>${escaparHtml(it.codigo)}</b> — ${escaparHtml(it.nombre)} <span class="vi-op-extra">· ${escaparHtml(it.extra)}</span></li>`).join('')
-            + (coinciden.length > mostrados.length ? `<li class="vi-op-aviso" aria-hidden="true">Mostrando ${mostrados.length} de ${coinciden.length}. Sigue escribiendo para acotar.</li>` : '')
+        + (coinciden.length > mostrados.length ? `<li class="vi-op-aviso" aria-hidden="true">Mostrando ${mostrados.length} de ${coinciden.length}. Sigue escribiendo para acotar.</li>` : '')
         : '<li class="vi-op-aviso" aria-hidden="true">Nadie coincide con esa búsqueda.</li>';
     entrada.setAttribute('aria-activedescendant', mostrados.length ? `viOp${mostrados[0].i}` : '');
 }
