@@ -1162,3 +1162,19 @@
 .vi-fac-cero .vi-fac-icono {
     filter: grayscale(1);
 }
+
+/* ---------- Listas desplegables de Admin: opciones alternadas en lila y blanco ---------- */
+#contenidoAdmin select option {
+    padding: 8px 12px;
+    color: var(--ink);
+    background: #fff;
+}
+
+#contenidoAdmin select option:nth-child(even) {
+    background: #F3EAFB;
+}
+
+#contenidoAdmin select option:checked {
+    font-weight: 600;
+    color: #4B2390;
+}
