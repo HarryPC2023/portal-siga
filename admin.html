@@ -157,27 +157,20 @@
                     <p class="vi-nota" style="margin-top:-8px;">Solo lectura — nunca modifica datos, ni tuyos ni del
                         alumno.</p>
 
-                    <label class="admin-form-campo">
-                        <span>Buscar</span>
-                        <input type="text" id="viBuscar" placeholder="Código de estudiante o nombre…" disabled>
-                    </label>
-
-                    <label class="admin-form-campo">
-                        <span>Alumno</span>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <div class="campo-select-custom" style="flex:1;">
-                                <button type="button" class="select-custom-trigger" id="viUsuarioTrigger"
-                                    aria-haspopup="listbox" aria-expanded="false">
-                                    <span id="viUsuarioTriggerTexto">Cargando lista…</span>
-                                    <span class="select-custom-chevron" aria-hidden="true">▾</span>
-                                </button>
-                                <ul class="select-custom-lista" id="viUsuarioLista" role="listbox" hidden></ul>
-                                <input type="hidden" id="viUsuarioValor">
+                    <div class="admin-form-campo">
+                        <span id="viComboEtiqueta">Alumno</span>
+                        <div class="vi-combo" id="viCombo">
+                            <div class="vi-combo-caja">
+                                <input type="text" id="viBuscar" class="vi-combo-input" role="combobox"
+                                    aria-expanded="false" aria-controls="viComboLista" aria-autocomplete="list"
+                                    aria-labelledby="viComboEtiqueta" placeholder="Cargando lista…" autocomplete="off" disabled>
+                                <button type="button" class="btn-volver" id="viLimpiar" aria-label="Limpiar selección"
+                                    title="Limpiar selección" style="flex-shrink:0; padding:8px 10px;">✕</button>
                             </div>
-                            <button type="button" class="btn-volver" id="viLimpiar" aria-label="Limpiar selección"
-                                title="Limpiar selección" style="flex-shrink:0; padding:8px 10px;">✕</button>
+                            <ul class="vi-combo-lista" id="viComboLista" role="listbox" hidden></ul>
+                            <input type="hidden" id="viUsuarioValor">
                         </div>
-                    </label>
+                    </div>
 
                     <div id="viDetalle" style="display:none;">
                         <div class="vi-ficha" id="viFicha"></div>

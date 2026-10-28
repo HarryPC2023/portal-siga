@@ -997,3 +997,83 @@
     }
 }
 
+/* ---------- Cuadro único «Ver un alumno» (buscador + lista en uno) ---------- */
+.vi-combo {
+    position: relative;
+}
+
+.vi-combo-caja {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vi-combo-input {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+}
+
+.vi-combo-input:focus {
+    outline: none;
+    border-color: var(--brand-morado);
+    box-shadow: 0 0 0 3px rgba(102, 0, 204, 0.12);
+}
+
+.vi-combo-input:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.vi-combo-lista {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 30;
+    max-height: 340px;
+    margin: 0;
+    padding: 6px;
+    overflow-y: auto;
+    list-style: none;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+}
+
+.vi-combo-lista[hidden] {
+    display: none;
+}
+
+.vi-op {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.vi-op.activa {
+    background: #F3EAFB;
+}
+
+.vi-op.elegida {
+    font-weight: 600;
+}
+
+.vi-op-extra {
+    font-size: 12px;
+    color: var(--ink-soft);
+}
+
+.vi-op-aviso {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+

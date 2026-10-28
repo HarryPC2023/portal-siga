@@ -8,6 +8,7 @@ import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
 import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.js?v=4';
 import { iniciarFaqAsesorias } from './admin-faq.js?v=1';
 import { iniciarBandejaPreguntas } from './admin-bandeja.js?v=1';
+import { nombreCursoLegible } from './nombres-curso.js?v=1';
 
 const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
 const BUCKET_ASESORIAS = 'asesorias-adjuntos';
@@ -118,12 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         pintarRankingVi();
     });
 
-    document.getElementById('viBuscar').addEventListener('input', (e) => {
-        const q = normalizarTexto(e.target.value);
-        document.querySelectorAll('#viUsuarioLista li').forEach((li) => {
-            li.style.display = normalizarTexto(li.textContent).includes(q) ? '' : 'none';
-        });
-    });
+    conectarComboAlumnosVi();
 
     document.getElementById('viLimpiar').addEventListener('click', limpiarSeleccionVista);
 });
@@ -809,7 +805,7 @@ async function traerTodo(crearConsulta) {
 
 async function cargarListaVistaIntranotas() {
     viListaCargada = true;
-    const triggerTexto = document.getElementById('viUsuarioTriggerTexto');
+    const entradaAlumno = document.getElementById('viBuscar');
 
     let perfiles, notas;
     try {
@@ -822,7 +818,7 @@ async function cargarListaVistaIntranotas() {
                 .order('id')),
         ]);
     } catch (error) {
-        triggerTexto.textContent = 'Error al cargar';
+        entradaAlumno.placeholder = 'Error al cargar';
         document.getElementById('viMetricas').innerHTML =
             `<p class="admin-vacio">No se pudo cargar: ${escaparHtml(error.message)}. Revisa las políticas RLS de admin.</p>`;
         return;
@@ -919,15 +915,10 @@ function refrescarVistaVi() {
     pintarRankingVi();
 }
 
-// Los nombres vienen de INTRALU en MAYÚSCULAS: se muestran como frase («Ecuaciones diferenciales»),
-// dejando en mayúsculas los números romanos («Química II»).
+// Los nombres vienen de INTRALU en MAYÚSCULAS y sin tildes: se muestran como frase con tildes
+// («Analítica de datos», «Química II»). La lógica vive en js/nombres-curso.js.
 function nombreLegibleVi(txt) {
-    // INTRALU manda algunos nombres con un guion o punto al final («ANALITICA DE DATOS-»): se quita.
-    const t = String(txt || '').trim().toLowerCase().replace(/[\s\-\u2013\u2014_.:;,]+$/, '');
-    if (!t) return '';
-    const romanos = new Set(['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']);
-    const frase = t.split(/\s+/).map((w) => (romanos.has(w) ? w.toUpperCase() : w)).join(' ');
-    return frase.charAt(0).toUpperCase() + frase.slice(1);
+    return nombreCursoLegible(txt);
 }
 
 // Tabla de cursos. «Desaprobado» = nota menor a 10 (si el curso sigue en proceso, se usa el promedio de prácticas).
@@ -1054,27 +1045,105 @@ function construirSelectorAlumnosVi(perfiles, notas) {
     // Primero quien sincronizó más recientemente; al final, quien nunca sincronizó.
     viAlumnos.sort((a, b) => (b.ultima || '').localeCompare(a.ultima || ''));
 
-    const opciones = viAlumnos.map((a, i) => {
+    viComboItems = viAlumnos.map((a, i) => {
         const codigo = a.perfil.codigo_estudiante || '(sin código)';
         const nombre = a.perfil.nombre || `Usuario ${a.userId.slice(0, 8)}…`;
         const extra = a.nPeriodos
             ? `${a.nPeriodos} periodo${a.nPeriodos === 1 ? '' : 's'} · ${haceCuanto(a.ultima)}`
             : 'sin notas';
-        return { value: String(i), label: escaparHtml(`${codigo} — ${nombre} · ${extra}`) };
+        return { i, codigo, nombre, extra, norm: normalizarTexto(`${codigo} ${nombre}`) };
     });
 
-    inicializarSelectPersonalizado({
-        triggerId: 'viUsuarioTrigger',
-        textoId: 'viUsuarioTriggerTexto',
-        listaId: 'viUsuarioLista',
-        valorId: 'viUsuarioValor',
-        opciones,
-        alElegir: (indiceStr) => mostrarAlumnoVi(viAlumnos[Number(indiceStr)]),
-    });
+    const entrada = document.getElementById('viBuscar');
+    entrada.disabled = !viAlumnos.length;
+    entrada.placeholder = viAlumnos.length ? 'Escribe un código o un nombre…' : 'Todavía no hay usuarios';
+}
 
-    document.getElementById('viBuscar').disabled = false;
-    document.getElementById('viUsuarioTriggerTexto').textContent =
-        viAlumnos.length ? 'Elige un alumno…' : 'Todavía no hay usuarios';
+// ───────────── Cuadro único «Ver un alumno» ─────────────
+// Un solo campo: al tocarlo o escribir se abre la lista, que se filtra por código o nombre (sin importar
+// tildes ni mayúsculas). Flechas ↑ ↓ para moverse, Enter para elegir, Esc para cerrar.
+let viComboItems = [];       // { i, codigo, nombre, extra, norm }; `i` = posición en viAlumnos
+let viComboActivo = 0;       // posición resaltada dentro de la lista visible
+let viComboFiltra = false;   // false = muestra todos; true = filtra por lo que escribiste
+const MAX_OPCIONES_COMBO_VI = 60;
+
+function pintarComboVi() {
+    const lista = document.getElementById('viComboLista');
+    const entrada = document.getElementById('viBuscar');
+    const q = viComboFiltra ? normalizarTexto(entrada.value) : '';
+    const coinciden = viComboItems.filter((it) => !q || it.norm.includes(q));
+    const mostrados = coinciden.slice(0, MAX_OPCIONES_COMBO_VI);
+    const elegido = document.getElementById('viUsuarioValor').value;
+    viComboActivo = 0;
+
+    lista.innerHTML = mostrados.length
+        ? mostrados.map((it, n) => `<li role="option" id="viOp${it.i}" data-i="${it.i}" class="vi-op${n === 0 ? ' activa' : ''}${String(it.i) === elegido ? ' elegida' : ''}" aria-selected="${String(it.i) === elegido}"><b>${escaparHtml(it.codigo)}</b> — ${escaparHtml(it.nombre)} <span class="vi-op-extra">· ${escaparHtml(it.extra)}</span></li>`).join('')
+            + (coinciden.length > mostrados.length ? `<li class="vi-op-aviso" aria-hidden="true">Mostrando ${mostrados.length} de ${coinciden.length}. Sigue escribiendo para acotar.</li>` : '')
+        : '<li class="vi-op-aviso" aria-hidden="true">Nadie coincide con esa búsqueda.</li>';
+    entrada.setAttribute('aria-activedescendant', mostrados.length ? `viOp${mostrados[0].i}` : '');
+}
+
+function abrirComboVi() {
+    if (!viComboItems.length) return;
+    pintarComboVi();
+    document.getElementById('viComboLista').hidden = false;
+    document.getElementById('viBuscar').setAttribute('aria-expanded', 'true');
+}
+
+function cerrarComboVi() {
+    document.getElementById('viComboLista').hidden = true;
+    const entrada = document.getElementById('viBuscar');
+    entrada.setAttribute('aria-expanded', 'false');
+    entrada.setAttribute('aria-activedescendant', '');
+}
+
+function elegirAlumnoComboVi(indice) {
+    const it = viComboItems[Number(indice)];
+    if (!it) return;
+    document.getElementById('viUsuarioValor').value = String(it.i);
+    document.getElementById('viBuscar').value = `${it.codigo} — ${it.nombre}`;
+    viComboFiltra = false;
+    cerrarComboVi();
+    mostrarAlumnoVi(viAlumnos[it.i]);
+}
+
+function moverComboVi(paso) {
+    const opciones = [...document.querySelectorAll('#viComboLista .vi-op')];
+    if (!opciones.length) return;
+    viComboActivo = (viComboActivo + paso + opciones.length) % opciones.length;
+    opciones.forEach((li, n) => li.classList.toggle('activa', n === viComboActivo));
+    opciones[viComboActivo].scrollIntoView({ block: 'nearest' });
+    document.getElementById('viBuscar').setAttribute('aria-activedescendant', opciones[viComboActivo].id);
+}
+
+function conectarComboAlumnosVi() {
+    const entrada = document.getElementById('viBuscar');
+    const lista = document.getElementById('viComboLista');
+
+    entrada.addEventListener('focus', () => { viComboFiltra = false; entrada.select(); abrirComboVi(); });
+    entrada.addEventListener('click', () => { if (lista.hidden) abrirComboVi(); });
+    entrada.addEventListener('input', () => { viComboFiltra = true; abrirComboVi(); });
+    entrada.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (lista.hidden) abrirComboVi(); else moverComboVi(e.key === 'ArrowDown' ? 1 : -1);
+        } else if (e.key === 'Enter') {
+            const activa = lista.hidden ? null : lista.querySelectorAll('.vi-op')[viComboActivo];
+            if (activa) { e.preventDefault(); elegirAlumnoComboVi(activa.dataset.i); }
+        } else if (e.key === 'Escape') {
+            cerrarComboVi();
+        }
+    });
+    // mousedown (y no click) para elegir antes de que el campo pierda el foco
+    lista.addEventListener('mousedown', (e) => {
+        const li = e.target.closest('.vi-op');
+        if (!li) return;
+        e.preventDefault();
+        elegirAlumnoComboVi(li.dataset.i);
+    });
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#viCombo')) cerrarComboVi();
+    });
 }
 
 async function mostrarAlumnoVi(alumno) {
@@ -1175,7 +1244,7 @@ function pintarTablaPeriodoVi(periodo) {
             <thead><tr><th>Código</th><th>Curso</th><th>Secc.</th><th>Prácticas</th><th>Final</th><th>Asist.</th></tr></thead>
             <tbody>${filas.map((f) => `<tr>
                 <td>${escaparHtml(f.codigo_curso)}</td>
-                <td>${escaparHtml(f.nombre_curso)}</td>
+                <td>${escaparHtml(nombreLegibleVi(f.nombre_curso))}</td>
                 <td>${escaparHtml(f.seccion || '—')}</td>
                 <td${claseNota(f.promedio_practicas)}>${formatearNota(f.promedio_practicas)}</td>
                 <td${claseNota(f.promedio_final)}>${formatearNota(f.promedio_final)}</td>
@@ -1186,9 +1255,9 @@ function pintarTablaPeriodoVi(periodo) {
 
 function limpiarSeleccionVista() {
     document.getElementById('viUsuarioValor').value = '';
-    document.getElementById('viUsuarioTriggerTexto').textContent = viAlumnos.length ? 'Elige un alumno…' : 'Cargando lista…';
     document.getElementById('viBuscar').value = '';
-    document.querySelectorAll('#viUsuarioLista li').forEach((li) => { li.style.display = ''; });
+    viComboFiltra = false;
+    cerrarComboVi();
     document.getElementById('viDetalle').style.display = 'none';
     document.getElementById('viVacio').style.display = 'block';
     viAlumnoActual = null;
