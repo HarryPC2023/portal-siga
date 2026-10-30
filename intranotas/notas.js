@@ -27,6 +27,7 @@ import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.j
 import { esBeta } from './beta-siga.js';
 import { tendenciaDeCurso } from './analisis-academico.js';
 import { pintarTermometro, resaltarTarjeta } from './termometro-ui.js';
+import { montarRadar } from './radar-ui.js';
 import { siglaDeCurso } from './siglas-cursos.js';
 
 const UMBRAL_APROBACION = 10;
@@ -168,6 +169,26 @@ function codigosEnCursoAhora() {
     return codigos;
 }
 
+/* Datos que el Radar académico (beta) necesita de cada curso del periodo en pantalla. */
+function cursosParaRadar() {
+    return (notasPorPeriodo[periodoActivo] || []).map((curso, idx) => {
+        const formula = formulaDeCurso(curso);
+        return {
+            id: idx,
+            codigo: curso.codigo_curso,
+            nombre: nombreCursoLindo(curso),
+            creditos: formula?.creditos ?? null,
+            evaluaciones: curso.evaluaciones,
+            valores: valoresActualesDeCurso(curso),
+            simulados: valoresSimulados[claveSimulacion(curso)] || {},
+            formulaPP: formula?.formula_practicas ?? null,
+            formulaFinal: formula?.formula_nota_final ?? null,
+            avisoFormula: htmlAvisoFormulaCorto(formula),
+            haySimulacion: haySimulacionActiva(curso),
+        };
+    });
+}
+
 /* Cursos del periodo que el alumno tiene en pantalla (selector de Ruta del Curso). */
 function cursosDelPeriodoActivo() {
     return (notasPorPeriodo[periodoActivo] || []).map((curso) => ({
@@ -193,6 +214,16 @@ function inicializarAnalisisAcademico() {
         chip.addEventListener('click', () => herramientas[chip.dataset.aa]?.());
     });
     inicializarMetaCurso();
+
+    // Radar académico (beta): solo para quien esté en beta-siga.js.
+    if (modoBeta) {
+        const radar = montarRadar({
+            cargarFilas: cargarFilasAvance,
+            obtenerEnCurso: codigosEnCursoAhora,
+            obtenerCursos: cursosParaRadar,
+        });
+        radar.insertarBoton();
+    }
 }
 
 async function cargarDatos(userId) {
