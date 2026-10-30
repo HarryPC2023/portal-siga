@@ -1,0 +1,422 @@
+/* ============================================================
+   📡 RADAR ACADÉMICO (beta) — panel lateral (escritorio) / hoja inferior (celular)
+   Mismo patrón que Ruta del curso. Va en css/radar.css; se carga desde notas.html.
+   Cada estado lleva su color (borde y tinte); el texto siempre dice el estado,
+   así que el color nunca es lo único que comunica.
+   ============================================================ */
+
+/* Botón del lateral: relleno blanco y borde rosado intenso (el pastel ciruela de SIGA). */
+.chip-herramienta--radar {
+    --chip-neon: #FF1AB4;
+    color: var(--acento-ciruela, #C13F94);
+}
+
+.rd-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 998;
+}
+
+.rd-overlay.rd-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.rd-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 460px;
+    max-width: 94vw;
+    background: #fff;
+    border-left: 4px solid #FF1AB4;
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.14);
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: var(--font-datos, 'Poppins', 'Segoe UI', Arial, sans-serif);
+    color: var(--ink, #1f2937);
+}
+
+.rd-panel.rd-abierto {
+    transform: translateX(0);
+}
+
+.rd-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+.rd-titulo-grupo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rd-icono {
+    font-size: 1.3rem;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: color-mix(in srgb, #FF1AB4 12%, transparent);
+}
+
+.rd-titulo {
+    font-family: var(--font-heading, 'Orbitron', sans-serif);
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.rd-beta {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--brand-morado-tinte, #F3EAFB);
+    color: var(--brand-morado, #6600CC);
+}
+
+.rd-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: #6b7280;
+    cursor: pointer;
+    line-height: 1;
+    padding: 6px;
+}
+
+.rd-cuerpo {
+    padding: 14px 18px 28px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.rd-mensaje {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #5b5478;
+    text-align: center;
+    padding: 28px 8px;
+}
+
+/* ---------- Colores por estado ---------- */
+.rd-e-fuera      { --rd-color: #6B6485; --rd-texto: #4B4468; }
+.rd-e-remontar   { --rd-color: #E5484D; --rd-texto: #B42318; }
+.rd-e-limite     { --rd-color: #F2A100; --rd-texto: #8A5A00; }
+.rd-e-margen     { --rd-color: #2BA84A; --rd-texto: #1B7A34; }
+.rd-e-asegurado  { --rd-color: #12A5A0; --rd-texto: #0B7A76; }
+.rd-e-esperando  { --rd-color: #AFA9C6; --rd-texto: #5b5478; }
+.rd-e-sinformula { --rd-color: #AFA9C6; --rd-texto: #5b5478; }
+
+/* ---------- Orden ---------- */
+.rd-orden {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #5b5478;
+    margin-bottom: 10px;
+}
+
+.rd-orden button {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 4px 11px;
+    border-radius: 8px;
+    border: 1px solid #d6d1e6;
+    background: #fff;
+    color: var(--ink, #1f2937);
+    cursor: pointer;
+}
+
+.rd-orden button.rd-orden--activo {
+    border: 1.5px solid var(--brand-morado, #6600CC);
+    background: var(--brand-morado-tinte, #F3EAFB);
+    font-weight: 600;
+}
+
+/* ---------- Selector de cursos ---------- */
+.rd-chips {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.rd-chip {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    text-align: left;
+    font-family: inherit;
+    background: #fff;
+    border: 2px solid var(--rd-color);
+    border-radius: 12px;
+    padding: 9px 11px;
+    cursor: pointer;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.rd-chip:hover { transform: translateY(-1px); }
+
+.rd-chip--activo {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--rd-color) 30%, transparent);
+    background: color-mix(in srgb, var(--rd-color) 9%, #fff);
+}
+
+.rd-chip__nombre {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink, #1f2937);
+}
+
+.rd-chip__num {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--rd-color) 18%, #fff);
+    color: var(--rd-texto);
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rd-chip__estado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--rd-texto);
+}
+
+.rd-mini-flecha { display: inline-flex; }
+
+/* ---------- Tendencia: mismos colores que el Termómetro ---------- */
+.rd-t-sube    { color: #1F4FD1; }
+.rd-t-baja    { color: #C2410C; }
+.rd-t-estable { color: #6600CC; }
+
+/* ---------- Detalle del curso ---------- */
+.rd-detalle {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border: 2px solid var(--rd-color);
+    border-radius: 14px;
+    padding: 0 0 14px;
+}
+
+.rd-detalle__barra {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: var(--rd-color);
+}
+
+.rd-detalle__cab {
+    padding: 14px 16px 12px 22px;
+    background: color-mix(in srgb, var(--rd-color) 13%, #fff);
+}
+
+.rd-detalle__nombre {
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--ink, #1f2937);
+}
+
+.rd-detalle__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #5b5478;
+}
+
+.rd-estado-grande {
+    margin-left: auto;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1.5px solid var(--rd-color);
+    color: var(--rd-texto);
+}
+
+.rd-etiqueta,
+.rd-simulado {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--brand-morado-tinte, #F3EAFB);
+    color: var(--brand-morado, #6600CC);
+}
+
+.rd-simulado {
+    border: 1px dashed var(--brand-morado, #6600CC);
+}
+
+.rd-seccion {
+    padding: 12px 16px 0 22px;
+}
+
+.rd-seccion__t {
+    margin: 0 0 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5b5478;
+}
+
+.rd-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+}
+
+.rd-tiles--dos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.rd-tile {
+    background: #F7F4FC;
+    border-radius: 10px;
+    padding: 9px 11px;
+}
+
+.rd-tile__et { font-size: 11.5px; color: #5b5478; }
+
+.rd-tile__valor {
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 2px 0;
+    color: var(--ink, #1f2937);
+}
+
+.rd-tile__sub { font-size: 11.5px; color: #5b5478; line-height: 1.4; }
+
+.rd-tile__valor--texto {
+    font-size: 16px;
+    line-height: 1.35;
+    margin: 4px 0;
+}
+
+.rd-tend {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+}
+
+.rd-sin {
+    font-size: 14px;
+    font-weight: 600;
+    color: #5b5478;
+}
+
+.rd-razones {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rd-razones li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.rd-razones li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    background: var(--rd-color);
+}
+
+.rd-accion {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: color-mix(in srgb, #3C7CF8 12%, #fff);
+    color: #1F4FD1;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.rd-accion svg { flex: 0 0 auto; margin-top: 1px; }
+
+.rd-detalle .aviso-formula-corto {
+    margin: 12px 16px 0 22px;
+    font-size: 12px;
+    color: #5b5478;
+}
+
+.rd-pie {
+    margin: 12px 2px 0;
+    font-size: 11.5px;
+    color: #5b5478;
+}
+
+/* ---------- Celular: hoja inferior ---------- */
+@media (max-width: 899px) {
+    .rd-panel {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 86vh;
+        border-radius: 14px 14px 0 0;
+        border-left: none;
+        border-top: 4px solid #FF1AB4;
+        transform: translateY(100%);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .rd-panel.rd-abierto { transform: translateY(0); }
+
+    .rd-chips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
