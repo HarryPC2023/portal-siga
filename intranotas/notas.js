@@ -25,7 +25,7 @@ import { construirValoresFormula, notaComoNumero, clasificarExamen } from './for
 import { FACULTADES } from './facultades-datos.js';
 import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.js';
 import { esBeta } from './beta-siga.js';
-import { tendenciaDeCurso } from './analisis-academico.js';
+import { analizarCurso } from './radar-calculo.js';
 import { pintarTermometro, resaltarTarjeta } from './termometro-ui.js';
 import { montarRadar } from './radar-ui.js';
 import { siglaDeCurso } from './siglas-cursos.js';
@@ -1142,12 +1142,24 @@ function actualizarTermometro() {
     if (!contenedor) return;
     if (!modoBeta) { contenedor.hidden = true; return; }
     const cursos = notasPorPeriodo[periodoActivo] || [];
-    const items = cursos.map((curso, idx) => ({
-        id: idx,
-        nombre: nombreCursoLindo(curso),
-        sigla: siglaDeCurso(curso.codigo_curso),
-        tendencia: tendenciaDeCurso(curso.evaluaciones, valoresSimulados[claveSimulacion(curso)] || {}),
-    }));
+    const items = cursos.map((curso, idx) => {
+        const formula = formulaDeCurso(curso);
+        const analisis = analizarCurso({
+            formulaPP: formula?.formula_practicas ?? null,
+            formulaFinal: formula?.formula_nota_final ?? null,
+            valores: valoresActualesDeCurso(curso),
+            evaluaciones: curso.evaluaciones,
+            simulados: valoresSimulados[claveSimulacion(curso)] || {},
+        });
+        return {
+            id: idx,
+            nombre: nombreCursoLindo(curso),
+            sigla: siglaDeCurso(curso.codigo_curso),
+            tendencia: analisis.tendencia,
+            // "Atención": el curso necesita remontar o no llega a 10 con lo que hay.
+            atencion: ['remontar', 'fuera'].includes(analisis.estado.clave),
+        };
+    });
     pintarTermometro(contenedor, items, (id) => resaltarTarjeta(`curso-card-${id}`));
 }
 

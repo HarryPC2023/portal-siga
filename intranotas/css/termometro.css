@@ -97,10 +97,25 @@
     flex: 0 0 auto;
 }
 
-.termo__chip--sube    { --termo-color: #2F6BFF; --termo-texto: #1F4FD1; }
-.termo__chip--baja    { --termo-color: #FF6A00; --termo-texto: #C2410C; }
-.termo__chip--estable { --termo-color: #8A2BE2; --termo-texto: #6600CC; }
-.termo__chip--sin     { --termo-color: #CFC8E0; --termo-texto: var(--ink-soft); }
+.termo__chip--sube {
+    --termo-color: #2F6BFF;
+    --termo-texto: #1F4FD1;
+}
+
+.termo__chip--baja {
+    --termo-color: #FF6A00;
+    --termo-texto: #C2410C;
+}
+
+.termo__chip--estable {
+    --termo-color: #8A2BE2;
+    --termo-texto: #6600CC;
+}
+
+.termo__chip--sin {
+    --termo-color: #CFC8E0;
+    --termo-texto: var(--ink-soft);
+}
 
 /* Con notas simuladas: borde punteado y etiqueta, para no confundirlo con lo real. */
 .termo__chip--sim {
@@ -125,6 +140,18 @@
     border-radius: 12px;
     font-size: 13px;
     color: var(--ink-soft);
+}
+
+/* Aviso de atención: el curso necesita remontar, aunque su tendencia sea buena
+   (puedes ir subiendo y aun así estar lejos de aprobar). */
+.termo__atencion {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 6px;
+    background: #FDECEC;
+    color: #B42318;
+    border: 1px solid #E5484D;
 }
 
 /* Celular: una sola fila que se desliza de lado, para no empujar las tarjetas. */

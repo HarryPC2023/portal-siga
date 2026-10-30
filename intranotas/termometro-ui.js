@@ -38,10 +38,11 @@ export function pintarTermometro(contenedor, items, alElegir) {
         const t = it.tendencia;
         const sigla = it.sigla ? `<span class="termo__sigla">${escaparHtml(it.sigla)}</span>` : '';
         const simulado = t.simulada ? '<span class="termo__sim">Simulado</span>' : '';
-        const etiqueta = `${it.nombre}: ${t.texto}${t.simulada ? ' (con notas simuladas)' : ''}`;
+        const atencion = it.atencion ? '<span class="termo__atencion" title="Con tus notas actuales este curso necesita remontar">Atención</span>' : '';
+        const etiqueta = `${it.nombre}: ${t.texto}${t.simulada ? ' (con notas simuladas)' : ''}${it.atencion ? '. Necesita atención' : ''}`;
         return `<button type="button" class="termo__chip termo__chip--${t.clave}${t.simulada ? ' termo__chip--sim' : ''}"
                 data-id="${escaparHtml(String(it.id))}" title="${escaparHtml(t.detalle)}" aria-label="${escaparHtml(etiqueta)}">
-                <span class="termo__cuerpo"><span class="termo__nombre">${escaparHtml(it.nombre)}</span>${sigla}</span>
+                <span class="termo__cuerpo"><span class="termo__nombre">${escaparHtml(it.nombre)}</span>${sigla}${atencion}</span>
                 <span class="termo__estado">${flecha(t.clave)}<span>${escaparHtml(t.texto)}</span>${simulado}</span>
             </button>`;
     }).join('');
