@@ -24,6 +24,9 @@ import { montarRutaCurso } from './ruta-curso-ui.js';
 import { construirValoresFormula, notaComoNumero, clasificarExamen } from './formula-mapper.js';
 import { FACULTADES } from './facultades-datos.js';
 import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.js';
+import { esBeta } from './beta-siga.js';
+import { tendenciaDeCurso } from './analisis-academico.js';
+import { pintarTermometro, resaltarTarjeta } from './termometro-ui.js';
 
 const UMBRAL_APROBACION = 10;
 
@@ -33,12 +36,14 @@ let bancoFormulas = {};     // codigo_curso -> [filas de formulas_curso de TODOS
 let periodoActivo = null;
 let valoresSimulados = {};  // clave `${codigo_curso}|${seccion}` -> { N1: 14, EP: 12, ... } (solo del periodo activo)
 let usuarioActual = null;
+let modoBeta = false;    // funciones nuevas de análisis: solo para quien esté en beta-siga.js
 let claveAlmacenUsuario = null; // huella estable del alumno (por su código de estudiante) para lo guardado en el navegador
 
 document.addEventListener('DOMContentLoaded', async () => {
     const sesion = await obtenerSesion();
     if (!sesion) { window.location.href = 'index.html'; return; }
     usuarioActual = sesion.user;
+    modoBeta = esBeta(usuarioActual);
 
     await pintarIdentidad(sesion);
     fijarHerramientasEnMovil();
@@ -1024,6 +1029,7 @@ function renderizarCursos() {
 
         const card = document.createElement('div');
         card.className = 'curso-card';
+        card.id = `curso-card-${idx}`;
         card.innerHTML = `
             <div class="curso-card__promedio">
                 <p class="curso-card__promedio-etiqueta">PROMEDIO</p>
@@ -1091,6 +1097,24 @@ function actualizarResumenPeriodo() {
     } else {
         banner.classList.remove('visible');
     }
+
+    actualizarTermometro();
+}
+
+/* ---------- TERMÓMETRO (beta) — franja "Cómo van tus cursos" ----------
+   Se vuelve a pintar con cada cambio de notas (esta función corre después
+   de cada edición). Solo se ve si modoBeta es verdadero. */
+function actualizarTermometro() {
+    const contenedor = document.getElementById('termometroCursos');
+    if (!contenedor) return;
+    if (!modoBeta) { contenedor.hidden = true; return; }
+    const cursos = notasPorPeriodo[periodoActivo] || [];
+    const items = cursos.map((curso, idx) => ({
+        id: idx,
+        nombre: nombreCursoLindo(curso),
+        tendencia: tendenciaDeCurso(curso.evaluaciones, valoresSimulados[claveSimulacion(curso)] || {}),
+    }));
+    pintarTermometro(contenedor, items, (id) => resaltarTarjeta(`curso-card-${id}`));
 }
 
 function toggleCurso(idx, curso) {

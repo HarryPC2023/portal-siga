@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="css/progreso-carrera.css">
     <link rel="stylesheet" href="css/ruta-curso.css">
     <link rel="stylesheet" href="css/aviso-formula.css">
+    <link rel="stylesheet" href="css/termometro.css">
 
     <style>
         body {
@@ -178,37 +179,47 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            border: none;
+            /* Relleno blanco y borde del color de cada herramienta en su
+               versión intensa (--chip-neon, definido en cada variante). */
+            background: #fff;
+            border: 2px solid var(--chip-neon, transparent);
             border-radius: 12px;
-            padding: 10px 14px;
+            padding: 8px 12px;
             font-family: var(--font-body);
             font-weight: 600;
             font-size: 12px;
             cursor: pointer;
             white-space: nowrap;
             text-align: left;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .chip-herramienta:hover,
+        .chip-herramienta:focus-visible {
+            transform: translateY(-1px);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--chip-neon, transparent) 28%, transparent);
         }
 
         @media (min-width: 900px) {
             .chip-herramienta {
-                padding: 12px 14px;
+                padding: 10px 12px;
                 font-size: 13px;
                 white-space: normal;
             }
         }
 
         .chip-herramienta--meta {
-            background: var(--bg-cian);
+            --chip-neon: #00D7E6;
             color: var(--acento-cian);
         }
 
         .chip-herramienta--progreso {
-            background: var(--bg-lavanda);
+            --chip-neon: #AC33FF;
             color: var(--acento-lavanda);
         }
 
         .chip-herramienta--ruta {
-            background: #EAF5C0;
+            --chip-neon: #AAD600;
             color: #6B7F00;
         }
 
@@ -1372,6 +1383,8 @@
                     <span class="card-promedio__etiqueta">PROMEDIO PONDERADO</span>
                     <span class="card-promedio__valor" id="promedioPonderado">--</span>
                 </div>
+
+                <div class="termo" id="termometroCursos" hidden></div>
 
                 <div class="banner-riesgo" id="bannerRiesgo">
                     <p class="banner-riesgo__titulo">⚠ Cursos en riesgo</p>
