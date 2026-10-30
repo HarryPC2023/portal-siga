@@ -1158,6 +1158,7 @@ function actualizarTermometro() {
             tendencia: analisis.tendencia,
             // "Atención": el curso necesita remontar o no llega a 10 con lo que hay.
             estadoTexto: analisis.estado.texto,
+            critico: analisis.estado.clave === 'fuera',
         };
     });
     pintarTermometro(contenedor, items, (id) => resaltarTarjeta(`curso-card-${id}`));
