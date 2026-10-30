@@ -21,17 +21,18 @@ export const UMBRAL_APROBAR = 10;      // nota mínima para aprobar
 export const MIN_PUBLICADO = 0.25;     // parte de la nota que debe estar publicada para opinar
 export const CORTE_MARGEN = 8;         // necesitas 8 o menos       → Con margen
 export const CORTE_LIMITE = 14;        // necesitas de 9 a 14       → Cerca del límite (15 o más → Necesita remontar)
+export const CORTE_CRITICO = 18;       // necesitar MÁS de 18 (casi la nota máxima) ya es situación crítica: casi no hay salida
 export const BRECHA_REMONTAR = 4;      // si con tu ritmo actual no apruebas y te faltan 4 o más puntos de promedio → Necesita remontar
 
 /* ---- Estados (clave, texto, orden de atención: menor = más urgente) ---- */
 export const ESTADOS = {
-    fuera: { clave: 'fuera', texto: 'Fuera de alcance', orden: 0 },
-    remontar: { clave: 'remontar', texto: 'Necesita remontar', orden: 1 },
-    limite: { clave: 'limite', texto: 'Cerca del límite', orden: 2 },
-    margen: { clave: 'margen', texto: 'Con margen', orden: 3 },
-    asegurado: { clave: 'asegurado', texto: 'Asegurado', orden: 4 },
-    esperando: { clave: 'esperando', texto: 'Esperando notas', orden: 5 },
-    sinformula: { clave: 'sinformula', texto: 'Sin fórmula aún', orden: 6 },
+    fuera:       { clave: 'fuera',       texto: 'Situación crítica', orden: 0 },
+    remontar:    { clave: 'remontar',    texto: 'Necesita remontar', orden: 1 },
+    limite:      { clave: 'limite',      texto: 'Cerca del límite',  orden: 2 },
+    margen:      { clave: 'margen',      texto: 'Con margen',        orden: 3 },
+    asegurado:   { clave: 'asegurado',   texto: 'Asegurado',         orden: 4 },
+    esperando:   { clave: 'esperando',   texto: 'Esperando notas',   orden: 5 },
+    sinformula:  { clave: 'sinformula',  texto: 'Sin fórmula aún',   orden: 6 },
 };
 
 const esNula = (v) => v === null || v === undefined || Number.isNaN(v);
@@ -93,6 +94,54 @@ export function etiquetaConArticulo(variable, evaluaciones = []) {
 }
 const mayuscula = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1);
 
+/* ---------- Descartes: qué nota deja de contar ----------
+   Muchas fórmulas de prácticas descartan la(s) más baja(s): MIN(N1, N2, ...) quita 1 y
+   K2MIN(...) quita 2. Se leen directo de la fórmula (la oficial, la anterior o la estimada),
+   nunca de una regla aparte, y se dicen con palabras: qué nota se descarta HOY y qué
+   pendientes solo suman si la superan. */
+function gruposDeDescarte(formulaPP) {
+    const grupos = [];
+    const re = /K(\d+)MIN\(([^)]*)\)|MIN\(([^)]*)\)/g;
+    let m;
+    while ((m = re.exec(String(formulaPP || ''))) !== null) {
+        const cantidad = m[1] ? parseInt(m[1], 10) : 1;
+        const variables = (m[2] ?? m[3]).split(',').map((s) => s.trim()).filter(Boolean);
+        if (variables.length > cantidad) grupos.push({ cantidad, variables });
+    }
+    return grupos;
+}
+
+const unir = (lista) => (lista.length <= 1 ? lista.join('') : `${lista.slice(0, -1).join(', ')} y ${lista[lista.length - 1]}`);
+
+export function describirDescartes(formulaPP, valores, evaluaciones = []) {
+    const frases = [];
+    for (const g of gruposDeDescarte(formulaPP)) {
+        const publicadas = g.variables.filter((v) => !esNula(valores[v]))
+            .map((v, i) => ({ v, nota: valores[v], i }))
+            .sort((a, b) => (a.nota - b.nota) || (a.i - b.i));
+        const pendientes = g.variables.filter((v) => esNula(valores[v]));
+        if (!publicadas.length) continue;
+        const bajas = publicadas.slice(0, g.cantidad);
+        const lab = /^laboratorio/.test(etiquetaDeVariable(g.variables[0], evaluaciones));
+        const plural = lab ? 'laboratorios' : 'prácticas';
+        const bajo = lab ? 'bajo' : 'baja';      // "el más bajo" (laboratorio) / "la más baja" (práctica)
+        const art = lab ? 'el' : 'la';
+        const nombre = (x) => `${etiquetaDeVariable(x.v, evaluaciones)} (${x.nota})`;
+        if (!pendientes.length) {
+            frases.push(g.cantidad === 1
+                ? `Se descarta tu ${nombre(bajas[0])}: es ${art} más ${bajo} de tus ${plural}.`
+                : `Se descartan tus ${g.cantidad} ${plural} más ${bajo}s: ${unir(bajas.map(nombre))}.`);
+        } else {
+            const pend = unir(pendientes.map((x) => etiquetaConArticulo(x, evaluaciones)));
+            const verbo = pendientes.length > 1 ? 'solo suman si superan' : 'solo suma si supera';
+            frases.push(g.cantidad === 1
+                ? `Hoy se descartaría tu ${nombre(bajas[0])}, ${art} más ${bajo} de tus ${plural}. ${mayuscula(pend)} ${verbo} ese valor.`
+                : `Hoy se descartarían tus ${bajas.length} ${plural} más ${bajo}s: ${unir(bajas.map(nombre))}. ${mayuscula(pend)} ${verbo} esos valores.`);
+        }
+    }
+    return frases;
+}
+
 /* ---------- Cursos que se abren al aprobar (cadena completa del plan) ----------
    `cursos`: los del Avance Curricular ya procesado (progreso-carrera.js):
    [{ codigo, creditos, estado, prereq: [{ code }] }]. Cuenta los cursos que
@@ -124,7 +173,8 @@ export function cursosQueAbre(cursos, codigo) {
 export function analizarCurso({ formulaPP = null, formulaFinal = null, valores = {}, evaluaciones = [], simulados = {} } = {}) {
     const tendencia = tendenciaDeCurso(evaluaciones, simulados);
     const serie = evaluacionesEnOrden(evaluaciones, simulados).filter((e) => e.nota !== null).map((e) => e.nota);
-    const base = { tendencia, serie, razones: [], pendientes: [], publicado: null, necesita: null, importante: null };
+    const base = { tendencia, serie, razones: [], pendientes: [], publicado: null, necesita: null, importante: null,
+        descartes: formulaPP ? describirDescartes(formulaPP, valores, evaluaciones) : [] };
 
     if (!formulaFinal) return { ...base, estado: ESTADOS.sinformula, tipo: 'sinformula' };
 
@@ -216,7 +266,10 @@ export function analizarCurso({ formulaPP = null, formulaFinal = null, valores =
         const minimo = (x - media >= BRECHA_REMONTAR) ? ESTADOS.remontar : ESTADOS.limite;
         if (minimo.orden < estado.orden) estado = minimo;
     }
-    const resultado = { ...base, estado, tipo: 'normal', necesita: x, media, ritmoNF, sinRendir: conCero };
+    // Necesitar 19 o 20 en lo que falta es, en la práctica, no tener salida: se dice sin rodeos.
+    const casiImposible = x > CORTE_CRITICO;
+    if (casiImposible) estado = ESTADOS.fuera;
+    const resultado = { ...base, estado, tipo: casiImposible ? 'casi' : 'normal', necesita: x, media, ritmoNF, sinRendir: conCero };
     if (pendientes.length === 1 && x > 0) {
         const anterior = conUniforme(x - 1);
         resultado.conUnoMenos = { nota: x - 1, notaFinal: anterior };
@@ -240,7 +293,7 @@ export function textoAnalisis(a) {
             razones.push(a.estado.clave === 'asegurado' ? 'Ya tienes todas las notas y llegas a 10.' : 'Ya tienes todas las notas y no llegas a 10.');
             queHacer = a.estado.clave === 'asegurado'
                 ? 'Tu curso está aprobado con las notas que ya tienes.'
-                : 'Con las notas actuales el curso no llega a 10. Revisa las opciones que te da tu universidad.';
+                : 'Con las notas actuales el curso no llega a 10. Decide a tiempo: conversa con tu profesor y revisa las opciones que te da tu facultad.';
             break;
         case 'sustitutorio':
             tile = { valor: String(a.necesita), sub: 'en el examen sustitutorio, sobre 20' };
@@ -257,7 +310,7 @@ export function textoAnalisis(a) {
         case 'fuera':
             tile = { valor: '> 20', sub: 'ni con 20 en lo que falta llegas a 10' };
             razones.push(`Aun sacando 20 en todo lo que falta, tu nota final sería ${a.maximoPosible.toFixed(1)}.`);
-            queHacer = 'Con las notas actuales el curso no llega a 10. Conversa con tu profesor o revisa las opciones de tu universidad.';
+            queHacer = 'Con las notas actuales el curso no llega a 10. Decide a tiempo: conversa con tu profesor y revisa las opciones que te da tu facultad.';
             break;
         case 'esperando':
             tile = { valor: '—', sub: 'aún no hay notas suficientes' };
@@ -271,11 +324,14 @@ export function textoAnalisis(a) {
             queHacer = 'En cuanto haya una fórmula, el Radar se activa solo.';
             break;
         default: {
+            const critico = a.tipo === 'casi';
             const sub = unico ? `en ${unico}, sobre 20` : 'de promedio en lo que falta, sobre 20';
-            tile = { valor: String(a.necesita), sub };
-            razones.push(unico
-                ? `Para aprobar necesitas ${a.necesita} en ${unico}.`
-                : `Para aprobar necesitas un promedio de ${a.necesita} en lo que falta.`);
+            tile = { valor: String(a.necesita), sub: critico ? `${sub}: casi la nota máxima` : sub };
+            razones.push(critico
+                ? `Para aprobar necesitarías ${a.necesita} de 20 ${unico ? `en ${unico}` : 'de promedio en lo que falta'}: casi la nota máxima.`
+                : (unico
+                    ? `Para aprobar necesitas ${a.necesita} en ${unico}.`
+                    : `Para aprobar necesitas un promedio de ${a.necesita} en lo que falta.`));
             // Igual que "Nota actual" en tu tarjeta: lo que no se rinde cuenta 0. Solo se dice cuando
             // lo que falta son prácticas, monografías o laboratorios (si falta un examen, no es una nota actual).
             const soloNoExamenes = a.pendientes.every((v) => /^N\d+$/.test(v));
@@ -287,9 +343,11 @@ export function textoAnalisis(a) {
             }
             if (a.conUnoMenos) razones.push(`Con ${a.conUnoMenos.nota} te quedas en ${a.conUnoMenos.notaFinal.toFixed(1)}: la universidad no redondea.`);
             if (a.importante) razones.push(`${mayuscula(a.importante.articulado)} pesa ${pct(a.importante.peso)}% de tu nota.`);
-            queHacer = a.importante
-                ? `Prioriza ${a.importante.articulado}: es lo que más pesa de lo que falta. ${unico ? `Con ${a.necesita} apruebas.` : `Necesitas un promedio de ${a.necesita} en lo que falta.`}`
-                : `Necesitas un promedio de ${a.necesita} en lo que falta.`;
+            queHacer = critico
+                ? 'Aprobar es prácticamente imposible con las notas actuales. Decide a tiempo: conversa con tu profesor y revisa las opciones que te da tu facultad.'
+                : (a.importante
+                    ? `Prioriza ${a.importante.articulado}: es lo que más pesa de lo que falta. ${unico ? `Con ${a.necesita} apruebas.` : `Necesitas un promedio de ${a.necesita} en lo que falta.`}`
+                    : `Necesitas un promedio de ${a.necesita} en lo que falta.`);
         }
     }
 
@@ -300,7 +358,7 @@ export function textoAnalisis(a) {
         else razones.push(`Tus evaluaciones se mantienen parejas: ${serieTexto(a.serie)}.`);
     }
 
-    return { razones: razones.slice(0, 3), queHacer, tile };
+    return { razones: razones.slice(0, 3), queHacer, tile, descartes: a.descartes || [] };
 }
 
 /* ---------- Orden de atención ----------
