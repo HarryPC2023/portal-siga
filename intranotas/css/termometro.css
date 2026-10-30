@@ -97,25 +97,14 @@
     flex: 0 0 auto;
 }
 
-.termo__chip--sube {
-    --termo-color: #2F6BFF;
-    --termo-texto: #1F4FD1;
-}
-
-.termo__chip--baja {
-    --termo-color: #FF6A00;
-    --termo-texto: #C2410C;
-}
-
-.termo__chip--estable {
-    --termo-color: #8A2BE2;
-    --termo-texto: #6600CC;
-}
-
-.termo__chip--sin {
-    --termo-color: #CFC8E0;
-    --termo-texto: var(--ink-soft);
-}
+.termo__chip--sube    { --termo-color: #2F6BFF; --termo-texto: #1F4FD1; }
+.termo__chip--baja    { --termo-color: #FF6A00; --termo-texto: #C2410C; }
+.termo__chip--estable { --termo-color: #8A2BE2; --termo-texto: #6600CC; }
+.termo__chip--sin     { --termo-color: #CFC8E0; --termo-texto: var(--ink-soft); }
+/* Atención: manda la situación (rojo), pase lo que pase con la tendencia. */
+.termo__chip--atencion { --termo-color: #E5484D; --termo-texto: #B42318; }
+/* Crítico: casi no hay salida (más oscuro que "necesita remontar"). */
+.termo__chip--critico { --termo-color: #B42318; --termo-texto: #8E1B12; }
 
 /* Con notas simuladas: borde punteado y etiqueta, para no confundirlo con lo real. */
 .termo__chip--sim {
@@ -142,16 +131,27 @@
     color: var(--ink-soft);
 }
 
-/* Aviso de atención: el curso necesita remontar, aunque su tendencia sea buena
-   (puedes ir subiendo y aun así estar lejos de aprobar). */
-.termo__atencion {
-    font-size: 11px;
+/* Con atención, la banda de abajo lleva dos líneas: la situación (en rojo) y, más
+   chica y sin color de buena noticia, la tendencia. */
+.termo__estado--atencion {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.termo__situacion {
+    font-size: 12px;
     font-weight: 700;
-    padding: 1px 7px;
-    border-radius: 6px;
-    background: #FDECEC;
-    color: #B42318;
-    border: 1px solid #E5484D;
+    color: var(--termo-texto, #B42318);
+}
+
+.termo__tend-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-soft);
 }
 
 /* Celular: una sola fila que se desliza de lado, para no empujar las tarjetas. */

@@ -1157,7 +1157,7 @@ function actualizarTermometro() {
             sigla: siglaDeCurso(curso.codigo_curso),
             tendencia: analisis.tendencia,
             // "Atención": el curso necesita remontar o no llega a 10 con lo que hay.
-            atencion: ['remontar', 'fuera'].includes(analisis.estado.clave),
+            estadoTexto: analisis.estado.texto,
         };
     });
     pintarTermometro(contenedor, items, (id) => resaltarTarjeta(`curso-card-${id}`));

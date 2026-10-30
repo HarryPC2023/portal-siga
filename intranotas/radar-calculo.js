@@ -25,13 +25,13 @@ export const BRECHA_REMONTAR = 4;      // si con tu ritmo actual no apruebas y t
 
 /* ---- Estados (clave, texto, orden de atención: menor = más urgente) ---- */
 export const ESTADOS = {
-    fuera:       { clave: 'fuera',       texto: 'Fuera de alcance',  orden: 0 },
-    remontar:    { clave: 'remontar',    texto: 'Necesita remontar', orden: 1 },
-    limite:      { clave: 'limite',      texto: 'Cerca del límite',  orden: 2 },
-    margen:      { clave: 'margen',      texto: 'Con margen',        orden: 3 },
-    asegurado:   { clave: 'asegurado',   texto: 'Asegurado',         orden: 4 },
-    esperando:   { clave: 'esperando',   texto: 'Esperando notas',   orden: 5 },
-    sinformula:  { clave: 'sinformula',  texto: 'Sin fórmula aún',   orden: 6 },
+    fuera: { clave: 'fuera', texto: 'Fuera de alcance', orden: 0 },
+    remontar: { clave: 'remontar', texto: 'Necesita remontar', orden: 1 },
+    limite: { clave: 'limite', texto: 'Cerca del límite', orden: 2 },
+    margen: { clave: 'margen', texto: 'Con margen', orden: 3 },
+    asegurado: { clave: 'asegurado', texto: 'Asegurado', orden: 4 },
+    esperando: { clave: 'esperando', texto: 'Esperando notas', orden: 5 },
+    sinformula: { clave: 'sinformula', texto: 'Sin fórmula aún', orden: 6 },
 };
 
 const esNula = (v) => v === null || v === undefined || Number.isNaN(v);
@@ -216,7 +216,7 @@ export function analizarCurso({ formulaPP = null, formulaFinal = null, valores =
         const minimo = (x - media >= BRECHA_REMONTAR) ? ESTADOS.remontar : ESTADOS.limite;
         if (minimo.orden < estado.orden) estado = minimo;
     }
-    const resultado = { ...base, estado, tipo: 'normal', necesita: x, media, ritmoNF };
+    const resultado = { ...base, estado, tipo: 'normal', necesita: x, media, ritmoNF, sinRendir: conCero };
     if (pendientes.length === 1 && x > 0) {
         const anterior = conUniforme(x - 1);
         resultado.conUnoMenos = { nota: x - 1, notaFinal: anterior };
@@ -276,6 +276,12 @@ export function textoAnalisis(a) {
             razones.push(unico
                 ? `Para aprobar necesitas ${a.necesita} en ${unico}.`
                 : `Para aprobar necesitas un promedio de ${a.necesita} en lo que falta.`);
+            // Igual que "Nota actual" en tu tarjeta: lo que no se rinde cuenta 0. Solo se dice cuando
+            // lo que falta son prácticas, monografías o laboratorios (si falta un examen, no es una nota actual).
+            const soloNoExamenes = a.pendientes.every((v) => /^N\d+$/.test(v));
+            if (soloNoExamenes && a.sinRendir !== null && a.sinRendir !== undefined && a.sinRendir < UMBRAL_APROBAR) {
+                razones.push(`Si no rindes lo que falta, tu nota quedaría en ${a.sinRendir.toFixed(1)}.`);
+            }
             if (a.ritmoNF !== null && a.ritmoNF !== undefined && a.ritmoNF < UMBRAL_APROBAR) {
                 razones.push(`Con tu ritmo actual (promedio ${a.media} en lo publicado) terminarías en ${a.ritmoNF.toFixed(1)}.`);
             }
