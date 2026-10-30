@@ -1,9 +1,12 @@
 /* ============================================================
    TERMÓMETRO — franja "Cómo van tus cursos" (beta).
    Va en css/termometro.css; se carga desde notas.html.
-   Cada tarjeta lleva el color de su tendencia en el borde y en la
-   banda de abajo: azul = subiendo, naranja = bajando, morado = estable.
-   (Azul y naranja se distinguen bien incluso con daltonismo.)
+   Cinco estados, UN color por tarjeta (borde neón, relleno suave del nombre e insignia):
+     azul = Subiendo · morado = Estable · rojo = Bajando
+     amarillo (con filo negro y triángulo de advertencia) = Situación crítica
+     gris = Esperando notas
+   Los textos van un tono más oscuro del mismo color solo para que se lean sobre blanco.
+   Nada depende solo del color: cada estado tiene su palabra y su símbolo.
    ============================================================ */
 .termo {
     margin-bottom: 20px;
@@ -22,7 +25,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
     grid-auto-rows: 1fr;
-    gap: 10px;
+    gap: 12px;
 }
 
 .termo__chip {
@@ -30,9 +33,9 @@
     flex-direction: column;
     text-align: left;
     background: #fff;
-    border: 2px solid var(--termo-color, #CFC8E0);
+    border: 3px solid var(--termo-color, #A39CC0);
     border-radius: 12px;
-    box-shadow: var(--sombra-tarjeta, 0 2px 10px rgba(0, 0, 0, 0.08));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--termo-color, #A39CC0) 18%, transparent), var(--sombra-tarjeta, 0 2px 10px rgba(0, 0, 0, 0.08));
     padding: 0;
     overflow: hidden;
     font-family: inherit;
@@ -43,10 +46,10 @@
 .termo__chip:hover,
 .termo__chip:focus-visible {
     transform: translateY(-1px);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--termo-color, #CFC8E0) 28%, transparent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--termo-color, #A39CC0) 28%, transparent);
 }
 
-/* Zona del nombre: lleva el fondo de color de la tendencia. */
+/* Zona del nombre: relleno suave del color del estado. */
 .termo__cuerpo {
     display: flex;
     flex-direction: column;
@@ -54,10 +57,10 @@
     flex: 1;
     gap: 5px;
     padding: 10px 12px;
-    background: color-mix(in srgb, var(--termo-color, #CFC8E0) 13%, #fff);
+    background: color-mix(in srgb, var(--termo-color, #A39CC0) 11%, #fff);
 }
 
-/* El nombre completo se reparte hasta en 3 líneas (letra pequeña para que quepa). */
+/* El nombre completo se reparte hasta en 3 líneas. */
 .termo__nombre {
     font-size: 11px;
     font-weight: 600;
@@ -80,32 +83,73 @@
     color: var(--brand-morado);
 }
 
-/* Estado de la tendencia: sobre blanco, alineado a la derecha. */
+/* Banda inferior: insignia + palabra del estado (y, si aplica, "fórmula estimada"). */
 .termo__estado {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    padding: 7px 12px 8px;
+    background: #fff;
+    color: var(--termo-texto, var(--ink-soft));
+}
+
+.termo__linea {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     flex-wrap: wrap;
-    gap: 6px;
-    padding: 7px 12px;
-    background: #fff;
-    color: var(--termo-texto, var(--ink-soft));
-    font-size: 11px;
-    font-weight: 600;
+    gap: 7px;
 }
 
-.termo__flecha {
+.termo__palabra {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* Insignia: círculo del color del estado con la flecha adentro. */
+.termo__ins {
+    width: 30px;
+    height: 30px;
     flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--termo-color, #A39CC0) 12%, #fff);
+    border: 2px solid var(--termo-color, #A39CC0);
+    color: var(--termo-color, #A39CC0);
 }
 
-.termo__chip--sube    { --termo-color: #2F6BFF; --termo-texto: #1F4FD1; }
-.termo__chip--baja    { --termo-color: #FF6A00; --termo-texto: #C2410C; }
-.termo__chip--estable { --termo-color: #8A2BE2; --termo-texto: #6600CC; }
-.termo__chip--sin     { --termo-color: #CFC8E0; --termo-texto: var(--ink-soft); }
-/* Atención: manda la situación (rojo), pase lo que pase con la tendencia. */
-.termo__chip--atencion { --termo-color: #E5484D; --termo-texto: #B42318; }
-/* Crítico: casi no hay salida (más oscuro que "necesita remontar"). */
-.termo__chip--critico { --termo-color: #B42318; --termo-texto: #8E1B12; }
+/* Triángulo de advertencia y reloj van sin círculo. */
+.termo__ins--sola {
+    width: auto;
+    border: none;
+    background: transparent;
+}
+
+.termo__chip--sube    { --termo-color: #2979FF; --termo-texto: #1550C7; }
+.termo__chip--estable { --termo-color: #B026FF; --termo-texto: #7A12B8; }
+.termo__chip--baja    { --termo-color: #FF1744; --termo-texto: #C4102F; }
+.termo__chip--espera  { --termo-color: #A39CC0; --termo-texto: #5b5478; }
+
+/* Situación crítica: borde amarillo neón más grueso, con un filo negro fino por fuera
+   (como las señales de advertencia reales; sin el filo, el amarillo casi no se ve). */
+.termo__chip--critico {
+    --termo-color: #FFE100;
+    --termo-texto: #1b1233;
+    border: 4px solid #FFE100;
+    box-shadow: 0 0 0 2px #1b1233, 0 3px 12px rgba(0, 0, 0, 0.2);
+}
+
+.termo__chip--critico .termo__cuerpo {
+    background: #FFF8C2;
+}
+
+.termo__chip--critico:hover,
+.termo__chip--critico:focus-visible {
+    box-shadow: 0 0 0 2px #1b1233, 0 5px 16px rgba(0, 0, 0, 0.28);
+}
 
 /* Con notas simuladas: borde punteado y etiqueta, para no confundirlo con lo real. */
 .termo__chip--sim {
@@ -121,6 +165,13 @@
     color: var(--brand-morado);
 }
 
+.termo__estimado {
+    font-size: 10.5px;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--ink-soft);
+}
+
 /* Aviso mientras ningún curso tiene todavía 3 evaluaciones con nota. */
 .termo__vacio {
     margin: 0;
@@ -132,43 +183,12 @@
     color: var(--ink-soft);
 }
 
-/* Con atención, la banda de abajo lleva dos líneas: la situación (en rojo) y, más
-   chica y sin color de buena noticia, la tendencia. */
-.termo__estado--atencion {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-}
-
-.termo__situacion {
-    white-space: nowrap;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--termo-texto, #B42318);
-}
-
-.termo__estimado {
-    font-size: 10.5px;
-    font-weight: 600;
-    font-style: italic;
-    color: var(--ink-soft);
-}
-
-.termo__tend-mini {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--ink-soft);
-}
-
 /* Celular: una sola fila que se desliza de lado, para no empujar las tarjetas. */
 @media (max-width: 899px) {
     .termo__lista {
         display: flex;
         overflow-x: auto;
-        padding-bottom: 6px;
+        padding: 4px 4px 8px;
         -webkit-overflow-scrolling: touch;
     }
 
@@ -181,10 +201,4 @@
 .curso-card--resaltada {
     outline: 2px solid var(--brand-morado);
     outline-offset: 2px;
-}
-
-/* Beta: borde cian en las tarjetas de curso de abajo. Solo se activa cuando
-   <body> tiene la clase "beta" (la pone notas.js si esBeta() es verdadero). */
-body.beta .curso-card {
-    border: 2px solid #00BFD0;
 }

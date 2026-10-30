@@ -35,6 +35,26 @@ export const ESTADOS = {
     sinformula:  { clave: 'sinformula',  texto: 'Sin fórmula aún',   orden: 6 },
 };
 
+/* ---------- Categoría del termómetro: SOLO cinco ----------
+   El termómetro mide el NIVEL del curso, como uno de fiebre: un curso en riesgo nunca puede
+   mostrarse como "Subiendo" o "Estable", aunque sus notas suban. Por eso la situación manda:
+     critico → "Situación crítica"   (no hay salida realista: se debe decidir a tiempo)
+     baja    → "Bajando"             (notas que bajan, o necesita remontar / está cerca del límite)
+     espera  → "Esperando notas"     (aún no hay datos suficientes para opinar)
+     sube / estable                  (solo cuando el nivel es bueno: tendencia de notas) */
+export const TEXTO_CATEGORIA = {
+    sube: 'Subiendo', estable: 'Estable', baja: 'Bajando', critico: 'Situación crítica', espera: 'Esperando notas',
+};
+
+export function categoriaTermometro(analisis) {
+    const e = analisis.estado.clave;
+    const t = analisis.tendencia.clave;
+    if (e === 'fuera') return 'critico';
+    if (e === 'remontar' || e === 'limite') return 'baja';
+    if (e === 'esperando' || e === 'sinformula' || t === 'sin') return 'espera';
+    return t === 'sube' ? 'sube' : t === 'baja' ? 'baja' : 'estable';
+}
+
 const esNula = (v) => v === null || v === undefined || Number.isNaN(v);
 
 /* ---------- Evaluación segura de la fórmula ---------- */

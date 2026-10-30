@@ -25,7 +25,7 @@ import { construirValoresFormula, notaComoNumero, clasificarExamen } from './for
 import { FACULTADES } from './facultades-datos.js';
 import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.js';
 import { esBeta } from './beta-siga.js';
-import { analizarCurso } from './radar-calculo.js';
+import { analizarCurso, categoriaTermometro } from './radar-calculo.js';
 import { pintarTermometro, resaltarTarjeta } from './termometro-ui.js';
 import { montarRadar } from './radar-ui.js';
 import { siglaDeCurso } from './siglas-cursos.js';
@@ -1157,9 +1157,9 @@ function actualizarTermometro() {
             nombre: nombreCursoLindo(curso),
             sigla: siglaDeCurso(curso.codigo_curso),
             tendencia: analisis.tendencia,
-            // "Atención": el curso necesita remontar o no llega a 10 con lo que hay.
+            // Una de cinco: sube, estable, baja, critico o espera (el nivel del curso manda sobre la tendencia).
+            categoria: categoriaTermometro(analisis),
             estadoTexto: analisis.estado.texto,
-            critico: analisis.estado.clave === 'fuera',
             estimado: formula?.fuentePP === 'estimada',
         };
     });

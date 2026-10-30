@@ -12,7 +12,8 @@
 //   devuelve { insertarBoton, abrir, cerrar }
 import { construirProgresoCarrera } from './progreso-carrera.js';
 import { escaparHtml, soltarFocoDe } from './progreso-carrera-ui.js';
-import { analizarCurso, textoAnalisis, cursosQueAbre, ordenarPorPrioridad } from './radar-calculo.js';
+import { analizarCurso, textoAnalisis, cursosQueAbre, ordenarPorPrioridad, categoriaTermometro } from './radar-calculo.js';
+import { svgTrianguloAlerta } from './termometro-ui.js';
 
 // Flechas de la tendencia (las mismas del Termómetro).
 const FLECHA = {
@@ -36,7 +37,11 @@ function tarjetaEstado(item) {
 export function htmlSelector(items, seleccionado, orden) {
     return items.map((it, i) => {
         const a = it.analisis;
-        const flecha = a.tendencia.clave !== 'sin' ? `<span class="rd-mini-flecha rd-t-${a.tendencia.clave}">${svgFlecha(a.tendencia.clave, 16)}</span>` : '';
+        // Misma regla que la franja del Termómetro: un curso en riesgo no muestra "Subiendo" ni "Estable".
+        const cat = categoriaTermometro(a);
+        const flecha = ['sube', 'estable', 'baja'].includes(cat)
+            ? `<span class="rd-mini-flecha rd-t-${cat}">${svgFlecha(cat === 'sube' ? 'sube' : cat === 'baja' ? 'baja' : 'estable', 16)}</span>`
+            : (cat === 'critico' ? `<span class="rd-mini-flecha">${svgTrianguloAlerta(20)}</span>` : '');
         return `<button type="button" class="rd-chip rd-e-${a.estado.clave}${it.id === seleccionado ? ' rd-chip--activo' : ''}" data-id="${escaparHtml(String(it.id))}" aria-pressed="${it.id === seleccionado}">
             <span class="rd-chip__nombre">${orden === 'prioridad' ? `<span class="rd-chip__num">${i + 1}</span>` : ''}${escaparHtml(it.nombre)}</span>
             <span class="rd-chip__estado">${escaparHtml(a.estado.texto)}${flecha}</span>
@@ -56,9 +61,13 @@ export function htmlDetalle(item) {
         ? '<p class="rd-estimado">Ojo: esta situación usa una fórmula de prácticas estimada con las reglas generales de la UNI. Puede cambiar cuando INTRALU publique la real al cerrar el ciclo.</p>'
         : '';
     const tend = a.tendencia;
+    // En un curso en riesgo, "Subiendo" o "Estable" engañarían: se muestran solo las notas, sin veredicto.
+    const enRiesgo = ['remontar', 'limite', 'fuera'].includes(a.estado.clave);
     const tendValor = tend.clave === 'sin'
         ? '<span class="rd-sin">Aún sin tendencia</span>'
-        : `<span class="rd-t-${tend.clave} rd-tend">${svgFlecha(tend.clave)}<span>${escaparHtml(tend.texto)}</span></span>`;
+        : (enRiesgo && tend.clave !== 'baja')
+            ? '<span class="rd-sin">Tus notas</span>'
+            : `<span class="rd-t-${tend.clave} rd-tend">${svgFlecha(tend.clave)}<span>${escaparHtml(tend.texto)}</span></span>`;
     const tendSub = a.serie.length >= 3 ? escaparHtml(a.serie.slice(0, 6).join(' → ')) : 'Se necesitan 3 evaluaciones con nota.';
 
     let abre;
@@ -77,7 +86,7 @@ export function htmlDetalle(item) {
             <h3 class="rd-detalle__nombre">${escaparHtml(item.nombre)}</h3>
             <div class="rd-detalle__meta">
                 ${item.creditos ? `<span>${item.creditos} créditos</span>` : ''}${categoria}${simulado}
-                <span class="rd-estado-grande rd-e-${a.estado.clave}">${escaparHtml(a.estado.texto)}</span>
+                <span class="rd-estado-grande rd-e-${a.estado.clave}">${a.estado.clave === 'fuera' ? `${svgTrianguloAlerta(20)} ` : ''}${escaparHtml(a.estado.texto)}</span>
             </div>
         </header>
 
@@ -92,7 +101,7 @@ export function htmlDetalle(item) {
 
         <section class="rd-seccion">
             <h4 class="rd-seccion__t">Por qué aparece aquí</h4>
-             <ul class="rd-razones">${t.razones.map((r) => `<li>${escaparHtml(r)}</li>`).join('')}</ul>
+            <ul class="rd-razones">${t.razones.map((r) => `<li>${escaparHtml(r)}</li>`).join('')}</ul>
             ${descartes}${estimado}
         </section>
 
