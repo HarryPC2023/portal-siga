@@ -43,13 +43,15 @@ export function pintarTermometro(contenedor, items, alElegir) {
         const sigla = it.sigla ? `<span class="termo__sigla">${escaparHtml(it.sigla)}</span>` : '';
         const simulado = t.simulada ? '<span class="termo__sim">Simulado</span>' : '';
         const clase = it.critico ? 'critico' : it.atencion ? 'atencion' : t.clave;
+        const estimado = it.atencion && it.estimado
+            ? '<span class="termo__estimado" title="Calculado con una fórmula de prácticas estimada; puede cambiar cuando INTRALU publique la real">fórmula estimada</span>' : '';
         const situacion = it.estadoTexto || 'Necesita atención';
-        const etiqueta = `${it.nombre}: ${it.atencion ? situacion + '. ' : ''}${t.texto}${t.simulada ? ' (con notas simuladas)' : ''}`;
+        const etiqueta = `${it.nombre}: ${it.atencion ? situacion + (it.estimado ? ' (fórmula estimada)' : '') + '. ' : ''}${t.texto}${t.simulada ? ' (con notas simuladas)' : ''}`;
 
         // Con atención: primero la situación (en rojo); la tendencia queda como dato aparte.
         const estado = it.atencion
             ? `<span class="termo__situacion">${escaparHtml(situacion)}</span>
-               <span class="termo__tend-mini">${t.clave === 'sin' ? '' : flecha(t.clave, 16)}<span>${escaparHtml(t.texto)}</span>${simulado}</span>`
+               <span class="termo__tend-mini">${t.clave === 'sin' ? '' : flecha(t.clave, 16)}<span>${escaparHtml(t.texto)}</span>${simulado}</span>${estimado}`
             : `${flecha(t.clave)}<span>${escaparHtml(t.texto)}</span>${simulado}`;
 
         return `<button type="button" class="termo__chip termo__chip--${clase}${t.simulada ? ' termo__chip--sim' : ''}"

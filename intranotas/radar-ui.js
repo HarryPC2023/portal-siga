@@ -51,6 +51,10 @@ function tile(etiqueta, valor, sub, extra = '', claseValor = '') {
 export function htmlDetalle(item) {
     const a = item.analisis;
     const t = textoAnalisis(a);
+    const descartes = (t.descartes || []).map((d) => `<p class="rd-descarte">${escaparHtml(d)}</p>`).join('');
+    const estimado = item.fuentePP === 'estimada' && ['remontar', 'fuera'].includes(a.estado.clave)
+        ? '<p class="rd-estimado">Ojo: esta situación usa una fórmula de prácticas estimada con las reglas generales de la UNI. Puede cambiar cuando INTRALU publique la real al cerrar el ciclo.</p>'
+        : '';
     const tend = a.tendencia;
     const tendValor = tend.clave === 'sin'
         ? '<span class="rd-sin">Aún sin tendencia</span>'
@@ -88,7 +92,8 @@ export function htmlDetalle(item) {
 
         <section class="rd-seccion">
             <h4 class="rd-seccion__t">Por qué aparece aquí</h4>
-            <ul class="rd-razones">${t.razones.map((r) => `<li>${escaparHtml(r)}</li>`).join('')}</ul>
+             <ul class="rd-razones">${t.razones.map((r) => `<li>${escaparHtml(r)}</li>`).join('')}</ul>
+            ${descartes}${estimado}
         </section>
 
         <section class="rd-seccion">

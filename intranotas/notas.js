@@ -185,6 +185,7 @@ function cursosParaRadar() {
             formulaFinal: formula?.formula_nota_final ?? null,
             avisoFormula: htmlAvisoFormulaCorto(formula),
             haySimulacion: haySimulacionActiva(curso),
+            fuentePP: formula?.fuentePP ?? null,
         };
     });
 }
@@ -1159,6 +1160,7 @@ function actualizarTermometro() {
             // "Atención": el curso necesita remontar o no llega a 10 con lo que hay.
             estadoTexto: analisis.estado.texto,
             critico: analisis.estado.clave === 'fuera',
+            estimado: formula?.fuentePP === 'estimada',
         };
     });
     pintarTermometro(contenedor, items, (id) => resaltarTarjeta(`curso-card-${id}`));
