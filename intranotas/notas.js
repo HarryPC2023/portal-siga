@@ -27,6 +27,7 @@ import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.j
 import { esBeta } from './beta-siga.js';
 import { tendenciaDeCurso } from './analisis-academico.js';
 import { pintarTermometro, resaltarTarjeta } from './termometro-ui.js';
+import { siglaDeCurso } from './siglas-cursos.js';
 
 const UMBRAL_APROBACION = 10;
 
@@ -1112,6 +1113,7 @@ function actualizarTermometro() {
     const items = cursos.map((curso, idx) => ({
         id: idx,
         nombre: nombreCursoLindo(curso),
+        sigla: siglaDeCurso(curso.codigo_curso),
         tendencia: tendenciaDeCurso(curso.evaluaciones, valoresSimulados[claveSimulacion(curso)] || {}),
     }));
     pintarTermometro(contenedor, items, (id) => resaltarTarjeta(`curso-card-${id}`));
