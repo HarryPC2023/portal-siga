@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!sesion) { window.location.href = 'index.html'; return; }
     usuarioActual = sesion.user;
     modoBeta = esBeta(usuarioActual);
+    document.body.classList.toggle('beta', modoBeta);
 
     await pintarIdentidad(sesion);
     fijarHerramientasEnMovil();
