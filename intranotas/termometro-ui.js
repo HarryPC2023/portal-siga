@@ -20,9 +20,16 @@ function flecha(clave) {
 export function pintarTermometro(contenedor, items, alElegir) {
     if (!contenedor) return;
     const hayAlguna = items.some((it) => it.tendencia && it.tendencia.clave !== 'sin');
-    if (!items.length || !hayAlguna) {
+    if (!items.length) {
         contenedor.hidden = true;
         contenedor.innerHTML = '';
+        return;
+    }
+    if (!hayAlguna) {
+        // Todavía ningún curso llega a 3 prácticas con nota: se avisa cuándo aparecerá.
+        contenedor.hidden = false;
+        contenedor.onclick = null;
+        contenedor.innerHTML = '<p class="termo__titulo">Cómo van tus cursos</p><p class="termo__vacio">Aquí aparecerá cómo van tus cursos cuando alguno tenga 3 prácticas con nota.</p>';
         return;
     }
 

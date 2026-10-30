@@ -57,9 +57,17 @@
     color: var(--ink-soft);
 }
 
-.termo__chip--sube .termo__estado { color: #12703E; }
-.termo__chip--baja .termo__estado { color: var(--acento-amarillo); }
-.termo__chip--sin .termo__estado { color: var(--ink-soft); }
+.termo__chip--sube .termo__estado {
+    color: #12703E;
+}
+
+.termo__chip--baja .termo__estado {
+    color: var(--acento-amarillo);
+}
+
+.termo__chip--sin .termo__estado {
+    color: var(--ink-soft);
+}
 
 /* Con notas simuladas: borde punteado y etiqueta, para no confundirlo con lo real. */
 .termo__chip--sim {
@@ -73,6 +81,17 @@
     border-radius: 6px;
     background: var(--brand-morado-tinte);
     color: var(--brand-morado);
+}
+
+/* Aviso mientras ningún curso tiene todavía 3 prácticas con nota. */
+.termo__vacio {
+    margin: 0;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1.5px dashed var(--brand-morado);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
 }
 
 /* Celular: una sola fila que se desliza de lado, para no empujar las tarjetas. */
