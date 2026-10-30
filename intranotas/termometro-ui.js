@@ -29,7 +29,7 @@ export function pintarTermometro(contenedor, items, alElegir) {
         // Todavía ningún curso llega a 3 prácticas con nota: se avisa cuándo aparecerá.
         contenedor.hidden = false;
         contenedor.onclick = null;
-        contenedor.innerHTML = '<p class="termo__titulo">Cómo van tus cursos</p><p class="termo__vacio">Aquí aparecerá cómo van tus cursos cuando alguno tenga 3 prácticas con nota.</p>';
+        contenedor.innerHTML = '<p class="termo__titulo">Cómo van tus cursos</p><p class="termo__vacio">Aquí aparecerá cómo van tus cursos cuando alguno tenga 3 evaluaciones con nota.</p>';
         return;
     }
 
