@@ -1172,10 +1172,10 @@ function actualizarTermometro() {
             nombre: nombreCursoLindo(curso),
             sigla: siglaDeCurso(curso.codigo_curso),
             tendencia: analisis.tendencia,
-            // Una de cinco: sube, estable, baja, critico o espera (el nivel del curso manda sobre la tendencia).
+            // Una de cinco (sube, estable, baja, critico o espera), según lo que necesitas en lo que falta.
             categoria: categoriaTermometro(analisis),
-            estadoTexto: analisis.estado.texto,
-            veredicto: analisis.veredicto,
+            // Frase que sale al pasar el mouse: la misma de "¿Qué nota necesito para aprobar?".
+            ayuda: analisis.ayuda,
             estimado: formula?.fuentePP === 'estimada',
         };
     });

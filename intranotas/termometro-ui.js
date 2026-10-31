@@ -1,7 +1,7 @@
 // termometro-ui.js — Dibuja la franja "Cómo van tus cursos" (Termómetro).
 // Solo pinta lo que le dan; no calcula nada.
 //   pintarTermometro(contenedor, items, alElegir)
-//     items:     [{ id, nombre, sigla?, categoria, tendencia, estadoTexto?, estimado? }]
+//     items:     [{ id, nombre, sigla?, categoria, tendencia, ayuda?, estimado? }]
 //       categoria: 'sube' | 'estable' | 'baja' | 'critico' | 'espera'  (ver categoriaTermometro en radar-calculo.js)
 //     alElegir:  función(id) que se llama al tocar un curso
 // Cada tarjeta usa UN solo color (borde, relleno suave del nombre e insignia).
@@ -56,11 +56,9 @@ export function pintarTermometro(contenedor, items, alElegir) {
         const estimado = alerta && it.estimado
             ? '<span class="termo__estimado" title="Calculado con una fórmula de prácticas estimada; puede cambiar cuando INTRALU publique la real">fórmula estimada</span>' : '';
         // La ayuda dice lo mismo que la caja "¿Qué nota necesito para aprobar?" de ese curso.
-        const motivo = it.veredicto ? ` (${it.veredicto})`
-            : (alerta && it.estadoTexto && it.estadoTexto !== TEXTO_CATEGORIA[cat] ? ` (${it.estadoTexto})` : '');
+        const motivo = it.ayuda ? ` (${it.ayuda})` : '';
         const etiqueta = `${it.nombre}: ${TEXTO_CATEGORIA[cat]}${motivo}${t.simulada ? ' (con notas simuladas)' : ''}${estimado ? ' (fórmula estimada)' : ''}`;
-        const ayuda = it.veredicto
-            || `${alerta && it.estadoTexto && it.estadoTexto !== TEXTO_CATEGORIA[cat] ? it.estadoTexto + '. ' : ''}${t.detalle}`;
+        const ayuda = it.ayuda || t.detalle;
         return `<button type="button" class="termo__chip termo__chip--${cat}${t.simulada ? ' termo__chip--sim' : ''}"
                 data-id="${escaparHtml(String(it.id))}" title="${escaparHtml(ayuda)}" aria-label="${escaparHtml(etiqueta)}">
                 <span class="termo__cuerpo"><span class="termo__nombre">${escaparHtml(it.nombre)}</span>${sigla}</span>
