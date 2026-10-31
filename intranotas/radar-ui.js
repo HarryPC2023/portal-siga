@@ -39,6 +39,28 @@ const ICONO_OBJETIVO = '<svg viewBox="0 0 24 24" width="22" height="22" fill="no
 
 const MENSAJE_SIN_CURSOS = '<p class="rd-mensaje">No hay cursos de este periodo para analizar.<br>Sincroniza tus notas y el Radar aparecerá acá.</p>';
 
+/* Un punto por cada curso del periodo dentro del radar del encabezado del panel. Cada punto lleva el color
+   de su estado (los mismos de los chips del selector) y se coloca en espiral, siempre dentro del aro:
+   el punto más su brillo no llegan al borde. Tope de 9: con más, se muestran los 9 más urgentes. */
+const COLOR_ESTADO = {
+    fuera: '#FFE100', esfuerzo: '#FF7A00', limite: '#B026FF', enc: '#4FB6FF', fav: '#2979FF', muyfav: '#12B886',
+    esperando: '#AFA9C6', sinformula: '#AFA9C6',
+    sobresaliente: '#12B886', muybuen: '#2979FF', buen: '#4FB6FF', aprobadolimite: '#B026FF', desaprobado: '#FF1744',
+};
+
+export function svgRadarConCursos(px = 46, estados = []) {
+    const lista = estados.slice(0, 9);
+    const puntos = lista.map((clave, i) => {
+        const angulo = i * 2.399963 + 0.6;
+        const radio = 3 + 10.5 * Math.sqrt((i + 0.5) / lista.length);
+        const x = (24 + radio * Math.cos(angulo)).toFixed(1);
+        const y = (24 + radio * Math.sin(angulo)).toFixed(1);
+        const color = COLOR_ESTADO[clave] || '#AFA9C6';
+        return `<circle cx="${x}" cy="${y}" r="4.4" fill="${color}" opacity=".5"/><circle cx="${x}" cy="${y}" r="2.7" fill="${color}" stroke="#fff" stroke-width=".8"/>`;
+    }).join('');
+    return svgRadar(px).replace('</svg>', `${puntos}</svg>`);
+}
+
 /* ---------- HTML (funciones puras, fáciles de probar) ---------- */
 function tarjetaEstado(item) {
     const a = item.analisis;
@@ -151,7 +173,7 @@ export function montarRadar({ obtenerCursos, cargarFilas, obtenerEnCurso = () =>
             <aside id="rd-panel" class="rd-panel" aria-hidden="true" aria-label="Radar académico" inert>
                 <div class="rd-cabecera">
                     <div class="rd-titulo-grupo">
-                        <span class="rd-icono">${svgRadar(38, true)}</span>
+                        <span class="rd-icono" id="rd-icono">${svgRadarConCursos(46)}</span>
                         <div class="rd-titulo">Radar académico</div>
                         <span class="rd-beta">Beta</span>
                     </div>
@@ -236,6 +258,7 @@ export function montarRadar({ obtenerCursos, cargarFilas, obtenerEnCurso = () =>
         cuerpo.innerHTML = '<p class="rd-mensaje">Armando tu radar…</p>';
         try {
             await prepararDatos();
+            $('rd-icono').innerHTML = svgRadarConCursos(46, ordenarPorPrioridad(items).map((it) => it.analisis.estado.clave));
             pintar();
         } catch (error) {
             console.error('Radar académico:', error);
