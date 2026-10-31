@@ -24,6 +24,17 @@ const FLECHA = {
 const svgFlecha = (clave, px = 22) => (FLECHA[clave]
     ? `<svg viewBox="0 0 24 24" width="${px}" height="${px}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${FLECHA[clave]}</svg>` : '');
 
+/* Ícono del Radar: el radar circular de siempre, en verde neón. El aro exterior es casi negro (no negro puro)
+   para que resalte sobre el fondo blanco de la página. Sin ids internos, así se puede repetir en la página.
+   `conPuntos` agrega dos destellos: solo se ven bien a partir de ~36 px, por eso el botón del lateral no los lleva. */
+export function svgRadar(px = 22, conPuntos = false) {
+    const V = '#1AFF4D';
+    const puntos = conPuntos
+        ? `<circle cx="31.5" cy="31" r="2.6" fill="${V}" opacity=".28"/><circle cx="31.5" cy="31" r="1.35" fill="#C9FFD6"/><circle cx="17" cy="19" r="2.4" fill="${V}" opacity=".28"/><circle cx="17" cy="19" r="1.2" fill="#C9FFD6"/>`
+        : '';
+    return `<svg class="rd-radar-ico" viewBox="0 0 48 48" width="${px}" height="${px}" aria-hidden="true" focusable="false"><circle cx="24" cy="24" r="23.2" fill="#0D1410"/><circle cx="24" cy="24" r="19.6" fill="#06200F" stroke="${V}" stroke-width="2.6"/><circle cx="24" cy="24" r="12.6" fill="none" stroke="${V}" stroke-width="1.1" opacity=".85"/><circle cx="24" cy="24" r="6.2" fill="none" stroke="${V}" stroke-width="1.1" opacity=".85"/><path d="M24 4.4V43.6M4.4 24H43.6" stroke="${V}" stroke-width="1.1" opacity=".85"/><path d="M24 24L27.3 5.3A18.4 18.4 0 0 1 40.2 14.4Z" fill="${V}" opacity=".42"/><path d="M24 24L27.3 5.3A18.4 18.4 0 0 1 33.5 6.9Z" fill="${V}" opacity=".35"/><path d="M24 24L27.3 5.3" stroke="${V}" stroke-width="1.8" stroke-linecap="round"/>${puntos}</svg>`;
+}
+
 const ICONO_OBJETIVO = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.8"/></svg>';
 
 const MENSAJE_SIN_CURSOS = '<p class="rd-mensaje">No hay cursos de este periodo para analizar.<br>Sincroniza tus notas y el Radar aparecerá acá.</p>';
@@ -58,6 +69,10 @@ export function htmlDetalle(item) {
     const estimado = item.fuentePP === 'estimada' && ['esfuerzo', 'fuera'].includes(a.estado.clave)
         ? '<p class="rd-estimado">Ojo: esta situación usa una fórmula de prácticas estimada con las reglas generales de la UNI. Puede cambiar cuando INTRALU publique la real al cerrar el ciclo.</p>'
         : '';
+    // El aviso corto de la fórmula solo aporta cuando la fórmula es ESTIMADA (y si la situación ya es de esfuerzo o
+    // crítica, eso ya se dijo arriba en "Ojo"). Con una fórmula real de un ciclo anterior no cambia nada: ya se explica
+    // completa dentro de la tarjeta del curso.
+    const avisoPie = item.fuentePP === 'estimada' && !estimado ? (item.avisoFormula || '') : '';
     const tend = a.tendencia;
     // En un curso en riesgo, "Subiendo" o "Estable" engañarían: se muestran solo las notas, sin veredicto.
     // Y en un curso casi aprobado, "Bajando" asustaría sin motivo: el nivel manda.
@@ -81,7 +96,6 @@ export function htmlDetalle(item) {
 
     return `
     <article class="rd-detalle rd-e-${a.estado.clave}" aria-live="polite">
-        <div class="rd-detalle__barra"></div>
         <header class="rd-detalle__cab">
             <h3 class="rd-detalle__nombre">${escaparHtml(item.nombre)}</h3>
             <div class="rd-detalle__meta">
@@ -100,7 +114,7 @@ export function htmlDetalle(item) {
         </section>
 
         <section class="rd-seccion">
-            <h4 class="rd-seccion__t">Por qué aparece aquí</h4>
+            <h4 class="rd-seccion__t">Por qué</h4>
             <ul class="rd-razones">${t.razones.map((r) => `<li>${escaparHtml(r)}</li>`).join('')}</ul>
             ${descartes}${estimado}
         </section>
@@ -115,7 +129,7 @@ export function htmlDetalle(item) {
             <div class="rd-tiles rd-tiles--dos">${creditos}${abre}</div>
         </section>
 
-        ${item.avisoFormula || ''}
+        ${avisoPie}
     </article>`;
 }
 
@@ -137,7 +151,7 @@ export function montarRadar({ obtenerCursos, cargarFilas, obtenerEnCurso = () =>
             <aside id="rd-panel" class="rd-panel" aria-hidden="true" aria-label="Radar académico" inert>
                 <div class="rd-cabecera">
                     <div class="rd-titulo-grupo">
-                        <span class="rd-icono">📡</span>
+                        <span class="rd-icono">${svgRadar(38, true)}</span>
                         <div class="rd-titulo">Radar académico</div>
                         <span class="rd-beta">Beta</span>
                     </div>
@@ -164,7 +178,7 @@ export function montarRadar({ obtenerCursos, cargarFilas, obtenerEnCurso = () =>
         boton.type = 'button';
         boton.className = 'chip-herramienta chip-herramienta--radar';
         boton.dataset.aa = 'radar';
-        boton.textContent = '📡 Radar académico';
+        boton.innerHTML = `${svgRadar(22)}<span>Radar académico</span>`;
         boton.addEventListener('click', abrir);
         fila.appendChild(boton);
     }
