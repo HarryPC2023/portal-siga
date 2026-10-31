@@ -258,7 +258,7 @@ export function montarRadar({ obtenerCursos, cargarFilas, obtenerEnCurso = () =>
         cuerpo.innerHTML = '<p class="rd-mensaje">Armando tu radar…</p>';
         try {
             await prepararDatos();
-            $('rd-icono').innerHTML = svgRadarConCursos(46, ordenarPorPrioridad(items).map((it) => it.analisis.estado.clave));
+            $('rd-icono').innerHTML = svgRadarConCursos(46, ordenarPorPrioridad(items).map((it) => it.analisis.estado.clave).filter((clave) => clave !== 'esperando' && clave !== 'sinformula'));
             pintar();
         } catch (error) {
             console.error('Radar académico:', error);
