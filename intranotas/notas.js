@@ -315,10 +315,28 @@ function inicializarMetaCurso() {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarMetaCurso(); });
 }
 
+/* Meta del curso se cierra con DATOS, no con fecha: un curso sale de Meta cuando INTRALU ya publicó su
+   promedio final oficial (no cuenta el que se calcula al simular notas). Cuando ya no queda ningún curso, el
+   botón se esconde. Red de seguridad: si el periodo ya cerró por calendario tampoco hay Meta (un curso retirado
+   nunca tendrá promedio final y el botón se quedaría visible para siempre). */
+function tieneFinalOficial(curso) {
+    return notaComoNumero(curso.promedio_final) !== null;
+}
+
+function actualizarBotonMeta() {
+    const boton = document.querySelector('.chip-herramienta--meta');
+    if (!boton) return;
+    const cursos = periodoActivo ? (notasPorPeriodo[periodoActivo] || []) : [];
+    const sinMeta = cursos.length > 0 && (!periodoEstaAbierto(periodoActivo) || cursos.every(tieneFinalOficial));
+    boton.hidden = sinMeta;
+    if (sinMeta && document.getElementById('metaPanel').classList.contains('abierto')) cerrarMetaCurso();
+}
+
 function abrirMetaCurso() {
     metaDisparador = document.activeElement;
     const cuerpo = document.getElementById('metaCuerpo');
     const cursos = [...(notasPorPeriodo[periodoActivo] || [])]
+        .filter((c) => !tieneFinalOficial(c))
         .sort((a, b) => nombreCursoMeta(a).localeCompare(nombreCursoMeta(b), 'es'));
 
     if (!cursos.length) {
@@ -1103,6 +1121,7 @@ function renderizarCursos() {
 
     actualizarResumenPeriodo();
     document.getElementById('accionesLista').style.display = cursos.length ? 'flex' : 'none';
+    actualizarBotonMeta();
 }
 
 /* Trunca (no redondea) a N decimales, como INTRALU y SIGA. El 1e-9 evita que un
