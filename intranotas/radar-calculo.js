@@ -19,10 +19,17 @@ import { tendenciaDeCurso, evaluacionesEnOrden } from './analisis-academico.js';
 /* ---- Números ajustables ---- */
 export const UMBRAL_APROBAR = 10;      // nota mínima para aprobar
 export const MIN_PUBLICADO = 0.25;     // parte de la nota que debe estar publicada para opinar
-export const CORTE_MARGEN = 8;         // necesitas 8 o menos       → Con margen
-export const CORTE_LIMITE = 14;        // necesitas de 9 a 14       → Cerca del límite (15 o más → Necesita remontar)
-export const CORTE_CRITICO = 18;       // necesitar MÁS de 18 (casi la nota máxima) ya es situación crítica: casi no hay salida
-export const BRECHA_REMONTAR = 4;      // si con tu ritmo actual no apruebas y te faltan 4 o más puntos de promedio → Necesita remontar
+/* ESCALA ÚNICA: el estado depende SOLO de lo que necesitas en lo que falta (como piensa un estudiante).
+   Termómetro y Radar usan exactamente estos cortes:
+     necesitas  0 a  8  → Con margen         (chip: Subiendo)
+     necesitas  9 a 10  → Cerca del límite   (chip: Estable)
+     necesitas 11 a 14  → Necesita remontar  (chip: Bajando)
+     necesitas 15 a 20  → Situación crítica  (chip: Situación crítica)   (en los primeros ciclos un 15 es difícil)
+   También es crítica si solo el sustitutorio puede salvar el curso o ya no hay forma de aprobar. */
+export const CORTE_MARGEN = 8;         // 8 o menos → Con margen
+export const CORTE_LIMITE = 10;        // 9 a 10 → Cerca del límite
+export const CORTE_CRITICO = 14;       // 11 a 14 → Necesita remontar; MÁS de 14 → Situación crítica
+export const CASI_IMPOSIBLE = 18;      // más de 18: "casi la nota máxima" (solo cambia el texto del panel)
 
 /* ---- Estados (clave, texto, orden de atención: menor = más urgente) ---- */
 export const ESTADOS = {
@@ -35,32 +42,38 @@ export const ESTADOS = {
     sinformula:  { clave: 'sinformula',  texto: 'Sin fórmula aún',   orden: 6 },
 };
 
+/* Estado que le corresponde a lo que necesitas (ver ESCALA ÚNICA arriba). */
+export function estadoPorNecesidad(x) {
+    return x <= CORTE_MARGEN ? ESTADOS.margen : x <= CORTE_LIMITE ? ESTADOS.limite : x <= CORTE_CRITICO ? ESTADOS.remontar : ESTADOS.fuera;
+}
+
 /* ---------- Categoría del termómetro: SOLO cinco ----------
-   El termómetro mide el NIVEL del curso, como uno de fiebre: un curso en riesgo nunca puede
-   mostrarse como "Subiendo" o "Estable", aunque sus notas suban. Por eso la situación manda:
-     critico → "Situación crítica"   (no hay salida realista: se debe decidir a tiempo)
-     baja    → "Bajando"             (notas que bajan, o necesita remontar / está cerca del límite)
-     espera  → "Esperando notas"     (aún no hay datos suficientes para opinar)
-     sube / estable                  (solo cuando el nivel es bueno: tendencia de notas)
-   Si el curso ya está ASEGURADO (aprueba aunque lo que falta valga 0, igual que "¡Ya aprobaste!"
-   en "¿Qué nota necesito?"), el nivel manda: nunca dice "Bajando"; muestra Subiendo o Estable. */
+   El chip mide QUÉ TAN CERCA estás de aprobar (lo que necesitas en lo que falta), no la dirección
+   de tus notas; esa dirección sigue en la tarjeta "Tendencia" del Radar.
+     sube    → "Subiendo"          necesitas 0 a 8 (o ya aprobaste)
+     estable → "Estable"           necesitas 9 a 10
+     baja    → "Bajando"           necesitas 11 a 14
+     critico → "Situación crítica" necesitas 15 a 20, solo el sustitutorio, o no hay forma
+     espera  → "Esperando notas"   menos de 25% publicado o sin datos */
 export const TEXTO_CATEGORIA = {
     sube: 'Subiendo', estable: 'Estable', baja: 'Bajando', critico: 'Situación crítica', espera: 'Esperando notas',
 };
 
 export function categoriaTermometro(analisis) {
-    const e = analisis.estado.clave;
-    const t = analisis.tendencia.clave;
-    if (e === 'fuera') return 'critico';
-    if (e === 'remontar' || e === 'limite') return 'baja';
-    if (e === 'asegurado') return t === 'sube' ? 'sube' : 'estable';
-    if (e === 'esperando' || e === 'sinformula' || t === 'sin') return 'espera';
-    return t === 'sube' ? 'sube' : t === 'baja' ? 'baja' : 'estable';
+    switch (analisis.estado.clave) {
+        case 'fuera': return 'critico';
+        case 'remontar': return 'baja';
+        case 'limite': return 'estable';
+        case 'margen':
+        case 'asegurado': return 'sube';
+        default: return 'espera';
+    }
 }
 
 const esNula = (v) => v === null || v === undefined || Number.isNaN(v);
 
 /* ---------- Evaluación segura de la fórmula ---------- */
+
 function notaFinalCruda(formulaPP, formulaFinal, valores) {
     try {
         const pp = formulaPP ? evaluarFormula(formulaPP, valores) : (valores.PP ?? null);
@@ -230,7 +243,7 @@ function analizarBase({ formulaPP = null, formulaFinal = null, valores = {}, eva
         if (esNula(valores.ES)) {
             // No llega, pero el sustitutorio siempre es una opción real.
             const r = calcularNotaMinimaNecesaria({ formulaPP, formulaFinal, valoresBase: { ...valores, ES: null }, variableIncognita: 'ES', umbral: UMBRAL_APROBAR });
-            if (r.posible) return { ...base, estado: ESTADOS.remontar, tipo: 'sustitutorio', notaFinal: nf, necesita: Math.min(20, Math.ceil(r.notaMinima - 1e-9)), variable: 'ES' };
+            if (r.posible) return { ...base, estado: ESTADOS.fuera, tipo: 'sustitutorio', notaFinal: nf, necesita: Math.min(20, Math.ceil(r.notaMinima - 1e-9)), variable: 'ES' };
         }
         return { ...base, estado: ESTADOS.fuera, tipo: 'completo', notaFinal: nf, necesita: null };
     }
@@ -277,21 +290,15 @@ function analizarBase({ formulaPP = null, formulaFinal = null, valores = {}, eva
 
     let x = 1;
     while (x < 20 && conUniforme(x) < UMBRAL_APROBAR) x += 1;
-    let estado = x <= CORTE_MARGEN ? ESTADOS.margen : x <= CORTE_LIMITE ? ESTADOS.limite : ESTADOS.remontar;
+    const estado = estadoPorNecesidad(x);
 
     /* Tu ritmo actual: si sigues sacando lo mismo que en lo ya publicado, ¿dónde terminas?
-       Un curso donde hoy sacas 5 y necesitas 13 NO está "cerca del límite": está en camino
-       a desaprobar. Por eso el ritmo puede subir la urgencia (nunca bajarla). */
+       Solo INFORMA (se muestra como razón en el panel): el estado depende únicamente de lo que necesitas. */
     const publicadas = variables.filter((v) => !esNula(valores[v])).map((v) => valores[v]);
     const media = publicadas.length ? Math.round((publicadas.reduce((s, n) => s + n, 0) / publicadas.length) * 10) / 10 : null;
     const ritmoNF = media === null ? null : conUniforme(media);
-    if (ritmoNF !== null && ritmoNF < UMBRAL_APROBAR) {
-        const minimo = (x - media >= BRECHA_REMONTAR) ? ESTADOS.remontar : ESTADOS.limite;
-        if (minimo.orden < estado.orden) estado = minimo;
-    }
     // Necesitar 19 o 20 en lo que falta es, en la práctica, no tener salida: se dice sin rodeos.
-    const casiImposible = x > CORTE_CRITICO;
-    if (casiImposible) estado = ESTADOS.fuera;
+    const casiImposible = x > CASI_IMPOSIBLE;
     const resultado = { ...base, estado, tipo: casiImposible ? 'casi' : 'normal', necesita: x, media, ritmoNF, sinRendir: conCero };
     if (pendientes.length === 1 && x > 0) {
         const anterior = conUniforme(x - 1);
@@ -309,7 +316,7 @@ const pct = (peso) => Math.round(peso * 100);
    estudiante: cuenta como 0 lo que falta y no es examen (PC, monografías, laboratorios), igual
    que SIGA producción. El Termómetro y el Radar se guían por ELLA; el cálculo propio del Radar
    (promedio parejo en todo lo que falta) solo se usa donde la caja no da un veredicto, por
-   ejemplo cuando todavía faltan el EP y el EF.
+   ejemplo cuando todavía faltan el EP y el EF, o el curso no tiene exámenes y aún faltan varias notas.
    Qué se pasa en `necesito`: exactamente lo que devuelve calcularNecesito con los mismos valores. */
 
 /* Mismas frases que la caja (para la ayuda del chip y el panel). */
@@ -337,7 +344,7 @@ export function veredictoDeNecesito(n) {
     }
 }
 
-/* Qué estado le corresponde a ese veredicto (null = la caja no decide: se usa el del Radar). */
+/* Qué estado le corresponde a ese veredicto (null = la caja no decide un número: se usa el promedio parejo del Radar). */
 function estadoPorNecesito(n) {
     if (!n) return null;
     switch (n.tipo) {
@@ -346,24 +353,35 @@ function estadoPorNecesito(n) {
         case 'unico':
             if (n.estado === 'seguro') return 'asegurado';
             if (n.estado === 'imposible') return 'fuera';          // "Necesitarás el sustitutorio para aprobar"
-            if (n.estado === 'ok') {
-                const x = Math.ceil(n.minimo - 1e-9);
-                return x <= CORTE_MARGEN ? 'margen' : x <= CORTE_LIMITE ? 'limite' : x <= CORTE_CRITICO ? 'remontar' : 'fuera';
-            }
+            if (n.estado === 'ok') return estadoPorNecesidad(Math.ceil(n.minimo - 1e-9)).clave;
             return null;
-        case 'hipotesis': return n.filas && !n.filas.length ? 'limite' : null;   // "Necesitas mejorar tu Prom. PC"
-        default: return null;
+        default: return null;                                      // 'hipotesis' y demás: la caja no da un solo número
     }
 }
 
 const listaConY = (items) => (items.length <= 1 ? (items[0] || '') : `${items.slice(0, -1).join(', ')} y ${items[items.length - 1]}`);
 
-function aplicarVeredicto(res, n, evaluaciones) {
+function aplicarVeredicto(res, n, evaluaciones, ctx) {
     const veredicto = veredictoDeNecesito(n);
     const conVeredicto = { ...res, veredicto };
     // Con menos del 25% publicado no se opina (aunque la caja ya sepa decir algo).
     if (!n || ['esperando', 'sinformula'].includes(res.estado.clave)) return conVeredicto;
     const clave = estadoPorNecesito(n);
+
+    /* Curso SIN exámenes con UNA sola evaluación pendiente (por ejemplo, solo monografías): la caja solo
+       muestra "Nota actual X (desaprobado)" porque cuenta lo que falta como 0. El termómetro calcula lo
+       que esa evaluación necesita con el MISMO motor y la MISMA regla (lo demás en 0, que aquí es nada). */
+    if (!clave && n.tipo === 'completo' && !n.aprueba && !n.conES && res.pendientes && res.pendientes.length === 1) {
+        const v = res.pendientes[0];
+        const r = calcularNotaMinimaNecesaria({ formulaPP: ctx.formulaPP, formulaFinal: ctx.formulaFinal,
+            valoresBase: { ...ctx.valores, [v]: null }, variableIncognita: v, umbral: UMBRAL_APROBAR });
+        if (r.posible === true) {
+            const x = Math.ceil(r.notaMinima - 1e-9);
+            return { ...res, veredicto: null, supuestos: [], supuestosTexto: '', estado: estadoPorNecesidad(x), tipo: 'examen',
+                necesita: x, variable: v, examen: etiquetaConArticulo(v, evaluaciones) };
+        }
+        return conVeredicto;       // ni con 20 se aprueba: el análisis base ya lo dice
+    }
     if (!clave) return conVeredicto;
 
     const supuestos = n.supuestos || [];
@@ -394,17 +412,33 @@ function aplicarVeredicto(res, n, evaluaciones) {
             return { ...res, ...extra, estado: ESTADOS[clave], tipo: 'examen', necesita: Math.ceil(n.minimo - 1e-9),
                 variable: n.incognita, examen: etiquetaConArticulo(n.incognita, evaluaciones) };
 
-        case 'hipotesis':
-            // Sin filas viables: al menos "cerca del límite" (si el Radar ya estaba peor, se respeta).
-            return res.estado.orden <= ESTADOS.limite.orden ? conVeredicto : { ...res, ...extra, estado: ESTADOS.limite };
-
         default:
             return conVeredicto;
     }
 }
 
+/* Frase corta para la ayuda del chip (aparece al pasar el mouse): lo mismo que dice la caja o,
+   si la caja no da un número, lo que se calculó con el mismo criterio. */
+function ayudaCorta(a, evaluaciones) {
+    if (a.veredicto) return a.veredicto;
+    switch (a.tipo) {
+        case 'examen': return `Para aprobar necesitas ${a.necesita} en ${a.examen}`;
+        case 'normal':
+        case 'casi': return `Necesitas un promedio de ${a.necesita} en lo que falta`;
+        case 'asegurado': return 'Ya apruebas aunque saques 0 en lo que falta';
+        case 'completo': return a.estado.clave === 'asegurado' ? `Ya aprobaste con ${a.notaFinal.toFixed(1)}` : `Con las notas actuales llegas a ${a.notaFinal.toFixed(1)}`;
+        case 'fuera': return 'Ni con 20 en lo que falta llegas a 10';
+        case 'esperando': return 'Aún no hay notas suficientes para opinar';
+        case 'sinformula': return 'Todavía no hay fórmula para este curso';
+        default: return a.estado.texto;
+    }
+}
+
 export function analizarCurso({ necesito = null, ...resto } = {}) {
-    return aplicarVeredicto(analizarBase(resto), necesito, resto.evaluaciones || []);
+    const evaluaciones = resto.evaluaciones || [];
+    const a = aplicarVeredicto(analizarBase(resto), necesito, evaluaciones,
+        { formulaPP: resto.formulaPP ?? null, formulaFinal: resto.formulaFinal ?? null, valores: resto.valores || {} });
+    return { ...a, ayuda: ayudaCorta(a, evaluaciones) };
 }
 
 export function textoAnalisis(a) {
