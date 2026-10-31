@@ -446,3 +446,26 @@
 
     .rd-chips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* ---------- El haz del radar gira despacio ----------
+   En el encabezado del panel gira siempre; en el botón del lateral solo al pasar el mouse o con el teclado
+   (para no distraer en la barra). Si la persona pidió "reducir movimiento" en su dispositivo, no se mueve. */
+.rd-barrido {
+    transform-box: view-box;
+    transform-origin: 24px 24px;
+}
+.rd-icono .rd-barrido {
+    animation: rd-giro 7s linear infinite;
+}
+.chip-herramienta--radar:hover .rd-barrido,
+.chip-herramienta--radar:focus-visible .rd-barrido {
+    animation: rd-giro 4s linear infinite;
+}
+@keyframes rd-giro {
+    to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .rd-icono .rd-barrido,
+    .chip-herramienta--radar:hover .rd-barrido,
+    .chip-herramienta--radar:focus-visible .rd-barrido { animation: none; }
+}
