@@ -183,6 +183,7 @@ function cursosParaRadar() {
             simulados: valoresSimulados[claveSimulacion(curso)] || {},
             formulaPP: formula?.formula_practicas ?? null,
             formulaFinal: formula?.formula_nota_final ?? null,
+            necesito: necesitoDeCurso(curso),
             avisoFormula: htmlAvisoFormulaCorto(formula),
             haySimulacion: haySimulacionActiva(curso),
             fuentePP: formula?.fuentePP ?? null,
@@ -964,6 +965,19 @@ function valoresActualesDeCurso(curso) {
     return { ...base, ...simulado };
 }
 
+/* Lo MISMO que calcula la caja "¿Qué nota necesito para aprobar?" de la tarjeta, con lo que hay
+   en pantalla. El Termómetro y el Radar se guían por este veredicto (null si aún no hay fórmula). */
+function necesitoDeCurso(curso) {
+    const formula = formulaDeCurso(curso);
+    if (!formula || !formula.formula_nota_final) return null;
+    return calcularNecesito({
+        formulaPP: formula.formula_practicas,
+        formulaFinal: formula.formula_nota_final,
+        valores: valoresActualesDeCurso(curso),
+        umbral: UMBRAL_APROBACION,
+    });
+}
+
 function calcularCurso(curso) {
     const formula = formulaDeCurso(curso);
     const valores = valoresActualesDeCurso(curso);
@@ -1151,6 +1165,7 @@ function actualizarTermometro() {
             valores: valoresActualesDeCurso(curso),
             evaluaciones: curso.evaluaciones,
             simulados: valoresSimulados[claveSimulacion(curso)] || {},
+            necesito: necesitoDeCurso(curso),
         });
         return {
             id: idx,
@@ -1160,6 +1175,7 @@ function actualizarTermometro() {
             // Una de cinco: sube, estable, baja, critico o espera (el nivel del curso manda sobre la tendencia).
             categoria: categoriaTermometro(analisis),
             estadoTexto: analisis.estado.texto,
+            veredicto: analisis.veredicto,
             estimado: formula?.fuentePP === 'estimada',
         };
     });

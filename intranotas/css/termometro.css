@@ -206,6 +206,12 @@
     }
 }
 
+/* Beta: borde cian en las tarjetas de curso de abajo. Solo se activa cuando
+   <body> tiene la clase "beta" (la pone notas.js si esBeta() es verdadero). */
+body.beta .curso-card {
+    border: 2px solid #00BFD0;
+}
+
 /* Tarjeta de curso resaltada al llegar desde la franja. */
 .curso-card--resaltada {
     outline: 2px solid var(--brand-morado);

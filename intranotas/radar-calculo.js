@@ -193,7 +193,7 @@ export function cursosQueAbre(cursos, codigo) {
      valores                 : { N1: 14, N2: null, EP: 12, EF: null, ES: null } (lo oficial + lo simulado)
      evaluaciones, simulados : para la tendencia y los nombres
    salida: { estado, necesita, ... } (ver abajo) */
-export function analizarCurso({ formulaPP = null, formulaFinal = null, valores = {}, evaluaciones = [], simulados = {} } = {}) {
+function analizarBase({ formulaPP = null, formulaFinal = null, valores = {}, evaluaciones = [], simulados = {} } = {}) {
     const tendencia = tendenciaDeCurso(evaluaciones, simulados);
     const serie = evaluacionesEnOrden(evaluaciones, simulados).filter((e) => e.nota !== null).map((e) => e.nota);
     const base = { tendencia, serie, razones: [], pendientes: [], publicado: null, necesita: null, importante: null,
@@ -304,6 +304,109 @@ export function analizarCurso({ formulaPP = null, formulaFinal = null, valores =
 const serieTexto = (serie) => serie.slice(0, 5).join(' → ');
 const pct = (peso) => Math.round(peso * 100);
 
+/* ---------- El veredicto de "¿Qué nota necesito para aprobar?" MANDA ----------
+   Esa caja (escenarios.js → calcularNecesito) es la referencia de lo que de verdad le pasa al
+   estudiante: cuenta como 0 lo que falta y no es examen (PC, monografías, laboratorios), igual
+   que SIGA producción. El Termómetro y el Radar se guían por ELLA; el cálculo propio del Radar
+   (promedio parejo en todo lo que falta) solo se usa donde la caja no da un veredicto, por
+   ejemplo cuando todavía faltan el EP y el EF.
+   Qué se pasa en `necesito`: exactamente lo que devuelve calcularNecesito con los mismos valores. */
+
+/* Mismas frases que la caja (para la ayuda del chip y el panel). */
+export function veredictoDeNecesito(n) {
+    if (!n) return null;
+    const entero = (v) => String(Math.ceil(v - 1e-9));
+    const nota = (x) => Number(x).toFixed(1);
+    switch (n.tipo) {
+        case 'completo':
+            if (n.aprueba) return `¡${n.conES ? 'Aprobaste' : 'Ya aprobaste'} con ${nota(n.notaFinal)}!`;
+            return n.conES ? `Curso desaprobado con ${nota(n.notaFinal)}` : `Nota actual: ${nota(n.notaFinal)} (desaprobado)`;
+        case 'sustitutorio':
+            if (n.estado === 'ok') return `Nota actual ${nota(n.notaFinal)}: con ES necesitas mínimo ${entero(n.minimo)}`;
+            if (n.estado === 'seguro') return `Nota actual ${nota(n.notaFinal)}: con cualquier nota en ES apruebas`;
+            return `Nota actual ${nota(n.notaFinal)}: no es posible aprobar con sustitutorio`;
+        case 'unico':
+            if (n.estado === 'ok') return `Para aprobar necesitas en ${n.incognita} mínimo ${entero(n.minimo)}`;
+            if (n.estado === 'seguro') return `Con cualquier nota en ${n.incognita} apruebas`;
+            if (n.estado === 'imposible') return 'Necesitarás el sustitutorio para aprobar';
+            return null;
+        case 'hipotesis':
+            return n.filas && n.filas.length ? null : 'Necesitas mejorar tu Prom. PC para poder aprobar';
+        default:
+            return null;
+    }
+}
+
+/* Qué estado le corresponde a ese veredicto (null = la caja no decide: se usa el del Radar). */
+function estadoPorNecesito(n) {
+    if (!n) return null;
+    switch (n.tipo) {
+        case 'completo': return n.aprueba ? 'asegurado' : (n.conES ? 'fuera' : null);
+        case 'sustitutorio': return 'fuera';                       // solo el sustitutorio puede salvarlo
+        case 'unico':
+            if (n.estado === 'seguro') return 'asegurado';
+            if (n.estado === 'imposible') return 'fuera';          // "Necesitarás el sustitutorio para aprobar"
+            if (n.estado === 'ok') {
+                const x = Math.ceil(n.minimo - 1e-9);
+                return x <= CORTE_MARGEN ? 'margen' : x <= CORTE_LIMITE ? 'limite' : x <= CORTE_CRITICO ? 'remontar' : 'fuera';
+            }
+            return null;
+        case 'hipotesis': return n.filas && !n.filas.length ? 'limite' : null;   // "Necesitas mejorar tu Prom. PC"
+        default: return null;
+    }
+}
+
+const listaConY = (items) => (items.length <= 1 ? (items[0] || '') : `${items.slice(0, -1).join(', ')} y ${items[items.length - 1]}`);
+
+function aplicarVeredicto(res, n, evaluaciones) {
+    const veredicto = veredictoDeNecesito(n);
+    const conVeredicto = { ...res, veredicto };
+    // Con menos del 25% publicado no se opina (aunque la caja ya sepa decir algo).
+    if (!n || ['esperando', 'sinformula'].includes(res.estado.clave)) return conVeredicto;
+    const clave = estadoPorNecesito(n);
+    if (!clave) return conVeredicto;
+
+    const supuestos = n.supuestos || [];
+    const extra = {
+        veredicto,
+        supuestos,
+        supuestosTexto: supuestos.length ? listaConY(supuestos.map((v) => etiquetaConArticulo(v, evaluaciones))) : '',
+    };
+
+    switch (n.tipo) {
+        case 'completo':
+            if (n.aprueba) return clave === res.estado.clave ? conVeredicto : { ...res, ...extra, estado: ESTADOS.asegurado, tipo: 'asegurado', necesita: 0 };
+            return { ...res, ...extra, estado: ESTADOS.fuera, tipo: 'completo', notaFinal: n.notaFinal };
+
+        case 'sustitutorio':
+            if (n.estado === 'imposible') return { ...res, ...extra, estado: ESTADOS.fuera, tipo: 'completo', notaFinal: n.notaFinal };
+            return { ...res, ...extra, estado: ESTADOS.fuera, tipo: 'sustitutorio', notaFinal: n.notaFinal, variable: 'ES',
+                necesita: n.estado === 'ok' ? Math.min(20, Math.ceil(n.minimo - 1e-9)) : 0 };
+
+        case 'unico':
+            if (n.estado === 'seguro') return clave === res.estado.clave ? conVeredicto : { ...res, ...extra, estado: ESTADOS.asegurado, tipo: 'asegurado', necesita: 0 };
+            if (n.estado === 'imposible') {
+                // Si ni con 20 en TODO lo que falta se aprueba, el análisis base ya lo dice más fuerte.
+                if (res.tipo === 'fuera') return { ...conVeredicto, ...extra };
+                const alternativa = (res.tipo === 'normal' || res.tipo === 'casi') && res.necesita !== null && res.necesita <= 20 ? res.necesita : null;
+                return { ...res, ...extra, estado: ESTADOS.fuera, tipo: 'soloSusti', examen: etiquetaConArticulo(n.incognita, evaluaciones), alternativa };
+            }
+            return { ...res, ...extra, estado: ESTADOS[clave], tipo: 'examen', necesita: Math.ceil(n.minimo - 1e-9),
+                variable: n.incognita, examen: etiquetaConArticulo(n.incognita, evaluaciones) };
+
+        case 'hipotesis':
+            // Sin filas viables: al menos "cerca del límite" (si el Radar ya estaba peor, se respeta).
+            return res.estado.orden <= ESTADOS.limite.orden ? conVeredicto : { ...res, ...extra, estado: ESTADOS.limite };
+
+        default:
+            return conVeredicto;
+    }
+}
+
+export function analizarCurso({ necesito = null, ...resto } = {}) {
+    return aplicarVeredicto(analizarBase(resto), necesito, resto.evaluaciones || []);
+}
+
 export function textoAnalisis(a) {
     const razones = [];
     const unico = a.pendientes.length === 1 ? a.importante?.articulado : null;
@@ -319,10 +422,32 @@ export function textoAnalisis(a) {
                 : 'Con las notas actuales el curso no llega a 10. Decide a tiempo: conversa con tu profesor y revisa las opciones que te da tu facultad.';
             break;
         case 'sustitutorio':
-            tile = { valor: String(a.necesita), sub: 'en el examen sustitutorio, sobre 20' };
+            tile = a.necesita === 0
+                ? { valor: '0+', sub: 'cualquier nota en el sustitutorio' }
+                : { valor: String(a.necesita), sub: 'en el examen sustitutorio, sobre 20' };
             razones.push(`Con tus notas actuales llegas a ${a.notaFinal.toFixed(1)}.`);
-            razones.push(`El sustitutorio reemplaza tu nota más baja entre parcial y final: con ${a.necesita} apruebas.`);
-            queHacer = `Prepara el sustitutorio: necesitas ${a.necesita} para llegar a 10.`;
+            razones.push(a.necesita === 0
+                ? 'El sustitutorio reemplaza tu nota más baja entre parcial y final: con cualquier nota apruebas.'
+                : `El sustitutorio reemplaza tu nota más baja entre parcial y final: con ${a.necesita} apruebas.`);
+            if (a.supuestosTexto) razones.push(`Contando como 0 ${a.supuestosTexto}.`);
+            queHacer = a.necesita === 0
+                ? 'Prepara el sustitutorio: con cualquier nota llegas a 10.'
+                : `Prepara el sustitutorio: necesitas ${a.necesita} para llegar a 10.`;
+            break;
+        case 'examen':      // un solo examen pendiente: lo mismo que dice "¿Qué nota necesito?"
+            tile = { valor: String(a.necesita), sub: `en ${a.examen}, sobre 20${a.supuestosTexto ? ', contando lo demás como 0' : ''}` };
+            razones.push(`Para aprobar necesitas ${a.necesita} en ${a.examen}.`);
+            if (a.supuestosTexto) razones.push(`Contando como 0 ${a.supuestosTexto}: si las rindes, necesitarías menos.`);
+            queHacer = `Prioriza ${a.examen}: con ${a.necesita} apruebas${a.supuestosTexto ? ' (contando como 0 lo que aún no rindes)' : ''}.`;
+            break;
+        case 'soloSusti':   // "Necesitarás el sustitutorio para aprobar"
+            tile = { valor: '> 20', sub: `en ${a.examen}${a.supuestosTexto ? ', contando lo demás como 0' : ''}: ni con 20 llegas a 10` };
+            razones.push(a.supuestosTexto
+                ? `Contando como 0 ${a.supuestosTexto}, ni con 20 en ${a.examen} llegas a 10.`
+                : `Ni con 20 en ${a.examen} llegas a 10.`);
+            razones.push('Solo el sustitutorio podría salvar el curso: reemplaza tu nota más baja entre parcial y final.');
+            if (a.alternativa) razones.push(`Si rindes todo lo que falta y sacas ${a.alternativa} en cada evaluación, aprobarías sin sustitutorio.`);
+            queHacer = 'Hoy tu salida es el sustitutorio, y cada evaluación que rindas suma. Decide a tiempo: conversa con tu profesor y revisa las opciones que te da tu facultad.';
             break;
         case 'asegurado':
             tile = { valor: '0', sub: 'en lo que falta: ya apruebas' };
