@@ -25,7 +25,8 @@ import { construirValoresFormula, notaComoNumero, clasificarExamen } from './for
 import { FACULTADES } from './facultades-datos.js';
 import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.js';
 import { esBeta } from './beta-siga.js';
-import { analizarCurso, categoriaTermometro } from './radar-calculo.js';
+import { analizarCurso, categoriaTermometro, claveResultado } from './radar-calculo.js';
+import { normalizarNotaEntera, esTeclaNoEntera } from './nota-entera.js';
 import { pintarTermometro, resaltarTarjeta } from './termometro-ui.js';
 import { montarRadar } from './radar-ui.js';
 import { siglaDeCurso } from './siglas-cursos.js';
@@ -36,6 +37,7 @@ let notasPorPeriodo = {};   // { "2023-2": [ {codigo_curso, seccion, nombre_curs
 let formulasPorCurso = {};  // clave `${codigo_curso}|${seccion}|${periodo}` -> {formula_practicas, formula_nota_final, creditos}
 let bancoFormulas = {};     // codigo_curso -> [filas de formulas_curso de TODOS los periodos/secciones] (banco compartido)
 let periodoActivo = null;
+let radarUI = null;         // el Radar (beta): se oculta en periodos cerrados
 let valoresSimulados = {};  // clave `${codigo_curso}|${seccion}` -> { N1: 14, EP: 12, ... } (solo del periodo activo)
 let usuarioActual = null;
 let modoBeta = false;    // funciones nuevas de análisis: solo para quien esté en beta-siga.js
@@ -225,6 +227,7 @@ function inicializarAnalisisAcademico() {
             obtenerCursos: cursosParaRadar,
         });
         radar.insertarBoton();
+        radarUI = radar;
     }
 }
 
@@ -688,7 +691,7 @@ function restaurarNotasGuardadas(periodo) {
                 return;
             }
             if (!valoresSimulados[claveCurso]) valoresSimulados[claveCurso] = {};
-            valoresSimulados[claveCurso][variable] = guardado.v;
+            valoresSimulados[claveCurso][variable] = guardado.v === null ? null : normalizarNotaEntera(guardado.v);
         });
         if (!Object.keys(variables).length) delete delPeriodo[claveCurso];
     });
@@ -1152,34 +1155,75 @@ function actualizarResumenPeriodo() {
 /* ---------- TERMÓMETRO (beta) — franja "Cómo van tus cursos" ----------
    Se vuelve a pintar con cada cambio de notas (esta función corre después
    de cada edición). Solo se ve si modoBeta es verdadero. */
+/* Análisis de un curso con lo que hay en pantalla (notas de INTRALU + lo que escribió el alumno).
+   El veredicto de "¿Qué nota necesito para aprobar?" manda; el Radar solo completa donde la caja no dice un número. */
+function analisisDeCurso(curso) {
+    const formula = formulaDeCurso(curso);
+    return analizarCurso({
+        formulaPP: formula?.formula_practicas ?? null,
+        formulaFinal: formula?.formula_nota_final ?? null,
+        valores: valoresActualesDeCurso(curso),
+        evaluaciones: curso.evaluaciones,
+        simulados: valoresSimulados[claveSimulacion(curso)] || {},
+        necesito: necesitoDeCurso(curso),
+    });
+}
+
+/* Termómetro (beta). Responde según el periodo:
+     · periodo ABIERTO → "¿Cómo voy?"    situación de cada curso (y el resultado de los que ya terminaron)
+     · periodo CERRADO → "¿Cómo me fue?" resultado final de cada curso
+   El Radar tampoco tiene sentido en un periodo cerrado: ya no hay nada que necesitar. */
 function actualizarTermometro() {
     const contenedor = document.getElementById('termometroCursos');
     if (!contenedor) return;
-    if (!modoBeta) { contenedor.hidden = true; return; }
+    if (!modoBeta || !periodoActivo) { contenedor.hidden = true; return; }
+
+    const abierto = periodoEstaAbierto(periodoActivo);
+    const botonRadar = document.querySelector('.chip-herramienta--radar');
+    if (botonRadar) botonRadar.hidden = !abierto;
+    if (!abierto && radarUI) radarUI.cerrar();
+
     const cursos = notasPorPeriodo[periodoActivo] || [];
-    const items = cursos.map((curso, idx) => {
-        const formula = formulaDeCurso(curso);
-        const analisis = analizarCurso({
-            formulaPP: formula?.formula_practicas ?? null,
-            formulaFinal: formula?.formula_nota_final ?? null,
-            valores: valoresActualesDeCurso(curso),
-            evaluaciones: curso.evaluaciones,
-            simulados: valoresSimulados[claveSimulacion(curso)] || {},
-            necesito: necesitoDeCurso(curso),
+    let items;
+    if (abierto) {
+        items = cursos.map((curso, idx) => {
+            const formula = formulaDeCurso(curso);
+            const analisis = analisisDeCurso(curso);
+            let categoria = categoriaTermometro(analisis);
+            let ayuda = analisis.ayuda;
+            // INTRALU ya publicó la nota final de este curso (y no hay nada simulado): el curso terminó.
+            const publicada = haySimulacionActiva(curso) ? null : notaComoNumero(curso.promedio_final);
+            if (publicada !== null) {
+                categoria = claveResultado(publicada);
+                ayuda = `Terminaste con ${publicada.toFixed(1)}`;
+            }
+            return {
+                id: idx,
+                nombre: nombreCursoLindo(curso),
+                sigla: siglaDeCurso(curso.codigo_curso),
+                categoria,
+                ayuda,
+                simulado: haySimulacionActiva(curso),
+                estimado: formula?.fuentePP === 'estimada',
+            };
         });
+        pintarTermometro(contenedor, items, (id) => resaltarTarjeta(`curso-card-${id}`));
+        return;
+    }
+
+    items = cursos.map((curso, idx) => {
+        const { notaFinal: calculada } = calcularCurso(curso);
+        const nf = notaComoNumero(notaFinalMostrada(curso, calculada));
         return {
             id: idx,
             nombre: nombreCursoLindo(curso),
             sigla: siglaDeCurso(curso.codigo_curso),
-            tendencia: analisis.tendencia,
-            // Una de cinco (sube, estable, baja, critico o espera), según lo que necesitas en lo que falta.
-            categoria: categoriaTermometro(analisis),
-            // Frase que sale al pasar el mouse: la misma de "¿Qué nota necesito para aprobar?".
-            ayuda: analisis.ayuda,
-            estimado: formula?.fuentePP === 'estimada',
+            categoria: claveResultado(nf),
+            ayuda: nf === null ? 'No se publicó la nota final de este curso' : `Terminaste con ${nf.toFixed(1)}`,
+            simulado: haySimulacionActiva(curso),
         };
     });
-    pintarTermometro(contenedor, items, (id) => resaltarTarjeta(`curso-card-${id}`));
+    pintarTermometro(contenedor, items, (id) => resaltarTarjeta(`curso-card-${id}`), { titulo: 'Cómo te fue', avisoSiTodoEspera: false });
 }
 
 function toggleCurso(idx, curso) {
@@ -1285,12 +1329,16 @@ function armarCuerpoCurso(cuerpo, curso, idx) {
             const valorInicial = fila.variable in simulado ? simulado[fila.variable] : fila.nota;
             campo.innerHTML = `
                 <label>${fila.label}</label>
-                <input type="number" step="0.1" min="0" max="20" value="${valorInicial ?? ''}" placeholder="--">
+                <input type="number" inputmode="numeric" step="1" min="0" max="20" value="${valorInicial ?? ''}" placeholder="--">
             `;
-            campo.querySelector('input').addEventListener('input', (e) => {
+            const entrada = campo.querySelector('input');
+            // Las evaluaciones de INTRALU son siempre enteras: sin punto, coma ni signos.
+            entrada.addEventListener('keydown', (e) => { if (esTeclaNoEntera(e.key)) e.preventDefault(); });
+            entrada.addEventListener('input', (e) => {
                 const clave = claveSimulacion(curso);
                 if (!valoresSimulados[clave]) valoresSimulados[clave] = {};
-                const v = e.target.value === '' ? null : parseFloat(e.target.value);
+                const v = normalizarNotaEntera(e.target.value);     // pegar "16.8" o escribir "25" queda en 17 / 20
+                if (v !== null && String(v) !== e.target.value.trim()) e.target.value = String(v);
                 valoresSimulados[clave][fila.variable] = v;
                 actualizarCuerpoCurso(cuerpo, curso, idx);
             });
@@ -1375,7 +1423,11 @@ function actualizarCuerpoCurso(cuerpo, curso, idx) {
         valores,
         umbral: UMBRAL_APROBACION,
     });
-    caja.innerHTML = htmlCajaNecesito(necesito, etiquetasCurso);
+    // Beta: en un curso SIN exámenes que aún no aprueba, la caja dice cuánto necesitas (un entero, hacia arriba)
+    // en vez de mostrar solo un promedio con decimales que no se puede "sacar".
+    const extra = modoBeta && necesito.tipo === 'completo' && !necesito.aprueba && !necesito.conES
+        ? { analisis: analisisDeCurso(curso) } : null;
+    caja.innerHTML = htmlCajaNecesito(necesito, etiquetasCurso, extra);
 }
 
 /* ---------- Caja "¿Qué nota necesito para aprobar?" ----------
@@ -1407,11 +1459,12 @@ function filaCaja(etiqueta, valor) {
    - EP y EF rendidos: aprueba → "¡Ya aprobaste con X!" (sin obligar a dar el ES);
      no llega → "Nota actual" + "Con ES necesitas mínimo: Y"
    - con el ES ya rendido → "¡Aprobaste con X!" o "Curso desaprobado con X" */
-function htmlCajaNecesito(r, etiquetas) {
+function htmlCajaNecesito(r, etiquetas, extra = null) {
     const titulo = '<div class="caja-necesito__titulo">🎯 ¿QUÉ NOTA NECESITO PARA APROBAR?</div>';
     const nota = (x) => Number(x).toFixed(1);
     const alerta = (texto) => `<div class="caja-necesito__alerta">${texto}</div>`;
     let cuerpo = '';
+    let pie = '';       // si se llena, reemplaza la línea "Lo que aún no tiene nota cuenta como 0"
 
     switch (r.tipo) {
         case 'hipotesis':
@@ -1441,6 +1494,20 @@ function htmlCajaNecesito(r, etiquetas) {
                 cuerpo = `<div class="caja-necesito__ok">✅ ¡${r.conES ? 'Aprobaste' : 'Ya aprobaste'} con ${nota(r.notaFinal)}!</div>`;
             } else if (r.conES) {
                 cuerpo = `<div class="caja-necesito__mal">❌ Curso desaprobado con ${nota(r.notaFinal)}</div>`;
+            } else if (extra && extra.analisis && ['examen', 'normal', 'casi', 'fuera'].includes(extra.analisis.tipo)) {
+                const an = extra.analisis;
+                const nombres = (r.supuestos || []).map((v) => etiquetaCorta(v, etiquetas));
+                const lista = nombres.length <= 1 ? (nombres[0] || '') : `${nombres.slice(0, -1).join(', ')} y ${nombres[nombres.length - 1]}`;
+                if (an.tipo === 'examen') {
+                    cuerpo = filaCaja(`Para aprobar necesitas en ${etiquetaCorta(an.variable, etiquetas)} mínimo:`, String(an.necesita));
+                    pie = `Tu promedio hoy es ${nota(r.notaFinal)}, contando ${lista} como 0.`;
+                } else if (an.tipo === 'fuera') {
+                    cuerpo = alerta(`Ni con 20 en ${lista} llegas a 10`);
+                    pie = `Tu promedio hoy es ${nota(r.notaFinal)}, contándolas como 0.`;
+                } else {
+                    cuerpo = filaCaja('Con este mínimo en cada una apruebas:', String(an.necesita));
+                    pie = `En ${lista}. Tu promedio hoy es ${nota(r.notaFinal)}, contándolas como 0.`;
+                }
             } else {
                 cuerpo = `<div class="caja-necesito__aviso">⚠️ Nota actual: ${nota(r.notaFinal)} (desaprobado)</div>`;
             }
@@ -1462,8 +1529,8 @@ function htmlCajaNecesito(r, etiquetas) {
 
     // Se rotula lo que no tenía nota y hubo que contar: 10 si es una proyección,
     // 0 si el curso ya terminó (EP y EF rendidos).
-    let supuestos = '';
-    if (r.supuestos && r.supuestos.length) {
+    let supuestos = pie ? `<p class="caja-necesito__supuesto">${escaparHtml(pie)}</p>` : '';
+    if (!pie && r.supuestos && r.supuestos.length) {
         const nombres = r.supuestos.map((v) => etiquetaCorta(v, etiquetas)).join(', ');
         supuestos = r.relleno === 0
             ? `<p class="caja-necesito__supuesto">Lo que aún no tiene nota cuenta como 0: ${nombres}.</p>`

@@ -13,7 +13,7 @@
 import { construirProgresoCarrera } from './progreso-carrera.js';
 import { escaparHtml, soltarFocoDe } from './progreso-carrera-ui.js';
 import { analizarCurso, textoAnalisis, cursosQueAbre, ordenarPorPrioridad, categoriaTermometro } from './radar-calculo.js';
-import { svgTrianguloAlerta } from './termometro-ui.js';
+import { svgTrianguloAlerta, svgInsignia } from './termometro-ui.js';
 
 // Flechas de la tendencia (las mismas del Termómetro).
 const FLECHA = {
@@ -37,11 +37,9 @@ function tarjetaEstado(item) {
 export function htmlSelector(items, seleccionado, orden) {
     return items.map((it, i) => {
         const a = it.analisis;
-        // Misma regla que la franja del Termómetro: un curso en riesgo no muestra "Subiendo" ni "Estable".
+        // La misma flecha (que gira según qué tan firme está la situación) que en la franja del Termómetro.
         const cat = categoriaTermometro(a);
-        const flecha = ['sube', 'estable', 'baja'].includes(cat)
-            ? `<span class="rd-mini-flecha rd-t-${cat}">${svgFlecha(cat === 'sube' ? 'sube' : cat === 'baja' ? 'baja' : 'estable', 16)}</span>`
-            : (cat === 'critico' ? `<span class="rd-mini-flecha">${svgTrianguloAlerta(20)}</span>` : '');
+        const flecha = (cat === 'espera' || cat === 'sinnota') ? '' : `<span class="rd-mini-flecha">${svgInsignia(cat, 16)}</span>`;
         return `<button type="button" class="rd-chip rd-e-${a.estado.clave}${it.id === seleccionado ? ' rd-chip--activo' : ''}" data-id="${escaparHtml(String(it.id))}" aria-pressed="${it.id === seleccionado}">
             <span class="rd-chip__nombre">${orden === 'prioridad' ? `<span class="rd-chip__num">${i + 1}</span>` : ''}${escaparHtml(it.nombre)}</span>
             <span class="rd-chip__estado">${escaparHtml(a.estado.texto)}${flecha}</span>
@@ -57,14 +55,14 @@ export function htmlDetalle(item) {
     const a = item.analisis;
     const t = textoAnalisis(a);
     const descartes = (t.descartes || []).map((d) => `<p class="rd-descarte">${escaparHtml(d)}</p>`).join('');
-    const estimado = item.fuentePP === 'estimada' && ['remontar', 'fuera'].includes(a.estado.clave)
+    const estimado = item.fuentePP === 'estimada' && ['esfuerzo', 'fuera'].includes(a.estado.clave)
         ? '<p class="rd-estimado">Ojo: esta situación usa una fórmula de prácticas estimada con las reglas generales de la UNI. Puede cambiar cuando INTRALU publique la real al cerrar el ciclo.</p>'
         : '';
     const tend = a.tendencia;
     // En un curso en riesgo, "Subiendo" o "Estable" engañarían: se muestran solo las notas, sin veredicto.
-    // Y en un curso ya asegurado, "Bajando" asustaría sin motivo: el nivel manda.
-    const enRiesgo = ['remontar', 'limite', 'fuera'].includes(a.estado.clave);
-    const sinVeredicto = (enRiesgo && tend.clave !== 'baja') || (a.estado.clave === 'asegurado' && tend.clave === 'baja');
+    // Y en un curso casi aprobado, "Bajando" asustaría sin motivo: el nivel manda.
+    const enRiesgo = ['esfuerzo', 'limite', 'fuera'].includes(a.estado.clave);
+    const sinVeredicto = (enRiesgo && tend.clave !== 'baja') || (a.estado.clave === 'muyfav' && tend.clave === 'baja');
     const tendValor = tend.clave === 'sin'
         ? '<span class="rd-sin">Aún sin tendencia</span>'
         : sinVeredicto

@@ -117,13 +117,20 @@
 
 /* ---------- Colores por estado ---------- */
 /* Misma escala que el Termómetro: lo recuperable en rojo, lo crítico en amarillo con filo negro. */
-.rd-e-fuera      { --rd-color: #FFE100; --rd-texto: #1b1233; }   /* necesitas 15 o más, o solo el sustitutorio */
-.rd-e-remontar   { --rd-color: #FF1744; --rd-texto: #C4102F; }   /* necesitas 11 a 14 */
-.rd-e-limite     { --rd-color: #B026FF; --rd-texto: #7A12B8; }   /* necesitas 9 a 10 */
-.rd-e-margen     { --rd-color: #2979FF; --rd-texto: #1550C7; }   /* necesitas 0 a 8 */
-.rd-e-asegurado  { --rd-color: #2979FF; --rd-texto: #1550C7; }
-.rd-e-esperando  { --rd-color: #AFA9C6; --rd-texto: #5b5478; }
-.rd-e-sinformula { --rd-color: #AFA9C6; --rd-texto: #5b5478; }
+.rd-e-fuera          { --rd-color: #FFE100; --rd-texto: #1b1233; }   /* necesitas 15 o más, o solo el sustitutorio */
+.rd-e-esfuerzo       { --rd-color: #FF7A00; --rd-texto: #B85500; }   /* necesitas 11 a 14 */
+.rd-e-limite         { --rd-color: #B026FF; --rd-texto: #7A12B8; }   /* necesitas 9 a 10 */
+.rd-e-enc            { --rd-color: #4FB6FF; --rd-texto: #0B6FB0; }   /* necesitas 6 a 8 */
+.rd-e-fav            { --rd-color: #2979FF; --rd-texto: #1550C7; }   /* necesitas 3 a 5 */
+.rd-e-muyfav         { --rd-color: #12B886; --rd-texto: #0B7F5E; }   /* necesitas 0 a 2 */
+.rd-e-esperando      { --rd-color: #AFA9C6; --rd-texto: #5b5478; }
+.rd-e-sinformula     { --rd-color: #AFA9C6; --rd-texto: #5b5478; }
+/* Cursos terminados (¿cómo me fue?): mismos colores que arriba */
+.rd-e-sobresaliente  { --rd-color: #12B886; --rd-texto: #0B7F5E; }
+.rd-e-muybuen        { --rd-color: #2979FF; --rd-texto: #1550C7; }
+.rd-e-buen           { --rd-color: #4FB6FF; --rd-texto: #0B6FB0; }
+.rd-e-aprobadolimite { --rd-color: #B026FF; --rd-texto: #7A12B8; }
+.rd-e-desaprobado    { --rd-color: #FF1744; --rd-texto: #C4102F; }
 
 /* ---------- Orden ---------- */
 .rd-orden {
@@ -217,7 +224,7 @@
     color: var(--rd-texto);
 }
 
-.rd-mini-flecha { display: inline-flex; }
+.rd-mini-flecha { display: inline-flex; color: var(--rd-texto); }
 
 /* ---------- Tendencia: mismos colores que el Termómetro ---------- */
 .rd-t-sube    { color: #1550C7; }

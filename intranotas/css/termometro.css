@@ -1,10 +1,8 @@
 /* ============================================================
    TERMÓMETRO — franja "Cómo van tus cursos" (beta).
    Va en css/termometro.css; se carga desde notas.html.
-   Cinco estados, UN color por tarjeta (borde neón, relleno suave del nombre e insignia):
-     azul = Subiendo · morado = Estable · rojo = Bajando
-     amarillo (con filo negro y triángulo de advertencia) = Situación crítica
-     gris = Esperando notas
+   Siete estados de situación (periodo abierto) y seis de resultado (periodo cerrado), UN color por tarjeta
+   (borde neón, relleno suave del nombre e insignia). Situación crítica = amarillo con filo negro y triángulo.
    Los textos van un tono más oscuro del mismo color solo para que se lean sobre blanco.
    Nada depende solo del color: cada estado tiene su palabra y su símbolo.
    ============================================================ */
@@ -137,10 +135,15 @@
     background: transparent;
 }
 
-.termo__chip--sube    { --termo-color: #2979FF; --termo-texto: #1550C7; }
-.termo__chip--estable { --termo-color: #B026FF; --termo-texto: #7A12B8; }
-.termo__chip--baja    { --termo-color: #FF1744; --termo-texto: #C4102F; }
-.termo__chip--espera  { --termo-color: #A39CC0; --termo-texto: #5b5478; }
+/* Los colores dicen lo mismo en las dos vistas (situación y resultado):
+   verde = excelente · azul = muy bien · celeste = bien · morado = en el límite · naranja/rojo = esfuerzo o problema. */
+.termo__chip--muyfav,  .termo__chip--sobresaliente  { --termo-color: #12B886; --termo-texto: #0B7F5E; }
+.termo__chip--fav,     .termo__chip--muybuen        { --termo-color: #2979FF; --termo-texto: #1550C7; }
+.termo__chip--enc,     .termo__chip--buen           { --termo-color: #4FB6FF; --termo-texto: #0B6FB0; }
+.termo__chip--limite,  .termo__chip--aprobadolimite { --termo-color: #B026FF; --termo-texto: #7A12B8; }
+.termo__chip--esfuerzo                              { --termo-color: #FF7A00; --termo-texto: #B85500; }
+.termo__chip--desaprobado                           { --termo-color: #FF1744; --termo-texto: #C4102F; }
+.termo__chip--espera,  .termo__chip--sinnota        { --termo-color: #A39CC0; --termo-texto: #5b5478; }
 
 /* Situación crítica: borde amarillo neón más grueso, con un filo negro fino por fuera
    (como las señales de advertencia reales; sin el filo, el amarillo casi no se ve). */
@@ -204,6 +207,11 @@
     .termo__chip {
         flex: 0 0 170px;
     }
+}
+
+/* El Radar no tiene sentido en un periodo ya cerrado: notas.js oculta su botón. */
+.chip-herramienta--radar[hidden] {
+    display: none !important;
 }
 
 /* Beta: borde cian en las tarjetas de curso de abajo. Solo se activa cuando

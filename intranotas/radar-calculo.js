@@ -20,54 +20,75 @@ import { tendenciaDeCurso, evaluacionesEnOrden } from './analisis-academico.js';
 export const UMBRAL_APROBAR = 10;      // nota mínima para aprobar
 export const MIN_PUBLICADO = 0.25;     // parte de la nota que debe estar publicada para opinar
 /* ESCALA ÚNICA: el estado depende SOLO de lo que necesitas en lo que falta (como piensa un estudiante).
-   Termómetro y Radar usan exactamente estos cortes:
-     necesitas  0 a  8  → Con margen         (chip: Subiendo)
-     necesitas  9 a 10  → Cerca del límite   (chip: Estable)
-     necesitas 11 a 14  → Necesita remontar  (chip: Bajando)
-     necesitas 15 a 20  → Situación crítica  (chip: Situación crítica)   (en los primeros ciclos un 15 es difícil)
-   También es crítica si solo el sustitutorio puede salvar el curso o ya no hay forma de aprobar. */
-export const CORTE_MARGEN = 8;         // 8 o menos → Con margen
-export const CORTE_LIMITE = 10;        // 9 a 10 → Cerca del límite
-export const CORTE_CRITICO = 14;       // 11 a 14 → Necesita remontar; MÁS de 14 → Situación crítica
+   Termómetro y Radar usan exactamente estos cortes (las notas de las evaluaciones son enteras):
+     necesitas  0 a  2  → Muy favorable    (prácticamente aprobado: tendría que pasar algo muy malo)
+     necesitas  3 a  5  → Favorable
+     necesitas  6 a  8  → Bien encaminado
+     necesitas  9 a 10  → Al límite        (aprobarías, pero casi sin margen)
+     necesitas 11 a 14  → Requiere esfuerzo (hay que rendir por encima del aprobado)
+     necesitas 15 a 20  → Situación crítica (en los primeros ciclos un 15 es difícil)
+   También es crítica si solo el sustitutorio puede salvar el curso o ya no hay forma de aprobar.
+   Cuando el curso YA TERMINÓ ya no hay nada que necesitar: se muestra "cómo te fue" (ver claveResultado). */
+export const CORTE_MUYFAV = 2;
+export const CORTE_FAV = 5;
+export const CORTE_ENC = 8;
+export const CORTE_LIMITE = 10;
+export const CORTE_ESFUERZO = 14;      // más de 14 → Situación crítica
 export const CASI_IMPOSIBLE = 18;      // más de 18: "casi la nota máxima" (solo cambia el texto del panel)
 
-/* ---- Estados (clave, texto, orden de atención: menor = más urgente) ---- */
+/* ---- Estados (clave, texto, orden de atención: menor = más urgente) ----
+   Los cinco últimos son RESULTADOS de un curso terminado ("¿Cómo me fue?"). */
 export const ESTADOS = {
-    fuera:       { clave: 'fuera',       texto: 'Situación crítica', orden: 0 },
-    remontar:    { clave: 'remontar',    texto: 'Necesita remontar', orden: 1 },
-    limite:      { clave: 'limite',      texto: 'Cerca del límite',  orden: 2 },
-    margen:      { clave: 'margen',      texto: 'Con margen',        orden: 3 },
-    asegurado:   { clave: 'asegurado',   texto: 'Asegurado',         orden: 4 },
-    esperando:   { clave: 'esperando',   texto: 'Esperando notas',   orden: 5 },
-    sinformula:  { clave: 'sinformula',  texto: 'Sin fórmula aún',   orden: 6 },
+    fuera:          { clave: 'fuera',          texto: 'Situación crítica',  orden: 0 },
+    esfuerzo:       { clave: 'esfuerzo',       texto: 'Requiere esfuerzo',  orden: 1 },
+    limite:         { clave: 'limite',         texto: 'Al límite',          orden: 2 },
+    enc:            { clave: 'enc',            texto: 'Bien encaminado',    orden: 3 },
+    fav:            { clave: 'fav',            texto: 'Favorable',          orden: 4 },
+    muyfav:         { clave: 'muyfav',         texto: 'Muy favorable',      orden: 5 },
+    esperando:      { clave: 'esperando',      texto: 'Esperando notas',    orden: 6 },
+    sinformula:     { clave: 'sinformula',     texto: 'Sin fórmula aún',    orden: 7 },
+    desaprobado:    { clave: 'desaprobado',    texto: 'Desaprobado',        orden: 8 },
+    aprobadolimite: { clave: 'aprobadolimite', texto: 'Aprobado al límite', orden: 9 },
+    buen:           { clave: 'buen',           texto: 'Buen desempeño',     orden: 10 },
+    muybuen:        { clave: 'muybuen',        texto: 'Muy buen desempeño', orden: 11 },
+    sobresaliente:  { clave: 'sobresaliente',  texto: 'Sobresaliente',      orden: 12 },
 };
+
+/* ¿Cómo me fue? La UNI NO redondea la nota final: 9.9 desaprueba y 10.0 aprueba.
+     17.0 o más → Sobresaliente · 14.0 a 16.9 → Muy buen desempeño · 11.0 a 13.9 → Buen desempeño
+     10.0 a 10.9 → Aprobado al límite · menos de 10 → Desaprobado · sin nota → 'sinnota' */
+export function claveResultado(nota) {
+    if (nota === null || nota === undefined || Number.isNaN(nota)) return 'sinnota';
+    if (nota >= 17) return 'sobresaliente';
+    if (nota >= 14) return 'muybuen';
+    if (nota >= 11) return 'buen';
+    if (nota >= UMBRAL_APROBAR) return 'aprobadolimite';
+    return 'desaprobado';
+}
 
 /* Estado que le corresponde a lo que necesitas (ver ESCALA ÚNICA arriba). */
 export function estadoPorNecesidad(x) {
-    return x <= CORTE_MARGEN ? ESTADOS.margen : x <= CORTE_LIMITE ? ESTADOS.limite : x <= CORTE_CRITICO ? ESTADOS.remontar : ESTADOS.fuera;
+    return x <= CORTE_MUYFAV ? ESTADOS.muyfav : x <= CORTE_FAV ? ESTADOS.fav : x <= CORTE_ENC ? ESTADOS.enc
+        : x <= CORTE_LIMITE ? ESTADOS.limite : x <= CORTE_ESFUERZO ? ESTADOS.esfuerzo : ESTADOS.fuera;
 }
 
-/* ---------- Categoría del termómetro: SOLO cinco ----------
-   El chip mide QUÉ TAN CERCA estás de aprobar (lo que necesitas en lo que falta), no la dirección
-   de tus notas; esa dirección sigue en la tarjeta "Tendencia" del Radar.
-     sube    → "Subiendo"          necesitas 0 a 8 (o ya aprobaste)
-     estable → "Estable"           necesitas 9 a 10
-     baja    → "Bajando"           necesitas 11 a 14
-     critico → "Situación crítica" necesitas 15 a 20, solo el sustitutorio, o no hay forma
-     espera  → "Esperando notas"   menos de 25% publicado o sin datos */
+/* ---------- Categoría del chip ----------
+   Situación (curso en marcha): muyfav · fav · enc · limite · esfuerzo · critico · espera
+   Resultado (curso terminado): sobresaliente · muybuen · buen · aprobadolimite · desaprobado · sinnota
+   El chip mide QUÉ TAN FIRME está tu situación para aprobar, no la dirección de tus notas
+   (esa dirección sigue en la tarjeta "Tendencia" del Radar). */
 export const TEXTO_CATEGORIA = {
-    sube: 'Subiendo', estable: 'Estable', baja: 'Bajando', critico: 'Situación crítica', espera: 'Esperando notas',
+    muyfav: 'Muy favorable', fav: 'Favorable', enc: 'Bien encaminado', limite: 'Al límite', esfuerzo: 'Requiere esfuerzo',
+    critico: 'Situación crítica', espera: 'Esperando notas',
+    sobresaliente: 'Sobresaliente', muybuen: 'Muy buen desempeño', buen: 'Buen desempeño',
+    aprobadolimite: 'Aprobado al límite', desaprobado: 'Desaprobado', sinnota: 'Sin nota final',
 };
 
 export function categoriaTermometro(analisis) {
-    switch (analisis.estado.clave) {
-        case 'fuera': return 'critico';
-        case 'remontar': return 'baja';
-        case 'limite': return 'estable';
-        case 'margen':
-        case 'asegurado': return 'sube';
-        default: return 'espera';
-    }
+    const k = analisis.estado.clave;
+    if (k === 'fuera') return 'critico';
+    if (k === 'esperando' || k === 'sinformula') return 'espera';
+    return k;
 }
 
 const esNula = (v) => v === null || v === undefined || Number.isNaN(v);
@@ -239,13 +260,13 @@ function analizarBase({ formulaPP = null, formulaFinal = null, valores = {}, eva
     if (!pendientes.length) {
         const nf = notaFinalTruncada(formulaPP, formulaFinal, valores);
         if (nf === null) return { ...base, estado: ESTADOS.sinformula, tipo: 'sinformula' };
-        if (nf >= UMBRAL_APROBAR) return { ...base, estado: ESTADOS.asegurado, tipo: 'completo', notaFinal: nf, necesita: null };
+        if (nf >= UMBRAL_APROBAR) return { ...base, estado: ESTADOS[claveResultado(nf)], tipo: 'completo', notaFinal: nf, necesita: null, terminado: true };
         if (esNula(valores.ES)) {
             // No llega, pero el sustitutorio siempre es una opción real.
             const r = calcularNotaMinimaNecesaria({ formulaPP, formulaFinal, valoresBase: { ...valores, ES: null }, variableIncognita: 'ES', umbral: UMBRAL_APROBAR });
             if (r.posible) return { ...base, estado: ESTADOS.fuera, tipo: 'sustitutorio', notaFinal: nf, necesita: Math.min(20, Math.ceil(r.notaMinima - 1e-9)), variable: 'ES' };
         }
-        return { ...base, estado: ESTADOS.fuera, tipo: 'completo', notaFinal: nf, necesita: null };
+        return { ...base, estado: ESTADOS.desaprobado, tipo: 'completo', notaFinal: nf, necesita: null, terminado: true };
     }
 
     /* ----- Caso 2: falta algo. ¿Cuánto de la nota ya está decidido? -----
@@ -285,7 +306,7 @@ function analizarBase({ formulaPP = null, formulaFinal = null, valores = {}, eva
     /* ----- ¿Qué promedio hace falta en TODO lo que falta? (entero, 0 a 20) ----- */
     const conCero = conUniforme(0), conVeinte = conUniforme(20);
     if (conCero === null || conVeinte === null) return { ...base, estado: ESTADOS.sinformula, tipo: 'sinformula' };
-    if (conCero >= UMBRAL_APROBAR) return { ...base, estado: ESTADOS.asegurado, tipo: 'asegurado', necesita: 0 };
+    if (conCero >= UMBRAL_APROBAR) return { ...base, estado: ESTADOS.muyfav, tipo: 'asegurado', necesita: 0 };
     if (conVeinte < UMBRAL_APROBAR) return { ...base, estado: ESTADOS.fuera, tipo: 'fuera', maximoPosible: conVeinte };
 
     let x = 1;
@@ -348,10 +369,10 @@ export function veredictoDeNecesito(n) {
 function estadoPorNecesito(n) {
     if (!n) return null;
     switch (n.tipo) {
-        case 'completo': return n.aprueba ? 'asegurado' : (n.conES ? 'fuera' : null);
+        case 'completo': return n.aprueba ? 'muyfav' : (n.conES ? 'fuera' : null);
         case 'sustitutorio': return 'fuera';                       // solo el sustitutorio puede salvarlo
         case 'unico':
-            if (n.estado === 'seguro') return 'asegurado';
+            if (n.estado === 'seguro') return 'muyfav';
             if (n.estado === 'imposible') return 'fuera';          // "Necesitarás el sustitutorio para aprobar"
             if (n.estado === 'ok') return estadoPorNecesidad(Math.ceil(n.minimo - 1e-9)).clave;
             return null;
@@ -392,17 +413,28 @@ function aplicarVeredicto(res, n, evaluaciones, ctx) {
     };
 
     switch (n.tipo) {
-        case 'completo':
-            if (n.aprueba) return clave === res.estado.clave ? conVeredicto : { ...res, ...extra, estado: ESTADOS.asegurado, tipo: 'asegurado', necesita: 0 };
-            return { ...res, ...extra, estado: ESTADOS.fuera, tipo: 'completo', notaFinal: n.notaFinal };
+        case 'completo': {
+            if (res.terminado) return conVeredicto;
+            // Curso SIN exámenes que ya aprueba contando lo pendiente como 0: todavía no terminó (faltan notas).
+            const tieneExamenes = variablesDeFormula(ctx.formulaFinal).some((v) => v === 'EP' || v === 'EF');
+            if (n.aprueba && !tieneExamenes) {
+                return res.estado.clave === 'muyfav' ? conVeredicto : { ...res, ...extra, estado: ESTADOS.muyfav, tipo: 'asegurado', necesita: 0 };
+            }
+            // Con EP y EF rendidos el curso terminó (lo que falte cuenta 0, igual que en la tarjeta del curso).
+            return { ...res, ...extra, estado: n.aprueba ? ESTADOS[claveResultado(n.notaFinal)] : ESTADOS.desaprobado,
+                tipo: 'completo', notaFinal: n.notaFinal, necesita: null, terminado: true };
+        }
 
         case 'sustitutorio':
-            if (n.estado === 'imposible') return { ...res, ...extra, estado: ESTADOS.fuera, tipo: 'completo', notaFinal: n.notaFinal };
+            if (n.estado === 'imposible') {
+                // Ni con el sustitutorio se puede aprobar: si ya no falta nada, el curso terminó desaprobado.
+                return res.terminado ? conVeredicto : { ...res, ...extra, estado: ESTADOS.fuera, tipo: 'completo', notaFinal: n.notaFinal };
+            }
             return { ...res, ...extra, estado: ESTADOS.fuera, tipo: 'sustitutorio', notaFinal: n.notaFinal, variable: 'ES',
                 necesita: n.estado === 'ok' ? Math.min(20, Math.ceil(n.minimo - 1e-9)) : 0 };
 
         case 'unico':
-            if (n.estado === 'seguro') return clave === res.estado.clave ? conVeredicto : { ...res, ...extra, estado: ESTADOS.asegurado, tipo: 'asegurado', necesita: 0 };
+            if (n.estado === 'seguro') return (res.terminado || res.estado.clave === 'muyfav') ? conVeredicto : { ...res, ...extra, estado: ESTADOS.muyfav, tipo: 'asegurado', necesita: 0 };
             if (n.estado === 'imposible') {
                 // Si ni con 20 en TODO lo que falta se aprueba, el análisis base ya lo dice más fuerte.
                 if (res.tipo === 'fuera') return { ...conVeredicto, ...extra };
@@ -426,7 +458,7 @@ function ayudaCorta(a, evaluaciones) {
         case 'normal':
         case 'casi': return `Necesitas un promedio de ${a.necesita} en lo que falta`;
         case 'asegurado': return 'Ya apruebas aunque saques 0 en lo que falta';
-        case 'completo': return a.estado.clave === 'asegurado' ? `Ya aprobaste con ${a.notaFinal.toFixed(1)}` : `Con las notas actuales llegas a ${a.notaFinal.toFixed(1)}`;
+        case 'completo': return a.notaFinal >= UMBRAL_APROBAR ? `Terminaste con ${a.notaFinal.toFixed(1)}` : `Con las notas actuales llegas a ${a.notaFinal.toFixed(1)}`;
         case 'fuera': return 'Ni con 20 en lo que falta llegas a 10';
         case 'esperando': return 'Aún no hay notas suficientes para opinar';
         case 'sinformula': return 'Todavía no hay fórmula para este curso';
@@ -450,8 +482,8 @@ export function textoAnalisis(a) {
     switch (a.tipo) {
         case 'completo':
             tile = { valor: String(a.notaFinal.toFixed(1)), sub: 'tu nota final con lo publicado' };
-            razones.push(a.estado.clave === 'asegurado' ? 'Ya tienes todas las notas y llegas a 10.' : 'Ya tienes todas las notas y no llegas a 10.');
-            queHacer = a.estado.clave === 'asegurado'
+            razones.push(a.notaFinal >= UMBRAL_APROBAR ? 'Ya tienes todas las notas y llegas a 10.' : 'Ya tienes todas las notas y no llegas a 10.');
+            queHacer = a.notaFinal >= UMBRAL_APROBAR
                 ? 'Tu curso está aprobado con las notas que ya tienes.'
                 : 'Con las notas actuales el curso no llega a 10. Decide a tiempo: conversa con tu profesor y revisa las opciones que te da tu facultad.';
             break;
@@ -534,7 +566,11 @@ export function textoAnalisis(a) {
     }
 
     // La tendencia suma una razón cuando hay datos y todavía queda espacio.
-    if (a.serie.length >= 3 && a.tendencia.clave !== 'sin' && razones.length < 3) {
+    // La dirección de las notas solo se menciona si no contradice el nivel: en un curso en riesgo no se dice
+    // "vienen subiendo", y en uno ya muy favorable no se dice "vienen bajando" (el nivel manda).
+    const enRiesgo = ['fuera', 'esfuerzo', 'limite'].includes(a.estado.clave);
+    const dice = (clave) => (clave === 'baja' ? !['muyfav'].includes(a.estado.clave) : !enRiesgo);
+    if (a.serie.length >= 3 && a.tendencia.clave !== 'sin' && razones.length < 3 && dice(a.tendencia.clave)) {
         if (a.tendencia.clave === 'baja') razones.push(`Tus evaluaciones vienen bajando: ${serieTexto(a.serie)}.`);
         else if (a.tendencia.clave === 'sube') razones.push(`Tus evaluaciones vienen subiendo: ${serieTexto(a.serie)}.`);
         else razones.push(`Tus evaluaciones se mantienen parejas: ${serieTexto(a.serie)}.`);
