@@ -41,7 +41,9 @@ export const ESTADOS = {
      critico → "Situación crítica"   (no hay salida realista: se debe decidir a tiempo)
      baja    → "Bajando"             (notas que bajan, o necesita remontar / está cerca del límite)
      espera  → "Esperando notas"     (aún no hay datos suficientes para opinar)
-     sube / estable                  (solo cuando el nivel es bueno: tendencia de notas) */
+     sube / estable                  (solo cuando el nivel es bueno: tendencia de notas)
+   Si el curso ya está ASEGURADO (aprueba aunque lo que falta valga 0, igual que "¡Ya aprobaste!"
+   en "¿Qué nota necesito?"), el nivel manda: nunca dice "Bajando"; muestra Subiendo o Estable. */
 export const TEXTO_CATEGORIA = {
     sube: 'Subiendo', estable: 'Estable', baja: 'Bajando', critico: 'Situación crítica', espera: 'Esperando notas',
 };
@@ -51,6 +53,7 @@ export function categoriaTermometro(analisis) {
     const t = analisis.tendencia.clave;
     if (e === 'fuera') return 'critico';
     if (e === 'remontar' || e === 'limite') return 'baja';
+    if (e === 'asegurado') return t === 'sube' ? 'sube' : 'estable';
     if (e === 'esperando' || e === 'sinformula' || t === 'sin') return 'espera';
     return t === 'sube' ? 'sube' : t === 'baja' ? 'baja' : 'estable';
 }

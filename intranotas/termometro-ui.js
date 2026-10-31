@@ -27,7 +27,7 @@ export function svgTrianguloAlerta(px = 34) {
 }
 
 function insignia(categoria) {
-    if (categoria === 'critico') return `<span class="termo__ins termo__ins--sola">${svgTrianguloAlerta(34)}</span>`;
+    if (categoria === 'critico') return `<span class="termo__ins termo__ins--sola">${svgTrianguloAlerta(30)}</span>`;
     if (categoria === 'espera') return `<span class="termo__ins termo__ins--sola">${svgIcono('espera', 18)}</span>`;
     return `<span class="termo__ins">${svgIcono(categoria, 19)}</span>`;
 }
@@ -62,7 +62,7 @@ export function pintarTermometro(contenedor, items, alElegir) {
                 data-id="${escaparHtml(String(it.id))}" title="${escaparHtml(ayuda)}" aria-label="${escaparHtml(etiqueta)}">
                 <span class="termo__cuerpo"><span class="termo__nombre">${escaparHtml(it.nombre)}</span>${sigla}</span>
                 <span class="termo__estado">
-                    <span class="termo__linea">${insignia(cat)}<span class="termo__palabra">${TEXTO_CATEGORIA[cat]}</span>${simulado}</span>
+                    <span class="termo__linea">${simulado}<span class="termo__principal">${insignia(cat)}<span class="termo__palabra">${TEXTO_CATEGORIA[cat]}</span></span></span>
                     ${estimado}
                 </span>
             </button>`;

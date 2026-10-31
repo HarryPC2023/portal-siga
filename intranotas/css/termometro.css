@@ -97,9 +97,18 @@
 .termo__linea {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
     flex-wrap: wrap;
+    gap: 6px 8px;
+    width: 100%;
+}
+
+/* La señal (insignia + palabra) SIEMPRE queda pegada a la derecha y en una sola línea;
+   la etiqueta "Simulado" va a su izquierda, o arriba si no cabe. */
+.termo__principal {
+    display: inline-flex;
+    align-items: center;
     gap: 7px;
+    margin-left: auto;
 }
 
 .termo__palabra {

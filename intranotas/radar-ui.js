@@ -62,10 +62,12 @@ export function htmlDetalle(item) {
         : '';
     const tend = a.tendencia;
     // En un curso en riesgo, "Subiendo" o "Estable" engañarían: se muestran solo las notas, sin veredicto.
+    // Y en un curso ya asegurado, "Bajando" asustaría sin motivo: el nivel manda.
     const enRiesgo = ['remontar', 'limite', 'fuera'].includes(a.estado.clave);
+    const sinVeredicto = (enRiesgo && tend.clave !== 'baja') || (a.estado.clave === 'asegurado' && tend.clave === 'baja');
     const tendValor = tend.clave === 'sin'
         ? '<span class="rd-sin">Aún sin tendencia</span>'
-        : (enRiesgo && tend.clave !== 'baja')
+        : sinVeredicto
             ? '<span class="rd-sin">Tus notas</span>'
             : `<span class="rd-t-${tend.clave} rd-tend">${svgFlecha(tend.clave)}<span>${escaparHtml(tend.texto)}</span></span>`;
     const tendSub = a.serie.length >= 3 ? escaparHtml(a.serie.slice(0, 6).join(' → ')) : 'Se necesitan 3 evaluaciones con nota.';
