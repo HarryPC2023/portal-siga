@@ -137,13 +137,45 @@
 
 /* Los colores dicen lo mismo en las dos vistas (situación y resultado):
    verde = excelente · azul = muy bien · celeste = bien · morado = en el límite · naranja/rojo = esfuerzo o problema. */
-.termo__chip--muyfav,  .termo__chip--sobresaliente  { --termo-color: #12B886; --termo-texto: #0B7F5E; }
-.termo__chip--fav,     .termo__chip--muybuen        { --termo-color: #2979FF; --termo-texto: #1550C7; }
-.termo__chip--enc,     .termo__chip--buen           { --termo-color: #4FB6FF; --termo-texto: #0B6FB0; }
-.termo__chip--limite,  .termo__chip--aprobadolimite { --termo-color: #B026FF; --termo-texto: #7A12B8; }
-.termo__chip--esfuerzo                              { --termo-color: #FF7A00; --termo-texto: #B85500; }
-.termo__chip--desaprobado                           { --termo-color: #FF1744; --termo-texto: #C4102F; }
-.termo__chip--espera,  .termo__chip--sinnota        { --termo-color: #A39CC0; --termo-texto: #5b5478; }
+.termo__chip--muyfav,
+.termo__chip--sobresaliente {
+    --termo-color: #12B886;
+    --termo-texto: #0B7F5E;
+}
+
+.termo__chip--fav,
+.termo__chip--muybuen {
+    --termo-color: #2979FF;
+    --termo-texto: #1550C7;
+}
+
+.termo__chip--enc,
+.termo__chip--buen {
+    --termo-color: #4FB6FF;
+    --termo-texto: #0B6FB0;
+}
+
+.termo__chip--limite,
+.termo__chip--aprobadolimite {
+    --termo-color: #B026FF;
+    --termo-texto: #7A12B8;
+}
+
+.termo__chip--esfuerzo {
+    --termo-color: #FF7A00;
+    --termo-texto: #B85500;
+}
+
+.termo__chip--desaprobado {
+    --termo-color: #FF1744;
+    --termo-texto: #C4102F;
+}
+
+.termo__chip--espera,
+.termo__chip--sinnota {
+    --termo-color: #A39CC0;
+    --termo-texto: #5b5478;
+}
 
 /* Situación crítica: borde amarillo neón más grueso, con un filo negro fino por fuera
    (como las señales de advertencia reales; sin el filo, el amarillo casi no se ve). */
@@ -209,8 +241,9 @@
     }
 }
 
-/* El Radar no tiene sentido en un periodo ya cerrado: notas.js oculta su botón. */
-.chip-herramienta--radar[hidden] {
+/* Un botón del lateral con el atributo hidden debe desaparecer de verdad:
+   .chip-herramienta usa display:flex y le ganaría al hidden. Vale para cualquier botón. */
+.chip-herramienta[hidden] {
     display: none !important;
 }
 
