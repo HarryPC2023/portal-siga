@@ -23,20 +23,52 @@ function extraerEncabezado(textoCrudo) {
 
 /* Bloque "De la carrera" que trae el Avance al final: los créditos que pide el plan del alumno
    (obligatorios, electivos, complementarios, otras actividades y total para egresar). Se busca cada
-   etiqueta en cualquier parte del texto y se toma el número que la sigue. Si el PDF no lo trae o cambia
-   de formato, devuelve null: es un dato extra y nunca debe romper la lectura del resto. */
+   etiqueta en cualquier parte del texto y se toma el número que la sigue. Es tolerante a cómo el PDF
+   escribe las tildes: algunos PDF dibujan la tilde como una pieza aparte ("Mi´nimo", "M í nimo"), así que
+   el texto se limpia de tildes y de esas piezas sueltas, y entre las letras de cada etiqueta se aceptan
+   espacios. Si el PDF no lo trae o cambia de formato, devuelve null: es un dato extra y nunca debe romper
+   la lectura del resto. */
+function limpiarParaEtiquetas(texto) {
+    return String(texto || '')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')   // tildes "pegadas" a la letra
+        .replace(/[´`¨^~'’]/g, '')                           // tildes dibujadas como pieza suelta
+        .replace(/ı/g, 'i')                                  // "i" sin punto
+        .replace(/\u00a0/g, ' ')
+        .toLowerCase();
+}
+
+function etiquetaFlexible(etiqueta) {
+    return etiqueta.replace(/\s+/g, '').split('').join('\\s*');   // "minimo de" -> m\s*i\s*n…: acepta espacios entre letras
+}
+
 function extraerCreditosDeLaCarrera(textoCrudo) {
+    try {
+        return leerCreditosDeLaCarrera(textoCrudo);
+    } catch (error) {
+        // Dato extra: si algo falla al leerlo, el resto del Avance se guarda igual.
+        console.warn('Avance: no se pudieron leer los créditos de la carrera:', error);
+        return null;
+    }
+}
+
+function leerCreditosDeLaCarrera(textoCrudo) {
+    const texto = limpiarParaEtiquetas(textoCrudo);
     const numeroTrasEtiqueta = (etiqueta) => {
-        const m = textoCrudo.match(new RegExp(`${etiqueta}\\s*[:\\-]?\\s*(\\d{1,3})(?!\\d)`, 'i'));
+        const m = texto.match(new RegExp(`${etiquetaFlexible(etiqueta)}\\s*[:\\-]?\\s*(\\d{1,3})(?!\\d)`));
         return m ? parseInt(m[1], 10) : null;
     };
     const creditos = {
-        obligatoriosMin: numeroTrasEtiqueta('M[íi]nimo\\s+de\\s+Cr[ée]ditos\\s+Obligatorios'),
-        electivosMin: numeroTrasEtiqueta('M[íi]nimo\\s+de\\s+Cr[ée]ditos\\s+Electivos'),
-        complementariosMax: numeroTrasEtiqueta('M[áa]ximo\\s+de\\s+Cr[ée]ditos\\s+Complementarios'),
-        otrasActividadesMax: numeroTrasEtiqueta('M[áa]ximo\\s+de\\s+Cr[ée]ditos\\s+por\\s+otras\\s+actividades'),
-        egreso: numeroTrasEtiqueta('Total\\s+de\\s+Cr[ée]ditos\\s+para\\s+Egresar'),
+        obligatoriosMin: numeroTrasEtiqueta('minimo de creditos obligatorios'),
+        electivosMin: numeroTrasEtiqueta('minimo de creditos electivos'),
+        complementariosMax: numeroTrasEtiqueta('maximo de creditos complementarios'),
+        otrasActividadesMax: numeroTrasEtiqueta('maximo de creditos por otras actividades'),
+        egreso: numeroTrasEtiqueta('total de creditos para egresar'),
     };
+    if (creditos.egreso !== null && creditos.electivosMin === null) {
+        // Aviso para diagnóstico: se vio el total pero no los electivos. Muestra cómo quedó escrito ese tramo del PDF.
+        const i = texto.search(/e\s*g\s*r\s*e\s*s\s*a\s*r/);
+        console.warn('Avance: no se leyeron los créditos de electivos. Texto cercano:', JSON.stringify(texto.slice(Math.max(0, i - 450), i + 40)));
+    }
     return Object.values(creditos).some((v) => v !== null) ? creditos : null;
 }
 
