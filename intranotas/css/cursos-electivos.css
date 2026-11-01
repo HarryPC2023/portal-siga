@@ -278,6 +278,22 @@
 .ce-detalle-sub { margin: 4px 0 0; font-size: 0.78rem; font-weight: 600; color: var(--ce-suave); }
 .ce-detalle-texto { margin: 0; font-size: 0.8rem; line-height: 1.5; color: var(--ce-suave); }
 
+.ce-volver {
+    align-self: flex-start;
+    margin-top: 4px;
+    font-family: inherit;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: #4B1D96;
+    background: #fff;
+    border: 1.5px solid var(--ce-violeta);
+    border-radius: 99px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+.ce-volver:hover { background: #F7ECFF; }
+
 .ce-pre { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; }
 .ce-pre small { color: #7a7498; }
 

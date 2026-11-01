@@ -50,13 +50,27 @@ function estadoBase(fila, enCurso) {
     return 'pendiente';
 }
 
+/* El Avance puede traer el mismo curso más de una vez (por ejemplo, filas guardadas en sincronizaciones
+   distintas). Un código = un curso: si se repite, se queda la fila con más información (la que tiene
+   nota, luego la que tiene periodo, luego la obligatoria); si empatan, la última. Sin esto, todo lo que
+   cuenta cursos (créditos, electivos, la lista de la carrera) sale multiplicado. */
+export function deduplicarFilas(filas) {
+    const puntaje = (f) => (!esNula(f.nota) ? 4 : 0) + (!esNula(f.periodo_pdf) ? 2 : 0) + (f.categoria === 'obligatorio' ? 1 : 0);
+    const porCodigo = new Map();
+    (filas || []).forEach((f) => {
+        const previa = porCodigo.get(f.codigo_curso);
+        if (!previa || puntaje(f) >= puntaje(previa)) porCodigo.set(f.codigo_curso, f);
+    });
+    return [...porCodigo.values()];
+}
+
 /* Construye el progreso completo de la carrera.
    opciones.enCurso: códigos de curso que el alumno está llevando ahora aunque el
    Avance todavía no lo diga (por ejemplo, los del periodo abierto en notas_curso). */
 export function construirProgresoCarrera(filas, opciones = {}) {
     const enCurso = new Set(opciones.enCurso || []);
 
-    const cursos = (filas || []).map((f) => ({
+    const cursos = deduplicarFilas(filas).map((f) => ({
         codigo: f.codigo_curso,
         nombre: f.nombre_curso,
         creditos: Number(f.creditos) || 0,

@@ -257,7 +257,10 @@ export function montarCursosElectivos({ cargarFilas, obtenerEnCurso = () => [], 
         $('ce-buscar').addEventListener('input', (e) => { busqueda = e.target.value; pintarLista(); });
         $('ce-lista').addEventListener('click', (e) => {
             const n = e.target.closest('[data-code]');
-            if (n) { seleccionado = n.dataset.code; pintarLista(); pintarDetalle(); }
+            if (n) { seleccionado = n.dataset.code; pintarLista(); pintarDetalle(); irAlDetalle(); }
+        });
+        $('ce-detalle').addEventListener('click', (e) => {
+            if (e.target.closest('[data-volver]')) volverALaLista();
         });
         pintarFiltros();
         pintarLista();
@@ -275,11 +278,23 @@ export function montarCursosElectivos({ cargarFilas, obtenerEnCurso = () => [], 
         if (columnas) columnas.scrollLeft = desplazamiento;
     }
 
+    /* La lista puede ser muy larga: al tocar un electivo se baja hasta su detalle (y desde ahí se puede volver). */
+    const sinMovimiento = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function irAlDetalle() {
+        $('ce-detalle').scrollIntoView({ behavior: sinMovimiento() ? 'auto' : 'smooth', block: 'start' });
+    }
+
+    function volverALaLista() {
+        const nodo = $('ce-lista').querySelector('.ce-nodo--sel');
+        if (nodo) nodo.scrollIntoView({ behavior: sinMovimiento() ? 'auto' : 'smooth', block: 'center', inline: 'center' });
+    }
+
     function pintarDetalle() {
         const e = electivos.find((x) => x.codigo === seleccionado);
         const caja = $('ce-detalle');
         caja.hidden = !e;
-        if (e) caja.innerHTML = htmlDetalle(e, cicloCarga);
+        if (e) caja.innerHTML = `${htmlDetalle(e, cicloCarga)}<button type="button" class="ce-volver" data-volver="1">↑ Volver a este electivo en la lista</button>`;
     }
 
     return { abrir, cerrar, insertarBoton };
