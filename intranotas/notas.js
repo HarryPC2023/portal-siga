@@ -21,6 +21,7 @@ import { calcularNecesito, conPendientesEnCero } from './escenarios.js';
 import { generarEscenariosMeta, TECHO_MAXIMO_EXAMEN } from './escenarios-meta.js';
 import { montarProgresoCarrera, nombreLindo, soltarFocoDe } from './progreso-carrera-ui.js';
 import { montarRutaCurso } from './ruta-curso-ui.js';
+import { montarRutaAcademica } from './ruta-academica-ui.js';
 import { construirValoresFormula, notaComoNumero, clasificarExamen } from './formula-mapper.js';
 import { FACULTADES } from './facultades-datos.js';
 import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.js';
@@ -193,6 +194,20 @@ function cursosParaRadar() {
     });
 }
 
+/* Lecturas del Radar de los cursos del periodo en pantalla, para la Ruta académica (beta):
+   { [codigo]: { clave, texto } }. Solo cursos con lectura (sin "Esperando notas" ni "Sin fórmula
+   aún") y solo en periodos abiertos, igual que el Radar. */
+function lecturasParaRuta() {
+    const lecturas = {};
+    if (!periodoActivo || !periodoEstaAbierto(periodoActivo)) return lecturas;
+    cursosParaRadar().forEach((curso) => {
+        const estado = analizarCurso(curso).estado;
+        if (estado.clave === 'esperando' || estado.clave === 'sinformula') return;
+        lecturas[curso.codigo] = { clave: estado.clave, texto: estado.texto };
+    });
+    return lecturas;
+}
+
 /* Cursos del periodo que el alumno tiene en pantalla (selector de Ruta del Curso). */
 function cursosDelPeriodoActivo() {
     return (notasPorPeriodo[periodoActivo] || []).map((curso) => ({
@@ -228,6 +243,18 @@ function inicializarAnalisisAcademico() {
         });
         radar.insertarBoton();
         radarUI = radar;
+
+        // Ruta académica (beta): reemplaza a la Ruta del curso. Invita a ver el Radar.
+        const rutaAcademica = montarRutaAcademica({
+            cargarFilas: cargarFilasAvance,
+            obtenerCursosDelPeriodo: cursosDelPeriodoActivo,
+            obtenerEnCurso: codigosEnCursoAhora,
+            obtenerLecturas: lecturasParaRuta,
+            obtenerPeriodo: () => periodoActivo,
+            abrirRadar: (codigo) => radar.abrirEn(codigo),
+        });
+        rutaAcademica.reemplazarBoton();
+        herramientas.ruta = () => rutaAcademica.abrir();
     }
 }
 

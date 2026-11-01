@@ -163,6 +163,7 @@ export function montarRadar({ obtenerCursos, cargarFilas, obtenerEnCurso = () =>
     let hayAvance = false;
     let seleccionado = null;
     let orden = 'prioridad';       // 'prioridad' | 'mis-cursos'
+    let codigoPendiente = null;    // curso que se quiere ver al abrir (lo pide la Ruta académica)
 
     const $ = (id) => document.getElementById(id);
 
@@ -259,6 +260,11 @@ export function montarRadar({ obtenerCursos, cargarFilas, obtenerEnCurso = () =>
         try {
             await prepararDatos();
             $('rd-icono').innerHTML = svgRadarConCursos(46, ordenarPorPrioridad(items).map((it) => it.analisis.estado.clave).filter((clave) => clave !== 'esperando' && clave !== 'sinformula'));
+            if (codigoPendiente) {
+                const buscado = items.find((it) => it.codigo === codigoPendiente);
+                if (buscado) seleccionado = buscado.id;
+                codigoPendiente = null;
+            }
             pintar();
         } catch (error) {
             console.error('Radar académico:', error);
@@ -275,5 +281,11 @@ export function montarRadar({ obtenerCursos, cargarFilas, obtenerEnCurso = () =>
         $('rd-panel').setAttribute('aria-hidden', 'true');
     }
 
-    return { insertarBoton, abrir, cerrar };
+    /* Abre el Radar con ese curso ya seleccionado. */
+    function abrirEn(codigo) {
+        codigoPendiente = codigo;
+        return abrir();
+    }
+
+    return { insertarBoton, abrir, abrirEn, cerrar };
 }

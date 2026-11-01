@@ -1,0 +1,368 @@
+/* ============================================================
+   🔗 RUTA ACADÉMICA — la Ruta del curso, mejorada (beta)
+   Ventana amplia al centro de la pantalla, igual que "Progreso de tu carrera"
+   (mismo overlay, borde y sombra lila). Va en css/ruta-academica.css; se carga
+   desde notas.html.
+
+   Código de color:
+   - Violeta intenso: TU curso (el seleccionado y el "En curso" de la cadena).
+   - Bronce: lo que se bloquea PRIMERO (tarjeta y primer ciclo de la cadena).
+   - Amarillo punteado: lo que se retrasa después.
+   Bordes finos de color intenso sobre fondo blanco, sin relleno.
+   ============================================================ */
+
+.ra-modal {
+    --ra-violeta: #9B00FF;
+    --ra-bronce: #996633;
+    --ra-ambar: #F2B705;
+    --ra-lila: #F0EAFF;
+    --ra-tinta: #14102a;
+    --ra-suave: #5b5478;
+}
+
+.ra-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+}
+
+.ra-overlay.ra-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ra-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -48%);
+    width: min(1000px, 94vw);
+    max-height: 90vh;
+    background: #fff;
+    border: 2px solid rgba(102, 0, 204, 0.55);
+    border: 2px solid color-mix(in srgb, var(--brand-morado, #6600CC) 55%, transparent);
+    border-radius: 20px;
+    box-shadow: 0 0 0 4px rgba(102, 0, 204, 0.18), 0 16px 44px rgba(102, 0, 204, 0.45);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-morado, #6600CC) 18%, transparent),
+        0 16px 44px color-mix(in srgb, var(--brand-morado, #6600CC) 45%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: var(--font-datos, 'Poppins', 'Segoe UI', Arial, sans-serif);
+    color: var(--ink, #1f2937);
+}
+
+.ra-modal.ra-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+}
+
+.ra-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 22px;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+.ra-modal-titulo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-heading, 'Orbitron', sans-serif);
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.ra-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #6b7280;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+}
+
+.ra-modal-body {
+    padding: 16px 22px 26px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.ra-mensaje {
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: #6b7280;
+    padding: 30px 10px;
+    margin: 0;
+}
+
+/* ---------- Ícono animado ---------- */
+.ra-ico { flex: 0 0 auto; display: block; overflow: visible; }   /* visible: que el halo no se recorte en el borde del dibujo */
+
+.ra-ico-flujo {
+    fill: none;
+    stroke: #B9A6D9;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 2.2 2.6;
+    animation: ra-flujo 1.1s linear infinite;
+}
+
+.ra-ico-halo {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+    animation: ra-halo 2.4s ease-out infinite;
+}
+
+@keyframes ra-flujo { to { stroke-dashoffset: -4.8; } }
+
+@keyframes ra-halo {
+    0% { transform: scale(1); opacity: 0.6; }
+    55% { transform: scale(2.4); opacity: 0; }
+    100% { transform: scale(2.4); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ra-ico-flujo, .ra-ico-halo { animation: none; }
+    .ra-ico-halo { opacity: 0; }
+}
+
+.chip-herramienta--ruta .ra-ico { flex: 0 0 auto; }
+
+/* ---------- Mis cursos ---------- */
+.ra-etiqueta {
+    align-self: flex-start;
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 99px;
+    background: #EDE4FF;
+    color: #4B1D96;
+}
+
+.ra-tarjetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 8px;
+}
+
+.ra-tarjeta {
+    text-align: left;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: #fff;
+    border: 1.5px solid #d9d3ee;
+    border-radius: 10px;
+    padding: 9px 10px;
+    color: var(--ra-tinta);
+    cursor: pointer;
+}
+
+.ra-tarjeta:hover { border-color: #b9a6e8; }
+
+.ra-tarjeta--activa,
+.ra-tarjeta--activa:hover {
+    border: 2px solid var(--ra-violeta);
+    padding: 8.5px 9.5px;
+}
+
+.ra-tarjeta-nombre { font-size: 0.8rem; font-weight: 600; line-height: 1.3; }
+.ra-tarjeta-abre { font-size: 0.74rem; color: var(--ra-suave); }
+.ra-tarjeta-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.ra-tipo, .ra-lectura {
+    display: inline-block;
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    border-radius: 99px;
+}
+
+.ra-tipo--base { background: #FFEFD6; color: #8a4b00; }
+.ra-tipo--especialidad { background: #EEF0FF; color: #3b3f9a; }
+.ra-tipo--electivo, .ra-tipo--complementario { background: #E8F5EE; color: #1b6b45; }
+
+.ra-lectura { font-weight: 600; background: #EEEAF7; color: #5b5478; }
+.ra-lectura--fuera { background: #FFF3B0; color: #7a6200; }
+.ra-lectura--esfuerzo { background: #FFE1CC; color: #9a4300; }
+.ra-lectura--limite { background: #F3E4FF; color: #7a1fb5; }
+.ra-lectura--enc { background: #DDF1FF; color: #0b5e8a; }
+.ra-lectura--fav { background: #DCE8FF; color: #1c4fb5; }
+.ra-lectura--muyfav { background: #D9F7EC; color: #0B6B4F; }
+.ra-lectura--desaprobado { background: #FFE1E1; color: #8a1f1f; }
+.ra-lectura--aprobadolimite { background: #F3E4FF; color: #7a1fb5; }
+.ra-lectura--buen { background: #DDF1FF; color: #0b5e8a; }
+.ra-lectura--muybuen { background: #DCE8FF; color: #1c4fb5; }
+.ra-lectura--sobresaliente { background: #D9F7EC; color: #0B6B4F; }
+
+/* ---------- Detalle del curso ---------- */
+.ra-detalle {
+    border: 1px solid #ddd6f3;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.ra-det-cabecera { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.ra-det-nombre { font-family: var(--font-heading, 'Orbitron', sans-serif); font-size: 0.98rem; font-weight: 700; }
+.ra-det-meta { font-size: 0.74rem; color: var(--ra-suave); }
+
+.ra-peso {
+    margin-left: auto;
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    border-radius: 99px;
+    background: #EEEAF7;
+    color: #5b5478;
+}
+
+.ra-peso--clave { background: #D6E8FF; color: #1F4FB0; }
+.ra-peso--importante { background: #FFF1CC; color: #7a5a00; }
+
+.ra-seccion { display: flex; flex-direction: column; gap: 6px; }
+.ra-seccion-titulo { margin: 0; font-size: 0.74rem; font-weight: 600; color: var(--ra-suave); }
+
+.ra-tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.7fr;
+    gap: 8px;
+    align-items: start;   /* cada tarjeta con la altura de su contenido */
+}
+
+.ra-tile {
+    background: var(--ra-lila);
+    border-radius: 12px;
+    padding: 9px 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ra-tile-label { font-size: 0.74rem; color: #2a2340; }
+.ra-tile-valor { font-family: var(--font-heading, 'Orbitron', sans-serif); font-size: 1.3rem; font-weight: 700; color: var(--ra-tinta); margin: 2px 0; }
+.ra-tile-sub { font-size: 0.74rem; color: #2a2340; }
+
+.ra-pastilla {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ra-tinta);
+    background: #fff;
+    border: 1.5px solid var(--ra-bronce);
+    border-radius: 9px;
+    padding: 5px 10px;
+    margin-top: 6px;
+    line-height: 1.3;
+}
+
+.ra-frase { margin: 6px 0 0; font-size: 0.86rem; line-height: 1.5; }
+
+.ra-sin-bloqueo {
+    margin: 0;
+    background: #F4F2FA;
+    border-radius: 9px;
+    padding: 12px 14px;
+    font-size: 0.86rem;
+    line-height: 1.5;
+}
+
+/* ---------- Aviso conectado con el Radar ---------- */
+.ra-aviso-radar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: #fff;
+    border: 1.5px solid #B026FF;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
+.ra-ver-radar {
+    margin-left: auto;
+    font-family: inherit;
+    font-size: 0.74rem;
+    font-weight: 600;
+    background: #fff;
+    color: #7a1fb5;
+    border: 1.5px solid #B026FF;
+    border-radius: 99px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+.ra-ver-radar:hover { background: #F7ECFF; }
+
+/* ---------- La cadena, ciclo por ciclo ---------- */
+.ra-cadena { overflow-x: auto; padding-bottom: 4px; }
+
+.ra-cadena-interior {
+    display: grid;
+    grid-template-columns: repeat(var(--ra-columnas, 1), minmax(112px, 1fr));
+    gap: 8px;
+    align-items: start;
+}
+
+.ra-col { display: flex; flex-direction: column; gap: 6px; }
+.ra-col-titulo { font-size: 0.68rem; color: #7a7498; text-align: center; }
+
+.ra-nodo {
+    background: #fff;
+    border: 1.5px dashed var(--ra-ambar);
+    border-radius: 9px;
+    padding: 7px 5px;
+    text-align: center;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.ra-col--primero .ra-nodo { border: 1.5px solid var(--ra-bronce); color: var(--ra-tinta); }
+.ra-nodo--origen { border: 2px solid var(--ra-violeta); color: #4B1D96; font-weight: 700; }
+.ra-col--primero .ra-nodo--origen { border: 2px solid var(--ra-violeta); }
+
+.ra-nodo-base { font-size: 0.62rem; color: #8a4b00; }
+.ra-nodo-falta { font-size: 0.64rem; font-weight: 600; color: #8a4b00; }
+
+.ra-electivos {
+    margin: 0;
+    background: #F4F2FA;
+    border-radius: 9px;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--ra-suave);
+}
+
+.ra-nota { margin: 0; font-size: 0.72rem; color: #7a7498; }
+
+@media (max-width: 620px) {
+    .ra-modal-body { padding: 14px 14px 22px; }
+    .ra-tarjetas { grid-template-columns: 1fr 1fr; }
+    .ra-tiles { grid-template-columns: 1fr 1fr; }
+    .ra-tile--ancho { grid-column: 1 / -1; }
+    .ra-peso { margin-left: 0; }
+}
