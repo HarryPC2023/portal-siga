@@ -182,7 +182,7 @@ export function montarRutaAcademica({
             <div id="ra-overlay" class="ra-overlay"></div>
             <div id="ra-modal" class="ra-modal" role="dialog" aria-label="Ruta académica" aria-hidden="true" inert>
                 <div class="ra-modal-header">
-                    <span class="ra-modal-titulo">${svgIconoRuta(76)}<span>Ruta académica</span></span>
+                    <span class="ra-modal-titulo">${svgIconoRuta(56)}<span>Ruta académica</span></span>
                     <button type="button" class="ra-cerrar" id="ra-cerrar" aria-label="Cerrar">✕</button>
                 </div>
                 <div class="ra-modal-body" id="ra-body"></div>
