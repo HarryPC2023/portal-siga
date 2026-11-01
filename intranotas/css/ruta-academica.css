@@ -243,14 +243,13 @@
 .ra-seccion-titulo { margin: 0; font-size: 0.74rem; font-weight: 600; color: var(--ra-suave); }
 
 .ra-tiles {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);   /* tres tarjetas del mismo ancho, repartidas en toda la fila */
     gap: 8px;
-    align-items: flex-start;   /* cada tarjeta con la altura de su contenido */
+    align-items: start;   /* cada tarjeta con la altura de su contenido: no se estiran entre sí */
 }
 
 .ra-tile {
-    flex: 0 0 176px;           /* las dos primeras, del mismo ancho */
     background: var(--ra-lila);
     border-radius: 12px;
     padding: 9px 12px;
@@ -258,12 +257,13 @@
     flex-direction: column;
 }
 
-/* "Primero en bloquearse": del ancho de su contenido, sin espacio de sobra. */
-.ra-tile--ancho {
-    flex: 0 1 auto;
-    width: fit-content;
-    min-width: 176px;
-    max-width: 100%;
+/* "Primero en bloquearse": los nombres son pastillas del tamaño de su texto; si caben dos en una
+   fila quedan juntas, y así la tarjeta no crece de alto. */
+.ra-pastillas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
 }
 
 .ra-tile-label { font-size: 0.74rem; color: #2a2340; }
@@ -281,7 +281,6 @@
     border: 1.5px solid var(--ra-bronce);
     border-radius: 9px;
     padding: 4px 10px;
-    margin-top: 6px;
     line-height: 1.3;
 }
 
@@ -376,7 +375,7 @@
 @media (max-width: 620px) {
     .ra-modal-body { padding: 14px 14px 22px; }
     .ra-tarjetas { grid-template-columns: 1fr 1fr; }
-    .ra-tile { flex: 1 1 calc(50% - 4px); }
-    .ra-tile--ancho { flex: 1 1 100%; width: auto; }
+    .ra-tiles { grid-template-columns: 1fr 1fr; }
+    .ra-tile--ancho { grid-column: 1 / -1; }
     .ra-peso { margin-left: 0; }
 }

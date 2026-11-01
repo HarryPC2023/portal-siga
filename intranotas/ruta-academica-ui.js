@@ -137,7 +137,7 @@ export function htmlDetalle(ruta, lectura) {
             <div class="ra-tiles">
                 <div class="ra-tile"><span class="ra-tile-label">${plural(ruta.n, 'Curso que se retrasa', 'Cursos que se retrasan')}</span><span class="ra-tile-valor">${ruta.n}</span><span class="ra-tile-sub">hasta el ciclo ${ruta.ultimoCiclo}</span></div>
                 <div class="ra-tile"><span class="ra-tile-label">Créditos afectados</span><span class="ra-tile-valor">${ruta.creditosAfectados}</span><span class="ra-tile-sub">de tu carrera</span></div>
-                <div class="ra-tile ra-tile--ancho"><span class="ra-tile-label">Primero en bloquearse</span><span class="ra-tile-valor">Ciclo ${ruta.primerCiclo}</span>${pastillas}</div>
+                <div class="ra-tile ra-tile--ancho"><span class="ra-tile-label">Primero en bloquearse</span><span class="ra-tile-valor">Ciclo ${ruta.primerCiclo}</span><div class="ra-pastillas">${pastillas}</div></div>
             </div>
             <p class="ra-frase">${plural(ruta.n, 'Se retrasaría', 'Se retrasarían')} ${ruta.n} ${plural(ruta.n, 'curso', 'cursos')} de tu carrera, empezando en el ciclo ${ruta.primerCiclo}. Aprobarlo mantiene toda esta ruta abierta.</p>
         </section>
@@ -182,7 +182,7 @@ export function montarRutaAcademica({
             <div id="ra-overlay" class="ra-overlay"></div>
             <div id="ra-modal" class="ra-modal" role="dialog" aria-label="Ruta académica" aria-hidden="true" inert>
                 <div class="ra-modal-header">
-                    <span class="ra-modal-titulo">${svgIconoRuta(56)}<span>Ruta académica</span></span>
+                    <span class="ra-modal-titulo">${svgIconoRuta(48)}<span>Ruta académica</span></span>
                     <button type="button" class="ra-cerrar" id="ra-cerrar" aria-label="Cerrar">✕</button>
                 </div>
                 <div class="ra-modal-body" id="ra-body"></div>
