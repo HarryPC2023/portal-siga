@@ -252,6 +252,7 @@ function inicializarAnalisisAcademico() {
             obtenerLecturas: lecturasParaRuta,
             obtenerPeriodo: () => periodoActivo,
             abrirRadar: (codigo) => radar.abrirEn(codigo),
+            esPeriodoAbierto: () => !!periodoActivo && periodoEstaAbierto(periodoActivo),
         });
         rutaAcademica.reemplazarBoton();
         herramientas.ruta = () => rutaAcademica.abrir();

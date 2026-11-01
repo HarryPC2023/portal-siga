@@ -5,8 +5,10 @@
 //
 // Reglas:
 //  - La cadena baja por TODOS los niveles (prerrequisitos de prerrequisitos) hasta el final.
-//  - Solo cuentan los cursos OBLIGATORIOS que todavía no están aprobados. Los electivos son
-//    opcionales: se listan aparte y no suman en los números.
+//  - Solo cuentan los cursos OBLIGATORIOS que todavía no están aprobados. Los electivos se
+//    listan aparte y no suman en los números: el alumno elige cuáles llevar (aunque tiene que
+//    completar los créditos de electivos que pide su carrera), así que un electivo bloqueado
+//    no retrasa la carrera, solo deja menos opciones.
 //  - Cada curso aparece UNA sola vez aunque el Avance traiga filas repetidas.
 import { tipoDeCurso } from './clasificacion-cursos.js';
 
@@ -70,7 +72,7 @@ export function rutaAcademica(progreso, codigo, unicos = cursosUnicos(progreso),
     const obligatorios = todos.filter((c) => c.categoria === 'obligatorio');
     const electivos = todos.filter((c) => c.categoria !== 'obligatorio')
         .sort((a, b) => a.codigo.localeCompare(b.codigo))
-        .map((c) => ({ codigo: c.codigo, nombre: c.nombre }));
+        .map((c) => ({ codigo: c.codigo, nombre: c.nombre, tipo: tipoDeCurso(c) }));
 
     const enCadena = new Set([codigo, ...obligatorios.map((c) => c.codigo)]);
     // Lo que le falta a un curso de la cadena, aparte de lo que ya está dentro de la cadena.
