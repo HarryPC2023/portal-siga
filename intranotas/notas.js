@@ -158,9 +158,14 @@ let rutaCurso = null;
 /* Filas del Avance Curricular del alumno. La tabla está protegida por RLS:
    cada usuario solo ve las suyas. */
 async function cargarFilasAvance() {
-    const { data, error } = await supabase
+    // La política de lectura de la tabla deja a un administrador ver las filas de TODOS los alumnos: sin el
+    // filtro por user_id, su Avance se mezclaría con el de los demás (cursos repetidos, notas ajenas).
+    // Para un alumno normal no cambia nada: la política ya le entrega solo las suyas.
+    let consulta = supabase
         .from('avance_curricular')
         .select('categoria, ciclo, codigo_curso, nombre_curso, creditos, prerequisitos, periodo_pdf, nota, veces_llevado, situacion');
+    if (usuarioActual?.id) consulta = consulta.eq('user_id', usuarioActual.id);
+    const { data, error } = await consulta;
     if (error) throw error;
     return data || [];
 }
