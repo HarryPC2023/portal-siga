@@ -1,0 +1,303 @@
+/* ============================================================
+   🕒 CURSOS ELECTIVOS (beta) — ventana central amplia, igual que Progreso de tu carrera y
+   Ruta académica. Va en css/cursos-electivos.css; se carga desde notas.html.
+
+   Código de color de cada electivo (borde fino sobre fondo blanco, sin relleno):
+   - Verde punteado: disponible ahora.      - Celeste: próximo ciclo (depende de un curso que lleva).
+   - Gris: bloqueado o por definir.         - Verde sólido: aprobado.   - Naranja: lo lleva ahora.
+   - Violeta: el electivo seleccionado.
+   ============================================================ */
+
+.chip-herramienta--electivos {
+    --chip-neon: #FF7A00;
+    color: #B35300;
+}
+
+.chip-herramienta--electivos .ce-ico { flex: 0 0 auto; }
+
+.ce-modal {
+    --ce-verde: #12A07A;
+    --ce-violeta: #9B00FF;
+    --ce-tinta: #14102a;
+    --ce-suave: #5b5478;
+}
+
+.ce-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+}
+
+.ce-overlay.ce-visible { opacity: 1; pointer-events: auto; }
+
+.ce-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -48%);
+    width: min(1040px, 94vw);
+    max-height: 90vh;
+    background: #fff;
+    border: 2px solid rgba(102, 0, 204, 0.55);
+    border: 2px solid color-mix(in srgb, var(--brand-morado, #6600CC) 55%, transparent);
+    border-radius: 20px;
+    box-shadow: 0 0 0 4px rgba(102, 0, 204, 0.18), 0 16px 44px rgba(102, 0, 204, 0.45);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-morado, #6600CC) 18%, transparent),
+        0 16px 44px color-mix(in srgb, var(--brand-morado, #6600CC) 45%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: var(--font-datos, 'Poppins', 'Segoe UI', Arial, sans-serif);
+    color: var(--ink, #1f2937);
+}
+
+.ce-modal.ce-visible { opacity: 1; transform: translate(-50%, -50%); pointer-events: auto; }
+
+.ce-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 22px;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+.ce-titulo-bloque { display: flex; align-items: center; gap: 12px; }
+
+.ce-titulo {
+    font-family: var(--font-heading, 'Orbitron', sans-serif);
+    font-weight: 700;
+    font-size: 1.3rem;
+    line-height: 1.2;
+}
+
+.ce-creditos {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    font-size: 0.92rem;
+    color: #2a2340;
+}
+
+.ce-creditos[hidden] { display: none; }
+
+.ce-creditos i {
+    display: block;
+    width: 4px;
+    height: 20px;
+    border-radius: 2px;
+    background: var(--ce-verde);
+}
+
+.ce-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #6b7280;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+}
+
+.ce-body {
+    padding: 16px 22px 24px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ce-mensaje {
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: #6b7280;
+    padding: 30px 10px;
+    margin: 0;
+}
+
+/* ---------- Ícono animado: reloj ---------- */
+.ce-ico { flex: 0 0 auto; display: block; }
+
+.ce-ico-minuto, .ce-ico-hora { transform-origin: 24px 24px; }
+.ce-ico-minuto { animation: ce-gira 6s linear infinite; }
+.ce-ico-hora { animation: ce-gira 72s linear infinite; }
+
+@keyframes ce-gira { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .ce-ico-minuto, .ce-ico-hora { animation: none; }
+}
+
+/* ---------- Filtros (una fila) y búsqueda ---------- */
+.ce-filtros { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.ce-filtro {
+    font-family: inherit;
+    font-size: 0.8rem;
+    padding: 5px 13px;
+    border-radius: 99px;
+    border: 1px solid #cfc6ec;
+    background: #fff;
+    color: var(--ce-tinta);
+    cursor: pointer;
+}
+
+.ce-filtro:hover { border-color: #b9a6e8; }
+
+.ce-filtro--activo, .ce-filtro--activo:hover {
+    border: 2px solid var(--ce-violeta);
+    font-weight: 600;
+    padding: 4px 12px;
+}
+
+.ce-buscar {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 9px 16px;
+    border: 1.5px solid #d9d3ee;
+    border-radius: 12px;
+    color: var(--ce-tinta);
+    background: #fff;
+}
+
+.ce-buscar:focus { outline: none; border-color: var(--ce-violeta); }
+
+/* ---------- Columnas por ciclo ---------- */
+.ce-columnas {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 2px 2px 8px;
+    align-items: flex-start;
+}
+
+.ce-columna { flex: 0 0 156px; display: flex; flex-direction: column; gap: 6px; }
+
+.ce-columna-titulo {
+    font-size: 0.7rem;
+    color: #7a7498;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.ce-columna--actual .ce-columna-titulo { color: #4B1D96; font-weight: 700; }
+
+.ce-nodo {
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: center;
+    background: #fff;
+    border: 1.5px dashed var(--ce-verde);
+    border-radius: 9px;
+    padding: 7px 7px;
+    color: var(--ce-tinta);
+    cursor: pointer;
+}
+
+.ce-nodo:hover { background: #FBF9FF; }
+
+.ce-nodo--proximo { border: 1.5px solid #4FB6FF; }
+.ce-nodo--bloqueado { border: 1.5px solid #b9b3cf; }
+.ce-nodo--definir { border: 1.5px dashed #b9b3cf; }
+.ce-nodo--aprobado { border: 1.5px solid var(--ce-verde); }
+.ce-nodo--en_curso { border: 1.5px solid #FF7A00; }
+.ce-nodo--sel, .ce-nodo--sel:hover { border: 2px solid var(--ce-violeta); padding: 6.5px 6.5px; }
+
+.ce-nodo-nombre { font-size: 0.72rem; font-weight: 500; line-height: 1.3; }
+.ce-nodo-meta { font-size: 0.62rem; color: var(--ce-suave); }
+.ce-nodo-dicta { font-size: 0.62rem; color: #8a849f; }
+.ce-nodo-dicta--si { color: #0B6B4F; }
+.ce-nodo-estado { font-size: 0.62rem; font-weight: 600; }
+.ce-nodo-estado--ok { color: #0B6B4F; }
+.ce-nodo-estado--curso { color: #B35300; }
+
+.ce-vacio {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #7a7498;
+    background: #F7F5FB;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.ce-ayuda, .ce-nota { margin: 0; font-size: 0.72rem; color: #7a7498; line-height: 1.5; }
+
+/* ---------- Detalle del electivo (aparece al tocarlo) ---------- */
+.ce-detalle {
+    border: 1px solid #ddd6f3;
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: #FBF9FF;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.ce-detalle[hidden] { display: none; }
+
+.ce-detalle-nombre {
+    font-family: var(--font-heading, 'Orbitron', sans-serif);
+    font-size: 0.98rem;
+    font-weight: 700;
+}
+
+.ce-detalle-meta { font-size: 0.78rem; color: var(--ce-suave); }
+.ce-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.ce-chip {
+    font-size: 0.7rem;
+    padding: 2px 9px;
+    border-radius: 99px;
+    background: #EEEAF7;
+    color: var(--ce-suave);
+}
+
+.ce-chip--disponible, .ce-chip--aprobado { background: #D9F7EC; color: #0B6B4F; }
+.ce-chip--proximo { background: #DDF1FF; color: #0b5e8a; }
+.ce-chip--en_curso { background: #FFE9D6; color: #9a4300; }
+.ce-chip--definir { background: #F1F0F6; color: #6b6585; }
+.ce-chip--tipo { background: #FFEFD6; color: #8a4b00; }
+.ce-chip--dicta { background: #fff; border: 1px solid var(--ce-verde); color: #0B6B4F; }
+.ce-chip--nodicta { background: #fff; border: 1px solid #e1ddee; color: #8a849f; }
+
+.ce-detalle-sub { margin: 4px 0 0; font-size: 0.78rem; font-weight: 600; color: var(--ce-suave); }
+.ce-detalle-texto { margin: 0; font-size: 0.8rem; line-height: 1.5; color: var(--ce-suave); }
+
+.ce-pre { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; }
+.ce-pre small { color: #7a7498; }
+
+.ce-pre-marca {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.ce-pre-marca--ok { background: #D9F7EC; color: #0B6B4F; }
+.ce-pre-marca--curso { background: #DDF1FF; color: #0b5e8a; }
+.ce-pre-marca--falta { background: #EEEAF7; color: var(--ce-suave); border: 1px solid #cfc6ec; }
+
+@media (max-width: 620px) {
+    .ce-body { padding: 14px 14px 20px; }
+    .ce-titulo { font-size: 1.1rem; }
+}

@@ -22,6 +22,7 @@ import { generarEscenariosMeta, TECHO_MAXIMO_EXAMEN } from './escenarios-meta.js
 import { montarProgresoCarrera, nombreLindo, soltarFocoDe } from './progreso-carrera-ui.js';
 import { montarRutaCurso } from './ruta-curso-ui.js';
 import { montarRutaAcademica } from './ruta-academica-ui.js';
+import { montarCursosElectivos } from './cursos-electivos-ui.js';
 import { construirValoresFormula, notaComoNumero, clasificarExamen } from './formula-mapper.js';
 import { FACULTADES } from './facultades-datos.js';
 import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.js';
@@ -43,6 +44,7 @@ let valoresSimulados = {};  // clave `${codigo_curso}|${seccion}` -> { N1: 14, E
 let usuarioActual = null;
 let modoBeta = false;    // funciones nuevas de análisis: solo para quien esté en beta-siga.js
 let claveAlmacenUsuario = null; // huella estable del alumno (por su código de estudiante) para lo guardado en el navegador
+let perfilActual = null;        // fila de perfiles_usuario del alumno (facultad, carrera…); la llena pintarIdentidad
 
 document.addEventListener('DOMContentLoaded', async () => {
     const sesion = await obtenerSesion();
@@ -86,6 +88,7 @@ async function pintarIdentidad(sesion) {
     // Lo que el alumno guarda en este navegador se identifica por su código de
     // estudiante (no por el user_id, que cambia con cada sesión anónima).
     claveAlmacenUsuario = await claveDeAlmacenamiento(perfil?.codigo_estudiante);
+    perfilActual = perfil;   // facultad y carrera del alumno: Cursos electivos las usa para los créditos y la carga horaria
     migrarAlmacenAntiguo();
 
     // Nombre real de SIGA vive en perfiles_usuario (lo llena el resto de
@@ -256,6 +259,14 @@ function inicializarAnalisisAcademico() {
         });
         rutaAcademica.reemplazarBoton();
         herramientas.ruta = () => rutaAcademica.abrir();
+
+        // Cursos electivos (beta): sección propia con los electivos de la malla por ciclo.
+        const cursosElectivos = montarCursosElectivos({
+            cargarFilas: cargarFilasAvance,
+            obtenerEnCurso: codigosEnCursoAhora,
+            obtenerPerfil: () => perfilActual,
+        });
+        cursosElectivos.insertarBoton();
     }
 }
 
