@@ -9,14 +9,13 @@
 // Es autocontenido: crea su propio DOM al abrirse por primera vez. Estilos en
 // css/ruta-academica.css. Los datos se los da quien lo monta:
 //   montarRutaAcademica({ cargarFilas, obtenerCursosDelPeriodo, obtenerEnCurso,
-//                         obtenerLecturas, obtenerPeriodo, abrirRadar, esPeriodoAbierto })
+//                         obtenerLecturas, obtenerPeriodo, abrirRadar })
 //     cargarFilas():              async → filas de avance_curricular
 //     obtenerCursosDelPeriodo():  → [{ codigo, nombre }] del periodo en pantalla
 //     obtenerEnCurso():           → códigos que el alumno lleva ahora (opcional)
 //     obtenerLecturas():          → { [codigo]: { clave, texto } } del Radar (opcional)
 //     obtenerPeriodo():           → texto del periodo en pantalla, ej. "2026-2" (opcional)
 //     abrirRadar(codigo):         abre el Radar en ese curso (opcional)
-//     esPeriodoAbierto():         → true si el periodo en pantalla sigue abierto (opcional)
 import { construirProgresoCarrera } from './progreso-carrera.js';
 import { escaparHtml, nombreLindo, soltarFocoDe } from './progreso-carrera-ui.js';
 import { cursosParaRuta } from './ruta-academica.js';
@@ -93,13 +92,11 @@ function htmlColumna(col, ruta) {
 
 /* Electivos que se habilitan al aprobar el curso. Van al FINAL de la ventana: no son un retraso (el
    alumno elige cuáles llevar y cuándo) sino oportunidades que conviene tener presentes al decidir.
-   No suman en los números de arriba. Cierran con un recordatorio de carga en número de cursos
-   ("Hoy llevas 7 cursos. Con un electivo serían 8"), porque no todos los cursos tienen EP o EF y eso
-   no se puede saber, pero todos piden tiempo y atención. Solo se muestra en el periodo abierto
-   (`cursosHoy` es null en periodos cerrados). */
+   No suman en los números de arriba. (Un recordatorio de carga, tipo "con un electivo serían N cursos",
+   se evaluó y se dejó para la futura sección de electivos: aquí comparaba con el ciclo equivocado.) */
 const MAX_ELECTIVOS = 12;
 
-function htmlElectivos(electivos, cursosHoy = null) {
+function htmlElectivos(electivos) {
     if (!electivos.length) return '';
     const k = electivos.length;
     const nodos = electivos.slice(0, MAX_ELECTIVOS).map((e) => `
@@ -108,21 +105,17 @@ function htmlElectivos(electivos, cursosHoy = null) {
     const intro = k === 1
         ? 'Aprobar este curso te habilita este electivo para completar los créditos que te piden. Tenlo en cuenta al decidir cuál llevar.'
         : 'Aprobar este curso te habilita estos electivos para completar los créditos que te piden. Tenlos en cuenta al decidir cuáles llevar.';
-    const carga = cursosHoy
-        ? `<p class="ra-electivos-carga">Hoy llevas ${cursosHoy} ${plural(cursosHoy, 'curso', 'cursos')}. Con un electivo serían <strong>${cursosHoy + 1} cursos</strong>, recuerda: cada curso requiere de tu tiempo y atención.</p>`
-        : '';
     return `
         <section class="ra-seccion ra-electivos-seccion">
             <h3 class="ra-seccion-titulo">${plural(k, 'Electivo que se habilita', 'Electivos que se habilitan')}</h3>
             <p class="ra-electivos-texto">${intro}</p>
             <div class="ra-electivos-fila">${nodos}${resto}</div>
-            ${carga}
         </section>`;
 }
 
 const LECTURAS_DE_ALERTA = new Set(['fuera', 'esfuerzo', 'limite']);
 
-export function htmlDetalle(ruta, lectura, cursosHoy = null) {
+export function htmlDetalle(ruta, lectura) {
     const donde = ruta.ciclo !== null ? `Ciclo ${ruta.ciclo} de tu plan` : 'Fuera de la malla obligatoria';
     const cabecera = `
         <div class="ra-det-cabecera">
@@ -134,7 +127,7 @@ export function htmlDetalle(ruta, lectura, cursosHoy = null) {
 
     if (!ruta.n) {
         return `${cabecera}
-        <p class="ra-sin-bloqueo">Este curso no bloquea otros cursos. Suma créditos a tu carrera, pero no afecta tu ruta si queda pendiente.</p>${htmlElectivos(ruta.electivos, cursosHoy)}`;
+        <p class="ra-sin-bloqueo">Este curso no bloquea otros cursos. Suma créditos a tu carrera, pero no afecta tu ruta si queda pendiente.</p>${htmlElectivos(ruta.electivos)}`;
     }
 
     const pastillas = ruta.primeros.map((p) => `<span class="ra-pastilla">${escaparHtml(nombreLindo(p.nombre))}</span>`).join('');
@@ -160,7 +153,7 @@ export function htmlDetalle(ruta, lectura, cursosHoy = null) {
             <div class="ra-cadena"><div class="ra-cadena-interior" style="--ra-columnas:${ruta.columnas.length}">${ruta.columnas.map((c) => htmlColumna(c, ruta)).join('')}</div></div>
         </section>
         <p class="ra-nota">Según los prerrequisitos del plan. El retraso real depende de cuándo se dicte cada curso.</p>
-        ${htmlElectivos(ruta.electivos, cursosHoy)}`;
+        ${htmlElectivos(ruta.electivos)}`;
 }
 
 const MENSAJE_SIN_AVANCE = `
@@ -179,11 +172,10 @@ const MENSAJE_TODO_APROBADO = `
 /* ---------- Montaje en la página ---------- */
 export function montarRutaAcademica({
     cargarFilas, obtenerCursosDelPeriodo, obtenerEnCurso = () => [],
-    obtenerLecturas = () => ({}), obtenerPeriodo = () => '', abrirRadar = null, esPeriodoAbierto = () => true,
+    obtenerLecturas = () => ({}), obtenerPeriodo = () => '', abrirRadar = null,
 }) {
     let lista = [];
     let lecturas = {};
-    let cursosHoy = null;    // cuántos cursos lleva el alumno ahora (solo si el periodo en pantalla está abierto)
     let seleccionado = null;
     let montado = false;
     let disparador = null;   // botón que abrió la ventana: recupera el foco al cerrarla
@@ -234,7 +226,6 @@ export function montarRutaAcademica({
             const progreso = construirProgresoCarrera(filas, { enCurso: obtenerEnCurso() });
             const delPeriodo = obtenerCursosDelPeriodo();
             lecturas = obtenerLecturas() || {};
-            cursosHoy = esPeriodoAbierto() ? delPeriodo.length : null;
             lista = cursosParaRuta(progreso, delPeriodo);
             if (!delPeriodo.length) { cuerpo.innerHTML = MENSAJE_SIN_CURSOS; return; }
             if (!lista.length) { cuerpo.innerHTML = MENSAJE_TODO_APROBADO; return; }
@@ -261,7 +252,7 @@ export function montarRutaAcademica({
         $('ra-body').innerHTML = `
             <span class="ra-etiqueta">Mis cursos${periodo ? ` · ${escaparHtml(periodo)}` : ''}</span>
             <div class="ra-tarjetas">${htmlTarjetas(lista, actual.codigo, lecturas)}</div>
-            <div class="ra-detalle">${htmlDetalle(actual, lecturas[actual.codigo], cursosHoy)}</div>`;
+            <div class="ra-detalle">${htmlDetalle(actual, lecturas[actual.codigo])}</div>`;
     }
 
     /* Cambia el botón del lateral por el nuevo: ícono animado y nombre "Ruta académica". */

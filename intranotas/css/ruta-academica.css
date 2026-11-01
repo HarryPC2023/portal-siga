@@ -375,17 +375,6 @@
 
 .ra-electivos-fila { display: flex; flex-wrap: wrap; gap: 6px; }
 
-/* Recordatorio de carga: "Hoy llevas 7 cursos. Con un electivo serían 8 cursos…" */
-.ra-electivos-carga {
-    margin: 8px 0 0;
-    background: var(--ra-lila);
-    border-radius: 10px;
-    padding: 8px 12px;
-    font-size: 0.78rem;
-    line-height: 1.5;
-    color: var(--ra-tinta);
-}
-
 .ra-electivo {
     display: flex;
     flex-direction: column;
