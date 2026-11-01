@@ -170,6 +170,23 @@ async function cargarFilasAvance() {
     return data || [];
 }
 
+/* Créditos de electivos que pide el plan del alumno (los guarda la sincronización a partir del encabezado
+   de su Avance). Se lee aparte de la identidad: si las columnas nuevas todavía no existen en la tabla,
+   falla en silencio y nada más se ve afectado. */
+async function cargarRequisitosDelPlan() {
+    if (!usuarioActual?.id) return null;
+    try {
+        const { data, error } = await supabase
+            .from('perfiles_usuario')
+            .select('plan_estudio, creditos_electivos_min')
+            .eq('user_id', usuarioActual.id)
+            .maybeSingle();
+        return error ? null : data;
+    } catch {
+        return null;
+    }
+}
+
 /* Cursos que el alumno lleva AHORA: los de los periodos que todavía están abiertos. */
 function codigosEnCursoAhora() {
     const codigos = [];
@@ -252,7 +269,17 @@ function inicializarAnalisisAcademico() {
         radar.insertarBoton();
         radarUI = radar;
 
-        // Ruta académica (beta): reemplaza a la Ruta del curso. Invita a ver el Radar.
+        // Cursos electivos (beta): sección propia con los electivos de la malla por ciclo.
+        const cursosElectivos = montarCursosElectivos({
+            cargarFilas: cargarFilasAvance,
+            obtenerEnCurso: codigosEnCursoAhora,
+            obtenerPerfil: () => perfilActual,
+            cargarRequisitos: cargarRequisitosDelPlan,
+            cicloVigente: periodoEstaAbierto,
+        });
+        cursosElectivos.insertarBoton();
+
+        // Ruta académica (beta): reemplaza a la Ruta del curso. Invita a ver el Radar y los electivos.
         const rutaAcademica = montarRutaAcademica({
             cargarFilas: cargarFilasAvance,
             obtenerCursosDelPeriodo: cursosDelPeriodoActivo,
@@ -260,18 +287,10 @@ function inicializarAnalisisAcademico() {
             obtenerLecturas: lecturasParaRuta,
             obtenerPeriodo: () => periodoActivo,
             abrirRadar: (codigo) => radar.abrirEn(codigo),
-            esPeriodoAbierto: () => !!periodoActivo && periodoEstaAbierto(periodoActivo),
+            abrirElectivos: (codigo) => cursosElectivos.abrir(codigo ? { seleccionar: codigo } : undefined),
         });
         rutaAcademica.reemplazarBoton();
         herramientas.ruta = () => rutaAcademica.abrir();
-
-        // Cursos electivos (beta): sección propia con los electivos de la malla por ciclo.
-        const cursosElectivos = montarCursosElectivos({
-            cargarFilas: cargarFilasAvance,
-            obtenerEnCurso: codigosEnCursoAhora,
-            obtenerPerfil: () => perfilActual,
-        });
-        cursosElectivos.insertarBoton();
     }
 }
 

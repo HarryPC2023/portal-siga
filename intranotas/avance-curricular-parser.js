@@ -21,6 +21,25 @@ function extraerEncabezado(textoCrudo) {
     return { facultad, especialidad, codigo, cicloRelativo, planEstudio };
 }
 
+/* Bloque "De la carrera" que trae el Avance al final: los créditos que pide el plan del alumno
+   (obligatorios, electivos, complementarios, otras actividades y total para egresar). Se busca cada
+   etiqueta en cualquier parte del texto y se toma el número que la sigue. Si el PDF no lo trae o cambia
+   de formato, devuelve null: es un dato extra y nunca debe romper la lectura del resto. */
+function extraerCreditosDeLaCarrera(textoCrudo) {
+    const numeroTrasEtiqueta = (etiqueta) => {
+        const m = textoCrudo.match(new RegExp(`${etiqueta}\\s*[:\\-]?\\s*(\\d{1,3})(?!\\d)`, 'i'));
+        return m ? parseInt(m[1], 10) : null;
+    };
+    const creditos = {
+        obligatoriosMin: numeroTrasEtiqueta('M[íi]nimo\\s+de\\s+Cr[ée]ditos\\s+Obligatorios'),
+        electivosMin: numeroTrasEtiqueta('M[íi]nimo\\s+de\\s+Cr[ée]ditos\\s+Electivos'),
+        complementariosMax: numeroTrasEtiqueta('M[áa]ximo\\s+de\\s+Cr[ée]ditos\\s+Complementarios'),
+        otrasActividadesMax: numeroTrasEtiqueta('M[áa]ximo\\s+de\\s+Cr[ée]ditos\\s+por\\s+otras\\s+actividades'),
+        egreso: numeroTrasEtiqueta('Total\\s+de\\s+Cr[ée]ditos\\s+para\\s+Egresar'),
+    };
+    return Object.values(creditos).some((v) => v !== null) ? creditos : null;
+}
+
 /* El código de estudiante de la UNI codifica, en sus primeros 5 dígitos:
    - los 4 primeros: año de ingreso (ej. "2023")
    - el 5to: modalidad de ingreso — 0 = Ordinario examen de febrero
@@ -139,7 +158,7 @@ function parsearAvanceCurricular(textoCrudo) {
         .filter((s) => s.etiqueta.tipo === 'electivo_complementario')
         .flatMap((s) => parsearFilasDeSegmento(s.texto));
 
-    return { ...encabezado, ciclos, electivos, electivosComplementarios };
+    return { ...encabezado, creditosCarrera: extraerCreditosDeLaCarrera(textoCrudo), ciclos, electivos, electivosComplementarios };
 }
 
-export { parsearAvanceCurricular, periodoIngresoDesdeCodigo };
+export { parsearAvanceCurricular, periodoIngresoDesdeCodigo, extraerCreditosDeLaCarrera };

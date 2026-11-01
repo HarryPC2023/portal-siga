@@ -9,26 +9,42 @@
 //   - si se dicta en el ciclo de la carga horaria que tenga Horarios (solo FIIS por ahora).
 // Los estados salen de progreso-carrera.js, los mismos de "Progreso de tu carrera".
 
-/* Créditos de electivos que pide la malla, por facultad/carrera. Se agregan a mano a medida que se
-   conozca cada plan: si una carrera no está aquí, el encabezado simplemente no muestra los créditos.
-   (El Avance Curricular no trae este dato; sale de la malla de cada plan.) */
-export const CREDITOS_ELECTIVOS = {
+/* Créditos de electivos que pide el plan del alumno. La fuente principal es el encabezado de su propio
+   Avance ("N° Mínimo de Créditos Electivos"), que la sincronización guarda en su perfil
+   (perfiles_usuario.creditos_electivos_min). Esta tabla es solo un respaldo para quien todavía no
+   volvió a sincronizar desde que existe ese dato: si no hay ninguno de los dos, el encabezado
+   simplemente no muestra los créditos. */
+export const CREDITOS_ELECTIVOS_RESPALDO = {
     'fiis/sistemas': 15,
-};
-
-/* Carga horaria oficial que ya usa la sección Horarios. Es la ÚNICA fuente de "se dicta este ciclo".
-   AL CAMBIAR DE CICLO hay que actualizar aquí el ciclo y el archivo, junto con lo de Horarios. */
-export const CARGAS_HORARIAS = {
-    fiis: { ciclo: '2026-2', url: '../horarios/static/data/cargas/fiis-2026-2.json' },
 };
 
 export function creditosRequeridos(facultadSigla, carreraId) {
     const clave = `${String(facultadSigla || '').toLowerCase()}/${carreraId || ''}`;
-    return CREDITOS_ELECTIVOS[clave] ?? null;
+    return CREDITOS_ELECTIVOS_RESPALDO[clave] ?? null;
 }
 
-export function cargaDeFacultad(facultadSigla) {
-    return CARGAS_HORARIAS[String(facultadSigla || '').toLowerCase()] || null;
+/* `requisitos` = { creditos_electivos_min } leído del perfil (o null). Primero lo que dice el PDF del
+   alumno; si no está, el respaldo; si tampoco, null. */
+export function creditosDelPlan(perfil, requisitos) {
+    const delPdf = Number(requisitos?.creditos_electivos_min);
+    if (Number.isFinite(delPdf) && delPdf > 0) return delPdf;
+    return creditosRequeridos(perfil?.facultad, perfil?.carrera);
+}
+
+/* Carga horaria oficial que usa también Horarios. Qué archivo corresponde a cada facultad y a qué ciclo
+   lo dice UN solo archivo: horarios/static/data/cargas/ciclos.json, p. ej.
+       { "fiis": { "ciclo": "2026-2", "archivo": "fiis-2026-2.json" } }
+   Al cambiar de ciclo se sube el JSON nuevo y se cambian esas dos líneas; nada de esto se toca en el código. */
+export const RUTA_CICLOS = '../horarios/static/data/cargas/ciclos.json';
+export const CARPETA_CARGAS = '../horarios/static/data/cargas/';
+
+/* Elige la carga de la facultad, o null si no hay o si ese ciclo YA TERMINÓ (`estaVigente(ciclo)`):
+   mejor no decir nada que decir "se dicta" con un dato vencido. */
+export function elegirCarga(catalogo, facultadSigla, estaVigente = () => true) {
+    const cfg = catalogo?.[String(facultadSigla || '').toLowerCase()];
+    if (!cfg || !cfg.ciclo || !cfg.archivo) return null;
+    if (!estaVigente(cfg.ciclo)) return null;
+    return { ciclo: cfg.ciclo, url: CARPETA_CARGAS + cfg.archivo };
 }
 
 /* El JSON de la carga horaria trae los cursos por nombre y, dentro, cada sección (U, V, W…) con su
@@ -97,7 +113,8 @@ export function construirElectivos(progreso, carga = null) {
                 codigo: c.codigo,
                 nombre: c.nombre,
                 creditos: c.creditos,
-                tipo: c.categoria === 'electivo_complementario' ? 'complementario' : 'electivo',
+                // Los "complementarios" ya no se manejan aparte: cuentan como electivos comunes.
+                tipo: 'electivo',
                 estado,
                 prereqs,
                 porDefinir,

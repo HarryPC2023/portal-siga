@@ -20,11 +20,11 @@ export function esCursoBase(codigo) {
     return PREFIJOS_BASE.some((p) => c.startsWith(p));
 }
 
-/* 'base' | 'especialidad' | 'electivo' | 'complementario' */
+/* 'base' | 'especialidad' | 'electivo' */
 export function tipoDeCurso(curso) {
     if (!curso) return 'especialidad';
-    if (curso.categoria === 'electivo') return 'electivo';
-    if (curso.categoria === 'electivo_complementario') return 'complementario';
+    // Los electivos complementarios ya no se manejan aparte: cuentan como electivos comunes.
+    if (curso.categoria === 'electivo' || curso.categoria === 'electivo_complementario') return 'electivo';
     return esCursoBase(curso.codigo) ? 'base' : 'especialidad';
 }
 
@@ -32,5 +32,4 @@ export const ETIQUETA_TIPO = {
     base: 'Curso base',
     especialidad: 'Curso de especialidad',
     electivo: 'Electivo',
-    complementario: 'Electivo complementario',
 };

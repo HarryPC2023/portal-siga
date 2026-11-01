@@ -133,6 +133,21 @@ async function guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance) {
     if (error) {
         console.error('Error guardando facultad/carrera en perfiles_usuario:', error);
     }
+
+    // Plan de estudios y créditos que pide la carrera (encabezado del Avance). Va en un guardado aparte:
+    // si las columnas nuevas todavía no existen, no se pierde lo de arriba.
+    const c = resultadoAvance.creditosCarrera;
+    if (resultadoAvance.planEstudio || c) {
+        const datos = { user_id: userId };
+        if (resultadoAvance.planEstudio) datos.plan_estudio = resultadoAvance.planEstudio;
+        if (c?.obligatoriosMin != null) datos.creditos_obligatorios_min = c.obligatoriosMin;
+        if (c?.electivosMin != null) datos.creditos_electivos_min = c.electivosMin;
+        if (c?.complementariosMax != null) datos.creditos_complementarios_max = c.complementariosMax;
+        if (c?.otrasActividadesMax != null) datos.creditos_otras_actividades_max = c.otrasActividadesMax;
+        if (c?.egreso != null) datos.creditos_egreso = c.egreso;
+        const { error: errorPlan } = await supabase.from('perfiles_usuario').upsert(datos, { onConflict: 'user_id' });
+        if (errorPlan) console.warn('No se pudieron guardar los créditos del plan (¿faltan las columnas nuevas?):', errorPlan.message);
+    }
 }
 
 /* Pinta la insignia de facultad/carrera en la pantalla de éxito, con

@@ -226,6 +226,34 @@
 .ce-nodo-estado--ok { color: #0B6B4F; }
 .ce-nodo-estado--curso { color: #B35300; }
 
+/* Guía que acompaña a "Disponibles ahora", el filtro con el que se abre la ventana. */
+.ce-intro {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: #4B1D96;
+    background: #F7F3FF;
+    border-radius: 10px;
+    padding: 8px 14px;
+}
+
+.ce-intro[hidden] { display: none; }
+
+/* "Ver N más ▾" / "Ver menos ▴" al pie de cada columna larga. */
+.ce-mas {
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #4B1D96;
+    background: #fff;
+    border: 1.5px solid var(--ce-violeta);
+    border-radius: 99px;
+    padding: 5px 8px;
+    cursor: pointer;
+}
+
+.ce-mas:hover { background: #F7ECFF; }
+
 .ce-vacio {
     margin: 0;
     font-size: 0.85rem;

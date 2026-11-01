@@ -9,13 +9,14 @@
 // Es autocontenido: crea su propio DOM al abrirse por primera vez. Estilos en
 // css/ruta-academica.css. Los datos se los da quien lo monta:
 //   montarRutaAcademica({ cargarFilas, obtenerCursosDelPeriodo, obtenerEnCurso,
-//                         obtenerLecturas, obtenerPeriodo, abrirRadar })
+//                         obtenerLecturas, obtenerPeriodo, abrirRadar, abrirElectivos })
 //     cargarFilas():              async → filas de avance_curricular
 //     obtenerCursosDelPeriodo():  → [{ codigo, nombre }] del periodo en pantalla
 //     obtenerEnCurso():           → códigos que el alumno lleva ahora (opcional)
 //     obtenerLecturas():          → { [codigo]: { clave, texto } } del Radar (opcional)
 //     obtenerPeriodo():           → texto del periodo en pantalla, ej. "2026-2" (opcional)
 //     abrirRadar(codigo):         abre el Radar en ese curso (opcional)
+//     abrirElectivos(codigo):     abre Cursos electivos; con un código, ese electivo ya elegido (opcional)
 import { construirProgresoCarrera } from './progreso-carrera.js';
 import { escaparHtml, nombreLindo, soltarFocoDe } from './progreso-carrera-ui.js';
 import { cursosParaRuta } from './ruta-academica.js';
@@ -96,11 +97,16 @@ function htmlColumna(col, ruta) {
    se evaluó y se dejó para la futura sección de electivos: aquí comparaba con el ciclo equivocado.) */
 const MAX_ELECTIVOS = 12;
 
-function htmlElectivos(electivos) {
+function htmlElectivos(electivos, conEnlaces = false) {
     if (!electivos.length) return '';
     const k = electivos.length;
-    const nodos = electivos.slice(0, MAX_ELECTIVOS).map((e) => `
-        <div class="ra-electivo"><span class="ra-nodo-nombre">${escaparHtml(nombreLindo(e.nombre))}</span><span class="ra-electivo-tipo">${ETIQUETA_TIPO[e.tipo] || 'Electivo'}</span></div>`).join('');
+    // Con enlaces, cada electivo se toca y abre "Cursos electivos" con ese electivo ya elegido.
+    const nodos = electivos.slice(0, MAX_ELECTIVOS).map((e) => {
+        const contenido = `<span class="ra-nodo-nombre">${escaparHtml(nombreLindo(e.nombre))}</span><span class="ra-electivo-tipo">${ETIQUETA_TIPO[e.tipo] || 'Electivo'}</span>`;
+        return conEnlaces
+            ? `\n        <button type="button" class="ra-electivo ra-electivo--enlace" data-electivo="${escaparHtml(e.codigo)}" title="Ver este electivo en Cursos electivos">${contenido}</button>`
+            : `\n        <div class="ra-electivo">${contenido}</div>`;
+    }).join('');
     const resto = k - MAX_ELECTIVOS > 0 ? `<div class="ra-electivo ra-electivo--mas">y ${k - MAX_ELECTIVOS} más</div>` : '';
     const intro = k === 1
         ? 'Aprobar este curso te habilita este electivo para completar los créditos que te piden. Tenlo en cuenta al decidir cuál llevar.'
@@ -110,12 +116,13 @@ function htmlElectivos(electivos) {
             <h3 class="ra-seccion-titulo">${plural(k, 'Electivo que se habilita', 'Electivos que se habilitan')}</h3>
             <p class="ra-electivos-texto">${intro}</p>
             <div class="ra-electivos-fila">${nodos}${resto}</div>
+            ${conEnlaces ? '<button type="button" class="ra-ver-electivos" data-ver-electivos="1">Ver todos los cursos electivos →</button>' : ''}
         </section>`;
 }
 
 const LECTURAS_DE_ALERTA = new Set(['fuera', 'esfuerzo', 'limite']);
 
-export function htmlDetalle(ruta, lectura) {
+export function htmlDetalle(ruta, lectura, conEnlaces = false) {
     const donde = ruta.ciclo !== null ? `Ciclo ${ruta.ciclo} de tu plan` : 'Fuera de la malla obligatoria';
     const cabecera = `
         <div class="ra-det-cabecera">
@@ -127,7 +134,7 @@ export function htmlDetalle(ruta, lectura) {
 
     if (!ruta.n) {
         return `${cabecera}
-        <p class="ra-sin-bloqueo">Este curso no bloquea otros cursos. Suma créditos a tu carrera, pero no afecta tu ruta si queda pendiente.</p>${htmlElectivos(ruta.electivos)}`;
+        <p class="ra-sin-bloqueo">Este curso no bloquea otros cursos. Suma créditos a tu carrera, pero no afecta tu ruta si queda pendiente.</p>${htmlElectivos(ruta.electivos, conEnlaces)}`;
     }
 
     const pastillas = ruta.primeros.map((p) => `<span class="ra-pastilla">${escaparHtml(nombreLindo(p.nombre))}</span>`).join('');
@@ -153,7 +160,7 @@ export function htmlDetalle(ruta, lectura) {
             <div class="ra-cadena"><div class="ra-cadena-interior" style="--ra-columnas:${ruta.columnas.length}">${ruta.columnas.map((c) => htmlColumna(c, ruta)).join('')}</div></div>
         </section>
         <p class="ra-nota">Según los prerrequisitos del plan. El retraso real depende de cuándo se dicte cada curso.</p>
-        ${htmlElectivos(ruta.electivos)}`;
+        ${htmlElectivos(ruta.electivos, conEnlaces)}`;
 }
 
 const MENSAJE_SIN_AVANCE = `
@@ -172,7 +179,7 @@ const MENSAJE_TODO_APROBADO = `
 /* ---------- Montaje en la página ---------- */
 export function montarRutaAcademica({
     cargarFilas, obtenerCursosDelPeriodo, obtenerEnCurso = () => [],
-    obtenerLecturas = () => ({}), obtenerPeriodo = () => '', abrirRadar = null,
+    obtenerLecturas = () => ({}), obtenerPeriodo = () => '', abrirRadar = null, abrirElectivos = null,
 }) {
     let lista = [];
     let lecturas = {};
@@ -202,6 +209,18 @@ export function montarRutaAcademica({
                 const codigo = verRadar.dataset.radar;
                 cerrar();
                 if (abrirRadar) abrirRadar(codigo);
+                return;
+            }
+            const electivo = e.target.closest('[data-electivo]');
+            if (electivo && abrirElectivos) {
+                const codigo = electivo.dataset.electivo;
+                cerrar();
+                abrirElectivos(codigo);
+                return;
+            }
+            if (e.target.closest('[data-ver-electivos]') && abrirElectivos) {
+                cerrar();
+                abrirElectivos(null);
                 return;
             }
             const tarjeta = e.target.closest('.ra-tarjeta');
@@ -252,7 +271,7 @@ export function montarRutaAcademica({
         $('ra-body').innerHTML = `
             <span class="ra-etiqueta">Mis cursos${periodo ? ` · ${escaparHtml(periodo)}` : ''}</span>
             <div class="ra-tarjetas">${htmlTarjetas(lista, actual.codigo, lecturas)}</div>
-            <div class="ra-detalle">${htmlDetalle(actual, lecturas[actual.codigo])}</div>`;
+            <div class="ra-detalle">${htmlDetalle(actual, lecturas[actual.codigo], !!abrirElectivos)}</div>`;
     }
 
     /* Cambia el botón del lateral por el nuevo: ícono animado y nombre "Ruta académica". */

@@ -6,17 +6,21 @@
 // contador, búsqueda y, al tocar un electivo, el detalle de sus prerrequisitos. Si hay carga
 // horaria (FIIS), dice si el electivo se dicta en ese ciclo. Estilos en css/cursos-electivos.css.
 //
-//   montarCursosElectivos({ cargarFilas, obtenerEnCurso, obtenerPerfil })
-//     cargarFilas():   async → filas de avance_curricular
-//     obtenerEnCurso():→ códigos que el alumno lleva ahora (opcional)
-//     obtenerPerfil(): → { facultad: 'FIIS', carrera: 'sistemas' } (opcional)
+//   montarCursosElectivos({ cargarFilas, obtenerEnCurso, obtenerPerfil, cargarRequisitos, cicloVigente })
+//     cargarFilas():       async → filas de avance_curricular
+//     obtenerEnCurso():    → códigos que el alumno lleva ahora (opcional)
+//     obtenerPerfil():     → { facultad: 'FIIS', carrera: 'sistemas' } (opcional)
+//     cargarRequisitos():  async → { creditos_electivos_min } que guardó su sincronización (opcional)
+//     cicloVigente(ciclo): → false si ese ciclo ya terminó: entonces no se dice "se dicta" (opcional)
+//   Devuelve { abrir, cerrar, insertarBoton }. abrir({ seleccionar: 'SI077' }) abre con ese electivo elegido.
 import { construirProgresoCarrera } from './progreso-carrera.js';
 import { escaparHtml, nombreLindo, soltarFocoDe } from './progreso-carrera-ui.js';
-import { ETIQUETA_TIPO } from './clasificacion-cursos.js';
 import {
     construirElectivos, filtrarElectivos, contarElectivos, agruparPorCiclo,
-    creditosRequeridos, cargaDeFacultad, indexarCarga,
+    creditosDelPlan, elegirCarga, indexarCarga, RUTA_CICLOS,
 } from './cursos-electivos.js';
+
+const LIMITE_POR_COLUMNA = 3;   // cada columna muestra 3 electivos y un botón "Ver N más" (si quedarían 2 o más ocultos)
 
 /* ---------- Ícono animado: un reloj cuyas manecillas giran (el tiempo pasa y hay que elegir) ---------- */
 export function svgIconoElectivos(px = 30) {
@@ -71,14 +75,25 @@ function htmlNodo(e, seleccionado, cicloCarga) {
         </button>`;
 }
 
-export function htmlColumnas(electivos, seleccionado, cicloActual, cicloCarga) {
+export const claveColumna = (ciclo) => (ciclo === null ? 'def' : String(ciclo));
+
+export function htmlColumnas(electivos, seleccionado, cicloActual, cicloCarga, expandidas = new Set()) {
     if (!electivos.length) return '<p class="ce-vacio">No hay electivos con ese filtro. Prueba con otro o borra la búsqueda.</p>';
     const grupos = agruparPorCiclo(electivos);
-    return `<div class="ce-columnas">${grupos.map((g) => `
+    return `<div class="ce-columnas">${grupos.map((g) => {
+        const clave = claveColumna(g.ciclo);
+        const sePuedePlegar = g.cursos.length > LIMITE_POR_COLUMNA + 1;
+        const abierta = expandidas.has(clave);
+        const visibles = sePuedePlegar && !abierta ? g.cursos.slice(0, LIMITE_POR_COLUMNA) : g.cursos;
+        const boton = !sePuedePlegar ? ''
+            : abierta ? `<button type="button" class="ce-mas" data-columna="${clave}">Ver menos ▴</button>`
+                : `<button type="button" class="ce-mas" data-columna="${clave}">Ver ${g.cursos.length - LIMITE_POR_COLUMNA} más ▾</button>`;
+        return `
         <div class="ce-columna${g.ciclo !== null && g.ciclo === cicloActual ? ' ce-columna--actual' : ''}">
             <div class="ce-columna-titulo">${g.ciclo === null ? 'Prerrequisitos por definir' : `Ciclo ${g.ciclo}${g.ciclo === cicloActual ? ' · actual' : ''}`}</div>
-            ${g.cursos.map((e) => htmlNodo(e, seleccionado, cicloCarga)).join('')}
-        </div>`).join('')}</div>`;
+            ${visibles.map((e) => htmlNodo(e, seleccionado, cicloCarga)).join('')}${boton}
+        </div>`;
+    }).join('')}</div>`;
 }
 
 function listaConY(nombres) {
@@ -88,7 +103,6 @@ function listaConY(nombres) {
 
 export function htmlDetalle(e, cicloCarga) {
     const chips = [`<span class="ce-chip ce-chip--${e.estado}">${etiquetaEstado(e)}</span>`];
-    if (e.tipo === 'complementario') chips.push(`<span class="ce-chip ce-chip--tipo">${ETIQUETA_TIPO.complementario}</span>`);
     if (e.dictado && cicloCarga && e.estado !== 'definir') {
         chips.push(e.dictado.secciones > 0
             ? `<span class="ce-chip ce-chip--dicta">Se dicta en ${escaparHtml(cicloCarga)} · ${e.dictado.secciones} ${plural(e.dictado.secciones, 'sección', 'secciones')}</span>`
@@ -133,14 +147,18 @@ const MENSAJE_SIN_ELECTIVOS = `
     Si crees que es un error, sincroniza de nuevo con INTRALU.</p>`;
 
 /* ---------- Montaje en la página ---------- */
-export function montarCursosElectivos({ cargarFilas, obtenerEnCurso = () => [], obtenerPerfil = () => null }) {
+export function montarCursosElectivos({
+    cargarFilas, obtenerEnCurso = () => [], obtenerPerfil = () => null,
+    cargarRequisitos = async () => null, cicloVigente = () => true,
+}) {
     let electivos = [];
     let cicloActual = null;
     let cicloCarga = null;      // p. ej. "2026-2"; null si no hay carga horaria para su facultad
     let creditos = null;
-    let filtro = 'todos';
+    let filtro = 'disp';            // al abrir se muestra lo que ya se puede llevar; "Todos" está a un toque
     let busqueda = '';
     let seleccionado = null;
+    let expandidas = new Set();     // columnas con "Ver más" abierto
     let montado = false;
     let disparador = null;
     let cargaYaPedida = false;
@@ -156,7 +174,7 @@ export function montarCursosElectivos({ cargarFilas, obtenerEnCurso = () => [], 
         boton.className = 'chip-herramienta chip-herramienta--electivos';
         boton.dataset.aa = 'electivos';
         boton.innerHTML = `${svgIconoElectivos(26)}<span>Cursos electivos</span>`;
-        boton.addEventListener('click', abrir);
+        boton.addEventListener('click', () => abrir());
         fila.appendChild(boton);
     }
 
@@ -186,19 +204,22 @@ export function montarCursosElectivos({ cargarFilas, obtenerEnCurso = () => [], 
     async function pedirCarga(perfil) {
         if (cargaYaPedida) return;
         cargaYaPedida = true;
-        const cfg = cargaDeFacultad(perfil?.facultad);
-        if (!cfg) return;
         try {
-            const respuesta = await fetch(cfg.url);
+            const respuestaCiclos = await fetch(RUTA_CICLOS);
+            if (!respuestaCiclos.ok) return;
+            const elegida = elegirCarga(await respuestaCiclos.json(), perfil?.facultad, cicloVigente);
+            if (!elegida) return;   // sin carga para su facultad, o ese ciclo ya terminó: no se dice nada
+            const respuesta = await fetch(elegida.url);
             if (!respuesta.ok) return;
             cargaIndexada = indexarCarga(await respuesta.json());
-            cicloCarga = cfg.ciclo;
+            cicloCarga = elegida.ciclo;
         } catch (error) {
             console.error('Cursos electivos: no se pudo leer la carga horaria:', error);
         }
     }
 
-    async function abrir() {
+    async function abrir(opciones) {
+        const deseado = opciones && typeof opciones === 'object' && !(opciones instanceof Event) ? opciones.seleccionar : null;
         disparador = document.activeElement;
         montar();
         $('ce-overlay').classList.add('ce-visible');
@@ -210,21 +231,32 @@ export function montarCursosElectivos({ cargarFilas, obtenerEnCurso = () => [], 
         cuerpo.innerHTML = '<p class="ce-mensaje">Armando tus electivos…</p>';
         try {
             const perfil = obtenerPerfil();
-            const [filas] = await Promise.all([cargarFilas(), pedirCarga(perfil)]);
+            const [filas, requisitos] = await Promise.all([cargarFilas(), cargarRequisitos().catch(() => null), pedirCarga(perfil)]);
             if (!filas || !filas.length) { cuerpo.innerHTML = MENSAJE_SIN_AVANCE; return; }
             const progreso = construirProgresoCarrera(filas, { enCurso: obtenerEnCurso() });
             const resultado = construirElectivos(progreso, cargaIndexada);
             electivos = resultado.electivos;
             cicloActual = resultado.cicloActual;
-            creditos = creditosRequeridos(perfil?.facultad, perfil?.carrera);
+            creditos = creditosDelPlan(perfil, requisitos);
             const lineaCreditos = $('ce-creditos');
             lineaCreditos.hidden = creditos === null;
             if (creditos !== null) lineaCreditos.querySelector('span').textContent = `${creditos} créditos`;
             if (!electivos.length) { cuerpo.innerHTML = MENSAJE_SIN_ELECTIVOS; return; }
-            filtro = 'todos';
+            filtro = 'disp';
             busqueda = '';
             seleccionado = null;
+            expandidas = new Set();
+            const elegido = deseado ? electivos.find((e) => e.codigo === deseado) : null;
+            if (elegido) {        // viene de otra ventana (por ejemplo la Ruta académica): se muestra completo y ya elegido
+                filtro = 'todos';
+                seleccionado = elegido.codigo;
+                expandidas.add(claveColumna(elegido.ciclo));
+            }
             armarCuerpo();
+            if (elegido) {
+                pintarDetalle();
+                requestAnimationFrame(irAlDetalle);
+            }
         } catch (error) {
             console.error('Cursos electivos:', error);
             cuerpo.innerHTML = MENSAJE_ERROR;
@@ -246,16 +278,24 @@ export function montarCursosElectivos({ cargarFilas, obtenerEnCurso = () => [], 
         $('ce-body').innerHTML = `
             <div class="ce-filtros" id="ce-filtros"></div>
             <input type="search" class="ce-buscar" id="ce-buscar" placeholder="🔍 Buscar por nombre o código" aria-label="Buscar electivo por nombre o código" autocomplete="off">
+            <p class="ce-intro" id="ce-intro" hidden>Estos son los electivos que ya puedes llevar. Usa los filtros para ver los que se abren después.</p>
             <div id="ce-lista"></div>
             <p class="ce-ayuda">Toca un electivo para ver sus prerrequisitos.</p>
             <div class="ce-detalle" id="ce-detalle" hidden></div>
             <p class="ce-nota">Los estados salen de tu Avance Curricular. «Desde el ciclo» es una estimación según tus prerrequisitos.${cicloCarga ? ` «Se dicta» se basa en la carga horaria de ${escaparHtml(cicloCarga)}.` : ''}</p>`;
         $('ce-filtros').addEventListener('click', (e) => {
             const b = e.target.closest('[data-filtro]');
-            if (b) { filtro = b.dataset.filtro; pintarFiltros(); pintarLista(); }
+            if (b) { filtro = b.dataset.filtro; expandidas = new Set(); pintarFiltros(); pintarLista(); }
         });
-        $('ce-buscar').addEventListener('input', (e) => { busqueda = e.target.value; pintarLista(); });
+        $('ce-buscar').addEventListener('input', (e) => { busqueda = e.target.value; expandidas = new Set(); pintarLista(); });
         $('ce-lista').addEventListener('click', (e) => {
+            const mas = e.target.closest('[data-columna]');
+            if (mas) {
+                const clave = mas.dataset.columna;
+                if (expandidas.has(clave)) expandidas.delete(clave); else expandidas.add(clave);
+                pintarLista();
+                return;
+            }
             const n = e.target.closest('[data-code]');
             if (n) { seleccionado = n.dataset.code; pintarLista(); pintarDetalle(); irAlDetalle(); }
         });
@@ -270,10 +310,15 @@ export function montarCursosElectivos({ cargarFilas, obtenerEnCurso = () => [], 
         $('ce-filtros').innerHTML = htmlFiltros(contarElectivos(electivos), filtro, !!cicloCarga);
     }
 
+    function pintarIntro() {
+        $('ce-intro').hidden = !(filtro === 'disp' && !busqueda.trim());
+    }
+
     function pintarLista() {
         // Al repintar se conserva el desplazamiento lateral: tocar un electivo del final no debe volver al inicio.
         const desplazamiento = $('ce-lista').querySelector('.ce-columnas')?.scrollLeft || 0;
-        $('ce-lista').innerHTML = htmlColumnas(filtrarElectivos(electivos, filtro, busqueda), seleccionado, cicloActual, cicloCarga);
+        pintarIntro();
+        $('ce-lista').innerHTML = htmlColumnas(filtrarElectivos(electivos, filtro, busqueda), seleccionado, cicloActual, cicloCarga, expandidas);
         const columnas = $('ce-lista').querySelector('.ce-columnas');
         if (columnas) columnas.scrollLeft = desplazamiento;
     }

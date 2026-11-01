@@ -388,6 +388,30 @@
     color: var(--ra-tinta);
 }
 
+button.ra-electivo--enlace {
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+button.ra-electivo--enlace:hover { background: #F2FBF7; }
+
+.ra-ver-electivos {
+    align-self: flex-start;
+    margin-top: 8px;
+    font-family: inherit;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #0B6B4F;
+    background: #fff;
+    border: 1.5px solid #12A07A;
+    border-radius: 99px;
+    padding: 5px 14px;
+    cursor: pointer;
+}
+
+.ra-ver-electivos:hover { background: #F2FBF7; }
+
 .ra-electivo-tipo { font-size: 0.58rem; color: #0B6B4F; }
 .ra-electivo--mas { justify-content: center; color: var(--ra-suave); border-style: solid; border-color: #d9d3ee; }
 
