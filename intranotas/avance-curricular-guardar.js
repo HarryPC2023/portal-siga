@@ -128,8 +128,6 @@ async function guardarAvanceCurricular(userId, estructurado) {
         facultad: facultadSigla,
         carrera: carreraNombre,
         periodoIngresoSugerido: periodoIngresoDesdeCodigo(estructurado.codigo),
-        planEstudio: estructurado.planEstudio || null,
-        creditosCarrera: estructurado.creditosCarrera || null,
     };
 }
 

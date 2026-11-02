@@ -133,21 +133,6 @@ async function guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance) {
     if (error) {
         console.error('Error guardando facultad/carrera en perfiles_usuario:', error);
     }
-
-    // Plan de estudios y créditos que pide la carrera (encabezado del Avance). Va en un guardado aparte:
-    // si las columnas nuevas todavía no existen, no se pierde lo de arriba.
-    const c = resultadoAvance.creditosCarrera;
-    if (resultadoAvance.planEstudio || c) {
-        const datos = { user_id: userId };
-        if (resultadoAvance.planEstudio) datos.plan_estudio = resultadoAvance.planEstudio;
-        if (c?.obligatoriosMin != null) datos.creditos_obligatorios_min = c.obligatoriosMin;
-        if (c?.electivosMin != null) datos.creditos_electivos_min = c.electivosMin;
-        if (c?.complementariosMax != null) datos.creditos_complementarios_max = c.complementariosMax;
-        if (c?.otrasActividadesMax != null) datos.creditos_otras_actividades_max = c.otrasActividadesMax;
-        if (c?.egreso != null) datos.creditos_egreso = c.egreso;
-        const { error: errorPlan } = await supabase.from('perfiles_usuario').upsert(datos, { onConflict: 'user_id' });
-        if (errorPlan) console.warn('No se pudieron guardar los créditos del plan (¿faltan las columnas nuevas?):', errorPlan.message);
-    }
 }
 
 /* Pinta la insignia de facultad/carrera en la pantalla de éxito, con
@@ -628,6 +613,15 @@ async function guardarAvanceCurricularDesdeBase64(userId, base64) {
     return guardarAvanceCurricular(userId, estructurado);
 }
 
+/* Plan de estudios y créditos que pide la carrera (del encabezado del Avance). Va en un módulo APARTE que se
+   carga recién cuando la sincronización ya terminó y NO se espera: si ese archivo faltara o fallara, lo único
+   que pasa es un aviso en la consola; la sincronización y el guardado del Avance no se enteran. */
+function guardarCreditosDeLaCarreraDesdePdf(userId, base64) {
+    import('./avance-creditos-carrera.js')
+        .then(async (modulo) => modulo.guardarCreditosDeLaCarrera(supabase, userId, await extraerTextoPdf(base64AArrayBuffer(base64))))
+        .catch((error) => console.warn('[INTRANOTAS] Créditos de la carrera: se omitió:', error));
+}
+
 function cancelarSyncEnCurso() {
     syncCancelada = true;
     if (jobIdActual) {
@@ -734,6 +728,7 @@ async function manejarSync(e, userId) {
                     await guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance);
                     pintarInsigniaFacultad(resultadoAvance.facultad, resultadoAvance.carrera);
                     console.log(`Avance Curricular actualizado: ${resultadoAvance.cursosGuardados} curso(s).`);
+                    guardarCreditosDeLaCarreraDesdePdf(userId, resultado.avancePdfBase64);
                 } else {
                     console.warn('No se pudo guardar el Avance Curricular esta vez:', resultadoAvance.motivo, resultadoAvance.detalle);
                 }
