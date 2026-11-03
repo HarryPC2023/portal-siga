@@ -394,6 +394,64 @@ UA_NAVEGADOR = (
     "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
 )
 URL_BASE_INTRALU = f"https://{DOMINIO_INTRALU}"
+
+
+# --------------------------------------------------------------
+# ¿ESTÁ CAÍDA LA PÁGINA DE LA UNI? (nov 2026)
+# INTRALU y Matrícula se caen o se cierran en ciertas épocas. Sin esta revisión, el alumno esperaba ~30 s con
+# Chromium ocupado (lo comparten Intranotas y Horarios) y recibía un error genérico. Ahora, ANTES de usar Chromium
+# ni gastar uno de los 4 logins por minuto de Matrícula, se hace un GET corto a la página de login con `requests`:
+#   - Solo se considera caída si no conecta, no contesta en unos segundos o devuelve un error 5xx. Un 403, un 429 o
+#     cualquier otra respuesta NO bloquea (podría ser solo que rechaza a `requests` y no al navegador): sigue el
+#     camino de siempre.
+#   - El resultado se recuerda unos segundos para que cientos de alumnos no hagan cientos de revisiones ni se
+#     martille a la UNI.
+# --------------------------------------------------------------
+PAGINA_TIMEOUT_SEGUNDOS = 4
+PAGINA_CAIDA_RECORDADA_SEGUNDOS = 30
+PAGINA_OK_RECORDADA_SEGUNDOS = 60
+_CODIGOS_PAGINA_CAIDA = (500, 502, 503, 504)
+_estado_paginas = {}        # url -> (hora, responde)
+_estado_paginas_lock = threading.Lock()
+
+MENSAJE_INTRALU_CAIDA = "La página de INTRALU está caída. No es un error de SIGA. Intenta de nuevo más tarde."
+MENSAJE_MATRICULA_CAIDA = ("La página de Matrícula de la UNI no está disponible en este momento. "
+                           "No es un error de SIGA: solo funciona cuando la UNI la habilita.")
+
+
+def _pagina_responde(url):
+    """True si la página responde (aunque sea con un aviso raro); False si no conecta, no contesta o da un 5xx."""
+    ahora = time.time()
+    with _estado_paginas_lock:
+        previo = _estado_paginas.get(url)
+    if previo:
+        hora, responde = previo
+        vigencia = PAGINA_OK_RECORDADA_SEGUNDOS if responde else PAGINA_CAIDA_RECORDADA_SEGUNDOS
+        if ahora - hora < vigencia:
+            return responde
+
+    responde = True
+    for intento in range(2):     # un solo fallo suelto no debe declarar caída la página para todos
+        try:
+            r = requests.get(url, headers={"User-Agent": UA_NAVEGADOR}, timeout=PAGINA_TIMEOUT_SEGUNDOS,
+                             allow_redirects=True)
+            responde = r.status_code not in _CODIGOS_PAGINA_CAIDA
+        except requests.RequestException:
+            responde = False
+        if responde:
+            break
+        if intento == 0:
+            time.sleep(1.0)
+    with _estado_paginas_lock:
+        _estado_paginas[url] = (time.time(), responde)
+    return responde
+
+
+def _exigir_pagina_disponible(url, mensaje):
+    """Corta de inmediato con un mensaje claro si la página de la UNI está caída."""
+    if not _pagina_responde(url):
+        logger.info("Página de la UNI caída o sin responder (%s): se avisa al alumno sin usar Chromium", url)
+        raise HTTPException(status_code=504, detail=mensaje)
 PETICIONES_PARALELAS = 4  # cursos/notas de TODOS los periodos a la vez. Con 6 INTRALU se ahogó y rechazó un curso (sep 2026)
 REINTENTOS_NOTAS = 2      # si un curso falla, se vuelve a pedir hasta 2 veces más, con pausa creciente
 
@@ -1242,6 +1300,7 @@ def _login_con_fila_y_reintentos(job_id, codigo, password, inicio):
     suelta el turno, se espera una pausa y se vuelve a la fila (el frontend muestra "sigues en la fila"),
     hasta REINTENTOS_POR_VERIFICACION veces. Un error real (contraseña, formulario) corta de inmediato."""
     bitacora = []   # un registro por intento de login (para las métricas)
+    _exigir_pagina_disponible(f"{URL_BASE_INTRALU}/login", MENSAJE_INTRALU_CAIDA)   # si está caída, ni se hace fila
     for ronda in range(REINTENTOS_POR_VERIFICACION + 1):
         _actualizar_job(job_id, etapa="en_fila", personas_delante=0)
         _tomar_turno_chromium(
@@ -1252,6 +1311,9 @@ def _login_con_fila_y_reintentos(job_id, codigo, password, inicio):
         if ronda == 0:
             _actualizar_job(job_id, espera_fila_s=round(time.time() - inicio, 1))
         try:
+            # Al llegar el turno se revisa de nuevo (casi gratis: el resultado se recuerda unos segundos), por si
+            # la página se cayó mientras el alumno esperaba en la fila.
+            _exigir_pagina_disponible(f"{URL_BASE_INTRALU}/login", MENSAJE_INTRALU_CAIDA)
             _actualizar_job(job_id, etapa="iniciando_sesion", personas_delante=0)
             espera_fila = time.time() - inicio
             cookies = _cookies_de_login_intralu(codigo, password, bitacora)
@@ -1725,6 +1787,8 @@ def _token_matricula_con_fila(codigo, password, ticket, espera_maxima,
             # Si canceló justo al llegar su turno, no se gasta un cupo de login.
             if esta_cancelado and esta_cancelado():
                 raise _SyncCancelada()
+            # Si la página de Matrícula está caída o cerrada, se avisa ya: sin gastar cupo ni dejar a Chromium esperando.
+            _exigir_pagina_disponible(f"{MATRICULA_BASE}/login", MENSAJE_MATRICULA_CAIDA)
             espera = _tomar_cupo_login_matricula()
             if espera == 0:
                 if al_iniciar_login:
@@ -1878,6 +1942,7 @@ def _ejecutar_sync_matricula(job_id, codigo, password):
 
         # 2. Sin token vigente: fila de Chromium + tope de 4 logins por minuto, como siempre.
         if resultado is None:
+            _exigir_pagina_disponible(f"{MATRICULA_BASE}/login", MENSAJE_MATRICULA_CAIDA)   # si está caída, ni se hace fila
             token = _token_matricula_con_fila(
                 codigo, password,
                 ticket=f"matricula-{job_id}",
