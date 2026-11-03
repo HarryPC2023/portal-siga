@@ -901,7 +901,7 @@
             ? 'http://localhost:8000/api/sync-horarios'
             : 'https://actualizar-intranotas.onrender.com/api/sync-horarios';
         const MATRICULA_INTERVALO_POLLING_MS = 2000;
-        const MATRICULA_ESPERA_MAXIMA_MS = 7 * 60 * 1000;
+        const MATRICULA_ESPERA_MAXIMA_MS = 17 * 60 * 1000;
         let matriculaJobActual = null;
         let matriculaSyncCancelada = false;
 
@@ -923,7 +923,7 @@
             if (data.etapa === 'en_fila') {
                 const n = data.personas_delante || 0;
                 return n > 0
-                    ? `En fila: ${n === 1 ? 'hay 1 persona' : `hay ${n} personas`} antes que tú. Ya casi...`
+                    ? `En fila: ${n === 1 ? 'hay 1 persona' : `hay ${n} personas`} antes que tú. ${n > 3 ? 'Puede tardar varios minutos: no cierres esta pantalla ni vuelvas a empezar.' : 'Ya casi...'}`
                     : 'Preparando la conexión con Matrícula...';
             }
             if (data.etapa === 'esperando_cupo') return 'Matrícula acepta pocas conexiones por minuto. Tu turno llega en menos de un minuto...';

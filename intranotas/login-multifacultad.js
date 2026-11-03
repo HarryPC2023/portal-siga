@@ -33,7 +33,7 @@ const BACKEND_SYNC_URL = `${BACKEND_BASE_URL}/api/sync-intralu`;
 // de una vez y puede haber fila de espera, así que el tope es más amplio
 // (el backend mismo corta la fila a los 5 min con un mensaje claro).
 const INTERVALO_POLLING_MS = 2000;
-const TIMEOUT_POLLING_MS = 10 * 60 * 1000;
+const TIMEOUT_POLLING_MS = 18 * 60 * 1000;
 
 document.addEventListener('DOMContentLoaded', async () => {
     prepararOjoPassword();
@@ -432,7 +432,7 @@ function textoProgreso(data) {
     if (data.etapa === 'en_fila') {
         const n = data.personas_delante || 0;
         return n > 0
-            ? `En fila: ${n === 1 ? 'hay 1 persona' : `hay ${n} personas`} antes que tú. Ya casi...`
+            ? `En fila: ${n === 1 ? 'hay 1 persona' : `hay ${n} personas`} antes que tú. ${n > 3 ? 'Puede tardar varios minutos: no cierres esta pantalla ni vuelvas a empezar.' : 'Ya casi...'}`
             : 'Preparando la conexión con INTRALU...';
     }
     if (data.etapa === 'iniciando_sesion') return 'Conectando con INTRALU...';

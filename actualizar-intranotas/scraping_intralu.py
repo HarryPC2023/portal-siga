@@ -69,7 +69,7 @@ app.add_middleware(
 _fila_chromium = []                 # tickets esperando, en orden de llegada
 _fila_cond = threading.Condition()
 _chromium_ocupado = False
-ESPERA_MAXIMA_FILA_SEGUNDOS = 5 * 60
+ESPERA_MAXIMA_FILA_SEGUNDOS = 15 * 60   # nov 2026: antes 5 min. Con Matrícula a 4 logins/min caben ~60 alumnos en fila
 
 
 # --------------------------------------------------------------
@@ -84,7 +84,8 @@ ESPERA_MAXIMA_FILA_SEGUNDOS = 5 * 60
 #      servicio espera una pausa y reintenta solo (así nadie cancela y vuelve a empezar).
 # Todo se ajusta con estas constantes.
 # --------------------------------------------------------------
-SESION_INTRALU_MINUTOS = 25            # cuánto se recuerda la sesión de INTRALU de un alumno
+SESION_INTRALU_MINUTOS = 60            # cuánto se recuerda la sesión de INTRALU de un alumno (cuenta desde su último uso)
+SESION_MATRICULA_MINUTOS = 60          # igual, para el token de Matrícula UNI (Horarios)
 MAX_SESIONES_EN_MEMORIA = 300          # tope; al llenarse se olvida la menos usada
 REINTENTOS_POR_VERIFICACION = 1        # rondas extra (cada una = intento rápido + humano)
 PAUSA_ANTES_DE_REINTENTAR_SEGUNDOS = 75
@@ -796,6 +797,53 @@ def _recordar_sesion(codigo, password, cookies):
 def _olvidar_sesion(codigo):
     with _sesiones_lock:
         _sesiones_intralu.pop(codigo, None)
+
+
+# Token de Matrícula UNI recordado (nov 2026), igual que la sesión de INTRALU: SOLO en memoria, nada a disco, se
+# olvida al reiniciar el servicio y solo se reusa con la MISMA contraseña (huella HMAC, nunca la contraseña).
+# Quien lo tiene vigente no entra a la fila de Chromium ni gasta uno de los 4 logins por minuto.
+_tokens_matricula = {}      # codigo -> {"token", "huella", "guardado_en", "ultimo_uso"}
+_tokens_matricula_lock = threading.Lock()
+
+
+def _token_matricula_recordado(codigo, password):
+    """(token, edad_en_segundos) de un token reciente de este alumno con ESTA contraseña, o (None, 0)."""
+    ahora = time.time()
+    with _tokens_matricula_lock:
+        entrada = _tokens_matricula.get(codigo)
+        if not entrada:
+            return None, 0
+        if ahora - entrada["ultimo_uso"] > SESION_MATRICULA_MINUTOS * 60:
+            _tokens_matricula.pop(codigo, None)
+            return None, 0
+        if not hmac.compare_digest(entrada["huella"], _huella_credencial(codigo, password)):
+            return None, 0          # otra contraseña: no se reusa (ni se borra el token del dueño)
+        entrada["ultimo_uso"] = ahora
+        return entrada["token"], ahora - entrada["guardado_en"]
+
+
+def _recordar_token_matricula(codigo, password, token):
+    ahora = time.time()
+    with _tokens_matricula_lock:
+        if codigo not in _tokens_matricula and len(_tokens_matricula) >= MAX_SESIONES_EN_MEMORIA:
+            menos_usado = min(_tokens_matricula, key=lambda c: _tokens_matricula[c]["ultimo_uso"])
+            _tokens_matricula.pop(menos_usado, None)
+        _tokens_matricula[codigo] = {
+            "token": token,
+            "huella": _huella_credencial(codigo, password),
+            "guardado_en": ahora,
+            "ultimo_uso": ahora,
+        }
+
+
+def _olvidar_token_matricula(codigo):
+    with _tokens_matricula_lock:
+        _tokens_matricula.pop(codigo, None)
+
+
+class _TokenMatriculaVencido(Exception):
+    """Matrícula rechazó el token recordado (venció o la UNI lo cerró): se olvida y se hace un login nuevo."""
+    pass
 
 
 def _sesion_http_intralu(cookies):
@@ -1773,6 +1821,8 @@ def _descargar_horarios_matricula(token):
     }
 
     resp_ficha = requests.get(f"{MATRICULA_BASE}/api/matricula/ficha", headers=headers, timeout=15)
+    if resp_ficha.status_code in (401, 403):
+        raise _TokenMatriculaVencido()
     if resp_ficha.status_code != 200:
         raise HTTPException(status_code=502, detail="No se pudo obtener la ficha de matrícula.")
 
@@ -1811,21 +1861,46 @@ def _ejecutar_sync_matricula(job_id, codigo, password):
     logins/min) -> iniciando_sesion -> descargando -> listo."""
     inicio = time.time()
     try:
-        token = _token_matricula_con_fila(
-            codigo, password,
-            ticket=f"matricula-{job_id}",
-            espera_maxima=ESPERA_MAXIMA_FILA_SEGUNDOS,
-            al_cambiar_posicion=lambda n: _actualizar_job(job_id, etapa="en_fila", personas_delante=n),
-            esta_cancelado=lambda: _job_cancelado(job_id),
-            al_esperar_cupo=lambda seg: _actualizar_job(job_id, etapa="esperando_cupo", personas_delante=0,
-                                                        segundos_espera=int(seg) + 1),
-            al_iniciar_login=lambda: _actualizar_job(job_id, etapa="iniciando_sesion", personas_delante=0),
-        )
-        if _job_cancelado(job_id):
-            raise _SyncCancelada()
+        resultado = None
 
-        _actualizar_job(job_id, etapa="descargando")
-        resultado = _descargar_horarios_matricula(token)
+        # 1. ¿Hay un token de Matrícula recordado de este alumno (misma contraseña)? Entonces no hay fila ni login.
+        token, edad_token = _token_matricula_recordado(codigo, password)
+        if token is not None:
+            logger.info("Job Matrícula %s: se reutiliza el token de Matrícula (tiene %.1f min): sin fila ni login",
+                        job_id, edad_token / 60)
+            _actualizar_job(job_id, etapa="descargando")
+            try:
+                resultado = _descargar_horarios_matricula(token)
+            except _TokenMatriculaVencido:
+                # Venció o la UNI lo cerró: se olvida y se hace un login normal, sin que el alumno vea nada.
+                logger.info("Job Matrícula %s: el token recordado ya no sirve, se hace un login nuevo", job_id)
+                _olvidar_token_matricula(codigo)
+
+        # 2. Sin token vigente: fila de Chromium + tope de 4 logins por minuto, como siempre.
+        if resultado is None:
+            token = _token_matricula_con_fila(
+                codigo, password,
+                ticket=f"matricula-{job_id}",
+                espera_maxima=ESPERA_MAXIMA_FILA_SEGUNDOS,
+                al_cambiar_posicion=lambda n: _actualizar_job(job_id, etapa="en_fila", personas_delante=n),
+                esta_cancelado=lambda: _job_cancelado(job_id),
+                al_esperar_cupo=lambda seg: _actualizar_job(job_id, etapa="esperando_cupo", personas_delante=0,
+                                                            segundos_espera=int(seg) + 1),
+                al_iniciar_login=lambda: _actualizar_job(job_id, etapa="iniciando_sesion", personas_delante=0),
+            )
+            # Se recuerda apenas hay login correcto (una contraseña mala nunca llega aquí): el login es lo caro.
+            _recordar_token_matricula(codigo, password, token)
+            if _job_cancelado(job_id):
+                raise _SyncCancelada()
+
+            _actualizar_job(job_id, etapa="descargando")
+            try:
+                resultado = _descargar_horarios_matricula(token)
+            except _TokenMatriculaVencido:
+                _olvidar_token_matricula(codigo)
+                raise HTTPException(status_code=502,
+                                    detail="Matrícula rechazó la sesión recién iniciada. Intenta de nuevo en unos minutos.")
+
         _actualizar_job(job_id, status="listo", resultado=resultado)
         logger.info("Job Matrícula %s: ✅ COMPLETA en %.1fs", job_id, time.time() - inicio)
 
