@@ -57,7 +57,7 @@ export function extraerCreditosDeLaCarrera(textoCrudo) {
    No se muestra en pantalla. */
 function anotarDiagnostico(resultado, detalle = '') {
     try {
-        localStorage.setItem('siga_diag_creditos', JSON.stringify({ hora: new Date().toISOString(), ok: !!resultado.ok, motivo: resultado.motivo || 'guardado', detalle: String(detalle).slice(0, 300) }));
+        localStorage.setItem('siga_diag_creditos', JSON.stringify({ hora: new Date().toISOString(), ok: !!resultado.ok, motivo: resultado.motivo || 'guardado', detalle: String(detalle).slice(0, 900) }));
     } catch (error) { /* sin almacenamiento: no pasa nada */ }
     return resultado;
 }
@@ -79,12 +79,21 @@ export async function guardarCreditosDeLaCarrera(supabase, userId, textoCrudo) {
         if (c?.otrasActividadesMax != null) datos.creditos_otras_actividades_max = c.otrasActividadesMax;
         if (c?.egreso != null) datos.creditos_egreso = c.egreso;
 
+        // Si faltó algo (p. ej. los electivos), se anota cómo quedó escrito ese tramo del PDF para poder ajustar la
+        // lectura sin adivinar. Es solo el cuadro de créditos: no trae nombre ni código del alumno.
+        let pista = '';
+        if (c && (c.electivosMin == null || c.obligatoriosMin == null)) {
+            const limpio = limpiarParaEtiquetas(textoCrudo);
+            const i = limpio.search(/e\s*g\s*r\s*e\s*s\s*a\s*r/);
+            pista = ' | FALTÓ ALGO. Texto cercano: ' + JSON.stringify(limpio.slice(Math.max(0, i - 420), i + 30));
+        }
+
         const { error } = await supabase.from('perfiles_usuario').upsert(datos, { onConflict: 'user_id' });
         if (error) {
             console.warn('[INTRANOTAS] No se pudieron guardar los créditos del plan (¿faltan las columnas?):', error.message);
             return anotarDiagnostico({ ok: false, motivo: 'guardado_fallo' }, error.message);
         }
-        return anotarDiagnostico({ ok: true, datos }, JSON.stringify(datos));
+        return anotarDiagnostico({ ok: true, datos }, JSON.stringify(datos) + pista);
     } catch (error) {
         console.warn('[INTRANOTAS] Créditos del plan: algo falló y se omitió:', error);
         return anotarDiagnostico({ ok: false, motivo: 'error' }, error && error.message ? error.message : error);
