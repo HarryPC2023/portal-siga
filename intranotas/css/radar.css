@@ -75,7 +75,9 @@
 }
 
 /* Ícono circular del Radar dentro del botón del lateral. */
-.chip-herramienta--radar .rd-radar-ico { flex: 0 0 auto; }
+.chip-herramienta--radar .rd-radar-ico {
+    flex: 0 0 auto;
+}
 
 .rd-titulo {
     font-family: var(--font-heading, 'Orbitron', sans-serif);
@@ -118,20 +120,77 @@
 
 /* ---------- Colores por estado ---------- */
 /* Misma escala que el Termómetro: lo recuperable en rojo, lo crítico en amarillo con filo negro. */
-.rd-e-fuera          { --rd-color: #FFE100; --rd-texto: #1b1233; }   /* necesitas 15 o más, o solo el sustitutorio */
-.rd-e-esfuerzo       { --rd-color: #FF7A00; --rd-texto: #B85500; }   /* necesitas 11 a 14 */
-.rd-e-limite         { --rd-color: #B026FF; --rd-texto: #7A12B8; }   /* necesitas 9 a 10 */
-.rd-e-enc            { --rd-color: #4FB6FF; --rd-texto: #0B6FB0; }   /* necesitas 6 a 8 */
-.rd-e-fav            { --rd-color: #2979FF; --rd-texto: #1550C7; }   /* necesitas 3 a 5 */
-.rd-e-muyfav         { --rd-color: #12B886; --rd-texto: #0B7F5E; }   /* necesitas 0 a 2 */
-.rd-e-esperando      { --rd-color: #AFA9C6; --rd-texto: #5b5478; }
-.rd-e-sinformula     { --rd-color: #AFA9C6; --rd-texto: #5b5478; }
+.rd-e-fuera {
+    --rd-color: #FFE100;
+    --rd-texto: #1b1233;
+}
+
+/* necesitas 15 o más, o solo el sustitutorio */
+.rd-e-esfuerzo {
+    --rd-color: #FF7A00;
+    --rd-texto: #B85500;
+}
+
+/* necesitas 11 a 14 */
+.rd-e-limite {
+    --rd-color: #B026FF;
+    --rd-texto: #7A12B8;
+}
+
+/* necesitas 9 a 10 */
+.rd-e-enc {
+    --rd-color: #4FB6FF;
+    --rd-texto: #0B6FB0;
+}
+
+/* necesitas 6 a 8 */
+.rd-e-fav {
+    --rd-color: #2979FF;
+    --rd-texto: #1550C7;
+}
+
+/* necesitas 3 a 5 */
+.rd-e-muyfav {
+    --rd-color: #12B886;
+    --rd-texto: #0B7F5E;
+}
+
+/* necesitas 0 a 2 */
+.rd-e-esperando {
+    --rd-color: #AFA9C6;
+    --rd-texto: #5b5478;
+}
+
+.rd-e-sinformula {
+    --rd-color: #AFA9C6;
+    --rd-texto: #5b5478;
+}
+
 /* Cursos terminados (¿cómo me fue?): mismos colores que arriba */
-.rd-e-sobresaliente  { --rd-color: #12B886; --rd-texto: #0B7F5E; }
-.rd-e-muybuen        { --rd-color: #2979FF; --rd-texto: #1550C7; }
-.rd-e-buen           { --rd-color: #4FB6FF; --rd-texto: #0B6FB0; }
-.rd-e-aprobadolimite { --rd-color: #B026FF; --rd-texto: #7A12B8; }
-.rd-e-desaprobado    { --rd-color: #FF1744; --rd-texto: #C4102F; }
+.rd-e-sobresaliente {
+    --rd-color: #12B886;
+    --rd-texto: #0B7F5E;
+}
+
+.rd-e-muybuen {
+    --rd-color: #2979FF;
+    --rd-texto: #1550C7;
+}
+
+.rd-e-buen {
+    --rd-color: #4FB6FF;
+    --rd-texto: #0B6FB0;
+}
+
+.rd-e-aprobadolimite {
+    --rd-color: #B026FF;
+    --rd-texto: #7A12B8;
+}
+
+.rd-e-desaprobado {
+    --rd-color: #FF1744;
+    --rd-texto: #C4102F;
+}
 
 /* ---------- Orden ---------- */
 .rd-orden {
@@ -185,7 +244,9 @@
     transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.rd-chip:hover { transform: translateY(-1px); }
+.rd-chip:hover {
+    transform: translateY(-1px);
+}
 
 .rd-chip--activo {
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--rd-color) 30%, transparent);
@@ -225,18 +286,42 @@
     color: var(--rd-texto);
 }
 
-.rd-mini-flecha { display: inline-flex; color: var(--rd-texto); }
+.rd-mini-flecha {
+    display: inline-flex;
+    color: var(--rd-texto);
+}
 
 /* ---------- Tendencia: mismos colores que el Termómetro ---------- */
-.rd-t-sube    { color: #1550C7; }
-.rd-t-baja    { color: #C4102F; }
-.rd-t-estable { color: #7A12B8; }
+.rd-t-sube {
+    color: #1550C7;
+}
+
+.rd-t-baja {
+    color: #C4102F;
+}
+
+.rd-t-estable {
+    color: #7A12B8;
+}
 
 /* El amarillo solo, sobre blanco, casi no se ve: lleva un filo negro fino por fuera. */
-.rd-chip.rd-e-fuera { box-shadow: 0 0 0 1.5px #1b1233; }
-.rd-chip.rd-e-fuera.rd-chip--activo { box-shadow: 0 0 0 1.5px #1b1233, 0 0 0 4px rgba(255, 225, 0, 0.45); }
-.rd-detalle.rd-e-fuera { box-shadow: 0 0 0 2px #1b1233; }
-.rd-estado-grande { display: inline-flex; align-items: center; gap: 6px; }
+.rd-chip.rd-e-fuera {
+    box-shadow: 0 0 0 1.5px #1b1233;
+}
+
+.rd-chip.rd-e-fuera.rd-chip--activo {
+    box-shadow: 0 0 0 1.5px #1b1233, 0 0 0 4px rgba(255, 225, 0, 0.45);
+}
+
+.rd-detalle.rd-e-fuera {
+    box-shadow: 0 0 0 2px #1b1233;
+}
+
+.rd-estado-grande {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
 
 /* ---------- Detalle del curso ---------- */
 .rd-detalle {
@@ -312,7 +397,9 @@
     gap: 8px;
 }
 
-.rd-tiles--dos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.rd-tiles--dos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 
 .rd-tile {
     background: #F7F4FC;
@@ -320,7 +407,10 @@
     padding: 9px 11px;
 }
 
-.rd-tile__et { font-size: 11.5px; color: #5b5478; }
+.rd-tile__et {
+    font-size: 11.5px;
+    color: #5b5478;
+}
 
 .rd-tile__valor {
     font-size: 21px;
@@ -330,7 +420,11 @@
     color: var(--ink, #1f2937);
 }
 
-.rd-tile__sub { font-size: 11.5px; color: #5b5478; line-height: 1.4; }
+.rd-tile__sub {
+    font-size: 11.5px;
+    color: #5b5478;
+    line-height: 1.4;
+}
 
 .rd-tile__valor--texto {
     font-size: 16px;
@@ -410,7 +504,11 @@
 }
 
 /* La diana en rojo: es lo que más la representa (todo el recuadro era azul). */
-.rd-accion svg { flex: 0 0 auto; margin-top: 1px; color: #E5173F; }
+.rd-accion svg {
+    flex: 0 0 auto;
+    margin-top: 1px;
+    color: #E5173F;
+}
 
 .rd-detalle .aviso-formula-corto {
     margin: 12px 16px 0 16px;
@@ -442,30 +540,46 @@
         box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.18);
     }
 
-    .rd-panel.rd-abierto { transform: translateY(0); }
+    .rd-panel.rd-abierto {
+        transform: translateY(0);
+    }
 
-    .rd-chips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rd-chips {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 /* ---------- El haz del radar gira despacio ----------
-   En el encabezado del panel gira siempre; en el botón del lateral solo al pasar el mouse o con el teclado
-   (para no distraer en la barra). Si la persona pidió "reducir movimiento" en su dispositivo, no se mueve. */
+   Gira siempre, tanto en el encabezado del panel como en el botón del lateral (movimiento suave, igual que los
+   demás íconos del lateral); al pasar el mouse o con el teclado va un poco más rápido. Si la persona pidió
+   "reducir movimiento" en su dispositivo, no se mueve. */
 .rd-barrido {
     transform-box: view-box;
     transform-origin: 24px 24px;
 }
-.rd-icono .rd-barrido {
+
+.rd-icono .rd-barrido,
+.chip-herramienta--radar .rd-barrido {
     animation: rd-giro 7s linear infinite;
 }
+
 .chip-herramienta--radar:hover .rd-barrido,
 .chip-herramienta--radar:focus-visible .rd-barrido {
     animation: rd-giro 4s linear infinite;
 }
+
 @keyframes rd-giro {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
+
 @media (prefers-reduced-motion: reduce) {
+
     .rd-icono .rd-barrido,
+    .chip-herramienta--radar .rd-barrido,
     .chip-herramienta--radar:hover .rd-barrido,
-    .chip-herramienta--radar:focus-visible .rd-barrido { animation: none; }
+    .chip-herramienta--radar:focus-visible .rd-barrido {
+        animation: none;
+    }
 }

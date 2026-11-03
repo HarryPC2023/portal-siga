@@ -1346,12 +1346,191 @@
 
             <div class="separador-panel"></div>
 
+            <style>
+                /* Íconos animados de Meta del curso (la flecha da en la diana) y Progreso de tu carrera (escalera de
+                   ciclos y birrete). Siempre en movimiento suave, como el Radar, la Ruta y el reloj de Cursos electivos. */
+                .li-ico {
+                    flex: 0 0 auto;
+                    display: block;
+                }
+
+                .li-k {
+                    animation-iteration-count: infinite;
+                    animation-timing-function: linear;
+                    transform-box: view-box;
+                }
+
+                .li-fl {
+                    animation-name: li-fl;
+                    animation-duration: 5s;
+                    animation-delay: -3s;
+                    animation-timing-function: ease-in-out;
+                }
+
+                .li-on {
+                    animation-name: li-on;
+                    animation-duration: 5s;
+                    animation-delay: -3s;
+                    transform-box: fill-box;
+                    transform-origin: center;
+                }
+
+                .li-en {
+                    animation-name: li-en;
+                    animation-duration: 4.4s;
+                    animation-delay: calc(var(--d, 0s) - 2.4s);
+                }
+
+                .li-sa {
+                    animation-name: li-sa;
+                    animation-duration: 4.4s;
+                    animation-delay: -2.4s;
+                    animation-timing-function: ease-out;
+                }
+
+                @keyframes li-fl {
+                    0% {
+                        transform: translate(-16px, -16px);
+                        opacity: 0;
+                    }
+
+                    8% {
+                        opacity: 1;
+                    }
+
+                    16% {
+                        transform: translate(0, 0);
+                    }
+
+                    19% {
+                        transform: translate(1.4px, 1.4px);
+                    }
+
+                    22% {
+                        transform: translate(0, 0);
+                    }
+
+                    80% {
+                        transform: translate(0, 0);
+                        opacity: 1;
+                    }
+
+                    92%,
+                    100% {
+                        transform: translate(0, 0);
+                        opacity: 0;
+                    }
+                }
+
+                @keyframes li-on {
+
+                    0%,
+                    15% {
+                        opacity: 0;
+                        transform: scale(1);
+                    }
+
+                    16% {
+                        opacity: .9;
+                        transform: scale(1);
+                    }
+
+                    36%,
+                    100% {
+                        opacity: 0;
+                        transform: scale(3.6);
+                    }
+                }
+
+                @keyframes li-en {
+                    0% {
+                        fill: #E9D5FF;
+                    }
+
+                    8%,
+                    72% {
+                        fill: #AC33FF;
+                    }
+
+                    84%,
+                    100% {
+                        fill: #E9D5FF;
+                    }
+                }
+
+                @keyframes li-sa {
+
+                    0%,
+                    30% {
+                        opacity: 0;
+                        transform: translateY(3px);
+                    }
+
+                    36% {
+                        opacity: 1;
+                        transform: translateY(-5px);
+                    }
+
+                    44%,
+                    74% {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+
+                    84%,
+                    100% {
+                        opacity: 0;
+                        transform: translateY(0);
+                    }
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .li-k {
+                        animation: none;
+                    }
+
+                    .li-en {
+                        fill: #AC33FF;
+                    }
+
+                    .li-on {
+                        opacity: 0;
+                    }
+                }
+            </style>
             <div class="fila-herramientas">
                 <button type="button" class="chip-herramienta chip-herramienta--meta" data-aa="meta">
-                    🎯 Meta del curso
+                    <svg class="li-ico" viewBox="0 0 48 48" width="26" height="26" aria-hidden="true">
+                        <circle cx="24" cy="24" r="20" fill="#fff" stroke="#00D7E6" stroke-width="3.5" />
+                        <circle cx="24" cy="24" r="12.5" fill="#E0FBFD" stroke="#00D7E6" stroke-width="2.5" />
+                        <circle cx="24" cy="24" r="5" fill="#00D7E6" />
+                        <circle class="li-k li-on" cx="24" cy="24" r="5" fill="none" stroke="#00D7E6"
+                            stroke-width="2" />
+                        <g class="li-k li-fl">
+                            <path d="M24 24L9 9" stroke="#14102a" stroke-width="2.6" stroke-linecap="round" />
+                            <path d="M9 9L4.5 9.8M9 9L9.8 4.5M13 13L8.5 13.8M13 13L13.8 8.5" stroke="#00A3B3"
+                                stroke-width="2" stroke-linecap="round" />
+                        </g>
+                    </svg>
+                    <span>Meta del curso</span>
                 </button>
                 <button type="button" class="chip-herramienta chip-herramienta--progreso" data-aa="progreso">
-                    🗺️ Progreso de tu carrera
+                    <svg class="li-ico" viewBox="0 0 48 48" width="26" height="26" aria-hidden="true">
+                        <rect class="li-k li-en" style="--d:0s" x="5" y="34" width="8" height="8" rx="1.5"
+                            fill="#E9D5FF" />
+                        <rect class="li-k li-en" style="--d:.35s" x="14.5" y="27" width="8" height="15" rx="1.5"
+                            fill="#E9D5FF" />
+                        <rect class="li-k li-en" style="--d:.7s" x="24" y="20" width="8" height="22" rx="1.5"
+                            fill="#E9D5FF" />
+                        <rect class="li-k li-en" style="--d:1.05s" x="33.5" y="13" width="8" height="29" rx="1.5"
+                            fill="#E9D5FF" />
+                        <g class="li-k li-sa">
+                            <path d="M37.5 2.5L45.5 6L37.5 9.5L29.5 6Z" fill="#7A1FCC" />
+                            <path d="M33 8V10.5Q37.5 12.5 42 10.5V8" fill="#AC33FF" />
+                            <path d="M45 6.5V10" stroke="#FFB400" stroke-width="1.6" stroke-linecap="round" />
+                        </g>
+                    </svg>
+                    <span>Progreso de tu carrera</span>
                 </button>
                 <button type="button" class="chip-herramienta chip-herramienta--ruta" data-aa="ruta">
                     🔗 Ruta del curso
