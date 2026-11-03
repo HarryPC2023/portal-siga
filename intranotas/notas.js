@@ -29,7 +29,7 @@ import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.j
 import { esBeta } from './beta-siga.js';
 import { analizarCurso, categoriaTermometro, claveResultado } from './radar-calculo.js';
 import { normalizarNotaEntera, esTeclaNoEntera } from './nota-entera.js';
-import { pintarTermometro, resaltarTarjeta } from './termometro-ui.js';
+import { pintarTermometro } from './termometro-ui.js';
 import { montarRadar } from './radar-ui.js';
 import { siglaDeCurso } from './siglas-cursos.js';
 
@@ -1317,6 +1317,27 @@ function toggleCurso(idx, curso) {
         armarCuerpoCurso(cuerpo, curso, idx);
         cuerpo.dataset.armado = '1';
     }
+}
+
+/* Al tocar un curso en la franja del Termómetro (pintarTermometro la llama con el id de su tarjeta, "curso-card-N"):
+   se ABRE el contenedor de ese curso (si estaba cerrado; si ya estaba abierto se deja así, nunca se cierra) y la vista
+   baja hasta él, con un resaltado breve, para que se vea cuál era. Reemplaza a la que antes se importaba de
+   termometro-ui.js, que solo bajaba. En celular la fila de herramientas queda pegada arriba: la tarjeta se deja
+   justo debajo de ella. */
+function resaltarTarjeta(idTarjeta) {
+    const id = String(idTarjeta).replace('curso-card-', '');
+    const curso = (notasPorPeriodo[periodoActivo] || [])[id];
+    const tarjeta = document.getElementById(idTarjeta);
+    const cuerpo = document.getElementById(`cuerpo-${id}`);
+    if (!curso || !tarjeta || !cuerpo) return;
+    if (!cuerpo.classList.contains('visible')) toggleCurso(Number(id), curso);
+
+    const fijo = document.querySelector('.panel-identidad');
+    const tapa = window.matchMedia('(max-width: 899px)').matches && fijo ? Math.max(0, fijo.getBoundingClientRect().bottom) : 0;
+    tarjeta.style.scrollMarginTop = `${tapa + 12}px`;
+    tarjeta.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    tarjeta.classList.add('curso-card--resaltada');
+    setTimeout(() => tarjeta.classList.remove('curso-card--resaltada'), 1800);
 }
 
 /* claseEvaluacion(descripcion) ahora vive en formula-practicas.js (la usa

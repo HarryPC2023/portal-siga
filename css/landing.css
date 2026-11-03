@@ -248,7 +248,7 @@ nav {
   .nav-links {
     flex-wrap: wrap;
     justify-content: center;
-    padding-top: 0;
+    padding-top: 10px;
     gap: 8px;
   }
 }
