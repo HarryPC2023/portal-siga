@@ -52,6 +52,16 @@ export function extraerCreditosDeLaCarrera(textoCrudo) {
     return Object.values(creditos).some((v) => v !== null) ? creditos : null;
 }
 
+/* Anota en el navegador cómo le fue a este guardado (solo la hora y el resultado, nada del alumno), para poder
+   revisarlo después aunque la página haya cambiado: en la consola, localStorage.getItem('siga_diag_creditos').
+   No se muestra en pantalla. */
+function anotarDiagnostico(resultado, detalle = '') {
+    try {
+        localStorage.setItem('siga_diag_creditos', JSON.stringify({ hora: new Date().toISOString(), ok: !!resultado.ok, motivo: resultado.motivo || 'guardado', detalle: String(detalle).slice(0, 300) }));
+    } catch (error) { /* sin almacenamiento: no pasa nada */ }
+    return resultado;
+}
+
 /* Lee el texto del Avance y guarda lo encontrado en el perfil. NUNCA lanza: siempre devuelve
    { ok, datos?, motivo? } y deja el detalle en la consola. */
 export async function guardarCreditosDeLaCarrera(supabase, userId, textoCrudo) {
@@ -59,7 +69,7 @@ export async function guardarCreditosDeLaCarrera(supabase, userId, textoCrudo) {
         const plan = extraerPlanDeEstudio(textoCrudo);
         const c = extraerCreditosDeLaCarrera(textoCrudo);
         console.log('[INTRANOTAS] Plan y créditos leídos del Avance:', { plan, creditos: c });
-        if (!plan && !c) return { ok: false, motivo: 'no_encontrado' };
+        if (!plan && !c) return anotarDiagnostico({ ok: false, motivo: 'no_encontrado' }, 'El texto del Avance no trae plan ni créditos');
 
         const datos = { user_id: userId };
         if (plan) datos.plan_estudio = plan;
@@ -72,11 +82,11 @@ export async function guardarCreditosDeLaCarrera(supabase, userId, textoCrudo) {
         const { error } = await supabase.from('perfiles_usuario').upsert(datos, { onConflict: 'user_id' });
         if (error) {
             console.warn('[INTRANOTAS] No se pudieron guardar los créditos del plan (¿faltan las columnas?):', error.message);
-            return { ok: false, motivo: 'guardado_fallo' };
+            return anotarDiagnostico({ ok: false, motivo: 'guardado_fallo' }, error.message);
         }
-        return { ok: true, datos };
+        return anotarDiagnostico({ ok: true, datos }, JSON.stringify(datos));
     } catch (error) {
         console.warn('[INTRANOTAS] Créditos del plan: algo falló y se omitió:', error);
-        return { ok: false, motivo: 'error' };
+        return anotarDiagnostico({ ok: false, motivo: 'error' }, error && error.message ? error.message : error);
     }
 }

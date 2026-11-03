@@ -744,8 +744,7 @@ async function manejarSync(e, userId) {
                     await guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance);
                     pintarInsigniaFacultad(resultadoAvance.facultad, resultadoAvance.carrera);
                     console.log(`Avance Curricular actualizado: ${resultadoAvance.cursosGuardados} curso(s).`);
-                    mostrarProgreso('Guardando tu plan de estudios...');
-                    await guardarCreditosDeLaCarreraDesdePdf(userId, resultado.avancePdfBase64);
+                    await guardarCreditosDeLaCarreraDesdePdf(userId, resultado.avancePdfBase64);   // en silencio: el alumno no ve nada
                 } else {
                     console.warn('No se pudo guardar el Avance Curricular esta vez:', resultadoAvance.motivo, resultadoAvance.detalle);
                 }
