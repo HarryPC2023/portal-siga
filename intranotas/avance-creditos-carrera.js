@@ -43,10 +43,10 @@ export function extraerCreditosDeLaCarrera(textoCrudo) {
         return m ? parseInt(m[1], 10) : null;
     };
     const creditos = {
-        obligatoriosMin: numeroTrasEtiqueta('minimo de creditos obligatorios'),
-        electivosMin: numeroTrasEtiqueta('minimo de creditos electivos'),
-        complementariosMax: numeroTrasEtiqueta('maximo de creditos complementarios'),
-        otrasActividadesMax: numeroTrasEtiqueta('maximo de creditos por otras actividades'),
+        obligatoriosMin: numeroTrasEtiqueta('de creditos obligatorios'),
+        electivosMin: numeroTrasEtiqueta('de creditos electivos'),
+        complementariosMax: numeroTrasEtiqueta('de creditos complementarios'),
+        otrasActividadesMax: numeroTrasEtiqueta('de creditos por otras actividades'),
         egreso: numeroTrasEtiqueta('total de creditos para egresar'),
     };
     return Object.values(creditos).some((v) => v !== null) ? creditos : null;
