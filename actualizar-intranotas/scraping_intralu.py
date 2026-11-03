@@ -728,6 +728,16 @@ def _huella_credencial(codigo, password):
     return hmac.new(_CLAVE_HUELLA, f"{codigo}\0{password}".encode("utf-8"), hashlib.sha256).hexdigest()
 
 
+def _clave_de_sync(codigo, password, periodo, omitir):
+    """Identifica una petición de sincronización: mismo alumno, misma contraseña y mismos periodos. Se usa para
+    unir las peticiones idénticas en un solo trabajo. Lleva la huella, nunca la contraseña."""
+    return "|".join([
+        _huella_credencial(codigo, password),
+        str(periodo or ""),
+        ",".join(sorted(str(p) for p in (omitir or []))),
+    ])
+
+
 def _sesion_recordada(codigo, password):
     """(cookies, edad_en_segundos) de una sesión reciente de este alumno con ESTA contraseña, o (None, 0)."""
     ahora = time.time()
@@ -1217,8 +1227,19 @@ def iniciar_sync(credentials: LoginIntraluRequest):
     #         raise HTTPException(status_code=400, detail="No tienes una contraseña guardada. Ingrésala para sincronizar.")
     #     password = _descifrar_password(cifrada)
 
+    # Sin duplicar trabajo (nov 2026): si ESTE alumno (misma contraseña, mismos periodos) ya tiene una
+    # sincronización en curso —porque apretó dos veces, abrió otra pestaña o volvió a entrar—, la nueva
+    # petición se UNE a esa en vez de hacer otro login contra INTRALU. Cada intento de más gasta la
+    # paciencia de su verificación de seguridad y alarga la fila de todos.
+    clave = _clave_de_sync(credentials.codigo, credentials.password, credentials.periodo, credentials.omitir)
     job_id = str(uuid.uuid4())
     with _jobs_lock:
+        for jid, existente in _jobs.items():
+            if existente.get("clave") == clave and existente["status"] == "en_progreso" and not existente["cancelado"]:
+                existente["suscriptores"] = existente.get("suscriptores", 1) + 1
+                logger.info("Job %s: otra solicitud idéntica del mismo alumno se une a esta sincronización (%d en total)",
+                            jid, existente["suscriptores"])
+                return {"job_id": jid}
         _jobs[job_id] = {
             "status": "en_progreso",
             "creado_en": time.time(),
@@ -1226,6 +1247,8 @@ def iniciar_sync(credentials: LoginIntraluRequest):
             "cancelado": False,
             "etapa": "en_fila",
             "personas_delante": 0,
+            "clave": clave,
+            "suscriptores": 1,
         }
 
     hilo = threading.Thread(
@@ -1266,6 +1289,12 @@ def cancelar_sync(job_id: str):
         job = _jobs.get(job_id)
         if not job:
             raise HTTPException(status_code=404, detail="No se encontró esa sincronización (puede haber expirado).")
+        job["suscriptores"] = max(0, job.get("suscriptores", 1) - 1)
+        if job["suscriptores"] > 0:
+            # Otra pestaña/solicitud del mismo alumno sigue esperando este trabajo: no se corta para ella.
+            logger.info("Job %s: un alumno canceló, pero otra solicitud suya sigue esperando (%d); continúa",
+                        job_id, job["suscriptores"])
+            return {"status": "cancelando"}
         job["cancelado"] = True
     logger.info("Job %s: solicitud de cancelación recibida", job_id)
     return {"status": "cancelando"}
