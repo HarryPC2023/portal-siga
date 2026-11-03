@@ -684,10 +684,26 @@ def _intento_login_intralu(browser, codigo, password, modo):
             pass
 
 
-def _login_intralu_en(browser, codigo, password):
+def _clasificar_resultado_login(resultado):
+    """Etiqueta corta del resultado de UN intento de login, para las métricas."""
+    if resultado is True:
+        return "ok"
+    if not resultado:
+        return "sin_respuesta"
+    if _mensaje_si_error_de_formulario(resultado):
+        return "formulario"
+    if _es_contrasena_incorrecta(resultado):
+        return "clave_incorrecta"
+    if "verificacion" in _sin_tildes(resultado):
+        return "verificacion"
+    return "otro"
+
+
+def _login_intralu_en(browser, codigo, password, bitacora=None):
     """Corre DENTRO del hilo de Chromium: intenta en modo rápido y, solo si
     INTRALU no respondió o rechazó la verificación, repite en modo humano.
-    Deja en el log cuánto tomó cada paso y qué modo funcionó."""
+    Deja en el log cuánto tomó cada paso y qué modo funcionó. Si se pasa `bitacora` (una lista), cada intento
+    se anota ahí para las métricas."""
     for modo in ("rapido", "humano"):
         resultado, cookies, tiempos = _intento_login_intralu(browser, codigo, password, modo)
         logger.info(
@@ -695,6 +711,15 @@ def _login_intralu_en(browser, codigo, password):
             modo, tiempos["contexto"], tiempos["pagina"], tiempos["tipeo"], tiempos["respuesta"],
             "OK" if resultado is True else f"ERROR ({resultado or 'sin respuesta en 20s'})",
         )
+        if bitacora is not None:
+            bitacora.append({
+                "modo": modo,
+                "resultado": _clasificar_resultado_login(resultado),
+                "contexto_s": round(tiempos["contexto"], 1),
+                "pagina_s": round(tiempos["pagina"], 1),
+                "tipeo_s": round(tiempos["tipeo"], 1),
+                "respuesta_s": round(tiempos["respuesta"], 1),
+            })
         if resultado is True:
             return cookies
         if resultado:
@@ -710,10 +735,10 @@ def _login_intralu_en(browser, codigo, password):
     raise _VerificacionRechazada()
 
 
-def _cookies_de_login_intralu(codigo, password):
+def _cookies_de_login_intralu(codigo, password, bitacora=None):
     """Hace el login en el Chromium siempre encendido y devuelve SOLO las
     cookies de la sesión (lo demás va por `requests`)."""
-    return _trabajador_chromium.ejecutar(lambda browser: _login_intralu_en(browser, codigo, password))
+    return _trabajador_chromium.ejecutar(lambda browser: _login_intralu_en(browser, codigo, password, bitacora))
 
 
 # Sesiones de INTRALU recordadas (SOLO en memoria: nada va a disco, y al reiniciar el servicio se olvidan).
@@ -1021,6 +1046,136 @@ def _job_cancelado(job_id):
         return bool(_jobs.get(job_id, {}).get("cancelado"))
 
 
+# --------------------------------------------------------------
+# MÉTRICAS DE SINCRONIZACIÓN (nov 2026)
+# Al terminar cada sincronización se anota UNA fila en Supabase (tabla sync_metricas): resultado, si reusó la
+# sesión de INTRALU y con qué edad, intentos de login con sus tiempos, espera en la fila, duración y cuántas
+# peticiones se unieron. Sirve para ver con datos cuándo y por qué falla, y ajustar las constantes de arriba.
+#   - NO se guarda el código ni la contraseña: solo una huella anónima del alumno (HMAC con el secreto).
+#   - El servicio NO tiene ninguna llave poderosa: llama a la función registrar_sync() de Supabase con la llave
+#     pública (anon) y un secreto, y esa función solo sabe insertar una fila (ver sql/sync_metricas.sql).
+#   - Variables de entorno en Render: SUPABASE_URL, SUPABASE_ANON_KEY y SYNC_LOG_SECRET. Si falta alguna, las
+#     métricas se desactivan solas y el resto funciona igual.
+#   - Corre en un hilo aparte con tiempo límite: JAMÁS retrasa ni rompe una sincronización.
+# --------------------------------------------------------------
+_metricas_aviso_dado = False
+
+
+def _es_llave_de_servicio(llave):
+    """True si la llave parece una llave PODEROSA de Supabase (sb_secret_… o un JWT con role=service_role). Esa
+    jamás debe usarse para las métricas: solo sirve la llave PÚBLICA (anon / sb_publishable_…)."""
+    if llave.startswith("sb_secret_"):
+        return True
+    if llave.count(".") == 2:
+        try:
+            cuerpo = llave.split(".")[1]
+            datos = base64.urlsafe_b64decode(cuerpo + "=" * (-len(cuerpo) % 4)).decode("utf-8", "ignore")
+            return "service_role" in datos
+        except Exception:
+            return False
+    return False
+
+
+def _config_metricas():
+    url = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
+    anon = os.environ.get("SUPABASE_ANON_KEY", "").strip()
+    secreto = os.environ.get("SYNC_LOG_SECRET", "").strip()
+    if anon and _es_llave_de_servicio(anon):
+        return None     # por seguridad: con una llave de servicio no se envía nada (ver el aviso al arrancar)
+    return (url, anon, secreto) if url and anon and secreto else None
+
+
+def _avisar_estado_de_metricas():
+    """Al arrancar, deja en el log si las 3 variables están bien puestas, SIN mostrar ningún valor. Del secreto
+    muestra su largo y una huella de 4 caracteres, para compararla con la de Supabase y confirmar que son iguales."""
+    url = os.environ.get("SUPABASE_URL", "").strip()
+    anon = os.environ.get("SUPABASE_ANON_KEY", "").strip()
+    secreto = os.environ.get("SYNC_LOG_SECRET", "").strip()
+    partes = [
+        "SUPABASE_URL " + ("ok" if url else "FALTA"),
+        "SUPABASE_ANON_KEY " + ("ok" if anon else "FALTA"),
+        ("SYNC_LOG_SECRET ok (%d caracteres, huella %s)" % (len(secreto), hashlib.sha256(secreto.encode("utf-8")).hexdigest()[:4]))
+        if secreto else "SYNC_LOG_SECRET FALTA",
+    ]
+    if anon and _es_llave_de_servicio(anon):
+        partes.append("¡ATENCIÓN! SUPABASE_ANON_KEY es una llave de SERVICIO: no se usará. Pon la llave pública (la de tu web)")
+    logger.info("Métricas de sincronización: %s", " · ".join(partes))
+
+
+def _resultado_de_job(job):
+    """Etiqueta del resultado final de una sincronización, para las métricas."""
+    estado = job.get("status")
+    if estado == "listo":
+        return "ok"
+    if estado == "cancelado":
+        return "cancelado"
+    codigo_http = job.get("status_code")
+    if codigo_http == 401:
+        return "clave_incorrecta"
+    if codigo_http == 400:
+        return "formulario"
+    if codigo_http == 503:
+        return "verificacion_rechazada" if job.get("detail") == MENSAJE_VERIFICACION_RECHAZADA else "fila_demasiado_larga"
+    if codigo_http == 502:
+        return "sesion_vencida"
+    return "error_interno"
+
+
+def _enviar_metrica(payload, url, anon, secreto):
+    try:
+        # Las llaves nuevas de Supabase ("sb_publishable_…") NO son JWT y van solo en `apikey`; las antiguas
+        # (JWT que empiezan con "eyJ") se mandan también como Bearer. Así sirve cualquiera de las dos.
+        headers = {"apikey": anon, "Content-Type": "application/json"}
+        if anon.count(".") == 2:
+            headers["Authorization"] = f"Bearer {anon}"
+        resp = requests.post(
+            f"{url}/rest/v1/rpc/registrar_sync",
+            json={"secreto": secreto, "datos": payload},
+            headers=headers,
+            timeout=6,
+        )
+        if resp.status_code >= 300:
+            logger.warning("Métricas: Supabase respondió HTTP %d: %s", resp.status_code, resp.text[:200])
+    except Exception as error:
+        logger.warning("Métricas: no se pudo registrar esta sincronización: %s", error)
+
+
+def _registrar_metrica_job(job_id, codigo):
+    """Arma y envía la fila de métricas de un trabajo ya terminado. NUNCA lanza ni espera a la red."""
+    global _metricas_aviso_dado
+    try:
+        config = _config_metricas()
+        if not config:
+            if not _metricas_aviso_dado:
+                _metricas_aviso_dado = True
+                logger.info("Métricas de sincronización desactivadas (faltan SUPABASE_URL, SUPABASE_ANON_KEY o SYNC_LOG_SECRET)")
+            return
+        with _jobs_lock:
+            job = dict(_jobs.get(job_id) or {})
+        if not job:
+            return
+        resultado = _resultado_de_job(job)
+        payload = {
+            "alumno_huella": hmac.new(config[2].encode("utf-8"), str(codigo).encode("utf-8"), hashlib.sha256).hexdigest()[:16],
+            "resultado": resultado,
+            "sesion_reutilizada": bool(job.get("sesion_reutilizada")),
+            "edad_sesion_s": job.get("edad_sesion_s"),
+            "reintento_sin_sesion": bool(job.get("reintento_sin_sesion")),
+            "rondas_login": job.get("rondas_login"),
+            "intentos": job.get("intentos"),
+            "espera_fila_s": job.get("espera_fila_s"),
+            "segundos_total": round(time.time() - job.get("creado_en", time.time()), 1),
+            "periodos_revisados": len(job.get("periodos_revisados") or []) if resultado == "ok" else None,
+            "suscriptores": job.get("suscriptores"),
+        }
+        threading.Thread(target=_enviar_metrica, args=(payload, *config), daemon=True).start()
+    except Exception:
+        logger.exception("Métricas: error armando el registro (se ignora)")
+
+
+_avisar_estado_de_metricas()
+
+
 class _ReintentarSinSesionGuardada(Exception):
     """La sesión de INTRALU que se recordaba ya estaba cerrada: se repite con un login nuevo."""
     pass
@@ -1038,6 +1193,7 @@ def _login_con_fila_y_reintentos(job_id, codigo, password, inicio):
     """Fila de Chromium + login. Si INTRALU rechaza la verificación de seguridad, el trabajo NO se cae: se
     suelta el turno, se espera una pausa y se vuelve a la fila (el frontend muestra "sigues en la fila"),
     hasta REINTENTOS_POR_VERIFICACION veces. Un error real (contraseña, formulario) corta de inmediato."""
+    bitacora = []   # un registro por intento de login (para las métricas)
     for ronda in range(REINTENTOS_POR_VERIFICACION + 1):
         _actualizar_job(job_id, etapa="en_fila", personas_delante=0)
         _tomar_turno_chromium(
@@ -1045,10 +1201,12 @@ def _login_con_fila_y_reintentos(job_id, codigo, password, inicio):
             al_cambiar_posicion=lambda n: _actualizar_job(job_id, personas_delante=n),
             esta_cancelado=lambda: _job_cancelado(job_id),
         )
+        if ronda == 0:
+            _actualizar_job(job_id, espera_fila_s=round(time.time() - inicio, 1))
         try:
             _actualizar_job(job_id, etapa="iniciando_sesion", personas_delante=0)
             espera_fila = time.time() - inicio
-            cookies = _cookies_de_login_intralu(codigo, password)
+            cookies = _cookies_de_login_intralu(codigo, password, bitacora)
             logger.info("Job %s: login OK (fila %.1fs, total %.1fs, ronda %d)",
                         job_id, espera_fila, time.time() - inicio, ronda + 1)
             return cookies
@@ -1058,6 +1216,7 @@ def _login_con_fila_y_reintentos(job_id, codigo, password, inicio):
             logger.info("Job %s: INTRALU rechazó la verificación (ronda %d); se reintenta solo en %ds",
                         job_id, ronda + 1, PAUSA_ANTES_DE_REINTENTAR_SEGUNDOS)
         finally:
+            _actualizar_job(job_id, intentos=list(bitacora), rondas_login=ronda + 1)
             _soltar_turno_chromium()
         _actualizar_job(job_id, etapa="reintentando", personas_delante=0)
         _esperar_con_cancelacion(job_id, PAUSA_ANTES_DE_REINTENTAR_SEGUNDOS)
@@ -1069,7 +1228,9 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
     try:
         _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir, usar_sesion_guardada=True)
     except _ReintentarSinSesionGuardada:
+        _actualizar_job(job_id, reintento_sin_sesion=True)
         _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir, usar_sesion_guardada=False)
+    _registrar_metrica_job(job_id, codigo)
 
 
 def _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir, usar_sesion_guardada):
@@ -1093,7 +1254,9 @@ def _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir,
     try:
         cookies, edad_sesion = _sesion_recordada(codigo, password) if usar_sesion_guardada else (None, 0)
         sesion_reutilizada = cookies is not None
+        _actualizar_job(job_id, sesion_reutilizada=sesion_reutilizada)
         if sesion_reutilizada:
+            _actualizar_job(job_id, edad_sesion_s=int(edad_sesion))   # sirva o no, así se sabe cuánto dura una sesión de INTRALU
             logger.info("Job %s: se reutiliza la sesión de INTRALU (tiene %.1f min): sin fila ni login",
                         job_id, edad_sesion / 60)
         else:
