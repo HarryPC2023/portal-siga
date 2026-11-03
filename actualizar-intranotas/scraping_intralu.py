@@ -1987,10 +1987,22 @@ def _ejecutar_sync_matricula(job_id, codigo, password):
 
 @app.post("/api/sync-horarios/iniciar")
 def iniciar_sync_horarios(credentials: LoginRequest):
-    """Responde AL INSTANTE con un job_id (mismo patrón que Intranotas)."""
+    """Responde AL INSTANTE con un job_id (mismo patrón que Intranotas).
+
+    Sin duplicar trabajo (nov 2026): si ESTE alumno (misma contraseña) ya tiene una conexión con Matrícula en
+    curso —porque recargó la página, abrió otra pestaña o entró desde otro aparato—, la nueva petición se UNE a
+    esa en vez de formarse otra vez en la fila y gastar otro de los 4 logins por minuto. Así conserva su lugar."""
     _limpiar_jobs_viejos()
+    clave = "matricula|" + _huella_credencial(credentials.codigo, credentials.password)
     job_id = str(uuid.uuid4())
     with _jobs_lock:
+        for jid, existente in _jobs.items():
+            if (existente.get("tipo") == "matricula" and existente.get("clave") == clave
+                    and existente["status"] == "en_progreso" and not existente["cancelado"]):
+                existente["suscriptores"] = existente.get("suscriptores", 1) + 1
+                logger.info("Job Matrícula %s: otra solicitud idéntica del mismo alumno se une a esta conexión (%d en total)",
+                            jid, existente["suscriptores"])
+                return {"job_id": jid}
         _jobs[job_id] = {
             "tipo": "matricula",
             "status": "en_progreso",
@@ -1998,6 +2010,8 @@ def iniciar_sync_horarios(credentials: LoginRequest):
             "cancelado": False,
             "etapa": "en_fila",
             "personas_delante": 0,
+            "clave": clave,
+            "suscriptores": 1,
         }
     threading.Thread(
         target=_ejecutar_sync_matricula,
@@ -2015,6 +2029,12 @@ def cancelar_sync_horarios(job_id: str):
         job = _jobs.get(job_id)
         if not job or job.get("tipo") != "matricula":
             raise HTTPException(status_code=404, detail="No se encontró esa conexión (puede haber expirado).")
+        job["suscriptores"] = max(0, job.get("suscriptores", 1) - 1)
+        if job["suscriptores"] > 0:
+            # Otra pestaña/solicitud del mismo alumno sigue esperando esta conexión: no se corta para ella.
+            logger.info("Job Matrícula %s: un alumno canceló, pero otra solicitud suya sigue esperando (%d); continúa",
+                        job_id, job["suscriptores"])
+            return {"status": "cancelando"}
         job["cancelado"] = True
     logger.info("Job Matrícula %s: solicitud de cancelación recibida", job_id)
     return {"status": "cancelando"}
