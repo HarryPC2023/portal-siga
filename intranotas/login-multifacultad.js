@@ -436,6 +436,11 @@ function textoProgreso(data) {
             : 'Preparando la conexión con INTRALU...';
     }
     if (data.etapa === 'iniciando_sesion') return 'Conectando con INTRALU...';
+    // INTRALU rechazó la verificación de seguridad y el servicio reintenta SOLO tras una pausa: el alumno
+    // conserva su lugar, y hay que decirle que no cancele ni vuelva a empezar (eso solo sumaría más intentos).
+    if (data.etapa === 'reintentando') {
+        return 'INTRALU está tardando en aceptar la conexión. Sigues en la fila y se reintenta solo: no hace falta cancelar ni volver a intentar.';
+    }
     if (data.etapa === 'descargando') {
         return data.periodo_actual && !periodoFuturo(data.periodo_actual)
             ? `Cargando ${periodoLindo(data.periodo_actual)}...`
@@ -653,6 +658,12 @@ async function manejarSync(e, userId) {
 
     if (!codigo) {
         mostrarBanner('error', 'Ingresa tu código de estudiante.');
+        return;
+    }
+    // Un código mal escrito gastaba intentos contra INTRALU (y su verificación de seguridad) para nada:
+    // se avisa aquí, antes de mandar nada. Los códigos de la UNI tienen 9 caracteres (ej. 20231059E).
+    if (codigo.length !== 9) {
+        mostrarBanner('error', 'Tu código de estudiante tiene 9 caracteres (por ejemplo 20231059E). Revísalo e intenta de nuevo.');
         return;
     }
     if (!password) {

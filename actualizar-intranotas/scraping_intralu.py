@@ -1,4 +1,6 @@
 import base64
+import hashlib
+import hmac
 import logging
 import os
 import queue
@@ -70,6 +72,25 @@ _chromium_ocupado = False
 ESPERA_MAXIMA_FILA_SEGUNDOS = 5 * 60
 
 
+# --------------------------------------------------------------
+# MENOS LOGINS POR SINCRONIZACIÓN (nov 2026)
+# Cada login contra INTRALU pasa por su verificación de seguridad (reCAPTCHA), que acepta unas veces y
+# rechaza otras, sobre todo después de muchos intentos seguidos. Para gastar menos intentos:
+#   1. Se RECUERDA, solo en memoria, la sesión de INTRALU de cada alumno unos minutos: una segunda
+#      sincronización pronto después de la primera no hace fila, ni login, ni pasa por el reCAPTCHA.
+#   2. Un error de formulario (p. ej. código de menos de 9 caracteres) corta de inmediato: no se gasta
+#      un segundo intento.
+#   3. Si INTRALU rechaza la verificación, la sincronización NO se cae: el alumno sigue en la fila, el
+#      servicio espera una pausa y reintenta solo (así nadie cancela y vuelve a empezar).
+# Todo se ajusta con estas constantes.
+# --------------------------------------------------------------
+SESION_INTRALU_MINUTOS = 25            # cuánto se recuerda la sesión de INTRALU de un alumno
+MAX_SESIONES_EN_MEMORIA = 300          # tope; al llenarse se olvida la menos usada
+REINTENTOS_POR_VERIFICACION = 1        # rondas extra (cada una = intento rápido + humano)
+PAUSA_ANTES_DE_REINTENTAR_SEGUNDOS = 75
+MENSAJE_VERIFICACION_RECHAZADA = "INTRALU no aceptó la verificación de seguridad. Intenta de nuevo en unos minutos."
+
+
 class _SyncCancelada(Exception):
     """El alumno presionó 'Cancelar' desde el frontend. Se revisa en la
     fila de espera y entre cada curso, para que cancelar corte rápido."""
@@ -79,6 +100,14 @@ class _SyncCancelada(Exception):
 class _FilaDemasiadoLarga(Exception):
     """Se esperó más de ESPERA_MAXIMA_FILA_SEGUNDOS sin llegar el turno."""
     pass
+
+
+class _VerificacionRechazada(HTTPException):
+    """INTRALU no dejó pasar el login por su verificación de seguridad (o no respondió a tiempo).
+    NO significa que la contraseña esté mal. Es un HTTPException 503 para que cualquier código que no la
+    conozca igual devuelva un error correcto; _ejecutar_sync la atrapa primero para reintentar solo."""
+    def __init__(self):
+        super().__init__(status_code=503, detail=MENSAJE_VERIFICACION_RECHAZADA)
 
 
 def _tomar_turno_chromium(ticket, al_cambiar_posicion=None, esta_cancelado=None,
@@ -588,6 +617,23 @@ MODOS_TIPEO = {
 }
 
 
+def _sin_tildes(texto):
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFD", (texto or "").lower()) if unicodedata.category(c) != "Mn")
+
+
+def _mensaje_si_error_de_formulario(texto):
+    """Si el aviso de INTRALU es un error de FORMULARIO (datos mal escritos, no la verificación ni la
+    contraseña), devuelve el mensaje para el alumno; si no, None. Ej.: 'El campo código debe contener 9
+    caracteres.' Reintentar no sirve de nada: solo gastaría otro intento contra INTRALU."""
+    t = _sin_tildes(texto)
+    if not ("debe contener" in t or "debe tener" in t or "es obligatorio" in t):
+        return None
+    if "codigo" in t:
+        return "El código de estudiante tiene 9 caracteres (por ejemplo 20231059E). Revísalo e intenta de nuevo."
+    return f"INTRALU rechazó los datos ingresados: {texto}"
+
+
 def _es_contrasena_incorrecta(texto):
     t = (texto or "").lower()
     return "contrase" in t or "incorrect" in t or "no coincid" in t or "credencial" in t
@@ -651,19 +697,70 @@ def _login_intralu_en(browser, codigo, password):
         )
         if resultado is True:
             return cookies
-        if resultado and _es_contrasena_incorrecta(resultado):
-            raise HTTPException(status_code=401, detail="Código o contraseña incorrectos en Intralú.")
-        # Sin respuesta, captcha u otro aviso raro: se reintenta en modo humano.
+        if resultado:
+            mensaje_formulario = _mensaje_si_error_de_formulario(resultado)
+            if mensaje_formulario:
+                raise HTTPException(status_code=400, detail=mensaje_formulario)   # sin 2.º intento
+            if _es_contrasena_incorrecta(resultado):
+                raise HTTPException(status_code=401, detail="Código o contraseña incorrectos en Intralú.")
+        # Sin respuesta, verificación de seguridad u otro aviso raro: se reintenta en modo humano.
 
-    if resultado and "captcha" in resultado.lower():
-        raise HTTPException(status_code=503, detail="INTRALU no aceptó la verificación de seguridad. Intenta de nuevo en unos minutos.")
-    raise HTTPException(status_code=401, detail="Código o contraseña incorrectos en Intralú.")
+    # Llegar acá = INTRALU no respondió o rechazó la verificación de seguridad en los dos modos. Eso NO es
+    # la contraseña (antes se avisaba "contraseña incorrecta" y el alumno la cambiaba sin necesidad).
+    raise _VerificacionRechazada()
 
 
 def _cookies_de_login_intralu(codigo, password):
     """Hace el login en el Chromium siempre encendido y devuelve SOLO las
     cookies de la sesión (lo demás va por `requests`)."""
     return _trabajador_chromium.ejecutar(lambda browser: _login_intralu_en(browser, codigo, password))
+
+
+# Sesiones de INTRALU recordadas (SOLO en memoria: nada va a disco, y al reiniciar el servicio se olvidan).
+# Para reusar una hay que mandar la MISMA contraseña: se compara una huella HMAC con una clave que solo existe
+# en esta ejecución, así que ni siquiera la memoria guarda la contraseña.
+_sesiones_intralu = {}      # codigo -> {"cookies", "huella", "guardada_en", "ultimo_uso"}
+_sesiones_lock = threading.Lock()
+_CLAVE_HUELLA = os.urandom(32)
+
+
+def _huella_credencial(codigo, password):
+    return hmac.new(_CLAVE_HUELLA, f"{codigo}\0{password}".encode("utf-8"), hashlib.sha256).hexdigest()
+
+
+def _sesion_recordada(codigo, password):
+    """(cookies, edad_en_segundos) de una sesión reciente de este alumno con ESTA contraseña, o (None, 0)."""
+    ahora = time.time()
+    with _sesiones_lock:
+        entrada = _sesiones_intralu.get(codigo)
+        if not entrada:
+            return None, 0
+        if ahora - entrada["ultimo_uso"] > SESION_INTRALU_MINUTOS * 60:
+            _sesiones_intralu.pop(codigo, None)
+            return None, 0
+        if not hmac.compare_digest(entrada["huella"], _huella_credencial(codigo, password)):
+            return None, 0          # otra contraseña: no se reusa (ni se borra la sesión del dueño)
+        entrada["ultimo_uso"] = ahora
+        return entrada["cookies"], ahora - entrada["guardada_en"]
+
+
+def _recordar_sesion(codigo, password, cookies):
+    ahora = time.time()
+    with _sesiones_lock:
+        if codigo not in _sesiones_intralu and len(_sesiones_intralu) >= MAX_SESIONES_EN_MEMORIA:
+            menos_usada = min(_sesiones_intralu, key=lambda c: _sesiones_intralu[c]["ultimo_uso"])
+            _sesiones_intralu.pop(menos_usada, None)
+        _sesiones_intralu[codigo] = {
+            "cookies": cookies,
+            "huella": _huella_credencial(codigo, password),
+            "guardada_en": ahora,
+            "ultimo_uso": ahora,
+        }
+
+
+def _olvidar_sesion(codigo):
+    with _sesiones_lock:
+        _sesiones_intralu.pop(codigo, None)
 
 
 def _sesion_http_intralu(cookies):
@@ -914,22 +1011,24 @@ def _job_cancelado(job_id):
         return bool(_jobs.get(job_id, {}).get("cancelado"))
 
 
-def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
-    """Corre en un hilo aparte. Guarda progreso y resultado en _jobs[job_id]
-    para que el frontend los recoja con GET /api/sync-intralu/{job_id}.
+class _ReintentarSinSesionGuardada(Exception):
+    """La sesión de INTRALU que se recordaba ya estaba cerrada: se repite con un login nuevo."""
+    pass
 
-    Flujo (sep 2026):
-      1. Fila de espera para Chromium (posición visible en el frontend).
-      2. Login con Chromium -> cookies -> se cierra Chromium y se suelta el
-         turno (el siguiente alumno ya puede entrar).
-      3. Con `requests`: lista de cursos de cada periodo del historial y
-         notas de cada curso (3 en paralelo), + PDF del Avance Curricular.
-    """
-    inicio = time.time()
-    data_por_periodo = {}
 
-    try:
-        # 1-2. Solo esta parte usa Chromium (y la fila).
+def _esperar_con_cancelacion(job_id, segundos):
+    """Pausa SIN ocupar Chromium (los demás alumnos siguen avanzando); cancelar corta la espera."""
+    for _ in range(int(segundos)):
+        if _job_cancelado(job_id):
+            raise _SyncCancelada()
+        time.sleep(1)
+
+
+def _login_con_fila_y_reintentos(job_id, codigo, password, inicio):
+    """Fila de Chromium + login. Si INTRALU rechaza la verificación de seguridad, el trabajo NO se cae: se
+    suelta el turno, se espera una pausa y se vuelve a la fila (el frontend muestra "sigues en la fila"),
+    hasta REINTENTOS_POR_VERIFICACION veces. Un error real (contraseña, formulario) corta de inmediato."""
+    for ronda in range(REINTENTOS_POR_VERIFICACION + 1):
         _actualizar_job(job_id, etapa="en_fila", personas_delante=0)
         _tomar_turno_chromium(
             job_id,
@@ -940,10 +1039,56 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
             _actualizar_job(job_id, etapa="iniciando_sesion", personas_delante=0)
             espera_fila = time.time() - inicio
             cookies = _cookies_de_login_intralu(codigo, password)
+            logger.info("Job %s: login OK (fila %.1fs, total %.1fs, ronda %d)",
+                        job_id, espera_fila, time.time() - inicio, ronda + 1)
+            return cookies
+        except _VerificacionRechazada:
+            if ronda >= REINTENTOS_POR_VERIFICACION:
+                raise
+            logger.info("Job %s: INTRALU rechazó la verificación (ronda %d); se reintenta solo en %ds",
+                        job_id, ronda + 1, PAUSA_ANTES_DE_REINTENTAR_SEGUNDOS)
         finally:
             _soltar_turno_chromium()
-        logger.info("Job %s: login OK (fila %.1fs, total %.1fs)",
-                    job_id, espera_fila, time.time() - inicio)
+        _actualizar_job(job_id, etapa="reintentando", personas_delante=0)
+        _esperar_con_cancelacion(job_id, PAUSA_ANTES_DE_REINTENTAR_SEGUNDOS)
+
+
+def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
+    """Envoltorio: primero usa la sesión de INTRALU que se recuerda de este alumno (sin fila, sin login y sin
+    reCAPTCHA); si INTRALU ya la cerró, repite UNA vez con un login nuevo."""
+    try:
+        _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir, usar_sesion_guardada=True)
+    except _ReintentarSinSesionGuardada:
+        _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir, usar_sesion_guardada=False)
+
+
+def _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir, usar_sesion_guardada):
+    """Corre en un hilo aparte. Guarda progreso y resultado en _jobs[job_id]
+    para que el frontend los recoja con GET /api/sync-intralu/{job_id}.
+
+    Flujo (nov 2026):
+      0. Si hay una sesión de INTRALU reciente de este alumno (misma contraseña), se usa: pasa directo al paso 3.
+      1. Fila de espera para Chromium (posición visible en el frontend).
+      2. Login con Chromium -> cookies -> se cierra Chromium y se suelta el
+         turno (el siguiente alumno ya puede entrar). Si INTRALU rechaza la verificación de seguridad,
+         se espera una pausa y se reintenta solo (ver _login_con_fila_y_reintentos).
+      3. Con `requests`: lista de cursos de cada periodo del historial y
+         notas de cada curso (3 en paralelo), + PDF del Avance Curricular.
+    """
+    inicio = time.time()
+    data_por_periodo = {}
+    sesion_reutilizada = False
+    edad_sesion = 0
+
+    try:
+        cookies, edad_sesion = _sesion_recordada(codigo, password) if usar_sesion_guardada else (None, 0)
+        sesion_reutilizada = cookies is not None
+        if sesion_reutilizada:
+            logger.info("Job %s: se reutiliza la sesión de INTRALU (tiene %.1f min): sin fila ni login",
+                        job_id, edad_sesion / 60)
+        else:
+            cookies = _login_con_fila_y_reintentos(job_id, codigo, password, inicio)
+            _recordar_sesion(codigo, password, cookies)
 
         sesion = _sesion_http_intralu(cookies)
         inicio_descarga = time.time()
@@ -1040,6 +1185,11 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
                         detail="SIGA está atendiendo a muchos alumnos ahora mismo. Intenta de nuevo en unos minutos.")
         logger.info("Job %s: ❌ fila demasiado larga tras %.1fs", job_id, time.time() - inicio)
     except _SesionIntraluVencida:
+        _olvidar_sesion(codigo)
+        if sesion_reutilizada:
+            logger.info("Job %s: la sesión recordada ya no servía (tenía %.1f min); se hace un login nuevo",
+                        job_id, edad_sesion / 60)
+            raise _ReintentarSinSesionGuardada()
         _actualizar_job(job_id, status="error", status_code=502,
                         detail="INTRALU cerró la sesión a mitad de la sincronización. Intenta de nuevo.")
         logger.info("Job %s: ❌ sesión de INTRALU vencida tras %.1fs", job_id, time.time() - inicio)
