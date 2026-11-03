@@ -619,12 +619,17 @@ async function guardarAvanceCurricularDesdeBase64(userId, base64) {
 }
 
 /* Plan de estudios y créditos que pide la carrera (del encabezado del Avance). Va en un módulo APARTE que se
-   carga recién cuando la sincronización ya terminó y NO se espera: si ese archivo faltara o fallara, lo único
-   que pasa es un aviso en la consola; la sincronización y el guardado del Avance no se enteran. */
-function guardarCreditosDeLaCarreraDesdePdf(userId, base64) {
-    import('./avance-creditos-carrera.js')
+   carga recién cuando el Avance ya se guardó. Se ESPERA un máximo de 6 segundos (suele tardar 1 o 2) para que
+   el alumno no pueda salir de la pantalla —con "Ver mis notas"— antes de que termine de guardarse y se corte
+   a medio camino. Nunca lanza: si ese archivo faltara, fallara o tardara más, solo hay un aviso en la consola y
+   la sincronización sigue como si nada. */
+const ESPERA_MAXIMA_CREDITOS_MS = 6000;
+
+async function guardarCreditosDeLaCarreraDesdePdf(userId, base64) {
+    const trabajo = import('./avance-creditos-carrera.js')
         .then(async (modulo) => modulo.guardarCreditosDeLaCarrera(supabase, userId, await extraerTextoPdf(base64AArrayBuffer(base64))))
         .catch((error) => console.warn('[INTRANOTAS] Créditos de la carrera: se omitió:', error));
+    await Promise.race([trabajo, new Promise((resolver) => setTimeout(resolver, ESPERA_MAXIMA_CREDITOS_MS))]);
 }
 
 function cancelarSyncEnCurso() {
@@ -739,7 +744,8 @@ async function manejarSync(e, userId) {
                     await guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance);
                     pintarInsigniaFacultad(resultadoAvance.facultad, resultadoAvance.carrera);
                     console.log(`Avance Curricular actualizado: ${resultadoAvance.cursosGuardados} curso(s).`);
-                    guardarCreditosDeLaCarreraDesdePdf(userId, resultado.avancePdfBase64);
+                    mostrarProgreso('Guardando tu plan de estudios...');
+                    await guardarCreditosDeLaCarreraDesdePdf(userId, resultado.avancePdfBase64);
                 } else {
                     console.warn('No se pudo guardar el Avance Curricular esta vez:', resultadoAvance.motivo, resultadoAvance.detalle);
                 }
