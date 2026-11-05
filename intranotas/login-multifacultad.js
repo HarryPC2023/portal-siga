@@ -715,6 +715,7 @@ async function manejarSync(e, userId) {
     // Paso 3: PRIMERO el Avance Curricular (única fuente de verdad de facultad/carrera). Es obligatorio y va antes
     // que las notas: si no llegó o no se pudo guardar, no se guarda nada más (todo o nada) y el alumno vuelve a intentar.
     try {
+        mostrarProgreso('Terminando de cargar...');
         if (!resultado.avancePdfBase64) throw new Error('el servidor no entregó el Avance Curricular');
         const resultadoAvance = await guardarAvanceCurricularDesdeBase64(userId, resultado.avancePdfBase64);
         if (!resultadoAvance.ok) throw new Error(`${resultadoAvance.motivo}: ${resultadoAvance.detalle}`);
