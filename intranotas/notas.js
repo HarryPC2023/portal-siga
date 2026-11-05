@@ -23,6 +23,7 @@ import { montarProgresoCarrera, nombreLindo, soltarFocoDe } from './progreso-car
 import { montarRutaCurso } from './ruta-curso-ui.js';
 import { montarRutaAcademica } from './ruta-academica-ui.js';
 import { montarCursosElectivos } from './cursos-electivos-ui.js';
+import { montarAdn } from './adn-ui.js';
 import { construirValoresFormula, notaComoNumero, clasificarExamen } from './formula-mapper.js';
 import { FACULTADES } from './facultades-datos.js';
 import { resolverFormulaPracticas, claseEvaluacion } from './formula-practicas.js';
@@ -278,6 +279,27 @@ function inicializarAnalisisAcademico() {
             cicloVigente: periodoEstaAbierto,
         });
         cursosElectivos.insertarBoton();
+                // ADN académico (beta): ventana central con tu historia por periodo académico (perfil, lo que más destacó y qué hacer).
+        const adn = montarAdn({
+            cargarFilas: cargarFilasAvance,
+            obtenerPeriodos: () => Object.keys(notasPorPeriodo).map((periodo) => ({
+                periodo,
+                abierto: periodoEstaAbierto(periodo),
+                cursos: notasPorPeriodo[periodo].map((curso) => {
+                    // Nota final OFICIAL de INTRALU; si todavía no hay, la calculada con las fórmulas (nunca una simulación del alumno).
+                    const oficial = curso.promedio_final;
+                    const hayOficial = oficial !== null && oficial !== undefined && oficial !== '' && Number.isFinite(Number(oficial));
+                    return {
+                        codigo: curso.codigo_curso,
+                        nombre: nombreCursoLindo(curso),
+                        creditos: formulaDeCurso(curso)?.creditos ?? null,
+                        nota: hayOficial ? Number(oficial) : (haySimulacionActiva(curso) ? null : calcularCurso(curso).notaFinal),
+                        evaluaciones: curso.evaluaciones,
+                    };
+                }),
+            })),
+        });
+        adn.insertarBoton();
 
         // Ruta académica (beta): reemplaza a la Ruta del curso. Invita a ver el Radar y los electivos.
         const rutaAcademica = montarRutaAcademica({
