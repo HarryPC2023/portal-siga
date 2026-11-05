@@ -17,5 +17,5 @@ export function esBeta(usuario) {
     try {
         if (new URLSearchParams(location.search).get('sinbeta') === '1') return false;
     } catch { /* sin URLSearchParams: se sigue */ }
-    return !!usuario && BETA_UIDS.includes(usuario.id);
+    return !!usuario;     // abierto a todos los alumnos con sesión iniciada (antes: solo BETA_UIDS)
 }
