@@ -98,8 +98,8 @@ export function montarAdn({ cargarFilas = async () => [], obtenerPeriodos }) {
     /* Junta lo que entrega notas.js con los créditos del Avance y deja todo listo para el cálculo. */
     async function cargarDatos() {
         const periodos = (typeof obtenerPeriodos === 'function' ? obtenerPeriodos() : []) || [];
-        const creditos = {};
-        try { (await cargarFilas()).forEach((f) => { if (f.creditos > 0) creditos[f.codigo_curso] = f.creditos; }); } catch { /* sin Avance: se usa lo que traiga cada curso */ }
+        const creditos = {}, categorias = {};
+        try { (await cargarFilas()).forEach((f) => { if (f.creditos > 0) creditos[f.codigo_curso] = f.creditos; categorias[f.codigo_curso] = f.categoria; }); } catch { /* sin Avance: se usa lo que traiga cada curso */ }
         const entrada = periodos.map((p) => ({
             periodo: p.periodo,
             abierto: !!p.abierto,
@@ -107,7 +107,7 @@ export function montarAdn({ cargarFilas = async () => [], obtenerPeriodos }) {
                 codigo: c.codigo, nombre: c.nombre,
                 creditos: c.creditos > 0 ? c.creditos : (creditos[c.codigo] || 0),
                 nota: aNota(c.nota),
-                tipo: esCursoBase(c.codigo) ? 'base' : 'especialidad',
+                tipo: esCursoBase(c.codigo, categorias[c.codigo]) ? 'base' : 'especialidad',
                 evaluaciones: evaluacionesParaAdn(c.evaluaciones),
             })),
         }));
