@@ -185,7 +185,7 @@ export function montarAdn({ cargarFilas = async () => [], obtenerPeriodos }) {
         const cuando = r.abierto ? 'Para este periodo académico' : 'Para tu próximo periodo académico';
         return `<div class="adn-quehacer"><div class="adn-quehacer__cab">${svgIcono('comp', 28)}<b>Qué hacer</b>
             <span class="adn-chico">${cuando} · según tu perfil más reciente: El ${esc(q.nombre)}</span></div>
-            ${lineas.map((l) => `<div class="adn-linea"><span class="adn-flecha">→</span><span>${esc(l[0])}</span>${l[1] ? `<span class="adn-herramienta">${esc(l[1])}</span>` : ''}</div>`).join('')}</div>`;
+            ${lineas.map((l) => `<div class="adn-linea"><span class="adn-flecha">→</span><span>${esc(l[0])}</span>${l[1] ? `<button type="button" class="adn-herramienta">${esc(l[1])}</button>` : ''}</div>`).join('')}</div>`;
     }
 
     function pintar() {

@@ -230,11 +230,11 @@ export const DATO_CURIOSO = {
 export const QUE_HACER = {
     rem: {
         paso: ['Remontas cuando un curso arranca difícil.', 'En tu próximo periodo académico, no te desanimes si tus primeras prácticas salen bajas: aún hay tiempo de subir.'],
-        vivo: [['Tus primeras prácticas no te definen: desde la PC2,'], ['Mira', 'Qué nota necesito'], ['Para ver cuánto te falta y dónde conviene concentrar el esfuerzo.']],
+        vivo: [['Tus primeras prácticas no te definen: desde la PC2,'], ['Mira', 'Radar académico'], ['Para ver cuánto te falta y dónde conviene concentrar el esfuerzo.']],
     },
     mad: {
         paso: ['Arrancas fuerte, y eso te da ventaja desde el inicio.', 'En tu próximo periodo académico, cuida que ese ritmo no baje hacia el final: guarda energía para las últimas evaluaciones.'],
-        vivo: [['Arrancas fuerte: que no se te pase el ritmo a mitad del periodo,'], ['Mira', 'Qué nota necesito'], ['Para ver cuánto te falta y mantener el ritmo hasta el final.']],
+        vivo: [['Arrancas fuerte: que no se te pase el ritmo a mitad del periodo,'], ['Mira', 'Radar académico'], ['Para ver cuánto te falta y mantener el ritmo hasta el final.']],
     },
     esp: {
         paso: ['Tu ventaja está en tu carrera, pero tus cursos base pesan muchos créditos.', 'En tu próximo periodo académico, dales tiempo desde la primera práctica.'],
@@ -242,7 +242,7 @@ export const QUE_HACER = {
     },
     cim: {
         paso: ['Los cursos de especialidad que vienen piden práctica constante.', 'En tu próximo periodo académico, empieza a estudiarlos desde la primera semana.'],
-        vivo: [['Los cursos de especialidad piden práctica constante.'], ['Desde la primera práctica, mira', 'Qué nota necesito'], ['Para saber cuánto te falta sin esperar al examen.']],
+        vivo: [['Los cursos de especialidad piden práctica constante.'], ['Desde la primera práctica, mira', 'Meta del curso'], ['Para saber qué nota necesitas en cada curso sin esperar al examen.']],
     },
     fin: {
         paso: ['Los exámenes son tu momento fuerte.', 'En tu próximo periodo académico, no descuides las prácticas: son el colchón que te deja llegar tranquilo al examen.'],
@@ -250,7 +250,7 @@ export const QUE_HACER = {
     },
     met: {
         paso: ['Tu trabajo continuo es tu fortaleza.', 'En tu próximo periodo académico, no te confíes en los exámenes: prepáralos igual que tus prácticas.'],
-        vivo: [['Tu trabajo continuo es tu fortaleza.'], ['Mira', 'Qué nota necesito'], ['Para ver qué nota en el examen te asegura el curso.']],
+        vivo: [['Tu trabajo continuo es tu fortaleza.'], ['Mira', 'Meta del curso'], ['Para ver qué nota en el examen te asegura el curso.']],
     },
     con: {
         paso: ['Tu ritmo parejo hace fácil planificar.', 'En tu próximo periodo académico, fija una meta de promedio y cuida que cada práctica la sostenga.'],

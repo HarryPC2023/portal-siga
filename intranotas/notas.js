@@ -300,6 +300,16 @@ function inicializarAnalisisAcademico() {
             })),
         });
         adn.insertarBoton();
+        // "Qué hacer" del ADN: las herramientas que se pueden abrir desde ahí. Siempre trabajan sobre el periodo en curso.
+        const enPeriodoAbierto = (accion) => () => {
+            const abierto = Object.keys(notasPorPeriodo).sort().reverse().find((p) => periodoEstaAbierto(p));
+            if (abierto && periodoActivo !== abierto) seleccionarPeriodo(abierto);
+            accion();
+        };
+        import('./adn-herramientas.js').then(({ conectarHerramientas }) => conectarHerramientas({
+            'Radar académico': enPeriodoAbierto(() => radar.abrir()),
+            'Meta del curso': enPeriodoAbierto(abrirMetaCurso),
+        }));
 
         // Ruta académica (beta): reemplaza a la Ruta del curso. Invita a ver el Radar y los electivos.
         const rutaAcademica = montarRutaAcademica({
