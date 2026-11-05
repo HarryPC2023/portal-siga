@@ -9,11 +9,15 @@
 //   - PREFIJOS_BASE: prefijos que cuentan como base.
 //   - EXCEPCIONES_BASE / EXCEPCIONES_ESPECIALIDAD: códigos sueltos que la regla clasificaría mal.
 const PREFIJOS_BASE = ['B', 'FB', 'HU'];
-const EXCEPCIONES_BASE = new Set([]);
+// Dibujo es un curso general aunque su código empiece con TE: Sistemas, Industrial y Software (TE205); Industrial 2018 (TE101).
+const EXCEPCIONES_BASE = new Set(['TE205', 'TE101']);
 const EXCEPCIONES_ESPECIALIDAD = new Set([]);
 
-export function esCursoBase(codigo) {
-    const c = String(codigo || '').trim().toUpperCase();
+/* categoria (opcional): si el curso es electivo, cuenta como de la carrera aunque su código diga B, FB o HU (ej. HU111, FB501). */
+export function esCursoBase(codigo, categoria) {
+    if (categoria === 'electivo' || categoria === 'electivo_complementario') return false;
+    // Se ignoran guiones y espacios: algunos planes escriben TE-205 y otros TE205.
+    const c = String(codigo || '').replace(/[-\s]/g, '').toUpperCase();
     if (!c) return false;
     if (EXCEPCIONES_BASE.has(c)) return true;
     if (EXCEPCIONES_ESPECIALIDAD.has(c)) return false;
