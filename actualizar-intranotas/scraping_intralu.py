@@ -1343,6 +1343,37 @@ def _ejecutar_sync(job_id, codigo, password, periodo_especifico, omitir):
     _registrar_metrica_job(job_id, codigo)
 
 
+REINTENTOS_AVANCE = 2                     # intentos extra del Avance Curricular (en total 3)
+PAUSA_REINTENTO_AVANCE_SEGUNDOS = 3
+MENSAJE_AVANCE_NO_DISPONIBLE = ("INTRALU no respondió como se esperaba. No es un error de SIGA. "
+                                "Intenta de nuevo en unos minutos.")
+
+
+def _descargar_avance_pdf(sesion, job_id):
+    """PDF del Avance Curricular en base64. Es OBLIGATORIO y va PRIMERO: es la única fuente de verdad de la
+    facultad, la carrera y el plan del alumno. Hasta 3 intentos; si la sesión de INTRALU ya no sirve se avisa
+    (para hacer un login nuevo); si no se consigue, la sincronización falla entera (todo o nada)."""
+    for intento in range(REINTENTOS_AVANCE + 1):
+        try:
+            resp = sesion.get(URL_AVANCE_CURRICULAR_PDF, timeout=30)
+            if "/login" in resp.url:
+                raise _SesionIntraluVencida()
+            if resp.status_code == 200 and resp.content[:4] == b"%PDF":
+                return base64.b64encode(resp.content).decode()
+            logger.warning("Job %s: el Avance Curricular respondió HTTP %d (intento %d de %d)",
+                           job_id, resp.status_code, intento + 1, REINTENTOS_AVANCE + 1)
+        except _SesionIntraluVencida:
+            raise
+        except Exception:
+            logger.exception("Job %s: error bajando el Avance Curricular (intento %d de %d)",
+                             job_id, intento + 1, REINTENTOS_AVANCE + 1)
+        if intento < REINTENTOS_AVANCE:
+            _esperar_con_cancelacion(job_id, PAUSA_REINTENTO_AVANCE_SEGUNDOS)
+    logger.error("Job %s: ❌ no se pudo traer el Avance Curricular tras %d intentos: la sincronización falla (todo o nada)",
+                 job_id, REINTENTOS_AVANCE + 1)
+    raise HTTPException(status_code=500, detail=MENSAJE_AVANCE_NO_DISPONIBLE)
+
+
 def _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir, usar_sesion_guardada):
     """Corre en un hilo aparte. Guarda progreso y resultado en _jobs[job_id]
     para que el frontend los recoja con GET /api/sync-intralu/{job_id}.
@@ -1353,8 +1384,9 @@ def _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir,
       2. Login con Chromium -> cookies -> se cierra Chromium y se suelta el
          turno (el siguiente alumno ya puede entrar). Si INTRALU rechaza la verificación de seguridad,
          se espera una pausa y se reintenta solo (ver _login_con_fila_y_reintentos).
-      3. Con `requests`: lista de cursos de cada periodo del historial y
-         notas de cada curso (3 en paralelo), + PDF del Avance Curricular.
+      3. Con `requests`: PRIMERO el PDF del Avance Curricular (obligatorio, con reintentos: si no llega, todo
+         falla), y después la lista de cursos de cada periodo del historial y las notas de cada curso
+         (3 en paralelo).
     """
     inicio = time.time()
     data_por_periodo = {}
@@ -1374,6 +1406,7 @@ def _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir,
             _recordar_sesion(codigo, password, cookies)
 
         sesion = _sesion_http_intralu(cookies)
+        avance_pdf_base64 = _descargar_avance_pdf(sesion, job_id)   # PRIMERO y obligatorio: sin Avance no hay sincronización
         inicio_descarga = time.time()
 
         # 3. Qué periodos revisar.
@@ -1434,18 +1467,6 @@ def _ejecutar_sync_una_vez(job_id, codigo, password, periodo_especifico, omitir,
 
         logger.info("Job %s: descarga de %d periodo(s) en %.1fs", job_id, len(periodos), time.time() - inicio_descarga)
         _actualizar_job(job_id, periodos_hechos=len(periodos), periodo_actual=None)
-
-        # Avance Curricular (best-effort, con la misma sesión, sin 2do login).
-        avance_pdf_base64 = None
-        try:
-            resp_avance = sesion.get(URL_AVANCE_CURRICULAR_PDF, timeout=30)
-            if resp_avance.status_code == 200 and resp_avance.content[:4] == b"%PDF":
-                avance_pdf_base64 = base64.b64encode(resp_avance.content).decode()
-            else:
-                logger.warning("Job %s: Avance Curricular respondió HTTP %d, se omite esta vez",
-                               job_id, resp_avance.status_code)
-        except Exception:
-            logger.exception("Job %s: no se pudo descargar el Avance Curricular (no crítico)", job_id)
 
         _actualizar_job(
             job_id,

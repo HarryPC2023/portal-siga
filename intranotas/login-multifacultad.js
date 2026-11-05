@@ -712,8 +712,30 @@ async function manejarSync(e, userId) {
         return;
     }
 
-    // Paso 3: guardar periodo por periodo (notas + fórmulas) y, si vino el
-    // PDF, el Avance Curricular (única fuente de verdad de facultad/carrera).
+    // Paso 3: PRIMERO el Avance Curricular (única fuente de verdad de facultad/carrera). Es obligatorio y va antes
+    // que las notas: si no llegó o no se pudo guardar, no se guarda nada más (todo o nada) y el alumno vuelve a intentar.
+    try {
+        if (!resultado.avancePdfBase64) throw new Error('el servidor no entregó el Avance Curricular');
+        const resultadoAvance = await guardarAvanceCurricularDesdeBase64(userId, resultado.avancePdfBase64);
+        if (!resultadoAvance.ok) throw new Error(`${resultadoAvance.motivo}: ${resultadoAvance.detalle}`);
+        await guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance);
+        console.log(`Avance Curricular actualizado: ${resultadoAvance.cursosGuardados} curso(s).`);
+        try {
+            pintarInsigniaFacultad(resultadoAvance.facultad, resultadoAvance.carrera);
+            await guardarCreditosDeLaCarreraDesdePdf(userId, resultado.avancePdfBase64);   // en silencio: el alumno no ve nada
+        } catch (errExtra) {
+            console.warn('Detalle secundario del Avance sin guardar (no detiene la sincronización):', errExtra);
+        }
+    } catch (errAvance) {
+        ocultarProgreso();
+        mostrarBanner('error', 'No pudimos completar la sincronización. Intenta de nuevo en unos minutos.');
+        console.error('Error con el Avance Curricular (la sincronización se detiene):', errAvance);
+        btnSync.disabled = false;
+        btnSync.textContent = 'Sincronizar';
+        return;
+    }
+
+    // Paso 4: guardar periodo por periodo (notas + fórmulas).
     try {
         let totalCursos = 0;
         let totalErrores = 0;
@@ -735,22 +757,6 @@ async function manejarSync(e, userId) {
                 user_id: userId,
                 periodo_actual: periodosConCursos[periodosConCursos.length - 1],
             }, { onConflict: 'user_id' });
-        }
-
-        if (resultado.avancePdfBase64) {
-            try {
-                const resultadoAvance = await guardarAvanceCurricularDesdeBase64(userId, resultado.avancePdfBase64);
-                if (resultadoAvance.ok) {
-                    await guardarPerfilAcademicoDesdeAvance(userId, resultadoAvance);
-                    pintarInsigniaFacultad(resultadoAvance.facultad, resultadoAvance.carrera);
-                    console.log(`Avance Curricular actualizado: ${resultadoAvance.cursosGuardados} curso(s).`);
-                    await guardarCreditosDeLaCarreraDesdePdf(userId, resultado.avancePdfBase64);   // en silencio: el alumno no ve nada
-                } else {
-                    console.warn('No se pudo guardar el Avance Curricular esta vez:', resultadoAvance.motivo, resultadoAvance.detalle);
-                }
-            } catch (errAvance) {
-                console.error('Error guardando Avance Curricular:', errAvance);
-            }
         }
 
         ocultarProgreso();
