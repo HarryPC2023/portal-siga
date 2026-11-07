@@ -2,7 +2,8 @@
 Módulo Mercado (SIGA) — recibe las ofertas laborales que captura la extensión del navegador y las entrega a
 Supabase para el Mapa de Competencias y la Ruta Profesional.
 
-  GET  /api/mercado/catalogo   Público. Competencias activas (slug, nombre, área, variantes), con caché de 10 min.
+  GET  /api/mercado/catalogo   Público. Competencias activas (slug, nombre, área, variantes) y sectores activos (slug,
+                               nombre), con caché de 10 min.
   POST /api/mercado/ofertas    Solo con la clave de la extensión (cabecera X-Clave-Extension) O con la sesión de
                                administrador de SIGA (campo "sesion" del cuerpo, el token de Supabase de Harry).
                                Valida, limpia la URL, calcula la huella y llama a la función registrar_oferta() de
@@ -285,11 +286,12 @@ class Oferta(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     fuente: Literal["linkedin", "bumeran", "computrabajo", "empleos_peru", "whatsapp", "otro"]
-    url: Optional[str] = Field(default=None, max_length=1500)   # obligatoria salvo en whatsapp (se revisa más abajo)
+    url: Optional[str] = Field(default=None, max_length=1500)   # obligatoria salvo en whatsapp y otro (se revisa más abajo)
     puesto: str = Field(min_length=1, max_length=200)
     ubicacion: Optional[str] = Field(default=None, max_length=150)
     fecha_publicacion: Optional[str] = None
     empresa: Optional[str] = Field(default=None, max_length=150)
+    sector: Optional[str] = Field(default=None, max_length=60)   # slug del sector de la empresa (opcional)
     carreras_mencionadas: List[str] = Field(default_factory=list, max_length=10)
     requisitos: List[Requisito] = Field(min_length=1, max_length=40)
 
@@ -297,6 +299,13 @@ class Oferta(BaseModel):
     @classmethod
     def _fuente(cls, v):
         return _limpiar_texto(v).lower() if isinstance(v, str) else v
+
+    @field_validator("sector", mode="before")
+    @classmethod
+    def _sector_limpio(cls, v):
+        if isinstance(v, str):
+            return v.strip().lower() or None
+        return v
 
     @field_validator("url", mode="before")
     @classmethod
@@ -477,6 +486,7 @@ def _procesar_oferta(datos):
         "ubicacion": oferta.ubicacion,
         "fecha_publicacion": oferta.fecha_publicacion,
         "empresa": oferta.empresa,
+        "sector": oferta.sector,
         "carreras_mencionadas": oferta.carreras_mencionadas,
         "requisitos": [
             {"competencia": r.competencia, "nivel": r.nivel, "tipo": r.tipo, "fragmento": r.fragmento}
@@ -541,7 +551,7 @@ def _procesar_oferta(datos):
 # --------------------------------------------------------------
 # Catálogo de competencias (caché de 10 minutos; si Supabase falla se conserva el último catálogo válido)
 # --------------------------------------------------------------
-_cache = {"competencias": None, "version": None, "expira": 0.0}
+_cache = {"competencias": None, "sectores": [], "version": None, "expira": 0.0}
 _cache_lock = threading.Lock()
 
 
@@ -563,11 +573,30 @@ def _pedir_catalogo(config):
     ]
 
 
+def _pedir_sectores(config):
+    respuesta = requests.get(
+        f"{config['url']}/rest/v1/sectores",
+        params={"select": "slug,nombre", "estado": "eq.activo", "order": "nombre.asc"},
+        headers=_cabeceras_supabase(config["anon"]),
+        timeout=TIMEOUT_SUPABASE_SEGUNDOS,
+    )
+    if respuesta.status_code != 200:
+        raise RuntimeError(f"HTTP {respuesta.status_code}")
+    filas = respuesta.json()
+    if not isinstance(filas, list):
+        raise RuntimeError("respuesta de sectores inesperada")
+    return [{"slug": f["slug"], "nombre": f["nombre"]} for f in filas]
+
+
+def _contenido_catalogo():
+    return {"success": True, "version": _cache["version"], "competencias": _cache["competencias"], "sectores": _cache["sectores"]}
+
+
 def _obtener_catalogo():
     ahora = time.monotonic()
     with _cache_lock:
         if _cache["competencias"] is not None and ahora < _cache["expira"]:
-            return _respuesta(200, {"success": True, "version": _cache["version"], "competencias": _cache["competencias"]})
+            return _respuesta(200, _contenido_catalogo())
 
     config = _config()
     try:
@@ -578,14 +607,23 @@ def _obtener_catalogo():
         with _cache_lock:
             if _cache["competencias"] is not None:
                 logger.warning("Mercado: no se pudo actualizar el catálogo (%s); se entrega el último válido", error)
-                return _respuesta(200, {"success": True, "version": _cache["version"], "competencias": _cache["competencias"]})
+                return _respuesta(200, _contenido_catalogo())
         logger.error("Mercado: no se pudo leer el catálogo y no hay copia guardada (%s)", error)
         return _error(503, "error_interno")
 
+    # Los sectores van aparte: si no se pueden leer, se conservan los últimos conocidos (o la lista queda vacía),
+    # pero eso nunca impide entregar las competencias.
+    try:
+        sectores = _pedir_sectores(config)
+    except Exception as error:
+        with _cache_lock:
+            sectores = list(_cache["sectores"])
+        logger.warning("Mercado: no se pudieron leer los sectores (%s)", error)
+
     version = hashlib.sha256(json.dumps(competencias, sort_keys=True, ensure_ascii=False).encode("utf-8")).hexdigest()[:12]
     with _cache_lock:
-        _cache.update({"competencias": competencias, "version": version, "expira": time.monotonic() + CACHE_CATALOGO_SEGUNDOS})
-    return _respuesta(200, {"success": True, "version": version, "competencias": competencias})
+        _cache.update({"competencias": competencias, "sectores": sectores, "version": version, "expira": time.monotonic() + CACHE_CATALOGO_SEGUNDOS})
+        return _respuesta(200, _contenido_catalogo())
 
 
 # --------------------------------------------------------------
