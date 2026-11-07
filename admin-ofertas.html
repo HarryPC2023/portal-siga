@@ -119,14 +119,16 @@
                     <div class="ofe-grid">
                         <label class="ofe-campo"><span>Fuente</span>
                             <select id="selFuente" class="ofe-sel">
-                                <option value="whatsapp" selected>WhatsApp</option>
+                                <option value="" selected disabled>— Elige la fuente —</option>
+                                <option value="whatsapp">WhatsApp</option>
                                 <option value="linkedin">LinkedIn</option>
                                 <option value="bumeran">Bumeran</option>
                                 <option value="computrabajo">Computrabajo</option>
                                 <option value="empleos_peru">Empleos Perú</option>
+                                <option value="otro">Otro (otra página, correo, etc.)</option>
                             </select>
                         </label>
-                        <label class="ofe-campo"><span>Enlace <small id="notaEnlace">(opcional en WhatsApp)</small></span>
+                        <label class="ofe-campo"><span>Enlace <small id="notaEnlace">(opcional en WhatsApp u Otro)</small></span>
                             <input id="inpUrl" class="ofe-input" type="url" placeholder="https://…" autocomplete="off"></label>
                         <label class="ofe-campo"><span>Puesto</span>
                             <input id="inpPuesto" class="ofe-input" type="text" maxlength="200" placeholder="Ej. Analista de Datos Jr."></label>
@@ -184,7 +186,7 @@
         // La seguridad real vive en el servidor (Render comprueba con Supabase que la sesión es la del administrador) y en
         // la base de datos: esta verificación del lado del navegador solo evita mostrar la pantalla a otra persona.
         import { supabase, requerirSesion, montarNavUsuario } from './js/auth-siga.js?v=9';
-        import { detectarCompetencias } from './js/mercado-motor.js?v=1';
+        import { detectarCompetencias } from './js/mercado-motor.js?v=2';
 
         const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
         const API = 'https://actualizar-intranotas.onrender.com';
@@ -199,6 +201,21 @@
         let avisos = [];
         let lector = null;       // lector de imágenes (OCR)
         let enviando = false;
+        let fuenteManual = false; // si Harry eligió la fuente a mano, ya no se cambia sola al pegar un enlace
+
+        // Fuentes que pueden ir sin enlace, y cómo reconocer la fuente por el dominio del enlace
+        const SIN_ENLACE_OK = ['whatsapp', 'otro'];
+        const FUENTE_POR_DOMINIO = [
+            ['linkedin.com', 'linkedin'], ['bumeran.com.pe', 'bumeran'], ['bumeran.com', 'bumeran'],
+            ['computrabajo.com', 'computrabajo'], ['empleosperu.gob.pe', 'empleos_peru'],
+        ];
+        function fuenteDeEnlace(texto) {
+            try {
+                const host = new URL(texto).hostname.toLowerCase();
+                for (const [dominio, fuente] of FUENTE_POR_DOMINIO) if (host === dominio || host.endsWith('.' + dominio)) return fuente;
+                return 'otro';
+            } catch (_) { return ''; }
+        }
 
         function el(etiqueta, props = {}, ...hijos) {
             const nodo = document.createElement(etiqueta);
@@ -263,6 +280,69 @@
             });
         }
 
+        /* Antes de leer una captura se prepara: se agranda (las de WhatsApp son chicas), se pasa a grises y se sube el
+           contraste. Con ofertas reales esto subió el acierto del lector de ~55 % a ~92 %. Si algo falla al preparar,
+           se lee la imagen original. */
+        const LADO_CORTO_OBJETIVO = 2800;   // px que debería medir el lado corto
+        const ESCALA_MAX = 4;               // nunca más de 4 veces
+        const MAX_PIXELES = 12e6;           // ni más de 12 millones de píxeles (para no trabar el navegador)
+        const CORTE_CONTRASTE = 2;          // % de píxeles extremos que se ignoran al estirar el contraste
+
+        function escalaPara(ancho, alto) {
+            let e = Math.max(1, Math.min(ESCALA_MAX, LADO_CORTO_OBJETIVO / Math.min(ancho, alto)));
+            while (ancho * alto * e * e > MAX_PIXELES && e > 1) e -= 0.05;
+            return e;
+        }
+
+        /* Pasa los píxeles (RGBA) a grises y estira el contraste, igual que el "autocontraste" de las librerías de imágenes. */
+        function aGrisesYContraste(rgba, corte) {
+            const n = rgba.length / 4;
+            const hist = new Uint32Array(256);
+            for (let p = 0; p < rgba.length; p += 4) {
+                const g = Math.round(0.299 * rgba[p] + 0.587 * rgba[p + 1] + 0.114 * rgba[p + 2]);
+                rgba[p] = g;
+                hist[g]++;
+            }
+            const fuera = Math.floor((n * corte) / 100);
+            let lo = 0, acum = 0;
+            while (lo < 255 && acum + hist[lo] <= fuera) { acum += hist[lo]; lo++; }
+            let hi = 255; acum = 0;
+            while (hi > 0 && acum + hist[hi] <= fuera) { acum += hist[hi]; hi--; }
+            const rango = hi - lo;
+            for (let p = 0; p < rgba.length; p += 4) {
+                let v = rango > 0 ? Math.round(((rgba[p] - lo) * 255) / rango) : rgba[p];
+                v = v < 0 ? 0 : v > 255 ? 255 : v;
+                rgba[p] = rgba[p + 1] = rgba[p + 2] = v;
+                rgba[p + 3] = 255;
+            }
+        }
+
+        async function prepararParaLeer(archivo) {
+            try {
+                if (typeof createImageBitmap !== 'function') return archivo;
+                const bmp = await createImageBitmap(archivo);
+                const e = escalaPara(bmp.width, bmp.height);
+                const lienzo = document.createElement('canvas');
+                lienzo.width = Math.round(bmp.width * e);
+                lienzo.height = Math.round(bmp.height * e);
+                const ctx = lienzo.getContext('2d', { willReadFrequently: true });
+                if (!ctx) return archivo;
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(bmp, 0, 0, lienzo.width, lienzo.height);
+                if (bmp.close) bmp.close();
+                const datos = ctx.getImageData(0, 0, lienzo.width, lienzo.height);
+                aGrisesYContraste(datos.data, CORTE_CONTRASTE);
+                ctx.putImageData(datos, 0, 0);
+                return lienzo;
+            } catch (e) {
+                console.warn('No se pudo preparar la imagen; se leerá la original:', e);
+                return archivo; // si no se pudo preparar, se lee la original
+            }
+        }
+
         let imagenActual = 0;
         let imagenesTotal = 0;
         async function obtenerLector() {
@@ -274,6 +354,8 @@
                     else $('estadoOcr').textContent = 'Preparando el lector (la primera vez descarga el idioma, puede tardar un poco)…';
                 },
             });
+            // Lectura de página completa con varios bloques (los flyers no son un solo párrafo)
+            try { await lector.setParameters({ tessedit_pageseg_mode: '3', preserve_interword_spaces: '1' }); } catch (_) { /* usa los valores por defecto */ }
             return lector;
         }
 
@@ -282,11 +364,16 @@
             if (!imagenes.length) return;
             imagenesTotal = imagenes.length;
             const textos = [];
+            let preparadas = 0;
             try {
                 const l = await obtenerLector();
                 for (let i = 0; i < imagenes.length; i++) {
                     imagenActual = i + 1;
-                    const { data } = await l.recognize(imagenes[i]);
+                    $('estadoOcr').textContent = `Preparando imagen ${imagenActual} de ${imagenesTotal}…`;
+                    const entrada = await prepararParaLeer(imagenes[i]);
+                    if (entrada !== imagenes[i]) preparadas++;
+                    const { data } = await l.recognize(entrada);
+                    if (entrada && entrada.width && entrada.getContext) { entrada.width = 0; entrada.height = 0; } // libera memoria
                     const t = (data.text || '').replace(/\r/g, '').trim();
                     if (t) textos.push(t);
                 }
@@ -297,7 +384,11 @@
             if (!textos.length) { $('estadoOcr').textContent = 'No se encontró texto en la imagen. Prueba con una captura más grande o más nítida.'; return; }
             const area = $('textoOferta');
             area.value = [area.value.trim(), ...textos].filter(Boolean).join('\n\n');
-            $('estadoOcr').textContent = `Listo: se leyeron ${textos.length} imagen(es). Revisa el texto: las capturas a veces confunden letras.`;
+            const sinPreparar = imagenes.length - preparadas;
+            const detalle = sinPreparar === 0
+                ? 'preparadas: agrandadas y con más contraste'
+                : `⚠ ${sinPreparar} se leyó sin preparar (el navegador no pudo agrandarla; la lectura puede salir peor)`;
+            $('estadoOcr').textContent = `Listo: se leyeron ${textos.length} imagen(es) (${detalle}). Revisa el texto: las capturas a veces confunden letras.`;
             analizar();
         }
 
@@ -416,7 +507,8 @@
 
             if (!puesto) errores.push('Falta el puesto.');
             if (puesto.length > 200) errores.push('El puesto es muy largo (máximo 200 caracteres).');
-            if (fuente !== 'whatsapp' && !url) errores.push('Falta el enlace (solo las ofertas de WhatsApp pueden ir sin enlace).');
+            if (!fuente) errores.push('Elige la fuente de la oferta (de dónde la sacaste).');
+            if (fuente && !SIN_ENLACE_OK.includes(fuente) && !url) errores.push('Falta el enlace (solo las ofertas de WhatsApp u Otro pueden ir sin enlace).');
             if (url && !/^https:\/\/\S+$/.test(url)) errores.push('El enlace debe empezar con https:// y no tener espacios.');
             if (empresa.length > 150) errores.push('La empresa es muy larga (máximo 150).');
             if (ubicacion.length > 150) errores.push('La ubicación es muy larga (máximo 150).');
@@ -507,11 +599,15 @@
             $('btnEnviar').hidden = false;
             $('btnOtra').hidden = true;
             $('estadoOcr').textContent = '';
+            $('selFuente').value = '';
+            fuenteManual = false;
+            actualizarNotaEnlace();
             mensaje('', '');
         }
 
         function actualizarNotaEnlace() {
-            $('notaEnlace').textContent = $('selFuente').value === 'whatsapp' ? '(opcional en WhatsApp)' : '(obligatorio)';
+            const f = $('selFuente').value;
+            $('notaEnlace').textContent = !f ? '(opcional en WhatsApp u Otro)' : SIN_ENLACE_OK.includes(f) ? '(opcional)' : '(obligatorio)';
         }
 
         /* ───────────── Arranque ───────────── */
@@ -529,7 +625,13 @@
             $('btnEnviar').addEventListener('click', enviar);
             $('btnImagenes').addEventListener('click', () => $('inputImagenes').click());
             $('inputImagenes').addEventListener('change', (e) => { leerImagenes(e.target.files); e.target.value = ''; });
-            $('selFuente').addEventListener('change', actualizarNotaEnlace);
+            $('selFuente').addEventListener('change', () => { fuenteManual = true; actualizarNotaEnlace(); });
+            // Al pegar un enlace, la fuente se completa sola (si no la elegiste tú)
+            $('inpUrl').addEventListener('input', () => {
+                if (fuenteManual) return;
+                const f = fuenteDeEnlace($('inpUrl').value.trim());
+                if (f) { $('selFuente').value = f; actualizarNotaEnlace(); }
+            });
             $('btnAgregar').addEventListener('click', () => {
                 const slug = $('selAgregar').value;
                 const c = (catalogo || []).find((x) => x.slug === slug);

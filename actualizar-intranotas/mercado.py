@@ -284,7 +284,7 @@ class Requisito(BaseModel):
 class Oferta(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    fuente: Literal["linkedin", "bumeran", "computrabajo", "empleos_peru", "whatsapp"]
+    fuente: Literal["linkedin", "bumeran", "computrabajo", "empleos_peru", "whatsapp", "otro"]
     url: Optional[str] = Field(default=None, max_length=1500)   # obligatoria salvo en whatsapp (se revisa más abajo)
     puesto: str = Field(min_length=1, max_length=200)
     ubicacion: Optional[str] = Field(default=None, max_length=150)
@@ -453,7 +453,7 @@ def _procesar_oferta(datos):
         oferta = Oferta.model_validate(datos)
         if oferta.url:
             url_limpia = limpiar_url(oferta.fuente, oferta.url)
-        elif oferta.fuente == "whatsapp":
+        elif oferta.fuente in ("whatsapp", "otro"):
             url_limpia = None
         else:
             raise _DatoInvalido(["url"])
