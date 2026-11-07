@@ -225,7 +225,7 @@ function detectarNivel(plegado, seg, ini, fin) {
 
     // 2) Justo después: "Excel avanzado", "Inglés: intermedio", "SQL (nivel avanzado)"
     const despues = plegado.slice(fin, seg.fin);
-    const d = new RegExp("^[\\s(:\\-–]*(?:nivel\\s+)?" + RE_NIVEL_TXT + "\\b").exec(despues);
+    const d = new RegExp("^[\\s(:\\-–]*(?:(?:a|de|en|con)\\s+nivel\\s+|nivel\\s+)?" + RE_NIVEL_TXT + "\\b").exec(despues);
     if (d) {
         const resto = despues.slice(d[0].length);
         // otro nivel pegado ("intermedio-avanzado", "basico a intermedio"): hay dos niveles, no se elige ninguno
@@ -409,6 +409,8 @@ export function detectarCompetencias(texto, catalogo) {
                 const ini = m.index;
                 const fin = ini + m[0].length;
                 const seg = segmentoAlrededor(limpio, limitesFrase, ini);
+                // Si el término queda partido entre dos renglones ("la gestión de / proyectos"), el segmento llega hasta donde termina
+                if (fin > seg.fin) seg.fin = segmentoAlrededor(limpio, limitesFrase, fin - 1).fin;
                 const regla = reglaEspecial(c.slug, t.plegado, plegado, ini, fin, seg);
                 if (regla === "rechazar") continue;
                 if (regla === "ambigua") {
