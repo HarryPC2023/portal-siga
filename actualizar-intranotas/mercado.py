@@ -3,14 +3,23 @@ Módulo Mercado (SIGA) — recibe las ofertas laborales que captura la extensió
 Supabase para el Mapa de Competencias y la Ruta Profesional.
 
   GET  /api/mercado/catalogo   Público. Competencias activas (slug, nombre, área, variantes), con caché de 10 min.
-  POST /api/mercado/ofertas    Solo con la clave de la extensión. Valida, limpia la URL, calcula la huella y llama a
-                               la función registrar_oferta() de Supabase. La base de datos es la autoridad final:
-                               aquí se validan los mismos límites solo para dar un error claro y rápido.
+  POST /api/mercado/ofertas    Solo con la clave de la extensión (cabecera X-Clave-Extension) O con la sesión de
+                               administrador de SIGA (campo "sesion" del cuerpo, el token de Supabase de Harry).
+                               Valida, limpia la URL, calcula la huella y llama a la función registrar_oferta() de
+                               Supabase. La base de datos es la autoridad final: aquí se validan los mismos límites
+                               solo para dar un error claro y rápido.
+
+OFERTAS DE WHATSAPP
+  La fuente "whatsapp" puede no traer enlace. Su huella de duplicados se calcula con el CONTENIDO (puesto, empresa,
+  ubicación y competencias), normalizado sin tildes ni signos, para tolerar pequeñas diferencias de lectura.
 
 SEGURIDAD
   - Variables de entorno en Render: SUPABASE_URL, SUPABASE_ANON_KEY (ya existen), SECRETO_OFERTAS (el secreto que
     vive en la tabla sync_config de Supabase, clave 'secreto_ofertas') y CLAVE_EXTENSION (la clave de la extensión).
-    Si falta CLAVE_EXTENSION, el POST queda apagado (503) sin tocar código.
+    Si falta CLAVE_EXTENSION, la entrada por clave queda apagada; la entrada con sesión de admin sigue funcionando.
+  - La sesión de admin se comprueba preguntándole a Supabase quién es el dueño del token (/auth/v1/user) y exigiendo
+    que sea el administrador (ADMIN_UID, el mismo UID que ya usa js/admin.js; puede cambiarse con MERCADO_ADMIN_UID).
+    El token no se guarda ni se escribe en los logs.
   - Jamás se usa una llave de servicio de Supabase: solo la pública (anon) más el secreto. Si SUPABASE_ANON_KEY
     parece una llave de servicio, no se envía nada.
   - Jamás se escribe en los logs el cuerpo de las solicitudes ni ningún secreto.
@@ -31,6 +40,7 @@ import os
 import re
 import threading
 import time
+import unicodedata
 from collections import deque
 from datetime import date
 from typing import List, Literal, Optional
@@ -53,6 +63,9 @@ VENTANA_SEGUNDOS = 60
 CACHE_CATALOGO_SEGUNDOS = 600       # 10 minutos
 TIMEOUT_SUPABASE_SEGUNDOS = 15
 LARGO_MINIMO_CLAVE_EXTENSION = 32
+ADMIN_UID_POR_DEFECTO = "f544dbae-fc6f-4fe6-9b86-fc72aef462a1"   # el mismo que js/admin.js (no es un secreto)
+CACHE_SESION_SEGUNDOS = 60          # una sesión ya comprobada se recuerda 60 s (y una rechazada, 30 s)
+LIMITE_VERIFICACIONES = 20          # comprobaciones de sesión nuevas por ventana (protege a Supabase de abusos)
 
 # Dominios aceptados por fuente: si la URL no es de esa fuente, algo anda mal en la extensión.
 DOMINIOS_POR_FUENTE = {
@@ -95,6 +108,7 @@ def _config():
         "anon": os.environ.get("SUPABASE_ANON_KEY", "").strip(),
         "secreto": os.environ.get("SECRETO_OFERTAS", "").strip(),
         "clave_extension": os.environ.get("CLAVE_EXTENSION", "").strip(),
+        "admin_uid": os.environ.get("MERCADO_ADMIN_UID", "").strip() or ADMIN_UID_POR_DEFECTO,
     }
 
 
@@ -129,7 +143,7 @@ def _avisar_estado():
         if secreto else "SECRETO_OFERTAS FALTA",
         ("CLAVE_EXTENSION ok (%d caracteres)" % len(config["clave_extension"]))
         if len(config["clave_extension"]) >= LARGO_MINIMO_CLAVE_EXTENSION
-        else "CLAVE_EXTENSION FALTA o es muy corta (POST apagado)",
+        else "CLAVE_EXTENSION FALTA o es muy corta (entrada por clave apagada; la sesión de admin sigue activa)",
     ]
     if config["anon"] and _es_llave_de_servicio(config["anon"]):
         partes.append("¡ATENCIÓN! SUPABASE_ANON_KEY es una llave de SERVICIO: Mercado no la usará")
@@ -163,6 +177,57 @@ def _permitir_solicitud():
         return True
 
 
+_marcas_verificacion = deque()
+
+
+def _permitir_verificacion():
+    ahora = time.monotonic()
+    with _marcas_lock:
+        while _marcas_verificacion and ahora - _marcas_verificacion[0] > VENTANA_SEGUNDOS:
+            _marcas_verificacion.popleft()
+        if len(_marcas_verificacion) >= LIMITE_VERIFICACIONES:
+            return False
+        _marcas_verificacion.append(ahora)
+        return True
+
+
+# --------------------------------------------------------------
+# Sesión de administrador (token de Supabase)
+# --------------------------------------------------------------
+_cache_sesiones = {}
+_cache_sesiones_lock = threading.Lock()
+
+
+def _es_sesion_admin(token, config):
+    """True si el token pertenece al administrador. Lo confirma Supabase; aquí solo se compara el UID."""
+    if not isinstance(token, str) or not (20 <= len(token) <= 4000):
+        return False
+    huella = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    ahora = time.monotonic()
+    with _cache_sesiones_lock:
+        previo = _cache_sesiones.get(huella)
+        if previo and ahora < previo[1]:
+            return previo[0]
+    if not _permitir_verificacion():
+        logger.warning("Mercado: demasiadas comprobaciones de sesión en poco tiempo")
+        return False
+    try:
+        respuesta = requests.get(
+            f"{config['url']}/auth/v1/user",
+            headers={"apikey": config["anon"], "Authorization": f"Bearer {token}"},
+            timeout=10,
+        )
+        es_admin = respuesta.status_code == 200 and str(respuesta.json().get("id", "")) == config["admin_uid"]
+    except (requests.RequestException, ValueError) as error:
+        logger.error("Mercado: no se pudo comprobar la sesión (%s)", type(error).__name__)
+        return False
+    with _cache_sesiones_lock:
+        if len(_cache_sesiones) > 100:
+            _cache_sesiones.clear()
+        _cache_sesiones[huella] = (es_admin, ahora + (CACHE_SESION_SEGUNDOS if es_admin else 30))
+    return es_admin
+
+
 # --------------------------------------------------------------
 # Validación de la oferta (mismos límites que la función SQL; la base decide al final)
 # --------------------------------------------------------------
@@ -185,7 +250,7 @@ class Requisito(BaseModel):
 
     competencia: str = Field(min_length=1, max_length=60)
     nivel: Optional[Literal["basico", "intermedio", "avanzado"]] = None
-    tipo: Literal["obligatorio", "deseable"] = "obligatorio"
+    tipo: Literal["obligatorio", "deseable", "no_indicado"] = "no_indicado"
     fragmento: Optional[str] = Field(default=None, max_length=220)
 
     @field_validator("competencia", "tipo", mode="before")
@@ -219,8 +284,8 @@ class Requisito(BaseModel):
 class Oferta(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    fuente: Literal["linkedin", "bumeran", "computrabajo", "empleos_peru"]
-    url: str = Field(min_length=1, max_length=1500)
+    fuente: Literal["linkedin", "bumeran", "computrabajo", "empleos_peru", "whatsapp"]
+    url: Optional[str] = Field(default=None, max_length=1500)   # obligatoria salvo en whatsapp (se revisa más abajo)
     puesto: str = Field(min_length=1, max_length=200)
     ubicacion: Optional[str] = Field(default=None, max_length=150)
     fecha_publicacion: Optional[str] = None
@@ -232,6 +297,13 @@ class Oferta(BaseModel):
     @classmethod
     def _fuente(cls, v):
         return _limpiar_texto(v).lower() if isinstance(v, str) else v
+
+    @field_validator("url", mode="before")
+    @classmethod
+    def _url_vacia(cls, v):
+        if isinstance(v, str):
+            return v.strip() or None
+        return v
 
     @field_validator("puesto", "ubicacion", "empresa", mode="before")
     @classmethod
@@ -323,7 +395,7 @@ def limpiar_url(fuente, url_original):
         raise _DatoInvalido(["url"])
     if partes.scheme.lower() != "https" or not host:
         raise _DatoInvalido(["url"])
-    if not any(host == d or host.endswith("." + d) for d in DOMINIOS_POR_FUENTE[fuente]):
+    if fuente in DOMINIOS_POR_FUENTE and not any(host == d or host.endswith("." + d) for d in DOMINIOS_POR_FUENTE[fuente]):
         raise _DatoInvalido(["url"])
 
     if fuente == "linkedin":
@@ -343,6 +415,25 @@ def calcular_huella(fuente, url_limpia):
     return hashlib.sha256(f"{fuente}|{url_limpia}".encode("utf-8")).hexdigest()
 
 
+def _normalizar_para_huella(texto):
+    """Minúsculas, sin tildes ni signos, espacios simples: tolera pequeñas diferencias de lectura de una captura."""
+    t = unicodedata.normalize("NFKD", texto or "").encode("ascii", "ignore").decode("ascii").lower()
+    return re.sub(r"[^a-z0-9]+", " ", t).strip()
+
+
+def calcular_huella_contenido(fuente, puesto, empresa, ubicacion, competencias):
+    """Para ofertas sin enlace (WhatsApp): la huella sale del contenido. Las competencias van ordenadas para que el
+    orden en que se listaron no cambie la huella."""
+    partes = [
+        fuente,
+        _normalizar_para_huella(puesto),
+        _normalizar_para_huella(empresa),
+        _normalizar_para_huella(ubicacion),
+        ",".join(sorted(set(competencias))),
+    ]
+    return hashlib.sha256("|".join(partes).encode("utf-8")).hexdigest()
+
+
 # --------------------------------------------------------------
 # Llamadas a Supabase
 # --------------------------------------------------------------
@@ -360,7 +451,12 @@ def _procesar_oferta(datos):
         if not isinstance(datos, dict):
             raise _DatoInvalido(["cuerpo"])
         oferta = Oferta.model_validate(datos)
-        url_limpia = limpiar_url(oferta.fuente, oferta.url)
+        if oferta.url:
+            url_limpia = limpiar_url(oferta.fuente, oferta.url)
+        elif oferta.fuente == "whatsapp":
+            url_limpia = None
+        else:
+            raise _DatoInvalido(["url"])
     except ValidationError as error:
         return _error(422, "datos_invalidos", campos=_campos_con_error(error))
     except _DatoInvalido as error:
@@ -370,7 +466,13 @@ def _procesar_oferta(datos):
     paquete = {
         "fuente": oferta.fuente,
         "url": url_limpia,
-        "huella": calcular_huella(oferta.fuente, url_limpia),
+        "huella": (
+            calcular_huella(oferta.fuente, url_limpia)
+            if url_limpia and oferta.fuente != "whatsapp"
+            else calcular_huella_contenido(
+                oferta.fuente, oferta.puesto, oferta.empresa, oferta.ubicacion, [r.competencia for r in oferta.requisitos]
+            )
+        ),
         "puesto": oferta.puesto,
         "ubicacion": oferta.ubicacion,
         "fecha_publicacion": oferta.fecha_publicacion,
@@ -496,20 +598,18 @@ async def catalogo_de_competencias():
 
 @router.post("/api/mercado/ofertas")
 async def recibir_oferta(request: Request):
-    clave_correcta = _config()["clave_extension"]
-    if len(clave_correcta) < LARGO_MINIMO_CLAVE_EXTENSION:
-        return _error(503, "error_interno")          # sin CLAVE_EXTENSION el POST queda apagado
+    config = _config()
+    clave_correcta = config["clave_extension"]
 
-    # 1. Clave (se revisa antes de leer el cuerpo: sin clave no se procesa nada)
+    # 1. ¿Viene con la clave de la extensión? (se revisa antes de leer el cuerpo)
     recibida = request.headers.get("x-clave-extension", "")
-    if not hmac.compare_digest(recibida.encode("utf-8"), clave_correcta.encode("utf-8")):
-        return _error(401, "no_autorizada")
+    con_clave = (
+        len(clave_correcta) >= LARGO_MINIMO_CLAVE_EXTENSION
+        and bool(recibida)
+        and hmac.compare_digest(recibida.encode("utf-8"), clave_correcta.encode("utf-8"))
+    )
 
-    # 2. Frecuencia
-    if not _permitir_solicitud():
-        return _error(429, "demasiadas_solicitudes")
-
-    # 3. Tamaño del cuerpo
+    # 2. Tamaño del cuerpo
     declarado = request.headers.get("content-length", "")
     if declarado.isdigit() and int(declarado) > TAMANO_MAXIMO_CUERPO:
         return _error(422, "datos_invalidos", campos=["cuerpo"])
@@ -519,9 +619,24 @@ async def recibir_oferta(request: Request):
     try:
         datos = json.loads(cuerpo)
     except ValueError:
-        return _error(422, "datos_invalidos", campos=["cuerpo"])
+        # sin clave válida no se explica nada del formato
+        return _error(422, "datos_invalidos", campos=["cuerpo"]) if con_clave else _error(401, "no_autorizada")
 
-    # 4. Todo lo demás (validar y hablar con Supabase) en un hilo, para no frenar al resto del servidor
+    # 3. Si no hay clave, tiene que venir la sesión del administrador en el cuerpo ("sesion")
+    sesion = datos.pop("sesion", None) if isinstance(datos, dict) else None
+    if not con_clave:
+        if not isinstance(sesion, str):
+            return _error(401, "no_autorizada")
+        if not _supabase_listo(config, con_secreto=False):
+            return _error(503, "error_interno")
+        if not await run_in_threadpool(_es_sesion_admin, sesion, config):
+            return _error(401, "no_autorizada")
+
+    # 4. Frecuencia (solo cuentan las solicitudes ya autorizadas)
+    if not _permitir_solicitud():
+        return _error(429, "demasiadas_solicitudes")
+
+    # 5. Todo lo demás (validar y hablar con Supabase) en un hilo, para no frenar al resto del servidor
     return await run_in_threadpool(_procesar_oferta, datos)
 
 
