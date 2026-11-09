@@ -46,5 +46,20 @@ from (
          (select (count(*) > 0)::text from pg_constraint
            where conrelid = 'public.ofertas'::regclass and contype = 'c'
              and pg_get_constraintdef(oid) ilike '%empresa_id%' and pg_get_constraintdef(oid) ilike '%nombre_empresa_confirmado%'), 'true'
+  union all
+  select 10, 'Competencias: existen las columnas nuevas (categoria, deteccion, descripcion)',
+         (select count(*)::text from information_schema.columns
+           where table_schema = 'public' and table_name = 'competencias' and column_name in ('categoria', 'deteccion', 'descripcion')), '3'
+  union all
+  select 11, 'Competencias: todas con categoría y detección válidas (0 = ninguna mal)',
+         (select count(*)::text from public.competencias c
+           where coalesce(to_jsonb(c) ->> 'categoria', '') not in ('herramienta', 'norma', 'conocimiento', 'metodologia', 'actividad', 'certificacion')
+              or coalesce(to_jsonb(c) ->> 'deteccion', '') not in ('auto', 'revisar')), '0'
+  union all
+  select 12, 'Competencias: anon puede leer y nadie puede escribir (true/false)',
+         has_table_privilege('anon', 'public.competencias', 'select')::text || '/' ||
+         (has_table_privilege('anon', 'public.competencias', 'insert') or has_table_privilege('anon', 'public.competencias', 'update')
+          or has_table_privilege('authenticated', 'public.competencias', 'insert') or has_table_privilege('authenticated', 'public.competencias', 'update')
+          or has_table_privilege('authenticated', 'public.competencias', 'delete'))::text, 'true/false'
 ) x
 order by n;

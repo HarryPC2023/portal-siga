@@ -564,7 +564,45 @@ _cache = {"competencias": None, "sectores": [], "version": None, "expira": 0.0}
 _cache_lock = threading.Lock()
 
 
+CATEGORIAS_COMPETENCIA = ("herramienta", "norma", "conocimiento", "metodologia", "actividad", "certificacion")
+COLUMNAS_CATALOGO = "slug,nombre,area,variantes,categoria,deteccion,descripcion"
+COLUMNAS_CATALOGO_BASICAS = "slug,nombre,area,variantes"   # por si la base todavía no tiene las columnas nuevas (migración 7)
+
+
+def _competencia_para_catalogo(f):
+    """Una fila de la base → lo que se entrega. Los valores raros se corrigen en vez de romper el catálogo."""
+    categoria = f.get("categoria")
+    return {
+        "slug": f["slug"],
+        "nombre": f["nombre"],
+        "area": f["area"],
+        "variantes": list(f.get("variantes") or []),
+        "categoria": categoria if categoria in CATEGORIAS_COMPETENCIA else None,
+        "deteccion": "revisar" if f.get("deteccion") == "revisar" else "auto",   # «revisar»: el motor nunca la marca sola
+        "descripcion": str(f.get("descripcion") or "")[:200],
+    }
+
+
 def _pedir_catalogo(config):
+    filas = None
+    for columnas in (COLUMNAS_CATALOGO, COLUMNAS_CATALOGO_BASICAS):
+        respuesta = requests.get(
+            f"{config['url']}/rest/v1/competencias",
+            params={"select": columnas, "estado": "eq.activa", "order": "area.asc,nombre.asc"},
+            headers=_cabeceras_supabase(config["anon"]),
+            timeout=TIMEOUT_SUPABASE_SEGUNDOS,
+        )
+        if respuesta.status_code == 400 and columnas == COLUMNAS_CATALOGO:
+            # Columna inexistente: la migración 7 aún no se ejecutó. Se entrega el catálogo de siempre y se avisa en el log.
+            logger.warning("Mercado: la base aún no tiene las columnas nuevas de competencias; se entrega el catálogo básico")
+            continue
+        if respuesta.status_code != 200:
+            raise RuntimeError(f"HTTP {respuesta.status_code}")
+        filas = respuesta.json()
+        break
+    if not isinstance(filas, list) or not filas:
+        raise RuntimeError("catálogo vacío")
+    return [_competencia_para_catalogo(f) for f in filas]
     respuesta = requests.get(
         f"{config['url']}/rest/v1/competencias",
         params={"select": "slug,nombre,area,variantes", "estado": "eq.activa", "order": "area.asc,nombre.asc"},

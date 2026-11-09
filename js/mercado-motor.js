@@ -22,7 +22,7 @@
  * Las reglas especiales de detección están al final de la sección "Reglas especiales".
  */
 
-export const VERSION_MOTOR = "1.0";
+export const VERSION_MOTOR = "1.1";
 
 const LIMITE_TEXTO = 30000;          // caracteres; más que eso se recorta (y se avisa)
 const MAX_PALABRAS_FRAGMENTO = 19;   // "menos de 20 palabras"
@@ -255,14 +255,20 @@ function detectarNivel(plegado, seg, ini, fin) {
 //   - Redes: la palabra suelta es ambigua ("redes sociales"). Solo cuenta si la frase trae contexto técnico
 //     (computadoras, datos, comunicaciones, LAN, WAN, routers, servidores...) y nunca si dice "redes sociales".
 //     Las variantes del catálogo ("networking", "administración de redes") sí cuentan siempre.
+//     Lo móvil (3G/4G/5G, LTE, estaciones base) y la fibra: mientras el catálogo NO tenga la competencia «redes-moviles», cuentan como
+//     contexto técnico de «Redes». Cuando la tenga, esa competencia (con variantes como "redes 4G" o "redes de fibra óptica", que al
+//     ser más largas absorben la palabra "redes") se encarga, y «Redes» no se cuenta dos veces.
 //   - Inglés: se detecta con y sin tilde ("inglés", "ingles", "English"). El nivel solo si la oferta lo dice.
 //   - Si dos términos se pisan, gana el más largo ("SAP ERP" cuenta como SAP, no además como ERP).
 
 const RE_REDES_TECNICO =
-    /\b(?:computadoras?|computadores|ordenadores|datos|comunicaciones|telecomunicaciones|lan|wan|vlan|tcp|ip|cisco|ccna|ccnp|ccie|routers?|switch(?:es)?|servidores|infraestructura|firewall|vpn|[2-5]g|lte|volte|gsm|umts|wcdma|fibra|ftth|radio|moviles?|estaciones? base|antenas?|wi-?fi|inalambric[oa]s?|bgp|ospf|mpls)\b/;
+    /\b(?:computadoras?|computadores|ordenadores|datos|comunicaciones|telecomunicaciones|lan|wan|vlan|tcp|ip|cisco|ccna|ccnp|ccie|routers?|switch(?:es)?|servidores|infraestructura|firewall|vpn|wi-?fi|inalambric[oa]s?|bgp|ospf|mpls)\b/;
+
+const RE_REDES_MOVIL =
+    /\b(?:[2-5]g|lte|volte|gsm|umts|wcdma|fibra|ftth|radio|moviles?|estaciones? base|antenas?)\b/;
 
 /** Devuelve 'ok' | 'rechazar' | 'ambigua' para una coincidencia de término, según las reglas especiales. */
-function reglaEspecial(slug, termino, plegado, ini, fin, seg) {
+function reglaEspecial(slug, termino, plegado, ini, fin, seg, catalogoMovil = false) {
     if (slug === "javascript" && termino === "js") {
         return /[.\-]$/.test(plegado.slice(0, ini)) ? "rechazar" : "ok";
     }
@@ -271,7 +277,8 @@ function reglaEspecial(slug, termino, plegado, ini, fin, seg) {
     }
     if (slug === "redes" && termino === "redes") {
         if (/^\s*sociales\b/.test(plegado.slice(fin))) return "rechazar";
-        return RE_REDES_TECNICO.test(plegado.slice(seg.ini, seg.fin)) ? "ok" : "ambigua";
+        const frase = plegado.slice(seg.ini, seg.fin);
+        return RE_REDES_TECNICO.test(frase) || (!catalogoMovil && RE_REDES_MOVIL.test(frase)) ? "ok" : "ambigua";
     }
     return "ok";
 }
@@ -298,7 +305,7 @@ function prepararCatalogo(catalogo) {
             vistos.add(p);
             terminos.push({ plegado: p, regex: regexDeTermino(p) });
         }
-        return { slug: c.slug, nombre: c.nombre, terminos };
+        return { slug: c.slug, nombre: c.nombre, terminos, deteccion: c.deteccion === "revisar" ? "revisar" : "auto" };
     });
 }
 
@@ -401,6 +408,7 @@ export function detectarCompetencias(texto, catalogo) {
     // 1. Todas las coincidencias posibles
     const candidatas = [];
     const ambiguas = [];
+    const catalogoMovil = competencias.some((c) => c.slug === "redes-moviles");
     for (const c of competencias) {
         for (const t of c.terminos) {
             t.regex.lastIndex = 0;
@@ -411,7 +419,7 @@ export function detectarCompetencias(texto, catalogo) {
                 const seg = segmentoAlrededor(limpio, limitesFrase, ini);
                 // Si el término queda partido entre dos renglones ("la gestión de / proyectos"), el segmento llega hasta donde termina
                 if (fin > seg.fin) seg.fin = segmentoAlrededor(limpio, limitesFrase, fin - 1).fin;
-                const regla = reglaEspecial(c.slug, t.plegado, plegado, ini, fin, seg);
+                const regla = reglaEspecial(c.slug, t.plegado, plegado, ini, fin, seg, catalogoMovil);
                 if (regla === "rechazar") continue;
                 if (regla === "ambigua") {
                     ambiguas.push({ c, ini, fin, seg });
@@ -462,6 +470,7 @@ export function detectarCompetencias(texto, catalogo) {
 
     // 3b. Cada mención: ¿negada?, ¿en una sección ignorada?, nivel, tipo, fragmento
     const menciones = [];
+    const generalesVistas = new Set();
     for (const k of aceptadas) {
         const fragmento = construirFragmento(limpio, k.seg, k.ini, k.fin);
         const clausula = segmentoAlrededor(limpio, limitesClausula, k.ini);
@@ -476,6 +485,14 @@ export function detectarCompetencias(texto, catalogo) {
         const seccion = secciones[lineaDe(k.ini)];
         if (seccion === "ignorar") {
             descartadas.push({ competencia: k.c.slug, nombre: k.c.nombre, motivo: "seccion_ignorada", fragmento });
+            continue;
+        }
+        if (k.c.deteccion === "revisar") {
+            // Mención demasiado general para marcarla sola (p. ej. «gestión de proyectos»): se ofrece para que decidas, una vez por competencia
+            if (!generalesVistas.has(k.c.slug)) {
+                generalesVistas.add(k.c.slug);
+                descartadas.push({ competencia: k.c.slug, nombre: k.c.nombre, motivo: "general", fragmento });
+            }
             continue;
         }
         const nivel = detectarNivel(plegado, k.seg, k.ini, k.fin);
