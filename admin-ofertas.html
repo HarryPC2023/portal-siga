@@ -66,6 +66,20 @@
         .ofe-agregar .ofe-sel { max-width: 280px; }
         .ofe-avisos { font-family: 'Poppins', sans-serif; font-size: 13px; background: var(--bg-amarillo); color: #000; border-radius: 10px; padding: 9px 14px; margin-top: 12px; }
         .ofe-avisos ul { margin: 4px 0 0 18px; padding: 0; }
+        .ofe-sug { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-family: 'Poppins', sans-serif; font-size: 12.5px; color: var(--ink-soft); }
+        .ofe-sug button { border: 1.5px solid rgba(0, 0, 0, 0.15); background: #fff; color: #000; border-radius: 999px; padding: 4px 10px; font-family: 'Poppins', sans-serif; font-size: 12.5px; cursor: pointer; }
+        .ofe-sug button:hover { border-color: var(--brand-azul); }
+        .ofe-info-empresa { font-family: 'Poppins', sans-serif; font-size: 12.5px; color: #000; background: var(--brand-azul-tinte); border-radius: 8px; padding: 6px 10px; }
+        .ofe-aviso-empresa { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: 'Poppins', sans-serif; font-size: 12.5px; color: #000; background: var(--brand-morado-tinte); border-radius: 8px; padding: 8px 10px; }
+        .ofe-aviso-empresa button { border: none; cursor: pointer; }
+        .ofe-enlace { font-family: 'Poppins', sans-serif; font-size: 12.5px; color: var(--brand-azul); text-decoration: underline; cursor: pointer; background: none; border: none; padding: 0; }
+        .ofe-cuadro { margin-top: 12px; border: 1.5px solid var(--brand-azul); background: var(--brand-azul-tinte); color: #000; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 13.5px; line-height: 1.5; display: flex; flex-direction: column; gap: 10px; }
+        .ofe-cuadro p { margin: 0; }
+        .ofe-cuadro .ofe-cuadro-botones { display: flex; flex-wrap: wrap; gap: 8px; }
+        .ofe-cuadro button { cursor: pointer; }
+        .ofe-check { display: flex; gap: 8px; align-items: flex-start; font-family: 'Poppins', sans-serif; font-size: 12.5px; color: #000; cursor: pointer; }
+        .ofe-pista { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: 'Poppins', sans-serif; font-size: 12.5px; color: #000; background: var(--brand-morado-tinte); border-radius: 8px; padding: 6px 10px; }
+        .ofe-pista button { border: none; cursor: pointer; }
         .ofe-vacio { font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--ink-soft); padding: 8px 2px; }
         @media (max-width: 820px) {
             .ofe-cabecera { display: none; }
@@ -132,10 +146,20 @@
                             <input id="inpUrl" class="ofe-input" type="url" placeholder="https://…" autocomplete="off"></label>
                         <label class="ofe-campo"><span>Puesto</span>
                             <input id="inpPuesto" class="ofe-input" type="text" maxlength="200" placeholder="Ej. Analista de Datos Jr."></label>
-                        <label class="ofe-campo"><span>Empresa <small>(solo si la oferta la nombra; el sector va aparte)</small></span>
-                            <input id="inpEmpresa" class="ofe-input" type="text" maxlength="150"></label>
-                        <label class="ofe-campo"><span>Sector de la empresa <small>(qué tipo de empresa pide esto; aunque no la nombre)</small></span>
-                            <select id="selSector" class="ofe-sel"><option value="" selected disabled>— Elige el sector —</option></select></label>
+                        <div class="ofe-campo"><span>Empresa <small>(escríbela aunque solo se vea el logo; se compara con las ya registradas)</small></span>
+                            <input id="inpEmpresa" class="ofe-input" type="text" maxlength="150" autocomplete="off" aria-label="Empresa">
+                            <div id="sugEmpresas" class="ofe-sug" hidden></div>
+                            <div id="avisoEmpresa" class="ofe-aviso-empresa" hidden></div>
+                            <div id="infoEmpresa" class="ofe-info-empresa" hidden></div>
+                            <div id="ayudaEmpresa" class="ofe-sug" hidden></div>
+                            <label class="ofe-check" id="filaEnTexto" hidden><input type="checkbox" id="chkEnTexto"> El nombre aparece escrito en el texto de la oferta</label>
+                            <label class="ofe-check" id="filaConfirmar" hidden><input type="checkbox" id="chkConfirmarSector"> Confirmar el sector de esta empresa (queda «verificada»)</label>
+                            <label class="ofe-campo" id="filaAlias" hidden><span><small>¿Es otro nombre de una empresa ya registrada?</small></span>
+                                <select id="selAliasDe" class="ofe-sel" aria-label="Es otro nombre de"><option value="">No, es una empresa distinta</option></select></label>
+                        </div>
+                        <div class="ofe-campo"><span>Sector de la empresa <small>(qué tipo de empresa pide esto; aunque no la nombre)</small></span>
+                            <select id="selSector" class="ofe-sel"><option value="" selected disabled>— Elige el sector —</option></select>
+                            <div id="pistaSector" class="ofe-pista" hidden></div></div>
                         <label class="ofe-campo"><span>Ubicación <small>(opcional)</small></span>
                             <input id="inpUbicacion" class="ofe-input" type="text" maxlength="150" placeholder="Ej. Lima"></label>
                         <label class="ofe-campo"><span>Fecha de publicación <small>(opcional)</small></span>
@@ -168,6 +192,7 @@
                         <button type="button" id="btnEnviar" class="admin-form-submit">Guardar oferta</button>
                         <button type="button" id="btnOtra" class="btn-secundario" hidden>Cargar otra oferta</button>
                     </div>
+                    <div id="cuadroGuardar" class="ofe-cuadro" hidden role="group" aria-live="polite"></div>
                     <div id="msgEnvio" class="admin-msg" style="margin-top:12px;"></div>
                 </div>
 
@@ -188,7 +213,7 @@
         // La seguridad real vive en el servidor (Render comprueba con Supabase que la sesión es la del administrador) y en
         // la base de datos: esta verificación del lado del navegador solo evita mostrar la pantalla a otra persona.
         import { supabase, requerirSesion, montarNavUsuario } from './js/auth-siga.js?v=9';
-        import { detectarCompetencias } from './js/mercado-motor.js?v=2';
+        import { detectarCompetencias, sugerirPuesto, sugerirSector, normalizarNombre, nombreEnTexto, parecidos, empresasEnTexto } from './js/mercado-motor.js?v=4';
 
         const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
         const API = 'https://actualizar-intranotas.onrender.com';
@@ -205,6 +230,14 @@
         let lector = null;       // lector de imágenes (OCR)
         let enviando = false;
         let fuenteManual = false; // si Harry eligió la fuente a mano, ya no se cambia sola al pegar un enlace
+        let empresas = [];        // empresas registradas [{id, nombre, sector, estado, alias[]}] (solo las ve el administrador)
+        let empresasOk = false;   // ¿se pudo cargar la lista? Si no, la empresa se guarda solo como texto
+        let empresaSel = null;    // empresa registrada que Harry eligió o que coincide exactamente con lo escrito
+        let enTextoManual = false;    // si Harry marcó a mano «aparece en el texto», ya no se recalcula
+        let sectorManual = false;     // si Harry eligió el sector a mano, elegir una empresa ya no lo cambia
+        let sectorDeSugerencia = false; // el sector elegido vino de la sugerencia por el texto
+        let textoAnalizado = '';  // texto de la oferta sin datos personales (para buscar el nombre de la empresa)
+        let pistaSector = null;   // {slug, pista} que sugiere el texto
 
         // Fuentes que pueden ir sin enlace, y cómo reconocer la fuente por el dominio del enlace
         const SIN_ENLACE_OK = ['whatsapp', 'otro'];
@@ -420,20 +453,17 @@
         }
 
         /* ───────────── Análisis ───────────── */
-        function sugerirPuesto(texto) {
-            for (const linea of texto.split('\n')) {
-                const t = linea.replace(/^[^\p{L}\p{N}]+/u, '').replace(/[^\p{L}\p{N})]+$/u, '').trim();
-                if (t && !/\[(teléfono|correo|enlace|usuario)\]/.test(t)) return t.slice(0, 120);
-            }
-            return '';
-        }
-
         function analizar() {
             if (!catalogo) { $('estadoOcr').textContent = 'El catálogo todavía no carga. Espera un momento o pulsa «Reintentar».'; return; }
             const texto = $('textoOferta').value.trim();
             if (!texto) { $('estadoOcr').textContent = 'Pega un texto o una captura primero.'; return; }
             const r = detectarCompetencias(texto, catalogo);
             if (!$('inpPuesto').value.trim()) $('inpPuesto').value = sugerirPuesto(r.texto_limpio);
+            textoAnalizado = r.texto_limpio;
+            pistaSector = sugerirSector(r.texto_limpio);
+            actualizarEnTexto();
+            actualizarPistaSector();
+            pintarEmpresa();
             filas = r.requisitos.map((x) => ({ incluir: true, slug: x.competencia, nombre: x.nombre, nivel: x.nivel || '', tipo: x.tipo, fragmento: x.fragmento }));
             descartadas = r.descartadas.slice();
             avisos = r.avisos.slice();
@@ -521,6 +551,204 @@
             caja.append(el('b', { text: 'Ten en cuenta:' }), el('ul', {}, ...avisos.map((a) => el('li', { text: a }))));
         }
 
+        /* ───────────── Empresa: lista registrada, coincidencias, alias y sector ───────────── */
+        class ErrorEmpresa extends Error {}
+        const nombreDeSector = (slug) => { const x = sectores.find((q) => q.slug === slug); return x ? x.nombre : ''; };
+
+        async function rpcAdmin(nombre, args) {
+            try {
+                const r = await supabase.rpc(nombre, args);
+                return { data: r.data, error: r.error };
+            } catch (e) { return { data: null, error: { code: 'red', message: String((e && e.message) || e) } }; }
+        }
+
+        async function cargarEmpresas() {
+            const { data, error } = await rpcAdmin('admin_listar_empresas');
+            if (error || !Array.isArray(data)) { empresasOk = false; empresas = []; }
+            else { empresasOk = true; empresas = data.filter((x) => x && x.id && x.nombre).map((x) => ({ ...x, alias: Array.isArray(x.alias) ? x.alias : [] })); }
+            if (empresaSel) empresaSel = empresas.find((x) => x.id === empresaSel.id) || null;
+            llenarAlias();
+            pintarEmpresa();
+            return empresasOk;
+        }
+
+        function llenarAlias() {
+            const sel = $('selAliasDe');
+            const elegido = sel.value;
+            sel.replaceChildren(el('option', { value: '', text: 'No, es una empresa distinta' }), ...empresas.map((e) => el('option', { value: e.id, text: e.nombre })));
+            sel.value = empresas.some((e) => e.id === elegido) ? elegido : '';
+        }
+
+        function coincidencias(texto) {
+            const q = normalizarNombre(texto);
+            let exacta = null; const parciales = [];
+            if (!q) return { exacta, parciales };
+            for (const e of empresas) {
+                const nombres = [e.nombre, ...e.alias].map(normalizarNombre);
+                if (nombres.includes(q)) { exacta = e; break; }
+                if (nombres.some((n) => (q.length >= 2 && n.includes(q)) || (n.length >= 4 && q.includes(n)))) parciales.push(e);
+            }
+            if (!exacta) for (const e of parecidos(texto, empresas)) if (!parciales.includes(e)) parciales.push(e);   // errores de tipeo
+            return { exacta, parciales: parciales.slice(0, 6) };
+        }
+
+        function textoEmpresa() { return $('inpEmpresa').value.replace(/\s+/g, ' ').trim(); }
+
+        function actualizarEnTexto() {
+            if (enTextoManual) return;
+            const texto = textoEmpresa();
+            if (!texto) { $('chkEnTexto').checked = false; return; }
+            const nombres = [texto, ...(empresaSel ? [empresaSel.nombre, ...empresaSel.alias] : [])];
+            $('chkEnTexto').checked = !!textoAnalizado && nombreEnTexto(textoAnalizado, nombres);
+        }
+
+        function actualizarPistaSector() {
+            const caja = $('pistaSector');
+            caja.replaceChildren(); caja.hidden = true;
+            if (!pistaSector || $('selSector').value) return;
+            const sec = sectores.find((x) => x.slug === pistaSector.slug);
+            if (!sec) return;
+            caja.hidden = false;
+            caja.append(
+                el('span', { text: `Sugerencia por el texto: ${sec.nombre} («${pistaSector.pista}»)` }),
+                el('button', { type: 'button', class: 'btn-secundario', text: 'Usar', onclick: () => {
+                    $('selSector').value = sec.slug; sectorManual = true; sectorDeSugerencia = true;
+                    actualizarPistaSector(); pintarEmpresa();
+                } }),
+            );
+        }
+
+        function seleccionarEmpresa(e, escribir = true) {
+            empresaSel = e;
+            if (escribir) $('inpEmpresa').value = e.nombre;
+            $('chkConfirmarSector').checked = false;
+            if (!sectorManual && e.sector && sectores.some((x) => x.slug === e.sector)) $('selSector').value = e.sector;
+            actualizarEnTexto(); actualizarPistaSector(); pintarEmpresa();
+        }
+
+        function alEscribirEmpresa() {
+            empresaSel = null;
+            const texto = textoEmpresa();
+            if (empresasOk && texto) {
+                const { exacta } = coincidencias(texto);
+                if (exacta) { seleccionarEmpresa(exacta, false); return; }
+            }
+            actualizarEnTexto(); pintarEmpresa();
+        }
+
+        /* Después de analizar, con el campo Empresa vacío: ¿el texto nombra alguna empresa registrada? Si no, se avisa.
+           Solo SUGIERE: elegir una sugerencia es lo que la confirma. */
+        function actualizarAvisoEmpresa() {
+            const caja = $('avisoEmpresa');
+            caja.replaceChildren(); caja.hidden = true;
+            if (!textoAnalizado || textoEmpresa()) return;
+            const halladas = empresasOk ? empresasEnTexto(textoAnalizado, empresas) : [];
+            caja.hidden = false;
+            if (halladas.length) {
+                caja.append(
+                    el('span', { text: 'Posible empresa en el texto:' }),
+                    ...halladas.map((e) => el('button', { type: 'button', class: 'btn-secundario', text: e.nombre, onclick: () => seleccionarEmpresa(e) })),
+                    el('span', { text: 'Elige la correcta, o escribe otra si no es.' }),
+                );
+                return;
+            }
+            const pista = pistaSector ? ` El texto menciona «${pistaSector.pista}», pero eso no dice qué empresa es.` : '';
+            caja.append(el('span', { text: 'No encontré el nombre de ninguna empresa en el texto. Si en el portal ves su logo, escríbela aquí; si no, puedes guardar la oferta sin empresa.' + pista }));
+        }
+
+        /* Cómo averiguar el sector de una empresa: buscarla tú o preguntarme a mí (no hay ninguna IA corriendo por detrás). */
+        async function copiarPregunta(nombre, aviso) {
+            const texto = `¿A qué sector pertenece la empresa «${nombre}» (Perú)? Dame su sector principal, una frase que explique por qué y una fuente que pueda abrir para comprobarlo. Sectores posibles: ${sectores.map((x) => x.nombre).join(', ')}.`;
+            let copiado = false;
+            try { await navigator.clipboard.writeText(texto); copiado = true; } catch (_) { /* sin permiso: se prueba el otro camino */ }
+            if (!copiado) {
+                try {
+                    const t = el('textarea', { style: 'position:fixed;opacity:0;' }); t.value = texto; document.body.append(t); t.select();
+                    copiado = document.execCommand('copy'); t.remove();
+                } catch (_) { copiado = false; }
+            }
+            aviso.textContent = copiado ? 'Pregunta copiada ✔ pégala en el chat con Claude.' : 'No se pudo copiar; escribe el nombre de la empresa en el chat.';
+        }
+
+        function pintarAyuda(nombre) {
+            const caja = $('ayudaEmpresa');
+            caja.replaceChildren(); caja.hidden = false;
+            const aviso = el('span', { text: '' });
+            caja.append(
+                el('span', { text: '¿No sabes su sector?' }),
+                el('a', { class: 'ofe-enlace', href: `https://www.google.com/search?q=${encodeURIComponent(nombre + ' Perú empresa sector')}`, target: '_blank', rel: 'noopener noreferrer', text: 'Buscar en Google' }),
+                el('button', { type: 'button', class: 'ofe-enlace', text: 'Copiar pregunta para Claude', onclick: () => copiarPregunta(nombre, aviso) }),
+                aviso,
+            );
+        }
+
+        function pintarEmpresa() {
+            const texto = textoEmpresa();
+            const sug = $('sugEmpresas'), info = $('infoEmpresa');
+            sug.replaceChildren(); sug.hidden = true; info.hidden = true;
+            $('ayudaEmpresa').replaceChildren(); $('ayudaEmpresa').hidden = true;
+            $('filaConfirmar').hidden = true; $('filaAlias').hidden = true;
+            $('filaEnTexto').hidden = !texto;
+            actualizarAvisoEmpresa();
+            if (!texto) return;
+            info.hidden = false;
+            if (!empresasOk) { info.textContent = 'La lista de empresas no está disponible: solo se guardará el nombre escrito en la oferta.'; return; }
+            if (empresaSel) {
+                const verificada = empresaSel.estado === 'verificada';
+                info.textContent = `Empresa registrada: ${empresaSel.nombre} · ${nombreDeSector(empresaSel.sector) || 'sin sector'} · ${verificada ? 'sector verificado' : 'sector sin verificar'}`;
+                if (!verificada) { $('filaConfirmar').hidden = false; pintarAyuda(empresaSel.nombre); }
+                return;
+            }
+            const { parciales } = coincidencias(texto);
+            if (parciales.length) {
+                sug.hidden = false;
+                sug.append(el('span', { text: '¿Es alguna de estas?' }), ...parciales.map((e) => el('button', { type: 'button', text: e.nombre, onclick: () => seleccionarEmpresa(e) })));
+            }
+            const sector = $('selSector').value;
+            info.textContent = sector && sector !== SIN_SECTOR
+                ? 'Empresa nueva: al guardar se registra con el sector elegido (queda verificada).'
+                : 'Empresa nueva: elige su sector para registrarla; sin sector solo se guarda el nombre en la oferta.';
+            $('filaAlias').hidden = false;
+            pintarAyuda(texto);
+        }
+
+        const MENSAJES_RPC = {
+            '23505': 'Esa empresa o ese alias ya existe. Revisa si ya está registrada con otro nombre.',
+            '42501': 'Tu sesión no tiene permiso de administrador para registrar empresas.',
+        };
+        function errorDeRpc(que, error) {
+            return new ErrorEmpresa((MENSAJES_RPC[error.code] || `No se pudo ${que} (${error.message || error.code}).`) + ' La oferta NO se guardó.');
+        }
+
+        /* Deja lista la empresa de la oferta: devuelve su id (o null si solo se guarda el nombre escrito). */
+        async function resolverEmpresa(paquete, notas, decision) {
+            const texto = textoEmpresa();
+            if (!texto || !empresasOk) return null;
+            const sector = $('selSector').value;
+            const sectorSlug = sector && sector !== SIN_SECTOR ? sector : '';
+            if (empresaSel) {
+                if (empresaSel.estado !== 'verificada' && $('chkConfirmarSector').checked && sectorSlug) {
+                    const { error } = await rpcAdmin('admin_verificar_empresa', { p_empresa: empresaSel.id, p_sector: sectorSlug });
+                    if (error) throw errorDeRpc('confirmar el sector de la empresa', error);
+                    notas.push('sector de la empresa confirmado');
+                }
+                paquete.empresa = empresaSel.nombre;
+                return empresaSel.id;
+            }
+            const aliasDe = $('selAliasDe').value;
+            if (aliasDe) {
+                const { error } = await rpcAdmin('admin_agregar_alias', { p_empresa: aliasDe, p_alias: texto });
+                if (error) throw errorDeRpc('agregar el alias', error);
+                notas.push('alias agregado');
+                return aliasDe;
+            }
+            if (decision !== 'registrar' || !sectorSlug) return null;   // solo se registra una empresa nueva si lo decidiste en el cuadro; si no, queda el nombre en la oferta
+            const { data, error } = await rpcAdmin('admin_crear_empresa', { p_nombre: texto, p_sector: sectorSlug, p_origen: sectorDeSugerencia ? 'oferta' : 'manual' });
+            if (error) throw errorDeRpc('registrar la empresa', error);
+            notas.push('empresa nueva registrada');
+            return data && data.id ? data.id : null;
+        }
+
         /* ───────────── Formulario → paquete para el servidor ───────────── */
         function leerFormulario() {
             const errores = [];
@@ -552,7 +780,7 @@
             const paquete = {
                 fuente, puesto,
                 ...(url ? { url } : {}),
-                ...(empresa ? { empresa } : {}),
+                ...(empresa ? { empresa, empresa_en_texto: $('chkEnTexto').checked } : {}),
                 ...(sector && sector !== SIN_SECTOR ? { sector } : {}),
                 ...(ubicacion ? { ubicacion } : {}),
                 ...(fecha ? { fecha_publicacion: fecha } : {}),
@@ -579,8 +807,63 @@
             m.className = 'admin-msg' + (clase ? ' ' + clase : '');
         }
 
-        async function enviar() {
+        /* ───────────── Cuadro antes de guardar: sin empresa / empresa nueva ───────────── */
+        function ocultarCuadro() {
+            const c = $('cuadroGuardar');
+            c.replaceChildren(); c.hidden = true;
+            if ($('btnOtra').hidden) $('btnEnviar').hidden = false;   // tras guardar con éxito, «Guardar» sigue oculto hasta «Cargar otra»
+        }
+
+        function volverAEscribirEmpresa() { ocultarCuadro(); $('inpEmpresa').focus(); }
+
+        function mostrarCuadro(caso) {
+            const c = $('cuadroGuardar');
+            const texto = textoEmpresa();
+            const sector = $('selSector').value;
+            const botones = el('div', { class: 'ofe-cuadro-botones' });
+            const boton = (txt, clase, fn) => el('button', { type: 'button', class: clase, text: txt, onclick: fn });
+            c.replaceChildren(); c.hidden = false;
+            $('btnEnviar').hidden = true;
+            mensaje('', '');
+
+            if (caso === 'sin_empresa') {
+                c.append(el('p', { text: 'Esta oferta no tiene una empresa identificada. Si en el portal ves su logo o su nombre, vuelve y escríbela: ayuda a clasificar mejor la oferta. Si no la tienes, guárdala sin empresa; queda pendiente y podrás completarla después.' }));
+                botones.append(boton('Volver a completar', 'btn-secundario', volverAEscribirEmpresa), boton('Guardar sin empresa', 'admin-form-submit ofe-cuadro-ok', () => enviar('sin_empresa')));
+                c.append(botones);
+                return;
+            }
+            const similares = coincidencias(texto).parciales;
+            c.append(el('p', { text: caso === 'nueva'
+                ? `«${texto}» no está registrada en SIGA. Si la registras, quedará como empresa nueva en el sector «${nombreDeSector(sector)}» (verificada, porque tú elegiste el sector).`
+                : `«${texto}» no está registrada en SIGA y no elegiste sector, así que solo se guardará el nombre escrito en la oferta, sin registrar la empresa.` }));
+            if (similares.length) {
+                c.append(el('p', { text: '¿Es la misma que alguna de estas? Si lo es, elígela para no duplicarla:' }),
+                    el('div', { class: 'ofe-cuadro-botones' }, ...similares.map((e) => el('button', { type: 'button', class: 'btn-secundario', text: e.nombre, onclick: () => { ocultarCuadro(); seleccionarEmpresa(e); } }))));
+            }
+            if (caso === 'nueva') {
+                botones.append(boton('Registrar y guardar', 'admin-form-submit ofe-cuadro-ok', () => enviar('registrar')), boton('Guardar solo con el nombre', 'btn-secundario ofe-cuadro-alt', () => enviar('solo_nombre')));
+            } else {
+                botones.append(boton('Guardar solo con el nombre', 'admin-form-submit ofe-cuadro-ok', () => enviar('solo_nombre')));
+            }
+            botones.append(boton('Volver', 'btn-secundario', volverAEscribirEmpresa));
+            c.append(botones);
+        }
+
+        /* Valida y decide si hace falta preguntar algo antes de guardar. */
+        async function alPulsarGuardar() {
             if (enviando) return;
+            const { errores } = leerFormulario();
+            if (errores.length) { ocultarCuadro(); mensaje(errores.join(' '), 'error'); return; }
+            const texto = textoEmpresa();
+            const sector = $('selSector').value;
+            if (!texto) { mostrarCuadro('sin_empresa'); return; }
+            if (empresasOk && !empresaSel && !$('selAliasDe').value) { mostrarCuadro(sector && sector !== SIN_SECTOR ? 'nueva' : 'nueva_sin_sector'); return; }
+            await enviar('directo');
+        }
+
+        async function enviar(decision = 'directo') {
+            if (enviando) return;
+            ocultarCuadro();
             const { errores, paquete } = leerFormulario();
             if (errores.length) { mensaje(errores.join(' '), 'error'); return; }
             const { data } = await supabase.auth.getSession();
@@ -591,6 +874,9 @@
             $('btnEnviar').disabled = true;
             mensaje('Guardando… (si el servidor estaba dormido puede tardar hasta 50 segundos)', '');
             try {
+                const notas = [];
+                const empresaId = await resolverEmpresa(paquete, notas, decision);
+                if (empresaId) paquete.empresa_id = empresaId;
                 const resp = await fetchConTiempo(`${API}/api/mercado/ofertas`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -599,7 +885,8 @@
                 let j = null;
                 try { j = await resp.json(); } catch (_) { /* respuesta sin JSON */ }
                 if (j && j.status === 'created') {
-                    mensaje(`Guardada ✔ ${j.requisitos} competencia(s), ${j.carreras_relacionadas} carrera(s) reconocida(s), ${j.carreras_pendientes} pendiente(s) de revisar. Queda como pendiente.`, 'exito');
+                    mensaje(`Guardada ✔ ${j.requisitos} competencia(s), ${j.carreras_relacionadas} carrera(s) reconocida(s), ${j.carreras_pendientes} pendiente(s) de revisar. Queda como pendiente.${notas.length ? ' Además: ' + notas.join(', ') + '.' : ''}${decision === 'sin_empresa' ? ' Quedó sin empresa: podrás completarla después.' : ''}${decision === 'solo_nombre' ? ' Se guardó solo el nombre escrito (la empresa no quedó registrada).' : ''}`, 'exito');
+                    if (notas.length) await cargarEmpresas();
                     $('btnOtra').hidden = false;
                     $('btnEnviar').hidden = true;
                 } else if (j && j.status === 'duplicate') {
@@ -613,7 +900,8 @@
                     mensaje(base + campos + detalle, 'error');
                 }
             } catch (e) {
-                mensaje('No se pudo conectar con el servidor. Revisa tu internet e inténtalo de nuevo.', 'error');
+                if (e instanceof ErrorEmpresa) mensaje(e.message, 'error');
+                else mensaje('No se pudo conectar con el servidor. Revisa tu internet e inténtalo de nuevo.', 'error');
             } finally {
                 enviando = false;
                 $('btnEnviar').disabled = false;
@@ -632,6 +920,10 @@
             $('selFuente').value = '';
             $('selSector').value = '';
             fuenteManual = false;
+            empresaSel = null; enTextoManual = false; sectorManual = false; sectorDeSugerencia = false; textoAnalizado = ''; pistaSector = null;
+            $('chkEnTexto').checked = false; $('chkConfirmarSector').checked = false; $('selAliasDe').value = '';
+            ocultarCuadro();
+            actualizarPistaSector(); pintarEmpresa();
             actualizarNotaEnlace();
             mensaje('', '');
         }
@@ -653,10 +945,14 @@
             $('btnAnalizar').addEventListener('click', analizar);
             $('btnLimpiar').addEventListener('click', reiniciar);
             $('btnOtra').addEventListener('click', reiniciar);
-            $('btnEnviar').addEventListener('click', enviar);
+            $('btnEnviar').addEventListener('click', alPulsarGuardar);
             $('btnImagenes').addEventListener('click', () => $('inputImagenes').click());
             $('inputImagenes').addEventListener('change', (e) => { leerImagenes(e.target.files); e.target.value = ''; });
             $('selFuente').addEventListener('change', () => { fuenteManual = true; actualizarNotaEnlace(); });
+            $('inpEmpresa').addEventListener('input', () => { ocultarCuadro(); alEscribirEmpresa(); });
+            $('selAliasDe').addEventListener('change', () => { ocultarCuadro(); });
+            $('chkEnTexto').addEventListener('change', () => { enTextoManual = true; });
+            $('selSector').addEventListener('change', () => { ocultarCuadro(); sectorManual = true; sectorDeSugerencia = false; actualizarPistaSector(); pintarEmpresa(); });
             // Al pegar un enlace, la fuente se completa sola (si no la elegiste tú)
             $('inpUrl').addEventListener('input', () => {
                 if (fuenteManual) return;
@@ -688,6 +984,7 @@
             });
 
             cargarCatalogo();
+            cargarEmpresas();
         }
         iniciar();
     </script>

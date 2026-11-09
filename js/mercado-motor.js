@@ -259,7 +259,7 @@ function detectarNivel(plegado, seg, ini, fin) {
 //   - Si dos términos se pisan, gana el más largo ("SAP ERP" cuenta como SAP, no además como ERP).
 
 const RE_REDES_TECNICO =
-    /\b(?:computadoras?|computadores|ordenadores|datos|comunicaciones|telecomunicaciones|lan|wan|vlan|tcp|ip|cisco|ccna|routers?|switch(?:es)?|servidores|infraestructura|firewall|vpn)\b/;
+    /\b(?:computadoras?|computadores|ordenadores|datos|comunicaciones|telecomunicaciones|lan|wan|vlan|tcp|ip|cisco|ccna|ccnp|ccie|routers?|switch(?:es)?|servidores|infraestructura|firewall|vpn|[2-5]g|lte|volte|gsm|umts|wcdma|fibra|ftth|radio|moviles?|estaciones? base|antenas?|wi-?fi|inalambric[oa]s?|bgp|ospf|mpls)\b/;
 
 /** Devuelve 'ok' | 'rechazar' | 'ambigua' para una coincidencia de término, según las reglas especiales. */
 function reglaEspecial(slug, termino, plegado, ini, fin, seg) {
@@ -529,4 +529,221 @@ export function detectarCompetencias(texto, catalogo) {
     }
 
     return { version: VERSION_MOTOR, texto_limpio: limpio, redacciones, requisitos, descartadas, avisos };
+}
+
+// --------------------------------------------------------------
+// Ayudas para completar la oferta (no cambian la detección de competencias)
+// --------------------------------------------------------------
+
+/** Minúsculas, sin tildes ni signos, espacios simples. Sirve para comparar textos. */
+export function normalizarBase(texto) {
+    return String(texto == null ? "" : texto)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/\./g, "")
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+}
+
+/** Igual que normalizarBase y además quita al final S.A.C., S.A.A., S.R.L., E.I.R.L.… (así «Bitel Perú SAC» ≈ «Bitel Perú»).
+ *  Es la MISMA regla que usa la base de datos (private.normalizar_nombre): si se cambia una, se cambia la otra. */
+export function normalizarNombre(texto) {
+    return normalizarBase(texto).replace(/\s+(sac|saa|sa|srl|eirl|scrl|sas|ltda)$/, "");
+}
+
+/** ¿Alguno de los nombres aparece escrito (como palabras completas) en el texto? */
+export function nombreEnTexto(texto, nombres) {
+    const t = " " + normalizarBase(texto) + " ";
+    return (nombres || []).some((n) => {
+        const x = normalizarNombre(n);
+        return x.length >= 2 && t.includes(" " + x + " ");
+    });
+}
+
+const PALABRAS_DE_PUESTO =
+    "egresad[oa]s?|bachiller(?:es)?|practicantes?|pasantes?|analistas?|asistentes?|auxiliar(?:es)?|ingenier[oa]s?|tecnic[oa]s?|jefes?|coordinador(?:a|es)?|supervisor(?:a|es)?|especialistas?|desarrollador(?:a|es)?|administrador(?:a|es)?|gerentes?|asesor(?:a|es)?|ejecutiv[oa]s?|operari[oa]s?|responsables?|consultor(?:a|es)?|investigador(?:a|es)?|docentes?|arquitect[oa]s?|contador(?:a|es)?|abogad[oa]s?|disenador(?:a|es)?|programador(?:a|es)?|residente|inspector(?:a|es)?|planner|trainee";
+const RE_PUESTO_EN_LINEA = new RegExp("\\b(?:" + PALABRAS_DE_PUESTO + ")\\b");
+const RE_PUESTO_AL_INICIO = new RegExp("^(?:" + PALABRAS_DE_PUESTO + ")\\b");
+const RE_PUESTO_EN_FRASE = new RegExp(
+    "(?:en busqueda de|busca(?:mos)?|requiere(?:mos)?|necesita(?:mos)?|contrata(?:mos)?|incorpora(?:mos)?|convoca(?:mos)?)\\s+(?:a\\s+)?(?:un|una|al|a la)?\\s*((?:" +
+    PALABRAS_DE_PUESTO +
+    ")\\b[^,.;:\\n]{0,90}?)(?=\\s+(?:altamente|con|para|que|quien|de manera|muy|y que)\\b|[,.;:\\n]|$)"
+);
+const TITULOS_GENERICOS = new Set([
+    "descripcion de la oferta", "descripcion del puesto", "descripcion", "detalle de la oferta", "oferta de trabajo", "oferta laboral",
+    "oferta de empleo", "resumen", "requisitos", "funciones", "perfil", "perfil del cargo", "nombre del cargo", "cargo", "puesto",
+    "responsabilidades", "convocatoria", "oportunidad laboral", "se busca", "buscamos", "requerimos", "requerimientos", "beneficios",
+]);
+
+const ENCABEZADOS_DE_SECCION = new Set([
+    "requisitos", "funciones", "responsabilidades", "perfil", "perfil del cargo", "requerimientos", "beneficios", "requisitos perfil",
+    "funciones y responsabilidades", "que ofrecemos", "lo que ofrecemos", "ofrecemos",
+]);
+const RE_ENCABEZADO_DE_SECCION = /^(?:requisitos|funciones|responsabilidades|perfil|requerimientos|beneficios|que ofrecemos|lo que ofrecemos)\b/;
+const RE_NO_ES_TITULO = /^(?:ser|tener|contar|no haber|cumplir|dominio|conocimientos?|experiencia|disponibilidad|manejo|estudiantes?)\b/;
+const TERMINA_EN_CONECTOR = /\b(?:de|del|la|las|los|en|y|e|o|para|con|a)$/;
+
+const RE_PREFIJO_DE_BUSQUEDA = /^(?:se busca(?:n)?|buscamos|requerimos|necesitamos|se requiere(?:n)?|solicitamos|contratamos|convocamos)\s+(?:a\s+)?(?:un|una)?\s*/i;
+
+function limpiarPuesto(texto) {
+    let t = texto.replace(/^[^\p{L}\p{N}]+/u, "").replace(/[^\p{L}\p{N})]+$/u, "").trim();
+    t = t.replace(RE_PREFIJO_DE_BUSQUEDA, "");
+    return t ? t.charAt(0).toUpperCase() + t.slice(1) : "";
+}
+
+/**
+ * Intenta reconocer el PUESTO real. Solo devuelve algo si está razonablemente claro; si no, devuelve "" y lo escribes tú.
+ * Ignora encabezados genéricos como «Descripción de la oferta». Primero mira si una de las primeras líneas es un título;
+ * si no, busca la frase «… en búsqueda de un Egresado de …».
+ * @returns {string}
+ */
+export function sugerirPuesto(texto) {
+    const original = typeof texto === "string" ? texto.normalize("NFC") : "";
+    const lineas = original.split("\n").map((l) => l.trim()).filter(Boolean);
+
+    // 1) Una de las primeras líneas (antes de «Requisitos», «Funciones»…) es un título corto con una palabra de puesto.
+    //    Si el título quedó partido en varios renglones («Practicante de / Transformación / Digital»), se vuelve a unir.
+    const limpiarLinea = (l) => l.replace(/^[^\p{L}\p{N}]+/u, "").replace(/[\s:.\-–—]+$/u, "").trim();
+    let vistas = 0;
+    for (let i = 0; i < lineas.length; i++) {
+        const limpia = limpiarLinea(lineas[i]);
+        if (!limpia) continue;
+        const base = normalizarBase(limpia);
+        if (ENCABEZADOS_DE_SECCION.has(base) || RE_ENCABEZADO_DE_SECCION.test(base)) break; // lo que sigue ya no es el título
+        if (TITULOS_GENERICOS.has(base)) continue;
+        if (++vistas > 8) continue;
+        // La línea misma debe parecer un título (así un logo o una marca suelta no se pega con el título de abajo)
+        if (RE_NO_ES_TITULO.test(base) || !(RE_PUESTO_AL_INICIO.test(base) || RE_PUESTO_EN_LINEA.test(plegar(limpia)))) continue;
+        let titulo = limpia;
+        for (let j = i + 1, unidas = 0; j < lineas.length && unidas < 2; j++, unidas++) {
+            const sig = limpiarLinea(lineas[j]);
+            const sigBase = normalizarBase(sig);
+            if (!sig || sig.split(/\s+/).length > 6 || ENCABEZADOS_DE_SECCION.has(sigBase) || TITULOS_GENERICOS.has(sigBase)) break;
+            if (/[.!?:]$/.test(lineas[j].trim())) break;
+            if (TERMINA_EN_CONECTOR.test(normalizarBase(titulo)) || TERMINA_EN_CONECTOR.test(sigBase)) titulo += " " + sig;
+            else break;
+        }
+        const palabras = titulo.split(/\s+/);
+        if (titulo.length > 110 || palabras.length > 14) continue;
+        if (/[.!?]$/.test(lineas[i]) && palabras.length > 6) continue; // una oración, no un título
+        const puesto = limpiarPuesto(titulo);
+        if (puesto) return puesto;
+    }
+
+    // 2) «… se encuentra en búsqueda de un Egresado de Ingeniería Electrónica o Telecomunicaciones altamente capacitado …»
+    const m = RE_PUESTO_EN_FRASE.exec(plegar(original));
+    if (m) {
+        const ini = m.index + m[0].indexOf(m[1]);
+        const candidato = limpiarPuesto(original.slice(ini, ini + m[1].length));
+        if (candidato.length >= 4 && candidato.length <= 110) return candidato;
+    }
+    return "";
+}
+
+// Pistas del propio texto sobre el sector de la empresa. Los identificadores son los de la tabla «sectores».
+const PISTAS_DE_SECTOR = [
+    ["banca", "banca|bancari[oa]s?|financier[oa]s?|seguros?|aseguradora|fintech|microfinanzas", "aseguradora|entidad financiera|institucion financiera"],
+    ["telecomunicaciones", "telecomunicaciones|telecom|telefonia|operador(?:a)? movil", "operador de telecomunicaciones|operadora de telecomunicaciones"],
+    ["consumo-masivo-retail", "retail|retailer|supermercados?|tiendas por departamento|consumo masivo|comercio minorista", "supermercados|tiendas por departamento"],
+    ["energia-electricidad", "energia|electric[a-z]*|generacion electrica|distribucion electrica|hidroelectric[a-z]*", "distribuidora electrica|generadora electrica"],
+    ["mineria-metalurgia", "mineri[a]|miner[oa]s?|metalurgi[a-z]*", "minera|empresa minera|compania minera"],
+    ["petroleo-gas-petroquimica", "petroleo|hidrocarburos|gas natural|petroquimic[a-z]*", "petrolera|empresa petrolera"],
+    ["construccion-infraestructura", "construccion|constructora|inmobiliari[a-z]*|obras civiles", "constructora|inmobiliaria"],
+    ["industria-manufactura", "manufactura|metalmecanic[a-z]*|industria manufacturera|planta industrial", "empresa manufacturera|metalmecanica"],
+    ["tecnologia-software", "tecnologia|software|servicios de ti|consultora tecnologica|transformacion digital", "empresa de software|software house|empresa tecnologica"],
+    ["logistica-transporte", "logistica|transporte|operador logistico|cadena de suministro", "operador logistico|empresa de transporte"],
+    ["consultoria-servicios-profesionales", "consultoria|consultora|auditoria|servicios profesionales", "consultora|firma de auditoria"],
+    ["sector-publico-regulacion", "organismo regulador|entidad publica|sector publico|municipalidad|ministerio|gobierno regional", "municipalidad|organismo regulador|entidad publica"],
+    ["educacion-investigacion", "universidad|instituto|colegio|educacion|investigacion", "universidad|instituto superior"],
+    ["medio-ambiente-sostenibilidad", "medio ambiente|gestion ambiental|sostenibilidad|saneamiento", "consultora ambiental"],
+    ["agroindustria-pesca", "agroindustri[a-z]*|agroexport[a-z]*|pesca|pesquera|acuicultura", "pesquera|agroexportadora|agroindustrial"],
+    ["quimica-farmaceutica-textil", "farmaceutic[a-z]*|laboratorio|textil|quimic[a-z]*|cosmetic[a-z]*", "laboratorio farmaceutico|empresa textil"],
+    ["arquitectura-urbanismo-diseno", "arquitectura|urbanismo", "estudio de arquitectura"],
+].map(([slug, palabras, fuertes]) => [
+    slug,
+    // «empresa/compañía/grupo… (hasta 60 caracteres) palabra clave»: la oferta DICE qué tipo de empresa es.
+    // O una pista fuerte por sí sola («una minera», «constructora»).
+    new RegExp(
+        "\\b(?:empresa|compania|organizacion|grupo|corporacion|firma|entidad|multinacional|operador(?:a)?)\\b[^.\\n]{0,60}?\\b(?:" + palabras + ")\\b|\\b(?:somos|es|una|un|la|el|nuestra|nuestro)\\s+(?:empresa\\s+)?(?:" + fuertes + ")\\b"
+    ),
+]);
+
+/**
+ * Pista sobre el sector de la empresa según lo que dice el texto («empresa líder en telecomunicaciones»). Solo devuelve algo
+ * si UN solo sector encaja; si hay dudas, devuelve null. Es una SUGERENCIA: quien decide eres tú.
+ * @returns {{slug: string, pista: string} | null}
+ */
+export function sugerirSector(texto) {
+    const original = typeof texto === "string" ? texto.normalize("NFC") : "";
+    const plegado = plegar(original);
+    const aciertos = [];
+    for (const [slug, re] of PISTAS_DE_SECTOR) {
+        const m = re.exec(plegado);
+        if (m) aciertos.push({ slug, pista: original.slice(m.index, m.index + m[0].length).replace(/\s+/g, " ").trim().slice(0, 90) });
+    }
+    return aciertos.length === 1 ? aciertos[0] : null;
+}
+
+// --------------------------------------------------------------
+// Empresas: errores de tipeo y empresas registradas que aparecen en el texto
+// --------------------------------------------------------------
+
+/** Distancia de edición (cuántas letras hay que cambiar, quitar o agregar para pasar de un texto a otro). */
+export function distanciaEdicion(a, b) {
+    const x = String(a == null ? "" : a), y = String(b == null ? "" : b);
+    if (x === y) return 0;
+    if (!x.length) return y.length;
+    if (!y.length) return x.length;
+    let previa = Array.from({ length: y.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= x.length; i++) {
+        const actual = [i];
+        for (let j = 1; j <= y.length; j++) {
+            actual[j] = Math.min(previa[j] + 1, actual[j - 1] + 1, previa[j - 1] + (x[i - 1] === y[j - 1] ? 0 : 1));
+        }
+        previa = actual;
+    }
+    return previa[y.length];
+}
+
+/**
+ * Empresas registradas cuyo nombre o alias SE PARECE por escritura a lo escrito («Bittel» → Bitel, «Interbanck» → Interbank).
+ * Los nombres de menos de 4 letras (EY, BCP) no se comparan por parecido: darían demasiados falsos avisos.
+ * @param {string} texto
+ * @param {{nombre: string, alias?: string[]}[]} empresas
+ */
+export function parecidos(texto, empresas) {
+    const q = normalizarNombre(texto);
+    if (q.length < 3) return [];
+    return (empresas || []).filter((e) =>
+        [e.nombre, ...(e.alias || [])].some((n) => {
+            const x = normalizarNombre(n);
+            if (x.length < 4 || x === q) return false;
+            const umbral = Math.min(3, Math.max(1, Math.floor(Math.max(x.length, q.length) / 4)));
+            return distanciaEdicion(q, x) <= umbral;
+        })
+    );
+}
+
+/**
+ * Empresas registradas cuyo nombre o alias aparece ESCRITO en el texto, con la misma escritura o todo en mayúsculas (las tildes
+ * no importan). Así «Claro» o «TASA» no saltan en frases como «es claro que…» o «tasa de interés». Solo SUGIERE: nunca elige.
+ */
+export function empresasEnTexto(texto, empresas) {
+    const sinTildes = (t) => String(t == null ? "" : t).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const t = sinTildes(texto);
+    const encontradas = [];
+    for (const e of empresas || []) {
+        for (const nombre of [e.nombre, ...(e.alias || [])]) {
+            const n = sinTildes(nombre).trim();
+            if (n.length < 2) continue;
+            // misma escritura que en el catálogo, o TODO en mayúsculas (los títulos suelen venir así: «BITEL», «GRUPO GAM»)
+            const aparece = [n, n.toUpperCase()].some((variante) => {
+                const patron = variante.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+                return new RegExp("(?<![\\p{L}\\p{N}])" + patron + "(?![\\p{L}\\p{N}])", "u").test(t);
+            });
+            if (aparece) { encontradas.push(e); break; }
+        }
+    }
+    return encontradas;
 }
