@@ -603,21 +603,6 @@ def _pedir_catalogo(config):
     if not isinstance(filas, list) or not filas:
         raise RuntimeError("catálogo vacío")
     return [_competencia_para_catalogo(f) for f in filas]
-    respuesta = requests.get(
-        f"{config['url']}/rest/v1/competencias",
-        params={"select": "slug,nombre,area,variantes", "estado": "eq.activa", "order": "area.asc,nombre.asc"},
-        headers=_cabeceras_supabase(config["anon"]),
-        timeout=TIMEOUT_SUPABASE_SEGUNDOS,
-    )
-    if respuesta.status_code != 200:
-        raise RuntimeError(f"HTTP {respuesta.status_code}")
-    filas = respuesta.json()
-    if not isinstance(filas, list) or not filas:
-        raise RuntimeError("catálogo vacío")
-    return [
-        {"slug": f["slug"], "nombre": f["nombre"], "area": f["area"], "variantes": list(f.get("variantes") or [])}
-        for f in filas
-    ]
 
 
 def _pedir_sectores(config):
