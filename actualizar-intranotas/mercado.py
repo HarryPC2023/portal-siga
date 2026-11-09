@@ -292,6 +292,9 @@ class Oferta(BaseModel):
     fecha_publicacion: Optional[str] = None
     empresa: Optional[str] = Field(default=None, max_length=150)
     sector: Optional[str] = Field(default=None, max_length=60)   # slug del sector de la empresa (opcional)
+    # Empresa identificada por el administrador (solo se acepta si la oferta viene de su sesión; ver _procesar_oferta)
+    empresa_id: Optional[str] = Field(default=None, pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+    empresa_en_texto: Optional[bool] = None   # ¿el nombre de la empresa aparece escrito en el texto de la oferta?
     carreras_mencionadas: List[str] = Field(default_factory=list, max_length=10)
     requisitos: List[Requisito] = Field(min_length=1, max_length=40)
 
@@ -449,7 +452,7 @@ def calcular_huella_contenido(fuente, puesto, empresa, ubicacion, competencias):
 _DETALLE_SEGURO = re.compile(r"^[a-záéíóúñ_ ]{1,40}$")
 
 
-def _procesar_oferta(datos):
+def _procesar_oferta(datos, por_admin=False):
     config = _config()
     if not _supabase_listo(config, con_secreto=True):
         logger.error("Mercado: faltan variables de Supabase o la llave pública no es válida; no se puede guardar la oferta")
@@ -466,6 +469,9 @@ def _procesar_oferta(datos):
             url_limpia = None
         else:
             raise _DatoInvalido(["url"])
+        # La empresa identificada solo puede venir de la sesión del administrador, nunca de la extensión
+        if oferta.empresa_id and not por_admin:
+            raise _DatoInvalido(["empresa_id"])
     except ValidationError as error:
         return _error(422, "datos_invalidos", campos=_campos_con_error(error))
     except _DatoInvalido as error:
@@ -487,6 +493,9 @@ def _procesar_oferta(datos):
         "fecha_publicacion": oferta.fecha_publicacion,
         "empresa": oferta.empresa,
         "sector": oferta.sector,
+        "empresa_id": oferta.empresa_id if por_admin else None,
+        "empresa_en_texto": oferta.empresa_en_texto,
+        "por_admin": bool(por_admin),   # lo fija ESTE servidor; el cliente no puede mandarlo (la validación lo rechaza)
         "carreras_mencionadas": oferta.carreras_mencionadas,
         "requisitos": [
             {"competencia": r.competencia, "nivel": r.nivel, "tipo": r.tipo, "fragmento": r.fragmento}
@@ -675,7 +684,7 @@ async def recibir_oferta(request: Request):
         return _error(429, "demasiadas_solicitudes")
 
     # 5. Todo lo demás (validar y hablar con Supabase) en un hilo, para no frenar al resto del servidor
-    return await run_in_threadpool(_procesar_oferta, datos)
+    return await run_in_threadpool(_procesar_oferta, datos, not con_clave)
 
 
 def registrar_rutas_mercado(app):
