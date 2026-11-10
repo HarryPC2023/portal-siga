@@ -22,7 +22,7 @@
  * Las reglas especiales de detección están al final de la sección "Reglas especiales".
  */
 
-export const VERSION_MOTOR = "1.4";
+export const VERSION_MOTOR = "1.5";
 
 const LIMITE_TEXTO = 30000;          // caracteres; más que eso se recorta (y se avisa)
 const MAX_PALABRAS_FRAGMENTO = 19;   // "menos de 20 palabras"
@@ -282,6 +282,28 @@ const RE_DESARROLLO_ANGULAR = new RegExp("\\b(?:" + BASE_DESARROLLO + "|react|vu
 // cuentan como CI/CD si la oferta, en cualquier parte, habla de desarrollo. «Integración continua» y «CI/CD» cuentan siempre.
 const RE_DESARROLLO_CICD = new RegExp("\\b(?:" + BASE_DESARROLLO + "|devops|pipelines?|docker|kubernetes|jenkins|repositorios?)\\b");
 
+// «BTS» también significa «build to suit» (y es un grupo musical): solo cuenta como estación base si la oferta, en cualquier parte,
+// habla de telecomunicaciones. NodeB, eNodeB y gNodeB cuentan siempre.
+const RE_TELECOM_CONTEXTO = /\b(?:telecomunicaciones?|telecom|celulares?|antenas?|redes? moviles?|redes? celulares?|lte|3g|4g|5g|radio|radiofrecuencia|rf|ran|nodeb|enodeb|gnodeb|estacion(?:es)? base|operadores? moviles?)\b/;
+
+// «Cortocircuito» suelto aparece en seguridad eléctrica general («evitar cortocircuitos»): solo cuenta como estudio de cortocircuito si
+// su frase habla de estudios, cálculos o de otros estudios eléctricos («flujo de carga, cortocircuito, coordinación de protecciones»).
+const RE_ESTUDIO_ELECTRICO = /\b(?:flujos? de (?:carga|potencia)|coordinacion de protecci(?:on|ones)|arc[ -]?flash|arco electrico|estudios?|analisis|calculos?|etap|digsilent|powerfactory|simulacion|iec 60909|ieee 1584)\b/;
+
+// «Cámaras de seguridad» aparece en descripciones generales de vigilancia: solo cuenta como CCTV si su frase habla de lo técnico.
+const RE_CCTV_TECNICO = /\b(?:instalacion(?:es)?|instalar|mantenimiento|configuracion|configurar|sistemas?|dvr|nvr|ip|cableado|montaje|tecnicos?|ingenieros?|equipos?|software|cctv|videovigilancia)\b/;
+// «Cisco» cuenta como dominio de equipos solo con contexto de equipos o redes en la oferta; «certificación Cisco» no lo es por sí sola.
+const RE_CISCO_EQUIPOS = /\b(?:routers?|switch(?:es)?|ios|equipos?|configuracion|configurar|redes?|networking|firewalls?|enrutamiento|vlans?|catalyst|nexus|meraki|packet tracer)\b/;
+// «Proteus» solo cuenta como software de simulación electrónica si la oferta habla de electrónica.
+const RE_ELECTRONICA = /\b(?:electronic[ao]s?|electronica|circuitos?|pcb|esquematicos?|microcontroladores?|arduino|kicad|altium|placas? electronicas?|isis|ares)\b/;
+
+// Frases compuestas que piden DOS competencias a la vez: cuentan para las dos (no solo para la que tenga el término más largo).
+// Solo se aplican si las dos competencias existen en el catálogo.
+const FRASES_COMPUESTAS = [
+    { re: /(?<![a-z0-9])planificacion y optimizacion (?:de )?(?:rf|radiofrecuencia|redes moviles)(?![a-z0-9])/g, slugs: ["planificacion-rf", "optimizacion-rf"] },
+    { re: /(?<![a-z0-9])(?:baja y media tension|media y baja tension|bt ?[\/y] ?mt|mt ?[\/y] ?bt)(?![a-z0-9])/g, slugs: ["baja-tension", "media-tension"] },
+];
+
 /** Devuelve 'ok' | 'rechazar' | 'ambigua' para una coincidencia de término, según las reglas especiales. */
 function reglaEspecial(slug, termino, plegado, ini, fin, seg, catalogoMovil = false) {
     if (slug === "javascript" && termino === "js") {
@@ -289,6 +311,22 @@ function reglaEspecial(slug, termino, plegado, ini, fin, seg, catalogoMovil = fa
     }
     if (slug === "sql" && termino === "sql") {
         return /[a-z][-/]$/.test(plegado.slice(0, ini)) ? "rechazar" : "ok";
+    }
+    if (slug === "cortocircuito" && (termino === "cortocircuito" || termino === "cortocircuitos")) {
+        return RE_ESTUDIO_ELECTRICO.test(plegado.slice(seg.ini, seg.fin)) ? "ok" : "rechazar";
+    }
+    if (slug === "cctv" && termino === "camaras de seguridad") {
+        return RE_CCTV_TECNICO.test(plegado.slice(seg.ini, seg.fin)) ? "ok" : "rechazar";
+    }
+    if (slug === "cisco" && termino === "cisco") {
+        if (/(?:certificacion(?:es)?|certificad[oa]s?|certified|cursos?)\s+(?:de\s+)?$/.test(plegado.slice(0, ini))) return "rechazar";
+        return RE_CISCO_EQUIPOS.test(plegado) ? "ok" : "rechazar";
+    }
+    if (slug === "proteus" && termino === "proteus") {
+        return RE_ELECTRONICA.test(plegado) ? "ok" : "rechazar";
+    }
+    if (slug === "estaciones-base" && termino === "bts") {
+        return RE_TELECOM_CONTEXTO.test(plegado) ? "ok" : "rechazar";
     }
     if (slug === "ci-cd" && (termino === "despliegue continuo" || termino === "entrega continua")) {
         return RE_DESARROLLO_CICD.test(plegado) ? "ok" : "rechazar";
@@ -459,11 +497,27 @@ export function detectarCompetencias(texto, catalogo) {
         }
     }
 
-    // 2. Si dos se pisan, gana la más larga ("SQL Server" gana sobre "SQL")
+    // 1b. Frases compuestas: la misma frase cuenta para varias competencias
+    for (const fc of FRASES_COMPUESTAS) {
+        const cs = fc.slugs.map((sl) => competencias.find((c) => c.slug === sl));
+        if (cs.some((c) => !c)) continue;
+        fc.re.lastIndex = 0;
+        let m;
+        while ((m = fc.re.exec(plegado))) {
+            const ini = m.index;
+            const fin = ini + m[0].length;
+            const seg = segmentoAlrededor(limpio, limitesFrase, ini);
+            if (fin > seg.fin) seg.fin = segmentoAlrededor(limpio, limitesFrase, fin - 1).fin;
+            for (const c of cs) candidatas.push({ c, ini, fin, seg });
+        }
+    }
+
+    // 2. Si dos se pisan, gana la más larga ("SQL Server" gana sobre "SQL"). Dos competencias con EXACTAMENTE la misma frase
+    //    (frases compuestas) no se pisan entre sí: cuentan las dos.
     candidatas.sort((p, q) => q.fin - q.ini - (p.fin - p.ini) || p.ini - q.ini);
     const aceptadas = [];
     for (const k of candidatas) {
-        if (!aceptadas.some((o) => k.ini < o.fin && o.ini < k.fin)) aceptadas.push(k);
+        if (!aceptadas.some((o) => k.ini < o.fin && o.ini < k.fin && !(k.ini === o.ini && k.fin === o.fin && k.c.slug !== o.c.slug))) aceptadas.push(k);
     }
     aceptadas.sort((p, q) => p.ini - q.ini);
 

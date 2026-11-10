@@ -25,84 +25,545 @@
     <style>
         /* ---- Cargar ofertas: estilos propios (usan los colores de SIGA; las tarjetas son siempre blancas) ---- */
         /* Lo que lleva el atributo «hidden» debe quedar oculto de verdad (varias clases de abajo usan display:flex, que le ganaría) */
-        [hidden] { display: none !important; }
-        .ofe-volver { display: inline-block; margin-bottom: 18px; text-decoration: none; }
-        .ofe-pasos { display: flex; flex-direction: column; gap: 22px; }
-        .ofe-caja { background: #fff; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); padding: 22px 24px; color: #000; }
-        .ofe-caja .admin-form-titulo { display: flex; align-items: center; gap: 10px; }
-        .ofe-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado)); color: #fff; font-size: 14px; font-weight: 700; }
-        .ofe-nota { font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--ink-soft); line-height: 1.5; margin: 6px 0 12px; }
-        .ofe-texto { width: 100%; min-height: 190px; font-family: 'Poppins', sans-serif; font-size: 14px; color: #000; background: #fff;
-            border: 1.5px solid rgba(0, 0, 0, 0.12); border-radius: 12px; padding: 12px 14px; resize: vertical; box-sizing: border-box; }
-        .ofe-texto:focus, .ofe-input:focus, .ofe-sel:focus { outline: none; border-color: var(--brand-azul); }
-        .ofe-texto.arrastrando { border-color: var(--brand-morado); background: var(--brand-morado-tinte); }
-        .ofe-fila-botones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
-        .ofe-fila-botones button { border: none; cursor: pointer; }
-        .ofe-estado { font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--ink-soft); min-height: 18px; margin-top: 8px; }
-        .ofe-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-bottom: 18px; }
-        .ofe-campo { display: flex; flex-direction: column; gap: 6px; }
-        .ofe-campo > span { font-size: 13px; font-weight: 600; color: var(--ink-soft); }
-        .ofe-campo small { font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 12px; color: var(--ink-soft); }
-        .ofe-input, .ofe-sel { font-family: 'Poppins', sans-serif; font-size: 14px; color: #000; background: #fff; box-sizing: border-box; width: 100%;
-            border: 1.5px solid rgba(0, 0, 0, 0.12); border-radius: 10px; padding: 10px 12px; }
-        .ofe-subtitulo { font-family: var(--font-heading); font-weight: 600; font-size: 15px; color: #000; margin: 20px 0 8px; }
-        .ofe-privacidad { font-family: 'Poppins', sans-serif; font-size: 12.5px; background: var(--brand-azul-tinte); color: #000; border-radius: 10px; padding: 9px 12px; margin-bottom: 14px; }
-        .ofe-tabla { display: flex; flex-direction: column; gap: 8px; }
-        .ofe-cabecera, .ofe-req { display: grid; grid-template-columns: 34px minmax(120px, 1.1fr) 120px 130px minmax(200px, 3fr) 34px; gap: 10px; align-items: center; }
-        .ofe-cabecera { font-size: 12px; font-weight: 600; color: var(--ink-soft); padding: 0 10px; }
-        .ofe-req { background: var(--paper); border: 1.5px solid rgba(0, 0, 0, 0.08); border-left: 6px solid #9aa0a6; border-radius: 10px; padding: 8px 10px; }
-        .ofe-req[data-tipo="obligatorio"] { border-left-color: var(--acento-cian); }
-        .ofe-req[data-tipo="deseable"] { border-left-color: var(--acento-amarillo); }
-        .ofe-req.excluida { opacity: 0.45; }
-        .ofe-req .nombre { font-weight: 600; font-size: 14px; color: #000; }
-        .ofe-frag { display: flex; flex-direction: column; gap: 3px; }
-        .ofe-contador { font-family: 'Poppins', sans-serif; font-size: 11.5px; color: var(--ink-soft); }
-        .ofe-contador.mal { color: #991b1b; font-weight: 600; }
-        .ofe-input.mal { border-color: #E23E3E; }
-        .ofe-quitar { border: none; background: transparent; cursor: pointer; font-size: 16px; color: #991b1b; }
-        .ofe-desc { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: var(--brand-morado-tinte); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; color: #000; }
-        .ofe-desc .motivo { font-weight: 600; }
-        .ofe-desc button { border: none; cursor: pointer; margin-left: auto; }
-        .ofe-agregar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
-        .ofe-agregar .ofe-sel { max-width: 280px; }
-        .ofe-avisos { font-family: 'Poppins', sans-serif; font-size: 13px; background: var(--bg-amarillo); color: #000; border-radius: 10px; padding: 9px 14px; margin-top: 12px; }
-        .ofe-avisos ul { margin: 4px 0 0 18px; padding: 0; }
-        .ofe-buscador { margin-top: 10px; border: 1.5px solid rgba(0, 0, 0, 0.12); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; background: #fff; }
-        .ofe-buscador-barra { display: flex; gap: 8px; align-items: center; }
-        .ofe-buscador-barra .ofe-input { flex: 1; }
-        .ofe-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-        .ofe-chip { border: 1.5px solid rgba(0, 0, 0, 0.15); background: #fff; color: #000; border-radius: 999px; padding: 4px 12px; font-family: 'Poppins', sans-serif; font-size: 12.5px; cursor: pointer; }
-        .ofe-chip:hover { border-color: var(--brand-azul); }
-        .ofe-chip.activo { background: var(--brand-azul-tinte); border-color: var(--brand-azul); font-weight: 600; }
-        .ofe-lista-comp { max-height: 340px; overflow-y: auto; border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 10px; }
-        .ofe-grupo { position: sticky; top: 0; background: var(--brand-morado-tinte); color: #000; font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 600; padding: 6px 12px; }
-        .ofe-item-comp { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: start; padding: 8px 12px; border-top: 1px solid rgba(0, 0, 0, 0.06); cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 13.5px; color: #000; }
-        .ofe-item-comp:hover { background: var(--brand-azul-tinte); }
-        .ofe-item-comp small { grid-column: 2; font-size: 12px; color: var(--ink-soft); line-height: 1.4; }
-        .ofe-etiqueta { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: var(--brand-azul-tinte); font-size: 11px; font-weight: 500; vertical-align: middle; }
-        .ofe-etiqueta.general { background: var(--brand-morado-tinte); }
-        .ofe-buscador-pie { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-        .ofe-sug { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-family: 'Poppins', sans-serif; font-size: 12.5px; color: var(--ink-soft); }
-        .ofe-sug button { border: 1.5px solid rgba(0, 0, 0, 0.15); background: #fff; color: #000; border-radius: 999px; padding: 4px 10px; font-family: 'Poppins', sans-serif; font-size: 12.5px; cursor: pointer; }
-        .ofe-sug button:hover { border-color: var(--brand-azul); }
-        .ofe-info-empresa { font-family: 'Poppins', sans-serif; font-size: 12.5px; color: #000; background: var(--brand-azul-tinte); border-radius: 8px; padding: 6px 10px; }
-        .ofe-aviso-empresa { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: 'Poppins', sans-serif; font-size: 12.5px; color: #000; background: var(--brand-morado-tinte); border-radius: 8px; padding: 8px 10px; }
-        .ofe-aviso-empresa button { border: none; cursor: pointer; }
-        .ofe-enlace { font-family: 'Poppins', sans-serif; font-size: 12.5px; color: var(--brand-azul); text-decoration: underline; cursor: pointer; background: none; border: none; padding: 0; }
-        .ofe-cuadro { margin-top: 12px; border: 1.5px solid var(--brand-azul); background: var(--brand-azul-tinte); color: #000; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 13.5px; line-height: 1.5; display: flex; flex-direction: column; gap: 10px; }
-        .ofe-cuadro p { margin: 0; }
-        .ofe-cuadro .ofe-cuadro-botones { display: flex; flex-wrap: wrap; gap: 8px; }
-        .ofe-cuadro button { cursor: pointer; }
-        .ofe-check { display: flex; gap: 8px; align-items: flex-start; font-family: 'Poppins', sans-serif; font-size: 12.5px; color: #000; cursor: pointer; }
-        .ofe-pista { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-family: 'Poppins', sans-serif; font-size: 12.5px; color: #000; background: var(--brand-morado-tinte); border-radius: 8px; padding: 6px 10px; }
-        .ofe-pista button { border: none; cursor: pointer; }
-        .ofe-vacio { font-family: 'Poppins', sans-serif; font-size: 13px; color: var(--ink-soft); padding: 8px 2px; }
+        [hidden] {
+            display: none !important;
+        }
+
+        .ofe-volver {
+            display: inline-block;
+            margin-bottom: 18px;
+            text-decoration: none;
+        }
+
+        .ofe-pasos {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .ofe-caja {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            padding: 22px 24px;
+            color: #000;
+        }
+
+        .ofe-caja .admin-form-titulo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ofe-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .ofe-nota {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: var(--ink-soft);
+            line-height: 1.5;
+            margin: 6px 0 12px;
+        }
+
+        .ofe-texto {
+            width: 100%;
+            min-height: 190px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #000;
+            background: #fff;
+            border: 1.5px solid rgba(0, 0, 0, 0.12);
+            border-radius: 12px;
+            padding: 12px 14px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .ofe-texto:focus,
+        .ofe-input:focus,
+        .ofe-sel:focus {
+            outline: none;
+            border-color: var(--brand-azul);
+        }
+
+        .ofe-texto.arrastrando {
+            border-color: var(--brand-morado);
+            background: var(--brand-morado-tinte);
+        }
+
+        .ofe-fila-botones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .ofe-fila-botones button {
+            border: none;
+            cursor: pointer;
+        }
+
+        .ofe-estado {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: var(--ink-soft);
+            min-height: 18px;
+            margin-top: 8px;
+        }
+
+        .ofe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .ofe-campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .ofe-campo>span {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink-soft);
+        }
+
+        .ofe-campo small {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .ofe-input,
+        .ofe-sel {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #000;
+            background: #fff;
+            box-sizing: border-box;
+            width: 100%;
+            border: 1.5px solid rgba(0, 0, 0, 0.12);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .ofe-subtitulo {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 15px;
+            color: #000;
+            margin: 20px 0 8px;
+        }
+
+        .ofe-privacidad {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            background: var(--brand-azul-tinte);
+            color: #000;
+            border-radius: 10px;
+            padding: 9px 12px;
+            margin-bottom: 14px;
+        }
+
+        .ofe-tabla {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ofe-cabecera,
+        .ofe-req {
+            display: grid;
+            grid-template-columns: 34px minmax(120px, 1.1fr) 120px 130px minmax(200px, 3fr) 34px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ofe-cabecera {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            padding: 0 10px;
+        }
+
+        .ofe-req {
+            background: var(--paper);
+            border: 1.5px solid rgba(0, 0, 0, 0.08);
+            border-left: 6px solid #9aa0a6;
+            border-radius: 10px;
+            padding: 8px 10px;
+        }
+
+        .ofe-req[data-tipo="obligatorio"] {
+            border-left-color: var(--acento-cian);
+        }
+
+        .ofe-req[data-tipo="deseable"] {
+            border-left-color: var(--acento-amarillo);
+        }
+
+        .ofe-req.excluida {
+            opacity: 0.45;
+        }
+
+        .ofe-req .nombre {
+            font-weight: 600;
+            font-size: 14px;
+            color: #000;
+        }
+
+        .ofe-frag {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .ofe-contador {
+            font-family: 'Poppins', sans-serif;
+            font-size: 11.5px;
+            color: var(--ink-soft);
+        }
+
+        .ofe-contador.mal {
+            color: #991b1b;
+            font-weight: 600;
+        }
+
+        .ofe-input.mal {
+            border-color: #E23E3E;
+        }
+
+        .ofe-quitar {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 16px;
+            color: #991b1b;
+        }
+
+        .ofe-desc {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            background: var(--brand-morado-tinte);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: #000;
+        }
+
+        .ofe-desc .motivo {
+            font-weight: 600;
+        }
+
+        .ofe-desc button {
+            border: none;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .ofe-agregar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .ofe-agregar .ofe-sel {
+            max-width: 280px;
+        }
+
+        .ofe-avisos {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            background: var(--bg-amarillo);
+            color: #000;
+            border-radius: 10px;
+            padding: 9px 14px;
+            margin-top: 12px;
+        }
+
+        .ofe-avisos ul {
+            margin: 4px 0 0 18px;
+            padding: 0;
+        }
+
+        .ofe-buscador {
+            margin-top: 10px;
+            border: 1.5px solid rgba(0, 0, 0, 0.12);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #fff;
+        }
+
+        .ofe-buscador-barra {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .ofe-buscador-barra .ofe-input {
+            flex: 1;
+        }
+
+        .ofe-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .ofe-chip {
+            border: 1.5px solid rgba(0, 0, 0, 0.15);
+            background: #fff;
+            color: #000;
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            cursor: pointer;
+        }
+
+        .ofe-chip:hover {
+            border-color: var(--brand-azul);
+        }
+
+        .ofe-chip.activo {
+            background: var(--brand-azul-tinte);
+            border-color: var(--brand-azul);
+            font-weight: 600;
+        }
+
+        .ofe-lista-comp {
+            max-height: 340px;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+        }
+
+        .ofe-grupo {
+            position: sticky;
+            top: 0;
+            background: var(--brand-morado-tinte);
+            color: #000;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 6px 12px;
+        }
+
+        .ofe-item-comp {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 4px 10px;
+            align-items: start;
+            padding: 8px 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13.5px;
+            color: #000;
+        }
+
+        .ofe-item-comp:hover {
+            background: var(--brand-azul-tinte);
+        }
+
+        .ofe-item-comp small {
+            grid-column: 2;
+            font-size: 12px;
+            color: var(--ink-soft);
+            line-height: 1.4;
+        }
+
+        .ofe-etiqueta {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 1px 8px;
+            border-radius: 999px;
+            background: var(--brand-azul-tinte);
+            font-size: 11px;
+            font-weight: 500;
+            vertical-align: middle;
+        }
+
+        .ofe-etiqueta.general {
+            background: var(--brand-morado-tinte);
+        }
+
+        .ofe-buscador-pie {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ofe-sug {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: var(--ink-soft);
+        }
+
+        .ofe-sug button {
+            border: 1.5px solid rgba(0, 0, 0, 0.15);
+            background: #fff;
+            color: #000;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            cursor: pointer;
+        }
+
+        .ofe-sug button:hover {
+            border-color: var(--brand-azul);
+        }
+
+        .ofe-info-empresa {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: #000;
+            background: var(--brand-azul-tinte);
+            border-radius: 8px;
+            padding: 6px 10px;
+        }
+
+        .ofe-aviso-empresa {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: #000;
+            background: var(--brand-morado-tinte);
+            border-radius: 8px;
+            padding: 8px 10px;
+        }
+
+        .ofe-aviso-empresa button {
+            border: none;
+            cursor: pointer;
+        }
+
+        .ofe-enlace {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: var(--brand-azul);
+            text-decoration: underline;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .ofe-cuadro {
+            margin-top: 12px;
+            border: 1.5px solid var(--brand-azul);
+            background: var(--brand-azul-tinte);
+            color: #000;
+            border-radius: 12px;
+            padding: 14px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13.5px;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ofe-cuadro p {
+            margin: 0;
+        }
+
+        .ofe-cuadro .ofe-cuadro-botones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ofe-cuadro button {
+            cursor: pointer;
+        }
+
+        .ofe-check {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .ofe-pista {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: #000;
+            background: var(--brand-morado-tinte);
+            border-radius: 8px;
+            padding: 6px 10px;
+        }
+
+        .ofe-pista button {
+            border: none;
+            cursor: pointer;
+        }
+
+        .ofe-vacio {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: var(--ink-soft);
+            padding: 8px 2px;
+        }
+
         @media (max-width: 820px) {
-            .ofe-cabecera { display: none; }
-            .ofe-req { grid-template-columns: 34px 1fr 34px; }
-            .ofe-req .nombre { grid-column: 2; }
-            .ofe-req > .ofe-sel, .ofe-req > .ofe-frag { grid-column: 1 / -1; }
+            .ofe-cabecera {
+                display: none;
+            }
+
+            .ofe-req {
+                grid-template-columns: 34px 1fr 34px;
+            }
+
+            .ofe-req .nombre {
+                grid-column: 2;
+            }
+
+            .ofe-req>.ofe-sel,
+            .ofe-req>.ofe-frag {
+                grid-column: 1 / -1;
+            }
         }
     </style>
 </head>
@@ -114,7 +575,8 @@
     <section class="dash-hero">
         <div class="dash-wrap">
             <h1 class="dash-hero-titulo"><span class="titulo-pildora">OFERTAS</span></h1>
-            <p>Carga ofertas laborales para el Mapa de Competencias. Todo lo que cargues queda como pendiente de revisión.</p>
+            <p>Carga ofertas laborales para el Mapa de Competencias. Todo lo que cargues queda como pendiente de
+                revisión.</p>
         </div>
     </section>
 
@@ -129,9 +591,12 @@
                 <!-- 1 · TEXTO O CAPTURA -->
                 <div class="ofe-caja">
                     <div class="admin-form-titulo"><span class="ofe-num">1</span> Pega la oferta</div>
-                    <p class="ofe-nota">Pega el texto, o una captura con <b>Ctrl + V</b> (también puedes arrastrar imágenes aquí o elegirlas). Las
-                        capturas se leen en tu navegador y no se suben a ningún servidor. Revisa el texto antes de analizar.</p>
-                    <textarea id="textoOferta" class="ofe-texto" placeholder="Texto de la oferta…" spellcheck="false"></textarea>
+                    <p class="ofe-nota">Pega el texto, o una captura con <b>Ctrl + V</b> (también puedes arrastrar
+                        imágenes aquí o elegirlas). Las
+                        capturas se leen en tu navegador y no se suben a ningún servidor. Revisa el texto antes de
+                        analizar.</p>
+                    <textarea id="textoOferta" class="ofe-texto" placeholder="Texto de la oferta…"
+                        spellcheck="false"></textarea>
                     <div class="ofe-fila-botones">
                         <button type="button" id="btnAnalizar" class="admin-form-submit">Analizar</button>
                         <button type="button" id="btnImagenes" class="btn-secundario">Elegir imágenes…</button>
@@ -139,7 +604,8 @@
                         <input type="file" id="inputImagenes" accept="image/*" multiple hidden>
                     </div>
                     <div id="estadoOcr" class="ofe-estado"></div>
-                    <div id="estadoCatalogo" class="ofe-estado">Cargando catálogo de competencias… (si el servidor estaba dormido puede tardar hasta 50 segundos)</div>
+                    <div id="estadoCatalogo" class="ofe-estado">Cargando catálogo de competencias… (si el servidor
+                        estaba dormido puede tardar hasta 50 segundos)</div>
                 </div>
 
                 <!-- 2 · REVISIÓN -->
@@ -159,56 +625,85 @@
                                 <option value="otro">Otro (otra página, correo, etc.)</option>
                             </select>
                         </label>
-                        <label class="ofe-campo"><span>Enlace <small id="notaEnlace">(opcional en WhatsApp u Otro)</small></span>
-                            <input id="inpUrl" class="ofe-input" type="url" placeholder="https://…" autocomplete="off"></label>
+                        <label class="ofe-campo"><span>Enlace <small id="notaEnlace">(opcional en WhatsApp u
+                                    Otro)</small></span>
+                            <input id="inpUrl" class="ofe-input" type="url" placeholder="https://…"
+                                autocomplete="off"></label>
                         <label class="ofe-campo"><span>Puesto</span>
-                            <input id="inpPuesto" class="ofe-input" type="text" maxlength="200" placeholder="Ej. Analista de Datos Jr."></label>
-                        <div class="ofe-campo"><span>Empresa <small>(escríbela aunque solo se vea el logo; se compara con las ya registradas)</small></span>
-                            <input id="inpEmpresa" class="ofe-input" type="text" maxlength="150" autocomplete="off" aria-label="Empresa">
+                            <input id="inpPuesto" class="ofe-input" type="text" maxlength="200"
+                                placeholder="Ej. Analista de Datos Jr."></label>
+                        <div class="ofe-campo"><span>Empresa <small>(escríbela aunque solo se vea el logo; se compara
+                                    con las ya registradas)</small></span>
+                            <input id="inpEmpresa" class="ofe-input" type="text" maxlength="150" autocomplete="off"
+                                aria-label="Empresa">
                             <div id="sugEmpresas" class="ofe-sug" hidden></div>
                             <div id="avisoEmpresa" class="ofe-aviso-empresa" hidden></div>
                             <div id="infoEmpresa" class="ofe-info-empresa" hidden></div>
                             <div id="ayudaEmpresa" class="ofe-sug" hidden></div>
-                            <label class="ofe-check" id="filaEnTexto" hidden><input type="checkbox" id="chkEnTexto"> El nombre aparece escrito en el texto de la oferta</label>
-                            <label class="ofe-check" id="filaConfirmar" hidden><input type="checkbox" id="chkConfirmarSector"> Confirmar el sector de esta empresa (queda «verificada»)</label>
-                            <label class="ofe-campo" id="filaAlias" hidden><span><small>¿Es otro nombre de una empresa ya registrada?</small></span>
-                                <select id="selAliasDe" class="ofe-sel" aria-label="Es otro nombre de"><option value="">No, es una empresa distinta</option></select></label>
+                            <label class="ofe-check" id="filaEnTexto" hidden><input type="checkbox" id="chkEnTexto"> El
+                                nombre aparece escrito en el texto de la oferta</label>
+                            <label class="ofe-check" id="filaConfirmar" hidden><input type="checkbox"
+                                    id="chkConfirmarSector"> Confirmar el sector de esta empresa (queda
+                                «verificada»)</label>
+                            <label class="ofe-campo" id="filaAlias" hidden><span><small>¿Es otro nombre de una empresa
+                                        ya registrada?</small></span>
+                                <select id="selAliasDe" class="ofe-sel" aria-label="Es otro nombre de">
+                                    <option value="">No, es una empresa distinta</option>
+                                </select></label>
                         </div>
-                        <div class="ofe-campo"><span>Sector de la empresa <small>(qué tipo de empresa pide esto; aunque no la nombre)</small></span>
-                            <select id="selSector" class="ofe-sel"><option value="" selected disabled>— Elige el sector —</option></select>
-                            <div id="pistaSector" class="ofe-pista" hidden></div></div>
+                        <div class="ofe-campo"><span>Sector de la empresa <small>(qué tipo de empresa pide esto; aunque
+                                    no la nombre)</small></span>
+                            <select id="selSector" class="ofe-sel">
+                                <option value="" selected disabled>— Elige el sector —</option>
+                            </select>
+                            <div id="pistaSector" class="ofe-pista" hidden></div>
+                        </div>
                         <label class="ofe-campo"><span>Ubicación <small>(opcional)</small></span>
-                            <input id="inpUbicacion" class="ofe-input" type="text" maxlength="150" placeholder="Ej. Lima"></label>
+                            <input id="inpUbicacion" class="ofe-input" type="text" maxlength="150"
+                                placeholder="Ej. Lima"></label>
                         <label class="ofe-campo"><span>Fecha de publicación <small>(opcional)</small></span>
                             <input id="inpFecha" class="ofe-input" type="date"></label>
-                        <label class="ofe-campo"><span>Carreras mencionadas <small>(tal como aparecen, separadas por coma)</small></span>
-                            <input id="inpCarreras" class="ofe-input" type="text" placeholder="Ej. Ingeniería de Sistemas, Ingeniería Industrial"></label>
+                        <label class="ofe-campo"><span>Carreras mencionadas <small>(tal como aparecen, separadas por
+                                    coma)</small></span>
+                            <input id="inpCarreras" class="ofe-input" type="text"
+                                placeholder="Ej. Ingeniería de Sistemas, Ingeniería Industrial"></label>
                     </div>
 
                     <div class="ofe-subtitulo">Competencias detectadas</div>
-                    <p class="ofe-nota">Marca las que cuentan. El fragmento debe tener menos de 20 palabras y no incluir datos personales.
+                    <p class="ofe-nota">Marca las que cuentan. El fragmento debe tener menos de 20 palabras y no incluir
+                        datos personales.
                         «No indicado» significa que la oferta no dice si es obligatorio o deseable.</p>
                     <div class="ofe-tabla">
-                        <div class="ofe-cabecera"><span></span><span>Competencia</span><span>Nivel</span><span>Tipo</span><span>Fragmento de respaldo</span><span></span></div>
+                        <div class="ofe-cabecera">
+                            <span></span><span>Competencia</span><span>Nivel</span><span>Tipo</span><span>Fragmento de
+                                respaldo</span><span></span></div>
                         <div id="tbodyReq"></div>
                     </div>
                     <div class="ofe-agregar">
-                        <button type="button" id="btnAbrirBuscador" class="btn-secundario" style="border:none;cursor:pointer;" aria-expanded="false" aria-controls="panelBuscador">+ Agregar competencias a mano</button>
+                        <button type="button" id="btnAbrirBuscador" class="btn-secundario"
+                            style="border:none;cursor:pointer;" aria-expanded="false" aria-controls="panelBuscador">+
+                            Agregar competencias a mano</button>
                     </div>
                     <div id="panelBuscador" class="ofe-buscador" hidden>
                         <div class="ofe-buscador-barra">
-                            <input id="inpBuscarComp" class="ofe-input" type="search" autocomplete="off" placeholder="Busca por nombre o variante (ej. autocad, ccna, plc…)" aria-label="Buscar competencia">
-                            <button type="button" id="btnCerrarBuscador" class="btn-secundario" style="border:none;cursor:pointer;">Cerrar</button>
+                            <input id="inpBuscarComp" class="ofe-input" type="search" autocomplete="off"
+                                placeholder="Busca por nombre o variante (ej. autocad, ccna, plc…)"
+                                aria-label="Buscar competencia">
+                            <button type="button" id="btnCerrarBuscador" class="btn-secundario"
+                                style="border:none;cursor:pointer;">Cerrar</button>
                         </div>
-                        <div id="chipsCategoria" class="ofe-chips" role="group" aria-label="Filtrar por categoría" hidden></div>
+                        <div id="chipsCategoria" class="ofe-chips" role="group" aria-label="Filtrar por categoría"
+                            hidden></div>
                         <div id="listaComp" class="ofe-lista-comp"></div>
                         <div class="ofe-buscador-pie">
                             <span id="resumenBuscador" class="ofe-nota"></span>
-                            <button type="button" id="btnAgregarSel" class="admin-form-submit" disabled>Agregar seleccionadas (0)</button>
+                            <button type="button" id="btnAgregarSel" class="admin-form-submit" disabled>Agregar
+                                seleccionadas (0)</button>
                         </div>
                     </div>
 
-                    <div class="ofe-subtitulo" id="tituloDescartadas" hidden>Descartadas por el motor (puedes recuperarlas)</div>
+                    <div class="ofe-subtitulo" id="tituloDescartadas" hidden>Descartadas por el motor (puedes
+                        recuperarlas)</div>
                     <div id="listaDescartadas"></div>
                     <div id="listaAvisos" class="ofe-avisos" hidden></div>
                 </div>
@@ -235,7 +730,7 @@
 
     <script src="js/landing.js"></script>
     <script src="js/tema-siga.js?v=1"></script>
-{% raw %}
+    {% raw %}
     <script type="module">
         // Cargar ofertas (Admin). Pega texto o capturas → el motor detecta competencias → revisas → se guarda como "pendiente".
         // La seguridad real vive en el servidor (Render comprueba con Supabase que la sesión es la del administrador) y en
@@ -358,6 +853,7 @@
             telecomunicaciones: 'Telecomunicaciones', electronica_automatizacion: 'Electrónica y automatización', sistemas_electricos: 'Sistemas eléctricos',
             economia_finanzas: 'Economía y finanzas', textil: 'Textil', sistemas_empresariales: 'Sistemas empresariales', operaciones_produccion: 'Operaciones y producción',
             infraestructura_ti: 'Infraestructura, nube y redes TI', idiomas: 'Idiomas',
+            calculo_simulacion: 'Cálculo y simulación',
         };
         const nombreDeArea = (a) => AREAS[a] || String(a || 'otras').replace(/_/g, ' ').replace(/^./, (m) => m.toUpperCase());
         const CATEGORIAS = [['herramienta', 'Herramienta'], ['norma', 'Norma'], ['conocimiento', 'Conocimiento'], ['metodologia', 'Metodología'], ['actividad', 'Actividad'], ['certificacion', 'Certificación']];
@@ -400,8 +896,10 @@
             chips.replaceChildren();
             chips.hidden = !disponibles.some((c) => c.categoria);
             if (!chips.hidden) {
-                const chip = (valor, texto, n) => el('button', { type: 'button', class: 'ofe-chip' + (filtroCategoria === valor ? ' activo' : ''), 'aria-pressed': String(filtroCategoria === valor), text: `${texto} (${n})`,
-                    onclick: () => { filtroCategoria = valor; pintarBuscador(); } });
+                const chip = (valor, texto, n) => el('button', {
+                    type: 'button', class: 'ofe-chip' + (filtroCategoria === valor ? ' activo' : ''), 'aria-pressed': String(filtroCategoria === valor), text: `${texto} (${n})`,
+                    onclick: () => { filtroCategoria = valor; pintarBuscador(); }
+                });
                 chips.append(chip('', 'Todas', porBusqueda.length), ...CATEGORIAS.filter(([v]) => v === filtroCategoria || porBusqueda.some((c) => c.categoria === v)).map(([v, t]) => chip(v, t, porBusqueda.filter((c) => c.categoria === v).length)));
             }
 
@@ -656,10 +1154,12 @@
             lista.replaceChildren();
             $('tituloDescartadas').hidden = !descartadas.length;
             descartadas.forEach((d, i) => {
-                const agregar = el('button', { type: 'button', class: 'btn-secundario', text: 'Agregar', onclick: () => {
-                    if (!filas.some((f) => f.slug === d.competencia)) filas.push({ incluir: true, slug: d.competencia, nombre: d.nombre, nivel: '', tipo: 'no_indicado', fragmento: d.fragmento });
-                    descartadas.splice(i, 1); pintarTodo();
-                } });
+                const agregar = el('button', {
+                    type: 'button', class: 'btn-secundario', text: 'Agregar', onclick: () => {
+                        if (!filas.some((f) => f.slug === d.competencia)) filas.push({ incluir: true, slug: d.competencia, nombre: d.nombre, nivel: '', tipo: 'no_indicado', fragmento: d.fragmento });
+                        descartadas.splice(i, 1); pintarTodo();
+                    }
+                });
                 agregar.style.cssText = 'padding:6px 14px;font-size:13px;';
                 lista.append(el('div', { class: 'ofe-desc' },
                     el('b', { text: d.nombre }), el('span', { class: 'motivo', text: MOTIVOS[d.motivo] || d.motivo }), el('span', { text: `«${d.fragmento}»` }), agregar));
@@ -675,7 +1175,7 @@
         }
 
         /* ───────────── Empresa: lista registrada, coincidencias, alias y sector ───────────── */
-        class ErrorEmpresa extends Error {}
+        class ErrorEmpresa extends Error { }
         const nombreDeSector = (slug) => { const x = sectores.find((q) => q.slug === slug); return x ? x.nombre : ''; };
 
         async function rpcAdmin(nombre, args) {
@@ -734,10 +1234,12 @@
             caja.hidden = false;
             caja.append(
                 el('span', { text: `Sugerencia por el texto: ${sec.nombre} («${pistaSector.pista}»)` }),
-                el('button', { type: 'button', class: 'btn-secundario', text: 'Usar', onclick: () => {
-                    $('selSector').value = sec.slug; sectorManual = true; sectorDeSugerencia = true;
-                    actualizarPistaSector(); pintarEmpresa();
-                } }),
+                el('button', {
+                    type: 'button', class: 'btn-secundario', text: 'Usar', onclick: () => {
+                        $('selSector').value = sec.slug; sectorManual = true; sectorDeSugerencia = true;
+                        actualizarPistaSector(); pintarEmpresa();
+                    }
+                }),
             );
         }
 
@@ -956,9 +1458,11 @@
                 return;
             }
             const similares = coincidencias(texto).parciales;
-            c.append(el('p', { text: caso === 'nueva'
-                ? `«${texto}» no está registrada en SIGA. Si la registras, quedará como empresa nueva en el sector «${nombreDeSector(sector)}» (verificada, porque tú elegiste el sector).`
-                : `«${texto}» no está registrada en SIGA y no elegiste sector, así que solo se guardará el nombre escrito en la oferta, sin registrar la empresa.` }));
+            c.append(el('p', {
+                text: caso === 'nueva'
+                    ? `«${texto}» no está registrada en SIGA. Si la registras, quedará como empresa nueva en el sector «${nombreDeSector(sector)}» (verificada, porque tú elegiste el sector).`
+                    : `«${texto}» no está registrada en SIGA y no elegiste sector, así que solo se guardará el nombre escrito en la oferta, sin registrar la empresa.`
+            }));
             if (similares.length) {
                 c.append(el('p', { text: '¿Es la misma que alguna de estas? Si lo es, elígela para no duplicarla:' }),
                     el('div', { class: 'ofe-cuadro-botones' }, ...similares.map((e) => el('button', { type: 'button', class: 'btn-secundario', text: e.nombre, onclick: () => { ocultarCuadro(); seleccionarEmpresa(e); } }))));
@@ -1111,7 +1615,7 @@
         }
         iniciar();
     </script>
-{% endraw %}
+    {% endraw %}
 </body>
 
 </html>
