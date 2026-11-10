@@ -61,5 +61,9 @@ from (
          (has_table_privilege('anon', 'public.competencias', 'insert') or has_table_privilege('anon', 'public.competencias', 'update')
           or has_table_privilege('authenticated', 'public.competencias', 'insert') or has_table_privilege('authenticated', 'public.competencias', 'update')
           or has_table_privilege('authenticated', 'public.competencias', 'delete'))::text, 'true/false'
+  union all
+  select 13, 'Competencias: ningún término (nombre o variante) pertenece a dos competencias',
+         (select count(*)::text from (select lower(t) from public.competencias c, unnest(array[c.nombre] || c.variantes) as t
+                                       where c.estado = 'activa' group by lower(t) having count(distinct c.slug) > 1) y), '0'
 ) x
 order by n;

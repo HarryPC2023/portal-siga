@@ -22,7 +22,7 @@
  * Las reglas especiales de detección están al final de la sección "Reglas especiales".
  */
 
-export const VERSION_MOTOR = "1.1";
+export const VERSION_MOTOR = "1.4";
 
 const LIMITE_TEXTO = 30000;          // caracteres; más que eso se recorta (y se avisa)
 const MAX_PALABRAS_FRAGMENTO = 19;   // "menos de 20 palabras"
@@ -267,6 +267,21 @@ const RE_REDES_TECNICO =
 const RE_REDES_MOVIL =
     /\b(?:[2-5]g|lte|volte|gsm|umts|wcdma|fibra|ftth|radio|moviles?|estaciones? base|antenas?)\b/;
 
+// «R» (el lenguaje) suelta es una letra: solo cuenta si la frase habla de datos, estadística o programación
+//   («Python, R y SQL», «estadística con R»). Sin ese contexto se descarta en silencio (iniciales, «Plan R», etc.).
+const RE_R_CONTEXTO =
+    /\b(?:python|spss|stata|sas|excel|sql|matlab|power bi|tableau|estadistic[oa]s?|estadistica|analisis de datos|ciencia de datos|data science|machine learning|programacion|lenguajes?|rstudio|ggplot2?|tidyverse|shiny|software|herramientas?)\b/;
+
+// «React» y «Angular» sueltas también son palabras comunes («ability to react», «piedra angular»): solo cuentan si la oferta, en
+// cualquier parte, habla de desarrollo de software. Las variantes largas (React.js, ReactJS…) y las demás competencias no se afectan.
+const BASE_DESARROLLO = "javascript|typescript|html5?|css3?|node(?:\\.?js)?|nestjs|next(?:\\.?js)?|redux|front-?end|front end|back-?end|back end|full ?stack|desarrollador(?:a|es)?|developer|programador(?:a|es)?|desarrollo de software|desarrollo web|software|frameworks?|aplicaciones? web|npm|apis?|git|github|sql|python|java|programacion";
+const RE_DESARROLLO_REACT = new RegExp("\\b(?:" + BASE_DESARROLLO + "|angular|vue)\\b");
+const RE_DESARROLLO_ANGULAR = new RegExp("\\b(?:" + BASE_DESARROLLO + "|react|vue)\\b");
+
+// «Despliegue continuo» y «entrega continua» también existen fuera del software (despliegue de redes, entrega de mercadería): solo
+// cuentan como CI/CD si la oferta, en cualquier parte, habla de desarrollo. «Integración continua» y «CI/CD» cuentan siempre.
+const RE_DESARROLLO_CICD = new RegExp("\\b(?:" + BASE_DESARROLLO + "|devops|pipelines?|docker|kubernetes|jenkins|repositorios?)\\b");
+
 /** Devuelve 'ok' | 'rechazar' | 'ambigua' para una coincidencia de término, según las reglas especiales. */
 function reglaEspecial(slug, termino, plegado, ini, fin, seg, catalogoMovil = false) {
     if (slug === "javascript" && termino === "js") {
@@ -274,6 +289,20 @@ function reglaEspecial(slug, termino, plegado, ini, fin, seg, catalogoMovil = fa
     }
     if (slug === "sql" && termino === "sql") {
         return /[a-z][-/]$/.test(plegado.slice(0, ini)) ? "rechazar" : "ok";
+    }
+    if (slug === "ci-cd" && (termino === "despliegue continuo" || termino === "entrega continua")) {
+        return RE_DESARROLLO_CICD.test(plegado) ? "ok" : "rechazar";
+    }
+    if (slug === "react" && termino === "react") {
+        if (/\bto\s+$/.test(plegado.slice(0, ini))) return "rechazar";            // «ability to react»
+        return RE_DESARROLLO_REACT.test(plegado) ? "ok" : "rechazar";
+    }
+    if (slug === "angular" && termino === "angular") {
+        if (/piedra\s+$/.test(plegado.slice(0, ini))) return "rechazar";           // «piedra angular»
+        return RE_DESARROLLO_ANGULAR.test(plegado) ? "ok" : "rechazar";
+    }
+    if (slug === "r" && termino === "r") {
+        return RE_R_CONTEXTO.test(plegado.slice(seg.ini, seg.fin)) ? "ok" : "rechazar";
     }
     if (slug === "redes" && termino === "redes") {
         if (/^\s*sociales\b/.test(plegado.slice(fin))) return "rechazar";
