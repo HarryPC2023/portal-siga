@@ -28,11 +28,11 @@ from (
          (select count(*)::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
            where n.nspname = 'public' and p.proname like 'admin\_%' and has_function_privilege('anon', p.oid, 'execute')), '0'
   union all
-  select 6, 'Envoltorios admin_* que existen en public (los usa la página): 4 de empresas + 8 de la bandeja de revisión',
+  select 6, 'Envoltorios admin_* que existen en public (los usa la página): 4 de empresas + 10 de la bandeja de revisión (con tipo de puesto y perfil académico)',
          (select count(*)::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
            where n.nspname = 'public' and p.proname in ('admin_listar_empresas','admin_crear_empresa','admin_verificar_empresa','admin_agregar_alias',
              'admin_listar_ofertas','admin_vincular_empresa_oferta','admin_asignar_sector_oferta','admin_carrera_oferta',
-             'admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas')), '12'
+             'admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas','admin_asignar_tipo_puesto_oferta','admin_perfil_academico_oferta')), '14'
   union all
   select 7, 'registrar_oferta: ¿la ejecuta anon? (sí, con el secreto) y ¿authenticated? (no)',
          has_function_privilege('anon', 'public.registrar_oferta(text, jsonb)', 'execute')::text || '/' ||
@@ -40,7 +40,7 @@ from (
   union all
   select 8, 'Funciones de Mercado que siguen como SECURITY DEFINER en public (lo que marcaba el Security Advisor)',
          (select count(*)::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-           where n.nspname = 'public' and p.prosecdef and p.proname in ('registrar_oferta','admin_listar_empresas','admin_crear_empresa','admin_verificar_empresa','admin_agregar_alias','admin_listar_ofertas','admin_vincular_empresa_oferta','admin_asignar_sector_oferta','admin_carrera_oferta','admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas')), '0'
+           where n.nspname = 'public' and p.prosecdef and p.proname in ('registrar_oferta','admin_listar_empresas','admin_crear_empresa','admin_verificar_empresa','admin_agregar_alias','admin_listar_ofertas','admin_vincular_empresa_oferta','admin_asignar_sector_oferta','admin_carrera_oferta','admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas','admin_asignar_tipo_puesto_oferta','admin_perfil_academico_oferta')), '0'
   union all
   select 9, 'Sigue la restricción v4: empresa_id solo con el nombre confirmado',
          (select (count(*) > 0)::text from pg_constraint
@@ -66,10 +66,10 @@ from (
          (select count(*)::text from (select lower(t) from public.competencias c, unnest(array[c.nombre] || c.variantes) as t
                                        where c.estado = 'activa' group by lower(t) having count(distinct c.slug) > 1) y), '0'
   union all
-  select 14, 'Las 13 funciones reales viven en private, con SECURITY DEFINER y search_path vacío',
+  select 14, 'Las 15 funciones reales viven en private, con SECURITY DEFINER y search_path vacío',
          (select count(*)::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
            where n.nspname = 'private' and p.prosecdef and coalesce(p.proconfig @> array['search_path=""'], false)
-             and p.proname in ('registrar_oferta','admin_listar_empresas','admin_crear_empresa','admin_verificar_empresa','admin_agregar_alias','admin_listar_ofertas','admin_vincular_empresa_oferta','admin_asignar_sector_oferta','admin_carrera_oferta','admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas')), '13'
+             and p.proname in ('registrar_oferta','admin_listar_empresas','admin_crear_empresa','admin_verificar_empresa','admin_agregar_alias','admin_listar_ofertas','admin_vincular_empresa_oferta','admin_asignar_sector_oferta','admin_carrera_oferta','admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas','admin_asignar_tipo_puesto_oferta','admin_perfil_academico_oferta')), '15'
   union all
   select 15, 'anon puede ejecutar las funciones admin_* de private (debe ser 0) y registrar_oferta de private (debe ser true)',
          (select count(*)::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
@@ -86,5 +86,30 @@ from (
   select 18, 'ofertas: existen las columnas motivo_revision y revisada_en',
          (select count(*)::text from information_schema.columns
            where table_schema = 'public' and table_name = 'ofertas' and column_name in ('motivo_revision', 'revisada_en')), '2'
+  union all
+  select 19, 'Catálogos nuevos: 9 tipos de puesto y 5 perfiles académicos, activos',
+         (select count(*)::text from public.tipos_puesto where estado = 'activo') || '/' || (select count(*)::text from public.perfiles_academicos where estado = 'activo'), '9/5'
+  union all
+  select 20, 'RLS activo en las 3 tablas nuevas (tipos_puesto, perfiles_academicos, oferta_perfiles_academicos)',
+         (select count(*)::text from pg_class c join pg_namespace s on s.oid = c.relnamespace
+           where s.nspname = 'public' and c.relkind = 'r' and c.relrowsecurity
+             and c.relname in ('tipos_puesto', 'perfiles_academicos', 'oferta_perfiles_academicos')), '3'
+  union all
+  select 21, 'Las 3 tablas nuevas: anon puede leer y nadie puede escribir directo (true/false)',
+         (has_table_privilege('anon', 'public.tipos_puesto', 'select') and has_table_privilege('anon', 'public.perfiles_academicos', 'select')
+          and has_table_privilege('anon', 'public.oferta_perfiles_academicos', 'select'))::text || '/' ||
+         (select bool_or(has_table_privilege(r.rol, 'public.' || t.tabla, p.priv))
+            from (values ('anon'), ('authenticated')) r(rol)
+            cross join (values ('tipos_puesto'), ('perfiles_academicos'), ('oferta_perfiles_academicos')) t(tabla)
+            cross join (values ('insert'), ('update'), ('delete')) p(priv))::text, 'true/false'
+  union all
+  select 22, 'ofertas.tipo_puesto_id existe, es opcional y la tabla ofertas sigue cerrada para anon y authenticated (true/true/0)',
+         coalesce((select (is_nullable = 'YES')::text from information_schema.columns where table_schema = 'public' and table_name = 'ofertas' and column_name = 'tipo_puesto_id'), 'no existe')
+         || '/' || (select (count(*) = 1)::text from information_schema.columns where table_schema = 'public' and table_name = 'ofertas' and column_name = 'tipo_puesto_id')
+         || '/' || (select count(*)::text from (values ('anon'), ('authenticated')) r(rol) where has_table_privilege(r.rol, 'public.ofertas', 'select')), 'true/true/0'
+  union all
+  select 23, 'La política de perfiles académicos solo deja ver los confirmados de ofertas publicadas',
+         (select count(*)::text from pg_policies where schemaname = 'public' and tablename = 'oferta_perfiles_academicos'
+            and cmd = 'SELECT' and qual ilike '%confirmado = true%' and qual ilike '%oferta_esta_publicada%'), '1'
 ) x
 order by n;
