@@ -1,0 +1,1119 @@
+---
+---
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revisar ofertas - SIGA</title>
+    <meta name="theme-color" content="#000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/tema-siga.css?v=1">
+    <link rel="stylesheet" href="css/admin.css?v=3">
+    <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
+    <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
+    <style>
+        /* ---- Revisar ofertas: estilos propios. Rectángulos de esquinas suaves y bordes de colores intensos.
+              Las tarjetas son siempre blancas con texto negro (igual que «Cargar ofertas»). ---- */
+        [hidden] {
+            display: none !important;
+        }
+
+        :root {
+            --rev-verde: #00E676;
+            --rev-verde-borde: #00C853;
+            --rev-azul: #2979FF;
+            --rev-violeta: #7C4DFF;
+            --rev-magenta: #FF1F8E;
+            --rev-naranja: #FF9100;
+            --rev-rojo: #FF1744;
+        }
+
+        .rev-volver-fila {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .rev-volver-fila a {
+            text-decoration: none;
+        }
+
+        /* Aviso (éxito / error) */
+        .rev-aviso {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #000;
+            background: #fff;
+            border: 2px solid var(--rev-azul);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+        }
+
+        .rev-aviso.ok {
+            border-color: var(--rev-verde-borde);
+            background: #EAFFF3;
+        }
+
+        .rev-aviso.error {
+            border-color: var(--rev-rojo);
+            background: #FFEEF1;
+        }
+
+        .rev-aviso.aviso {
+            border-color: var(--rev-naranja);
+            background: #FFF5E5;
+        }
+
+        /* Pestañas */
+        .rev-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .rev-tab {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #000;
+            background: #fff;
+            border: 2px solid var(--rev-violeta);
+            border-radius: 8px;
+            padding: 8px 13px;
+            cursor: pointer;
+        }
+
+        .rev-tab:hover {
+            background: #F3EEFF;
+        }
+
+        .rev-tab[aria-pressed="true"] {
+            background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
+            border-color: var(--brand-morado);
+            color: #fff;
+        }
+
+        .rev-tab .n {
+            display: inline-block;
+            min-width: 22px;
+            text-align: center;
+            margin-left: 6px;
+            padding: 0 6px;
+            border-radius: 5px;
+            background: #EFE8FF;
+            color: #3A0A8C;
+            font-size: 12px;
+        }
+
+        .rev-tab[aria-pressed="true"] .n {
+            background: rgba(255, 255, 255, 0.92);
+            color: #3A0A8C;
+        }
+
+        /* Tarjeta de oferta */
+        .rev-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .rev-card {
+            --c: var(--rev-violeta);
+            --c-glow: rgba(124, 77, 255, 0.28);
+            background: #fff;
+            color: #000;
+            border: 2px solid var(--c);
+            border-radius: 10px;
+            box-shadow: 0 0 0 1px var(--c-glow), 0 0 14px var(--c-glow);
+        }
+
+        .rev-card.completa {
+            --c: var(--rev-verde-borde);
+            --c-glow: rgba(0, 230, 118, 0.35);
+        }
+
+        .rev-card.incompleta {
+            --c: var(--rev-naranja);
+            --c-glow: rgba(255, 145, 0, 0.30);
+        }
+
+        .rev-card.publicada {
+            --c: var(--rev-azul);
+            --c-glow: rgba(41, 121, 255, 0.30);
+        }
+
+        .rev-card.rechazada {
+            --c: var(--rev-magenta);
+            --c-glow: rgba(255, 31, 142, 0.28);
+        }
+
+        .rev-fila-cab {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+        }
+
+        .rev-check {
+            width: 20px;
+            height: 20px;
+            margin-top: 3px;
+            accent-color: var(--brand-morado);
+            flex: none;
+        }
+
+        .rev-cab {
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            color: #000;
+        }
+
+        .rev-cab:focus-visible,
+        .rev-btn:focus-visible,
+        .rev-tab:focus-visible,
+        .rev-sel:focus-visible,
+        .rev-inp:focus-visible,
+        .rev-check:focus-visible {
+            outline: 3px solid var(--rev-azul);
+            outline-offset: 2px;
+        }
+
+        .rev-puesto {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .rev-meta {
+            font-size: 12.5px;
+            color: var(--ink-soft);
+            margin: 2px 0 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .rev-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .rev-flecha {
+            flex: none;
+            font-size: 18px;
+            line-height: 1;
+            margin-top: 2px;
+            color: var(--brand-morado);
+            transition: transform 0.15s ease;
+        }
+
+        .rev-cab[aria-expanded="true"]+.rev-flecha {
+            transform: rotate(180deg);
+        }
+
+        /* Etiquetas y fichas: rectángulos de esquinas suaves */
+        .rev-tag {
+            --tc: var(--rev-violeta);
+            --tb: #F3EEFF;
+            --tt: #3A0A8C;
+            display: inline-block;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--tt);
+            background: var(--tb);
+            border: 1.5px solid var(--tc);
+            border-radius: 6px;
+            padding: 2px 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .rev-tag.ok {
+            --tc: var(--rev-verde-borde);
+            --tb: #E8FFF1;
+            --tt: #00531F;
+        }
+
+        .rev-tag.aviso {
+            --tc: var(--rev-naranja);
+            --tb: #FFF4E0;
+            --tt: #7A3F00;
+        }
+
+        .rev-tag.mal {
+            --tc: var(--rev-rojo);
+            --tb: #FFECEF;
+            --tt: #9E0020;
+        }
+
+        .rev-tag.azul {
+            --tc: var(--rev-azul);
+            --tb: #EAF1FF;
+            --tt: #0B3FA8;
+        }
+
+        .rev-tag.punteada {
+            border-style: dashed;
+        }
+
+        /* Cuerpo desplegado */
+        .rev-cuerpo {
+            border-top: 2px solid var(--c);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rev-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+            gap: 12px;
+        }
+
+        .rev-sec {
+            --sc: var(--rev-violeta);
+            border: 2px solid var(--sc);
+            border-radius: 8px;
+            padding: 10px 12px;
+            background: #fff;
+            min-width: 0;
+        }
+
+        .rev-sec.azul {
+            --sc: var(--rev-azul);
+        }
+
+        .rev-sec.violeta {
+            --sc: var(--rev-violeta);
+        }
+
+        .rev-sec.magenta {
+            --sc: var(--rev-magenta);
+        }
+
+        .rev-sec.verde {
+            --sc: var(--rev-verde-borde);
+        }
+
+        .rev-sec-titulo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: #000;
+            margin: 0 0 8px;
+        }
+
+        .rev-linea {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            margin: 0 0 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .rev-nota {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: var(--ink-soft);
+            margin: 0 0 8px;
+        }
+
+        .rev-fichas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .rev-ficha {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rev-mini {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            color: #000;
+            background: #fff;
+            border: 1.5px solid var(--rev-violeta);
+            border-radius: 5px;
+            padding: 4px 6px;
+            cursor: pointer;
+        }
+
+        .rev-mini:hover {
+            background: #F3EEFF;
+        }
+
+        .rev-mini.no {
+            border-color: var(--rev-rojo);
+        }
+
+        .rev-mini.si {
+            border-color: var(--rev-verde-borde);
+        }
+
+        .rev-fila-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .rev-sel,
+        .rev-inp,
+        .rev-area {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: #000;
+            background: #fff;
+            border: 1.5px solid rgba(0, 0, 0, 0.35);
+            border-radius: 8px;
+            padding: 8px 10px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .rev-sel {
+            min-width: 0;
+            flex: 1 1 190px;
+        }
+
+        .rev-inp {
+            flex: 1 1 190px;
+            min-width: 0;
+        }
+
+        .rev-area {
+            width: 100%;
+            min-height: 70px;
+            resize: vertical;
+        }
+
+        .rev-chk {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: #000;
+            margin-top: 6px;
+        }
+
+        .rev-chk input {
+            accent-color: var(--brand-morado);
+            margin-top: 2px;
+        }
+
+        /* Botones */
+        .rev-btn {
+            --bc: var(--brand-morado);
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #000;
+            background: #fff;
+            border: 2px solid var(--bc);
+            border-radius: 8px;
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+
+        .rev-btn:hover {
+            background: #F3EEFF;
+        }
+
+        .rev-btn.ok {
+            --bc: var(--rev-verde-borde);
+            background: var(--rev-verde);
+            color: #00260F;
+        }
+
+        .rev-btn.ok:hover {
+            background: #00D96B;
+        }
+
+        .rev-btn.no {
+            --bc: var(--rev-rojo);
+            color: #9E0020;
+        }
+
+        .rev-btn.no:hover {
+            background: #FFECEF;
+        }
+
+        .rev-btn.azul {
+            --bc: var(--rev-azul);
+            color: #0B3FA8;
+        }
+
+        .rev-btn.azul:hover {
+            background: #EAF1FF;
+        }
+
+        .rev-btn:disabled {
+            opacity: 0.55;
+            cursor: default;
+        }
+
+        .rev-ocupado .rev-btn,
+        .rev-ocupado .rev-mini,
+        .rev-ocupado .rev-tab {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .rev-acciones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .rev-detalles summary {
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #3A0A8C;
+        }
+
+        .rev-detalles ul {
+            margin: 6px 0 0;
+            padding-left: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: #000;
+        }
+
+        .rev-detalles li {
+            overflow-wrap: anywhere;
+            margin-bottom: 3px;
+        }
+
+        .rev-motivo-caja {
+            border: 2px solid var(--rev-rojo);
+            border-radius: 8px;
+            padding: 10px 12px;
+            background: #FFF7F8;
+        }
+
+        .rev-contador {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            color: var(--ink-soft);
+            text-align: right;
+        }
+
+        /* Pie: publicar varias y paginación */
+        .rev-pie {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+
+        .rev-vacio {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #000;
+            background: #fff;
+            border: 2px dashed var(--rev-violeta);
+            border-radius: 10px;
+            padding: 22px 18px;
+            text-align: center;
+        }
+
+        @media (max-width: 560px) {
+            .rev-fila-cab {
+                padding: 10px;
+            }
+
+            .rev-cuerpo {
+                padding: 10px;
+            }
+
+            .rev-btn {
+                flex: 1 1 auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include nav.html activo="" %}
+
+    <section class="dash-hero">
+        <div class="dash-wrap">
+            <h1 class="dash-hero-titulo"><span class="titulo-pildora">REVISAR OFERTAS</span></h1>
+            <p>Completa lo que falte de cada oferta y publícala o recházala. Solo lo publicado llega al Mapa de
+                Competencias.</p>
+        </div>
+    </section>
+
+    <section class="dash-detalle admin-ancho" style="padding-top:30px;">
+        <div id="estadoAcceso" class="admin-estado">Verificando acceso…</div>
+
+        <div id="contenidoRevisar" style="display:none;">
+            <div class="rev-volver-fila">
+                <a href="admin.html" class="btn-secundario">← Volver al Admin</a>
+                <a href="admin-ofertas.html" class="btn-secundario">Cargar ofertas →</a>
+            </div>
+
+            <div id="aviso" class="rev-aviso" role="status" aria-live="polite" hidden></div>
+
+            <div id="tabs" class="rev-tabs" role="group" aria-label="Filtros de la bandeja"></div>
+
+            <div id="lista" class="rev-lista" aria-live="polite">
+                <div class="rev-vacio">Cargando ofertas…</div>
+            </div>
+
+            <div id="pie" class="rev-pie" hidden></div>
+        </div>
+    </section>
+
+    <script src="js/landing.js"></script>
+    <script src="js/tema-siga.js?v=1"></script>
+    {% raw %}
+    <script type="module">
+        // Revisar ofertas (Admin). Aquí apruebas lo que cargaste en «Cargar ofertas»: completas lo que falte y lo publicas o lo rechazas.
+        // La seguridad real vive en la base de datos (cada función vuelve a comprobar que eres el administrador): esta
+        // verificación del lado del navegador solo evita mostrar la pantalla a otra persona.
+        // Todo texto que viene de una oferta se pinta con textContent (nunca como HTML).
+        import { supabase, requerirSesion, montarNavUsuario } from './js/auth-siga.js?v=9';
+
+        const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
+        const POR_PAGINA = 10;
+        const $ = (id) => document.getElementById(id);
+        const irA = (url) => { window.location.href = url; };
+
+        const TABS = [
+            { id: 'pendientes', t: 'Pendientes' },
+            { id: 'sin_empresa', t: 'Sin empresa' },
+            { id: 'nombre_sin_confirmar', t: 'Nombre sin confirmar' },
+            { id: 'sector_sin_verificar', t: 'Sector sin verificar' },
+            { id: 'carreras_por_revisar', t: 'Carreras por revisar' },
+            { id: 'completas', t: 'Completas' },
+            { id: 'publicadas', t: 'Publicadas' },
+            { id: 'rechazadas', t: 'Rechazadas' },
+        ];
+
+        const ref = { carreras: [], competencias: [], sectores: [], empresas: [], empresasOk: false, listo: false };
+        const est = { filtro: 'pendientes', desplazamiento: 0, abierta: null, rechazando: null, sel: new Set(), datos: null, ocupado: false };
+        let temporizadorAviso = null;
+
+        function el(etiqueta, props = {}, ...hijos) {
+            const nodo = document.createElement(etiqueta);
+            for (const [k, v] of Object.entries(props)) {
+                if (k === 'class') nodo.className = v;
+                else if (k === 'text') nodo.textContent = v;
+                else if (k.startsWith('on')) nodo.addEventListener(k.slice(2), v);
+                else if (v !== undefined && v !== null && v !== false) nodo.setAttribute(k, v);
+            }
+            for (const h of hijos) if (h) nodo.append(h);
+            return nodo;
+        }
+
+        const norm = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+        /* ───────────── Llamadas a Supabase ───────────── */
+        async function rpcAdmin(nombre, args) {
+            try {
+                const r = await supabase.rpc(nombre, args);
+                return { data: r.data, error: r.error };
+            } catch (e) { return { data: null, error: { code: 'red', message: String((e && e.message) || e) } }; }
+        }
+
+        function textoError(err) {
+            const m = String((err && err.message) || err || '');
+            if (err && err.code === 'red') return 'No se pudo conectar. Revisa tu internet y vuelve a intentar.';
+            if (err && err.code === '42501') return 'Tu sesión no tiene permiso de administrador. Vuelve a iniciar sesión.';
+            if (/no est[aá] en revisi/i.test(m)) return 'Esa oferta ya no está en revisión. Devuélvela a pendiente para editarla.';
+            if (/sin competencias/i.test(m)) return 'No se puede publicar una oferta sin competencias. Agrega al menos una.';
+            if (/motivo/i.test(m)) return 'Escribe un motivo de 1 a 200 caracteres.';
+            if (/ya existe/i.test(m)) return 'Esa empresa ya existe. Elígela de la lista.';
+            if (/solo se puede publicar/i.test(m)) return 'Esa oferta ya no está pendiente.';
+            return 'No se pudo completar: ' + m.replace(/^datos_invalidos:\s*/i, 'dato no válido — ');
+        }
+
+        function avisar(texto, tipo) {
+            const caja = $('aviso');
+            caja.textContent = texto;
+            caja.className = 'rev-aviso ' + (tipo || '');
+            caja.hidden = !texto;
+            clearTimeout(temporizadorAviso);
+            if (texto && tipo === 'ok') temporizadorAviso = setTimeout(() => { caja.hidden = true; }, 7000);
+        }
+
+        async function cargarReferencias() {
+            const [c, k, s, e] = await Promise.all([
+                supabase.from('carreras').select('id,nombre').eq('estado', 'activa').order('nombre'),
+                supabase.from('competencias').select('slug,nombre,area').eq('estado', 'activa').order('nombre'),
+                supabase.from('sectores').select('slug,nombre').eq('estado', 'activo').order('nombre'),
+                rpcAdmin('admin_listar_empresas'),
+            ]);
+            ref.carreras = (c && Array.isArray(c.data)) ? c.data : [];
+            ref.competencias = (k && Array.isArray(k.data)) ? k.data : [];
+            ref.sectores = (s && Array.isArray(s.data)) ? s.data : [];
+            asignarEmpresas(e);
+            ref.listo = true;
+            if (!ref.carreras.length || !ref.competencias.length) avisar('No se pudieron cargar las carreras o las competencias. Recarga la página.', 'error');
+            if (est.datos) pintarLista();
+        }
+
+        function asignarEmpresas(r) {
+            if (r && !r.error && Array.isArray(r.data)) {
+                ref.empresasOk = true;
+                ref.empresas = r.data.filter((x) => x && x.id && x.nombre).map((x) => ({ ...x, alias: Array.isArray(x.alias) ? x.alias : [] }));
+            } else { ref.empresasOk = false; ref.empresas = []; }
+        }
+
+        async function recargarEmpresas() { asignarEmpresas(await rpcAdmin('admin_listar_empresas')); }
+
+        async function cargarLista() {
+            const { data, error } = await rpcAdmin('admin_listar_ofertas', { p_filtro: est.filtro, p_limite: POR_PAGINA, p_desplazamiento: est.desplazamiento });
+            if (error || !data || !Array.isArray(data.ofertas)) {
+                $('lista').replaceChildren(el('div', { class: 'rev-vacio', text: 'No se pudo cargar la bandeja. ' + (error ? textoError(error) : '') }));
+                $('pie').hidden = true;
+                return false;
+            }
+            if (!data.ofertas.length && est.desplazamiento > 0) {       // la página quedó vacía (por ejemplo, publicaste la última): retrocede
+                est.desplazamiento = Math.max(0, est.desplazamiento - POR_PAGINA);
+                return cargarLista();
+            }
+            est.datos = data;
+            const aqui = new Set(data.ofertas.map((o) => o.id));
+            est.sel = new Set([...est.sel].filter((id) => aqui.has(id)));
+            if (est.abierta && !aqui.has(est.abierta)) est.abierta = null;
+            if (est.rechazando && !aqui.has(est.rechazando)) est.rechazando = null;
+            pintarTabs();
+            pintarLista();
+            return true;
+        }
+
+        // Ejecuta una acción del administrador, avisa y vuelve a leer la lista (conservando el desplazamiento de la pantalla)
+        async function ejecutar(nombre, args, textoOk) {
+            if (est.ocupado) return null;
+            est.ocupado = true; document.body.classList.add('rev-ocupado');
+            const y = window.scrollY;
+            const { data, error } = await rpcAdmin(nombre, args);
+            let resultado = { data, error };
+            if (error) avisar(textoError(error), 'error');
+            else {
+                if (textoOk) avisar(textoOk, 'ok');
+                await cargarLista();
+                window.scrollTo(0, y);
+            }
+            est.ocupado = false; document.body.classList.remove('rev-ocupado');
+            return resultado;
+        }
+
+        /* ───────────── Pestañas ───────────── */
+        function pintarTabs() {
+            const caja = $('tabs');
+            caja.replaceChildren();
+            const cn = (est.datos && est.datos.conteos) || {};
+            for (const t of TABS) {
+                const activa = t.id === est.filtro;
+                caja.append(el('button', {
+                    type: 'button', class: 'rev-tab', 'aria-pressed': String(activa), 'data-tab': t.id,
+                    onclick: () => cambiarPestana(t.id),
+                }, document.createTextNode(t.t), el('span', { class: 'n', text: String(cn[t.id] ?? 0) })));
+            }
+        }
+
+        async function cambiarPestana(id) {
+            if (est.ocupado || id === est.filtro) return;
+            est.filtro = id; est.desplazamiento = 0; est.abierta = null; est.rechazando = null; est.sel.clear();
+            avisar('', '');
+            await cargarLista();
+        }
+
+        /* ───────────── Lista de tarjetas ───────────── */
+        const enRevision = (o) => o.estado === 'pendiente' || o.estado === 'revisada';
+
+        function fechaCorta(iso) {
+            const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+            if (!m) return '';
+            const f = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+            return f.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function enlaceSeguro(url) {
+            try { const u = new URL(String(url || '')); return (u.protocol === 'https:' || u.protocol === 'http:') ? u.href : null; } catch (e) { return null; }
+        }
+
+        const tag = (clase, texto, extra) => el('span', { class: 'rev-tag ' + clase + (extra ? ' ' + extra : ''), text: texto });
+
+        function etiquetasDe(o) {
+            const t = [];
+            const b = o.banderas || {};
+            if (enRevision(o)) {
+                if (b.completa) t.push(tag('ok', 'Completa'));
+                if (b.sin_empresa) t.push(tag('aviso', 'Sin empresa'));
+                if (b.nombre_sin_confirmar) t.push(tag('aviso', 'Nombre sin confirmar'));
+                if (b.sector_sin_verificar) t.push(tag('aviso', 'Sector sin verificar'));
+                if (b.carreras_por_revisar) t.push(tag('aviso', 'Carreras por revisar'));
+                if (!o.carreras.some((c) => c.confirmada)) t.push(tag('aviso', 'Sin carrera confirmada'));
+                if (!o.requisitos.length) t.push(tag('mal', 'Sin competencias'));
+            } else if (o.estado === 'publicada') t.push(tag('azul', 'Publicada'));
+            else if (o.estado === 'rechazada') t.push(tag('mal', 'Rechazada'));
+            t.push(tag('azul', o.requisitos.length + (o.requisitos.length === 1 ? ' competencia' : ' competencias')));
+            return t;
+        }
+
+        function pendientesDe(o) {
+            const f = [];
+            const b = o.banderas || {};
+            if (!o.requisitos.length) f.push('sin competencias');
+            if (!o.carreras.some((c) => c.confirmada)) f.push('sin carrera confirmada');
+            if (b.carreras_por_revisar) f.push('carreras por revisar');
+            return f;
+        }
+
+        function pintarLista() {
+            const cont = $('lista');
+            cont.replaceChildren();
+            const d = est.datos;
+            if (!d) return;
+            if (!d.ofertas.length) {
+                const textos = {
+                    pendientes: 'No hay ofertas pendientes. Cuando cargues nuevas en «Cargar ofertas», aparecerán aquí.',
+                    publicadas: 'Todavía no hay ofertas publicadas.',
+                    rechazadas: 'No hay ofertas rechazadas.',
+                };
+                cont.append(el('div', { class: 'rev-vacio', text: textos[est.filtro] || 'No hay ofertas en este filtro.' }));
+            }
+            for (const o of d.ofertas) cont.append(tarjeta(o));
+            pintarPie();
+        }
+
+        function tarjeta(o) {
+            const abierta = est.abierta === o.id;
+            const rev = enRevision(o);
+            const clase = o.estado === 'publicada' ? 'publicada' : o.estado === 'rechazada' ? 'rechazada' : (o.banderas && o.banderas.completa ? 'completa' : 'incompleta');
+            const empresa = o.empresa && o.empresa.id ? o.empresa.nombre : (o.empresa && o.empresa.texto_original) || 'Empresa no indicada';
+            const meta = [empresa, o.ubicacion, o.fuente, fechaCorta(o.fecha_publicacion)].filter(Boolean).join(' · ');
+
+            const fila = el('div', { class: 'rev-fila-cab' });
+            if (rev) {
+                const chk = el('input', { type: 'checkbox', class: 'rev-check', 'aria-label': 'Seleccionar «' + o.puesto + '» para publicar', onchange: (e) => { if (e.target.checked) est.sel.add(o.id); else est.sel.delete(o.id); pintarPie(); } });
+                chk.checked = est.sel.has(o.id);
+                fila.append(chk);
+            }
+            fila.append(el('button', {
+                type: 'button', class: 'rev-cab', 'aria-expanded': String(abierta),
+                onclick: () => { est.abierta = abierta ? null : o.id; if (est.rechazando !== est.abierta) est.rechazando = null; pintarLista(); },
+            }, el('p', { class: 'rev-puesto', text: o.puesto }), el('p', { class: 'rev-meta', text: meta }), el('div', { class: 'rev-tags' }, ...etiquetasDe(o))));
+            fila.append(el('span', { class: 'rev-flecha', 'aria-hidden': 'true', text: '▾' }));
+
+            const card = el('article', { class: 'rev-card ' + clase }, fila);
+            if (abierta) card.append(cuerpo(o, rev));
+            return card;
+        }
+
+        /* ───────────── Cuerpo de una oferta ───────────── */
+        function seccion(titulo, color) {
+            const s = el('div', { class: 'rev-sec ' + color });
+            s.append(el('p', { class: 'rev-sec-titulo', text: titulo }));
+            return s;
+        }
+
+        function boton(texto, clase, alClic, props) {
+            const b = el('button', { type: 'button', class: 'rev-btn ' + (clase || ''), onclick: alClic, ...(props || {}) }, document.createTextNode(texto));
+            return b;
+        }
+
+        function cuerpo(o, rev) {
+            const c = el('div', { class: 'rev-cuerpo' });
+            const url = enlaceSeguro(o.url);
+            if (url) c.append(el('p', { class: 'rev-nota' }, el('a', { href: url, target: '_blank', rel: 'noopener noreferrer', text: 'Ver la oferta original ↗', style: 'font-weight:600;color:#0B3FA8;' })));
+            const grid = el('div', { class: 'rev-grid' });
+            grid.append(seccionEmpresa(o, rev), seccionSector(o, rev), seccionCarreras(o, rev), seccionCompetencias(o, rev));
+            c.append(grid);
+            if (o.estado === 'rechazada' && o.motivo) c.append(el('p', { class: 'rev-linea' }, el('b', { text: 'Motivo del rechazo: ' }), document.createTextNode(o.motivo)));
+            c.append(accionesEstado(o, rev));
+            return c;
+        }
+
+        /* Empresa */
+        function sugerirEmpresa(texto) {
+            const t = norm(texto);
+            if (!t) return null;
+            const exacta = ref.empresas.find((x) => norm(x.nombre) === t || x.alias.some((a) => norm(a) === t));
+            if (exacta) return exacta;
+            if (t.length < 4) return null;
+            return ref.empresas.find((x) => { const n = norm(x.nombre); return n.length >= 4 && (n.includes(t) || t.includes(n)); }) || null;
+        }
+
+        function seccionEmpresa(o, rev) {
+            const caja = seccion('Empresa', 'azul');
+            const e = o.empresa || {};
+            if (e.id) {
+                caja.append(el('p', { class: 'rev-linea' }, el('b', { text: e.nombre }), document.createTextNode(' '), tag('ok', 'Confirmada')));
+                caja.append(el('p', { class: 'rev-nota', text: e.verificacion === 'verificada' ? 'El sector de esta empresa está verificado.' : 'El sector de esta empresa aún no está verificado.' }));
+                if (e.texto_original && norm(e.texto_original) !== norm(e.nombre)) caja.append(el('p', { class: 'rev-nota', text: 'En la oferta decía: «' + e.texto_original + '»' }));
+                if (rev) caja.append(boton('Quitar empresa', 'no', () => ejecutar('admin_vincular_empresa_oferta', { p_oferta: o.id, p_empresa: null }, 'Empresa quitada.')));
+                return caja;
+            }
+            caja.append(el('p', { class: 'rev-linea', text: e.texto_original ? 'En la oferta dice: «' + e.texto_original + '»' : 'La oferta no menciona la empresa.' }));
+            if (e.texto_original) caja.append(tag('aviso', 'Nombre sin confirmar'));
+            if (!rev) return caja;
+            if (!ref.empresasOk) { caja.append(el('p', { class: 'rev-nota', text: 'No se pudo cargar la lista de empresas. Recarga la página.' })); return caja; }
+
+            const sel = el('select', { class: 'rev-sel', 'aria-label': 'Empresa registrada' }, el('option', { value: '', text: 'Elegir empresa registrada…' }), ...ref.empresas.map((x) => el('option', { value: x.id, text: x.nombre })));
+            const sug = sugerirEmpresa(e.texto_original);
+            if (sug) sel.value = sug.id;
+            const chkAlias = el('input', { type: 'checkbox' });
+            const lblAlias = el('label', { class: 'rev-chk' }, chkAlias, el('span', { text: '' }));
+            const actualizarAlias = () => {
+                const emp = ref.empresas.find((x) => x.id === sel.value);
+                const t = e.texto_original;
+                const aplica = !!(emp && t && norm(t) !== norm(emp.nombre) && !emp.alias.some((a) => norm(a) === norm(t)));
+                lblAlias.hidden = !aplica;
+                chkAlias.checked = aplica;
+                lblAlias.lastChild.textContent = aplica ? 'Recordar «' + t + '» como otro nombre de ' + emp.nombre + ' (así la próxima vez se reconoce sola).' : '';
+            };
+            sel.addEventListener('change', actualizarAlias);
+            const confirmar = boton('Confirmar empresa', 'azul', async () => {
+                if (!sel.value) { avisar('Elige una empresa de la lista.', 'error'); return; }
+                if (chkAlias.checked && e.texto_original) {
+                    const r = await rpcAdmin('admin_agregar_alias', { p_empresa: sel.value, p_alias: e.texto_original });
+                    if (r.error) avisar('Se confirmará la empresa, pero no se pudo recordar el otro nombre.', 'aviso');
+                }
+                const r2 = await ejecutar('admin_vincular_empresa_oferta', { p_oferta: o.id, p_empresa: sel.value }, 'Empresa confirmada.');
+                if (r2 && !r2.error) recargarEmpresas();
+            });
+            caja.append(el('div', { class: 'rev-fila-form' }, sel, confirmar), lblAlias);
+            actualizarAlias();
+
+            // Crear una empresa nueva
+            const inpNombre = el('input', { type: 'text', class: 'rev-inp', maxlength: '150', 'aria-label': 'Nombre de la empresa nueva', placeholder: 'Nombre de la empresa' });
+            inpNombre.value = e.texto_original || '';
+            const selSector = el('select', { class: 'rev-sel', 'aria-label': 'Sector de la empresa nueva' }, el('option', { value: '', text: 'Elegir sector…' }), ...ref.sectores.map((s) => el('option', { value: s.slug, text: s.nombre })));
+            if (o.sector) selSector.value = o.sector.slug;
+            const crear = boton('Crear y vincular', 'ok', async () => {
+                const nombre = inpNombre.value.trim();
+                if (!nombre) { avisar('Escribe el nombre de la empresa.', 'error'); return; }
+                if (!selSector.value) { avisar('Elige el sector de la empresa nueva.', 'error'); return; }
+                if (est.ocupado) return;
+                const r = await rpcAdmin('admin_crear_empresa', { p_nombre: nombre, p_sector: selSector.value, p_origen: 'oferta' });
+                if (r.error || !r.data || !r.data.id) { avisar(textoError(r.error || { message: 'sin respuesta' }), 'error'); return; }
+                await recargarEmpresas();
+                await ejecutar('admin_vincular_empresa_oferta', { p_oferta: o.id, p_empresa: r.data.id }, 'Empresa creada y confirmada.');
+            });
+            caja.append(el('details', { class: 'rev-detalles', style: 'margin-top:10px;' }, el('summary', { text: 'La empresa no está en la lista: crear una nueva' }), el('div', { class: 'rev-fila-form' }, inpNombre, selSector, crear)));
+            return caja;
+        }
+
+        /* Sector */
+        function seccionSector(o, rev) {
+            const caja = seccion('Sector', 'violeta');
+            if (!rev) { caja.append(el('p', { class: 'rev-linea', text: o.sector ? o.sector.nombre : 'Sin sector' })); return caja; }
+            const sel = el('select', { class: 'rev-sel', 'aria-label': 'Sector de la oferta' }, el('option', { value: '', text: 'Sin sector' }), ...ref.sectores.map((s) => el('option', { value: s.slug, text: s.nombre })));
+            sel.value = o.sector ? o.sector.slug : '';
+            sel.addEventListener('change', () => ejecutar('admin_asignar_sector_oferta', { p_oferta: o.id, p_sector: sel.value || null }, 'Sector guardado.'));
+            caja.append(el('div', { class: 'rev-fila-form' }, sel), el('p', { class: 'rev-nota', style: 'margin-top:8px;', text: 'Si confirmas una empresa y la oferta no tenía sector, toma el de la empresa.' }));
+            return caja;
+        }
+
+        /* Carreras */
+        function seccionCarreras(o, rev) {
+            const caja = seccion('Carreras', 'magenta');
+            const fichas = el('div', { class: 'rev-fichas' });
+            for (const c of o.carreras) {
+                const f = el('span', { class: 'rev-ficha' }, tag(c.confirmada ? 'ok' : 'aviso', c.confirmada ? c.nombre : c.nombre + ' · por confirmar'));
+                if (rev && !c.confirmada) f.append(el('button', { type: 'button', class: 'rev-mini si', 'aria-label': 'Confirmar la carrera ' + c.nombre, title: 'Confirmar', text: '✓', onclick: () => ejecutar('admin_carrera_oferta', { p_oferta: o.id, p_carrera: c.id, p_accion: 'confirmar' }, 'Carrera confirmada.') }));
+                if (rev) f.append(el('button', { type: 'button', class: 'rev-mini no', 'aria-label': 'Quitar la carrera ' + c.nombre, title: 'Quitar', text: '✕', onclick: () => ejecutar('admin_carrera_oferta', { p_oferta: o.id, p_carrera: c.id, p_accion: 'quitar' }, 'Carrera quitada.') }));
+                fichas.append(f);
+            }
+            if (!o.carreras.length && !(o.carreras_pendientes || []).length) fichas.append(el('span', { class: 'rev-nota', text: 'Sin carreras todavía.' }));
+            caja.append(fichas);
+
+            for (const texto of (o.carreras_pendientes || [])) {
+                const fila = el('div', { class: 'rev-fila-form' }, tag('mal', '«' + texto + '» · sin reconocer', 'punteada'));
+                if (rev) {
+                    const sel = el('select', { class: 'rev-sel', 'aria-label': 'Vincular «' + texto + '» a una carrera' }, el('option', { value: '', text: 'Vincular a…' }), ...ref.carreras.map((c) => el('option', { value: c.id, text: c.nombre })));
+                    sel.addEventListener('change', () => { if (sel.value) ejecutar('admin_resolver_carrera_pendiente', { p_oferta: o.id, p_texto: texto, p_carrera: sel.value }, 'Carrera vinculada y confirmada.'); });
+                    fila.append(sel, boton('Descartar', 'no', () => ejecutar('admin_resolver_carrera_pendiente', { p_oferta: o.id, p_texto: texto, p_carrera: null }, 'Texto descartado.')));
+                }
+                caja.append(fila);
+            }
+            if (rev) {
+                const ya = new Set(o.carreras.map((c) => c.id));
+                const libres = ref.carreras.filter((c) => !ya.has(c.id));
+                if (libres.length) {
+                    const sel = el('select', { class: 'rev-sel', 'aria-label': 'Agregar una carrera' }, el('option', { value: '', text: 'Agregar carrera…' }), ...libres.map((c) => el('option', { value: c.id, text: c.nombre })));
+                    sel.addEventListener('change', () => { if (sel.value) ejecutar('admin_carrera_oferta', { p_oferta: o.id, p_carrera: sel.value, p_accion: 'confirmar' }, 'Carrera agregada.'); });
+                    caja.append(el('div', { class: 'rev-fila-form' }, sel));
+                }
+            }
+            return caja;
+        }
+
+        /* Competencias */
+        const TIPOS = { obligatorio: 'obligatorio', deseable: 'deseable', no_indicado: '' };
+        const NIVELES = { basico: 'básico', intermedio: 'intermedio', avanzado: 'avanzado' };
+
+        function seccionCompetencias(o, rev) {
+            const caja = seccion('Competencias', 'verde');
+            const fichas = el('div', { class: 'rev-fichas' });
+            const inpBuscar = el('input', { type: 'text', class: 'rev-inp', list: 'listaCompetencias', 'aria-label': 'Buscar una competencia para agregar', placeholder: 'Buscar para agregar', autocomplete: 'off' });
+            const selTipo = el('select', { class: 'rev-sel', style: 'flex:1 1 130px;', 'aria-label': 'Tipo de requisito' }, el('option', { value: 'no_indicado', text: 'Sin tipo' }), el('option', { value: 'obligatorio', text: 'Obligatorio' }), el('option', { value: 'deseable', text: 'Deseable' }));
+            const selNivel = el('select', { class: 'rev-sel', style: 'flex:1 1 130px;', 'aria-label': 'Nivel' }, el('option', { value: '', text: 'Sin nivel' }), el('option', { value: 'basico', text: 'Básico' }), el('option', { value: 'intermedio', text: 'Intermedio' }), el('option', { value: 'avanzado', text: 'Avanzado' }));
+
+            for (const r of o.requisitos) {
+                const etiqueta = [r.nombre, TIPOS[r.tipo] || '', NIVELES[r.nivel] || ''].filter(Boolean).join(' · ');
+                const f = el('span', { class: 'rev-ficha' }, tag('azul', etiqueta));
+                if (rev) {
+                    f.append(el('button', { type: 'button', class: 'rev-mini', 'aria-label': 'Editar ' + r.nombre, title: 'Cambiar tipo o nivel', text: '✎', onclick: () => { inpBuscar.value = r.nombre; selTipo.value = r.tipo || 'no_indicado'; selNivel.value = r.nivel || ''; selTipo.focus(); } }));
+                    f.append(el('button', { type: 'button', class: 'rev-mini no', 'aria-label': 'Quitar ' + r.nombre, title: 'Quitar', text: '✕', onclick: () => ejecutar('admin_requisito_oferta', { p_oferta: o.id, p_competencia: r.competencia, p_accion: 'quitar', p_tipo: null, p_nivel: null }, 'Competencia quitada.') }));
+                }
+                fichas.append(f);
+            }
+            if (!o.requisitos.length) fichas.append(el('span', { class: 'rev-nota', text: 'Sin competencias todavía.' }));
+            caja.append(fichas);
+
+            if (rev) {
+                const agregar = boton('Agregar', 'ok', () => {
+                    const t = norm(inpBuscar.value);
+                    const comp = t && ref.competencias.find((x) => norm(x.nombre) === t || x.slug === inpBuscar.value.trim().toLowerCase());
+                    if (!comp) { avisar('Elige una competencia de la lista que aparece al escribir.', 'error'); return; }
+                    ejecutar('admin_requisito_oferta', { p_oferta: o.id, p_competencia: comp.slug, p_accion: 'agregar', p_tipo: selTipo.value, p_nivel: selNivel.value || null }, 'Competencia guardada.');
+                });
+                caja.append(el('div', { class: 'rev-fila-form' }, inpBuscar, selTipo, selNivel, agregar));
+            }
+            const conFrag = o.requisitos.filter((r) => r.fragmento);
+            if (conFrag.length) {
+                caja.append(el('details', { class: 'rev-detalles', style: 'margin-top:10px;' }, el('summary', { text: 'Fragmentos de respaldo (' + conFrag.length + ')' }),
+                    el('ul', {}, ...conFrag.map((r) => el('li', {}, el('b', { text: r.nombre + ': ' }), document.createTextNode('«' + r.fragmento + '»'))))));
+            }
+            return caja;
+        }
+
+        /* Publicar, rechazar y devolver */
+        function accionesEstado(o, rev) {
+            const caja = el('div', { class: 'rev-acciones' });
+            if (rev) {
+                caja.append(boton('Publicar', 'ok', () => {
+                    const falta = pendientesDe(o);
+                    if (falta.length && !window.confirm('A esta oferta todavía le falta: ' + falta.join(', ') + '.\n\n¿Publicarla igual?')) return;
+                    ejecutar('admin_cambiar_estado_oferta', { p_oferta: o.id, p_estado: 'publicada', p_motivo: null }, 'Oferta publicada.');
+                }));
+                caja.append(boton('Rechazar…', 'no', () => { est.rechazando = est.rechazando === o.id ? null : o.id; pintarLista(); }));
+                if (est.rechazando === o.id) {
+                    const area = el('textarea', { class: 'rev-area', maxlength: '200', 'aria-label': 'Motivo del rechazo', placeholder: 'Motivo, por ejemplo: es una oferta de ventas, no de nuestras carreras' });
+                    const cont = el('div', { class: 'rev-contador', text: '0 / 200' });
+                    area.addEventListener('input', () => { cont.textContent = area.value.length + ' / 200'; });
+                    const confirmar = boton('Confirmar rechazo', 'no', () => {
+                        const motivo = area.value.trim();
+                        if (!motivo) { avisar('Escribe un motivo para rechazar la oferta.', 'error'); area.focus(); return; }
+                        ejecutar('admin_cambiar_estado_oferta', { p_oferta: o.id, p_estado: 'rechazada', p_motivo: motivo }, 'Oferta rechazada: queda oculta pero guardada.');
+                    });
+                    const caja2 = el('div', { class: 'rev-motivo-caja', style: 'flex:1 1 100%;' },
+                        el('p', { class: 'rev-nota', text: 'Rechazar no la borra: queda oculta y guardada, así no se vuelve a cargar por error.' }),
+                        area, cont, el('div', { class: 'rev-acciones', style: 'margin-top:6px;' }, confirmar, boton('Cancelar', '', () => { est.rechazando = null; pintarLista(); })));
+                    caja.append(caja2);
+                }
+            } else {
+                caja.append(boton('Devolver a pendiente', 'azul', () => ejecutar('admin_cambiar_estado_oferta', { p_oferta: o.id, p_estado: 'pendiente', p_motivo: null }, 'La oferta volvió a pendiente.')));
+                caja.append(el('span', { class: 'rev-nota', text: 'Para editarla, primero devuélvela a pendiente.' }));
+            }
+            return caja;
+        }
+
+        /* ───────────── Pie: publicar varias y paginación ───────────── */
+        function pintarPie() {
+            const pie = $('pie');
+            const d = est.datos;
+            pie.replaceChildren();
+            if (!d || !d.ofertas.length) { pie.hidden = true; return; }
+            pie.hidden = false;
+            const hayRev = d.ofertas.some(enRevision);
+            const izq = el('div', { class: 'rev-acciones' });
+            if (hayRev) {
+                izq.append(boton('Marcar las completas', 'azul', () => {
+                    for (const o of d.ofertas) if (enRevision(o) && o.banderas && o.banderas.completa) est.sel.add(o.id);
+                    pintarLista();
+                }));
+                const n = est.sel.size;
+                const b = boton('Publicar las completas seleccionadas' + (n ? ' (' + n + ')' : ''), 'ok', publicarSeleccion);
+                if (!n) b.disabled = true;
+                izq.append(b);
+            }
+            const desde = est.desplazamiento + 1, hasta = est.desplazamiento + d.ofertas.length;
+            const der = el('div', { class: 'rev-acciones' },
+                boton('← Anterior', '', () => irPagina(-POR_PAGINA), est.desplazamiento <= 0 ? { disabled: 'disabled' } : {}),
+                el('span', { class: 'rev-nota', style: 'margin:0;', text: desde + ' a ' + hasta + ' de ' + d.total }),
+                boton('Siguiente →', '', () => irPagina(POR_PAGINA), hasta >= d.total ? { disabled: 'disabled' } : {}));
+            pie.append(izq, der);
+        }
+
+        async function irPagina(delta) {
+            if (est.ocupado) return;
+            est.desplazamiento = Math.max(0, est.desplazamiento + delta); est.abierta = null; est.rechazando = null; est.sel.clear();
+            await cargarLista();
+            window.scrollTo(0, 0);
+        }
+
+        async function publicarSeleccion() {
+            const ids = [...est.sel];
+            if (!ids.length) { avisar('Marca primero las ofertas que quieras publicar.', 'error'); return; }
+            const r = await ejecutar('admin_publicar_ofertas_completas', { p_ids: ids }, null);
+            if (r && !r.error && r.data) {
+                const om = Array.isArray(r.data.omitidas) ? r.data.omitidas.length : 0;
+                avisar('Publicadas: ' + r.data.publicadas + (om ? '. Omitidas: ' + om + ' (no estaban completas o ya no estaban pendientes).' : '.'), om ? 'aviso' : 'ok');
+            }
+        }
+
+        /* ───────────── Arranque ───────────── */
+        async function iniciar() {
+            montarNavUsuario();
+            const sesion = await requerirSesion('');
+            if (!sesion) return;
+            if (sesion.user.id !== ADMIN_UID) { irA('dashboard.html'); return; }
+            $('estadoAcceso').style.display = 'none';
+            $('contenidoRevisar').style.display = 'block';
+            // La lista de competencias para el buscador (el navegador filtra mientras escribes)
+            const dl = el('datalist', { id: 'listaCompetencias' });
+            document.body.append(dl);
+            await Promise.all([cargarReferencias(), cargarLista()]);
+            dl.replaceChildren(...ref.competencias.map((c) => el('option', { value: c.nombre, label: c.area || '' })));
+        }
+        iniciar();
+    </script>
+    {% endraw %}
+</body>
+
+</html>

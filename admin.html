@@ -34,7 +34,11 @@
             <h1 class="dash-hero-titulo"><span class="titulo-pildora">ADMIN</span></h1>
             <p>Panel privado — sugerencias, asesorías propuestas y vista de Intranotas.</p>
             <p><a href="admin-ofertas.html" class="btn-secundario"
-                    style="display:inline-block;text-decoration:none;margin-top:6px;">Cargar ofertas laborales →</a></p>
+                    style="display:inline-block;text-decoration:none;margin-top:6px;">Cargar ofertas laborales →</a>
+                <a href="admin-revisar-ofertas.html" class="btn-secundario"
+                    style="display:inline-block;text-decoration:none;margin-top:6px;">Revisar ofertas <span
+                        id="contadorRevisar"></span> →</a>
+            </p>
         </div>
     </section>
 
@@ -204,6 +208,22 @@
     <script src="js/tema-siga.js?v=1"></script>
     <script src="js/selector-personalizado.js?v=1"></script>
     <script type="module" src="js/admin.js?v=2"></script>
+    {% raw %}
+    <script type="module">
+        // Número de ofertas pendientes junto al botón «Revisar ofertas» (solo lo ve el administrador; si algo falla, no muestra nada)
+        import { supabase } from './js/auth-siga.js?v=9';
+        (async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) return;
+                const { data, error } = await supabase.rpc('admin_listar_ofertas', { p_filtro: 'pendientes', p_limite: 1, p_desplazamiento: 0 });
+                if (error || !data || typeof data.total !== 'number') return;
+                const marca = document.getElementById('contadorRevisar');
+                if (marca && data.total > 0) marca.textContent = '· ' + data.total;
+            } catch (e) { /* sin contador: no pasa nada */ }
+        })();
+    </script>
+    {% endraw %}
 </body>
 
 </html>
