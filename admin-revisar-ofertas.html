@@ -554,6 +554,61 @@
             text-align: center;
         }
 
+        .rev-sec.cian {
+            --sc: #00B8D4;
+        }
+
+        .rev-sec.ancha {
+            grid-column: 1 / -1;
+        }
+
+        .rev-clasif {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+            gap: 14px;
+        }
+
+        .rev-anios {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .rev-anios .rev-inp {
+            flex: 0 1 110px;
+            min-width: 0;
+        }
+
+        .rev-perfil-fila {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13.5px;
+            color: #000;
+        }
+
+        .rev-check-lbl {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 120px;
+        }
+
+        .rev-check-lbl input {
+            accent-color: var(--brand-morado);
+        }
+
+        .rev-perfil-fila .rev-sel {
+            flex: 0 1 150px;
+            min-width: 120px;
+            padding: 6px 8px;
+            font-size: 12.5px;
+        }
+
         @media (max-width: 560px) {
             .rev-fila-cab {
                 padding: 10px;
@@ -624,12 +679,14 @@
             { id: 'nombre_sin_confirmar', t: 'Nombre sin confirmar' },
             { id: 'sector_sin_verificar', t: 'Sector sin verificar' },
             { id: 'carreras_por_revisar', t: 'Carreras por revisar' },
+            { id: 'sin_tipo_puesto', t: 'Sin tipo de puesto' },
+            { id: 'sin_perfil_academico', t: 'Sin perfil académico' },
             { id: 'completas', t: 'Completas' },
             { id: 'publicadas', t: 'Publicadas' },
             { id: 'rechazadas', t: 'Rechazadas' },
         ];
 
-        const ref = { carreras: [], competencias: [], sectores: [], empresas: [], empresasOk: false, listo: false };
+        const ref = { carreras: [], competencias: [], sectores: [], tipos: [], perfiles: [], empresas: [], empresasOk: false, listo: false };
         const est = { filtro: 'pendientes', desplazamiento: 0, abierta: null, rechazando: null, sel: new Set(), datos: null, ocupado: false };
         let temporizadorAviso = null;
 
@@ -663,6 +720,7 @@
             if (/sin competencias/i.test(m)) return 'No se puede publicar una oferta sin competencias. Agrega al menos una.';
             if (/motivo/i.test(m)) return 'Escribe un motivo de 1 a 200 caracteres.';
             if (/ya existe/i.test(m)) return 'Esa empresa ya existe. Elígela de la lista.';
+            if (/experiencia/i.test(m)) return 'Los años de experiencia deben ser de 0 a 40, y el máximo no puede ser menor que el mínimo.';
             if (/solo se puede publicar/i.test(m)) return 'Esa oferta ya no está pendiente.';
             return 'No se pudo completar: ' + m.replace(/^datos_invalidos:\s*/i, 'dato no válido — ');
         }
@@ -677,15 +735,19 @@
         }
 
         async function cargarReferencias() {
-            const [c, k, s, e] = await Promise.all([
+            const [c, k, s, e, tp, pa] = await Promise.all([
                 supabase.from('carreras').select('id,nombre').eq('estado', 'activa').order('nombre'),
                 supabase.from('competencias').select('slug,nombre,area').eq('estado', 'activa').order('nombre'),
                 supabase.from('sectores').select('slug,nombre').eq('estado', 'activo').order('nombre'),
                 rpcAdmin('admin_listar_empresas'),
+                supabase.from('tipos_puesto').select('slug,nombre,orden').eq('estado', 'activo').order('orden'),
+                supabase.from('perfiles_academicos').select('slug,nombre,orden').eq('estado', 'activo').order('orden'),
             ]);
             ref.carreras = (c && Array.isArray(c.data)) ? c.data : [];
             ref.competencias = (k && Array.isArray(k.data)) ? k.data : [];
             ref.sectores = (s && Array.isArray(s.data)) ? s.data : [];
+            ref.tipos = (tp && Array.isArray(tp.data)) ? tp.data : [];
+            ref.perfiles = (pa && Array.isArray(pa.data)) ? pa.data : [];
             asignarEmpresas(e);
             ref.listo = true;
             if (!ref.carreras.length || !ref.competencias.length) avisar('No se pudieron cargar las carreras o las competencias. Recarga la página.', 'error');
@@ -790,6 +852,13 @@
             } else if (o.estado === 'publicada') t.push(tag('azul', 'Publicada'));
             else if (o.estado === 'rechazada') t.push(tag('mal', 'Rechazada'));
             t.push(tag('azul', o.requisitos.length + (o.requisitos.length === 1 ? ' competencia' : ' competencias')));
+            if (o.tipo_puesto) t.push(tag('azul', o.tipo_puesto.nombre));
+            else if (enRevision(o)) t.push(tag('aviso', 'Sin tipo de puesto'));
+            const pa = o.perfiles_academicos || [];
+            if (pa.length) t.push(tag('azul', 'Perfil: ' + pa.map((x) => x.nombre + (x.tipo === 'deseable' ? ' (deseable)' : x.tipo === 'obligatorio' ? ' (obligatorio)' : '')).join(', ')));
+            else if (enRevision(o)) t.push(tag('aviso', 'Sin perfil académico'));
+            const an = textoAnios(o.experiencia && o.experiencia.min, o.experiencia && o.experiencia.max);
+            if (an) t.push(tag('azul', an));
             return t;
         }
 
@@ -860,7 +929,7 @@
             const url = enlaceSeguro(o.url);
             if (url) c.append(el('p', { class: 'rev-nota' }, el('a', { href: url, target: '_blank', rel: 'noopener noreferrer', text: 'Ver la oferta original ↗', style: 'font-weight:600;color:#0B3FA8;' })));
             const grid = el('div', { class: 'rev-grid' });
-            grid.append(seccionEmpresa(o, rev), seccionSector(o, rev), seccionCarreras(o, rev), seccionCompetencias(o, rev));
+            grid.append(seccionEmpresa(o, rev), seccionSector(o, rev), seccionCarreras(o, rev), seccionCompetencias(o, rev), seccionClasificacion(o, rev));
             c.append(grid);
             if (o.estado === 'rechazada' && o.motivo) c.append(el('p', { class: 'rev-linea' }, el('b', { text: 'Motivo del rechazo: ' }), document.createTextNode(o.motivo)));
             c.append(accionesEstado(o, rev));
@@ -1022,14 +1091,89 @@
             return caja;
         }
 
+        /* Clasificación: tipo de puesto, años de experiencia y perfil académico (nada de esto bloquea publicar) */
+        function textoAnios(mi, ma) {
+            const a = mi === undefined ? null : mi, b = ma === undefined ? null : ma;
+            if (a === null && b === null) return '';
+            const y = (n) => n + (n === 1 ? ' año' : ' años');
+            if (a === 0 && b === 0) return 'Sin experiencia';
+            if (a !== null && b === null) return 'Desde ' + y(a);
+            if (a === null) return 'Hasta ' + y(b);
+            return a === b ? y(a) : a + ' a ' + b + ' años';
+        }
+
+        const TIPOS_DEL_PERFIL = [['no_indicado', 'No indicado'], ['obligatorio', 'Obligatorio'], ['deseable', 'Deseable']];
+
+        function seccionClasificacion(o, rev) {
+            const caja = seccion('Clasificación', 'cian');
+            caja.classList.add('ancha');
+            const grid = el('div', { class: 'rev-clasif' });
+
+            // Tipo de puesto
+            const colTipo = el('div', {}, el('p', { class: 'rev-nota', style: 'margin-bottom:4px;', text: 'Tipo de puesto (el nivel)' }));
+            if (rev) {
+                const sel = el('select', { class: 'rev-sel', 'aria-label': 'Tipo de puesto' }, el('option', { value: '', text: '— Sin clasificar —' }), ...ref.tipos.map((t) => el('option', { value: t.slug, text: t.nombre })));
+                sel.value = o.tipo_puesto ? o.tipo_puesto.slug : '';
+                sel.addEventListener('change', () => ejecutar('admin_asignar_tipo_puesto_oferta', { p_oferta: o.id, p_tipo: sel.value || null }, sel.value ? 'Tipo de puesto guardado.' : 'Tipo de puesto vaciado: queda sin clasificar.'));
+                colTipo.append(el('div', { class: 'rev-fila-form' }, sel));
+                if (!o.tipo_puesto) colTipo.append(el('p', { class: 'rev-nota', style: 'margin-top:6px;', text: 'Sin clasificar: la oferta se puede publicar igual.' }));
+            } else colTipo.append(el('p', { class: 'rev-linea', text: o.tipo_puesto ? o.tipo_puesto.nombre : 'Sin clasificar' }));
+
+            // Años de experiencia
+            const colExp = el('div', {}, el('p', { class: 'rev-nota', style: 'margin-bottom:4px;', text: 'Años de experiencia que pide' }));
+            if (rev) {
+                const mk = (rotulo, valor) => el('input', { type: 'number', class: 'rev-inp', min: '0', max: '40', step: '1', inputmode: 'numeric', placeholder: rotulo, 'aria-label': 'Años de experiencia: ' + rotulo.toLowerCase(), value: valor === null || valor === undefined ? '' : String(valor) });
+                const inpMin = mk('Mínimo', o.experiencia && o.experiencia.min), inpMax = mk('Máximo', o.experiencia && o.experiencia.max);
+                const leer = (inp) => { const t = inp.value.trim(); return t === '' ? null : /^\d{1,2}$/.test(t) ? Number(t) : NaN; };
+                const guardar = boton('Guardar años', 'azul', () => {
+                    const mi = leer(inpMin), ma = leer(inpMax);
+                    if (Number.isNaN(mi) || Number.isNaN(ma) || (mi !== null && mi > 40) || (ma !== null && ma > 40)) { avisar('Los años de experiencia deben ser números enteros de 0 a 40.', 'error'); return; }
+                    if (mi !== null && ma !== null && ma < mi) { avisar('En los años de experiencia, el máximo no puede ser menor que el mínimo.', 'error'); return; }
+                    ejecutar('admin_asignar_experiencia_oferta', { p_oferta: o.id, p_min: mi, p_max: ma }, 'Años de experiencia guardados.');
+                });
+                colExp.append(el('div', { class: 'rev-anios' }, inpMin, inpMax, guardar));
+                colExp.append(el('p', { class: 'rev-nota', style: 'margin-top:6px;', text: 'Déjalos vacíos si la oferta no los indica. 0 y 0 significa «sin experiencia».' }));
+            } else colExp.append(el('p', { class: 'rev-linea', text: textoAnios(o.experiencia && o.experiencia.min, o.experiencia && o.experiencia.max) || 'No indicados' }));
+
+            // Perfil académico
+            const colPerf = el('div', {}, el('p', { class: 'rev-nota', style: 'margin-bottom:4px;', text: 'Perfil académico que pide (puede ser más de uno)' }));
+            for (const p of ref.perfiles) {
+                const act = (o.perfiles_academicos || []).find((x) => x.slug === p.slug);
+                const chk = el('input', { type: 'checkbox', 'aria-label': p.nombre });
+                chk.checked = !!act; if (!rev) chk.disabled = true;
+                const fila = el('div', { class: 'rev-perfil-fila' }, el('label', { class: 'rev-check-lbl' }, chk, document.createTextNode(p.nombre)));
+                if (rev) chk.addEventListener('change', () => ejecutar('admin_perfil_academico_oferta', { p_oferta: o.id, p_perfil: p.slug, p_accion: chk.checked ? 'confirmar' : 'quitar', p_tipo: null }, p.nombre + (chk.checked ? ': agregado.' : ': quitado.')));
+                if (act && p.slug !== 'no-indicado') {
+                    if (rev) {
+                        const sel = el('select', { class: 'rev-sel', 'aria-label': 'Tipo de ' + p.nombre });
+                        for (const [v, t] of TIPOS_DEL_PERFIL) { const op = el('option', { value: v, text: t }); if (v === act.tipo) op.selected = true; sel.append(op); }
+                        sel.addEventListener('change', () => ejecutar('admin_perfil_academico_oferta', { p_oferta: o.id, p_perfil: p.slug, p_accion: 'confirmar', p_tipo: sel.value }, 'Tipo de ' + p.nombre + ' guardado.'));
+                        fila.append(sel);
+                    } else if (act.tipo !== 'no_indicado') fila.append(tag('azul', act.tipo));
+                }
+                colPerf.append(fila);
+            }
+            if (rev && !(o.perfiles_academicos || []).length) colPerf.append(el('p', { class: 'rev-nota', style: 'margin-top:6px;', text: 'Sin perfil académico: la oferta se puede publicar igual.' }));
+
+            if (!ref.tipos.length || !ref.perfiles.length) caja.append(el('p', { class: 'rev-nota', text: 'No se pudieron cargar los catálogos de clasificación. Recarga la página.' }));
+            grid.append(colTipo, colExp, colPerf);
+            caja.append(grid);
+            return caja;
+        }
+
         /* Publicar, rechazar y devolver */
         function accionesEstado(o, rev) {
             const caja = el('div', { class: 'rev-acciones' });
             if (rev) {
-                caja.append(boton('Publicar', 'ok', () => {
+                caja.append(boton('Publicar', 'ok', async () => {
                     const falta = pendientesDe(o);
                     if (falta.length && !window.confirm('A esta oferta todavía le falta: ' + falta.join(', ') + '.\n\n¿Publicarla igual?')) return;
-                    ejecutar('admin_cambiar_estado_oferta', { p_oferta: o.id, p_estado: 'publicada', p_motivo: null }, 'Oferta publicada.');
+                    const r = await ejecutar('admin_cambiar_estado_oferta', { p_oferta: o.id, p_estado: 'publicada', p_motivo: null }, 'Oferta publicada.');
+                    // El tipo de puesto y el perfil NUNCA bloquean la publicación: solo se avisa
+                    const b = o.banderas || {}, sin = [];
+                    if (b.sin_tipo_puesto) sin.push('el tipo de puesto');
+                    if (b.sin_perfil_academico) sin.push('el perfil académico');
+                    if (r && !r.error && sin.length) avisar('Oferta publicada. Ojo: le falta ' + sin.join(' y ') + ' (aun así quedó publicada; para completarlo, devuélvela a pendiente).', 'aviso');
                 }));
                 caja.append(boton('Rechazar…', 'no', () => { est.rechazando = est.rechazando === o.id ? null : o.id; pintarLista(); }));
                 if (est.rechazando === o.id) {
@@ -1090,10 +1234,14 @@
         async function publicarSeleccion() {
             const ids = [...est.sel];
             if (!ids.length) { avisar('Marca primero las ofertas que quieras publicar.', 'error'); return; }
+            const antes = new Map(((est.datos && est.datos.ofertas) || []).map((x) => [x.id, x]));
             const r = await ejecutar('admin_publicar_ofertas_completas', { p_ids: ids }, null);
             if (r && !r.error && r.data) {
-                const om = Array.isArray(r.data.omitidas) ? r.data.omitidas.length : 0;
-                avisar('Publicadas: ' + r.data.publicadas + (om ? '. Omitidas: ' + om + ' (no estaban completas o ya no estaban pendientes).' : '.'), om ? 'aviso' : 'ok');
+                const omitidas = Array.isArray(r.data.omitidas) ? r.data.omitidas : [];
+                const om = omitidas.length;
+                const fuera = new Set(omitidas.map((x) => x.id));
+                const sinTipo = ids.filter((id) => !fuera.has(id) && antes.get(id) && antes.get(id).banderas && antes.get(id).banderas.sin_tipo_puesto).length;
+                avisar('Publicadas: ' + r.data.publicadas + (om ? '. Omitidas: ' + om + ' (no estaban completas o ya no estaban pendientes).' : '.') + (sinTipo ? ' De las publicadas, ' + sinTipo + (sinTipo === 1 ? ' quedó' : ' quedaron') + ' sin tipo de puesto.' : ''), om || sinTipo ? 'aviso' : 'ok');
             }
         }
 
