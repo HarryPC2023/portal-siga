@@ -117,5 +117,10 @@ from (
            where table_schema = 'public'
              and ((table_name = 'ofertas' and column_name in ('experiencia_min_anios', 'experiencia_max_anios'))
                or (table_name = 'oferta_perfiles_academicos' and column_name = 'tipo'))), '3'
+  union all
+  select 25, 'Facultades y carreras de la UNI cargadas: 11 facultades activas, 31 carreras activas y ninguna sin su facultad',
+         (select count(*)::text from public.facultades where estado = 'activa') || '/' ||
+         (select count(*)::text from public.carreras where estado = 'activa') || '/' ||
+         (select count(*)::text from public.carreras c where not exists (select 1 from public.facultades f where f.id = c.facultad_id)), '11/31/0'
 ) x
 order by n;
