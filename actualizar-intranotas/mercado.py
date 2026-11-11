@@ -282,6 +282,19 @@ class Requisito(BaseModel):
         return v
 
 
+class PerfilAcademico(BaseModel):
+    """Perfil académico que pide la oferta (estudiante, egresado, bachiller, titulado) y si es obligatorio o deseable."""
+    model_config = ConfigDict(extra="forbid")
+
+    perfil: str = Field(min_length=1, max_length=40, pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$")
+    tipo: Literal["obligatorio", "deseable", "no_indicado"] = "no_indicado"
+
+    @field_validator("perfil", "tipo", mode="before")
+    @classmethod
+    def _minusculas(cls, v):
+        return v.strip().lower() if isinstance(v, str) else v
+
+
 class Oferta(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -295,6 +308,11 @@ class Oferta(BaseModel):
     # Empresa identificada por el administrador (solo se acepta si la oferta viene de su sesión; ver _procesar_oferta)
     empresa_id: Optional[str] = Field(default=None, pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     empresa_en_texto: Optional[bool] = None   # ¿el nombre de la empresa aparece escrito en el texto de la oferta?
+    # Clasificación revisada por el administrador (solo se acepta si la oferta viene de su sesión; ver _procesar_oferta)
+    tipo_puesto: Optional[str] = Field(default=None, max_length=40, pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$")
+    perfiles_academicos: List[PerfilAcademico] = Field(default_factory=list, max_length=5)
+    experiencia_min_anios: Optional[int] = Field(default=None, ge=0, le=40)
+    experiencia_max_anios: Optional[int] = Field(default=None, ge=0, le=40)
     carreras_mencionadas: List[str] = Field(default_factory=list, max_length=10)
     requisitos: List[Requisito] = Field(min_length=1, max_length=40)
 
@@ -302,6 +320,22 @@ class Oferta(BaseModel):
     @classmethod
     def _fuente(cls, v):
         return _limpiar_texto(v).lower() if isinstance(v, str) else v
+
+    @field_validator("tipo_puesto", mode="before")
+    @classmethod
+    def _tipo_puesto_limpio(cls, v):
+        if isinstance(v, str):
+            return v.strip().lower() or None
+        return v
+
+    @field_validator("experiencia_min_anios", "experiencia_max_anios", mode="before")
+    @classmethod
+    def _anios_de_experiencia(cls, v):
+        if isinstance(v, bool):
+            raise ValueError("debe ser un número")
+        if isinstance(v, str):
+            return v.strip() or None
+        return v
 
     @field_validator("sector", mode="before")
     @classmethod
@@ -472,6 +506,20 @@ def _procesar_oferta(datos, por_admin=False):
         # La empresa identificada solo puede venir de la sesión del administrador, nunca de la extensión
         if oferta.empresa_id and not por_admin:
             raise _DatoInvalido(["empresa_id"])
+        # Lo mismo con la clasificación revisada (tipo de puesto, perfil académico y años de experiencia)
+        if not por_admin:
+            solo_admin = []
+            if oferta.tipo_puesto:
+                solo_admin.append("tipo_puesto")
+            if oferta.perfiles_academicos:
+                solo_admin.append("perfiles_academicos")
+            if oferta.experiencia_min_anios is not None or oferta.experiencia_max_anios is not None:
+                solo_admin.append("experiencia")
+            if solo_admin:
+                raise _DatoInvalido(solo_admin)
+        if (oferta.experiencia_min_anios is not None and oferta.experiencia_max_anios is not None
+                and oferta.experiencia_max_anios < oferta.experiencia_min_anios):
+            raise _DatoInvalido(["experiencia_max_anios"])
     except ValidationError as error:
         return _error(422, "datos_invalidos", campos=_campos_con_error(error))
     except _DatoInvalido as error:
@@ -495,6 +543,12 @@ def _procesar_oferta(datos, por_admin=False):
         "sector": oferta.sector,
         "empresa_id": oferta.empresa_id if por_admin else None,
         "empresa_en_texto": oferta.empresa_en_texto,
+        "tipo_puesto": oferta.tipo_puesto if por_admin else None,
+        "perfiles_academicos": (
+            [{"perfil": p.perfil, "tipo": p.tipo} for p in oferta.perfiles_academicos] if por_admin and oferta.perfiles_academicos else None
+        ),
+        "experiencia_min_anios": oferta.experiencia_min_anios if por_admin else None,
+        "experiencia_max_anios": oferta.experiencia_max_anios if por_admin else None,
         "por_admin": bool(por_admin),   # lo fija ESTE servidor; el cliente no puede mandarlo (la validación lo rechaza)
         "carreras_mencionadas": oferta.carreras_mencionadas,
         "requisitos": [

@@ -847,3 +847,176 @@ export function empresasEnTexto(texto, empresas) {
     }
     return encontradas;
 }
+// --------------------------------------------------------------
+// Clasificación de la oferta: tipo de puesto, perfil académico y años de experiencia.
+// Todo esto son SUGERENCIAS: quien decide eres tú. Ninguna regla adivina cuando el texto no es claro.
+// Los identificadores (slug) son los de las tablas tipos_puesto y perfiles_academicos.
+// --------------------------------------------------------------
+
+export const TIPOS_DE_PUESTO = [
+    { slug: "practicas", nombre: "Prácticas" },
+    { slug: "trainee", nombre: "Programa trainee" },
+    { slug: "asistente", nombre: "Asistente" },
+    { slug: "junior", nombre: "Nivel junior" },
+    { slug: "intermedio", nombre: "Nivel intermedio" },
+    { slug: "senior-especialista", nombre: "Nivel senior o especialista" },
+    { slug: "jefatura-supervision", nombre: "Jefatura o supervisión" },
+    { slug: "otro", nombre: "Otro" },
+    { slug: "no-indicado", nombre: "No indicado" },
+];
+
+export const PERFILES_ACADEMICOS = [
+    { slug: "estudiante", nombre: "Estudiante" },
+    { slug: "egresado", nombre: "Egresado" },
+    { slug: "bachiller", nombre: "Bachiller" },
+    { slug: "titulado", nombre: "Titulado" },
+    { slug: "no-indicado", nombre: "No indicado" },
+];
+
+// Palabras del PUESTO que indican el nivel (texto ya sin tildes ni mayúsculas, vía plegar). «Semi senior» va antes que «senior».
+const CL_REGLAS_TIPO_PUESTO = [
+    ["practicas", /\b(?:practicantes?|practicas?\s+(?:pre\s*-?\s*)?profesionales?|practicas|pasant(?:e|es|ia|ias)|internships?|interns?|aprendiz|aprendices)\b/],
+    ["trainee", /\b(?:trainees?|jovenes\s+talentos|jovenes\s+profesionales|graduate\s+(?:program|programme)|programa\s+para\s+recien\s+egresados)\b/],
+    ["asistente", /\b(?:asistentes?|auxiliar(?:es)?|assistants?)\b/],
+    ["junior", /\b(?:junior|jr)\b/],
+    ["intermedio", /\b(?:semi\s*-?\s*(?:senior|sr)|semisenior|ssr|intermedio)\b/],
+    ["senior-especialista", /\b(?:senior|sr|especialistas?|expert[oa]s?)\b/],
+    ["jefatura-supervision", /\b(?:jef[ea]s?|jefatura|gerentes?|subgerentes?|director(?:a|es|as)?|head|managers?|superintendentes?)\b/],
+];
+// «Coordinador» y «supervisor» pueden ser de nivel inicial o de jefatura según la empresa: no se sugiere uno, se muestran las dos opciones.
+const CL_RE_PUESTO_AMBIGUO = /\b(?:coordinador(?:a|es|as)?|supervisor(?:a|es|as)?)\b/;
+const CL_OPCIONES_AMBIGUAS = ["intermedio", "jefatura-supervision"];
+
+/**
+ * Sugiere el TIPO DE PUESTO (el nivel) leyendo el puesto.
+ *  · Una sola señal clara → `sugerido` (queda preseleccionado y tú confirmas).
+ *  · Dos o más señales distintas («Asistente administrativo junior») → no sugiere ninguno y devuelve todas en `opciones`.
+ *  · «Coordinador» / «supervisor» sin otra señal → no sugiere ninguno y devuelve las dos opciones posibles.
+ *  · «Analista», «ingeniero», «desarrollador», «técnico»… no dicen el nivel: no sugiere nada.
+ * @param {string} puesto
+ * @returns {{sugerido: string|null, opciones: string[], evidencia: string[]}}
+ */
+export function sugerirTipoPuesto(puesto) {
+    let t = plegar(typeof puesto === "string" ? puesto : "").replace(/[^a-z0-9]+/g, " ").trim();
+    const claras = [];
+    const evidencia = [];
+    for (const [slug, re] of CL_REGLAS_TIPO_PUESTO) {
+        const m = re.exec(t);
+        if (!m) continue;
+        claras.push(slug);
+        evidencia.push(m[0].trim());
+        if (slug === "intermedio") t = t.replace(re, " "); // «semi senior» no cuenta además como «senior»
+    }
+    if (claras.length === 1) return { sugerido: claras[0], opciones: [], evidencia };
+    if (claras.length > 1) return { sugerido: null, opciones: claras, evidencia };
+    const amb = CL_RE_PUESTO_AMBIGUO.exec(t);
+    if (amb) return { sugerido: null, opciones: CL_OPCIONES_AMBIGUAS.slice(), evidencia: [amb[0].trim()] };
+    return { sugerido: null, opciones: [], evidencia: [] };
+}
+
+const CL_NUMEROS_EN_LETRAS = { un: 1, uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10 };
+
+/**
+ * Busca los AÑOS DE EXPERIENCIA que pide la oferta. Solo cuenta cifras que están junto a la palabra «experiencia».
+ * Es un dato aparte: NO decide el tipo de puesto. Si el texto menciona cifras distintas, no rellena nada y las lista en `candidatos`.
+ *  «sin experiencia» → 0 y 0 · «de 2 a 4 años de experiencia» → 2 y 4 · «mínimo 3 años de experiencia» → 3 y vacío.
+ * @param {string} texto
+ * @returns {{min: number|null, max: number|null, evidencia: string, varias: boolean, candidatos: Array<{min: number|null, max: number|null, evidencia: string}>} | null}
+ */
+export function sugerirExperiencia(texto) {
+    const original = typeof texto === "string" ? texto.normalize("NFC") : "";
+    if (!original) return null;
+    let p = plegar(original);
+    // «dos años», «un año», «dos a tres años» → cifras (con espacios de relleno: así las posiciones coinciden con el texto original)
+    p = p.replace(new RegExp("\\b(" + Object.keys(CL_NUMEROS_EN_LETRAS).join("|") + ")\\b(?=[^.\\n]{0,16}\\banos?\\b)", "g"), (m) => String(CL_NUMEROS_EN_LETRAS[m]).padEnd(m.length, " "));
+    // La evidencia es la LÍNEA del texto original donde se vio (con sus tildes y mayúsculas), no el texto «plegado»
+    const linea = (idx) => {
+        const ini = original.lastIndexOf("\n", idx - 1) + 1;
+        let fin = original.indexOf("\n", idx); if (fin < 0) fin = original.length;
+        return original.slice(ini, fin).replace(/\s+/g, " ").trim().replace(/^[-–—•*·>\s]+/, "").slice(0, 110);
+    };
+    const hallados = [];
+    const agregar = (min, max, idx, largo) => {
+        const ventana = p.slice(Math.max(0, idx - 70), idx + largo + 70);
+        if (!/experien/.test(ventana)) return;
+        if (hallados.some((h) => h.min === min && h.max === max)) return;
+        hallados.push({ min, max, evidencia: linea(idx) });
+    };
+    const re0 = /\b(?:sin\s+experiencia(?:\s+(?:laboral|previa))?|no\s+(?:se\s+)?requiere\s+experiencia|experiencia\s+no\s+(?:necesaria|requerida|indispensable))\b/g;
+    for (let m; (m = re0.exec(p));) hallados.push({ min: 0, max: 0, evidencia: linea(m.index) });
+    const reRango = /\b(\d{1,2})\s*(?:a|-|y|o|hasta)\s*(\d{1,2})\s*anos?\b/g;
+    for (let m; (m = reRango.exec(p));) { const a = Number(m[1]), b = Number(m[2]); if (a <= b && b <= 40) agregar(a, b, m.index, m[0].length); }
+    const reMinimo = /\b(?:minimo|min|al\s+menos|mas\s+de|mayor\s+(?:a|de)|desde)\s*(\d{1,2})\s*\+?\s*anos?\b/g;
+    for (let m; (m = reMinimo.exec(p));) { const a = Number(m[1]); if (a <= 40) agregar(a, null, m.index, m[0].length); }
+    const reSimple = /(?:^|[^\d])(\d{1,2})\s*\+?\s*anos?\b(?:\s+de)?/g;
+    for (let m; (m = reSimple.exec(p));) {
+        const a = Number(m[1]);
+        const inicio = m.index + (m[0].length - m[0].replace(/^[^\d]/, "").length);
+        if (a > 40) continue;
+        // si ya lo recogió un rango («2 a 4 años») o un mínimo, no se repite
+        if (hallados.some((h) => (h.min === a && h.max === null) || h.max === a || (h.min === a && h.max !== null))) continue;
+        agregar(a, null, inicio, m[0].length);
+    }
+    if (!hallados.length) return null;
+    if (hallados.length === 1) return { min: hallados[0].min, max: hallados[0].max, evidencia: hallados[0].evidencia, varias: false, candidatos: hallados };
+    return { min: null, max: null, evidencia: "", varias: true, candidatos: hallados };
+}
+
+const CL_NIVELES_POR_ANIOS = [[0, "prácticas o nivel inicial"], [1, "nivel junior"], [3, "nivel intermedio"], [6, "nivel senior o especialista"]];
+const clNivelDeAnios = (n) => CL_NIVELES_POR_ANIOS.filter(([desde]) => n >= desde).pop()[1];
+
+/**
+ * Nota que acompaña a los años de experiencia («Pide 3 años: suele ser nivel intermedio»). Es solo una PISTA escrita:
+ * no preselecciona ningún tipo de puesto.
+ * @returns {string} cadena vacía si no hay años
+ */
+export function pistaTipoPorExperiencia(min, max) {
+    if (min == null && max == null) return "";
+    const a = min == null ? max : min;
+    const b = max == null ? a : max;
+    const niv = [...new Set([clNivelDeAnios(a), clNivelDeAnios(b)])];
+    const que = min === 0 && max === 0 ? "No pide experiencia" : min != null && max != null && min !== max ? `Pide de ${min} a ${max} años` : `Pide ${a} ${a === 1 ? "año" : "años"}`;
+    return `${que}: suele ser ${niv.join(" o ")}.`;
+}
+
+const CL_REGLAS_PERFIL = [
+    ["estudiante", /\b(?:estudiantes?|alumn[oa]s?|cursando|ultimos?\s+ciclos?|\d{1,2}\s*(?:ro|do|to|mo|vo|no|er|avo|º|°)?\s*ciclo|(?:quinto|sexto|setimo|septimo|octavo|noveno|decimo)\s+ciclo)\b/],
+    ["egresado", /\begresad[oa]s?\b/],
+    ["bachiller", /\bbachiller(?:es)?\b/],
+    ["titulado", /\b(?:titulad[oa]s?|titulo\s+(?:profesional|universitario)|colegiad[oa]s?|colegiatura)\b/],
+];
+const CL_RE_DESEABLE = /\b(?:deseable|deseables|preferible|preferentemente|de\s+preferencia|se\s+valora(?:ra|ran|n)?|valorad[oa]s?|ideal|plus)\b/;
+const CL_RE_OBLIGATORIO = /\b(?:indispensable|indispensables|obligatori[oa]s?|excluyente|excluyentes|imprescindible|imprescindibles)\b/;
+
+/**
+ * Sugiere el PERFIL ACADÉMICO que pide la oferta (puede ser más de uno) y si es obligatorio o deseable.
+ *  · «Deseable» solo con palabras claras (deseable, preferible, se valorará, ideal, plus…); «obligatorio» solo con (indispensable,
+ *    obligatorio, excluyente, imprescindible). Sin ninguna, o con las dos a la vez en la misma frase: «no_indicado».
+ *  · «Colegiado» y «colegiatura» cuentan como Titulado (la colegiatura presupone el título profesional). «Título» suelto no cuenta.
+ *  · «No indicado» solo se propone si el texto es largo (300 caracteres o más) y no aparece ninguna señal.
+ * @param {string} texto
+ * @returns {Array<{slug: string, tipo: "obligatorio"|"deseable"|"no_indicado", evidencia: string}>}
+ */
+export function sugerirPerfilesAcademicos(texto) {
+    const original = typeof texto === "string" ? texto.normalize("NFC") : "";
+    const p = plegar(original);
+    const resultado = [];
+    for (const [slug, reBase] of CL_REGLAS_PERFIL) {
+        const re = new RegExp(reBase.source, "g");
+        const tipos = [];
+        let evidencia = "";
+        for (let m; (m = re.exec(p));) {
+            // «Frase» = lo que hay entre signos de puntuación (coma, punto, paréntesis, punto y coma, salto de línea)
+            const ini = Math.max(p.lastIndexOf("\n", m.index), p.lastIndexOf(".", m.index), p.lastIndexOf(";", m.index), p.lastIndexOf(",", m.index), p.lastIndexOf("(", m.index), p.lastIndexOf(")", m.index)) + 1;
+            const sig = [p.indexOf("\n", m.index), p.indexOf(".", m.index), p.indexOf(";", m.index), p.indexOf(",", m.index), p.indexOf("(", m.index), p.indexOf(")", m.index)].filter((x) => x >= 0);
+            const fin = sig.length ? Math.min(...sig) : p.length;
+            const frase = p.slice(ini, fin);
+            const des = CL_RE_DESEABLE.test(frase), obl = CL_RE_OBLIGATORIO.test(frase);
+            tipos.push(des && !obl ? "deseable" : obl && !des ? "obligatorio" : "no_indicado");
+            if (!evidencia) evidencia = original.slice(ini, fin).replace(/\s+/g, " ").trim().replace(/^[-–—•*·>\s]+/, "").slice(0, 90);
+        }
+        if (tipos.length) resultado.push({ slug, tipo: tipos.every((x) => x === tipos[0]) ? tipos[0] : "no_indicado", evidencia });
+    }
+    if (!resultado.length && p.replace(/\s+/g, " ").trim().length >= 300) resultado.push({ slug: "no-indicado", tipo: "no_indicado", evidencia: "" });
+    return resultado;
+}

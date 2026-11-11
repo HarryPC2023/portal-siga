@@ -565,6 +565,42 @@
                 grid-column: 1 / -1;
             }
         }
+
+        /* Clasificación de la oferta: tipo de puesto, años de experiencia y perfil académico */
+        .ofe-ancho {
+            grid-column: 1 / -1;
+        }
+
+        .ofe-anios {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ofe-anios .ofe-input {
+            min-width: 0;
+        }
+
+        .ofe-perfiles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+        }
+
+        .ofe-perfil {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13.5px;
+            color: #000;
+        }
+
+        .ofe-perfil .ofe-sel {
+            width: auto;
+            min-width: 140px;
+            padding: 6px 8px;
+            font-size: 12.5px;
+        }
     </style>
 </head>
 
@@ -668,6 +704,27 @@
                                     coma)</small></span>
                             <input id="inpCarreras" class="ofe-input" type="text"
                                 placeholder="Ej. Ingeniería de Sistemas, Ingeniería Industrial"></label>
+                        <div class="ofe-campo"><span>Tipo de puesto <small>(el nivel: prácticas, junior, jefatura…)</small></span>
+                            <select id="selTipoPuesto" class="ofe-sel" aria-label="Tipo de puesto">
+                                <option value="">— Sin clasificar —</option>
+                            </select>
+                            <div id="opcionesTipo" class="ofe-sug" hidden></div>
+                            <div id="pistaTipo" class="ofe-pista" hidden></div>
+                        </div>
+                        <div class="ofe-campo"><span>Años de experiencia que pide <small>(opcional)</small></span>
+                            <div class="ofe-anios">
+                                <input id="inpExpMin" class="ofe-input" type="number" min="0" max="40" step="1" inputmode="numeric"
+                                    placeholder="Mínimo" aria-label="Años de experiencia: mínimo">
+                                <input id="inpExpMax" class="ofe-input" type="number" min="0" max="40" step="1" inputmode="numeric"
+                                    placeholder="Máximo" aria-label="Años de experiencia: máximo">
+                            </div>
+                            <div id="pistaExp" class="ofe-pista" hidden></div>
+                        </div>
+                        <div class="ofe-campo ofe-ancho"><span>Perfil académico que pide <small>(puedes marcar varios; si es
+                                    deseable, indícalo)</small></span>
+                            <div id="perfilesAcad" class="ofe-perfiles" role="group" aria-label="Perfil académico"></div>
+                            <div id="pistaPerfiles" class="ofe-pista" hidden></div>
+                        </div>
                     </div>
 
                     <div class="ofe-subtitulo">Competencias detectadas</div>
@@ -737,7 +794,7 @@
         // La seguridad real vive en el servidor (Render comprueba con Supabase que la sesión es la del administrador) y en
         // la base de datos: esta verificación del lado del navegador solo evita mostrar la pantalla a otra persona.
         import { supabase, requerirSesion, montarNavUsuario } from './js/auth-siga.js?v=9';
-        import { detectarCompetencias, sugerirPuesto, sugerirSector, normalizarBase, normalizarNombre, nombreEnTexto, parecidos, empresasEnTexto } from './js/mercado-motor.js?v=5';
+        import { detectarCompetencias, sugerirPuesto, sugerirSector, normalizarBase, normalizarNombre, nombreEnTexto, parecidos, empresasEnTexto, sugerirTipoPuesto, sugerirExperiencia, pistaTipoPorExperiencia, sugerirPerfilesAcademicos, TIPOS_DE_PUESTO, PERFILES_ACADEMICOS } from './js/mercado-motor.js?v=6';
 
         const ADMIN_UID = 'f544dbae-fc6f-4fe6-9b86-fc72aef462a1';
         const API = 'https://actualizar-intranotas.onrender.com';
@@ -760,6 +817,11 @@
         let enTextoManual = false;    // si Harry marcó a mano «aparece en el texto», ya no se recalcula
         let sectorManual = false;     // si Harry eligió el sector a mano, elegir una empresa ya no lo cambia
         let sectorDeSugerencia = false; // el sector elegido vino de la sugerencia por el texto
+        let tipoManual = false;       // si elegiste el tipo de puesto a mano, ya no se recalcula al cambiar el puesto
+        let perfilesManual = false;   // si tocaste los perfiles académicos, ya no se recalculan
+        let expManual = false;        // si escribiste los años a mano, ya no se recalculan
+        let sugExp = null;            // lo que encontró el motor sobre los años de experiencia
+        const perfilesSel = new Map(); // perfil académico elegido → tipo («obligatorio», «deseable» o «no_indicado»)
         let textoAnalizado = '';  // texto de la oferta sin datos personales (para buscar el nombre de la empresa)
         let pistaSector = null;   // {slug, pista} que sugiere el texto
 
@@ -1083,6 +1145,7 @@
             if (!$('inpPuesto').value.trim()) $('inpPuesto').value = sugerirPuesto(r.texto_limpio);
             textoAnalizado = r.texto_limpio;
             pistaSector = sugerirSector(r.texto_limpio);
+            actualizarClasificacion();
             actualizarEnTexto();
             actualizarPistaSector();
             pintarEmpresa();
@@ -1244,6 +1307,93 @@
             );
         }
 
+        /* ───────────── Clasificación: tipo de puesto, años de experiencia y perfil académico ───────────── */
+        // Todo esto son SUGERENCIAS del motor: quien decide eres tú. Una oferta se guarda igual aunque queden sin completar.
+        const nombreTipo = (slug) => (TIPOS_DE_PUESTO.find((t) => t.slug === slug) || {}).nombre || slug;
+        const TIPOS_DEL_PERFIL = [['no_indicado', 'No indicado'], ['obligatorio', 'Obligatorio'], ['deseable', 'Deseable']];
+
+        function llenarTipos() {
+            const sel = $('selTipoPuesto');
+            sel.replaceChildren(el('option', { value: '', text: '— Sin clasificar —' }), ...TIPOS_DE_PUESTO.map((t) => el('option', { value: t.slug, text: t.nombre })));
+        }
+
+        function actualizarTipo() {
+            const sug = sugerirTipoPuesto($('inpPuesto').value);
+            if (!tipoManual) $('selTipoPuesto').value = sug.sugerido || '';
+            const opc = $('opcionesTipo');
+            opc.replaceChildren(); opc.hidden = true;
+            if (sug.opciones.length && !$('selTipoPuesto').value) {
+                opc.hidden = false;
+                opc.append(el('span', { text: 'Puede ser uno de estos (elige tú):' }), ...sug.opciones.map((slug) => el('button', {
+                    type: 'button', text: nombreTipo(slug), onclick: () => { $('selTipoPuesto').value = slug; tipoManual = true; actualizarTipo(); },
+                })));
+            }
+            const caja = $('pistaTipo');
+            caja.replaceChildren();
+            const lineas = [];
+            if (sug.sugerido && $('selTipoPuesto').value === sug.sugerido) lineas.push(`Sugerido por «${sug.evidencia[0]}». Confírmalo o cámbialo.`);
+            const nota = sugExp && !sugExp.varias ? pistaTipoPorExperiencia($('inpExpMin').value === '' ? null : Number($('inpExpMin').value), $('inpExpMax').value === '' ? null : Number($('inpExpMax').value)) : '';
+            if (nota) lineas.push(nota + ' (solo una pista: no cambia el tipo).');
+            if (!$('selTipoPuesto').value) lineas.push('Sin clasificar: la oferta se guarda igual y la bandeja te lo recordará.');
+            caja.hidden = !lineas.length;
+            for (const l of lineas) caja.append(el('span', { text: l }));
+        }
+
+        function actualizarExperiencia() {
+            sugExp = sugerirExperiencia(textoAnalizado);
+            if (!expManual) {
+                $('inpExpMin').value = sugExp && !sugExp.varias && sugExp.min !== null ? String(sugExp.min) : '';
+                $('inpExpMax').value = sugExp && !sugExp.varias && sugExp.max !== null ? String(sugExp.max) : '';
+            }
+            const caja = $('pistaExp');
+            caja.replaceChildren();
+            caja.hidden = !sugExp;
+            if (!sugExp) return;
+            caja.append(el('span', {
+                text: sugExp.varias
+                    ? `El texto menciona cifras distintas (${sugExp.candidatos.map((c) => (c.max !== null && c.max !== c.min ? `${c.min} a ${c.max}` : String(c.min))).join(', ')} años): escribe la que corresponda.`
+                    : `Encontrado: «${sugExp.evidencia}»`,
+            }));
+        }
+
+        function pintarPerfiles() {
+            const caja = $('perfilesAcad');
+            caja.replaceChildren();
+            for (const p of PERFILES_ACADEMICOS) {
+                const marcado = perfilesSel.has(p.slug);
+                const chk = el('input', { type: 'checkbox', 'aria-label': p.nombre });
+                chk.checked = marcado;
+                const fila = el('div', { class: 'ofe-perfil' }, el('label', { class: 'ofe-check', style: 'margin:0;' }, chk, document.createTextNode(' ' + p.nombre)));
+                chk.addEventListener('change', () => {
+                    perfilesManual = true;
+                    if (chk.checked) {
+                        if (p.slug === 'no-indicado') perfilesSel.clear(); else perfilesSel.delete('no-indicado');
+                        perfilesSel.set(p.slug, 'no_indicado');
+                    } else perfilesSel.delete(p.slug);
+                    pintarPerfiles();
+                });
+                if (marcado && p.slug !== 'no-indicado') {
+                    const sel = el('select', { class: 'ofe-sel', 'aria-label': 'Tipo de ' + p.nombre });
+                    for (const [v, t] of TIPOS_DEL_PERFIL) { const o = el('option', { value: v, text: t }); if (v === perfilesSel.get(p.slug)) o.selected = true; sel.append(o); }
+                    sel.addEventListener('change', () => { perfilesManual = true; perfilesSel.set(p.slug, sel.value); });
+                    fila.append(sel);
+                }
+                caja.append(fila);
+            }
+        }
+
+        function actualizarPerfiles() {
+            const sug = sugerirPerfilesAcademicos(textoAnalizado);
+            if (!perfilesManual) { perfilesSel.clear(); for (const x of sug) perfilesSel.set(x.slug, x.tipo); }
+            pintarPerfiles();
+            const caja = $('pistaPerfiles');
+            caja.replaceChildren();
+            caja.hidden = !sug.length;
+            if (sug.length) caja.append(el('span', { text: 'Encontrado en el texto: ' + [...new Set(sug.map((x) => (x.evidencia ? `«${x.evidencia}»` : 'ninguna mención clara')))].join(' · ') }));
+        }
+
+        function actualizarClasificacion() { actualizarExperiencia(); actualizarTipo(); actualizarPerfiles(); }
+
         function seleccionarEmpresa(e, escribir = true) {
             empresaSel = e;
             if (escribir) $('inpEmpresa').value = e.nombre;
@@ -1398,6 +1548,13 @@
             if (carreras.length > 10) errores.push('Máximo 10 carreras.');
             if (carreras.some((c) => c.length > 120)) errores.push('Una carrera es demasiado larga (máximo 120 caracteres).');
 
+            const tipoPuesto = $('selTipoPuesto').value;
+            const anios = (id) => { const v = $(id).value.trim(); return v === '' ? null : /^\d{1,2}$/.test(v) ? Number(v) : NaN; };
+            const expMin = anios('inpExpMin'), expMax = anios('inpExpMax');
+            if (Number.isNaN(expMin) || Number.isNaN(expMax) || (expMin !== null && expMin > 40) || (expMax !== null && expMax > 40)) errores.push('Los años de experiencia deben ser números enteros de 0 a 40.');
+            else if (expMin !== null && expMax !== null && expMax < expMin) errores.push('Los años de experiencia: el máximo no puede ser menor que el mínimo.');
+            const perfiles = [...perfilesSel].map(([perfil, tipo]) => ({ perfil, tipo }));
+
             const elegidas = filas.filter((f) => f.incluir);
             if (!elegidas.length) errores.push('Marca al menos una competencia.');
             if (elegidas.length > 40) errores.push('Máximo 40 competencias.');
@@ -1411,6 +1568,10 @@
                 ...(ubicacion ? { ubicacion } : {}),
                 ...(fecha ? { fecha_publicacion: fecha } : {}),
                 carreras_mencionadas: carreras,
+                ...(tipoPuesto ? { tipo_puesto: tipoPuesto } : {}),
+                ...(perfiles.length ? { perfiles_academicos: perfiles } : {}),
+                ...(expMin !== null && !Number.isNaN(expMin) ? { experiencia_min_anios: expMin } : {}),
+                ...(expMax !== null && !Number.isNaN(expMax) ? { experiencia_max_anios: expMax } : {}),
                 requisitos: elegidas.map((f) => ({
                     competencia: f.slug, tipo: f.tipo,
                     ...(f.nivel ? { nivel: f.nivel } : {}),
@@ -1513,7 +1674,7 @@
                 let j = null;
                 try { j = await resp.json(); } catch (_) { /* respuesta sin JSON */ }
                 if (j && j.status === 'created') {
-                    mensaje(`Guardada ✔ ${j.requisitos} competencia(s), ${j.carreras_relacionadas} carrera(s) reconocida(s), ${j.carreras_pendientes} pendiente(s) de revisar. Queda como pendiente.${notas.length ? ' Además: ' + notas.join(', ') + '.' : ''}${decision === 'sin_empresa' ? ' Quedó sin empresa: podrás completarla después.' : ''}${decision === 'solo_nombre' ? ' Se guardó solo el nombre escrito (la empresa no quedó registrada).' : ''}`, 'exito');
+                    mensaje(`Guardada ✔ ${j.requisitos} competencia(s), ${j.carreras_relacionadas} carrera(s) reconocida(s), ${j.carreras_pendientes} pendiente(s) de revisar. Queda como pendiente.${notas.length ? ' Además: ' + notas.join(', ') + '.' : ''}${decision === 'sin_empresa' ? ' Quedó sin empresa: podrás completarla después.' : ''}${decision === 'solo_nombre' ? ' Se guardó solo el nombre escrito (la empresa no quedó registrada).' : ''}${paquete.tipo_puesto ? '' : ' Sin tipo de puesto: la bandeja te lo marcará.'}`, 'exito');
                     if (notas.length) await cargarEmpresas();
                     $('btnOtra').hidden = false;
                     $('btnEnviar').hidden = true;
@@ -1550,6 +1711,9 @@
             fuenteManual = false;
             empresaSel = null; enTextoManual = false; sectorManual = false; sectorDeSugerencia = false; textoAnalizado = ''; pistaSector = null;
             $('chkEnTexto').checked = false; $('chkConfirmarSector').checked = false; $('selAliasDe').value = '';
+            tipoManual = false; perfilesManual = false; expManual = false; sugExp = null; perfilesSel.clear();
+            $('selTipoPuesto').value = ''; $('inpExpMin').value = ''; $('inpExpMax').value = '';
+            actualizarTipo(); pintarPerfiles(); $('pistaExp').hidden = true; $('pistaPerfiles').hidden = true;
             ocultarCuadro();
             cerrarBuscador(); filtroCategoria = ''; avisoBuscador = ''; seleccionComp.clear(); $('inpBuscarComp').value = '';
             actualizarBotonSeleccion();
@@ -1579,6 +1743,11 @@
             $('btnImagenes').addEventListener('click', () => $('inputImagenes').click());
             $('inputImagenes').addEventListener('change', (e) => { leerImagenes(e.target.files); e.target.value = ''; });
             $('selFuente').addEventListener('change', () => { fuenteManual = true; actualizarNotaEnlace(); });
+            llenarTipos(); pintarPerfiles(); actualizarTipo();
+            $('inpPuesto').addEventListener('input', actualizarTipo);
+            $('selTipoPuesto').addEventListener('change', () => { tipoManual = true; actualizarTipo(); });
+            $('inpExpMin').addEventListener('input', () => { expManual = true; actualizarTipo(); });
+            $('inpExpMax').addEventListener('input', () => { expManual = true; actualizarTipo(); });
             $('inpEmpresa').addEventListener('input', () => { ocultarCuadro(); alEscribirEmpresa(); });
             $('selAliasDe').addEventListener('change', () => { ocultarCuadro(); });
             $('chkEnTexto').addEventListener('change', () => { enTextoManual = true; });
