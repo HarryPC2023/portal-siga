@@ -40,7 +40,7 @@ from (
   union all
   select 8, 'Funciones de Mercado que siguen como SECURITY DEFINER en public (lo que marcaba el Security Advisor)',
          (select count(*)::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-           where n.nspname = 'public' and p.prosecdef and p.proname in ('registrar_oferta','admin_listar_empresas','admin_crear_empresa','admin_verificar_empresa','admin_agregar_alias','admin_listar_ofertas','admin_vincular_empresa_oferta','admin_asignar_sector_oferta','admin_carrera_oferta','admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas','admin_asignar_tipo_puesto_oferta','admin_perfil_academico_oferta','admin_asignar_experiencia_oferta')), '0'
+           where n.nspname = 'public' and p.prosecdef and p.proname in ('registrar_oferta','admin_listar_empresas','admin_crear_empresa','admin_verificar_empresa','admin_agregar_alias','admin_listar_ofertas','admin_vincular_empresa_oferta','admin_asignar_sector_oferta','admin_carrera_oferta','admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas','admin_asignar_tipo_puesto_oferta','admin_perfil_academico_oferta','admin_asignar_experiencia_oferta','mapa_filtros','mapa_competencias')), '0'
   union all
   select 9, 'Sigue la restricción v4: empresa_id solo con el nombre confirmado',
          (select (count(*) > 0)::text from pg_constraint
@@ -66,10 +66,10 @@ from (
          (select count(*)::text from (select lower(t) from public.competencias c, unnest(array[c.nombre] || c.variantes) as t
                                        where c.estado = 'activa' group by lower(t) having count(distinct c.slug) > 1) y), '0'
   union all
-  select 14, 'Las 16 funciones reales viven en private, con SECURITY DEFINER y search_path vacío',
+  select 14, 'Las 18 funciones reales viven en private, con SECURITY DEFINER y search_path vacío',
          (select count(*)::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
            where n.nspname = 'private' and p.prosecdef and coalesce(p.proconfig @> array['search_path=""'], false)
-             and p.proname in ('registrar_oferta','admin_listar_empresas','admin_crear_empresa','admin_verificar_empresa','admin_agregar_alias','admin_listar_ofertas','admin_vincular_empresa_oferta','admin_asignar_sector_oferta','admin_carrera_oferta','admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas','admin_asignar_tipo_puesto_oferta','admin_perfil_academico_oferta','admin_asignar_experiencia_oferta')), '16'
+             and p.proname in ('registrar_oferta','admin_listar_empresas','admin_crear_empresa','admin_verificar_empresa','admin_agregar_alias','admin_listar_ofertas','admin_vincular_empresa_oferta','admin_asignar_sector_oferta','admin_carrera_oferta','admin_resolver_carrera_pendiente','admin_requisito_oferta','admin_cambiar_estado_oferta','admin_publicar_ofertas_completas','admin_asignar_tipo_puesto_oferta','admin_perfil_academico_oferta','admin_asignar_experiencia_oferta','mapa_filtros','mapa_competencias')), '18'
   union all
   select 15, 'anon puede ejecutar las funciones admin_* de private (debe ser 0) y registrar_oferta de private (debe ser true)',
          (select count(*)::text from pg_proc p join pg_namespace n on n.oid = p.pronamespace
@@ -122,5 +122,9 @@ from (
          (select count(*)::text from public.facultades where estado = 'activa') || '/' ||
          (select count(*)::text from public.carreras where estado = 'activa') || '/' ||
          (select count(*)::text from public.carreras c where not exists (select 1 from public.facultades f where f.id = c.facultad_id)), '11/31/0'
+  union all
+  select 26, 'Funciones del Mapa: anon NO puede usarlas y un usuario con sesión SÍ (false/true)',
+         (has_function_privilege('anon', 'public.mapa_competencias(text, text, text)', 'execute') or has_function_privilege('anon', 'public.mapa_filtros()', 'execute'))::text || '/' ||
+         (has_function_privilege('authenticated', 'public.mapa_competencias(text, text, text)', 'execute') and has_function_privilege('authenticated', 'public.mapa_filtros()', 'execute'))::text, 'false/true'
 ) x
 order by n;
