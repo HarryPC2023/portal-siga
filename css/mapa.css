@@ -1,0 +1,753 @@
+/* css/mapa.css — Mapa de competencias (vista general).
+   Prefijo mp- en todo. Las tarjetas son blancas en todos los temas (igual que Asesorías),
+   y el fondo lo pone tema-siga.css. Borde y sombra lila: la misma familia de Inicio y Asesorías. */
+
+:root {
+  --mp-borde: rgba(102, 0, 204, 0.40);
+  --mp-sombra: 0 10px 26px rgba(102, 0, 204, 0.16);
+  --mp-pista: #EDEAF5;
+  --mp-ok: #1E9E6A;
+  --mp-aviso: #E08A00;
+}
+
+.mp-wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 26px 24px 70px;
+  font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+  color: var(--ink);
+}
+
+.mp-wrap h1,
+.mp-wrap h2,
+.mp-wrap h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  margin: 0;
+}
+
+.mp-pildora {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: #4A4433;
+  padding: 8px 24px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #FDFCF7, #F5EFDE 50%, #FDFCF7);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.07);
+}
+
+/* ───── Cabecera ───── */
+.mp-hero h1 {
+  font-size: 30px;
+  line-height: 1.2;
+  margin: 14px 0 10px;
+  max-width: 780px;
+}
+
+.mp-hero h1 em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--brand-azul), var(--brand-morado));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.mp-capt {
+  margin: 0;
+  max-width: 720px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+html[data-tema="oscuro"] .mp-hero h1 {
+  color: #f1ecff;
+}
+
+html[data-tema="oscuro"] .mp-capt,
+html[data-tema="oscuro"] .mp-fuente {
+  color: var(--hero-texto);
+}
+
+/* ───── Filtros ───── */
+.mp-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: flex-end;
+  margin: 22px 0 14px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1.5px solid var(--mp-borde);
+  border-radius: 18px;
+  box-shadow: var(--mp-sombra);
+}
+
+.mp-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.mp-campo span {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mp-campo select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  font: 500 13.5px 'Poppins', sans-serif;
+  color: var(--ink);
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1.5 5 5 5-5' fill='none' stroke='%236600CC' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center;
+  border: 1.5px solid rgba(102, 0, 204, 0.25);
+  border-radius: 12px;
+  padding: 10px 36px 10px 14px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+
+.mp-campo select:focus-visible,
+.mp-limpiar:focus-visible,
+.mp-comp:focus-visible,
+.mp-chip:focus-visible,
+.mp-btn:focus-visible {
+  outline: 2px solid var(--brand-morado);
+  outline-offset: 2px;
+}
+
+.mp-campo select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.mp-limpiar {
+  font: 600 12.5px 'Poppins', sans-serif;
+  color: #6600CC;
+  background: var(--brand-morado-tinte);
+  border: 1.5px solid rgba(102, 0, 204, 0.25);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mp-limpiar:hover {
+  background: #fff;
+}
+
+/* ───── Resumen de la selección ───── */
+.mp-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  min-height: 28px;
+  margin: 0 2px 16px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+html[data-tema="oscuro"] .mp-resumen {
+  color: var(--hero-texto);
+}
+
+.mp-resumen strong {
+  color: var(--ink);
+}
+
+html[data-tema="oscuro"] .mp-resumen strong {
+  color: #fff;
+}
+
+.mp-nivel {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.mp-nivel.completo {
+  background: #E4F6EE;
+  color: #14724B;
+  border-color: rgba(30, 158, 106, 0.35);
+}
+
+.mp-nivel.conteos {
+  background: #FFF1DB;
+  color: #9A5B00;
+  border-color: rgba(224, 138, 0, 0.4);
+}
+
+.mp-nivel.insuficiente {
+  background: #ECECF2;
+  color: #505064;
+  border-color: rgba(80, 80, 100, 0.25);
+}
+
+.mp-tuya {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--brand-morado-tinte);
+  color: #6600CC;
+  border: 1px solid rgba(102, 0, 204, 0.25);
+}
+
+/* ───── Cuadrícula de bloques ───── */
+.mp-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.mp-card {
+  grid-column: span 12;
+  min-width: 0;
+  background: #fff;
+  border: 1.5px solid var(--mp-borde);
+  border-radius: 18px;
+  padding: 18px 20px 20px;
+  box-shadow: var(--mp-sombra);
+}
+
+.mp-card.c7 {
+  grid-column: span 7;
+}
+
+.mp-card.c5 {
+  grid-column: span 5;
+}
+
+/* Combinaciones usa todo el ancho: la red a la izquierda y la lista de duplas a la derecha */
+.mp-combos-cuerpo {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 8px 28px;
+  align-items: center;
+}
+
+.mp-combos-cuerpo .mp-duplas {
+  margin-top: 0;
+}
+
+.mp-card h2 {
+  font-size: 16.5px;
+  line-height: 1.3;
+}
+
+.mp-sub {
+  margin: 4px 0 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.mp-vacio-txt {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* ───── Barras (competencias y áreas) ───── */
+.mp-barra {
+  height: 9px;
+  border-radius: 999px;
+  background: var(--mp-pista);
+  overflow: hidden;
+}
+
+.mp-barra>i {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.mp-comp {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: center;
+  width: 100%;
+  padding: 9px 8px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mp-comp:hover,
+.mp-comp[aria-expanded="true"] {
+  background: var(--brand-morado-tinte);
+}
+
+.mp-rango {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font: 700 11.5px var(--font-heading);
+  background: #F1EEF8;
+  color: #4A3A6B;
+}
+
+.mp-comp:nth-child(-n+3) .mp-rango {
+  background: linear-gradient(135deg, var(--brand-azul), var(--brand-morado));
+  color: #fff;
+}
+
+.mp-comp-nom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  margin-bottom: 5px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.mp-comp-area {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.mp-valor {
+  text-align: right;
+  line-height: 1.15;
+  min-width: 58px;
+}
+
+.mp-valor b {
+  display: block;
+  font: 700 15px var(--font-heading);
+}
+
+.mp-valor small {
+  font-size: 10.5px;
+  color: var(--ink-soft);
+}
+
+.mp-detalle {
+  margin: 0 8px 6px 46px;
+  padding: 10px 14px;
+  border-left: 3px solid var(--brand-morado);
+  border-radius: 0 10px 10px 0;
+  background: var(--brand-morado-tinte);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.mp-detalle p {
+  margin: 0 0 4px;
+}
+
+.mp-detalle p:last-child {
+  margin-bottom: 0;
+}
+
+.mp-btn {
+  font: 600 12px 'Poppins', sans-serif;
+  color: #6600CC;
+  background: #fff;
+  border: 1.5px solid rgba(102, 0, 204, 0.3);
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+.mp-btn:hover {
+  background: var(--brand-morado-tinte);
+}
+
+.mp-mas {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.mp-area {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 7px 4px;
+}
+
+.mp-icono {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+}
+
+.mp-icono svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mp-area-nom {
+  margin-bottom: 5px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ───── Distribución por tipo de puesto (circular) ───── */
+.mp-dona-caja {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px 24px;
+}
+
+.mp-dona {
+  position: relative;
+  width: 210px;
+  height: 210px;
+  flex: none;
+}
+
+.mp-dona svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.mp-dona-centro {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.mp-dona-centro b {
+  font: 700 30px var(--font-heading);
+}
+
+.mp-dona-centro small {
+  font-size: 10.5px;
+  color: var(--ink-soft);
+}
+
+.mp-leyenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+  font-size: 12.5px;
+  flex: 1 1 180px;
+}
+
+.mp-leyenda li {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.mp-leyenda i {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.mp-leyenda b {
+  font-weight: 600;
+}
+
+.mp-nota {
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+/* ───── Combinaciones (red + lista) ───── */
+.mp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.mp-chip {
+  font: 500 12px 'Poppins', sans-serif;
+  color: var(--ink-soft);
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.mp-chip:hover {
+  color: var(--ink);
+}
+
+.mp-chip.on {
+  background: var(--brand-morado);
+  border-color: var(--brand-morado);
+  color: #fff;
+}
+
+.mp-red {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.mp-red text {
+  font-family: 'Poppins', sans-serif;
+  pointer-events: none;
+}
+
+.mp-duplas {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.mp-dupla {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  align-items: center;
+  font-size: 12.5px;
+}
+
+.mp-dupla b {
+  font-weight: 600;
+}
+
+.mp-dupla .mp-barra {
+  grid-column: 1 / -1;
+  height: 6px;
+}
+
+/* ───── Tendencias (barras verticales en miniatura) ───── */
+.mp-minis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+.mp-mini {
+  padding: 14px 14px 10px;
+  border: 1.5px solid rgba(102, 0, 204, 0.18);
+  border-radius: 14px;
+  background: #FBFAFE;
+}
+
+.mp-mini h3 {
+  font-size: 13.5px;
+}
+
+.mp-mini-dato {
+  margin: 2px 0 10px;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+.mp-mini-dato b {
+  color: var(--ink);
+}
+
+.mp-mini-barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 92px;
+  padding-bottom: 2px;
+  border-bottom: 1.5px solid var(--mp-pista);
+}
+
+.mp-mini-barras span {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 5px 5px 0 0;
+}
+
+.mp-mini-barras span.poco {
+  height: 3px;
+  background: #C9C6D6;
+  border-radius: 2px;
+}
+
+.mp-mini-meses {
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.mp-mini-meses span {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 9px;
+  text-align: center;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.mp-bloqueo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.mp-pasos {
+  display: flex;
+  gap: 6px;
+}
+
+.mp-pasos i {
+  width: 26px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--mp-pista);
+}
+
+.mp-pasos i.on {
+  background: linear-gradient(90deg, var(--brand-azul), var(--brand-morado));
+}
+
+/* ───── Estados: poca muestra, cargando, error ───── */
+.mp-estado-card {
+  background: #fff;
+  border: 1.5px solid var(--mp-borde);
+  border-radius: 18px;
+  padding: 26px 24px;
+  box-shadow: var(--mp-sombra);
+  text-align: center;
+}
+
+.mp-estado-card h2 {
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.mp-estado-card p {
+  margin: 6px auto 14px;
+  max-width: 560px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.mp-progreso {
+  max-width: 340px;
+  margin: 12px auto 6px;
+}
+
+.mp-progreso .mp-barra {
+  height: 12px;
+}
+
+.mp-progreso small {
+  display: block;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+.mp-esq {
+  min-height: 250px;
+  background: linear-gradient(100deg, #fff 30%, #F4F0FB 50%, #fff 70%);
+  background-size: 220% 100%;
+  animation: mpBrillo 1.4s linear infinite;
+}
+
+@keyframes mpBrillo {
+  from {
+    background-position: 120% 0;
+  }
+
+  to {
+    background-position: -120% 0;
+  }
+}
+
+.mp-fuente {
+  margin: 22px 2px 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 860px;
+}
+
+/* Tendencias bloqueada: el aviso queda centrado junto al círculo de tipos de puesto */
+.mp-card.mp-bloqueada {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mp-card.mp-bloqueada .mp-pasos i {
+  width: 34px;
+  height: 12px;
+}
+
+@media (max-width: 860px) {
+  .mp-combos-cuerpo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mp-wrap {
+    padding: 20px 16px 60px;
+  }
+
+  .mp-hero h1 {
+    font-size: 24px;
+  }
+
+  .mp-card.c7,
+  .mp-card.c5 {
+    grid-column: span 12;
+  }
+
+  .mp-detalle {
+    margin-left: 8px;
+  }
+
+  .mp-filtros {
+    padding: 12px;
+  }
+
+  .mp-campo {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .mp-barra>i,
+  .mp-esq {
+    transition: none;
+    animation: none;
+  }
+}
