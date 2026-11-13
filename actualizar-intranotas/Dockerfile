@@ -15,7 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Playwright — no hace falta "playwright install" de nuevo.
 
 COPY scraping_intralu.py .
-COPY mercado.py .
 
 # Railway inyecta la variable PORT en tiempo de ejecución (no la
 # conocemos todavía al construir la imagen), así que el comando de

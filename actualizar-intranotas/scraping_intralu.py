@@ -33,12 +33,6 @@ app = FastAPI()
 logger = logging.getLogger("recoleccion_notas")
 logging.basicConfig(level=logging.INFO)
 
-# Módulo Mercado (ofertas laborales). Si falla al cargarse, Intranotas y Horarios siguen funcionando.
-try:
-    from mercado import registrar_rutas_mercado
-    registrar_rutas_mercado(app)
-except Exception:
-    logger.exception("Módulo Mercado no disponible; Intranotas y Horarios continúan.")
 
 # --------------------------------------------------------------
 # CORS: solo tu propio frontend puede llamar a este endpoint.
