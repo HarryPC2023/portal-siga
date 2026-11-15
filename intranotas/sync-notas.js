@@ -31,7 +31,7 @@ export function syncNotasActiva(usuario) {
     try {
         if (new URLSearchParams(location.search).get('sinsync') === '1') return false;
     } catch { /* sin location (pruebas) */ }
-    return !!usuario && (UIDS_SYNC.includes(usuario.id) || CORREOS_SYNC.includes(String(usuario.email || '').toLowerCase()));
+    return !!usuario;
 }
 
 const igual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
