@@ -90,7 +90,7 @@ async function pintarIdentidad(sesion) {
     // estudiante (no por el user_id, que cambia con cada sesión anónima).
     claveAlmacenUsuario = await claveDeAlmacenamiento(perfil?.codigo_estudiante);
     perfilActual = perfil;   // facultad y carrera del alumno: Cursos electivos las usa para los créditos y la carga horaria
-    migrarAlmacenAntiguo();
+    await migrarAlmacenAntiguo();
 
     // Nombre real de SIGA vive en perfiles_usuario (lo llena el resto de
     // la plataforma al iniciar sesión) — se usa primero; solo si faltara,
@@ -279,7 +279,7 @@ function inicializarAnalisisAcademico() {
             cicloVigente: periodoEstaAbierto,
         });
         cursosElectivos.insertarBoton();
-                // ADN académico (beta): ventana central con tu historia por periodo académico (perfil, lo que más destacó y qué hacer).
+        // ADN académico (beta): ventana central con tu historia por periodo académico (perfil, lo que más destacó y qué hacer).
         const adn = montarAdn({
             cargarFilas: cargarFilasAvance,
             obtenerPeriodos: () => Object.keys(notasPorPeriodo).map((periodo) => ({
@@ -737,19 +737,43 @@ async function claveDeAlmacenamiento(codigo) {
 
 /* Lo guardado antes de este cambio quedó bajo el user_id de esa sesión. Si la sesión
    actual todavía tiene datos ahí, se pasan a la clave estable (sin pisar lo que ya haya). */
-function migrarAlmacenAntiguo() {
-    if (!usuarioActual || !claveAlmacenUsuario) return;
-    const claveVieja = `${CLAVE_ALMACEN_NOTAS}_${usuarioActual.id}`;
+let syncNotas = null; // sincronización con la cuenta (sync-notas.js); null = solo este navegador
+
+async function migrarAlmacenAntiguo() {
+    if (usuarioActual && claveAlmacenUsuario) {
+        const claveVieja = `${CLAVE_ALMACEN_NOTAS}_${usuarioActual.id}`;
+        try {
+            const viejo = JSON.parse(localStorage.getItem(claveVieja));
+            if (viejo) {
+                const actual = leerAlmacenNotas();
+                Object.keys(viejo).forEach((periodo) => { if (!actual[periodo]) actual[periodo] = viejo[periodo]; });
+                if (escribirAlmacenNotas(actual)) localStorage.removeItem(claveVieja);
+            }
+        } catch { /* dato viejo dañado: se ignora */ }
+    }
+
+    // Notas guardadas y descartes también en la cuenta (hoy solo para quien esté en el interruptor de sync-notas.js).
     try {
-        const viejo = JSON.parse(localStorage.getItem(claveVieja));
-        if (!viejo) return;
-        const actual = leerAlmacenNotas();
-        Object.keys(viejo).forEach((periodo) => { if (!actual[periodo]) actual[periodo] = viejo[periodo]; });
-        if (escribirAlmacenNotas(actual)) localStorage.removeItem(claveVieja);
-    } catch { /* dato viejo dañado: se ignora */ }
+        const { iniciarSyncNotas } = await import('./sync-notas.js?v=1');
+        syncNotas = await iniciarSyncNotas({
+            usuario: usuarioActual,
+            clavesViejas: { notas: claveAlmacenNotas(), descartes: claveAlmacenDescartes() },
+            alRemoto: () => {
+                if (!periodoActivo) return;
+                valoresSimulados = {};
+                restaurarNotasGuardadas(periodoActivo);
+                renderizarCursos();
+            },
+            avisar: mostrarToast,
+        });
+    } catch (e) {
+        console.error('Sincronización de notas no disponible:', e);
+        syncNotas = null;
+    }
 }
 
 function leerAlmacenNotas() {
+    if (syncNotas) return syncNotas.leerNotas();
     try {
         return JSON.parse(localStorage.getItem(claveAlmacenNotas())) || {};
     } catch {
@@ -759,6 +783,7 @@ function leerAlmacenNotas() {
 
 /* Devuelve true si pudo escribir (puede fallar en modo privado o sin espacio). */
 function escribirAlmacenNotas(almacen) {
+    if (syncNotas) return syncNotas.escribirNotas(almacen);
     try {
         if (Object.keys(almacen).length) localStorage.setItem(claveAlmacenNotas(), JSON.stringify(almacen));
         else localStorage.removeItem(claveAlmacenNotas());
@@ -988,6 +1013,7 @@ function claveDescartesCurso(curso) {
 }
 
 function leerDescartes(curso) {
+    if (syncNotas) return syncNotas.leerDescartes(claveDescartesCurso(curso));
     try {
         const todo = JSON.parse(localStorage.getItem(claveAlmacenDescartes())) || {};
         return todo[claveDescartesCurso(curso)] || {};
@@ -997,6 +1023,7 @@ function leerDescartes(curso) {
 }
 
 function guardarDescarte(curso, campo, valor) {
+    if (syncNotas) { syncNotas.guardarDescarte(claveDescartesCurso(curso), campo, valor); return; }
     try {
         const todo = JSON.parse(localStorage.getItem(claveAlmacenDescartes())) || {};
         const clave = claveDescartesCurso(curso);
