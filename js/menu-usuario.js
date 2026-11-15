@@ -15,7 +15,6 @@
 
 import { supabase, cerrarSesion, resolverUrlFoto } from './auth-siga.js?v=9';
 import { SigaEstado } from './sync-estado.js?v=1';
-import { salidaSegura } from './sync-aviso-salida.js?v=1';
 import { PIEZAS, piezasFaltantes, pintarCarnet, asegurarEstilosCarnet } from './carnet-siga.js';
 
 /* Mismos íconos (SVG, no emojis: 🪪 no existe en Windows 10) que las
@@ -141,9 +140,8 @@ export async function montarMenuUsuario(cont, sesion, raiz) {
     });
     salir.addEventListener('click', async () => {
         salir.disabled = true;
-        // Sube lo pendiente; si todo llegó a la cuenta limpia este navegador. Si no, muestra el aviso de SIGA.
-        const seguir = await salidaSegura(SigaEstado);
-        if (!seguir) { salir.disabled = false; return; }
+        // Sube en silencio lo pendiente. Si todo llegó, limpia este navegador; si no, deja los datos para la próxima vez.
+        try { await SigaEstado.prepararSalida(); } catch { /* sin conexión: se cierra igual */ }
         await cerrarSesion();
         window.location.href = `${raiz}index.html`;
     });

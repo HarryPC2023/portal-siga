@@ -845,25 +845,68 @@ function inicializarGuardarLimpiar() {
     document.getElementById('btnConfirmarLimpiarTodo').addEventListener('click', limpiarTodo);
 }
 
+/* Lo que se guardaría hoy de ESTE curso (null si no hay nada que guardar).
+   Mismas reglas para "Guardar notas" del curso y para "Guardar todo". */
+function armarGuardadoDeCurso(curso) {
+    const escritas = valoresSimulados[claveSimulacion(curso)];
+    if (!escritas) return null;
+
+    const guardadas = {};
+    Object.keys(escritas).forEach((variable) => {
+        const base = valorOficial(curso, variable);
+        if (escritas[variable] === base) return; // igual a lo oficial: nada que guardar
+        // Una casilla vacía nunca se guarda encima de una nota oficial de
+        // INTRALU: taparía la nota real y el alumno creería que SIGA la perdió.
+        if (escritas[variable] === null && base !== null) return;
+        guardadas[variable] = { v: escritas[variable], base };
+    });
+    return Object.keys(guardadas).length ? guardadas : null;
+}
+
+/* Compara sin importar el orden de las casillas (la nube puede devolverlas en otro orden). */
+function huellaGuardado(g) {
+    return g ? JSON.stringify(Object.keys(g).sort().map((k) => [k, g[k].v, g[k].base])) : 'null';
+}
+
+function cursoSinCambiosPorGuardar(curso) {
+    const guardado = leerAlmacenNotas()[periodoActivo]?.[claveSimulacion(curso)] || null;
+    return huellaGuardado(armarGuardadoDeCurso(curso)) === huellaGuardado(guardado);
+}
+
+/* El botón "Guardar notas" del curso se ve apagado mientras no haya nada nuevo que guardar. */
+function refrescarBotonGuardarCurso(cuerpo, curso) {
+    const boton = cuerpo.querySelector('.btn-guardar-curso');
+    if (boton) boton.classList.toggle('btn-guardar-curso--reposo', cursoSinCambiosPorGuardar(curso));
+}
+
+function guardarNotasDeCurso(cuerpo, curso) {
+    if (!periodoActivo) return;
+    if (cursoSinCambiosPorGuardar(curso)) {
+        mostrarToast('ℹ️ No hay cambios por guardar en este curso');
+        return;
+    }
+
+    const clave = claveSimulacion(curso);
+    const guardadas = armarGuardadoDeCurso(curso);
+    const almacen = leerAlmacenNotas();
+    const delPeriodo = almacen[periodoActivo] || {};
+    if (guardadas) delPeriodo[clave] = guardadas;
+    else delete delPeriodo[clave];
+    if (Object.keys(delPeriodo).length) almacen[periodoActivo] = delPeriodo;
+    else delete almacen[periodoActivo];
+
+    const ok = escribirAlmacenNotas(almacen);
+    mostrarToast(ok ? '✅ Notas del curso guardadas' : '⚠️ No se pudo guardar en este navegador');
+    refrescarBotonGuardarCurso(cuerpo, curso);
+}
+
 function guardarNotas() {
     if (!periodoActivo) return;
 
     const delPeriodo = {};
     (notasPorPeriodo[periodoActivo] || []).forEach((curso) => {
-        const claveCurso = claveSimulacion(curso);
-        const escritas = valoresSimulados[claveCurso];
-        if (!escritas) return;
-
-        const guardadas = {};
-        Object.keys(escritas).forEach((variable) => {
-            const base = valorOficial(curso, variable);
-            if (escritas[variable] === base) return; // igual a lo oficial: nada que guardar
-            // Una casilla vacía nunca se guarda encima de una nota oficial de
-            // INTRALU: taparía la nota real y el alumno creería que SIGA la perdió.
-            if (escritas[variable] === null && base !== null) return;
-            guardadas[variable] = { v: escritas[variable], base };
-        });
-        if (Object.keys(guardadas).length) delPeriodo[claveCurso] = guardadas;
+        const guardadas = armarGuardadoDeCurso(curso);
+        if (guardadas) delPeriodo[claveSimulacion(curso)] = guardadas;
     });
 
     const almacen = leerAlmacenNotas();
@@ -872,6 +915,7 @@ function guardarNotas() {
 
     const ok = escribirAlmacenNotas(almacen);
     mostrarToast(ok ? '✅ Notas guardadas correctamente' : '⚠️ No se pudo guardar en este navegador');
+    document.querySelectorAll('.curso-card__cuerpo').forEach((c) => c._refrescarGuardar?.());
 }
 
 function abrirModalLimpiarTodo() {
@@ -1447,11 +1491,17 @@ function armarCuerpoCurso(cuerpo, curso, idx) {
     // "Limpiar notas" de ESTE curso, arriba a la derecha, igual que en SIGA.
     const acciones = document.createElement('div');
     acciones.className = 'curso-card__acciones';
-    acciones.innerHTML = '<button type="button" class="btn-limpiar-curso">🗑️ Limpiar notas</button>';
-    acciones.querySelector('button').addEventListener('click', (e) => {
+    acciones.innerHTML = '<button type="button" class="btn-limpiar-curso">🗑️ Limpiar notas</button>'
+        + '<button type="button" class="btn-guardar-curso">💾 Guardar notas</button>';
+    acciones.querySelector('.btn-limpiar-curso').addEventListener('click', (e) => {
         e.stopPropagation();
         limpiarNotasDeCurso(cuerpo, curso, idx);
     });
+    acciones.querySelector('.btn-guardar-curso').addEventListener('click', (e) => {
+        e.stopPropagation();
+        guardarNotasDeCurso(cuerpo, curso);
+    });
+    cuerpo._refrescarGuardar = () => refrescarBotonGuardarCurso(cuerpo, curso);
     cuerpo.appendChild(acciones);
 
     // Aviso de la fórmula de prácticas (solo si NO es la oficial). Se repinta
@@ -1566,6 +1616,7 @@ function actualizarCuerpoCurso(cuerpo, curso, idx) {
         badge.className = `badge ${estado.clase}`;
     }
     actualizarResumenPeriodo();
+    refrescarBotonGuardarCurso(cuerpo, curso);
 
     const etiquetasCurso = Object.fromEntries(componentesVisibles(curso.evaluaciones).map((f) => [f.variable, f.label]));
     const contenedorAviso = cuerpo.querySelector('.aviso-formula-contenedor');

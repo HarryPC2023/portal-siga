@@ -552,6 +552,37 @@
             background: #fecaca;
         }
 
+        .curso-card__acciones {
+            gap: 8px;
+        }
+
+        .btn-guardar-curso {
+            font-family: var(--font-datos);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s, opacity 0.15s;
+        }
+
+        .btn-guardar-curso:hover {
+            background: #bbf7d0;
+        }
+
+        .btn-guardar-curso--reposo {
+            background: #f1f5f9;
+            color: #94a3b8;
+            border-color: #e2e8f0;
+        }
+
+        .btn-guardar-curso--reposo:hover {
+            background: #f1f5f9;
+        }
+
         .curso-card__cuerpo.visible {
             display: block;
             margin: 14px -16px -14px;
@@ -1577,7 +1608,7 @@
                 <div id="listaCursos"></div>
                 <div class="acciones-lista" id="accionesLista">
                     <button type="button" class="btn-accion btn-accion--guardar" id="btnGuardarNotas">💾
-                        Guardar</button>
+                        Guardar todo</button>
                     <button type="button" class="btn-accion btn-accion--limpiar" id="btnLimpiarTodo">🗑️ Limpiar
                         todo</button>
                 </div>
