@@ -16,7 +16,6 @@
 import { supabase, cerrarSesion, resolverUrlFoto } from './auth-siga.js?v=9';
 import { SigaEstado } from './sync-estado.js?v=1';
 import { salidaSegura } from './sync-aviso-salida.js?v=1';
-import { SigaEstado } from './sync-estado.js?v=1';
 import { PIEZAS, piezasFaltantes, pintarCarnet, asegurarEstilosCarnet } from './carnet-siga.js';
 
 /* Mismos íconos (SVG, no emojis: 🪪 no existe en Windows 10) que las
