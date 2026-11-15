@@ -104,3 +104,9 @@ if (RUTA) {
     try { cargaOcultaParaImprimir = window.self !== window.top && window.innerWidth === 0 && window.innerHeight === 0; } catch (e) { /* sin acceso: se anota normal */ }
     if (!cargaOcultaParaImprimir) registrar('abrio');
 }
+
+// Avance de la asesoría (checklists, pasos vistos…) sincronizado con la cuenta. Va aparte y tarde
+// para no retrasar la carga ni la impresión; si falla, la asesoría sigue igual.
+try {
+    window.addEventListener('load', () => setTimeout(() => { import('./asesorias-avance.js?v=1').catch(() => { }); }, 3000));
+} catch (e) { /* nunca rompe la asesoría */ }
