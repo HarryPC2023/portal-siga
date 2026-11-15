@@ -116,13 +116,7 @@ export function aviso(texto, tipo = 'ok') {
 }
 
 // ───────────── Último recurso abierto ("Continúa donde quedaste") ─────────────
-export function recordarUltimo(slug, id) {
-    try { localStorage.setItem(LS_ULTIMO, JSON.stringify({ slug, id, t: Date.now() })); } catch (e) { /* sin almacenamiento */ }
-}
-
-export function leerUltimo() {
-    try { return JSON.parse(localStorage.getItem(LS_ULTIMO) || 'null'); } catch (e) { return null; }
-}
+export { recordarUltimo, leerUltimo } from './asesorias-estado.js?v=1';
 
 // ───────────── "Lo necesito", pedidos y reportes (tabla asesorias_demanda) ─────────────
 const clave = (codigo, evaluacion) => `${codigo}|${evaluacion || ''}`;

@@ -210,12 +210,12 @@ function mostrarGlobito({ texto, href = '', retraso = 0 }) {
     }, retraso);
 }
 
-function anunciarNovedades() {
-    const vistas = new Set(leerLista(LS_VISTAS));
+async function anunciarNovedades(E) {
+    const vistas = new Set(E.leerVistas());
     const nuevas = recursosNuevos().filter(({ recurso }) => !vistas.has(recurso.id));
     if (!nuevas.length) return;
     nuevas.forEach(({ recurso }) => vistas.add(recurso.id));
-    guardarLista(LS_VISTAS, [...vistas]);
+    E.guardarVistas([...vistas]);
 
     const slugs = [...new Set(nuevas.map(({ curso }) => curso.slug))];
     if (slugs.length === 1) {
@@ -231,16 +231,19 @@ function anunciarNovedades() {
     }
 }
 
-function saludarOAnunciar() {
-    let vista = false;
-    try { vista = localStorage.getItem(LS_BURBUJA) === '1'; } catch (e) { /* sin almacenamiento: tratar como primera visita */ }
-    if (!vista) {
-        try { localStorage.setItem(LS_BURBUJA, '1'); } catch (e) { /* nada */ }
+async function saludarOAnunciar() {
+    // Lo que recuerda Asesorías (continúa, bienvenida, novedades) vive en la cuenta: se espera a que cargue.
+    const E = await import('./asesorias-estado.js?v=1');
+    await E.listoAsesorias;
+    pintarFila(); // "Continúa donde quedaste", ya con lo de la cuenta
+
+    if (!E.burbujaVista()) {
+        E.marcarBurbuja();
         // Quien llega por primera vez ya verá las etiquetas "Nuevo": no se le anuncia lo mismo después.
-        guardarLista(LS_VISTAS, recursosNuevos().map(({ recurso }) => recurso.id));
+        E.guardarVistas(recursosNuevos().map(({ recurso }) => recurso.id));
         mostrarGlobito({ texto: '¡Hola! Aquí encuentras asesorías hechas por estudiantes.', retraso: 700 });
     } else {
-        anunciarNovedades();
+        anunciarNovedades(E);
     }
 }
 
