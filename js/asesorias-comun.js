@@ -9,6 +9,7 @@
 //                            reportes de error; ver SQL de instalación)
 import { supabase, obtenerSesion } from './auth-siga.js?v=9';
 import { CURSOS } from './asesorias-cursos.js?v=1';
+import './asesorias-avance.js?v=1';
 
 // Página de la portada de Asesorías (desde el corte del 1 oct 2026 es asesorias.html).
 export const PORTADA = 'asesorias.html';
