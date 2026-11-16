@@ -134,34 +134,82 @@ async function obtenerUserIdActual() {
 // Los cambios que llegan seguidos se JUNTAN (antes el último pisaba a los
 // anteriores: si cambiabas cruces y prioridades en menos de 1 s, solo se
 // guardaba uno de los dos).
+// Además, lo pendiente se sube DE INMEDIATO cuando la página se oculta o se
+// cierra (cambiar de app en el celular, bloquear pantalla...), y al volver a
+// la pestaña se revisa la nube para traer lo hecho en otro dispositivo.
 let _debounceNubeGen = null;
 let _pendientesNubeGen = {};
+let _subidaNubeGen = Promise.resolve();   // subida en curso (se encadenan en orden)
+let _sinSubirNubeGen = false;             // hay cambios que aún no llegaron a la nube
+let _userIdNubeGen = null;
 function guardarEnNube(campos) {
     Object.assign(_pendientesNubeGen, campos);
+    _sinSubirNubeGen = true;
     clearTimeout(_debounceNubeGen);
-    _debounceNubeGen = setTimeout(async () => {
-        // Nada sube a la nube hasta confirmar que el alumno no borró sus
-        // datos desde otro dispositivo (si no, esta copia vieja los
-        // "resucitaría"). Ver verificarBorradoRemoto().
-        if (_verificacionBorrado && !(await _verificacionBorrado)) {
-            _pendientesNubeGen = {};
-            return;
-        }
-        const pendientes = _pendientesNubeGen;
-        _pendientesNubeGen = {};
-        if (!Object.keys(pendientes).length) return;
-        const userId = await obtenerUserIdActual();
-        if (!userId) return;
+    _debounceNubeGen = setTimeout(subirPendientesNubeGen, 800);
+}
+
+function subirPendientesNubeGen() {
+    clearTimeout(_debounceNubeGen);
+    _debounceNubeGen = null;
+    if (!Object.keys(_pendientesNubeGen).length) return _subidaNubeGen;
+    const pendientes = _pendientesNubeGen;
+    _pendientesNubeGen = {};
+    _subidaNubeGen = _subidaNubeGen.then(async () => {
+        let subido = false;
         try {
+            // Nada sube a la nube hasta confirmar que el alumno no borró sus
+            // datos desde otro dispositivo (si no, esta copia vieja los
+            // "resucitaría"). Ver verificarBorradoRemoto().
+            if (_verificacionBorrado && !(await _verificacionBorrado)) { subido = true; return; }
+            const userId = _userIdNubeGen || await obtenerUserIdActual();
+            if (!userId) { subido = true; return; }
+            _userIdNubeGen = userId;
             const { error } = await window.sigaSupabase
                 .from('horarios_alumno')
                 .upsert({ user_id: userId, actualizado_en: new Date().toISOString(), ...pendientes });
             if (error) console.warn('No se pudo sincronizar con la nube:', error);
+            else subido = true;
         } catch (e) {
             console.warn('Error sincronizando con la nube:', e);
+        } finally {
+            // Si falló, lo pendiente vuelve a la cola (sin pisar lo más nuevo) para reintentar.
+            if (!subido) _pendientesNubeGen = { ...pendientes, ..._pendientesNubeGen };
+            _sinSubirNubeGen = _debounceNubeGen !== null || Object.keys(_pendientesNubeGen).length > 0;
         }
-    }, 800);
+    });
+    return _subidaNubeGen;
 }
+
+// Compara el JSON guardado en este navegador con el que trae la nube SIN
+// depender del orden de las claves (la nube las reordena y daba falsos "cambios").
+function jsonIgualGen(textoLocal, objetoNube) {
+    const orden = v => Array.isArray(v) ? v.map(orden)
+        : (v && typeof v === 'object')
+            ? Object.keys(v).sort().reduce((o, k) => { o[k] = orden(v[k]); return o; }, {})
+            : v;
+    try { return JSON.stringify(orden(JSON.parse(textoLocal))) === JSON.stringify(orden(objetoNube)); }
+    catch (e) { return false; }
+}
+
+let _ocultoDesdeGen = 0;
+let _sincronizandoGen = false;
+document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'hidden') {
+        _ocultoDesdeGen = Date.now();
+        subirPendientesNubeGen();
+        return;
+    }
+    if (!_ocultoDesdeGen || Date.now() - _ocultoDesdeGen < 3000) return;   // salida muy breve
+    _ocultoDesdeGen = 0;
+    if (!cargaGlobal || !Object.keys(seccionesData).length) return;       // pantalla sin datos
+    if (_sinSubirNubeGen) { subirPendientesNubeGen(); return; }           // lo local aún no llegó: no se pisa
+    await _subidaNubeGen;
+    if (_sinSubirNubeGen || _sincronizandoGen || document.visibilityState !== 'visible') return;
+    _sincronizandoGen = true;
+    try { await sincronizarSeleccionDesdeNube(); } finally { _sincronizandoGen = false; }
+});
+window.addEventListener('pagehide', () => { subirPendientesNubeGen(); });
 
 // ── "Borrar mis datos de Horarios" hecho en otro dispositivo ─────
 // Devuelve true si lo local sigue siendo válido. Si en la nube hay un
@@ -301,7 +349,7 @@ async function sincronizarSeleccionDesdeNube() {
 
         if (data.secciones_generador) {
             const nubeStr = JSON.stringify(data.secciones_generador);
-            if (localStorage.getItem(LS_GEN_SECCIONES) !== nubeStr) {
+            if (!jsonIgualGen(localStorage.getItem(LS_GEN_SECCIONES), data.secciones_generador)) {
                 document.querySelectorAll('.p-check').forEach(cb => {
                     const curso = cb.dataset.curso;
                     if (curso in data.secciones_generador) {
@@ -323,7 +371,7 @@ async function sincronizarSeleccionDesdeNube() {
         // los selectores ya dibujados sin pasar por generar() de nuevo.
         if (data.prioridades_profesor) {
             const nubeStr = JSON.stringify(data.prioridades_profesor);
-            if (localStorage.getItem(LS_GEN_PRIORIDADES) !== nubeStr) {
+            if (!jsonIgualGen(localStorage.getItem(LS_GEN_PRIORIDADES), data.prioridades_profesor)) {
                 aplicarPrioridadesEnSidebar(data.prioridades_profesor);
                 try { localStorage.setItem(LS_GEN_PRIORIDADES, nubeStr); } catch (e) { /* no crítico */ }
             }
