@@ -260,10 +260,22 @@
         }
 
         .encabezado-notas__volver {
+            display: inline-block;
             font-size: 13px;
-            color: var(--brand-morado);
+            color: #6600CC;
             text-decoration: none;
             font-weight: 600;
+            background: #fff;
+            border: 2px solid #B026FF;
+            border-radius: 10px;
+            padding: 8px 14px;
+            transition: box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        .encabezado-notas__volver:hover,
+        .encabezado-notas__volver:focus-visible {
+            box-shadow: 0 0 0 3px rgba(176, 38, 255, 0.25);
+            transform: translateY(-1px);
         }
 
         .fila-selector-periodo {

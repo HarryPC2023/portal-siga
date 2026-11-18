@@ -11,11 +11,17 @@
 }
 
 .termo__titulo {
-    font-size: 12px;
+    display: inline-block;
+    font-size: 14px;
     font-weight: 600;
-    color: var(--ink-soft);
-    letter-spacing: 0.02em;
-    margin: 0 0 8px;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 6px 0 14px;
+    padding: 12px 20px;
+    background: #fff;
+    border: 1.5px solid rgba(176, 38, 255, 0.35);
+    border-radius: 10px;
 }
 
 /* Todas las tarjetas del mismo ancho y de la misma altura. */
