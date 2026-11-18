@@ -103,18 +103,18 @@ export const AVISO_ERROR_GUARDADO = 'No se pudo guardar tu último cambio. Segui
 // ───────────── hub ─────────────
 export const PARTES_HUB = [
     {
-        id: 'proyectos', titulo: 'Proyectos Prácticos', subtitulo: 'Aprendizaje aplicado y generación de proyectos',
-        texto: 'Te ayuda a descubrir qué puedes construir con lo que aprendes en tus cursos. Resuelve especialmente bien el problema de no tener experiencia que mostrar.',
+        id: 'proyectos', etiqueta: 'Crea experiencia', titulo: 'Proyectos Prácticos', subtitulo: 'Aprendizaje aplicado y generación de proyectos',
+        texto: 'Descubre qué puedes construir con lo que aprendes en tus cursos, aunque aún no tengas experiencia que mostrar.',
         disponible: false,
     },
     {
-        id: 'cv', titulo: 'CV Profesional', subtitulo: 'Presentación profesional',
-        texto: 'No se limita a generar un documento. Te enseña a reconocer tus fortalezas, organizar tus experiencias y presentar tus capacidades de forma profesional.',
+        id: 'cv', etiqueta: 'Impulsa tu perfil', titulo: 'CV Profesional', subtitulo: 'Presentación profesional',
+        texto: 'Reconoce tus fortalezas, organiza tus experiencias y presenta tus capacidades de forma profesional.',
         disponible: true, enlace: 'cv-profesional.html',
     },
     {
-        id: 'entrevista', titulo: 'Prepárate para tu Entrevista', subtitulo: 'Preparación y comunicación profesional',
-        texto: 'Atiende la dificultad que aparece después de preparar el CV: saber explicar lo que has hecho, responder preguntas y desenvolverte en una entrevista.',
+        id: 'entrevista', etiqueta: 'Demuestra tu potencial', titulo: 'Prepárate para tu Entrevista', subtitulo: 'Preparación y comunicación profesional',
+        texto: 'Aprende a explicar lo que has hecho, responder preguntas y desenvolverte en una entrevista.',
         disponible: false,
     },
 ];

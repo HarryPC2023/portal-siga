@@ -12,6 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Orbitron:wght@500;600;700&display=swap"
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Figtree:wght@400;500;700&family=Chakra+Petch:wght@600;700&family=Teko:wght@500;600;700&display=swap"
+    rel="stylesheet">
   {% include tema-anti-flash.html %}
   {% include gate-anti-flash.html %}
   <link rel="stylesheet" href="css/variables.css">
@@ -19,6 +21,7 @@
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/tema-siga.css?v=1">
   <link rel="stylesheet" href="css/desarrollo.css?v=1">
+  <link rel="stylesheet" href="css/desarrollo-portada.css?v=1">
   <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
   <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
@@ -30,20 +33,35 @@
 
   {% include nav.html activo="desarrollo" %}
 
-  <main class="dp-wrap" id="dpMain" hidden>
+  <main class="dp-wrap dpp" id="dpMain" hidden>
 
-    <section class="dp-hero">
-      <span class="dp-pildora">DESARROLLO PROFESIONAL</span>
-      <h1>Crea tu perfil profesional</h1>
-      <p class="dp-lema" id="dpLema"></p>
-      <p class="dp-suave">Herramientas para descubrir tus capacidades, construir tu perfil profesional y prepararte para
-        nuevas oportunidades.</p>
+    <section class="dpp-hero">
+      <div class="dpp-hero-texto">
+        <span class="dp-pildora">DESARROLLO PROFESIONAL</span>
+        <h1>Construye tu experiencia, <em>bloque a bloque</em></h1>
+        <p class="dpp-lema" id="dpLema"></p>
+        <p class="dpp-intro">Cada proyecto, habilidad y logro es una pieza. Aquí las reúnes y las conviertes en un perfil que puedes mostrar.</p>
+        <a class="dpp-cta" id="dpCta" href="cv-profesional.html">Empezar mi CV</a>
+      </div>
+      <div class="dpp-vis" role="img" aria-label="Hoja de currículo con silueta y marcadores de datos, proyectos y logros">
+        <div class="dpp-papel">
+          <svg class="dpp-sil" viewBox="0 0 50 58" fill="none" stroke="#2F7BFF" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="25" cy="16" r="11"/><path d="M4 54c0-12 9-19 21-19s21 7 21 19z"/></svg>
+          <i class="n"></i><i class="s" style="width:62%"></i><i class="m" style="width:48%"></i><i class="h"></i><i></i><i class="s"></i><i class="m"></i><i class="h"></i><i class="s"></i><i></i><i class="m"></i><i class="h"></i><i class="s"></i><i class="m"></i>
+        </div>
+        <span class="dpp-chip dpp-c1"><u style="background:#1F9D55"></u>Datos básicos</span>
+        <span class="dpp-chip dpp-c2"><u style="background:#E0A100"></u>Proyectos</span>
+        <span class="dpp-chip dpp-c3"><u style="background:#D92D20"></u>Logros</span>
+      </div>
     </section>
 
-    <section class="dp-hub" id="dpHub" aria-label="Partes de Desarrollo profesional"></section>
+    <div class="dpp-sec"><h2>Tu ruta</h2><span></span></div>
 
-    <p class="dp-progreso-hub">Progreso: <span class="dp-chip dp-chip-lila" id="dpProgreso">0 de 3 partes listas</span></p>
-    <p class="dp-suave dp-privacidad" id="dpPrivacidad"></p>
+    <section class="dpp-ruta" id="dpHub" aria-label="Partes de Desarrollo profesional"></section>
+
+    <div class="dpp-barra">
+      <b id="dpProgreso">Tu progreso: 0 de 3 partes listas</b>
+      <span id="dpPrivacidad"></span>
+    </div>
 
   </main>
 
