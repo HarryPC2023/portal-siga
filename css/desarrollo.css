@@ -1,0 +1,221 @@
+/* css/desarrollo.css — «Desarrollo profesional» y CV Profesional.
+   Todo lleva el prefijo dp- para no chocar con el resto de SIGA.
+   Los contenedores son blancos con texto oscuro fijo, así se ven igual en cualquier tema de color. */
+
+.dp-wrap {
+    --dp-azul: #3C7CF8;
+    --dp-morado: #6600CC;
+    --dp-azul-tinte: #EAF2FF;
+    --dp-morado-tinte: #F3EAFB;
+    --dp-borde: #cfd5e3;
+    --dp-texto: #1f2430;
+    --dp-suave: #5a6275;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 24px 20px 96px;
+    font-family: 'Poppins', sans-serif;
+    color: var(--dp-texto);
+}
+
+.dp-wrap *, .dp-wrap *::before, .dp-wrap *::after { box-sizing: border-box; }
+.dp-suave { color: var(--dp-suave); font-size: 13px; line-height: 1.55; margin: 4px 0 8px; }
+[hidden] { display: none !important; }
+
+/* ───────────── encabezado ───────────── */
+.dp-hero {
+    background: #fff; border: 1.5px solid var(--dp-azul); border-radius: 12px;
+    padding: 20px 24px; margin-bottom: 18px; color: var(--dp-texto);
+}
+.dp-hero h1 { font-family: 'Orbitron', sans-serif; font-weight: 500; font-size: 26px; line-height: 1.25; margin: 10px 0 6px; color: var(--dp-texto); }
+.dp-hero-chico h1 { font-size: 22px; }
+.dp-pildora {
+    display: inline-block; font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: .12em;
+    color: #fff; background: linear-gradient(90deg, var(--dp-azul), var(--dp-morado)); border-radius: 6px; padding: 4px 10px;
+}
+.dp-lema { color: var(--dp-morado); font-weight: 500; font-size: 15px; margin: 0 0 6px; }
+.dp-volver { display: block; font-size: 13px; color: var(--dp-azul); text-decoration: none; margin-bottom: 10px; }
+.dp-volver:hover { text-decoration: underline; }
+
+/* ───────────── hub ───────────── */
+.dp-hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.dp-card-hub {
+    background: #fff; border: 1.5px solid var(--dp-borde); border-radius: 12px; padding: 18px;
+    display: flex; flex-direction: column; gap: 4px; color: var(--dp-texto);
+}
+.dp-card-hub h3 { font-family: 'Orbitron', sans-serif; font-weight: 500; font-size: 17px; margin: 0; color: var(--dp-texto); }
+.dp-card-sub { color: var(--dp-azul); font-size: 13px; margin: 0 0 4px; font-weight: 500; }
+.dp-card-hub .dp-suave { flex: 1; }
+.dp-card-activa { border-color: var(--dp-azul); background: var(--dp-azul-tinte); }
+.dp-estado-cv { font-size: 13px; font-weight: 500; color: var(--dp-morado); margin: 4px 0 8px; }
+.dp-progreso-hub { margin: 16px 0 0; font-size: 13px; color: var(--dp-texto); }
+.dp-privacidad { margin-top: 6px; }
+
+/* ───────────── botones y chips ───────────── */
+.dp-btn {
+    display: inline-block; border: 1.5px solid var(--dp-borde); background: #fff; color: var(--dp-texto); border-radius: 8px;
+    padding: 8px 14px; font: inherit; font-size: 14px; cursor: pointer; text-decoration: none; line-height: 1.3;
+}
+.dp-btn:hover { border-color: var(--dp-azul); }
+.dp-btn:focus-visible, .dp-btn-texto:focus-visible, .dp-paso:focus-visible { outline: 3px solid rgba(60, 124, 248, .35); outline-offset: 2px; }
+.dp-btn-primario { background: var(--dp-morado); border-color: var(--dp-morado); color: #fff; }
+.dp-btn-primario:hover { background: #5200a3; border-color: #5200a3; }
+.dp-btn-chico { padding: 5px 10px; font-size: 12px; }
+.dp-btn-agregar { margin-top: 4px; border-style: dashed; border-color: var(--dp-azul); color: #1d4ed8; }
+.dp-enlace { align-self: flex-start; }
+.dp-btn-texto { background: none; border: 0; color: var(--dp-azul); cursor: pointer; font: inherit; font-size: 13px; text-decoration: underline; padding: 2px 4px; }
+.dp-peligro { color: #B42318; }
+.dp-solo-cel { display: none; }
+
+.dp-chip {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; border-radius: 8px; padding: 4px 10px;
+    margin: 3px 6px 3px 0; border: 1px solid; line-height: 1.3;
+}
+.dp-chip-lila { background: var(--dp-morado-tinte); color: #4c0099; border-color: var(--dp-morado); }
+.dp-chip-azul { background: var(--dp-azul-tinte); color: #1d4ed8; border-color: var(--dp-azul); }
+.dp-chip-gris { background: #eceef3; color: #444b5c; border-color: #cfd5e3; }
+.dp-chip-hab { background: var(--dp-morado-tinte); color: #4c0099; border-color: var(--dp-morado); }
+.dp-chip-x { background: none; border: 0; color: #4c0099; cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px; }
+.dp-etiqueta-siga { display: inline-block; font-size: 12px; background: #E6F6EC; color: #14532d; border: 1px solid #1F9D55; border-radius: 8px; padding: 4px 10px; }
+
+/* ───────────── pasos ───────────── */
+.dp-app { min-height: 200px; }
+.dp-cargando { background: #fff; border: 1.5px solid var(--dp-borde); border-radius: 12px; padding: 24px; color: var(--dp-suave); }
+.dp-pasos { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; }
+.dp-paso {
+    flex: none; display: flex; align-items: center; gap: 7px; border: 1.5px solid #e3e6ee; background: #fff; color: var(--dp-texto);
+    border-radius: 8px; padding: 7px 11px; font: inherit; font-size: 13px; cursor: pointer;
+}
+.dp-paso-activo { border-color: var(--dp-morado); background: var(--dp-morado-tinte); }
+.dp-paso-n { font-weight: 500; }
+
+.dp-punto { width: 10px; height: 10px; border-radius: 50%; flex: none; display: inline-block; }
+.dp-rojo { background: #D92D20; } .dp-ambar { background: #E0A100; } .dp-verde { background: #1F9D55; }
+.dp-gris { background: #9aa3b5; } .dp-rev { background: var(--dp-morado); }
+
+.dp-constructor { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+.dp-panel { background: #fff; border: 1.5px solid var(--dp-morado); border-radius: 12px; padding: 20px 22px; color: var(--dp-texto); }
+.dp-paso-titulo { font-family: 'Orbitron', sans-serif; font-weight: 500; font-size: 19px; margin: 0 0 2px; color: var(--dp-texto); outline: none; }
+.dp-lateral { position: sticky; top: 90px; background: #fff; border: 1.5px solid var(--dp-azul); border-radius: 12px; padding: 12px; color: var(--dp-texto); }
+.dp-lateral-cab { font-size: 13px; margin-bottom: 8px; }
+
+/* ───────────── campos ───────────── */
+.dp-campo { margin: 14px 0 0; }
+.dp-campo label { display: block; font-size: 13px; font-weight: 500; color: #3b4254; margin-bottom: 4px; }
+.dp-opc { font-weight: 400; color: var(--dp-suave); }
+.dp-wrap input[type="text"], .dp-wrap input[type="email"], .dp-wrap input[type="tel"], .dp-wrap textarea, .dp-wrap select {
+    width: 100%; border: 1.5px solid var(--dp-borde); border-radius: 8px; padding: 9px 11px; font: inherit; font-size: 14px;
+    background: #fff; color: var(--dp-texto);
+}
+.dp-wrap textarea { resize: vertical; min-height: 72px; line-height: 1.45; }
+.dp-wrap input:focus, .dp-wrap textarea:focus, .dp-wrap select:focus { outline: none; border-color: var(--dp-azul); box-shadow: 0 0 0 3px rgba(60, 124, 248, .2); }
+.dp-ayuda { display: block; color: var(--dp-suave); font-size: 12px; margin-top: 3px; }
+.dp-error { display: block; color: #B42318; font-size: 12px; margin-top: 4px; }
+.dp-fila-siga { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+.dp-casilla { display: flex; gap: 8px; align-items: center; font-size: 14px; margin: 12px 0; cursor: pointer; }
+.dp-casilla input { width: 18px; height: 18px; }
+.dp-atenuado { opacity: .5; }
+
+.dp-consejo { margin-top: 18px; border: 1.5px solid #E0A100; background: #FFF6DD; color: #6b4500; border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.5; }
+.dp-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+
+/* ───────────── tarjetas y listas ───────────── */
+.dp-tarjeta { border: 1.5px solid var(--dp-azul); background: #fafcff; border-radius: 10px; padding: 12px 14px 14px; margin: 14px 0 0; }
+.dp-tarjeta-cab { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; }
+.dp-quitar { font-size: 13px; }
+.dp-vacio { background: #f6f7fb; border: 1.5px dashed var(--dp-borde); border-radius: 8px; padding: 12px; color: var(--dp-suave); font-size: 13px; margin: 14px 0 0; }
+.dp-ideas { margin-top: 16px; }
+.dp-lista-ejemplos { margin: 0; padding-left: 18px; font-size: 13px; color: var(--dp-suave); line-height: 1.6; }
+
+.dp-grupo { margin-top: 16px; }
+.dp-grupo h3 { font-size: 15px; font-weight: 500; margin: 0; color: var(--dp-texto); }
+.dp-chips { min-height: 8px; margin: 6px 0 4px; }
+.dp-agregar { display: flex; gap: 6px; align-items: center; margin-top: 4px; }
+.dp-agregar select { width: 130px; }
+
+/* ───────────── revisión (semáforo) ───────────── */
+.dp-leyenda { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 8px 0 10px; }
+.dp-leyenda-item { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
+.dp-fila { display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid; border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
+.dp-fila .dp-punto { margin-top: 6px; }
+.dp-fila-texto { flex: 1; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+.dp-fila-texto span { line-height: 1.5; }
+.dp-fila-rojo { border-color: #D92D20; background: #FDE8E8; color: #7a1b13; }
+.dp-fila-ambar { border-color: #E0A100; background: #FFF6DD; color: #6b4500; }
+.dp-fila-verde { border-color: #1F9D55; background: #E6F6EC; color: #14532d; }
+.dp-fila-gris { border-color: #9aa3b5; background: #f1f2f6; color: #444b5c; }
+.dp-solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.dp-aviso { border: 1.5px solid var(--dp-azul); background: var(--dp-azul-tinte); border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.55; margin-top: 12px; }
+.dp-acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+/* ───────────── hoja A4 (vista previa) ───────────── */
+.dp-a4-wrap { position: relative; width: 100%; overflow: hidden; background: #fff; border: 1.5px solid var(--dp-borde); border-radius: 6px; }
+.dp-a4-grande { max-width: 640px; margin: 0 auto; }
+.dp-previa-barra { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; background: #fff; border: 1.5px solid var(--dp-azul); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; }
+.dp-previa .dp-suave { background: #fff; border-radius: 8px; padding: 8px 12px; margin: 10px auto 0; max-width: 640px; }
+
+.dp-ajuste { display: inline-block; font-size: 12px; border-radius: 8px; padding: 4px 9px; margin: 8px 0 6px; border: 1px solid; line-height: 1.4; }
+.dp-ajuste-ok { background: #E6F6EC; color: #14532d; border-color: #1F9D55; }
+.dp-ajuste-largo { background: #FFF6DD; color: #6b4500; border-color: #E0A100; }
+
+/* La hoja: tamaño A4 real (210 × 297 mm). Se reduce con transform para mostrarla; se imprime a tamaño real. */
+.dp-a4 {
+    width: 210mm; height: 297mm; padding: 18mm 20mm; background: #fff; color: #111;
+    font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.35;
+    transform-origin: top left; overflow: hidden; overflow-wrap: anywhere;
+}
+.dp-a4 h1, .dp-a4 h2, .dp-a4 p, .dp-a4 li, .dp-a4 strong, .dp-a4 header, .dp-a4 section { font-family: inherit; color: inherit; letter-spacing: normal; text-transform: none; }
+.dp-cv-h1 { font-size: 22pt; line-height: 1.15; font-weight: 700; margin: 0 0 3pt; }
+.dp-cv-contacto { font-size: 10pt; color: #333 !important; margin: 0 0 4pt; }
+.dp-cv-sec { margin: 0; }
+.dp-cv-h2 { font-size: 11pt; font-weight: 700; text-transform: uppercase !important; letter-spacing: .04em !important; border-bottom: 1px solid #444; margin: 12pt 0 5pt; padding: 0 0 2pt; }
+.dp-cv-p { margin: 0 0 3pt; font-size: 10.5pt; }
+.dp-cv-suave { color: #444 !important; }
+.dp-cv-item { margin: 0 0 6pt; }
+.dp-cv-ul { margin: 0; padding-left: 16pt; font-size: 10.5pt; }
+.dp-cv-ul li { margin: 0 0 3pt; }
+
+/* Medición fuera de pantalla: cuánto ocupa el CV frente al alto útil de un A4 (297 − 2×18 mm = 261 mm). */
+.dp-medida { position: absolute; left: -10000px; top: 0; visibility: hidden; pointer-events: none; }
+.dp-medida .dp-a4 { height: auto; transform: none; overflow: visible; }
+.dp-sonda { height: 261mm; width: 1px; }
+
+/* ───────────── avisos y ventana de confirmación ───────────── */
+.dp-toasts { position: fixed; right: 16px; bottom: 16px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; max-width: min(380px, calc(100vw - 32px)); }
+.dp-toast { background: #1f2430; color: #fff; border-radius: 10px; padding: 10px 12px; font: 400 13px/1.45 'Poppins', sans-serif; display: flex; gap: 10px; align-items: center; }
+.dp-toast span { flex: 1; }
+.dp-toast-btn { background: #fff; color: #1f2430; border: 0; border-radius: 6px; padding: 5px 9px; cursor: pointer; font: 500 12px 'Poppins', sans-serif; }
+.dp-toast-x { background: none; border: 0; color: #cfd5e3; font-size: 18px; cursor: pointer; line-height: 1; }
+
+.dp-modal-fondo { position: fixed; inset: 0; background: rgba(15, 18, 30, .5); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.dp-modal { background: #fff; color: #1f2430; border: 1.5px solid #6600CC; border-radius: 12px; padding: 20px 22px; max-width: 440px; width: 100%; font-family: 'Poppins', sans-serif; }
+.dp-modal h3 { margin: 0 0 8px; font-family: 'Orbitron', sans-serif; font-weight: 500; font-size: 17px; }
+.dp-modal p { margin: 0 0 16px; font-size: 14px; line-height: 1.55; color: #3b4254; }
+.dp-modal-acciones { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* ───────────── celular y tablet ───────────── */
+@media (max-width: 960px) {
+    .dp-constructor { grid-template-columns: minmax(0, 1fr); }
+    .dp-lateral { display: none; }
+    .dp-solo-cel { display: inline-block; }
+}
+@media (max-width: 560px) {
+    .dp-wrap { padding: 14px 12px 90px; }
+    .dp-panel { padding: 16px 14px; }
+    .dp-hero { padding: 16px; }
+    .dp-hero h1 { font-size: 21px; }
+    .dp-paso-t { display: none; }
+    .dp-paso-activo .dp-paso-t { display: inline; }
+    .dp-agregar { flex-wrap: wrap; }
+}
+
+/* ───────────── impresión: solo la hoja del CV, en A4 real ───────────── */
+#dpHojaImpresion { display: none; }
+@page { size: A4; margin: 18mm 20mm; }
+@media print {
+    html, body { background: #fff !important; }
+    body > *:not(#dpHojaImpresion) { display: none !important; }
+    #dpHojaImpresion { display: block !important; }
+    #dpHojaImpresion .dp-a4 { width: auto; height: auto; padding: 0; transform: none; overflow: visible; border: 0; }
+    .dp-cv-sec, .dp-cv-item { break-inside: avoid; }
+    .dp-cv-h2 { break-after: avoid; }
+}
