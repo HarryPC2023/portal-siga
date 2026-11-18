@@ -12,13 +12,13 @@
 
 .termo__titulo {
     display: inline-block;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     color: #000;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin: 6px 0 14px;
-    padding: 12px 20px;
+    letter-spacing: 0.05em;
+    margin: 6px 0 12px;
+    padding: 9px 16px;
     background: #fff;
     border: 1.5px solid rgba(176, 38, 255, 0.35);
     border-radius: 10px;
