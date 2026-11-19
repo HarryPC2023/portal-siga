@@ -68,7 +68,7 @@
 .dpc .dp-ajuste { font-size: 14px; }
 
 /* etiqueta inclinada sobre la hoja (solo PC; con la vista previa oculta en celular no estorba) */
-.dpc-pega { position: absolute; right: -14px; bottom: 96px; z-index: 2; transform: rotate(4deg); background: var(--dpc-naranja); color: #fff;
+.dpc-pega { position: absolute; right: -14px; top: 410px; z-index: 2; transform: rotate(4deg); background: var(--dpc-naranja); color: #fff;
             font: 400 14px/1.15 'Russo One', sans-serif; letter-spacing: .04em; padding: 11px 16px; border-radius: 6px; text-align: center; max-width: 210px;
             box-shadow: 0 10px 20px rgba(232, 89, 12, .35); pointer-events: none; }
 

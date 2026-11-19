@@ -424,7 +424,8 @@ function medirAjuste() {
     // Mientras cabe en una hoja no se muestra nada (un % bajo desanima a quien recién empieza); solo se avisa si se pasa.
     $$('[data-ajuste]').forEach((n) => {
         n.className = ajusteActual.cabe ? '' : 'dp-ajuste dp-ajuste-largo';
-        n.textContent = ajusteActual.cabe ? '' : `Pasa de una página A4 (${pct} %): recorta o resume lo menos importante`;
+        n.replaceChildren(...(ajusteActual.cabe ? [] : [el('strong', { text: '💡 Revisa la extensión: ' }),
+            'Tu CV supera una página. Revisa si puedes resumir algunas descripciones o eliminar información secundaria. Recuerda que dos páginas también son aceptables si el contenido lo justifica.']));
     });
 }
 
