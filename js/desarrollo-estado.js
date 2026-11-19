@@ -9,6 +9,7 @@
 //   cv:ajustes          → { sinExperiencia }
 //   proyecto:<id>       → { nombre, queHiciste, herramientas, evidencia, origen, orden }
 //   habilidad:<id>      → { categoria: 'tecnica'|'herramienta'|'idioma', nombre, nivel, orden }
+//   certificacion:<id>  → { nombre, institucion, anio, tipo, enlace, orden }   (tipo y enlace opcionales)
 //   logro:<id>          → { texto, respaldo, orden }
 //   experiencia:<id>    → { puesto, queHiciste, orden }
 //
@@ -22,6 +23,7 @@ export const MODULO = 'desarrollo';
 export const TIPOS = {
     proyecto: 'proyecto:',
     habilidad: 'habilidad:',
+    certificacion: 'certificacion:',
     logro: 'logro:',
     experiencia: 'experiencia:',
 };
@@ -68,6 +70,7 @@ export function crearDesarrollo(estado) {
             ajustes: objeto(estado.leer(MODULO, CLAVE_AJUSTES)),
             proyectos: coleccion('proyecto'),
             habilidades: coleccion('habilidad'),
+            certificaciones: coleccion('certificacion'),
             logros: coleccion('logro'),
             experiencias: coleccion('experiencia'),
         };

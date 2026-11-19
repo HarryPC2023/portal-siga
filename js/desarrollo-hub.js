@@ -4,9 +4,9 @@
 // el alumno ya guardó (SigaEstado, módulo «desarrollo»); si no carga, la portada se ve igual, sin avance.
 import { SigaEstado } from './sync-estado.js?v=1';
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
-import { crearDesarrollo } from './desarrollo-estado.js?v=1';
+import { crearDesarrollo } from './desarrollo-estado.js?v=2';
 import { evaluarCV } from './desarrollo-reglas.js?v=2';
-import { LEMA, PARTES_HUB, NOTA_PRIVACIDAD } from './desarrollo-contenido.js?v=3';
+import { LEMA, PARTES_HUB, NOTA_PRIVACIDAD } from './desarrollo-contenido.js?v=4';
 
 const $ = (s) => document.querySelector(s);
 
@@ -21,7 +21,7 @@ function el(tag, props = {}, ...hijos) {
 }
 
 const hayDatos = (cv) => Object.keys(cv.datos).length || Object.keys(cv.formacion).length || cv.proyectos.length
-    || cv.habilidades.length || cv.logros.length || cv.experiencias.length;
+    || cv.habilidades.length || (cv.certificaciones || []).length || cv.logros.length || cv.experiencias.length;
 
 function resumenCV(cv) {
     if (!hayDatos(cv)) return { texto: 'Aún no empiezas', listo: false, empezado: false };

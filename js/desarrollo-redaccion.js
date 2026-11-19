@@ -2,7 +2,7 @@
 //
 // Archivo PURO: sin DOM, sin red y SIN IA. Solo ordena las respuestas en frases con una plantilla.
 // No inventa nada: lo que el alumno deja vacío no aparece, y nunca se fabrica un resultado.
-import { VERBOS_TRABAJO, PATRONES_CARRERA, DETALLE_IDIOMA } from './desarrollo-contenido.js?v=3';
+import { VERBOS_TRABAJO, PATRONES_CARRERA, DETALLE_IDIOMA } from './desarrollo-contenido.js?v=4';
 
 const t = (v) => (typeof v === 'string' ? v.trim() : '');
 const sinPunto = (v) => t(v).replace(/[.\s]+$/, '');

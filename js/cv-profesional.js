@@ -9,11 +9,11 @@
 import { SigaEstado } from './sync-estado.js?v=1';
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { supabase } from './auth-siga.js?v=9';
-import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES } from './desarrollo-estado.js?v=1';
-import { evaluarCV } from './desarrollo-reglas.js?v=2';
-import * as C from './desarrollo-contenido.js?v=3';
-import { htmlCV } from './cv-documento.js?v=1';
-import { armarBorrador, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=1';
+import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES } from './desarrollo-estado.js?v=2';
+import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
+import * as C from './desarrollo-contenido.js?v=4';
+import { htmlCV } from './cv-documento.js?v=2';
+import { armarBorrador, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 
 const D = crearDesarrollo(SigaEstado);
@@ -41,9 +41,9 @@ let paso = 0;                        // índice en C.PASOS
 let modo = 'constructor';            // 'constructor' | 'previa'
 const sucios = new Set();            // «clave|campo» con texto escrito que aún no se manda a guardar
 const temporizadores = new Map();    // clave → temporizador del autoguardado
-const SECCION_DE_PASO = { datos: 'datos', formacion: 'formacion', proyectos: 'proyectos', habilidades: 'habilidades', logros: 'logros', experiencia: 'experiencia' };
-const TIPO_DE_PASO = { proyectos: 'proyecto', logros: 'logro', experiencia: 'experiencia' };
-const COLECCION = { proyecto: 'proyectos', logro: 'logros', experiencia: 'experiencias', habilidad: 'habilidades' };
+const SECCION_DE_PASO = { datos: 'datos', formacion: 'formacion', proyectos: 'proyectos', habilidades: 'habilidades', certificaciones: 'certificaciones', logros: 'logros', experiencia: 'experiencia' };
+const TIPO_DE_PASO = { proyectos: 'proyecto', certificaciones: 'certificacion', logros: 'logro', experiencia: 'experiencia' };
+const COLECCION = { proyecto: 'proyectos', certificacion: 'certificaciones', logro: 'logros', experiencia: 'experiencias', habilidad: 'habilidades' };
 
 // ───────────── autoguardado ─────────────
 const esVacio = (o) => Object.entries(o || {}).every(([k, v]) => k === 'orden' || k === 'origen' || k === 'desdeSiga' || v === '' || v === false || v == null || (Array.isArray(v) && !v.length));
@@ -85,7 +85,7 @@ function programar(clave) {
 function flushTodo() { [...temporizadores.keys()].forEach(flush); }
 
 // ───────────── campos de formulario ─────────────
-function campo({ clave, nombre, etiqueta, placeholder = '', tipo = 'text', opcional = false, area = false, ayuda = '', extra = {} }) {
+function campo({ clave, nombre, etiqueta, placeholder = '', tipo = 'text', opcional = false, area = false, ayuda = '', extra = {}, validar = null }) {
     const id = `f-${clave.replace(/\W/g, '_')}-${nombre}`;
     const valor = (D.leerClave(clave) || {})[nombre];
     const input = area ? el('textarea', { id, rows: 3, placeholder }) : el('input', { id, type: tipo, placeholder, autocomplete: 'off', ...extra });
@@ -94,9 +94,19 @@ function campo({ clave, nombre, etiqueta, placeholder = '', tipo = 'text', opcio
     input.dataset.campo = nombre;
     input.addEventListener('input', () => { sucios.add(`${clave}|${nombre}`); programar(clave); });
     input.addEventListener('blur', () => flush(clave));
+    // Validación opcional: solo AVISA junto al campo; nunca impide escribir ni guardar.
+    const aviso = validar ? el('small', { role: 'status', hidden: true }) : null;
+    const revisar = () => {
+        if (!validar) return;
+        const r = validar(input.value);
+        aviso.hidden = !r;
+        if (r) { aviso.textContent = r.mensaje; aviso.className = r.nivel === 'aviso' ? 'dp-ayuda' : 'dp-error'; }
+    };
+    if (validar) { input.addEventListener('input', revisar); revisar(); }
     return el('div', { class: 'dp-campo' },
         el('label', { for: id }, etiqueta, opcional ? el('span', { class: 'dp-opc', text: ' (opcional)' }) : null),
         input,
+        aviso,
         ayuda ? el('small', { class: 'dp-ayuda', text: ayuda }) : null);
 }
 
@@ -155,7 +165,7 @@ const leerItem = (clave) => D.leerClave(clave) || {};
 function pintarSel(caja) {
     const v = leerItem(caja.dataset.claveSel)[caja.dataset.sel] || '';
     $$('[data-valor]', caja).forEach((b) => { const on = b.dataset.valor === v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
-    const hint = $('[data-hint]', caja.parentElement);
+    const hint = caja.parentElement ? $('[data-hint]', caja.parentElement) : null;
     if (hint) { const c = C.CATEGORIAS_PROYECTO.find((x) => x.id === v); hint.textContent = c ? c.texto : hint.dataset.vacio; }
 }
 
@@ -310,21 +320,54 @@ function camposProyecto(clave) {
     ];
 }
 
+// Certificación o formación complementaria: nombre (tal como aparece en la constancia), institución, año, tipo y enlace, estos dos últimos opcionales.
+function camposCertificacion(clave) {
+    const Cc = C.CERTIFICACIONES;
+    const caja = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': 'Tipo (opcional)', 'data-pinta': '', 'data-sel': 'tipo', 'data-clave-sel': clave },
+        ...C.TIPOS_CERTIFICACION.map((o) => el('button', {
+            type: 'button', class: 'dpc-op', 'data-valor': o.id, 'aria-pressed': 'false', text: o.nombre, title: o.texto,
+            onclick: () => {
+                flush(clave);
+                const actual = leerItem(clave);
+                const nuevo = { ...actual }; if (actual.tipo === o.id) delete nuevo.tipo; else nuevo.tipo = o.id;     // sin tipo = no se guarda la clave
+                D.guardarClave(clave, nuevo); refrescarMemoria(); pintarSel(caja);
+            },
+        })));
+    caja._pintar = () => pintarSel(caja);
+    pintarSel(caja);
+    return [
+        el('div', { class: 'dpc-fila-cert' },
+            campo({ clave, nombre: 'nombre', etiqueta: 'Nombre', placeholder: 'Fundamentos de bases de datos' }),
+            campo({ clave, nombre: 'anio', etiqueta: 'Año', opcional: true, placeholder: '2025', extra: { inputmode: 'numeric', maxlength: '4' } })),
+        campo({ clave, nombre: 'institucion', etiqueta: 'Quién lo dio', placeholder: 'Institución, plataforma o centro' }),
+        el('div', { class: 'dp-campo' }, el('span', { class: 'dpc-lab' }, 'Tipo', el('span', { class: 'dp-opc', text: ' (opcional)' })), caja,
+            el('small', { class: 'dp-ayuda', text: Cc.tipos.cierre })),
+        campo({ clave, nombre: 'enlace', etiqueta: 'Enlace de verificación', opcional: true, placeholder: 'https://…', ayuda: Cc.enlaceAyuda, validar: analizarEnlaceWeb, extra: { inputmode: 'url' } }),
+        el('p', { class: 'dpc-aviso-priv', text: Cc.enlacePrivacidad }),
+    ];
+}
+
 const CAMPOS_TARJETA = {
     proyecto: (clave) => camposProyecto(clave),
+    certificacion: (clave) => camposCertificacion(clave),
     logro: (clave) => [
-        campo({ clave, nombre: 'texto', etiqueta: 'Logro', placeholder: C.EJEMPLOS_LOGRO[1], area: true }),
-        campo({ clave, nombre: 'respaldo', etiqueta: 'Con qué lo respaldas', placeholder: 'Un número, un reconocimiento o un enlace', ayuda: 'Puede ser una cantidad, un puesto obtenido, el nombre del evento o un enlace.' }),
+        campo({ clave, nombre: 'texto', etiqueta: 'Describe tu logro', placeholder: C.LOGROS.placeholder, area: true }),
+        campo({
+            clave, nombre: 'respaldo', etiqueta: C.LOGROS.respaldo.etiqueta, opcional: true, placeholder: C.LOGROS.respaldo.placeholder, ayuda: C.LOGROS.respaldo.pista,
+            validar: (v) => (/^\s*[a-z][a-z0-9+.-]*:/i.test(v) ? analizarEnlaceWeb(v) : null),
+        }),
+        el('details', { class: 'dpc-det' }, el('summary', { text: C.LOGROS.respaldo.ayudaResumen }),
+            el('p', { class: 'dp-suave', text: C.LOGROS.respaldo.ayuda }), el('p', { class: 'dpc-aviso-priv', text: C.LOGROS.respaldo.privacidad })),
     ],
     experiencia: (clave) => [
         campo({ clave, nombre: 'puesto', etiqueta: 'Puesto o actividad', placeholder: 'Voluntariado, negocio familiar, trabajo temporal…' }),
         campo({ clave, nombre: 'queHiciste', etiqueta: '¿Qué hiciste?', placeholder: 'Empieza con un verbo y di el resultado', area: true }),
     ],
 };
-const ROTULO = { proyecto: 'Proyecto', logro: 'Logro', experiencia: 'Experiencia' };
+const ROTULO = { proyecto: 'Proyecto', certificacion: 'Certificación', logro: 'Logro', experiencia: 'Experiencia' };
 
-const PRIMER_CAMPO = { proyecto: 'nombre', logro: 'texto', experiencia: 'puesto' };
-const SIN_TITULO = { proyecto: 'sin nombre todavía', logro: 'sin descripción todavía', experiencia: 'sin puesto todavía' };
+const PRIMER_CAMPO = { proyecto: 'nombre', certificacion: 'nombre', logro: 'texto', experiencia: 'puesto' };
+const SIN_TITULO = { proyecto: 'sin nombre todavía', certificacion: 'sin nombre todavía', logro: 'sin descripción todavía', experiencia: 'sin puesto todavía' };
 const plegadas = new Set();        // ids de tarjetas plegadas (solo vista: no se guarda en la base)
 
 function textoResumen(tipo, clave) {
@@ -517,12 +560,43 @@ function pasoProyectos() {
     }), sugerencia);
 }
 
+function listaAyuda(resumen, ...cuerpo) {
+    return el('details', { class: 'dpc-det', open: null }, el('summary', { text: resumen }), ...cuerpo);
+}
+const itemsUl = (items) => el('ul', { class: 'dp-lista-ejemplos' }, items.map((x) => el('li', { text: x })));
+
+function pasoCertificaciones() {
+    const Cc = C.CERTIFICACIONES;
+    const sinNinguna = D.leerCV().certificaciones.length === 0;
+    const descubrir = el('details', { class: 'dpc-det', open: sinNinguna ? true : null },
+        el('summary', { text: Cc.descubrir.resumen }),
+        el('p', { class: 'dp-suave', text: Cc.descubrir.intro }), itemsUl(Cc.descubrir.items),
+        el('p', { class: 'dp-suave dpc-parcial', text: Cc.descubrir.cierre }));
+    const ayudas = el('div', { class: 'dpc-ayudas' },
+        descubrir,
+        listaAyuda(Cc.cuales.resumen, itemsUl(Cc.cuales.items), el('p', { class: 'dp-suave dpc-parcial', text: Cc.cuales.cierre })),
+        listaAyuda(Cc.donde.resumen, itemsUl(Cc.donde.items), el('p', { class: 'dp-suave dpc-parcial', text: Cc.donde.cierre })),
+        listaAyuda(Cc.como.resumen, el('p', { class: 'dp-suave', text: Cc.como.texto }), el('p', { class: 'dpc-ejemplo', text: Cc.como.ejemplo })),
+        listaAyuda(Cc.tipos.resumen, el('ul', { class: 'dp-lista-ejemplos' }, C.TIPOS_CERTIFICACION.map((o) => el('li', {}, el('strong', { text: o.nombre + ': ' }), o.texto)))));
+    return el('div', {}, el('p', { class: 'dp-suave', text: Cc.intro }), ayudas,
+        bloqueLista('certificacion', { vacio: Cc.vacio, botonTexto: '+ Añadir certificación', base: { nombre: '', institucion: '', anio: '', enlace: '' } }),
+        el('p', { class: 'dp-suave dpc-conservar', text: Cc.conservar }));
+}
+
 function pasoLogros() {
-    return el('div', {}, bloqueLista('logro', {
-        vacio: 'Todavía no agregaste ningún logro.', botonTexto: '+ Añadir logro', base: { texto: '', respaldo: '' },
-    }), el('div', { class: 'dp-ideas' },
-        el('p', { class: 'dp-suave', text: 'Ejemplos de logros con respaldo:' }),
-        el('ul', { class: 'dp-lista-ejemplos' }, C.EJEMPLOS_LOGRO.map((t) => el('li', { text: t })))));
+    const L = C.LOGROS;
+    const sinLogros = D.leerCV().logros.length === 0;
+    const ayudas = el('div', { class: 'dpc-ayudas' },
+        el('details', { class: 'dpc-det', open: sinLogros ? true : null },
+            el('summary', { text: L.categorias.resumen }),
+            el('ul', { class: 'dp-lista-ejemplos' }, L.categorias.items.map(([n, t]) => el('li', {}, el('strong', { text: n + ': ' }), t))),
+            el('p', { class: 'dp-suave dpc-parcial', text: L.categorias.cierre })),
+        listaAyuda(L.preguntas.resumen, itemsUl(L.preguntas.items)),
+        listaAyuda(L.describir.resumen, el('p', { class: 'dp-suave', text: L.describir.texto }),
+            el('p', { class: 'dpc-ejemplo' }, el('strong', { text: 'Antes: ' }), L.describir.antes, el('br'), el('strong', { text: 'Mejor: ' }), L.describir.mejor),
+            el('p', { class: 'dp-suave', text: L.describir.cierre })));
+    return el('div', {}, el('p', { class: 'dp-suave', text: L.intro }), ayudas,
+        bloqueLista('logro', { vacio: L.vacio, botonTexto: '+ Añadir logro', base: { texto: '', respaldo: '' } }));
 }
 
 function pasoExperiencia() {
@@ -770,7 +844,7 @@ function pintarDesdeProyectos() {
 
 // ───────────── revisión con semáforo ─────────────
 const ROTULO_ESTADO = { rojo: 'Rojo', ambar: 'Ámbar', verde: 'Verde', gris: 'Gris' };
-const PASO_DE_SECCION = { datos: 0, formacion: 1, proyectos: 2, habilidades: 3, logros: 4, experiencia: 5 };
+const PASO_DE_SECCION = Object.fromEntries(C.PASOS.map((p, i) => [p.id, i]));   // se calcula: reordenar o añadir pasos no rompe el «Ir al paso»
 
 function pasoRevision() {
     const cont = el('div', { class: 'dp-revision', 'data-revision': '' });
@@ -845,6 +919,36 @@ function dibujarPasos() {
         type: 'button', class: `dp-paso${i === paso ? ' dp-paso-activo' : ''}`, 'aria-current': i === paso ? 'step' : null, onclick: () => irAPaso(i),
     }, el('span', { class: `dp-punto dp-${SECCION_DE_PASO[p.id] ? estado[SECCION_DE_PASO[p.id]] : 'rev'}` }), el('span', { class: 'dp-paso-n', text: String(i + 1) }), el('span', { class: 'dp-paso-t', text: p.titulo }))));
     pintarAvance(estado);
+    mostrarPasoActivo();
+}
+
+// Barra de pasos con flechas < > (como la de Asesorías): las flechas solo aparecen si hay pasos que no caben.
+let ultimoPasoVisto = -1;
+function actualizarFlechas() {
+    const nav = $('#dpPasos'), izq = $('.dpc-flecha-izq'), der = $('.dpc-flecha-der');
+    if (!nav || !izq || !der) return;
+    const resto = nav.scrollWidth - nav.clientWidth;
+    izq.hidden = resto <= 2 || nav.scrollLeft <= 2;
+    der.hidden = resto <= 2 || nav.scrollLeft >= resto - 2;
+}
+function mostrarPasoActivo() {
+    const nav = $('#dpPasos');
+    if (!nav) return;
+    const act = $('.dp-paso-activo', nav);
+    if (act && ultimoPasoVisto !== paso) {                                   // solo al CAMBIAR de paso: no pelea con quien desliza a mano
+        const primera = ultimoPasoVisto === -1;
+        ultimoPasoVisto = paso;
+        nav.scrollTo({ left: Math.max(0, act.offsetLeft - (nav.clientWidth - act.offsetWidth) / 2), behavior: primera ? 'auto' : 'smooth' });
+    }
+    actualizarFlechas();
+}
+function enlazarFlechas() {
+    const nav = $('#dpPasos');
+    const mover = (signo) => nav.scrollBy({ left: signo * Math.max(160, nav.clientWidth * 0.7), behavior: 'smooth' });
+    $('.dpc-flecha-izq').addEventListener('click', () => mover(-1));
+    $('.dpc-flecha-der').addEventListener('click', () => mover(1));
+    nav.addEventListener('scroll', actualizarFlechas, { passive: true });
+    window.addEventListener('resize', actualizarFlechas);
 }
 
 // Barra de avance del panel: un segmento por paso (verde = listo, naranja = el paso actual) y el mensaje de "completado" solo si es verdad.
@@ -863,7 +967,7 @@ function pintarAvance(estado) {
 
 function dibujarPaso() {
     const p = C.PASOS[paso];
-    const cuerpo = { datos: pasoDatos, formacion: pasoFormacion, proyectos: pasoProyectos, habilidades: pasoHabilidades, logros: pasoLogros, experiencia: pasoExperiencia, revision: pasoRevision }[p.id]();
+    const cuerpo = { datos: pasoDatos, formacion: pasoFormacion, proyectos: pasoProyectos, habilidades: pasoHabilidades, certificaciones: pasoCertificaciones, logros: pasoLogros, experiencia: pasoExperiencia, revision: pasoRevision }[p.id]();
     const nav = el('div', { class: 'dp-nav' },
         paso > 0 ? el('button', { type: 'button', class: 'dp-btn', text: 'Anterior', onclick: () => irAPaso(paso - 1) }) : null,
         paso < C.PASOS.length - 1 ? el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: paso === C.PASOS.length - 2 ? 'Revisar con el semáforo' : 'Siguiente', onclick: () => irAPaso(paso + 1) }) : null,
@@ -926,7 +1030,10 @@ function conciliar() {
 // ───────────── arranque ─────────────
 function armar() {
     $('#dpApp').replaceChildren(
-        el('nav', { id: 'dpPasos', class: 'dp-pasos', 'aria-label': 'Pasos del CV' }),
+        el('div', { class: 'dpc-pasos-wrap' },
+            el('button', { type: 'button', class: 'dpc-flecha dpc-flecha-izq', 'aria-label': 'Ver pasos anteriores', hidden: true, text: '‹' }),
+            el('nav', { id: 'dpPasos', class: 'dp-pasos', 'aria-label': 'Pasos del CV' }),
+            el('button', { type: 'button', class: 'dpc-flecha dpc-flecha-der', 'aria-label': 'Ver más pasos', hidden: true, text: '›' })),
         el('div', { id: 'dpConstructor', class: 'dp-constructor' },
             el('section', { id: 'dpPanel', class: 'dp-panel' }),
             el('aside', { class: 'dp-lateral', 'aria-label': 'Vista previa de tu CV' },
@@ -947,6 +1054,7 @@ function armar() {
         el('div', { id: 'dpMedida', class: 'dp-medida', 'aria-hidden': 'true' }, el('div', { class: 'dp-a4' }, el('div', { class: 'dp-a4-in' })), el('div', { id: 'dpSonda', class: 'dp-sonda' })));
     if (typeof ResizeObserver !== 'undefined') { const ro = new ResizeObserver(() => escalar()); $$('.dp-a4-wrap').forEach((w) => ro.observe(w)); }
     window.addEventListener('resize', escalar);
+    enlazarFlechas();
 }
 
 function leerHash() {

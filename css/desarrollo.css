@@ -218,6 +218,7 @@
 .dp-cv-item { margin: 0 0 6pt; }
 .dp-cv-ul { margin: 0; padding-left: 16pt; font-size: 10.5pt; }
 .dp-cv-ul li { margin: 0 0 3pt; }
+.dp-cv-sec a { color: inherit; text-decoration: underline; word-break: break-all; }
 
 /* Medición fuera de pantalla: cuánto ocupa el CV frente al alto útil de un A4 (297 − 2×18 mm = 261 mm). */
 .dp-medida { position: absolute; left: -10000px; top: 0; visibility: hidden; pointer-events: none; }

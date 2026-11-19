@@ -33,9 +33,14 @@ export const PASOS = [
         consejo: 'Sé honesto al describir tus capacidades. Si lo deseas, indica tu nivel de dominio en conocimientos y herramientas. En idiomas, puedes indicar tu nivel general y detallar tus habilidades. Evita porcentajes como «Python 85 %»: dan una falsa sensación de precisión.',
     },
     {
-        id: 'logros', titulo: 'Logros',
+        id: 'certificaciones', titulo: 'Certificaciones', etiquetaPaso: 'Opcional',
+        porQue: 'Lo que has aprendido fuera del aula también cuenta, incluso si fue un solo curso.',
+        consejo: 'Prioriza lo que se relaciona con lo que buscas. Copia el nombre tal como aparece en tu constancia y conserva tú el documento: SIGA solo guarda el nombre y, si quieres, un enlace.',
+    },
+    {
+        id: 'logros', titulo: 'Logros', etiquetaPaso: 'Opcional',
         porQue: 'Lo que te distingue de otra persona con tus mismos cursos.',
-        consejo: 'Un logro puede tener un número, un reconocimiento o un enlace como respaldo. No inventes cifras: una evidencia verificable pesa igual.',
+        consejo: 'Describe qué hiciste y qué resultado tuvo. No inventes cifras: un hecho real y verificable pesa más que un número dudoso.',
     },
     {
         id: 'experiencia', titulo: 'Experiencia',
@@ -151,6 +156,108 @@ export const EJEMPLO_PROYECTO = {
     evidencia: 'Permitió centralizar el registro de productos y reducir el trabajo manual de control.',
 };
 
+// ───────────── Certificaciones y formación complementaria (paso propio) ─────────────
+export const TIPOS_CERTIFICACION = [
+    { id: 'certificacion', nombre: 'Certificación', texto: 'Acreditación otorgada por una entidad que reconoce determinados conocimientos o competencias.' },
+    { id: 'curso', nombre: 'Curso', texto: 'Actividad formativa sobre un tema específico, que puede entregar una constancia al completarse.' },
+    { id: 'diplomado', nombre: 'Diplomado', texto: 'Programa de formación especializado que aborda un área con mayor profundidad.' },
+    { id: 'programa', nombre: 'Programa', texto: 'Trayecto formativo estructurado, como un bootcamp, programa intensivo o ruta de aprendizaje.' },
+];
+export const CERTIFICACIONES = {
+    intro: 'Cursos, talleres y certificaciones que has completado, dentro o fuera de la universidad. Deben ser actividades formativas finalizadas, no cursos de tu carrera que todavía estás llevando. Si todavía no tienes ninguna, puedes saltar este paso.',
+    vacio: 'No necesitas acumular certificados. Una formación relacionada con lo que buscas puede aportar valor a tu CV.',
+    descubrir: {
+        resumen: '¿Has realizado alguna formación que podrías incluir?',
+        intro: 'Quizá tienes más de lo que crees. Revisa si alguna de estas situaciones te suena:',
+        items: [
+            'Un curso o taller que hiciste en tu facultad, en un centro estudiantil o en extensión universitaria.',
+            'Un curso de idiomas, aunque haya sido hace un tiempo.',
+            'Un curso corto en línea, gratuito o de pago, que terminaste.',
+            'Una capacitación en una herramienta que usas (Excel, Python, AutoCAD…).',
+            'Un programa formativo de una empresa, una institución o un voluntariado (no cualquier actividad realizada allí).',
+            'Una constancia de un curso, taller o capacitación que completaste.',
+        ],
+        cierre: 'Un buen CV no necesita muchos certificados. Basta con lo que de verdad hiciste y se relaciona con lo que buscas.',
+    },
+    cuales: {
+        resumen: '¿Cuáles incluir?',
+        items: [
+            'Los que se relacionan con lo que buscas.',
+            'No hace falta poner todo lo que hiciste.',
+            'Si hiciste varios cursos cortos del mismo tema, agrúpalos en uno: «Excel: básico e intermedio».',
+            'Un curso puede incluirse aunque no te hayan dado un certificado formal, siempre que lo hayas completado y puedas decir qué formación fue y quién la dio.',
+            'Los cursos de tu malla curricular, incluidos los electivos, van en Formación, no aquí.',
+        ],
+        cierre: 'Para un primer CV, puedes comenzar con 3 a 5 elementos relevantes. Es preferible incluir pocos y relacionados con tu objetivo que llenar la sección con cursos que aportan poco.',
+    },
+    donde: {
+        resumen: '¿Dónde encuentro los míos?',
+        items: [
+            'Correos electrónicos y cuentas de plataformas educativas.',
+            'Centros de idiomas.',
+            'Cursos de extensión universitaria.',
+            'Talleres y actividades de centros estudiantiles.',
+            'Plataformas de fabricantes de software y tecnología.',
+            'Programas de capacitación y formación profesional.',
+        ],
+        cierre: 'No todo taller o actividad entrega un certificado, y eso no le quita valor. Pero esta sección es para formación que se pueda identificar con claridad.',
+    },
+    como: {
+        resumen: '¿Cómo lo escribo?',
+        texto: 'Nombre exacto, quién lo dio y el año. Copia el nombre tal como aparece en el certificado o la constancia: SIGA no lo cambia.',
+        ejemplo: 'Fundamentos de bases de datos · Centro de extensión · 2025',
+    },
+    tipos: {
+        resumen: '¿Qué es cada tipo?',
+        cierre: 'Si no sabes qué tipo elegir, puedes dejarlo sin especificar. Lo importante es registrar el nombre real de la formación.',
+    },
+    conservar: 'Conserva tú los certificados y constancias: SIGA no guarda documentos, pero los necesitarás si una empresa los pide.',
+    enlaceAyuda: 'Si hay un enlace donde se pueda verificar, añádelo. Es opcional.',
+    enlacePrivacidad: 'No pegues enlaces que muestren tu DNI, dirección o teléfono.',
+};
+
+// ───────────── Logros y reconocimientos (paso propio) ─────────────
+export const LOGROS = {
+    intro: 'Lo que te distingue de otra persona con tus mismos cursos. Si todavía no sabes qué poner, empieza por las ayudas de abajo.',
+    vacio: 'Todavía no agregaste ningún logro. Si algo de las ayudas de arriba te suena, empieza por ahí.',
+    placeholder: 'Ejemplo: Brindé asesorías a estudiantes de ciclos anteriores',
+    categorias: {
+        resumen: '¿Qué puede ser un logro?',
+        items: [
+            ['Académico', 'una beca, un reconocimiento por tu rendimiento o la participación en un programa selectivo.'],
+            ['Competencias y concursos', 'hackatones, olimpiadas, concursos de tu facultad.'],
+            ['Liderazgo', 'haber coordinado un equipo, un evento o un centro estudiantil.'],
+            ['Impacto', 'algo que hiciste y tuvo un resultado que se pueda contar.'],
+            ['Apoyo a otros', 'asesorías, tutorías, voluntariado.'],
+        ],
+        cierre: 'Un proyecto cuenta lo que hiciste. Un logro cuenta lo que conseguiste o por lo que te reconocieron. Si es lo primero, va en Proyectos.',
+    },
+    preguntas: {
+        resumen: 'Preguntas para recordar',
+        items: [
+            '¿Alguna vez te eligieron, te premiaron o te felicitaron por algo?',
+            '¿Ayudaste a otros a aprobar o a entender un curso?',
+            '¿Algo que hiciste ahorró tiempo, resolvió un problema o lo usaron otras personas?',
+            '¿Te tocó liderar o coordinar a otros?',
+        ],
+    },
+    describir: {
+        resumen: '¿Cómo lo describo?',
+        texto: 'Di qué hiciste y qué resultado tuvo, sin inventar cifras.',
+        antes: 'Fui buen asesor.',
+        mejor: 'Brindé asesorías de bases de datos a estudiantes de ciclos anteriores.',
+        cierre: 'Si no tienes un número exacto, describe el hecho. Un dato inventado le quita credibilidad a todo el CV.',
+    },
+    respaldo: {
+        etiqueta: 'Con qué lo respaldas',
+        pista: 'Puedes añadir un dato o referencia para dar más contexto y credibilidad a tu logro.',
+        placeholder: 'Un enlace, un dato o una referencia',
+        ayudaResumen: '¿Qué puede servir como respaldo?',
+        ayuda: 'Un enlace público, el nombre de quien puede confirmarlo, una cifra real o una constancia que tú conservas. SIGA no guarda documentos.',
+        privacidad: 'Si pones un enlace, que sea http o https y que no muestre tu DNI, dirección o teléfono.',
+    },
+};
+
 export const EJEMPLOS_LOGRO = [
     'Brindé asesorías a 12 estudiantes durante un periodo académico',
     'Obtuve el primer puesto en un concurso universitario de programación',
@@ -242,7 +349,8 @@ export const ETAPAS = {
     formacion: 'Ya tienes lo básico: ahora cuenta dónde estudias',
     proyectos: 'Aquí está lo que más pesa: lo que ya has construido',
     habilidades: 'Lo que sabes hacer, con las palabras que buscan las empresas',
-    logros: 'Lo que te distingue: resultados con respaldo',
+    certificaciones: 'Lo que aprendiste fuera del aula también cuenta',
+    logros: 'Lo que te distingue: lo que conseguiste',
     experiencia: 'También cuenta lo que no fue un empleo formal',
     revision: 'Último paso: revisa tu perfil y descárgalo',
 };
@@ -252,7 +360,8 @@ export const COMPLETADO = {
     formacion: 'Formación registrada · Tu CV ya muestra dónde estudias',
     proyectos: 'Proyectos completos · Tu CV ya muestra lo que sabes hacer',
     habilidades: 'Habilidades registradas · Tu CV ya muestra lo que sabes usar',
-    logros: 'Logro registrado con su respaldo · Es lo que te distingue',
+    certificaciones: 'Formación complementaria registrada · Tu CV ya muestra lo que estudiaste además de tu carrera',
+    logros: 'Logro registrado · Es lo que te distingue',
 };
 
 // Consejo sobre la extensión del CV: se muestra solo en el paso de Revisión.

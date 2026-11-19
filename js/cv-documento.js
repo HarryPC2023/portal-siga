@@ -4,7 +4,8 @@
 // con títulos y listas normales, para que los filtros automáticos de las empresas lo lean bien.
 // Todo lo que escribe el alumno pasa por esc() antes de entrar al HTML.
 
-import { detalleIdioma } from './desarrollo-redaccion.js?v=1';
+import { detalleIdioma } from './desarrollo-redaccion.js?v=2';
+import { esEnlaceWeb } from './desarrollo-reglas.js?v=2';
 
 export function esc(valor) {
     return String(valor == null ? '' : valor).replace(/[&<>"']/g, (c) => (
@@ -74,8 +75,35 @@ function htmlHabilidades(lista) {
     return filas.join('');
 }
 
+// Texto libre del alumno → HTML seguro: todo se escapa y solo las direcciones http/https se vuelven enlaces
+// (se muestra la dirección completa, para que también se vea al imprimir).
+function conEnlaces(crudo) {
+    const s = t(crudo);
+    const re = /https?:\/\/[^\s<>"']+/gi;
+    let salida = '', desde = 0, m;
+    while ((m = re.exec(s))) {
+        const url = m[0].replace(/[.,;:)\]]+$/, '');
+        salida += esc(s.slice(desde, m.index));
+        salida += esEnlaceWeb(url) ? `<a href="${esc(url)}" rel="noopener noreferrer" target="_blank">${esc(url)}</a>` : esc(url);
+        desde = m.index + url.length;
+        re.lastIndex = desde;
+    }
+    return salida + esc(s.slice(desde));
+}
+
 function htmlLogros(lista) {
-    return '<ul class="dp-cv-ul">' + lista.map((l) => `<li>${esc(t(l.texto))}${t(l.respaldo) ? ` — ${esc(t(l.respaldo))}` : ''}</li>`).join('') + '</ul>';
+    return '<ul class="dp-cv-ul">' + lista.map((l) => `<li>${esc(t(l.texto))}${t(l.respaldo) ? ` — ${conEnlaces(l.respaldo)}` : ''}</li>`).join('') + '</ul>';
+}
+
+const TIPO_CERT = { certificacion: 'certificación', curso: 'curso', diplomado: 'diplomado', programa: 'programa' };
+
+function htmlCertificaciones(lista) {
+    return '<ul class="dp-cv-ul">' + lista.map((c) => {
+        const nombre = esc(t(c.nombre)) + (TIPO_CERT[t(c.tipo)] ? ` (${TIPO_CERT[t(c.tipo)]})` : '');
+        const resto = [esc(t(c.institucion)), esc(t(c.anio))].filter(Boolean).join(' · ');
+        const enlace = esEnlaceWeb(c.enlace) ? ` — <a href="${esc(t(c.enlace))}" rel="noopener noreferrer" target="_blank">${esc(t(c.enlace))}</a>` : '';
+        return `<li>${[nombre, resto].filter(Boolean).join(' · ')}${enlace}</li>`;
+    }).join('') + '</ul>';
 }
 
 export function htmlCV(cv = {}) {
@@ -83,6 +111,7 @@ export function htmlCV(cv = {}) {
     const proyectos = (cv.proyectos || []).filter((p) => t(p.nombre) || t(p.queHiciste) || t(p.herramientas) || t(p.evidencia));
     const experiencias = (cv.experiencias || []).filter((e) => t(e.puesto) || t(e.queHiciste));
     const habilidades = (cv.habilidades || []).filter((h) => t(h.nombre));
+    const certificaciones = (cv.certificaciones || []).filter((c) => t(c.nombre) || t(c.institucion));
     const logros = (cv.logros || []).filter((l) => t(l.texto));
     const f = cv.formacion || {};
     const hayFormacion = t(f.universidad) || t(f.carrera) || t(f.ingreso) || t(f.promedio) || (Array.isArray(f.cursos) && f.cursos.some((c) => t(c)));
@@ -95,6 +124,7 @@ export function htmlCV(cv = {}) {
     if (hayFormacion) partes.push(seccion('Formación', htmlFormacion(f)));
     if (proyectos.length) partes.push(seccion('Proyectos', htmlProyectos(proyectos)));
     if (experiencias.length) partes.push(seccion('Experiencia', htmlExperiencia(experiencias)));
+    if (certificaciones.length) partes.push(seccion('Certificaciones y formación complementaria', htmlCertificaciones(certificaciones)));
     if (habilidades.length) partes.push(seccion('Habilidades', htmlHabilidades(habilidades)));
     if (logros.length) partes.push(seccion('Logros', htmlLogros(logros)));
 

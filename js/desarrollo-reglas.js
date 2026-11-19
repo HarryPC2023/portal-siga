@@ -12,7 +12,7 @@
 //   gris  → información opcional
 //
 // Forma esperada de `cv`:
-//   { datos, formacion, ajustes, proyectos[], habilidades[], logros[], experiencias[] }
+//   { datos, formacion, ajustes, proyectos[], habilidades[], certificaciones[], logros[], experiencias[] }
 
 export const ROJO = 'rojo';
 export const AMBAR = 'ambar';
@@ -38,6 +38,22 @@ export function validarEnlace(v, dominio) {
     if (!t) return true;
     const sinProtocolo = t.replace(/^https?:\/\//, '').replace(/^www\./, '');
     return sinProtocolo.startsWith(dominio + '/') && sinProtocolo.length > dominio.length + 1 && !/\s/.test(sinProtocolo);
+}
+
+// Enlace web que se mostrará como enlace clicable: SOLO http o https (nunca javascript:, data:, mailto:…).
+export function esEnlaceWeb(v) {
+    const x = txt(v);
+    if (!x || /\s/.test(x)) return false;
+    try { const u = new URL(x); return u.protocol === 'https:' || u.protocol === 'http:'; } catch (e) { return false; }
+}
+
+// null = nada que decir. { nivel: 'error' | 'aviso', mensaje } = qué mostrarle al alumno junto al campo.
+export function analizarEnlaceWeb(v) {
+    const x = txt(v);
+    if (!x) return null;
+    if (!esEnlaceWeb(x)) return { nivel: 'error', mensaje: 'Escribe una dirección completa que empiece con http:// o https://' };
+    if (x.toLowerCase().startsWith('http://')) return { nivel: 'aviso', mensaje: 'Si existe, prefiere el enlace seguro (https).' };
+    return null;
 }
 
 // ───────────── ayudas para saber si un elemento está completo ─────────────
@@ -111,15 +127,25 @@ function evaluarHabilidades(lista = []) {
     return { estado: VERDE, mensaje: 'Conocimientos y herramientas registrados.' };
 }
 
+function evaluarCertificaciones(lista = []) {
+    const con = lista.filter((c) => txt(c.nombre) || txt(c.institucion) || txt(c.anio) || txt(c.enlace));
+    if (!con.length) return { estado: GRIS, mensaje: 'Opcional. No necesitas acumular certificados: una formación relacionada con lo que buscas puede aportar valor a tu CV.' };
+    const sinInstitucion = con.find((c) => !txt(c.nombre) || !txt(c.institucion));
+    if (sinInstitucion) {
+        const nombre = txt(sinInstitucion.nombre) ? `«${txt(sinInstitucion.nombre)}»` : 'una formación sin nombre';
+        return { estado: AMBAR, mensaje: `Completa ${!txt(sinInstitucion.nombre) ? 'el nombre' : 'quién la dio'} de ${nombre}.` };
+    }
+    const malEnlace = con.find((c) => txt(c.enlace) && !esEnlaceWeb(c.enlace));
+    if (malEnlace) return { estado: AMBAR, mensaje: `Revisa el enlace de «${txt(malEnlace.nombre)}»: debe empezar con http:// o https://.` };
+    return { estado: VERDE, mensaje: con.length === 1 ? 'Formación complementaria registrada.' : `${con.length} formaciones complementarias registradas.` };
+}
+
 function evaluarLogros(lista = []) {
     const con = lista.filter((l) => txt(l.texto));
     if (!con.length) {
-        return { estado: AMBAR, mensaje: 'Todavía no registras logros. Puedes incluir premios, concursos, asesorías o participación destacada.' };
+        return { estado: GRIS, mensaje: 'Opcional. Un logro es lo que te distingue: puedes empezar con las ayudas del paso.' };
     }
-    if (!con.some((l) => txt(l.respaldo))) {
-        return { estado: AMBAR, mensaje: 'Falta el respaldo de tu logro: un número, un reconocimiento o un enlace.' };
-    }
-    return { estado: VERDE, mensaje: 'Logro registrado con su respaldo.' };
+    return { estado: VERDE, mensaje: con.length === 1 ? 'Logro registrado.' : `${con.length} logros registrados.` };
 }
 
 function evaluarExperiencia(lista = [], ajustes = {}) {
@@ -132,7 +158,7 @@ function evaluarExperiencia(lista = [], ajustes = {}) {
 // ───────────── resultado completo ─────────────
 export const NOMBRES_SECCION = {
     datos: 'Datos básicos', formacion: 'Formación', proyectos: 'Proyectos',
-    habilidades: 'Habilidades', logros: 'Logros', experiencia: 'Experiencia',
+    habilidades: 'Habilidades', certificaciones: 'Certificaciones', logros: 'Logros', experiencia: 'Experiencia',
 };
 
 export function evaluarCV(cv) {
@@ -143,6 +169,7 @@ export function evaluarCV(cv) {
         formacion: evaluarFormacion(c.formacion || {}),
         proyectos: evaluarProyectos(lista(c.proyectos)),
         habilidades: evaluarHabilidades(lista(c.habilidades)),
+        certificaciones: evaluarCertificaciones(lista(c.certificaciones)),
         logros: evaluarLogros(lista(c.logros)),
         experiencia: evaluarExperiencia(lista(c.experiencias), c.ajustes || {}),
     };
