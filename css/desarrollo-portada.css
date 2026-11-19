@@ -4,15 +4,17 @@
 
 .dpp { --dpp-carbon: #1E2530; --dpp-naranja: #E8590C; --dpp-naranja-os: #A83F06; --dpp-teal: #0F766E;
        --dpp-verde: #0FA678; --dpp-azul: #2F7BFF; --dpp-suave: #4a4f5b; --dpp-champagne: linear-gradient(120deg, #FDFCF7 0%, #F5EFDE 50%, #FDFCF7 100%);
-       font-family: 'Figtree', 'Poppins', sans-serif; max-width: 1160px; padding-top: 38px; }
+       font-family: 'Figtree', 'Poppins', sans-serif; max-width: 1440px; padding-top: 38px; }
 
 /* ───── hero ───── */
-.dpp-hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 34px; align-items: center; margin-bottom: 26px; }
+.dpp-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 34px; align-items: center; margin-bottom: 26px; }
 .dpp .dp-pildora { font-size: 15px; letter-spacing: .04em; padding: 10px 30px; }
-.dpp h1 { font: 400 clamp(32px, 4.4vw, 52px)/1.1 'Russo One', sans-serif; margin: 18px 0 14px; color: var(--dpp-carbon); }
-.dpp h1 em { font-style: normal; color: var(--dpp-naranja); box-shadow: inset 0 -.22em 0 #FFD27A; background: none; -webkit-text-fill-color: currentColor; }
-.dpp-lema { font-size: 19px; font-weight: 700; color: var(--dpp-teal); margin: 0 0 10px; }
-.dpp-intro { font-size: 17.5px; line-height: 1.6; color: var(--dpp-suave); margin: 0 0 22px; max-width: 540px; }
+.dpp h1 { font: 400 clamp(34px, 4vw, 62px)/1.1 'Russo One', sans-serif; margin: 18px 0 14px; color: var(--dpp-carbon); }
+.dpp h1 em { font-style: normal; color: var(--dpp-naranja); background: none; -webkit-text-fill-color: currentColor; }
+.dpp h1 em { white-space: nowrap; }
+.dpp-l2 { white-space: nowrap; }
+.dpp-lema { font-size: 23px; font-weight: 700; color: var(--dpp-teal); margin: 0 0 10px; }
+.dpp-intro { font-size: 19px; line-height: 1.6; color: var(--dpp-suave); margin: 0 0 24px; max-width: 620px; }
 .dpp-cta { display: inline-block; background: var(--dpp-naranja); color: #fff; font: 700 18px 'Figtree', sans-serif; padding: 16px 30px;
            border-radius: 10px; box-shadow: 0 6px 0 var(--dpp-naranja-os); text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
 .dpp-cta:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--dpp-naranja-os); }
@@ -27,9 +29,9 @@
 .dpp-papel i.h { width: 36%; background: #FF5A36; height: 8px; margin-top: 17px; }
 .dpp-papel i.s { width: 84%; } .dpp-papel i.m { width: 66%; }
 .dpp-sil { position: absolute; right: 16px; top: 22px; width: 50px; height: 58px; }
-.dpp-chip { position: absolute; background: #fff; border-radius: 999px; box-shadow: 0 12px 24px rgba(30, 37, 48, .2); font: 700 15px 'Chakra Petch', sans-serif;
-            padding: 10px 18px 10px 13px; display: flex; align-items: center; gap: 9px; color: #14213D; }
-.dpp-chip u { width: 13px; height: 13px; border-radius: 50%; display: inline-block; }
+.dpp-chip { position: absolute; background: #fff; border-radius: 999px; box-shadow: 0 12px 24px rgba(30, 37, 48, .2); font: 700 18px 'Chakra Petch', sans-serif;
+            padding: 12px 22px 12px 16px; display: flex; align-items: center; gap: 9px; color: #14213D; }
+.dpp-chip u { width: 15px; height: 15px; border-radius: 50%; display: inline-block; }
 .dpp-c1 { left: 2%; top: 62px; transform: rotate(-4deg); } .dpp-c2 { right: 0; top: 164px; transform: rotate(3deg); } .dpp-c3 { left: 5%; bottom: 60px; transform: rotate(2deg); }
 
 /* ───── «Tu ruta» ───── */
@@ -76,6 +78,7 @@ html[data-tema="oscuro"] .dpp-lema { color: #5EEAD4; }
 /* ───── pantallas medianas y celular ───── */
 @media (max-width: 900px) {
     .dpp-hero { grid-template-columns: 1fr; }
+    .dpp-l2 { white-space: normal; }
     .dpp-ruta { grid-template-columns: 1fr; padding-left: 34px; }
     .dpp-ruta::before { left: 10px; margin-left: 0; }
     .dpp-card:nth-child(n) { grid-column: 1; grid-row: auto; width: 100%; justify-self: stretch; }
