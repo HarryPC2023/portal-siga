@@ -13,7 +13,7 @@
 .dpp h1 em { font-style: normal; color: var(--dpp-naranja); background: none; -webkit-text-fill-color: currentColor; }
 .dpp h1 em { white-space: nowrap; }
 .dpp-l2 { white-space: nowrap; }
-.dpp-lema { font-size: 23px; font-weight: 700; color: var(--dpp-teal); margin: 0 0 10px; }
+.dpp-lema { font-size: 26px; font-weight: 700; color: var(--dpp-teal); margin: 0 0 10px; }
 .dpp-intro { font-size: 19px; line-height: 1.6; color: var(--dpp-suave); margin: 0 0 24px; max-width: 620px; }
 .dpp-cta { display: inline-block; background: var(--dpp-naranja); color: #fff; font: 700 18px 'Figtree', sans-serif; padding: 16px 30px;
            border-radius: 10px; box-shadow: 0 6px 0 var(--dpp-naranja-os); text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
@@ -40,7 +40,7 @@
 .dpp-sec span { flex: 1; height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--dpp-verde), var(--dpp-naranja), var(--dpp-azul)); }
 
 /* ruta vertical: línea punteada al centro, tarjetas alternando izquierda / derecha */
-.dpp-ruta { position: relative; max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; row-gap: 34px; }
+.dpp-ruta { position: relative; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; row-gap: 34px; }
 .dpp-ruta::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 5px; margin-left: -2.5px; border-radius: 4px;
                     background: repeating-linear-gradient(180deg, var(--dpp-naranja) 0 14px, transparent 14px 26px); }
 .dpp-card { --c: var(--dpp-verde); position: relative; width: calc(100% - 44px); display: flex; flex-direction: column; gap: 7px; background: #fff; color: var(--dpp-carbon);
@@ -65,7 +65,7 @@
            color: color-mix(in srgb, var(--c) 70%, #000); padding: 8px 14px; border-radius: 6px; }
 
 /* ───── barra de progreso (champagne, como la etiqueta) ───── */
-.dpp-barra { max-width: 960px; margin: 34px auto 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+.dpp-barra { max-width: 1100px; margin: 34px auto 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
              background: var(--dpp-champagne); border: 1px solid rgba(0, 0, 0, .06); box-shadow: 0 8px 20px rgba(0, 0, 0, .08); color: #4A4433; border-radius: 12px; padding: 18px 24px; }
 .dpp-barra b { font: 400 17px 'Russo One', sans-serif; color: var(--dpp-naranja); }
 .dpp-barra span { font-size: 15px; color: #4A4433; }
