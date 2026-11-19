@@ -6,7 +6,7 @@ import { SigaEstado } from './sync-estado.js?v=1';
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { crearDesarrollo } from './desarrollo-estado.js?v=1';
 import { evaluarCV } from './desarrollo-reglas.js?v=1';
-import { LEMA, PARTES_HUB, NOTA_PRIVACIDAD } from './desarrollo-contenido.js?v=1';
+import { LEMA, PARTES_HUB, NOTA_PRIVACIDAD } from './desarrollo-contenido.js?v=2';
 
 const $ = (s) => document.querySelector(s);
 

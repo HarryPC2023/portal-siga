@@ -11,7 +11,7 @@ import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { supabase } from './auth-siga.js?v=9';
 import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES } from './desarrollo-estado.js?v=1';
 import { evaluarCV } from './desarrollo-reglas.js?v=1';
-import * as C from './desarrollo-contenido.js?v=1';
+import * as C from './desarrollo-contenido.js?v=2';
 import { htmlCV } from './cv-documento.js?v=1';
 import { armarBorrador, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=1';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
@@ -494,7 +494,7 @@ function pintarSugerenciaProyectos() {
     if (!caja) return;
     const S = C.SUGERENCIA_PROYECTOS_PRACTICOS;
     const hay = $$('.dp-tarjeta', $('[data-lista="proyecto"]') || document).length > 0;
-    caja.replaceChildren(hay ? S.antesCon : S.antesSin, el('a', { href: S.enlace, text: S.enlaceTexto }), S.despues);
+    caja.replaceChildren(el('span', { class: 'dpc-sug-texto', text: hay ? S.textoCon : S.textoSin }), el('a', { class: 'dp-btn dp-btn-primario dpc-sug-boton', href: S.enlace, text: S.boton }));
 }
 
 function pasoProyectos() {
@@ -508,7 +508,7 @@ function pasoProyectos() {
             el('p', { class: 'dp-suave dpc-parcial', text: A.parcial }),
             el('p', { class: 'dp-suave', text: A.preguntasTitulo }),
             el('ul', { class: 'dp-lista-ejemplos' }, A.preguntas.map((q) => el('li', { text: q })))));
-    const sugerencia = el('p', { class: 'dpc-sugerencia', 'data-sug-proy': '' });
+    const sugerencia = el('div', { class: 'dpc-sugerencia', 'data-sug-proy': '' });
     queueMicrotask(pintarSugerenciaProyectos);
     return el('div', {}, ideas, sugerencia, bloqueLista('proyecto', {
         vacio: 'Todavía no agregaste ningún proyecto. Un trabajo final de un curso es un buen comienzo.',

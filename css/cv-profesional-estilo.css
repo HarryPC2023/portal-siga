@@ -160,8 +160,9 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dpc-ayudas .dpc-det { margin-top: 12px; }
 .dpc .dpc-recomendado { display: inline-block; margin: 0 0 10px; padding: 4px 12px; border-radius: 999px; background: #FFF1E6; color: #A83F06; border: 1px solid #F4B88C; font-size: 15px; font-weight: 700; }
 .dpc .dpc-ayudas .dpc-parcial { margin-top: 14px; }
-.dpc .dpc-sugerencia { margin: 14px 0 12px; padding: 10px 14px; border-left: 4px solid var(--dpc-naranja); background: #FFF8F2; border-radius: 0 10px 10px 0; font-size: 16px; line-height: 1.55; }
-.dpc .dpc-sugerencia a { color: #A83F06; font-weight: 700; text-decoration: underline; }
+.dpc .dpc-sugerencia { margin: 14px 0 12px; padding: 12px 16px; border-left: 4px solid var(--dpc-naranja); background: #FFF8F2; border-radius: 0 10px 10px 0; font-size: 16px; line-height: 1.55; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+.dpc .dpc-sug-texto { flex: 1 1 280px; }
+.dpc .dpc-sug-boton { text-decoration: none; white-space: nowrap; }
 .dpc .dpc-ayudas .dp-suave { margin: 0 0 14px; }
 .dpc .dpc-det4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 10px 0 14px; }
 .dpc .dpc-det4 label { display: block; font-size: 15px; color: var(--dp-suave); margin-bottom: 4px; }
