@@ -510,11 +510,11 @@ function pasoProyectos() {
             el('ul', { class: 'dp-lista-ejemplos' }, A.preguntas.map((q) => el('li', { text: q })))));
     const sugerencia = el('div', { class: 'dpc-sugerencia', 'data-sug-proy': '' });
     queueMicrotask(pintarSugerenciaProyectos);
-    return el('div', {}, ideas, sugerencia, bloqueLista('proyecto', {
+    return el('div', {}, ideas, bloqueLista('proyecto', {
         vacio: 'Todavía no agregaste ningún proyecto. Un trabajo final de un curso es un buen comienzo.',
         botonTexto: '+ Añadir proyecto',
         base: { nombre: '', queHiciste: '', herramientas: '', evidencia: '', categoria: '', modalidad: '', desde: '', hasta: '', sigue: false, origen: 'manual' },
-    }));
+    }), sugerencia);
 }
 
 function pasoLogros() {
