@@ -391,7 +391,8 @@ function pintarRevision(cont) {
         el('p', { class: 'dp-suave', text: C.NOTA_DESCARGA }),
         el('div', { class: 'dp-acciones' },
             el('button', { type: 'button', class: 'dp-btn', text: 'Ver mi CV', onclick: () => abrirPrevia() }),
-            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Imprimir o guardar PDF', onclick: imprimir })));
+            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Imprimir o guardar PDF', onclick: imprimir })),
+        el('div', { class: 'dpc-tip' }, el('b', { text: '💡 Consejo profesional:' }), ' ' + C.CONSEJO_PROFESIONAL));
 }
 
 // ───────────── hoja A4: vista previa lateral, vista previa grande, medición e impresión ─────────────

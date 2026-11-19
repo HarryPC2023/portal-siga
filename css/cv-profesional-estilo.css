@@ -81,10 +81,40 @@
 html[data-tema="oscuro"] .dpc .dp-hero h1, html[data-tema="oscuro"] .dpc .dp-hero-chico h1 { color: #F1EEFF; }
 html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc3e8); }
 
+/* ───── letra más grande y más aire en todos los pasos ───── */
+.dpc .dp-panel { padding: 40px 44px 44px; min-height: 620px; }
+.dpc .dp-campo { margin: 26px 0 0; }
+.dpc textarea { min-height: 130px; line-height: 1.5; }
+.dpc .dp-ayuda { font-size: 16px; }
+.dpc .dp-error { font-size: 15px; }
+.dpc .dp-suave { font-size: 17px; line-height: 1.6; }
+.dpc .dp-casilla { font-size: 17px; margin: 20px 0; }
+.dpc .dp-casilla input { width: 22px; height: 22px; }
+.dpc .dp-vacio { font-size: 16px; padding: 16px 18px; margin: 22px 0 0; }
+.dpc .dp-btn-agregar { font-size: 17px; padding: 13px 22px; margin-top: 12px; }
+.dpc .dp-ideas { margin-top: 26px; }
+.dpc .dp-lista-ejemplos { font-size: 16px; line-height: 1.7; }
+.dpc .dp-chip, .dpc .dp-chip-hab { font-size: 16px; padding: 7px 14px; margin: 5px 8px 5px 0; border-radius: 10px; }
+.dpc .dp-chip-x { font-size: 20px; }
+.dpc .dp-tarjeta { padding: 20px 22px 24px; margin: 24px 0 0; border-radius: 14px; }
+.dpc .dp-tarjeta-cab { font-size: 17px; }
+.dpc .dp-quitar, .dpc .dp-btn-texto { font-size: 15px; }
+.dpc .dp-grupo { margin-top: 30px; }
+.dpc .dp-grupo h3 { font-size: 20px; font-weight: 700; }
+.dpc .dp-agregar { gap: 10px; flex-wrap: wrap; }
+.dpc .dp-agregar select { width: 170px; }
+.dpc .dp-etiqueta-siga { font-size: 15px; padding: 6px 12px; }
+.dpc .dp-leyenda-item { font-size: 16px; }
+.dpc .dp-fila { padding: 14px 16px; margin: 12px 0; }
+.dpc .dp-fila-texto { font-size: 17px; }
+.dpc .dp-aviso { font-size: 17px; padding: 16px 18px; }
+.dpc .dp-acciones { gap: 12px; margin-top: 16px; }
+.dpc .dp-nav { margin-top: 34px; }
+
 /* ───── pantallas medianas y celular ───── */
 @media (max-width: 960px) {
     .dpc .dp-constructor { grid-template-columns: minmax(0, 1fr); }
-    .dpc .dp-panel { padding: 22px 18px 26px; }
+    .dpc .dp-panel { padding: 22px 18px 26px; min-height: 0; }
     .dpc-pega { display: none; }
     .dpc nav.dp-pasos { flex-wrap: nowrap; overflow-x: auto; }
 }

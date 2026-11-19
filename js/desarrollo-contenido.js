@@ -33,7 +33,7 @@ export const PASOS = [
     },
     {
         id: 'experiencia', titulo: 'Experiencia',
-        porQue: 'Es opcional. Si nunca has trabajado, puedes saltarla.',
+        porQue: 'No se limita a empleos formales. También cuenta cualquier experiencia donde hayas asumido responsabilidades, colaborado con otras personas o aportado valor.',
         consejo: 'También cuentan voluntariados, trabajos independientes, participación en organizaciones, apoyo en negocios familiares o trabajos temporales. No todo tiene que ser un contrato formal.',
     },
     {
@@ -64,8 +64,8 @@ export const EJEMPLOS_LOGRO = [
 ];
 
 export const TIPOS_EXPERIENCIA = [
-    'Voluntariados', 'Actividades independientes', 'Participación en organizaciones',
-    'Apoyo en negocios familiares', 'Trabajos temporales',
+    'Voluntariados', 'Tutorías o asesorías', 'Organizaciones estudiantiles (IEEE, ACIA, LeadUNI…)', 'Delegado de aula o representación',
+    'Organización de eventos', 'Freelance o actividades independientes', 'Apoyo en negocios familiares', 'Trabajos temporales',
 ];
 
 export const HABILIDADES = {
@@ -127,7 +127,7 @@ export const ETAPAS = {
     proyectos: 'Aquí está lo que más pesa: lo que ya has construido',
     habilidades: 'Lo que sabes hacer, con las palabras que buscan las empresas',
     logros: 'Lo que te distingue: resultados con respaldo',
-    experiencia: 'Opcional: si aún no trabajas, puedes saltar este paso',
+    experiencia: 'También cuenta lo que no fue un empleo formal',
     revision: 'Último paso: revisa tu perfil y descárgalo',
 };
 // Se muestran SOLO cuando el semáforo de ese paso está en verde (así lo que dicen es cierto).
@@ -138,3 +138,6 @@ export const COMPLETADO = {
     habilidades: 'Habilidades registradas · Tu CV ya muestra lo que sabes usar',
     logros: 'Logro registrado con su respaldo · Es lo que te distingue',
 };
+
+// Consejo sobre la extensión del CV: se muestra solo en el paso de Revisión.
+export const CONSEJO_PROFESIONAL = 'Para estudiantes y recién egresados, una página suele ser suficiente para mostrar la formación académica, los proyectos, las habilidades y los logros más importantes. Un CV no destaca por tener más páginas, sino por presentar la información más relevante de forma clara y concisa. Si tienes más experiencia o contenido relevante, puedes pasar de una página, siempre que cada sección aporte valor. Antes que añadir información por llenar espacio, prioriza aquello que mejor represente tu perfil profesional.';
