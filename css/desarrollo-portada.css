@@ -54,14 +54,14 @@
 .dpp-card:nth-child(odd) .dpp-nodo { right: -35px; } .dpp-card:nth-child(2) .dpp-nodo { left: -35px; }
 .dpp-num { font: 700 84px/.8 'Teko', sans-serif; color: transparent; -webkit-text-stroke: 2.5px var(--c); }
 .dpp-card.act .dpp-num { color: var(--c); -webkit-text-stroke: 0; }
-.dpp-et { font: 400 12px 'Russo One', sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--c); }
-.dpp-card h3 { font: 400 21px/1.2 'Russo One', sans-serif; margin: 2px 0 0; color: var(--dpp-carbon); }
-.dpp-sub { color: var(--c); font-weight: 700; font-size: 14.5px; margin: 0; filter: brightness(.82); }
-.dpp-texto { margin: 0 0 8px; font-size: 15.5px; line-height: 1.55; color: var(--dpp-suave); flex: 1; }
-.dpp-estado { margin: 0 0 8px; font-size: 14px; font-weight: 700; color: var(--dpp-naranja-os); }
-.dpp-btn { align-self: flex-start; background: var(--c); color: #fff; font: 700 16px 'Figtree', sans-serif; padding: 12px 22px; border-radius: 8px; text-decoration: none;
+.dpp-et { font: 400 14px 'Russo One', sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--c); }
+.dpp-card h3 { font: 400 26px/1.2 'Russo One', sans-serif; margin: 2px 0 0; color: var(--dpp-carbon); }
+.dpp-sub { color: var(--c); font-weight: 700; font-size: 17px; margin: 0; filter: brightness(.82); }
+.dpp-texto { margin: 0 0 8px; font-size: 18px; line-height: 1.55; color: var(--dpp-suave); flex: 1; }
+.dpp-estado { margin: 0 0 8px; font-size: 16px; font-weight: 700; color: var(--dpp-naranja-os); }
+.dpp-btn { align-self: flex-start; background: var(--c); color: #fff; font: 700 18px 'Figtree', sans-serif; padding: 12px 22px; border-radius: 8px; text-decoration: none;
            box-shadow: 0 5px 0 color-mix(in srgb, var(--c) 60%, #000); }
-.dpp-pro { align-self: flex-start; font: 700 13px 'Figtree', sans-serif; background: color-mix(in srgb, var(--c) 12%, #fff);
+.dpp-pro { align-self: flex-start; font: 700 15px 'Figtree', sans-serif; background: color-mix(in srgb, var(--c) 12%, #fff);
            color: color-mix(in srgb, var(--c) 70%, #000); padding: 8px 14px; border-radius: 6px; }
 
 /* ───── barra de progreso (champagne, como la etiqueta) ───── */
