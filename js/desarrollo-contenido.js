@@ -84,7 +84,8 @@ export const AYUDA_PROYECTOS = {
 };
 // Sugerencia para quien aún no tiene proyectos: Proyectos Prácticos es la parte 1 de la portada de Desarrollo profesional.
 export const SUGERENCIA_PROYECTOS_PRACTICOS = {
-    antes: 'Si todavía no tienes proyectos, en ',
+    antesSin: 'Si todavía no tienes proyectos, en ',
+    antesCon: '¿Quieres tener más proyectos para mostrar? En ',
     enlaceTexto: 'Proyectos Prácticos',
     despues: ' descubres qué construir con lo que aprendes en tus cursos.',
     // Hoy apunta a la portada (donde está la tarjeta). Cuando la sección exista, cambiar por su página (p. ej. 'proyectos-practicos.html').

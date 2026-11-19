@@ -98,6 +98,11 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dp-chip-x { font-size: 20px; }
 .dpc .dp-tarjeta { padding: 20px 22px 24px; margin: 24px 0 0; border-radius: 14px; }
 .dpc .dp-tarjeta-cab { font-size: 17px; }
+.dpc .dp-tarjeta-toggle { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 4px 0; font: inherit; color: inherit; cursor: pointer; }
+.dpc .dp-tarjeta-toggle:focus-visible { outline: 3px solid rgba(232, 89, 12, .35); outline-offset: 2px; border-radius: 6px; }
+.dpc .dp-tarjeta-flecha { color: var(--dpc-naranja); width: 18px; flex: none; }
+.dpc .dp-tarjeta-resumen { font-weight: 400; color: var(--dp-suave); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.dpc .dp-tarjeta-cuerpo { margin-top: 6px; }
 .dpc .dp-quitar, .dpc .dp-btn-texto { font-size: 15px; }
 .dpc .dp-grupo { margin-top: 30px; }
 .dpc .dp-grupo h3 { font-size: 20px; font-weight: 700; }

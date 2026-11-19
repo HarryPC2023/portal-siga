@@ -323,6 +323,26 @@ const CAMPOS_TARJETA = {
 };
 const ROTULO = { proyecto: 'Proyecto', logro: 'Logro', experiencia: 'Experiencia' };
 
+const PRIMER_CAMPO = { proyecto: 'nombre', logro: 'texto', experiencia: 'puesto' };
+const SIN_TITULO = { proyecto: 'sin nombre todavía', logro: 'sin descripción todavía', experiencia: 'sin puesto todavía' };
+const plegadas = new Set();        // ids de tarjetas plegadas (solo vista: no se guarda en la base)
+
+function textoResumen(tipo, clave) {
+    const v = String((D.leerClave(clave) || {})[PRIMER_CAMPO[tipo]] || '').trim().replace(/\s+/g, ' ');
+    return v ? (v.length > 60 ? v.slice(0, 57) + '…' : v) : SIN_TITULO[tipo];
+}
+
+function aplicarPliegue(tarjeta, tipo, clave) {
+    const plegada = plegadas.has(tarjeta.dataset.id);
+    const cuerpo = $('.dp-tarjeta-cuerpo', tarjeta), boton = $('.dp-tarjeta-toggle', tarjeta);
+    cuerpo.hidden = plegada;
+    boton.setAttribute('aria-expanded', String(!plegada));
+    $('.dp-tarjeta-flecha', tarjeta).textContent = plegada ? '▸' : '▾';
+    const res = $('.dp-tarjeta-resumen', tarjeta);
+    res.hidden = !plegada;
+    if (plegada) res.textContent = '· ' + textoResumen(tipo, clave);
+}
+
 function crearTarjeta(tipo, item) {
     const clave = D.claveDe(tipo, item.id);
     const titulo = el('strong', { class: 'dp-tarjeta-num' });
@@ -337,7 +357,19 @@ function crearTarjeta(tipo, item) {
             el('button', { type: 'button', class: 'dp-btn-texto', text: 'No', onclick: mostrarQuitar }));
     };
     mostrarQuitar();
-    return el('div', { class: 'dp-tarjeta', 'data-id': item.id }, el('div', { class: 'dp-tarjeta-cab' }, titulo, accion), ...CAMPOS_TARJETA[tipo](clave));
+    const cuerpo = el('div', { class: 'dp-tarjeta-cuerpo', id: `dp-cuerpo-${item.id}` }, ...CAMPOS_TARJETA[tipo](clave));
+    const boton = el('button', {
+        type: 'button', class: 'dp-tarjeta-toggle', 'aria-controls': cuerpo.id, 'aria-expanded': 'true',
+        title: 'Plegar o desplegar',
+    }, el('span', { class: 'dp-tarjeta-flecha', 'aria-hidden': 'true', text: '▾' }), titulo, el('span', { class: 'dp-tarjeta-resumen', hidden: true }));
+    const tarjeta = el('div', { class: 'dp-tarjeta', 'data-id': item.id }, el('div', { class: 'dp-tarjeta-cab' }, boton, accion), cuerpo);
+    boton.addEventListener('click', () => {
+        if (plegadas.has(item.id)) plegadas.delete(item.id);
+        else { plegadas.add(item.id); if (cuerpo.contains(document.activeElement)) boton.focus(); }
+        aplicarPliegue(tarjeta, tipo, clave);
+    });
+    aplicarPliegue(tarjeta, tipo, clave);
+    return tarjeta;
 }
 
 function quitar(tipo, id, clave) {
@@ -365,7 +397,11 @@ function reconciliarLista(tipo) {
             existentes.set(item.id, t);
         }
     });
-    $$('.dp-tarjeta', cont).forEach((t, i) => { $('.dp-tarjeta-num', t).textContent = `${ROTULO[tipo]} ${i + 1}`; });
+    $$('.dp-tarjeta', cont).forEach((t, i) => {
+        $('.dp-tarjeta-num', t).textContent = `${ROTULO[tipo]} ${i + 1}`;
+        if (plegadas.has(t.dataset.id)) aplicarPliegue(t, tipo, D.claveDe(tipo, t.dataset.id));
+    });
+    if (tipo === 'proyecto') pintarSugerenciaProyectos();
     const vacio = $(`[data-vacio="${tipo}"]`);
     if (vacio) vacio.hidden = cont.querySelectorAll('.dp-tarjeta').length > 0;
     sincronizarCampos(cont);
@@ -453,8 +489,16 @@ function pasoFormacion() {
         campo({ clave: c, nombre: 'promedio', etiqueta: 'Promedio académico', opcional: true, placeholder: 'Déjalo vacío si no deseas incluirlo' }));
 }
 
+function pintarSugerenciaProyectos() {
+    const caja = $('[data-sug-proy]');
+    if (!caja) return;
+    const S = C.SUGERENCIA_PROYECTOS_PRACTICOS;
+    const hay = $$('.dp-tarjeta', $('[data-lista="proyecto"]') || document).length > 0;
+    caja.replaceChildren(hay ? S.antesCon : S.antesSin, el('a', { href: S.enlace, text: S.enlaceTexto }), S.despues);
+}
+
 function pasoProyectos() {
-    const A = C.AYUDA_PROYECTOS, S = C.SUGERENCIA_PROYECTOS_PRACTICOS;
+    const A = C.AYUDA_PROYECTOS;
     const sinProyectos = D.leerCV().proyectos.length === 0;
     const ideas = el('div', { class: 'dpc-ayudas' },
         el('details', { class: 'dpc-det', open: sinProyectos ? true : null },
@@ -463,9 +507,10 @@ function pasoProyectos() {
             el('ul', { class: 'dp-lista-ejemplos' }, C.CATEGORIAS_PROYECTO.map((c) => el('li', {}, el('strong', { text: c.nombre + ': ' }), c.texto))),
             el('p', { class: 'dp-suave dpc-parcial', text: A.parcial }),
             el('p', { class: 'dp-suave', text: A.preguntasTitulo }),
-            el('ul', { class: 'dp-lista-ejemplos' }, A.preguntas.map((q) => el('li', { text: q }))),
-            sinProyectos ? el('p', { class: 'dpc-sugerencia' }, S.antes, el('a', { href: S.enlace, text: S.enlaceTexto }), S.despues) : null));
-    return el('div', {}, ideas, bloqueLista('proyecto', {
+            el('ul', { class: 'dp-lista-ejemplos' }, A.preguntas.map((q) => el('li', { text: q })))));
+    const sugerencia = el('p', { class: 'dpc-sugerencia', 'data-sug-proy': '' });
+    queueMicrotask(pintarSugerenciaProyectos);
+    return el('div', {}, ideas, sugerencia, bloqueLista('proyecto', {
         vacio: 'Todavía no agregaste ningún proyecto. Un trabajo final de un curso es un buen comienzo.',
         botonTexto: '+ Añadir proyecto',
         base: { nombre: '', queHiciste: '', herramientas: '', evidencia: '', categoria: '', modalidad: '', desde: '', hasta: '', sigue: false, origen: 'manual' },
