@@ -4,6 +4,8 @@
 // con títulos y listas normales, para que los filtros automáticos de las empresas lo lean bien.
 // Todo lo que escribe el alumno pasa por esc() antes de entrar al HTML.
 
+import { detalleIdioma } from './desarrollo-redaccion.js?v=1';
+
 export function esc(valor) {
     return String(valor == null ? '' : valor).replace(/[&<>"']/g, (c) => (
         { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -55,13 +57,20 @@ function htmlExperiencia(lista) {
 
 function htmlHabilidades(lista) {
     const de = (cat) => lista.filter((h) => h.categoria === cat && t(h.nombre));
+    const conNivel = (h) => t(h.nombre) + (t(h.nivel) ? ` (${t(h.nivel).toLowerCase()})` : '');   // sin nivel: solo el nombre, como siempre
     const filas = [];
-    const tec = de('tecnica').map((h) => t(h.nombre));
-    const her = de('herramienta').map((h) => t(h.nombre));
-    const idi = de('idioma').map((h) => t(h.nombre) + (t(h.nivel) ? ` (${t(h.nivel).toLowerCase()})` : ''));
+    const tec = de('tecnica').map(conNivel);
+    const her = de('herramienta').map(conNivel);
+    // Idiomas: igual que antes («Inglés (intermedio)»); si completó el detalle: «Inglés (intermedio; lectura avanzada, expresión oral básica)».
+    const idi = de('idioma').map((h) => {
+        const dentro = [t(h.nivel).toLowerCase(), detalleIdioma(h)].filter(Boolean).join('; ');
+        return t(h.nombre) + (dentro ? ` (${dentro})` : '');
+    });
+    const per = de('personal').map((h) => t(h.nombre));
     if (tec.length) filas.push(`<p class="dp-cv-p"><strong>Conocimientos:</strong> ${esc(tec.join(', '))}</p>`);
     if (her.length) filas.push(`<p class="dp-cv-p"><strong>Herramientas:</strong> ${esc(her.join(', '))}</p>`);
     if (idi.length) filas.push(`<p class="dp-cv-p"><strong>Idiomas:</strong> ${esc(idi.join(', '))}</p>`);
+    if (per.length) filas.push(`<p class="dp-cv-p"><strong>Habilidades personales:</strong> ${esc(per.join(', '))}</p>`);
     return filas.join('');
 }
 

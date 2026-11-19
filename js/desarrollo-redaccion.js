@@ -2,7 +2,7 @@
 //
 // Archivo PURO: sin DOM, sin red y SIN IA. Solo ordena las respuestas en frases con una plantilla.
 // No inventa nada: lo que el alumno deja vacío no aparece, y nunca se fabrica un resultado.
-import { VERBOS_TRABAJO, PATRONES_CARRERA } from './desarrollo-contenido.js?v=1';
+import { VERBOS_TRABAJO, PATRONES_CARRERA, DETALLE_IDIOMA } from './desarrollo-contenido.js?v=1';
 
 const t = (v) => (typeof v === 'string' ? v.trim() : '');
 const sinPunto = (v) => t(v).replace(/[.\s]+$/, '');
@@ -52,4 +52,18 @@ export function armarBorrador({ verbo = 0, objeto, hizo, meta, resultado, equipo
     texto += ` ${sigue ? 'Me encargo' : 'Me encargué'} de ${h}${hs.length ? ', utilizando ' + unir(hs) : ''}.`;
     if (r) texto += ` ${sigue ? 'Hasta ahora, ' : 'Como resultado, '}${minuscula(r)}.`;
     return texto;
+}
+
+// Detalle de un idioma para mostrar: solo las habilidades que el alumno completó y que DIFIEREN de su nivel general.
+// «lectura avanzada, expresión oral básica». Si no completó nada (o todo es igual al general) devuelve ''.
+const ADJETIVO = { 'básico': 'básica', 'intermedio': 'intermedia', 'avanzado': 'avanzada' };
+export function detalleIdioma(h = {}) {
+    const d = h.detalle && typeof h.detalle === 'object' ? h.detalle : {};
+    const general = t(h.nivel).toLowerCase();
+    const partes = [];
+    for (const [clave, , enCV] of DETALLE_IDIOMA) {
+        const v = t(d[clave]).toLowerCase();
+        if (v && v !== general && ADJETIVO[v]) partes.push(`${enCV} ${ADJETIVO[v]}`);
+    }
+    return partes.join(', ');
 }

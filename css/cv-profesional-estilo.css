@@ -148,6 +148,18 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dpc-borrador.vacio { color: var(--dp-suave); }
 .dpc .dpc-acciones-guia { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 16px; }
 
+/* ───── paso Habilidades: nivel opcional, editor de idioma y ayudas ───── */
+.dpc .dpc-nivel { font: inherit; font-size: 13px; border: 0; background: rgba(255, 255, 255, .85); color: var(--dp-suave); border-radius: 6px; padding: 2px 8px; cursor: pointer; margin-left: 2px; }
+.dpc .dpc-nivel:hover { color: var(--dpc-naranja-os); }
+.dpc .dpc-ayudas { margin-top: 6px; }
+.dpc .dpc-ayudas .dpc-det { margin-top: 12px; }
+.dpc .dpc-ayudas .dp-suave { margin: 0 0 14px; }
+.dpc .dpc-det4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 10px 0 14px; }
+.dpc .dpc-det4 label { display: block; font-size: 15px; color: var(--dp-suave); margin-bottom: 4px; }
+.dpc .dpc-editor { margin-top: 10px; border: 1.5px dashed var(--dpc-naranja); border-radius: 12px; background: #FFFAF5; padding: 14px 18px 16px; }
+.dpc .dpc-editor[hidden] { display: none; }
+.dpc .dp-agregar + .dpc-det { margin-top: 12px; }
+
 /* ───── pantallas medianas y celular ───── */
 @media (max-width: 960px) {
     .dpc .dp-constructor { grid-template-columns: minmax(0, 1fr); }

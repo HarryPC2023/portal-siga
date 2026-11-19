@@ -13,7 +13,7 @@ import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES } from './
 import { evaluarCV } from './desarrollo-reglas.js?v=1';
 import * as C from './desarrollo-contenido.js?v=1';
 import { htmlCV } from './cv-documento.js?v=1';
-import { armarBorrador, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo } from './desarrollo-redaccion.js?v=1';
+import { armarBorrador, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=1';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 
 const D = crearDesarrollo(SigaEstado);
@@ -487,44 +487,194 @@ function pasoExperiencia() {
     return el('div', {}, el('label', { class: 'dp-casilla', for: 'dpSinExp' }, casilla, ' Aún no he trabajado (puedes saltar este paso)'), cuerpo);
 }
 
-// Habilidades: cada una es un elemento independiente (chip).
+// Habilidades: cada una es un elemento independiente (chip). Cuatro categorías:
+//   tecnica / herramienta → nombre + nivel OPCIONAL (sin nivel se ve y se guarda igual que siempre)
+//   idioma               → nombre + nivel general + detalle opcional (au, le, or, es)
+//   personal             → solo el nombre, hasta C.MAX_PERSONALES, sin nivel
+// Lo ya guardado nunca se reescribe al abrir el paso: solo cambia lo que el alumno edita, y se conservan los campos que no conoce.
+const CICLO_NIVEL = ['', ...C.NIVELES];
+
+function ejemplosHabilidades() {
+    return C.EJEMPLOS_HABILIDADES[tipoCarrera((cv.formacion || {}).carrera)] || C.EJEMPLOS_HABILIDADES.gen;
+}
+
+// Actualiza UN elemento sin tocar los demás y conservando todos sus campos.
+function guardarHabilidad(id, cambios, quitar = []) {
+    const actual = D.leerCV().habilidades.find((x) => x.id === id);
+    if (!actual) return;
+    const nuevo = { ...actual, ...cambios };
+    quitar.forEach((k) => { delete nuevo[k]; });                   // un nivel vacío se quita del todo: el elemento vuelve a ser como era
+    D.guardarElemento('habilidad', nuevo);
+    refrescarMemoria(); pintarChips();
+}
+
+const yaExiste = (cat, nombre) => cv.habilidades.some((h) => h.categoria === cat && String(h.nombre || '').trim().toLowerCase() === nombre.toLowerCase());
+
+function filaAgregar({ cat, info, conNivel }) {
+    const chips = el('div', { class: 'dp-chips', 'data-chips': cat });
+    const sugerencias = el('div', { class: 'dp-chips dpc-sugerencias', 'data-sugerencias': cat });
+    const entrada = el('input', { type: 'text', placeholder: 'Escribe y pulsa Enter', 'aria-label': `Agregar a ${info.titulo}`, autocomplete: 'off', class: 'dp-entrada-chip' });
+    const nivel = el('select', { 'aria-label': 'Nivel de dominio (opcional)' }, el('option', { value: '', text: 'Sin nivel' }), C.NIVELES.map((n) => el('option', { value: n, text: n })));
+    const error = el('small', { class: 'dp-error', role: 'alert', hidden: true });
+    const agregar = (texto, niv = '') => {
+        const nombre = String(texto || '').trim();
+        if (!nombre) { error.textContent = 'Escribe algo antes de agregarlo.'; error.hidden = false; return; }
+        if (yaExiste(cat, nombre)) { error.textContent = 'Ya lo agregaste.'; error.hidden = false; return; }
+        error.hidden = true;
+        D.nuevoElemento('habilidad', { categoria: cat, nombre, ...(niv ? { nivel: niv } : {}) });
+        entrada.value = ''; nivel.value = '';
+        refrescarMemoria(); pintarChips();
+    };
+    sugerencias._agregar = (t) => agregar(t);
+    entrada.addEventListener('input', () => { error.hidden = true; });
+    entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); agregar(entrada.value, nivel.value); } });
+    return el('div', { class: 'dp-grupo' },
+        el('h3', { text: info.titulo }), el('small', { class: 'dp-ayuda', text: info.ayuda }), chips,
+        el('div', { class: 'dp-agregar' }, entrada, conNivel ? nivel : null, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Agregar', onclick: () => agregar(entrada.value, nivel.value) })), error,
+        conNivel ? el('p', { class: 'dpc-sug-tit', text: 'Ideas para tu carrera:' }) : null, conNivel ? sugerencias : null);
+}
+
+function grupoIdiomas() {
+    const cat = 'idioma', info = C.HABILIDADES.idioma;
+    const chips = el('div', { class: 'dp-chips', 'data-chips': cat });
+    const editor = el('div', { class: 'dpc-editor', 'data-editor-idioma': '', hidden: true });
+    const entrada = el('input', { type: 'text', placeholder: 'Ejemplo: Inglés', 'aria-label': 'Agregar idioma', autocomplete: 'off', class: 'dp-entrada-chip' });
+    const nivel = el('select', { 'aria-label': 'Nivel general' }, C.NIVELES.map((n) => el('option', { value: n, text: n, selected: n === 'Intermedio' })));
+    const detalle = C.DETALLE_IDIOMA.map(([k, etiqueta]) => ({ k, sel: el('select', { id: `dpc-det-${k}`, 'aria-label': etiqueta }, el('option', { value: '', text: 'Igual que el general' }), C.NIVELES.map((n) => el('option', { value: n, text: n }))), etiqueta }));
+    const error = el('small', { class: 'dp-error', role: 'alert', hidden: true });
+    const agregar = () => {
+        const nombre = entrada.value.trim();
+        if (!nombre) { error.textContent = 'Escribe un idioma antes de agregarlo.'; error.hidden = false; return; }
+        if (yaExiste(cat, nombre)) { error.textContent = 'Ya lo agregaste.'; error.hidden = false; return; }
+        error.hidden = true;
+        const det = {}; detalle.forEach(({ k, sel }) => { if (sel.value) det[k] = sel.value; });
+        D.nuevoElemento('habilidad', { categoria: cat, nombre, nivel: nivel.value, ...(Object.keys(det).length ? { detalle: det } : {}) });
+        entrada.value = ''; detalle.forEach(({ sel }) => { sel.value = ''; });
+        const d = $('.dpc-det-nuevo'); if (d) d.open = false;
+        refrescarMemoria(); pintarChips();
+    };
+    entrada.addEventListener('input', () => { error.hidden = true; });
+    entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); agregar(); } });
+    return el('div', { class: 'dp-grupo' },
+        el('h3', { text: info.titulo }), el('small', { class: 'dp-ayuda', text: info.ayuda }), chips, editor,
+        el('div', { class: 'dp-agregar' }, entrada, nivel, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Agregar', onclick: agregar })),
+        el('details', { class: 'dpc-det dpc-det-nuevo' }, el('summary', { text: 'Detallar por habilidad (opcional)' }),
+            el('div', { class: 'dpc-det4' }, detalle.map(({ etiqueta, sel }) => el('div', {}, el('label', { for: sel.id, text: etiqueta }), sel)))),
+        error, el('small', { class: 'dp-ayuda', text: C.AVISO_IDIOMAS }));
+}
+
+function grupoPersonales() {
+    const info = C.HABILIDADES.personal;
+    const entrada = el('input', { type: 'text', placeholder: 'Otra habilidad', 'aria-label': 'Otra habilidad personal', autocomplete: 'off', class: 'dp-entrada-chip' });
+    const error = el('small', { class: 'dp-error', role: 'alert', hidden: true, 'data-err-personal': '' });
+    entrada.addEventListener('input', () => { error.hidden = true; });
+    entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); agregarPersonal(entrada.value, entrada, error); } });
+    return el('div', { class: 'dp-grupo' },
+        el('h3', {}, info.titulo, el('span', { class: 'dp-opc', text: ' (opcional, sin niveles)' })), el('small', { class: 'dp-ayuda', text: info.ayuda }),
+        el('div', { class: 'dpc-opciones', 'data-personales': '' }),
+        el('div', { class: 'dp-agregar' }, entrada, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Agregar', onclick: () => agregarPersonal(entrada.value, entrada, error) }),
+            el('span', { class: 'dp-ayuda', 'data-cuenta-personales': '' })), error);
+}
+
+function agregarPersonal(texto, entrada, error) {
+    const nombre = String(texto || '').trim();
+    const e = error || $('[data-err-personal]');
+    const fallo = (t) => { if (e) { e.textContent = t; e.hidden = false; } };
+    if (!nombre) return fallo('Escribe algo antes de agregarla.');
+    if (yaExiste('personal', nombre)) return fallo('Ya la agregaste.');
+    if (cv.habilidades.filter((h) => h.categoria === 'personal').length >= C.MAX_PERSONALES) return fallo(`Puedes elegir hasta ${C.MAX_PERSONALES}. Quita una para elegir otra.`);
+    if (e) e.hidden = true;
+    D.nuevoElemento('habilidad', { categoria: 'personal', nombre });
+    if (entrada) entrada.value = '';
+    refrescarMemoria(); pintarChips();
+}
+
 function pasoHabilidades() {
-    const grupos = Object.entries(C.HABILIDADES).map(([cat, info]) => {
-        const chips = el('div', { class: 'dp-chips', 'data-chips': cat });
-        const entrada = el('input', { type: 'text', placeholder: `Ejemplo: ${info.ejemplos.split(',')[0]}`, 'aria-label': `Agregar a ${info.titulo}`, autocomplete: 'off', class: 'dp-entrada-chip' });
-        const nivel = cat === 'idioma' ? el('select', { 'aria-label': 'Nivel' }, C.NIVELES.map((n) => el('option', { value: n, text: n, selected: n === 'Intermedio' }))) : null;
-        const error = el('small', { class: 'dp-error', role: 'alert', hidden: true });
-        const agregar = () => {
-            const nombre = entrada.value.trim();
-            if (!nombre) { error.textContent = 'Escribe una habilidad antes de agregarla.'; error.hidden = false; return; }
-            if (cv.habilidades.some((h) => h.categoria === cat && h.nombre.trim().toLowerCase() === nombre.toLowerCase())) { error.textContent = 'Ya la agregaste.'; error.hidden = false; return; }
-            error.hidden = true;
-            D.nuevoElemento('habilidad', { categoria: cat, nombre, ...(nivel ? { nivel: nivel.value } : {}) });
-            entrada.value = '';
-            refrescarMemoria(); pintarChips();
-            entrada.focus();
-        };
-        entrada.addEventListener('input', () => { error.hidden = true; });
-        entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); agregar(); } });
-        return el('div', { class: 'dp-grupo' },
-            el('h3', { text: info.titulo }), el('small', { class: 'dp-ayuda', text: `Por ejemplo: ${info.ejemplos}` }), chips,
-            el('div', { class: 'dp-agregar' }, entrada, nivel, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Agregar', onclick: agregar })), error);
-    });
+    const ayudas = el('div', { class: 'dpc-ayudas' },
+        el('details', { class: 'dpc-det' }, el('summary', { text: '¿No sabes qué habilidades incluir?' }), el('p', { class: 'dp-suave', text: C.AYUDA_QUE_INCLUIR })),
+        el('details', { class: 'dpc-det' }, el('summary', { text: '¿Qué significa cada nivel?' }), el('p', { class: 'dp-suave', text: C.AYUDA_NIVELES })));
     queueMicrotask(pintarChips);
-    return el('div', {}, grupos);
+    return el('div', {}, ayudas,
+        filaAgregar({ cat: 'tecnica', info: C.HABILIDADES.tecnica, conNivel: true }),
+        filaAgregar({ cat: 'herramienta', info: C.HABILIDADES.herramienta, conNivel: true }),
+        grupoIdiomas(), grupoPersonales());
+}
+
+function chipNivel(h) {
+    return el('span', { class: 'dp-chip dp-chip-hab' }, h.nombre,
+        el('button', { type: 'button', class: 'dpc-nivel', title: 'Pulsa para cambiar el nivel (opcional)', text: h.nivel || 'sin nivel',
+            onclick: () => { const sig = CICLO_NIVEL[(CICLO_NIVEL.indexOf(h.nivel || '') + 1) % CICLO_NIVEL.length]; guardarHabilidad(h.id, sig ? { nivel: sig } : {}, sig ? [] : ['nivel']); } }),
+        botonQuitar(h));
+}
+const botonQuitar = (h) => el('button', { type: 'button', class: 'dp-chip-x', 'aria-label': `Quitar ${h.nombre}`, text: '×', onclick: () => { D.quitarElemento('habilidad', h.id); refrescarMemoria(); pintarChips(); } });
+
+function chipIdioma(h) {
+    const det = detalleIdioma(h);
+    return el('span', { class: 'dp-chip dp-chip-hab' }, h.nombre + (h.nivel ? ` · ${h.nivel}` : '') + (det ? ` (${det})` : ''),
+        el('button', { type: 'button', class: 'dpc-nivel', text: 'editar', title: 'Cambiar el nivel o el detalle', onclick: () => abrirEditorIdioma(h.id) }),
+        botonQuitar(h));
+}
+
+// Editor de un idioma ya guardado: cada cambio actualiza ese idioma al instante.
+function abrirEditorIdioma(id) {
+    const caja = $('[data-editor-idioma]'); if (!caja) return;
+    const h = D.leerCV().habilidades.find((x) => x.id === id); if (!h) return;
+    const det = (h.detalle && typeof h.detalle === 'object') ? h.detalle : {};
+    const general = el('select', { id: 'dpc-ed-nivel', 'aria-label': 'Nivel general' }, C.NIVELES.map((n) => el('option', { value: n, text: n, selected: n === h.nivel })));
+    general.addEventListener('change', () => guardarHabilidad(id, { nivel: general.value }));
+    const campos = C.DETALLE_IDIOMA.map(([k, etiqueta]) => {
+        const sel = el('select', { id: `dpc-ed-${k}` }, el('option', { value: '', text: 'Igual que el general' }), C.NIVELES.map((n) => el('option', { value: n, text: n, selected: n === det[k] })));
+        sel.addEventListener('change', () => {
+            const actual = D.leerCV().habilidades.find((x) => x.id === id); if (!actual) return;
+            const nuevo = { ...((actual.detalle && typeof actual.detalle === 'object') ? actual.detalle : {}) };
+            if (sel.value) nuevo[k] = sel.value; else delete nuevo[k];
+            guardarHabilidad(id, Object.keys(nuevo).length ? { detalle: nuevo } : {}, Object.keys(nuevo).length ? [] : ['detalle']);
+        });
+        return el('div', {}, el('label', { for: sel.id, text: etiqueta }), sel);
+    });
+    caja.hidden = false;
+    caja.dataset.id = id;
+    caja.replaceChildren(el('strong', { text: `Editar ${h.nombre}` }),
+        el('div', { class: 'dpc-det4' }, el('div', {}, el('label', { for: general.id, text: 'Nivel general' }), general), campos),
+        el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Listo', onclick: () => { caja.hidden = true; caja.replaceChildren(); } }));
+    general.focus();
+}
+
+function pintarPersonales() {
+    const cont = $('[data-personales]'); if (!cont) return;
+    const sel = cv.habilidades.filter((h) => h.categoria === 'personal' && String(h.nombre || '').trim());
+    const firma = sel.map((h) => `${h.id}|${h.nombre}`).join('~');
+    const cuenta = $('[data-cuenta-personales]');
+    if (cuenta) cuenta.textContent = `${sel.length} de ${C.MAX_PERSONALES} seleccionadas`;
+    if (cont.dataset.firma === firma) return;
+    cont.dataset.firma = firma;
+    const enLista = (p) => sel.find((h) => h.nombre.trim().toLowerCase() === p.toLowerCase());
+    const pastilla = (texto, h, nombre) => el('button', { type: 'button', class: `dpc-op${h ? ' on' : ''}`, 'aria-pressed': h ? 'true' : 'false', text: texto,
+        onclick: () => { if (h) { D.quitarElemento('habilidad', h.id); refrescarMemoria(); pintarChips(); const e = $('[data-err-personal]'); if (e) e.hidden = true; } else agregarPersonal(nombre); } });
+    cont.replaceChildren(
+        ...C.HABILIDADES_PERSONALES.map((p) => pastilla(p, enLista(p), p)),
+        ...sel.filter((h) => !C.HABILIDADES_PERSONALES.some((p) => p.toLowerCase() === h.nombre.trim().toLowerCase())).map((h) => pastilla(`${h.nombre} ×`, h, h.nombre)));
 }
 
 function pintarChips() {
     for (const cont of $$('[data-chips]')) {
         const cat = cont.dataset.chips;
         const lista = cv.habilidades.filter((h) => h.categoria === cat);
-        const firma = lista.map((h) => `${h.id}|${h.nombre}|${h.nivel || ''}`).join('~');
+        const firma = lista.map((h) => `${h.id}|${h.nombre}|${h.nivel || ''}|${JSON.stringify(h.detalle || '')}`).join('~');
         if (cont.dataset.firma === firma) continue;
         cont.dataset.firma = firma;
-        cont.replaceChildren(...lista.map((h) => el('span', { class: 'dp-chip dp-chip-hab' },
-            h.nombre + (h.nivel ? ` · ${h.nivel}` : ''),
-            el('button', { type: 'button', class: 'dp-chip-x', 'aria-label': `Quitar ${h.nombre}`, text: '×', onclick: () => { D.quitarElemento('habilidad', h.id); refrescarMemoria(); pintarChips(); } }))));
+        cont.replaceChildren(...lista.map((h) => (cat === 'idioma' ? chipIdioma(h) : chipNivel(h))));
     }
+    for (const caja of $$('[data-sugerencias]')) {
+        const cat = caja.dataset.sugerencias;
+        const ej = ejemplosHabilidades()[cat === 'tecnica' ? 'tec' : 'her'] || [];
+        const quedan = ej.filter((x) => !yaExiste(cat, x));
+        const firma = quedan.join('|');
+        if (caja.dataset.firma === firma) continue;
+        caja.dataset.firma = firma;
+        caja.replaceChildren(...quedan.map((x) => el('button', { type: 'button', class: 'dp-chip dpc-sug', text: `+ ${x}`, onclick: () => caja._agregar(x) })));
+    }
+    pintarPersonales();
 }
 
 // ───────────── revisión con semáforo ─────────────

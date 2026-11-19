@@ -23,8 +23,8 @@ export const PASOS = [
     },
     {
         id: 'habilidades', titulo: 'Habilidades',
-        porQue: 'Sepáralas en conocimientos, herramientas e idiomas.',
-        consejo: 'Usa nivel básico, intermedio o avanzado. Evita porcentajes como «Python 85 %»: dan una falsa sensación de precisión.',
+        porQue: 'Registra los conocimientos, herramientas, idiomas y habilidades personales que has desarrollado durante tu formación y otras experiencias.',
+        consejo: 'Sé honesto al describir tus capacidades. Si lo deseas, indica tu nivel de dominio en conocimientos y herramientas. En idiomas, puedes indicar tu nivel general y detallar tus habilidades. Evita porcentajes como «Python 85 %»: dan una falsa sensación de precisión.',
     },
     {
         id: 'logros', titulo: 'Logros',
@@ -75,6 +75,7 @@ export const GRUPOS_HERRAMIENTAS = [
 export const PATRONES_CARRERA = [
     ['arq', /arquitect|urban/i],
     ['civ', /civil|sanitari|hidr[aá]ulic/i],
+    ['qui', /qu[ií]mic/i],
     ['sis', /sistemas|software|inform[aá]tic|computaci|ciencia de datos|inteligencia artificial/i],
 ];
 export const EJEMPLOS_CARRERA = {
@@ -126,10 +127,32 @@ export const TIPOS_EXPERIENCIA = [
     'Organización de eventos', 'Freelance o actividades independientes', 'Apoyo en negocios familiares', 'Trabajos temporales',
 ];
 
+// Cuatro categorías de habilidades. Las dos primeras admiten un nivel OPCIONAL; idiomas lleva nivel general (y detalle opcional); las personales no llevan nivel.
 export const HABILIDADES = {
-    tecnica: { titulo: 'Técnicas', ejemplos: 'Programación, análisis de datos, modelado de bases de datos' },
-    herramienta: { titulo: 'Herramientas', ejemplos: 'Excel, SQL, Python, Git, Power BI' },
-    idioma: { titulo: 'Idiomas', ejemplos: 'Inglés, portugués' },
+    tecnica: { titulo: 'Conocimientos técnicos', ayuda: 'Lo que sabes hacer y aplicar. Los ejemplos se adaptan a tu carrera. Nivel de dominio opcional.' },
+    herramienta: { titulo: 'Herramientas y tecnologías', ayuda: 'Programas, aplicaciones, equipos y recursos que sabes utilizar. Aquí van las que sabes usar, no solo las de un proyecto concreto. Nivel de dominio opcional.' },
+    idioma: { titulo: 'Idiomas', ayuda: 'Indica tu nivel general y, si lo deseas, detalla tus niveles de comprensión auditiva, comprensión lectora, expresión oral y expresión escrita.' },
+    personal: { titulo: 'Habilidades personales', ayuda: 'Selecciona hasta 5 que realmente te representen. Piensa en situaciones en las que las hayas demostrado: trabajos grupales, proyectos, actividades universitarias, voluntariado u otras experiencias. Por ejemplo, coordinar un equipo puede reflejar liderazgo.' },
+};
+export const HABILIDADES_PERSONALES = [
+    'Comunicación', 'Trabajo en equipo', 'Liderazgo', 'Resolución de problemas', 'Organización',
+    'Adaptabilidad', 'Pensamiento crítico', 'Iniciativa', 'Creatividad', 'Gestión del tiempo',
+];
+export const MAX_PERSONALES = 5;
+export const DETALLE_IDIOMA = [   // [clave guardada, etiqueta del formulario, cómo se escribe en el CV]
+    ['au', 'Comprensión auditiva', 'comprensión auditiva'], ['le', 'Comprensión lectora', 'lectura'],
+    ['or', 'Expresión oral', 'expresión oral'], ['es', 'Expresión escrita', 'expresión escrita'],
+];
+export const AYUDA_QUE_INCLUIR = 'Piensa en los conocimientos que has adquirido en tus cursos, proyectos, investigaciones, actividades o experiencias. Incluye aquello que sabes aplicar y que puede aportar valor a tu perfil profesional. Cuentan los conocimientos de la universidad, no solo los de cursos externos o certificaciones, siempre que seas honesto con tu nivel.';
+export const AYUDA_NIVELES = 'Básico: conozco los fundamentos. Intermedio: lo he aplicado en trabajos o proyectos. Avanzado: lo uso con soltura en situaciones complejas. Es tu propia valoración y puedes dejarlo vacío.';
+export const AVISO_IDIOMAS = 'Niveles declarados por ti, no una certificación oficial.';
+// Ejemplos de conocimientos y herramientas según la carrera (orientativos: se puede escribir cualquier cosa). Deberían revisarlos estudiantes de cada facultad.
+export const EJEMPLOS_HABILIDADES = {
+    sis: { tec: ['Programación', 'Análisis de datos', 'Modelado de bases de datos'], her: ['Python', 'SQL', 'Git', 'Power BI'] },
+    arq: { tec: ['Diseño arquitectónico', 'Representación gráfica', 'Modelado 3D'], her: ['AutoCAD', 'Revit', 'SketchUp'] },
+    civ: { tec: ['Análisis estructural', 'Topografía', 'Presupuestos de obra'], her: ['SAP2000', 'AutoCAD', 'Excel'] },
+    qui: { tec: ['Análisis químico', 'Experimentación', 'Investigación'], her: ['MATLAB', 'Excel', 'Instrumentos de laboratorio'] },
+    gen: { tec: ['Análisis de datos', 'Investigación', 'Planificación'], her: ['Excel', 'Word', 'PowerPoint'] },
 };
 export const NIVELES = ['Básico', 'Intermedio', 'Avanzado'];
 
