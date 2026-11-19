@@ -84,7 +84,7 @@ function evaluarFormacion(f = {}) {
 function evaluarProyectos(lista = []) {
     const reales = lista.filter(proyectoTieneContenido);
     if (!reales.length) {
-        return { estado: ROJO, mensaje: 'Todavía no tienes proyectos registrados. Puedes comenzar con un trabajo académico o una actividad que hayas desarrollado.' };
+        return { estado: GRIS, mensaje: 'Recomendado para tu primer CV. Aún no tienes proyectos: puedes empezar con un trabajo de un curso, aunque sea parcial.' };
     }
     const incompletos = reales.filter((p) => !proyectoCompleto(p));
     if (incompletos.length) {
@@ -93,7 +93,7 @@ function evaluarProyectos(lista = []) {
         return { estado: AMBAR, mensaje: `Completa ${unir(faltantesProyecto(p))} del proyecto ${nombre}.` };
     }
     if (reales.length === 1) {
-        return { estado: AMBAR, mensaje: 'Tienes un proyecto. Añade otro para mostrar más de lo que sabes hacer.' };
+        return { estado: VERDE, mensaje: 'Tienes un proyecto completo. Si tienes otro, puedes añadirlo para mostrar más de lo que sabes hacer.' };
     }
     return { estado: VERDE, mensaje: `Tienes ${reales.length} proyectos completos.` };
 }
@@ -103,7 +103,7 @@ function evaluarHabilidades(lista = []) {
     const tecnicas = con.filter((h) => h.categoria === 'tecnica').length;
     const herramientas = con.filter((h) => h.categoria === 'herramienta').length;
     if (!tecnicas && !herramientas) {
-        return { estado: AMBAR, mensaje: 'Agrega conocimientos o herramientas concretas que hayas utilizado (por ejemplo Excel, AutoCAD, Python o un método de análisis).' };
+        return { estado: GRIS, mensaje: 'Recomendado. Agrega conocimientos o herramientas concretas que hayas utilizado (por ejemplo Excel, AutoCAD, Python o un método de análisis).' };
     }
     if (!herramientas) {
         return { estado: VERDE, mensaje: 'Conocimientos registrados. Si usaste herramientas concretas, puedes añadirlas.' };

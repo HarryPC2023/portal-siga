@@ -136,6 +136,8 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dpc-det .dp-agregar { margin-top: 12px; }
 .dpc .dpc-sug-tit { font-size: 15px; color: var(--dp-suave); margin: 14px 0 2px; }
 .dpc .dpc-sugerencias { margin-bottom: 14px; }
+.dpc .dpc-desdeproy { margin: 18px 0 6px; padding: 12px 16px; border-left: 4px solid var(--dpc-naranja); background: #FFF8F2; border-radius: 0 10px 10px 0; }
+.dpc .dpc-conservar { margin-top: 24px; }
 .dpc .dp-chip.dpc-sug { background: #fff; border: 1.5px dashed #b4bac8; color: #4a4f5b; cursor: pointer; font: inherit; font-size: 15px; }
 .dpc .dp-chip.dpc-sug:hover { border-color: var(--dpc-naranja); color: var(--dpc-naranja-os); }
 

@@ -10,8 +10,8 @@ import { SigaEstado } from './sync-estado.js?v=1';
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { supabase } from './auth-siga.js?v=9';
 import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES } from './desarrollo-estado.js?v=1';
-import { evaluarCV } from './desarrollo-reglas.js?v=1';
-import * as C from './desarrollo-contenido.js?v=2';
+import { evaluarCV } from './desarrollo-reglas.js?v=2';
+import * as C from './desarrollo-contenido.js?v=3';
 import { htmlCV } from './cv-documento.js?v=1';
 import { armarBorrador, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=1';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
@@ -646,11 +646,16 @@ function pasoHabilidades() {
     const ayudas = el('div', { class: 'dpc-ayudas' },
         el('details', { class: 'dpc-det' }, el('summary', { text: '¿No sabes qué habilidades incluir?' }), el('p', { class: 'dp-suave', text: C.AYUDA_QUE_INCLUIR })),
         el('details', { class: 'dpc-det' }, el('summary', { text: '¿Qué significa cada nivel?' }), el('p', { class: 'dp-suave', text: C.AYUDA_NIVELES })));
+    const desdeProy = el('div', { class: 'dpc-desdeproy', 'data-desde-proyectos': '', hidden: true },
+        el('p', { class: 'dpc-sug-tit', text: C.DESDE_PROYECTOS.titulo }),
+        el('small', { class: 'dp-ayuda', text: C.DESDE_PROYECTOS.ayuda }),
+        el('div', { class: 'dp-chips', 'data-desde-chips': '' }));
     queueMicrotask(pintarChips);
-    return el('div', {}, ayudas,
+    return el('div', {}, ayudas, desdeProy,
         filaAgregar({ cat: 'tecnica', info: C.HABILIDADES.tecnica, conNivel: true }),
         filaAgregar({ cat: 'herramienta', info: C.HABILIDADES.herramienta, conNivel: true }),
-        grupoIdiomas(), grupoPersonales());
+        grupoIdiomas(), grupoPersonales(),
+        el('p', { class: 'dp-suave dpc-conservar', text: C.AYUDA_CONSERVAR }));
 }
 
 function chipNivel(h) {
@@ -728,6 +733,39 @@ function pintarChips() {
         caja.replaceChildren(...quedan.map((x) => el('button', { type: 'button', class: 'dp-chip dpc-sug', text: `+ ${x}`, onclick: () => caja._agregar(x) })));
     }
     pintarPersonales();
+    pintarDesdeProyectos();
+}
+
+// Herramientas que el alumno ya escribió en sus proyectos y todavía no están en Habilidades (solo el nombre, sin nivel).
+function herramientasDeProyectos() {
+    const vistos = new Set(), salida = [];
+    for (const p of cv.proyectos || []) {
+        for (const parte of String(p.herramientas || '').split(/[,;\n]+/)) {
+            const nombre = parte.trim();
+            const clave = nombre.toLowerCase();
+            if (nombre.length < 2 || nombre.length > 40 || vistos.has(clave)) continue;
+            vistos.add(clave);
+            if (yaExiste('herramienta', nombre) || yaExiste('tecnica', nombre)) continue;
+            salida.push(nombre);
+        }
+    }
+    return salida.slice(0, 8);
+}
+
+function pintarDesdeProyectos() {
+    const caja = $('[data-desde-proyectos]');
+    if (!caja) return;
+    const lista = herramientasDeProyectos();
+    const firma = lista.join('|');
+    const chips = $('[data-desde-chips]', caja);
+    if (caja.dataset.firma !== firma) {
+        caja.dataset.firma = firma;
+        chips.replaceChildren(...lista.map((x) => el('button', {
+            type: 'button', class: 'dp-chip dpc-sug', text: `+ ${x}`,
+            onclick: () => { D.nuevoElemento('habilidad', { categoria: 'herramienta', nombre: x }); refrescarMemoria(); pintarChips(); },
+        })));
+    }
+    caja.hidden = lista.length === 0;
 }
 
 // ───────────── revisión con semáforo ─────────────

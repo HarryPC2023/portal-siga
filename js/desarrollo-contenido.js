@@ -28,7 +28,7 @@ export const PASOS = [
         consejo: 'Empieza describiendo tu participación con un verbo. El resultado no tiene que ser un número: un repositorio, una presentación, una demostración o un documento también sirven.',
     },
     {
-        id: 'habilidades', titulo: 'Habilidades',
+        id: 'habilidades', titulo: 'Habilidades', etiquetaPaso: 'Recomendado',
         porQue: 'Registra los conocimientos, herramientas, idiomas y habilidades personales que has desarrollado durante tu formación y otras experiencias.',
         consejo: 'Sé honesto al describir tus capacidades. Si lo deseas, indica tu nivel de dominio en conocimientos y herramientas. En idiomas, puedes indicar tu nivel general y detallar tus habilidades. Evita porcentajes como «Python 85 %»: dan una falsa sensación de precisión.',
     },
@@ -67,6 +67,13 @@ export const CATEGORIAS_PROYECTO = [
     { id: 'centro', nombre: 'Centro u organización estudiantil', texto: 'Proyectos dentro de centros, capítulos o grupos estudiantiles.' },
     { id: 'ext', nombre: 'Para un negocio, empresa o comunidad', texto: 'Trabajos por encargo, colaboraciones y aportes concretos para otras personas u organizaciones, con o sin pago.' },
 ];
+// Habilidades: ayudas añadidas para quien busca sus primeras prácticas.
+export const DESDE_PROYECTOS = {
+    titulo: 'Herramientas que anotaste en tus proyectos',
+    ayuda: 'Toca una para añadirla a tus herramientas. Puedes ponerle nivel después.',
+};
+export const AYUDA_CONSERVAR = 'Conserva tú los certificados o constancias de lo que sabes: SIGA no guarda documentos, pero te servirán cuando una empresa los pida.';
+
 export const MODALIDADES_PROYECTO = [{ id: 'solo', nombre: 'Solo' }, { id: 'equipo', nombre: 'En equipo' }];
 
 // Ayuda para descubrir proyectos (paso Proyectos): sirve a quien siente que «no tiene nada que incluir».
