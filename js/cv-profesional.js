@@ -421,9 +421,10 @@ function medirAjuste() {
     const usado = $('.dp-a4-in', medida).offsetHeight;
     const pct = disponible ? Math.round((usado / disponible) * 100) : 0;
     ajusteActual = { pct, cabe: pct <= 100 };
+    // Mientras cabe en una hoja no se muestra nada (un % bajo desanima a quien recién empieza); solo se avisa si se pasa.
     $$('[data-ajuste]').forEach((n) => {
-        n.className = `dp-ajuste ${ajusteActual.cabe ? 'dp-ajuste-ok' : 'dp-ajuste-largo'}`;
-        n.textContent = ajusteActual.cabe ? `Ocupa ${pct} % de una página A4` : `Pasa de una página A4 (${pct} %): recorta o resume lo menos importante`;
+        n.className = ajusteActual.cabe ? '' : 'dp-ajuste dp-ajuste-largo';
+        n.textContent = ajusteActual.cabe ? '' : `Pasa de una página A4 (${pct} %): recorta o resume lo menos importante`;
     });
 }
 
@@ -442,6 +443,21 @@ function dibujarPasos() {
     $('#dpPasos').replaceChildren(...C.PASOS.map((p, i) => el('button', {
         type: 'button', class: `dp-paso${i === paso ? ' dp-paso-activo' : ''}`, 'aria-current': i === paso ? 'step' : null, onclick: () => irAPaso(i),
     }, el('span', { class: `dp-punto dp-${SECCION_DE_PASO[p.id] ? estado[SECCION_DE_PASO[p.id]] : 'rev'}` }), el('span', { class: 'dp-paso-n', text: String(i + 1) }), el('span', { class: 'dp-paso-t', text: p.titulo }))));
+    pintarAvance(estado);
+}
+
+// Barra de avance del panel: un segmento por paso (verde = listo, naranja = el paso actual) y el mensaje de "completado" solo si es verdad.
+function pintarAvance(estado) {
+    const idActual = C.PASOS[paso].id;
+    $$('.dpc-seg i').forEach((seg, i) => {
+        const sec = SECCION_DE_PASO[C.PASOS[i].id];
+        seg.className = `${i === paso ? 'act' : ''} ${sec && estado[sec] === 'verde' ? 'ok' : ''}`.trim();
+    });
+    const listo = $('[data-listo]');
+    if (!listo) return;
+    const msg = SECCION_DE_PASO[idActual] && estado[SECCION_DE_PASO[idActual]] === 'verde' ? C.COMPLETADO[idActual] : '';
+    listo.hidden = !msg;
+    listo.textContent = msg ? `✓ ${msg}` : '';
 }
 
 function dibujarPaso() {
@@ -452,8 +468,12 @@ function dibujarPaso() {
         paso < C.PASOS.length - 1 ? el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: paso === C.PASOS.length - 2 ? 'Revisar con el semáforo' : 'Siguiente', onclick: () => irAPaso(paso + 1) }) : null,
         el('button', { type: 'button', class: 'dp-btn dp-solo-cel', text: 'Ver vista previa', onclick: () => abrirPrevia() }));
     $('#dpPanel').replaceChildren(
+        el('div', { class: 'dpc-avance' },
+            el('div', { class: 'dpc-seg', 'aria-hidden': 'true' }, ...C.PASOS.map(() => el('i'))),
+            el('span', { text: `Paso ${paso + 1} de ${C.PASOS.length} · ${C.ETAPAS[p.id] || ''}` })),
         el('h2', { class: 'dp-paso-titulo' }, `${paso + 1}. ${p.titulo}`),
         el('p', { class: 'dp-suave', text: p.porQue }),
+        el('div', { class: 'dpc-listo', 'data-listo': '', hidden: true, role: 'status' }),
         cuerpo,
         ...(p.consejo ? [el('div', { class: 'dp-consejo' }, el('strong', { text: 'Consejo: ' }), p.consejo)] : []),
         nav);
@@ -508,6 +528,7 @@ function armar() {
         el('div', { id: 'dpConstructor', class: 'dp-constructor' },
             el('section', { id: 'dpPanel', class: 'dp-panel' }),
             el('aside', { class: 'dp-lateral', 'aria-label': 'Vista previa de tu CV' },
+                el('div', { class: 'dpc-pega', 'aria-hidden': 'true', text: 'TU PERFIL, LISTO PARA MOSTRAR' }),
                 el('div', { class: 'dp-lateral-cab' }, el('strong', { text: 'Vista previa' }), el('span', { class: 'dp-suave', text: ' · hoja A4' })),
                 el('div', { class: 'dp-a4-wrap' }, el('div', { class: 'dp-a4' }, el('div', { class: 'dp-a4-in' }))),
                 el('p', { 'data-ajuste': '' }),

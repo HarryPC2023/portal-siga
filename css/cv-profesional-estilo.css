@@ -1,0 +1,100 @@
+/* css/cv-profesional-estilo.css — Identidad de «Desarrollo profesional» para el constructor del CV (cv-profesional.html).
+   Se carga DESPUÉS de desarrollo.css y solo en esta página, así que no toca la portada ni el resto de SIGA.
+   Para quitarlo todo: borrar este archivo, su <link> en cv-profesional.html y la clase "dpc" del <main>. */
+
+.dp-wrap.dpc { --dpc-naranja: #E8590C; --dpc-naranja-os: #A83F06; --dpc-suave: #4a4f5b; max-width: 1440px; font-family: 'Figtree', 'Poppins', sans-serif; }
+
+/* ───── cabecera ───── */
+.dpc .dp-hero-chico { row-gap: 0; align-items: start; }
+.dpc .dp-hero-chico > * { justify-self: start; }   /* la etiqueta no se estira a todo el ancho */
+.dpc .dp-volver { font: 700 16px 'Figtree', sans-serif; margin-bottom: 14px; }
+.dpc .dp-pildora { font-size: 15px; letter-spacing: .04em; padding: 10px 30px; }
+.dpc .dp-hero h1, .dpc .dp-hero-chico h1 { font: 400 clamp(34px, 4vw, 56px)/1.1 'Russo One', sans-serif; margin: 18px 0 12px; color: #1E2530; }
+.dpc .dp-hero h1 em { font-style: normal; background: none; -webkit-text-fill-color: currentColor; color: var(--dpc-naranja); }
+.dpc .dp-hero .dp-suave { font-size: 19px; line-height: 1.6; color: var(--dpc-suave); max-width: none; margin: 0 0 22px; }
+
+/* ───── pasos: etiquetas como las de la portada; los pendientes en gris ───── */
+/* el <nav> de los pasos hereda la barra champagne del menú de SIGA (regla global «nav»): se la quitamos */
+.dpc nav.dp-pasos { position: static; max-width: none; margin: 0 0 8px; padding: 4px 4px 14px; background: none; border: 0; box-shadow: none; border-radius: 0;
+                    justify-content: flex-start; flex-wrap: wrap; gap: 10px; overflow: visible; }
+.dpc .dp-paso { gap: 9px; border: 1.5px solid rgba(0, 0, 0, .08); border-radius: 999px; padding: 11px 20px 11px 15px; background: #fff;
+                font: 700 17px 'Chakra Petch', sans-serif; color: #14213D; box-shadow: 0 6px 14px rgba(30, 37, 48, .08); }
+.dpc .dp-paso-n { font-weight: 700; }
+.dpc .dp-paso .dp-punto { width: 14px; height: 14px; }
+.dpc .dp-paso .dp-rojo, .dpc .dp-paso .dp-rev { background: #b4bac8; }          /* sin empezar = gris, no rojo */
+.dpc .dp-paso-activo { background: var(--dpc-naranja); border-color: var(--dpc-naranja); color: #fff; box-shadow: 0 5px 0 var(--dpc-naranja-os); }
+.dpc .dp-paso-activo .dp-punto { box-shadow: 0 0 0 3px #fff; }
+.dpc .dp-paso:focus-visible { outline: 3px solid #FFD27A; outline-offset: 3px; }
+
+/* ───── cuerpo: recuadro naranja neón + vista previa ───── */
+.dpc .dp-constructor { grid-template-columns: minmax(0, 1fr) 360px; gap: 26px; }
+.dpc .dp-panel { border: 2.5px solid var(--dpc-naranja); border-radius: 18px; padding: 30px 34px 34px;
+                 box-shadow: 0 0 20px rgba(232, 89, 12, .38), inset 0 0 0 1px rgba(232, 89, 12, .12); }
+.dpc .dp-lateral { border-radius: 18px; padding: 20px 20px 22px; }
+.dpc .dp-lateral-cab { font-size: 18px; margin-bottom: 12px; }
+
+/* barra de avance del panel */
+.dpc-avance { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0 0 18px; }
+.dpc-seg { display: flex; gap: 5px; }
+.dpc-seg i { width: 34px; height: 8px; border-radius: 5px; background: #e4e8f3; }
+.dpc-seg i.ok { background: #1F9D55; }
+.dpc-seg i.act { background: var(--dpc-naranja); }
+.dpc-avance span { font: 700 16px 'Figtree', sans-serif; color: var(--dpc-naranja-os); }
+.dpc-listo { background: #E7F8EF; border: 1.5px solid #12A150; color: #0B6B36; font: 700 17px 'Figtree', sans-serif; border-radius: 12px; padding: 13px 18px; margin: 4px 0 18px; }
+.dpc-listo[hidden] { display: none; }
+
+/* textos y campos más grandes */
+.dpc .dp-paso-titulo { font: 400 32px/1.2 'Russo One', sans-serif; margin: 0 0 6px; }
+.dpc .dp-panel > .dp-suave { font-size: 19px; color: var(--dpc-suave); margin: 0 0 18px; }
+.dpc .dp-campo { margin: 20px 0 0; }
+.dpc .dp-campo label { font: 700 18px 'Figtree', sans-serif; color: #1E2530; margin-bottom: 7px; }
+.dpc .dp-opc { font-weight: 400; font-size: 17px; }
+.dpc .dp-ayuda { font-size: 15px; margin-top: 6px; }
+.dpc .dp-wrap input[type="text"], .dpc input[type="text"], .dpc input[type="email"], .dpc input[type="tel"], .dpc textarea, .dpc select {
+    font-size: 18px; padding: 14px 16px; border-radius: 10px; }
+.dpc input:focus, .dpc textarea:focus, .dpc select:focus { border-color: var(--dpc-naranja); box-shadow: 0 0 0 4px rgba(232, 89, 12, .18); }
+.dpc .dp-consejo { font-size: 17px; border-radius: 12px; padding: 16px 18px; margin-top: 22px; }
+.dpc .dp-nav { margin-top: 24px; gap: 12px; }
+.dpc .dp-btn { font: 700 17px 'Figtree', sans-serif; padding: 12px 24px; border-radius: 10px; }
+.dpc .dp-btn-chico { font-size: 15px; padding: 8px 16px; border-radius: 999px; }
+.dpc .dp-btn:hover { border-color: var(--dpc-naranja); }
+
+/* botón principal naranja con relieve (también en los avisos y cuadros de confirmación, que cuelgan del body) */
+.dp-btn-primario { background: #E8590C; border-color: #E8590C; color: #fff; box-shadow: 0 5px 0 #A83F06; transition: transform .15s ease, box-shadow .15s ease; }
+.dp-btn-primario:hover { background: #E8590C; border-color: #E8590C; transform: translateY(2px); box-shadow: 0 3px 0 #A83F06; }
+
+/* aviso de hoja: solo aparece si el CV pasa de una página */
+[data-ajuste]:empty { display: none; }
+.dpc .dp-ajuste { font-size: 14px; }
+
+/* etiqueta inclinada sobre la hoja (solo PC; con la vista previa oculta en celular no estorba) */
+.dpc-pega { position: absolute; right: -14px; bottom: 96px; z-index: 2; transform: rotate(4deg); background: var(--dpc-naranja); color: #fff;
+            font: 400 14px/1.15 'Russo One', sans-serif; letter-spacing: .04em; padding: 11px 16px; border-radius: 6px; text-align: center; max-width: 210px;
+            box-shadow: 0 10px 20px rgba(232, 89, 12, .35); pointer-events: none; }
+
+/* consejo profesional al pie de la pantalla (barra champagne como en la portada) */
+.dpc-tip { margin-top: 28px; background: linear-gradient(120deg, #FDFCF7 0%, #F5EFDE 50%, #FDFCF7 100%); border: 1px solid rgba(0, 0, 0, .06);
+           box-shadow: 0 8px 20px rgba(0, 0, 0, .08); border-radius: 14px; padding: 20px 26px; font-size: 18px; line-height: 1.6; color: #4A4433; }
+.dpc-tip b { font: 400 18px 'Russo One', sans-serif; color: var(--dpc-naranja-os); margin-right: 4px; }
+
+/* tema Oscuro: lo que va directo sobre el fondo */
+html[data-tema="oscuro"] .dpc .dp-hero h1, html[data-tema="oscuro"] .dpc .dp-hero-chico h1 { color: #F1EEFF; }
+html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc3e8); }
+
+/* ───── pantallas medianas y celular ───── */
+@media (max-width: 960px) {
+    .dpc .dp-constructor { grid-template-columns: minmax(0, 1fr); }
+    .dpc .dp-panel { padding: 22px 18px 26px; }
+    .dpc-pega { display: none; }
+    .dpc nav.dp-pasos { flex-wrap: nowrap; overflow-x: auto; }
+}
+@media (max-width: 560px) {
+    .dpc .dp-hero h1, .dpc .dp-hero-chico h1 { font-size: 34px; }
+    .dpc .dp-hero .dp-suave { font-size: 17px; }
+    .dpc .dp-paso { padding: 10px 14px 10px 12px; font-size: 16px; }
+    .dpc .dp-paso-titulo { font-size: 26px; }
+    .dpc-seg i { width: 24px; }
+    .dpc-tip { font-size: 16px; padding: 16px 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .dp-btn-primario { transition: none; } }
+@media print { .dpc-tip, .dpc-pega { display: none !important; } }

@@ -119,3 +119,22 @@ export const PARTES_HUB = [
     },
 ];
 export const NOTA_PRIVACIDAD = 'Lo que escribes aquí es privado: solo tú lo ves. Nada se publica.';
+
+// Mensajes de avance de cada paso del constructor del CV (cv-profesional.js). Solo texto: ninguna regla depende de ellos.
+export const ETAPAS = {
+    datos: 'Empiezas por lo más fácil: tus datos de contacto',
+    formacion: 'Ya tienes lo básico: ahora cuenta dónde estudias',
+    proyectos: 'Aquí está lo que más pesa: lo que ya has construido',
+    habilidades: 'Lo que sabes hacer, con las palabras que buscan las empresas',
+    logros: 'Lo que te distingue: resultados con respaldo',
+    experiencia: 'Opcional: si aún no trabajas, puedes saltar este paso',
+    revision: 'Último paso: revisa tu perfil y descárgalo',
+};
+// Se muestran SOLO cuando el semáforo de ese paso está en verde (así lo que dicen es cierto).
+export const COMPLETADO = {
+    datos: 'Datos básicos completados · Información suficiente para contactarte',
+    formacion: 'Formación registrada · Tu CV ya muestra dónde estudias',
+    proyectos: 'Proyectos completos · Tu CV ya muestra lo que sabes hacer',
+    habilidades: 'Habilidades registradas · Tu CV ya muestra lo que sabes usar',
+    logros: 'Logro registrado con su respaldo · Es lo que te distingue',
+};
