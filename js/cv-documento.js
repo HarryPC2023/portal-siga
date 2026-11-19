@@ -27,9 +27,17 @@ function htmlFormacion(f = {}) {
     return partes.join('');
 }
 
+// «2024 – actualidad», «2025», «marzo de 2025 – noviembre de 2025» o '' si no puso fechas.
+function periodoDe(p) {
+    const d = t(p.desde), h = t(p.hasta);
+    if (p.sigue) return d ? `${d} – actualidad` : 'En desarrollo';
+    if (d && h) return d === h ? d : `${d} – ${h}`;
+    return d || h;
+}
+
 function htmlProyectos(lista) {
     return lista.map((p) => {
-        const titulo = unir([t(p.nombre) ? `<strong>${esc(t(p.nombre))}</strong>` : '', esc(t(p.herramientas))]);
+        const titulo = unir([t(p.nombre) ? `<strong>${esc(t(p.nombre))}</strong>` : '', esc(periodoDe(p)), esc(t(p.herramientas))]);
         return '<div class="dp-cv-item">'
             + (titulo ? `<p class="dp-cv-p">${titulo}</p>` : '')
             + (t(p.queHiciste) ? `<p class="dp-cv-p">${esc(t(p.queHiciste))}</p>` : '')

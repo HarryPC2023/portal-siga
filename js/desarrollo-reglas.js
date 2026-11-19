@@ -47,8 +47,8 @@ export const proyectoCompleto = (p) => !!(txt(p.nombre) && txt(p.queHiciste) && 
 function faltantesProyecto(p) {
     const f = [];
     if (!txt(p.nombre)) f.push('el nombre');
-    if (!txt(p.queHiciste)) f.push('qué hiciste');
-    if (!txt(p.herramientas)) f.push('las herramientas utilizadas');
+    if (!txt(p.queHiciste)) f.push('la descripción');
+    if (!txt(p.herramientas)) f.push('las herramientas o recursos utilizados');
     return f;
 }
 
@@ -103,7 +103,7 @@ function evaluarHabilidades(lista = []) {
     const tecnicas = con.filter((h) => h.categoria === 'tecnica').length;
     const herramientas = con.filter((h) => h.categoria === 'herramienta').length;
     if (!tecnicas && !herramientas) {
-        return { estado: AMBAR, mensaje: 'Agrega conocimientos o herramientas concretas que hayas utilizado (por ejemplo SQL, Python, Excel o Git).' };
+        return { estado: AMBAR, mensaje: 'Agrega conocimientos o herramientas concretas que hayas utilizado (por ejemplo Excel, AutoCAD, Python o un método de análisis).' };
     }
     if (!herramientas) {
         return { estado: VERDE, mensaje: 'Conocimientos registrados. Si usaste herramientas concretas, puedes añadirlas.' };

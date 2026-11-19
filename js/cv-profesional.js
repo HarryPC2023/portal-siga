@@ -13,6 +13,7 @@ import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES } from './
 import { evaluarCV } from './desarrollo-reglas.js?v=1';
 import * as C from './desarrollo-contenido.js?v=1';
 import { htmlCV } from './cv-documento.js?v=1';
+import { armarBorrador, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo } from './desarrollo-redaccion.js?v=1';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 
 const D = crearDesarrollo(SigaEstado);
@@ -112,6 +113,8 @@ function sincronizarCampos(raiz) {
         const v = valorDe(input.dataset.clave, input.dataset.campo);
         if (input.value !== v) input.value = v;
     }
+    // Lo que no es un campo de texto (opciones, periodo, herramientas) se repinta desde lo guardado.
+    for (const n of $$('[data-pinta]', raiz)) if (n._pintar) n._pintar();
 }
 
 // ───────────── modal propio (no el confirm del navegador) ─────────────
@@ -146,13 +149,169 @@ function toast({ id, texto, boton, alBoton, persistente = false }) {
 const quitarToast = (id) => { const n = $(`[data-toast="${id}"]`); if (n) n.remove(); };
 
 // ───────────── tarjetas de las colecciones (proyectos, logros, experiencia) ─────────────
-const CAMPOS_TARJETA = {
-    proyecto: (clave) => [
-        campo({ clave, nombre: 'nombre', etiqueta: 'Nombre del proyecto', placeholder: C.EJEMPLO_PROYECTO.nombre }),
-        campo({ clave, nombre: 'queHiciste', etiqueta: '¿Qué hiciste?', placeholder: C.EJEMPLO_PROYECTO.queHiciste, area: true }),
-        campo({ clave, nombre: 'herramientas', etiqueta: 'Herramientas utilizadas', placeholder: C.EJEMPLO_PROYECTO.herramientas }),
+// ───────────── proyecto: categoría, equipo, periodo, descripción guiada y herramientas ─────────────
+const leerItem = (clave) => D.leerClave(clave) || {};
+
+function pintarSel(caja) {
+    const v = leerItem(caja.dataset.claveSel)[caja.dataset.sel] || '';
+    $$('[data-valor]', caja).forEach((b) => { const on = b.dataset.valor === v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    const hint = $('[data-hint]', caja.parentElement);
+    if (hint) { const c = C.CATEGORIAS_PROYECTO.find((x) => x.id === v); hint.textContent = c ? c.texto : hint.dataset.vacio; }
+}
+
+function pintarPeriodo(det) {
+    const chk = $('[data-campo="sigue"]', det), desde = $('[data-campo="desde"]', det), hasta = $('[data-campo="hasta"]', det);
+    hasta.disabled = chk.checked;
+    $('[data-resumen]', det).textContent = textoPeriodo({ desde: desde.value, hasta: hasta.value, sigue: chk.checked });
+}
+
+function camposProyecto(clave) {
+    const ej = C.EJEMPLOS_CARRERA[tipoCarrera((cv.formacion || {}).carrera)] || C.EJEMPLOS_CARRERA.gen;
+    const base = 'g-' + clave.replace(/\W/g, '_');
+    let pintarBorrador = () => '';
+
+    // Guarda lo que NO es un campo de texto sin pisar lo que el alumno está escribiendo.
+    const guardarCampo = (cambios) => {
+        flush(clave);
+        D.guardarClave(clave, { ...leerItem(clave), ...cambios });
+        refrescarMemoria();
+    };
+
+    // 1. Opciones de una sola respuesta (categoría y modalidad)
+    const opciones = (campoNombre, lista, etiqueta, hint) => {
+        const caja = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': etiqueta, 'data-pinta': '', 'data-sel': campoNombre, 'data-clave-sel': clave },
+            ...lista.map((o) => el('button', {
+                type: 'button', class: 'dpc-op', 'data-valor': o.id, 'aria-pressed': 'false', text: o.nombre,
+                onclick: () => { guardarCampo({ [campoNombre]: leerItem(clave)[campoNombre] === o.id ? '' : o.id }); pintarSel(caja); pintarBorrador(); },
+            })));
+        caja._pintar = () => { pintarSel(caja); pintarBorrador(); };
+        const bloque = el('div', { class: 'dp-campo' }, el('span', { class: 'dpc-lab', text: etiqueta }), caja, hint);
+        pintarSel(caja);
+        return bloque;
+    };
+    const hintCategoria = el('small', { class: 'dp-ayuda', 'data-hint': '', 'data-vacio': 'Elige donde empezó. Si dudas entre dos, quédate con la primera en la que lo trabajaste.', text: 'Elige donde empezó. Si dudas entre dos, quédate con la primera en la que lo trabajaste.' });
+    const bloqueCategoria = opciones('categoria', C.CATEGORIAS_PROYECTO, '¿Dónde nació este proyecto?', hintCategoria);
+    const bloqueModalidad = opciones('modalidad', C.MODALIDADES_PROYECTO, '¿Lo hiciste solo o en equipo?', null);
+    pintarSel($('.dpc-opciones', bloqueCategoria));
+
+    // 2. Periodo (opcional): una casilla «Sigue en desarrollo» desactiva «Hasta»
+    const chkSigue = el('input', { type: 'checkbox', id: `${base}-sigue` });
+    chkSigue.dataset.clave = clave; chkSigue.dataset.campo = 'sigue';
+    chkSigue.checked = !!leerItem(clave).sigue;
+    const desde = campo({ clave, nombre: 'desde', etiqueta: 'Desde', placeholder: 'Ej.: 2024 o marzo de 2024' });
+    const hasta = campo({ clave, nombre: 'hasta', etiqueta: 'Hasta', placeholder: 'Ej.: 2025 o noviembre de 2025' });
+    const resumen = el('span', { class: 'dpc-resumen', 'data-resumen': '' });
+    const it0 = leerItem(clave);
+    const detPeriodo = el('details', { class: 'dpc-det dpc-periodo', 'data-pinta': '', open: (it0.desde || it0.hasta || it0.sigue) ? true : null },
+        el('summary', {}, 'Periodo ', el('span', { class: 'dp-opc', text: '(opcional)' }), resumen),
+        el('div', { class: 'dpc-fechas' }, desde, hasta),
+        el('label', { class: 'dp-casilla', for: chkSigue.id }, chkSigue, ' Sigue en desarrollo'),
+        el('small', { class: 'dp-ayuda', text: 'Sin fechas, tu CV no muestra periodo. Basta con el año si no recuerdas el mes.' }));
+    detPeriodo._pintar = () => { pintarPeriodo(detPeriodo); pintarBorrador(); };
+    chkSigue.addEventListener('change', () => {
+        if (chkSigue.checked) $('input[data-campo="hasta"]', detPeriodo).value = '';
+        flush(clave); pintarPeriodo(detPeriodo); pintarBorrador();
+    });
+    detPeriodo.addEventListener('input', () => pintarPeriodo(detPeriodo));
+    pintarPeriodo(detPeriodo);
+
+    // 3. Descripción: escribir directo o recibir orientación (sin IA: una plantilla que se puede editar)
+    const areaCampo = campo({ clave, nombre: 'queHiciste', etiqueta: 'Describe tu proyecto', area: true, placeholder: ej.desc,
+        ayuda: 'Basta con 2 o 3 líneas: qué es, qué hiciste y con qué. El detalle largo va en tu portafolio o LinkedIn.' });
+    const area = $('textarea', areaCampo);
+    const verbo = el('select', { id: `${base}-v` }, C.VERBOS_TRABAJO.map((v, i) => el('option', { value: String(i), text: v[0] })));
+    const gObj = el('input', { type: 'text', id: `${base}-o`, autocomplete: 'off', placeholder: `Ej.: ${ej.objeto}` });
+    const gHizo = el('input', { type: 'text', id: `${base}-h`, autocomplete: 'off', placeholder: `Ej.: ${ej.hizo}` });
+    const gMeta = el('input', { type: 'text', id: `${base}-m`, autocomplete: 'off', placeholder: `Ej.: ${ej.meta}` });
+    const gRes = el('input', { type: 'text', id: `${base}-r`, autocomplete: 'off', placeholder: `Ej.: ${ej.resultado}` });
+    const borrador = el('div', { class: 'dpc-borrador', 'aria-live': 'polite' });
+    const errGuia = el('small', { class: 'dp-error', role: 'alert', hidden: true });
+    const pregunta = (id, etiqueta, entrada, ayuda, opc) => el('div', { class: 'dpc-pregunta' },
+        el('label', { for: id }, etiqueta, opc ? el('span', { class: 'dp-opc', text: ' (opcional)' }) : null), entrada,
+        ayuda ? el('small', { class: 'dp-ayuda', text: ayuda }) : null);
+    pintarBorrador = () => {
+        const it = leerItem(clave);
+        const t = armarBorrador({ verbo: Number(verbo.value), objeto: gObj.value, hizo: gHizo.value, meta: gMeta.value, resultado: gRes.value,
+            equipo: it.modalidad === 'equipo', sigue: chkSigue.checked, herramientas: todasLasHerramientas(gruposDesde(it)) });
+        borrador.textContent = t || 'Completa «qué creaste» y «qué hiciste» y verás tu borrador aquí.';
+        borrador.classList.toggle('vacio', !t);
+        return t;
+    };
+    const guia = el('div', { class: 'dpc-guia', hidden: true },
+        pregunta(`${base}-v`, '¿Qué tipo de trabajo realizaste?', verbo, 'Elige el verbo que mejor describe tu participación.'),
+        pregunta(`${base}-o`, '¿Qué creaste o realizaste?', gObj, 'Una aplicación, investigación, diseño, prototipo, análisis, propuesta, estudio…'),
+        pregunta(`${base}-h`, '¿Qué hiciste concretamente?', gHizo, 'Tus tareas, responsabilidades y aportes principales.'),
+        pregunta(`${base}-m`, '¿Qué problema, necesidad u objetivo tenía?', gMeta, 'Qué buscabas solucionar, mejorar, investigar o conseguir.', true),
+        pregunta(`${base}-r`, '¿Qué resultado obtuviste?', gRes, 'Escríbelo como frase, sin inventar cifras: «la usan compañeros de varios ciclos».', true),
+        el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, errGuia,
+        el('div', { class: 'dpc-acciones-guia' },
+            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
+                const t = pintarBorrador();
+                if (!t) { errGuia.textContent = 'Falta lo principal: qué creaste y qué hiciste.'; errGuia.hidden = false; return; }
+                if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu descripción', texto: 'Ya escribiste una descripción. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;
+                area.value = t; area.dispatchEvent(new Event('input', { bubbles: true })); flush(clave);
+                guia.hidden = true; botonGuia.setAttribute('aria-expanded', 'false'); area.focus();
+            } }),
+            el('span', { class: 'dp-ayuda', text: 'Después podrás cambiar lo que quieras: la última palabra es tuya.' })));
+    [verbo, gObj, gHizo, gMeta, gRes].forEach((n) => n.addEventListener('input', () => { errGuia.hidden = true; pintarBorrador(); }));
+    const botonGuia = el('button', { type: 'button', class: 'dpc-camino', 'aria-expanded': 'false', onclick: () => {
+        guia.hidden = !guia.hidden; botonGuia.setAttribute('aria-expanded', guia.hidden ? 'false' : 'true'); if (!guia.hidden) { pintarBorrador(); gObj.focus(); }
+    } }, el('strong', { text: 'Necesito orientación' }), el('span', { text: 'Responde unas preguntas y arma un borrador que puedes editar' }));
+    const bloqueDescripcion = el('div', {}, areaCampo, el('div', { class: 'dpc-caminos' }, botonGuia), guia);
+
+    // 4. Herramientas y recursos, en tres grupos con escritura libre
+    const bloqueHerr = el('div', { class: 'dp-campo', 'data-pinta': '' },
+        el('span', { class: 'dpc-lab', text: 'Herramientas y recursos utilizados' }),
+        el('small', { class: 'dp-ayuda', text: 'No necesitas completar todos los grupos. Puedes escribir lo que quieras: lo sugerido es solo una guía.' }));
+    const pintores = [];
+    const cambiarHerr = (id, fn) => {
+        const g = gruposDesde(leerItem(clave));
+        g[id] = fn([...g[id]]);
+        guardarCampo({ herr: g, herramientas: aplanarHerramientas(g) });
+        pintores.forEach((p) => p()); pintarBorrador();
+    };
+    for (const grupo of C.GRUPOS_HERRAMIENTAS) {
+        const etiquetas = el('div', { class: 'dp-chips' });
+        const sugerencias = el('div', { class: 'dp-chips dpc-sugerencias' });
+        const cuenta = el('span', { class: 'dpc-resumen' });
+        const entrada = el('input', { type: 'text', autocomplete: 'off', placeholder: 'Escribe y pulsa Enter', 'aria-label': `Añadir a ${grupo.nombre}` });
+        const error = el('small', { class: 'dp-error', role: 'alert', hidden: true });
+        const anadir = (valor) => {
+            const v = (valor || '').trim();
+            if (!v) { error.textContent = 'Escribe algo antes de añadirlo.'; error.hidden = false; return; }
+            if (gruposDesde(leerItem(clave))[grupo.id].some((x) => x.toLowerCase() === v.toLowerCase())) { error.textContent = 'Ya lo añadiste.'; error.hidden = false; return; }
+            error.hidden = true; entrada.value = '';
+            cambiarHerr(grupo.id, (l) => [...l, v]);
+        };
+        entrada.addEventListener('input', () => { error.hidden = true; });
+        entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); anadir(entrada.value); } });
+        const pintar = () => {
+            const actuales = gruposDesde(leerItem(clave))[grupo.id];
+            cuenta.textContent = actuales.length ? ` · ${actuales.length}` : '';
+            etiquetas.replaceChildren(...actuales.map((x, i) => el('span', { class: 'dp-chip dp-chip-hab' }, x,
+                el('button', { type: 'button', class: 'dp-chip-x', 'aria-label': `Quitar ${x}`, text: '×', onclick: () => cambiarHerr(grupo.id, (l) => { l.splice(i, 1); return l; }) }))));
+            sugerencias.replaceChildren(...(ej.herr[grupo.id] || []).filter((x) => !actuales.some((a) => a.toLowerCase() === x.toLowerCase()))
+                .map((x) => el('button', { type: 'button', class: 'dp-chip dpc-sug', text: `+ ${x}`, onclick: () => anadir(x) })));
+        };
+        pintores.push(pintar);
+        bloqueHerr.append(el('details', { class: 'dpc-det', open: (grupo.id === 'sw' || gruposDesde(leerItem(clave))[grupo.id].length) ? true : null },
+            el('summary', {}, grupo.nombre, cuenta),
+            el('small', { class: 'dp-ayuda', text: grupo.texto }), etiquetas,
+            el('div', { class: 'dp-agregar' }, entrada, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Añadir', onclick: () => anadir(entrada.value) })), error,
+            el('p', { class: 'dpc-sug-tit', text: 'Ideas para tu carrera:' }), sugerencias));
+    }
+    bloqueHerr._pintar = () => { pintores.forEach((p) => p()); pintarBorrador(); };
+    pintores.forEach((p) => p());
+
+    return [
+        campo({ clave, nombre: 'nombre', etiqueta: 'Nombre del proyecto', placeholder: ej.nombre }),
+        bloqueCategoria, bloqueModalidad, detPeriodo, bloqueDescripcion, bloqueHerr,
         campo({ clave, nombre: 'evidencia', etiqueta: 'Resultado o evidencia', opcional: true, placeholder: 'Un repositorio, una presentación, una demostración, un documento o un resultado', area: true }),
-    ],
+    ];
+}
+
+const CAMPOS_TARJETA = {
+    proyecto: (clave) => camposProyecto(clave),
     logro: (clave) => [
         campo({ clave, nombre: 'texto', etiqueta: 'Logro', placeholder: C.EJEMPLOS_LOGRO[1], area: true }),
         campo({ clave, nombre: 'respaldo', etiqueta: 'Con qué lo respaldas', placeholder: 'Un número, un reconocimiento o un enlace', ayuda: 'Puede ser una cantidad, un puesto obtenido, el nombre del evento o un enlace.' }),
@@ -296,13 +455,12 @@ function pasoFormacion() {
 
 function pasoProyectos() {
     const ideas = el('div', { class: 'dp-ideas' },
-        el('p', { class: 'dp-suave', text: 'No todos los proyectos son sistemas informáticos. También cuentan:' }),
-        el('div', {}, C.QUE_CUENTA_COMO_PROYECTO.map((t) => el('span', { class: 'dp-chip dp-chip-lila', text: t }))),
-        el('p', { class: 'dp-suave', text: 'Empieza describiendo tu participación con verbos como:' }),
-        el('div', {}, C.VERBOS.map((t) => el('span', { class: 'dp-chip dp-chip-azul', text: t }))));
+        el('p', { class: 'dp-suave', text: 'Un proyecto no tiene que ser un sistema informático. Según dónde nació, puede ser:' }),
+        el('ul', { class: 'dp-lista-ejemplos' }, C.CATEGORIAS_PROYECTO.map((c) => el('li', {}, el('strong', { text: c.nombre + ': ' }), c.texto))));
     return el('div', {}, bloqueLista('proyecto', {
         vacio: 'Todavía no agregaste ningún proyecto. Un trabajo final de un curso es un buen comienzo.',
-        botonTexto: '+ Añadir proyecto', base: { nombre: '', queHiciste: '', herramientas: '', evidencia: '', origen: 'manual' },
+        botonTexto: '+ Añadir proyecto',
+        base: { nombre: '', queHiciste: '', herramientas: '', evidencia: '', categoria: '', modalidad: '', desde: '', hasta: '', sigue: false, origen: 'manual' },
     }), ideas);
 }
 

@@ -43,12 +43,70 @@ export const PASOS = [
     },
 ];
 
-export const VERBOS = ['Desarrollé', 'Diseñé', 'Implementé', 'Analicé', 'Automaticé', 'Construí'];
-
-export const QUE_CUENTA_COMO_PROYECTO = [
-    'Trabajos finales de cursos', 'Investigaciones académicas', 'Proyectos grupales',
-    'Automatizaciones', 'Emprendimientos', 'Apoyo a familiares o conocidos',
+// Verbos para describir el trabajo, de varias disciplinas: [infinitivo, presente (1.ª persona), pasado (1.ª persona)].
+// El borrador usa el presente si el proyecto sigue en desarrollo y el pasado si ya terminó.
+export const VERBOS_TRABAJO = [
+    ['Desarrollar', 'Desarrollo', 'Desarrollé'], ['Diseñar', 'Diseño', 'Diseñé'], ['Analizar', 'Analizo', 'Analicé'],
+    ['Investigar', 'Investigo', 'Investigué'], ['Construir', 'Construyo', 'Construí'], ['Implementar', 'Implemento', 'Implementé'],
+    ['Modelar', 'Modelo', 'Modelé'], ['Elaborar', 'Elaboro', 'Elaboré'], ['Experimentar', 'Experimento', 'Experimenté'],
+    ['Evaluar', 'Evalúo', 'Evalué'], ['Calcular', 'Calculo', 'Calculé'], ['Automatizar', 'Automatizo', 'Automaticé'],
+    ['Organizar', 'Organizo', 'Organicé'], ['Coordinar', 'Coordino', 'Coordiné'], ['Gestionar', 'Gestiono', 'Gestioné'],
 ];
+
+// Cinco categorías según DÓNDE nació el proyecto (no según su tema ni su tecnología): sirven para cualquier facultad.
+export const CATEGORIAS_PROYECTO = [
+    { id: 'curso', nombre: 'Proyecto de curso', texto: 'Lo hiciste dentro de una asignatura: trabajos finales, laboratorios, diseños, informes o maquetas.' },
+    { id: 'inv', nombre: 'Investigación', texto: 'Estudios, experimentos, análisis, semilleros o trabajos de investigación.' },
+    { id: 'propia', nombre: 'Iniciativa propia', texto: 'Algo que creaste por tu cuenta, fuera de una actividad académica: una aplicación, un diseño, un prototipo, un estudio.' },
+    { id: 'centro', nombre: 'Centro u organización estudiantil', texto: 'Proyectos dentro de centros, capítulos o grupos estudiantiles.' },
+    { id: 'ext', nombre: 'Para un negocio, empresa o comunidad', texto: 'Trabajos por encargo, colaboraciones y aportes concretos para otras personas u organizaciones, con o sin pago.' },
+];
+export const MODALIDADES_PROYECTO = [{ id: 'solo', nombre: 'Solo' }, { id: 'equipo', nombre: 'En equipo' }];
+
+// Tres grupos de herramientas, con escritura libre: las sugerencias solo orientan.
+export const GRUPOS_HERRAMIENTAS = [
+    { id: 'sw', nombre: 'Software y tecnologías', texto: 'Programas, aplicaciones, lenguajes de programación, plataformas y tecnologías especializadas.' },
+    { id: 'eq', nombre: 'Equipos y materiales', texto: 'Instrumentos, dispositivos, herramientas físicas y materiales.' },
+    { id: 'me', nombre: 'Métodos y técnicas', texto: 'Metodologías de investigación, procedimientos, técnicas de análisis y métodos de trabajo.' },
+];
+
+// Ejemplos orientativos según la carrera del alumno (no limitan: puede escribir cualquier proyecto). «gen» sirve para cualquier carrera.
+// Estos ejemplos deberían revisarlos estudiantes o docentes de cada facultad antes de ampliarlos.
+export const PATRONES_CARRERA = [
+    ['arq', /arquitect|urban/i],
+    ['civ', /civil|sanitari|hidr[aá]ulic/i],
+    ['sis', /sistemas|software|inform[aá]tic|computaci|ciencia de datos|inteligencia artificial/i],
+];
+export const EJEMPLOS_CARRERA = {
+    sis: {
+        nombre: 'Plataforma web para estudiantes de mi facultad',
+        desc: 'Describe qué es tu proyecto, qué hiciste tú y con qué lo construiste.',
+        objeto: 'una plataforma web para estudiantes de mi facultad', meta: 'reunir en un solo lugar herramientas académicas',
+        hizo: 'programar el simulador de notas y diseñar la base de datos', resultado: 'la usan compañeros de varios ciclos',
+        herr: { sw: ['Python', 'JavaScript', 'SQL', 'Git'], eq: ['Arduino', 'Raspberry Pi'], me: ['Scrum', 'Pruebas con usuarios'] },
+    },
+    arq: {
+        nombre: 'Propuesta de centro cultural',
+        desc: 'Describe qué diseñaste o realizaste, tu aporte y los recursos que usaste.',
+        objeto: 'la propuesta de un centro cultural', meta: 'dar un espacio público a un barrio sin equipamiento',
+        hizo: 'elaborar los planos, cortes y la maqueta final', resultado: 'la propuesta fue presentada ante el jurado del curso',
+        herr: { sw: ['AutoCAD', 'Revit', 'SketchUp'], eq: ['Maqueta en cartón pluma', 'Cortadora láser'], me: ['Análisis de sitio', 'Diseño participativo'] },
+    },
+    civ: {
+        nombre: 'Análisis estructural de un puente peatonal',
+        desc: 'Describe qué analizaste o construiste, tu aporte y los recursos que usaste.',
+        objeto: 'el análisis estructural de un puente peatonal', meta: 'verificar que soporte las cargas de uso',
+        hizo: 'calcular las cargas y modelar la estructura', resultado: 'un informe con las verificaciones de resistencia',
+        herr: { sw: ['SAP2000', 'AutoCAD', 'Excel'], eq: ['Estación total', 'Nivel óptico'], me: ['Método de rigidez', 'Ensayos de laboratorio'] },
+    },
+    gen: {
+        nombre: 'Nombre de tu proyecto',
+        desc: 'Describe qué hiciste, cuál fue tu aporte y qué recursos usaste.',
+        objeto: 'un estudio sobre un tema que me interesaba', meta: 'entender mejor un problema',
+        hizo: 'recopilar datos y organizar los resultados', resultado: 'un informe presentado a mi grupo',
+        herr: { sw: ['Excel', 'Word', 'PowerPoint'], eq: ['Instrumentos de medición'], me: ['Encuestas', 'Revisión bibliográfica'] },
+    },
+};
 
 export const EJEMPLO_PROYECTO = {
     nombre: 'Sistema de gestión de inventario',
