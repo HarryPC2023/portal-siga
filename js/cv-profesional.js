@@ -454,14 +454,22 @@ function pasoFormacion() {
 }
 
 function pasoProyectos() {
-    const ideas = el('div', { class: 'dp-ideas' },
-        el('p', { class: 'dp-suave', text: 'Un proyecto no tiene que ser un sistema informático. Según dónde nació, puede ser:' }),
-        el('ul', { class: 'dp-lista-ejemplos' }, C.CATEGORIAS_PROYECTO.map((c) => el('li', {}, el('strong', { text: c.nombre + ': ' }), c.texto))));
-    return el('div', {}, bloqueLista('proyecto', {
+    const A = C.AYUDA_PROYECTOS, S = C.SUGERENCIA_PROYECTOS_PRACTICOS;
+    const sinProyectos = D.leerCV().proyectos.length === 0;
+    const ideas = el('div', { class: 'dpc-ayudas' },
+        el('details', { class: 'dpc-det', open: sinProyectos ? true : null },
+            el('summary', { text: A.resumen }),
+            el('p', { class: 'dp-suave', text: A.intro }),
+            el('ul', { class: 'dp-lista-ejemplos' }, C.CATEGORIAS_PROYECTO.map((c) => el('li', {}, el('strong', { text: c.nombre + ': ' }), c.texto))),
+            el('p', { class: 'dp-suave dpc-parcial', text: A.parcial }),
+            el('p', { class: 'dp-suave', text: A.preguntasTitulo }),
+            el('ul', { class: 'dp-lista-ejemplos' }, A.preguntas.map((q) => el('li', { text: q }))),
+            sinProyectos ? el('p', { class: 'dpc-sugerencia' }, S.antes, el('a', { href: S.enlace, text: S.enlaceTexto }), S.despues) : null));
+    return el('div', {}, ideas, bloqueLista('proyecto', {
         vacio: 'Todavía no agregaste ningún proyecto. Un trabajo final de un curso es un buen comienzo.',
         botonTexto: '+ Añadir proyecto',
         base: { nombre: '', queHiciste: '', herramientas: '', evidencia: '', categoria: '', modalidad: '', desde: '', hasta: '', sigue: false, origen: 'manual' },
-    }), ideas);
+    }));
 }
 
 function pasoLogros() {
@@ -782,6 +790,7 @@ function dibujarPaso() {
             el('div', { class: 'dpc-seg', 'aria-hidden': 'true' }, ...C.PASOS.map(() => el('i'))),
             el('span', { text: `Paso ${paso + 1} de ${C.PASOS.length} · ${C.ETAPAS[p.id] || ''}` })),
         el('h2', { class: 'dp-paso-titulo' }, `${paso + 1}. ${p.titulo}`),
+        p.etiquetaPaso ? el('span', { class: 'dpc-recomendado', text: p.etiquetaPaso }) : null,
         el('p', { class: 'dp-suave', text: p.porQue }),
         el('div', { class: 'dpc-listo', 'data-listo': '', hidden: true, role: 'status' }),
         cuerpo,

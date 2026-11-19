@@ -2,6 +2,12 @@
 //
 // Contenido estático: se edita aquí, sin tocar el constructor ni la base de datos.
 // Para cambiar un consejo, un ejemplo o un mensaje de ayuda basta con editar este archivo.
+//
+// PRINCIPIO DE DISEÑO (regla de Harry): diseñar desde quien busca sus primeras prácticas preprofesionales.
+// El constructor debe ayudar al estudiante a reconocer, organizar y comunicar sus conocimientos, proyectos y
+// experiencias reales, incluso cuando inicialmente sienta que no tiene nada que incluir. No debe exigir
+// trayectorias que todavía no ha tenido, pero tampoco limitarse a mostrar campos vacíos. Cada sección debe
+// ofrecer orientación adecuada para que el estudiante descubra qué puede aportar.
 
 export const LEMA = 'Crea experiencia → impulsa tu perfil → demuestra tu potencial';
 
@@ -17,7 +23,7 @@ export const PASOS = [
         consejo: 'Elige hasta 5 cursos relacionados con el puesto al que postulas. El promedio es opcional: inclúyelo solo si te favorece.',
     },
     {
-        id: 'proyectos', titulo: 'Proyectos',
+        id: 'proyectos', titulo: 'Proyectos', etiquetaPaso: 'Recomendado para tu primer CV',
         porQue: 'Aquí muestras lo que sabes hacer, aunque nunca hayas trabajado.',
         consejo: 'Empieza describiendo tu participación con un verbo. El resultado no tiene que ser un número: un repositorio, una presentación, una demostración o un documento también sirven.',
     },
@@ -62,6 +68,28 @@ export const CATEGORIAS_PROYECTO = [
     { id: 'ext', nombre: 'Para un negocio, empresa o comunidad', texto: 'Trabajos por encargo, colaboraciones y aportes concretos para otras personas u organizaciones, con o sin pago.' },
 ];
 export const MODALIDADES_PROYECTO = [{ id: 'solo', nombre: 'Solo' }, { id: 'equipo', nombre: 'En equipo' }];
+
+// Ayuda para descubrir proyectos (paso Proyectos): sirve a quien siente que «no tiene nada que incluir».
+export const AYUDA_PROYECTOS = {
+    resumen: '¿No sabes qué proyecto incluir?',
+    intro: 'Un proyecto no tiene que ser un sistema informático ni estar terminado. Según dónde nació, puede ser:',
+    parcial: 'Un trabajo parcial también cuenta: un avance de un curso, un prototipo, un laboratorio o algo que construiste solo en parte. Lo importante es que puedas explicar qué hiciste tú.',
+    preguntasTitulo: 'Para recordar, piensa en:',
+    preguntas: [
+        'Algún trabajo final, laboratorio o informe del que te sientas orgulloso.',
+        'Algo que armaste por tu cuenta para resolver un problema tuyo o de alguien más.',
+        'Un trabajo en equipo en el que tuviste una parte clara.',
+        'Una ayuda concreta que diste a un negocio, familiar, colegio o comunidad.',
+    ],
+};
+// Sugerencia para quien aún no tiene proyectos: Proyectos Prácticos es la parte 1 de la portada de Desarrollo profesional.
+export const SUGERENCIA_PROYECTOS_PRACTICOS = {
+    antes: 'Si todavía no tienes proyectos, en ',
+    enlaceTexto: 'Proyectos Prácticos',
+    despues: ' descubres qué construir con lo que aprendes en tus cursos.',
+    // Hoy apunta a la portada (donde está la tarjeta). Cuando la sección exista, cambiar por su página (p. ej. 'proyectos-practicos.html').
+    enlace: 'desarrollo.html',
+};
 
 // Tres grupos de herramientas, con escritura libre: las sugerencias solo orientan.
 export const GRUPOS_HERRAMIENTAS = [
