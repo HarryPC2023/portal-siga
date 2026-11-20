@@ -99,3 +99,12 @@ export function armarBorradorExperiencia({ verbos = [], contexto, hizo, resultad
     if (r) frases.push(`${sigue ? 'Hasta ahora, ' : 'Como resultado, '}${minuscula(r)}.`);
     return frases.join(' ');
 }
+
+// Borrador de un logro: «verbo + lo que hiciste [+ conector + detalle]». Solo ordena lo escrito; no agrega nada.
+export function armarBorradorLogro({ verbo = '', a = '', conector = '', b = '' } = {}) {
+    const limpia = (x) => t(x).replace(/[.\s]+$/, '');
+    const A = limpia(a), B = limpia(b), V = t(verbo);
+    if (!A) return '';
+    const parteA = V ? `${V} ${minuscula(A)}` : A.charAt(0).toUpperCase() + A.slice(1);
+    return `${parteA}${B && conector ? ' ' + conector + ' ' + minuscula(B) : ''}.`;
+}

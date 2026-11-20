@@ -13,7 +13,7 @@ import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES } from './
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=4';
 import { htmlCV } from './cv-documento.js?v=2';
-import { armarBorrador, armarBorradorExperiencia, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=2';
+import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 
 const D = crearDesarrollo(SigaEstado);
@@ -202,6 +202,17 @@ function crearPeriodo({ clave, base, textoSigue, alCambiar }) {
 // ───────────── ejemplos rotativos (solo vista: nunca se guardan en el CV) ─────────────
 // Cada tarjeta nueva toma el PRIMER ejemplo de la lista que no esté en uso (si todos lo están, el menos usado).
 // Al borrar una tarjeta su ejemplo queda libre; las demás tarjetas no cambian. Al recargar se reasignan en orden.
+// Oferta de ayuda: botón con ✍️ (borde naranja) y, cuando el campo ya tiene texto, enlace pequeño «Rehacer con ayuda».
+function ofertaAyuda(textoBoton, alAbrir) {
+    const O = C.OFERTA_AYUDA;
+    const boton = el('button', { type: 'button', class: 'dpc-camino', 'aria-expanded': 'false', onclick: alAbrir },
+        el('span', { class: 'dpc-ico', 'aria-hidden': 'true', text: O.icono }),
+        el('span', { class: 'dpc-camino-txt' }, el('strong', { text: textoBoton }), el('span', { text: O.sub })));
+    const enlace = el('button', { type: 'button', class: 'dp-btn-texto dpc-rehacer', text: O.rehacer, hidden: true, onclick: alAbrir });
+    return { boton, enlace };
+}
+const botonCerrarGuia = (alCerrar) => el('button', { type: 'button', class: 'dp-btn-texto dpc-cerrar-guia', text: C.OFERTA_AYUDA.cerrar, onclick: alCerrar });
+
 const ejemplosAsignados = { proyecto: new Map(), certificacion: new Map(), logro: new Map(), experiencia: new Map() };
 const LISTA_DE_TIPO = { proyecto: 'proyectos', certificacion: 'certificaciones', logro: 'logros', experiencia: 'experiencias' };
 function indiceEjemplo(tipo, clave, total) {
@@ -285,14 +296,21 @@ function camposProyecto(clave) {
                 if (!t) { errGuia.textContent = 'Falta lo principal: qué creaste y qué hiciste.'; errGuia.hidden = false; return; }
                 if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu descripción', texto: 'Ya escribiste una descripción. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;
                 area.value = t; area.dispatchEvent(new Event('input', { bubbles: true })); flush(clave);
-                guia.hidden = true; botonGuia.setAttribute('aria-expanded', 'false'); area.focus();
+                cerrarGuiaP(); area.focus();
             } }),
             el('span', { class: 'dp-ayuda', text: 'Después podrás cambiar lo que quieras: la última palabra es tuya.' })));
     [verbo, gObj, gHizo, gMeta, gRes].forEach((n) => n.addEventListener('input', () => { errGuia.hidden = true; pintarBorrador(); }));
-    const botonGuia = el('button', { type: 'button', class: 'dpc-camino', 'aria-expanded': 'false', onclick: () => {
-        guia.hidden = !guia.hidden; botonGuia.setAttribute('aria-expanded', guia.hidden ? 'false' : 'true'); if (!guia.hidden) { pintarBorrador(); gObj.focus(); }
-    } }, el('strong', { text: C.OFERTA_AYUDA.describir }), el('span', { text: C.OFERTA_AYUDA.sub }));
-    const bloqueDescripcion = el('div', {}, areaCampo, el('div', { class: 'dpc-caminos' }, botonGuia), guia);
+    const { boton: botonGuia, enlace: enlaceP } = ofertaAyuda(C.OFERTA_AYUDA.describir, () => abrirGuiaP());
+    const actualizarOfertaP = () => {
+        const tiene = area.value.trim().length > 0, abierta = !guia.hidden;
+        botonGuia.hidden = tiene || abierta; enlaceP.hidden = !tiene || abierta;
+    };
+    function abrirGuiaP() { guia.hidden = false; botonGuia.setAttribute('aria-expanded', 'true'); actualizarOfertaP(); pintarBorrador(); gObj.focus(); }
+    function cerrarGuiaP() { guia.hidden = true; botonGuia.setAttribute('aria-expanded', 'false'); actualizarOfertaP(); }
+    guia.append(botonCerrarGuia(cerrarGuiaP));
+    area.addEventListener('input', actualizarOfertaP);
+    const bloqueDescripcion = el('div', {}, areaCampo, el('div', { class: 'dpc-caminos' }, botonGuia, enlaceP), guia);
+    actualizarOfertaP();
 
     // 4. Herramientas y recursos, en tres grupos con escritura libre
     const bloqueHerr = el('div', { class: 'dp-campo', 'data-pinta': '' },
@@ -423,9 +441,7 @@ function camposExperiencia(clave) {
     [gCon, gHizo, gRes].forEach((n) => n.addEventListener('input', () => { errGuia.hidden = true; pintarBorrador(); }));
 
     // La oferta de ayuda se ve con el campo vacío; con texto queda un enlace pequeño
-    const botonGuia = el('button', { type: 'button', class: 'dpc-camino', 'aria-expanded': 'false', onclick: () => abrirGuia() },
-        el('strong', { text: O.describir }), el('span', { text: O.sub }));
-    const enlace = el('button', { type: 'button', class: 'dp-btn-texto dpc-rehacer', text: O.rehacer, hidden: true, onclick: () => abrirGuia() });
+    const { boton: botonGuia, enlace } = ofertaAyuda(O.describir, () => abrirGuia());
     const actualizarOferta = () => {
         const tiene = area.value.trim().length > 0, abierta = !guia.hidden;
         botonGuia.hidden = tiene || abierta;
@@ -433,6 +449,7 @@ function camposExperiencia(clave) {
     };
     function abrirGuia() { guia.hidden = false; botonGuia.setAttribute('aria-expanded', 'true'); actualizarOferta(); pintarBorrador(); gCon.focus(); }
     function cerrarGuia() { guia.hidden = true; botonGuia.setAttribute('aria-expanded', 'false'); actualizarOferta(); }
+    guia.append(botonCerrarGuia(() => cerrarGuia()));
     area.addEventListener('input', actualizarOferta);
     const bloqueDescripcion = el('div', { 'data-pinta': '' }, areaCampo, el('div', { class: 'dpc-caminos' }, botonGuia, enlace), guia);
     bloqueDescripcion._pintar = actualizarOferta;
@@ -473,11 +490,84 @@ function camposCertificacion(clave) {
     ];
 }
 
+// Logro: campo → oferta de ayuda → pistas. El asistente guarda solo lo que se usa del borrador.
+function camposLogroTexto(clave) {
+    const L = C.LOGROS, A = L.asistente, O = C.OFERTA_AYUDA;
+    const base = 'l-' + clave.replace(/\W/g, '_');
+    const areaCampo = campo({ clave, nombre: 'texto', etiqueta: 'Describe tu logro', area: true,
+        placeholder: 'Ej. ' + L.ejemplos[indiceEjemplo('logro', clave, L.ejemplos.length)] });
+    const area = $('textarea', areaCampo);
+
+    let tipo = -1;       // solo vista, no se guarda; sin elegir se usa el primer tipo como base
+    const chips = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': 'Tipo de logro' });
+    const verbo = el('select', { id: `${base}-v`, 'aria-label': 'Verbo' });
+    const gA = el('input', { type: 'text', id: `${base}-a`, autocomplete: 'off' });
+    const gB = el('input', { type: 'text', id: `${base}-b`, autocomplete: 'off' });
+    const preB = el('span', { class: 'dpc-prefijo-txt' });
+    const borrador = el('div', { class: 'dpc-borrador', 'aria-live': 'polite' });
+    const errGuia = el('small', { class: 'dp-error', role: 'alert', hidden: true });
+    const T = () => A.tipos[tipo >= 0 ? tipo : 0];
+    const pregunta = (id, etiqueta, entrada, ayuda, opc) => el('div', { class: 'dpc-pregunta' },
+        el('label', { for: id }, etiqueta, opc ? el('span', { class: 'dp-opc', text: ' (opcional)' }) : null), entrada,
+        ayuda ? el('small', { class: 'dp-ayuda', text: ayuda }) : null);
+    const pintarTipo = () => {
+        const t = T();
+        verbo.replaceChildren(...t.verbos.map((v) => el('option', { value: v, text: v })));
+        gA.placeholder = 'Ej. ' + t.a; gB.placeholder = 'Ej. ' + t.b; preB.textContent = t.conector;
+    };
+    const pintarBorrador = () => {
+        const t = T();
+        const x = armarBorradorLogro({ verbo: verbo.value, a: gA.value, conector: t.conector, b: gB.value });
+        borrador.textContent = x || 'Completa «qué hiciste o conseguiste» y verás tu borrador aquí.';
+        borrador.classList.toggle('vacio', !x);
+        return x;
+    };
+    A.tipos.forEach((t, i) => {
+        const b = el('button', { type: 'button', class: 'dpc-op', 'aria-pressed': 'false', text: t.nombre });
+        b.addEventListener('click', () => {
+            tipo = tipo === i ? -1 : i;
+            $$('.dpc-op', chips).forEach((x, j) => { const on = j === tipo; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+            pintarTipo(); pintarBorrador();
+        });
+        chips.append(b);
+    });
+    const conPrefijo = (pre, input) => el('div', { class: 'dpc-prefijo' }, pre, input);
+    const guia = el('div', { class: 'dpc-guia', hidden: true },
+        pregunta(`${base}-t`, A.pregTipo, chips, A.ayudaTipo, true),
+        pregunta(`${base}-v`, A.pregHice, el('div', { class: 'dpc-fila-verbo' }, verbo, gA), A.ayudaHice),
+        pregunta(`${base}-b`, A.pregAlcance, conPrefijo(preB, gB), A.ayudaAlcance, true),
+        el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, errGuia,
+        el('p', { class: 'dp-suave dpc-parcial', text: A.cierre }),
+        el('div', { class: 'dpc-acciones-guia' },
+            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
+                const x = pintarBorrador();
+                if (!x) { errGuia.textContent = 'Falta lo principal: qué hiciste o conseguiste.'; errGuia.hidden = false; return; }
+                if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu descripción', texto: 'Ya escribiste una descripción. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;
+                area.value = x; area.dispatchEvent(new Event('input', { bubbles: true })); flush(clave);
+                cerrar(); area.focus();
+            } }),
+            botonCerrarGuia(() => cerrar())));
+    [verbo, gA, gB].forEach((n) => n.addEventListener('input', () => { errGuia.hidden = true; pintarBorrador(); }));
+
+    const { boton, enlace } = ofertaAyuda(O.redactar, () => abrir());
+    const actualizar = () => {
+        const tiene = area.value.trim().length > 0, abierta = !guia.hidden;
+        boton.hidden = tiene || abierta; enlace.hidden = !tiene || abierta;
+    };
+    function abrir() { guia.hidden = false; boton.setAttribute('aria-expanded', 'true'); actualizar(); pintarBorrador(); gA.focus(); }
+    function cerrar() { guia.hidden = true; boton.setAttribute('aria-expanded', 'false'); actualizar(); }
+    area.addEventListener('input', actualizar);
+    pintarTipo(); pintarBorrador(); actualizar();
+    const bloque = el('div', { 'data-pinta': '' }, areaCampo, el('div', { class: 'dpc-caminos' }, boton, enlace), guia);
+    bloque._pintar = actualizar;
+    return [bloque];
+}
+
 const CAMPOS_TARJETA = {
     proyecto: (clave) => camposProyecto(clave),
     certificacion: (clave) => camposCertificacion(clave),
     logro: (clave) => [
-        campo({ clave, nombre: 'texto', etiqueta: 'Describe tu logro', placeholder: 'Ej. ' + C.LOGROS.ejemplos[indiceEjemplo('logro', clave, C.LOGROS.ejemplos.length)], area: true }),
+        ...camposLogroTexto(clave),
         el('div', { class: 'dpc-pistas' }, el('strong', { text: C.LOGROS.pistas.titulo + ':' }),
             el('div', {}, C.LOGROS.pistas.items.map((t) => el('span', { class: 'dpc-pista', text: t })))),
         campo({
@@ -744,32 +834,12 @@ function pasoCertificaciones() {
 function pasoLogros() {
     const L = C.LOGROS;
     const sinLogros = D.leerCV().logros.length === 0;
-    // Tipos de logro: solo ofrecen una estructura de ejemplo; no son obligatorios ni se guardan.
-    const estructura = el('div', { class: 'dpc-estructura', hidden: true });
-    const chips = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': 'Tipo de logro' });
-    L.redactar.tipos.forEach(([nombre, forma, ejemplo]) => {
-        const b = el('button', { type: 'button', class: 'dpc-op', 'aria-pressed': 'false', text: nombre });
-        b.addEventListener('click', () => {
-            const estabaActivo = b.getAttribute('aria-pressed') === 'true';
-            $$('.dpc-op', chips).forEach((x) => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
-            if (estabaActivo) { estructura.hidden = true; return; }
-            b.classList.add('on'); b.setAttribute('aria-pressed', 'true');
-            estructura.hidden = false;
-            estructura.replaceChildren(
-                el('p', {}, el('strong', { text: L.redactar.etiquetaEstructura }), forma),
-                el('p', {}, el('strong', { text: L.redactar.etiquetaEjemplo }), `«${ejemplo}»`));
-        });
-        chips.append(b);
-    });
     const ayudas = el('div', { class: 'dpc-ayudas' },
         el('details', { class: 'dpc-det', open: sinLogros ? true : null },
             el('summary', { text: L.reconocer.resumen }),
             el('p', { class: 'dp-suave', text: L.reconocer.texto }),
             itemsUl(L.reconocer.items)),
         listaAyuda(L.descubrir.resumen, el('p', { class: 'dp-suave', text: L.descubrir.texto })),
-        listaAyuda(L.redactar.resumen,
-            el('p', { class: 'dp-suave', text: L.redactar.texto }), chips, estructura,
-            el('p', { class: 'dp-suave dpc-parcial', text: L.redactar.cierre })),
         listaAyuda(L.donde.resumen,
             el('ul', { class: 'dp-lista-ejemplos' }, L.donde.items.map(([n, t]) => el('li', {}, el('strong', { text: n + ': ' }), t))),
             el('p', { class: 'dp-suave dpc-parcial', text: L.donde.cierre })));

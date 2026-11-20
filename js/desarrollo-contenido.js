@@ -293,6 +293,8 @@ export const OFERTA_AYUDA = {
     redactar: 'Te ayudamos a redactarlo',
     sub: 'Responde unas preguntas y revisa un borrador que puedes editar.',
     rehacer: 'Rehacer con ayuda',
+    cerrar: 'Cerrar',
+    icono: '✍️',
 };
 
 // ───────────── Logros y reconocimientos (paso propio) ─────────────
@@ -329,19 +331,23 @@ export const LOGROS = {
         titulo: 'Pistas para destacar el resultado',
         items: ['¿Qué conseguiste?', '¿A quiénes ayudaste?', '¿Qué responsabilidad asumiste?', '¿Qué mejoró o llegó a realizarse?', '¿Te reconocieron o te seleccionaron?'],
     },
-    redactar: {
-        resumen: '¿Cómo puedes redactarlo?',
-        texto: 'Una forma sencilla: acción + resultado o alcance. Ejemplo: «Organicé el material de estudio de mi sección antes de un examen». Si quieres una estructura más parecida a tu experiencia, elige un tipo (es opcional; si ya sabes qué escribir, escribe directo):',
-        etiquetaEstructura: 'Cómo escribirlo: ',
-        etiquetaEjemplo: 'Ejemplo: ',
-        tipos: [
-            ['Reconocimiento', 'Qué distinción obtuviste y quién la otorgó.', 'Obtuve una beca por rendimiento académico otorgada por la universidad.'],
-            ['Liderazgo', 'Qué responsabilidad asumiste y durante qué periodo.', 'Representé a mi sección como delegado durante el periodo académico 2026-1.'],
-            ['Organización', 'Qué actividad organizaste y cuál fue su alcance.', 'Organicé una jornada académica con la participación de estudiantes de mi facultad.'],
-            ['Impacto', 'Qué hiciste y a quién benefició.', 'Elaboré una guía de estudio que otros compañeros de mi sección utilizaron.'],
-            ['Presentación académica', 'Qué trabajo presentaste y dónde.', 'Presenté un proyecto universitario en una feria académica.'],
-        ],
+    // Asistente «Te ayudamos a redactarlo»: tipo (opcional, solo vista) → verbo + complemento → borrador editable.
+    // Cada tipo: verbos [forma], ejemplo del complemento, y una segunda parte opcional con conector fijo (sin género ni número).
+    asistente: {
+        pregTipo: '¿Qué tipo de logro es?',
+        ayudaTipo: 'Elige el que más se parezca; si ninguno encaja, sáltate esta pregunta.',
+        pregHice: '¿Qué hiciste o conseguiste?',
+        ayudaHice: 'Elige el verbo y completa la frase con tus palabras.',
+        pregAlcance: '¿Quieres añadir un detalle?',
+        ayudaAlcance: 'Dónde, con quién, durante cuánto tiempo o a quién benefició. Si no lo tienes claro, déjalo vacío.',
         cierre: 'No todos los logros necesitan cifras. Si no conoces una cantidad exacta, no la inventes. Los ejemplos son modelos de redacción: sustituye los datos por los tuyos.',
+        tipos: [
+            { nombre: 'Reconocimiento', verbos: ['Obtuve', 'Recibí', 'Gané'], a: 'una beca por rendimiento académico', conector: 'de parte de', b: 'la universidad' },
+            { nombre: 'Liderazgo', verbos: ['Asumí', 'Ejercí'], a: 'la coordinación de un grupo de estudio', conector: 'durante', b: 'un ciclo académico' },
+            { nombre: 'Organización', verbos: ['Organicé', 'Coordiné', 'Colaboré en la organización de'], a: 'una jornada académica', conector: 'con', b: 'la participación de estudiantes de mi facultad' },
+            { nombre: 'Impacto', verbos: ['Elaboré', 'Creé', 'Diseñé', 'Desarrollé'], a: 'una guía de estudio', conector: 'que', b: 'otros compañeros de mi sección utilizaron' },
+            { nombre: 'Presentación académica', verbos: ['Presenté', 'Expuse'], a: 'los resultados de un trabajo de laboratorio', conector: 'en', b: 'una exposición del curso' },
+        ],
     },
     donde: {
         resumen: '¿No sabes dónde incluir algo?',
