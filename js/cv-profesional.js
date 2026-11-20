@@ -241,7 +241,7 @@ function entradaCrece(attrs = {}) {
 // Escribir libre sigue siendo lo principal: Enter agrega lo que se escribió, esté o no en la lista. Las ideas ya agregadas no se vuelven a ofrecer.
 let contadorLista = 0;
 const sinTildes = (v) => String(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-function campoConLista({ aria, catalogo, ocupado, enviar, alIdea }) {
+function campoConLista({ aria, catalogo, ocupado, enviar, alIdea, descripcion, bloqueado }) {
     const I = C.IDEAS, id = `lista-ideas-${++contadorLista}`;
     const entrada = el('input', { type: 'text', autocomplete: 'off', placeholder: I.placeholder, 'aria-label': aria, role: 'combobox', 'aria-expanded': 'false', 'aria-controls': id, 'aria-autocomplete': 'list' });
     const lista = el('div', { id, role: 'listbox', class: 'dpc-lista-ideas', hidden: true, 'aria-label': aria });
@@ -249,6 +249,7 @@ function campoConLista({ aria, catalogo, ocupado, enviar, alIdea }) {
     const ideas = el('div', { class: 'dp-chips dpc-sugerencias' });
     let visibles = [], activa = -1;
     const libres = () => catalogo.filter((x) => !ocupado(x));
+    const descr = (x) => (descripcion ? descripcion(x) : '') || '';
     const marcar = (i) => {
         activa = i;
         const ops = $$('[role="option"]', lista);
@@ -260,10 +261,11 @@ function campoConLista({ aria, catalogo, ocupado, enviar, alIdea }) {
     function elegir(x) { cerrar(); enviar(x); }
     function abrir() {
         const q = sinTildes(entrada.value.trim());
-        visibles = libres().filter((x) => !q || sinTildes(x).includes(q)).sort((a, b) => a.localeCompare(b, 'es'));
+        if (bloqueado && bloqueado()) { cerrar(); return; }
+        visibles = libres().filter((x) => !q || sinTildes(x).includes(q) || sinTildes(descr(x)).includes(q)).sort((a, b) => a.localeCompare(b, 'es'));
         if (!visibles.length) { cerrar(); return; }
-        lista.replaceChildren(...visibles.map((x, i) => el('div', { id: `${id}-${i}`, role: 'option', class: 'dpc-op-idea', 'aria-selected': 'false', text: x,
-            onmousedown: (e) => { e.preventDefault(); elegir(x); } })));
+        lista.replaceChildren(...visibles.map((x, i) => el('div', { id: `${id}-${i}`, role: 'option', class: 'dpc-op-idea', 'aria-selected': 'false',
+            onmousedown: (e) => { e.preventDefault(); elegir(x); } }, el('span', { text: x }), descr(x) ? el('small', { class: 'dpc-op-desc', text: descr(x) }) : null)));
         lista.hidden = false; entrada.setAttribute('aria-expanded', 'true'); activa = -1; entrada.removeAttribute('aria-activedescendant');
     }
     entrada.addEventListener('click', abrir);
@@ -277,7 +279,7 @@ function campoConLista({ aria, catalogo, ocupado, enviar, alIdea }) {
     });
     flecha.addEventListener('mousedown', (e) => e.preventDefault());
     flecha.addEventListener('click', () => { if (lista.hidden) { entrada.focus(); abrir(); } else cerrar(); });
-    const pintarIdeas = () => ideas.replaceChildren(...libres().slice(0, 6).map((x) => el('button', { type: 'button', class: 'dp-chip dpc-sug', text: `+ ${x}`, onclick: () => (alIdea || enviar)(x) })));
+    const pintarIdeas = () => ideas.replaceChildren(...((bloqueado && bloqueado()) ? [] : libres().slice(0, 6)).map((x) => el('button', { type: 'button', class: 'dp-chip dpc-sug', text: `+ ${x}`, title: descr(x) || null, onclick: () => (alIdea || enviar)(x) })));
     const caja = el('div', { class: 'dpc-combo', 'data-combo': '' }, entrada, flecha, lista);
     caja._refrescar = () => { pintarIdeas(); if (!lista.hidden) abrir(); };
     pintarIdeas();
@@ -1200,17 +1202,21 @@ function grupoIdiomas() {
         error, el('small', { class: 'dp-ayuda', text: C.AVISO_IDIOMAS }));
 }
 
+const personalesElegidas = () => cv.habilidades.filter((h) => h.categoria === 'personal' && String(h.nombre || '').trim());
+const personalesLlenas = () => personalesElegidas().length >= C.MAX_PERSONALES;
+
 function grupoPersonales() {
     const info = C.HABILIDADES.personal;
-    const entrada = el('input', { type: 'text', placeholder: 'Otra habilidad', 'aria-label': 'Otra habilidad personal', autocomplete: 'off', class: 'dp-entrada-chip' });
     const error = el('small', { class: 'dp-error', role: 'alert', hidden: true, 'data-err-personal': '' });
-    entrada.addEventListener('input', () => { error.hidden = true; });
-    entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); agregarPersonal(entrada.value, entrada, error); } });
+    const combo = campoConLista({ aria: 'Agregar una habilidad personal', catalogo: C.CATALOGO.per, descripcion: (x) => C.DESCRIPCION_PERSONAL[x] || '',
+        ocupado: (x) => yaExiste('personal', x), bloqueado: personalesLlenas, enviar: (v) => agregarPersonal(v, combo.entrada, error) });
+    combo.entrada.addEventListener('input', () => { error.hidden = true; });
     return el('div', { class: 'dp-grupo' },
         el('h3', {}, info.titulo, el('span', { class: 'dp-opc', text: ' (opcional, sin niveles)' })), el('small', { class: 'dp-ayuda', text: info.ayuda }),
-        el('div', { class: 'dpc-opciones', 'data-personales': '' }),
-        el('div', { class: 'dp-agregar' }, entrada, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Agregar', onclick: () => agregarPersonal(entrada.value, entrada, error) }),
-            el('span', { class: 'dp-ayuda', 'data-cuenta-personales': '' })), error);
+        el('div', { class: 'dp-chips', 'data-personales': '' }),
+        el('div', { class: 'dp-agregar' }, combo.caja, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Agregar', onclick: () => agregarPersonal(combo.entrada.value, combo.entrada, error) }),
+            el('span', { class: 'dp-ayuda', 'data-cuenta-personales': '' })), error,
+        el('div', { 'data-ideas-personales': '' }, el('p', { class: 'dpc-sug-tit', text: C.IDEAS.titulo }), combo.ideas));
 }
 
 function agregarPersonal(texto, entrada, error) {
@@ -1284,18 +1290,20 @@ function abrirEditorIdioma(id) {
 
 function pintarPersonales() {
     const cont = $('[data-personales]'); if (!cont) return;
-    const sel = cv.habilidades.filter((h) => h.categoria === 'personal' && String(h.nombre || '').trim());
-    const firma = sel.map((h) => `${h.id}|${h.nombre}`).join('~');
+    const sel = personalesElegidas();
+    const llena = sel.length >= C.MAX_PERSONALES;
     const cuenta = $('[data-cuenta-personales]');
     if (cuenta) cuenta.textContent = `${sel.length} de ${C.MAX_PERSONALES} seleccionadas`;
+    const entrada = $('input[role="combobox"]', cont.parentElement);
+    if (entrada) entrada.placeholder = llena ? C.IDEAS.llenas : C.IDEAS.placeholder;
+    const ideas = $('[data-ideas-personales]', cont.parentElement);
+    if (ideas) ideas.hidden = llena;
+    const firma = sel.map((h) => `${h.id}|${h.nombre}`).join('~');
     if (cont.dataset.firma === firma) return;
     cont.dataset.firma = firma;
-    const enLista = (p) => sel.find((h) => h.nombre.trim().toLowerCase() === p.toLowerCase());
-    const pastilla = (texto, h, nombre) => el('button', { type: 'button', class: `dpc-op${h ? ' on' : ''}`, 'aria-pressed': h ? 'true' : 'false', text: texto,
-        onclick: () => { if (h) { D.quitarElemento('habilidad', h.id); refrescarMemoria(); pintarChips(); const e = $('[data-err-personal]'); if (e) e.hidden = true; } else agregarPersonal(nombre); } });
-    cont.replaceChildren(
-        ...C.HABILIDADES_PERSONALES.map((p) => pastilla(p, enLista(p), p)),
-        ...sel.filter((h) => !C.HABILIDADES_PERSONALES.some((p) => p.toLowerCase() === h.nombre.trim().toLowerCase())).map((h) => pastilla(`${h.nombre} ×`, h, h.nombre)));
+    cont.replaceChildren(...sel.map((h) => el('span', { class: 'dp-chip dp-chip-hab' }, h.nombre,
+        el('button', { type: 'button', class: 'dp-chip-x', 'aria-label': `Quitar ${h.nombre}`, text: '×',
+            onclick: () => { D.quitarElemento('habilidad', h.id); refrescarMemoria(); pintarChips(); const e = $('[data-err-personal]'); if (e) e.hidden = true; } }))));
 }
 
 function pintarChips() {

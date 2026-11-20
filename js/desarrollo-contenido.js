@@ -448,10 +448,45 @@ export const HABILIDADES = {
     idioma: { titulo: 'Idiomas', ayuda: 'Indica tu nivel general y, si lo deseas, detalla tus niveles de comprensión auditiva, comprensión lectora, expresión oral y expresión escrita.' },
     personal: { titulo: 'Habilidades personales', ayuda: 'Selecciona hasta 5 que realmente te representen. Piensa en situaciones en las que las hayas demostrado: trabajos grupales, proyectos, actividades universitarias, voluntariado u otras experiencias. Por ejemplo, coordinar un equipo puede reflejar liderazgo.' },
 };
-export const HABILIDADES_PERSONALES = [
-    'Comunicación', 'Trabajo en equipo', 'Liderazgo', 'Resolución de problemas', 'Organización',
-    'Adaptabilidad', 'Pensamiento crítico', 'Iniciativa', 'Creatividad', 'Gestión del tiempo',
-];
+// Habilidades personales: ideas para elegir (hasta MAX_PERSONALES). Son de uso general; cada una lleva una explicación corta que se ve en la lista.
+// El CV solo guarda el nombre. El orden mezcla temas para que las 6 primeras ideas sean variadas.
+export const DESCRIPCION_PERSONAL = {
+    'Trabajo en equipo': 'Colaborar con otros para lograr un objetivo común.',
+    'Gestión del tiempo': 'Priorizar tareas y cumplir plazos.',
+    'Comunicación asertiva': 'Expresar tus ideas con claridad y respeto.',
+    'Resolución de problemas': 'Encontrar soluciones cuando algo no sale como esperabas.',
+    'Adaptabilidad': 'Ajustar tus planes ante cambios inesperados sin perder el rumbo.',
+    'Pensamiento crítico': 'Analizar la información antes de aceptarla o de decidir.',
+    'Responsabilidad': 'Cumplir tus compromisos y asumir sus consecuencias.',
+    'Liderazgo': 'Guiar y motivar a un grupo hacia un objetivo.',
+    'Escucha activa': 'Prestar atención real para entender a los demás.',
+    'Iniciativa': 'Actuar y proponer mejoras sin esperar a que te lo pidan.',
+    'Creatividad': 'Proponer ideas nuevas o formas distintas de hacer las cosas.',
+    'Empatía': 'Ponerte en el lugar de otra persona y comprender sus emociones.',
+    'Organización': 'Ordenar tu trabajo, tus materiales y tus tareas.',
+    'Aprendizaje continuo': 'Seguir aprendiendo por tu cuenta y mejorar con la práctica.',
+    'Resolución de conflictos': 'Mediar en desacuerdos y buscar acuerdos.',
+    'Perseverancia': 'Seguir adelante aunque el trabajo sea largo o difícil.',
+    'Autonomía': 'Trabajar por tu cuenta sin necesitar supervisión constante.',
+    'Atención al detalle': 'Revisar tu trabajo y detectar errores pequeños.',
+    'Toma de decisiones': 'Elegir una opción con la información que tienes.',
+    'Resiliencia': 'Recuperarte de un error o un tropiezo y volver a intentarlo.',
+    'Expresión oral': 'Explicar tus ideas con claridad cuando hablas ante otros.',
+    'Curiosidad': 'Preguntar, investigar y querer entender cómo funcionan las cosas.',
+    'Compromiso': 'Involucrarte de verdad con lo que haces y con tu equipo.',
+    'Manejo del estrés': 'Mantener la calma y rendir bien bajo presión.',
+    'Redacción clara': 'Escribir de forma ordenada y fácil de entender.',
+    'Ética profesional': 'Actuar con honestidad y respeto en tu trabajo.',
+    'Disciplina': 'Mantener constancia en tus hábitos y tareas.',
+    'Pensamiento analítico': 'Dividir un problema en partes para entenderlo mejor.',
+    'Negociación': 'Llegar a acuerdos que convengan a las partes.',
+    'Puntualidad': 'Llegar y entregar a tiempo.',
+    'Orientación a resultados': 'Enfocarte en terminar lo que se propone y en que funcione.',
+    'Apertura a la retroalimentación': 'Recibir comentarios y usarlos para mejorar.',
+    'Capacidad de síntesis': 'Resumir lo importante sin perder el sentido.',
+    'Responsabilidad social': 'Tener en cuenta cómo tu trabajo afecta a las personas y al entorno.',
+};
+export const HABILIDADES_PERSONALES = Object.keys(DESCRIPCION_PERSONAL);
 export const MAX_PERSONALES = 5;
 export const DETALLE_IDIOMA = [   // [clave guardada, etiqueta del formulario, cómo se escribe en el CV]
     ['au', 'Comprensión auditiva', 'comprensión auditiva'], ['le', 'Comprensión lectora', 'lectura'],
@@ -478,12 +513,14 @@ const IDEAS_TEC = ['Análisis de datos', 'Investigación', 'Planificación', 'Pr
     'Análisis estructural', 'Topografía', 'Análisis químico', 'Control de calidad', 'Optimización', 'Simulación de procesos', 'Bases de datos', 'Diseño de planos',
     'Redacción técnica', 'Mecánica de materiales', 'Circuitos eléctricos', 'Termodinámica', 'Seguridad industrial', 'Análisis financiero', 'Gestión de inventarios',
     'Mediciones y calibración', 'Experimentación', 'Investigación de operaciones', 'Diseño de producto', 'Contabilidad de costos', 'Cálculo numérico'];
-export const CATALOGO = { sw: IDEAS_SW, eq: IDEAS_EQ, me: IDEAS_ME, tec: IDEAS_TEC, her: intercalar(IDEAS_SW, IDEAS_EQ) };
+export const CATALOGO = { per: null, sw: IDEAS_SW, eq: IDEAS_EQ, me: IDEAS_ME, tec: IDEAS_TEC, her: intercalar(IDEAS_SW, IDEAS_EQ) };
 export const IDEAS = {
     titulo: 'Ideas:',
     placeholder: 'Escribe o elige de la lista',
     verTodas: 'Ver todas las ideas',
+    llenas: 'Quita una para agregar otra',
 };
+CATALOGO.per = HABILIDADES_PERSONALES;
 
 // Formación: ejemplos neutros (no dependen de la carrera). Los cursos rotan entre facultades y solo se ven como ejemplo, nunca se guardan.
 export const FORMACION = {
