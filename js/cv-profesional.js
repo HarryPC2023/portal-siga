@@ -175,8 +175,27 @@ function pintarPeriodo(det) {
     $('[data-resumen]', det).textContent = textoPeriodo({ desde: desde.value, hasta: hasta.value, sigue: chk.checked });
 }
 
+// ───────────── ejemplos rotativos (solo vista: nunca se guardan en el CV) ─────────────
+// Cada tarjeta nueva toma el PRIMER ejemplo de la lista que no esté en uso (si todos lo están, el menos usado).
+// Al borrar una tarjeta su ejemplo queda libre; las demás tarjetas no cambian. Al recargar se reasignan en orden.
+const ejemplosAsignados = { proyecto: new Map(), certificacion: new Map(), logro: new Map(), experiencia: new Map() };
+const LISTA_DE_TIPO = { proyecto: 'proyectos', certificacion: 'certificaciones', logro: 'logros', experiencia: 'experiencias' };
+function indiceEjemplo(tipo, clave, total) {
+    const mapa = ejemplosAsignados[tipo];
+    const vivas = new Set(((cv && cv[LISTA_DE_TIPO[tipo]]) || []).map((e) => D.claveDe(tipo, e.id)));
+    for (const k of [...mapa.keys()]) if (!vivas.has(k) && k !== clave) mapa.delete(k);
+    if (mapa.has(clave)) return mapa.get(clave) % total;
+    const usos = new Array(total).fill(0);
+    for (const i of mapa.values()) usos[i % total] += 1;
+    const minimo = Math.min(...usos);
+    const idx = usos.indexOf(minimo);
+    mapa.set(clave, idx);
+    return idx;
+}
+
 function camposProyecto(clave) {
-    const ej = C.EJEMPLOS_CARRERA[tipoCarrera((cv.formacion || {}).carrera)] || C.EJEMPLOS_CARRERA.gen;
+    const grupoEj = C.EJEMPLOS_CARRERA[tipoCarrera((cv.formacion || {}).carrera)] || C.EJEMPLOS_CARRERA.gen;
+    const ej = { ...grupoEj, ...grupoEj.variantes[indiceEjemplo('proyecto', clave, grupoEj.variantes.length)] };
     const base = 'g-' + clave.replace(/\W/g, '_');
     let pintarBorrador = () => '';
 
@@ -323,6 +342,7 @@ function camposProyecto(clave) {
 // Certificación o formación complementaria: nombre (tal como aparece en la constancia), institución, año, tipo y enlace, estos dos últimos opcionales.
 function camposCertificacion(clave) {
     const Cc = C.CERTIFICACIONES;
+    const [ejNombre, ejInst] = Cc.ejemplos[indiceEjemplo('certificacion', clave, Cc.ejemplos.length)];
     const caja = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': 'Tipo (opcional)', 'data-pinta': '', 'data-sel': 'tipo', 'data-clave-sel': clave },
         ...C.TIPOS_CERTIFICACION.map((o) => el('button', {
             type: 'button', class: 'dpc-op', 'data-valor': o.id, 'aria-pressed': 'false', text: o.nombre, title: o.texto,
@@ -337,9 +357,9 @@ function camposCertificacion(clave) {
     pintarSel(caja);
     return [
         el('div', { class: 'dpc-fila-cert' },
-            campo({ clave, nombre: 'nombre', etiqueta: 'Nombre', placeholder: 'Fundamentos de bases de datos' }),
+            campo({ clave, nombre: 'nombre', etiqueta: 'Nombre', placeholder: 'Ej. ' + ejNombre }),
             campo({ clave, nombre: 'anio', etiqueta: 'Año', opcional: true, placeholder: '2025', extra: { inputmode: 'numeric', maxlength: '4' } })),
-        campo({ clave, nombre: 'institucion', etiqueta: 'Quién lo dio', placeholder: 'Institución, plataforma o centro' }),
+        campo({ clave, nombre: 'institucion', etiqueta: 'Quién lo dio', placeholder: 'Ej. ' + ejInst }),
         el('div', { class: 'dp-campo' }, el('span', { class: 'dpc-lab' }, 'Tipo', el('span', { class: 'dp-opc', text: ' (opcional)' })), caja,
             el('small', { class: 'dp-ayuda', text: Cc.tipos.cierre })),
         campo({ clave, nombre: 'enlace', etiqueta: 'Enlace de verificación', opcional: true, placeholder: 'https://…', ayuda: Cc.enlaceAyuda, validar: analizarEnlaceWeb, extra: { inputmode: 'url' } }),
@@ -351,7 +371,7 @@ const CAMPOS_TARJETA = {
     proyecto: (clave) => camposProyecto(clave),
     certificacion: (clave) => camposCertificacion(clave),
     logro: (clave) => [
-        campo({ clave, nombre: 'texto', etiqueta: 'Describe tu logro', placeholder: C.LOGROS.placeholder, area: true }),
+        campo({ clave, nombre: 'texto', etiqueta: 'Describe tu logro', placeholder: 'Ej. ' + C.LOGROS.ejemplos[indiceEjemplo('logro', clave, C.LOGROS.ejemplos.length)], area: true }),
         el('div', { class: 'dpc-pistas' }, el('strong', { text: C.LOGROS.pistas.titulo + ':' }),
             el('div', {}, C.LOGROS.pistas.items.map((t) => el('span', { class: 'dpc-pista', text: t })))),
         campo({

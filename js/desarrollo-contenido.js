@@ -110,6 +110,13 @@ export const GRUPOS_HERRAMIENTAS = [
     { id: 'me', nombre: 'Métodos y técnicas', texto: 'Metodologías de investigación, procedimientos, técnicas de análisis y métodos de trabajo.' },
 ];
 
+// ═══ REGLAS DE LOS EJEMPLOS (Logros, Certificaciones, Proyectos, Experiencia) ═══
+// 1. Enseñan a comunicar, no qué trayectoria tener: ayudan a reconocer posibilidades que el estudiante quizá no había considerado.
+// 2. Neutrales y variados: distintas facultades, escalas (pequeños, medianos, elaborados) y tipos de trabajo; no siempre cifras ni resultados espectaculares.
+// 3. Son modelos de redacción: el estudiante cambia los datos por los suyos y no inventa resultados (cantidades, puestos, promedios, concursos).
+// 4. Rotación determinista: cada tarjeta nueva toma el PRIMER ejemplo de la lista que no esté en uso (si todos lo están, el menos usado). Nunca se guardan en el CV.
+// 5. Los ejemplos del campo no repiten los de las ayudas ("¿Cómo puedes redactarlo?"). Revisarlos con estudiantes o docentes de cada facultad.
+
 // Ejemplos orientativos según la carrera del alumno (no limitan: puede escribir cualquier proyecto). «gen» sirve para cualquier carrera.
 // Estos ejemplos deberían revisarlos estudiantes o docentes de cada facultad antes de ampliarlos.
 export const PATRONES_CARRERA = [
@@ -120,32 +127,40 @@ export const PATRONES_CARRERA = [
 ];
 export const EJEMPLOS_CARRERA = {
     sis: {
-        nombre: 'Plataforma web para estudiantes de mi facultad',
         desc: 'Describe qué es tu proyecto, qué hiciste tú y con qué lo construiste.',
-        objeto: 'una plataforma web para estudiantes de mi facultad', meta: 'reunir en un solo lugar herramientas académicas',
-        hizo: 'programar el simulador de notas y diseñar la base de datos', resultado: 'la usan compañeros de varios ciclos',
         herr: { sw: ['Python', 'JavaScript', 'SQL', 'Git'], eq: ['Arduino', 'Raspberry Pi'], me: ['Scrum', 'Pruebas con usuarios'] },
+        variantes: [
+            { nombre: 'Control de inventario de una bodega pequeña', objeto: 'un sistema de control de inventario para una bodega pequeña', meta: 'llevar el registro de productos y existencias', hizo: 'diseñar la base de datos y programar el registro de movimientos', resultado: 'el encargado dejó de anotar el stock a mano' },
+            { nombre: 'Análisis de las notas de un curso con Python', objeto: 'un análisis de las notas de un curso', meta: 'identificar qué temas costaron más al grupo', hizo: 'limpiar los datos y graficar los resultados con Python', resultado: 'un informe con las conclusiones' },
+            { nombre: 'Sitio web de un club estudiantil', objeto: 'el sitio web de un club estudiantil', meta: 'dar a conocer las actividades del club', hizo: 'diseñar las páginas y publicarlas', resultado: 'el club lo usa para anunciar sus eventos' },
+        ],
     },
     arq: {
-        nombre: 'Propuesta de centro cultural',
         desc: 'Describe qué diseñaste o realizaste, tu aporte y los recursos que usaste.',
-        objeto: 'la propuesta de un centro cultural', meta: 'dar un espacio público a un barrio sin equipamiento',
-        hizo: 'elaborar los planos, cortes y la maqueta final', resultado: 'la propuesta fue presentada ante el jurado del curso',
         herr: { sw: ['AutoCAD', 'Revit', 'SketchUp'], eq: ['Maqueta en cartón pluma', 'Cortadora láser'], me: ['Análisis de sitio', 'Diseño participativo'] },
+        variantes: [
+            { nombre: 'Rediseño del aula de un colegio', objeto: 'el rediseño del aula de un colegio', meta: 'mejorar la iluminación y la circulación', hizo: 'levantar medidas y dibujar la propuesta en planos', resultado: 'la propuesta fue presentada en clase' },
+            { nombre: 'Maqueta de una vivienda unifamiliar', objeto: 'una vivienda unifamiliar', meta: 'mostrar su distribución y sus volúmenes', hizo: 'elaborar los planos y construir la maqueta', resultado: 'la maqueta fue evaluada en el curso' },
+            { nombre: 'Propuesta de centro cultural', objeto: 'la propuesta de un centro cultural', meta: 'dar un espacio público a un barrio sin equipamiento', hizo: 'elaborar los planos, cortes y la maqueta final', resultado: 'la propuesta fue presentada ante el jurado del curso' },
+        ],
     },
     civ: {
-        nombre: 'Análisis estructural de un puente peatonal',
         desc: 'Describe qué analizaste o construiste, tu aporte y los recursos que usaste.',
-        objeto: 'el análisis estructural de un puente peatonal', meta: 'verificar que soporte las cargas de uso',
-        hizo: 'calcular las cargas y modelar la estructura', resultado: 'un informe con las verificaciones de resistencia',
         herr: { sw: ['SAP2000', 'AutoCAD', 'Excel'], eq: ['Estación total', 'Nivel óptico'], me: ['Método de rigidez', 'Ensayos de laboratorio'] },
+        variantes: [
+            { nombre: 'Medición topográfica de un terreno', objeto: 'el levantamiento topográfico de un terreno', meta: 'obtener sus medidas y desniveles', hizo: 'tomar los datos en campo y procesarlos', resultado: 'un plano con curvas de nivel' },
+            { nombre: 'Diseño de un muro de contención', objeto: 'el diseño de un muro de contención', meta: 'verificar su estabilidad', hizo: 'calcular las fuerzas y dimensionar el muro', resultado: 'una memoria de cálculo para el curso' },
+            { nombre: 'Análisis académico de la estructura de un puente peatonal', objeto: 'el análisis académico de la estructura de un puente peatonal', meta: 'verificar que soporte las cargas de uso', hizo: 'calcular las cargas y modelar la estructura', resultado: 'un informe con las verificaciones de resistencia' },
+        ],
     },
     gen: {
-        nombre: 'Nombre de tu proyecto',
         desc: 'Describe qué hiciste, cuál fue tu aporte y qué recursos usaste.',
-        objeto: 'un estudio sobre un tema que me interesaba', meta: 'entender mejor un problema',
-        hizo: 'recopilar datos y organizar los resultados', resultado: 'un informe presentado a mi grupo',
         herr: { sw: ['Excel', 'Word', 'PowerPoint'], eq: ['Instrumentos de medición'], me: ['Encuestas', 'Revisión bibliográfica'] },
+        variantes: [
+            { nombre: 'Organización de un estudio de caso grupal', objeto: 'un estudio de caso en grupo', meta: 'analizar una situación real del curso', hizo: 'repartir tareas y redactar las conclusiones', resultado: 'el caso se presentó en clase' },
+            { nombre: 'Informe técnico de laboratorio', objeto: 'un informe técnico de laboratorio', meta: 'documentar un experimento y sus resultados', hizo: 'tomar las mediciones y redactar el informe', resultado: 'el informe fue evaluado por el docente' },
+            { nombre: 'Propuesta de mejora para un taller', objeto: 'una propuesta de mejora para un taller', meta: 'ordenar y hacer más seguro el espacio de trabajo', hizo: 'observar el taller y proponer cambios', resultado: 'la propuesta se presentó al docente a cargo' },
+        ],
     },
 };
 
@@ -164,6 +179,17 @@ export const TIPOS_CERTIFICACION = [
     { id: 'programa', nombre: 'Programa', texto: 'Trayecto formativo estructurado, como un bootcamp, programa intensivo o ruta de aprendizaje.' },
 ];
 export const CERTIFICACIONES = {
+    // [nombre, quién lo dio]: un ejemplo distinto por tarjeta; mezclan curso, taller, programa y certificación.
+    ejemplos: [
+        ['Excel intermedio', 'Centro de capacitación'],
+        ['Curso de inglés intermedio', 'Centro de idiomas'],
+        ['Curso de primeros auxilios', 'Institución de salud o voluntariado'],
+        ['Taller de seguridad en laboratorio', 'Facultad'],
+        ['AutoCAD básico', 'Academia o instituto'],
+        ['Taller de redacción académica', 'Universidad'],
+        ['Programa de liderazgo estudiantil', 'Organización estudiantil'],
+        ['Gestión del tiempo y productividad', 'Plataforma en línea'],
+    ],
     intro: 'Cursos, talleres y certificaciones que has completado, dentro o fuera de la universidad. Deben ser actividades formativas finalizadas, no cursos de tu carrera que todavía estás llevando. Si todavía no tienes ninguna, puedes saltar este paso.',
     vacio: 'No necesitas acumular certificados. Una formación relacionada con lo que buscas puede aportar valor a tu CV.',
     descubrir: {
@@ -219,7 +245,17 @@ export const CERTIFICACIONES = {
 // ───────────── Logros y reconocimientos (paso propio) ─────────────
 export const LOGROS = {
     vacio: 'Todavía no agregaste ningún logro. Si algo de las ayudas te suena, empieza por ahí.',
-    placeholder: 'Ej. Brindé asesorías a 12 estudiantes durante un periodo académico.',
+    // Un ejemplo distinto por tarjeta (ver REGLAS DE LOS EJEMPLOS). Son modelos de redacción: no se guardan.
+    ejemplos: [
+        'Coordiné la distribución de tareas de un equipo de cinco estudiantes para completar un trabajo académico dentro del plazo establecido.',
+        'Obtuve el primer puesto en un concurso interno de mi facultad.',
+        'Participé en una campaña de reciclaje de mi facultad que logró recolectar una cantidad importante de papel.',
+        'Completé un curso de verano con la nota más alta de mi grupo.',
+        'Redacté el manual de uso de un equipo de laboratorio, que hoy consultan los estudiantes del curso.',
+        'Integré un equipo finalista en un concurso de proyectos universitarios.',
+        'Mantuve un promedio ponderado superior a 15 durante tres ciclos consecutivos.',
+        'Fui elegido para representar a mi sección en una reunión con las autoridades de la facultad.',
+    ],
     reconocer: {
         resumen: '¿Qué puede considerarse un logro?',
         texto: 'No necesitas haber ganado un concurso ni recibido un premio. También cuentan lo que organizaste, las responsabilidades que asumiste, las personas a las que ayudaste y los resultados que conseguiste. Piensa si alguna vez has:',
@@ -242,7 +278,7 @@ export const LOGROS = {
     },
     redactar: {
         resumen: '¿Cómo puedes redactarlo?',
-        texto: 'Una forma sencilla: acción + resultado o alcance. Ejemplo: «Brindé asesorías a 12 estudiantes durante un periodo académico». Si quieres una estructura más parecida a tu experiencia, elige un tipo (es opcional; si ya sabes qué escribir, escribe directo):',
+        texto: 'Una forma sencilla: acción + resultado o alcance. Ejemplo: «Organicé el material de estudio de mi sección antes de un examen». Si quieres una estructura más parecida a tu experiencia, elige un tipo (es opcional; si ya sabes qué escribir, escribe directo):',
         etiquetaEstructura: 'Cómo escribirlo: ',
         etiquetaEjemplo: 'Ejemplo: ',
         tipos: [
@@ -252,7 +288,7 @@ export const LOGROS = {
             ['Impacto', 'Qué hiciste y a quién benefició.', 'Elaboré una guía de estudio que otros compañeros de mi sección utilizaron.'],
             ['Presentación académica', 'Qué trabajo presentaste y dónde.', 'Presenté un proyecto universitario en una feria académica.'],
         ],
-        cierre: 'No todos los logros necesitan cifras. Si no conoces una cantidad exacta, no la inventes.',
+        cierre: 'No todos los logros necesitan cifras. Si no conoces una cantidad exacta, no la inventes. Los ejemplos son modelos de redacción: sustituye los datos por los tuyos.',
     },
     donde: {
         resumen: '¿No sabes dónde incluir algo?',
