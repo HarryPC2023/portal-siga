@@ -69,8 +69,8 @@ function limpiarSucios(clave) {
 function marcarEstado(clave, estado) {
     const n = $(`.dp-tarjeta[data-clave="${clave}"] [data-guardado]`);
     if (!n) return;
-    n.dataset.guardado = estado;
-    n.textContent = estado === 'guardando' ? C.GUARDADO.guardando : estado === 'guardado' ? C.GUARDADO.guardado : '';
+    n.dataset.guardado = estado; n.hidden = false;
+    n.textContent = C.GUARDADO[estado] || '';
 }
 
 function flush(clave) {
@@ -645,6 +645,8 @@ function aplicarPliegue(tarjeta, tipo, clave) {
     cuerpo.hidden = plegada;
     boton.setAttribute('aria-expanded', String(!plegada));
     $('.dp-tarjeta-flecha', tarjeta).textContent = plegada ? '▸' : '▾';
+    const est = $('[data-guardado]', tarjeta);
+    if (est && est.dataset.guardado === 'reposo') est.hidden = plegada;      // plegada y sin cambios: basta con el título
     const res = $('.dp-tarjeta-resumen', tarjeta);
     res.hidden = !plegada;
     if (plegada) res.textContent = '· ' + textoResumen(tipo, clave);
@@ -665,7 +667,7 @@ function crearTarjeta(tipo, item) {
     };
     mostrarQuitar();
     const G = C.GUARDADO[tipo];
-    const estado = el('span', { class: 'dp-guardado', 'data-guardado': '', role: 'status' });
+    const estado = el('span', { class: 'dp-guardado', 'data-guardado': 'reposo', role: 'status', text: C.GUARDADO.reposo });
     const cierre = G ? el('div', { class: 'dpc-guardar' },
         el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: G.boton, onclick: () => guardarTarjeta(tipo, item.id, clave) }),
         el('small', { class: 'dp-ayuda', text: C.GUARDADO.nota }),
@@ -686,7 +688,7 @@ function crearTarjeta(tipo, item) {
     return tarjeta;
 }
 
-// «Guardar proyecto / experiencia / logro»: los datos ya se guardan solos; este botón confirma, cierra la tarjeta y la deja en la lista.
+// «Registrar proyecto / experiencia / logro»: los datos ya se guardan solos; este botón los registra, cierra la tarjeta y la deja en la lista.
 function guardarTarjeta(tipo, id, clave) {
     const G = C.GUARDADO[tipo];
     const tarjeta = $(`.dp-tarjeta[data-id="${id}"]`);

@@ -114,9 +114,14 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dp-tarjeta-flecha { color: var(--dpc-naranja); width: 18px; flex: none; }
 .dpc .dp-tarjeta-resumen { font-weight: 400; color: var(--dp-suave); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .dpc .dp-tarjeta-cuerpo { margin-top: 6px; }
+.dpc .dp-tarjeta-cab { position: sticky; top: 0; z-index: 4; background: #fafcff; margin: 0 -4px; padding: 8px 4px; border-bottom: 1px solid var(--dp-borde); }     /* la cabecera acompaña mientras se escribe: el aviso de guardado siempre se ve */
 .dpc .dp-guardado { flex: none; font-size: 14px; color: #1E7B3A; white-space: nowrap; }
-.dpc .dp-guardado[data-guardado="guardando"] { color: var(--dp-suave); }
-.dpc .dp-guardado:empty { display: none; }
+.dpc .dp-guardado[data-guardado="reposo"], .dpc .dp-guardado[data-guardado="guardando"] { color: var(--dp-suave); }
+.dpc .dp-guardado[hidden] { display: none; }
+@media (max-width: 520px) {
+    .dpc .dp-tarjeta-cab { flex-wrap: wrap; }
+    .dpc .dp-guardado { order: 3; flex-basis: 100%; margin-left: 26px; font-size: 13px; }
+}
 .dpc .dpc-guardar { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--dp-borde); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
 .dpc .dpc-guardar .dp-ayuda { flex: 1 1 240px; margin: 0; }
 .dpc .dpc-guardar .dp-error { flex-basis: 100%; }

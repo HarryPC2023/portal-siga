@@ -380,12 +380,13 @@ export const LOGROS = {
 // Los ejemplos son modelos de redacción de distintas áreas (ver REGLAS DE LOS EJEMPLOS); no se guardan y no se atribuyen al estudiante.
 // Guardado visible: el sistema guarda solo; estos textos se lo hacen saber al alumno y cierran cada tarjeta.
 export const GUARDADO = {
+    reposo: 'Se guarda automáticamente',
     guardando: 'Guardando…',
     guardado: '✓ Guardado',
-    nota: 'Tus cambios se guardan solos mientras escribes. Este botón cierra la tarjeta y la deja en tu lista.',
-    proyecto: { boton: 'Guardar proyecto', ok: 'Proyecto guardado en tu lista de proyectos.', falta: 'Escribe el nombre del proyecto para poder guardarlo.' },
-    experiencia: { boton: 'Guardar experiencia', ok: 'Experiencia guardada en tu lista de experiencias.', falta: 'Escribe el puesto o la actividad para poder guardarla.' },
-    logro: { boton: 'Guardar logro', ok: 'Logro guardado en tu lista de logros.', falta: 'Describe tu logro para poder guardarlo.' },
+    nota: 'Todo lo que escribes se guarda solo. Este botón registra el elemento en tu lista y cierra la tarjeta.',
+    proyecto: { boton: 'Registrar proyecto', ok: 'Proyecto registrado en tu lista de proyectos.', falta: 'Escribe el nombre del proyecto para poder registrarlo.' },
+    experiencia: { boton: 'Registrar experiencia', ok: 'Experiencia registrada en tu lista de experiencias.', falta: 'Escribe el puesto o la actividad para poder registrarla.' },
+    logro: { boton: 'Registrar logro', ok: 'Logro registrado en tu lista de logros.', falta: 'Describe tu logro para poder registrarlo.' },
 };
 
 // Campo plegable «Resultado o evidencia» del proyecto (se pliega igual que los grupos de herramientas).
