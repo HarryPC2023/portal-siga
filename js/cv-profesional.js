@@ -219,8 +219,12 @@ function entradaCrece(attrs = {}) {
     return ta;
 }
 const ajustarCrecen = (raiz) => $$('textarea.dpc-crece', raiz).forEach((t) => t._ajustar && t._ajustar());
-// «Así va quedando» se queda a la vista mientras se responde (en pantallas grandes).
-const bloqueBorrador = (borrador, err) => el('div', { class: 'dpc-borrador-fijo' }, el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, err);
+// Aviso «Tu borrador inicial» (informativo, no de error) y, debajo, «Así va quedando», que se queda a la vista mientras se responde (en pantallas grandes).
+const bloqueBorrador = (borrador, err, tipo = 'normal') => [
+    el('div', { class: 'dpc-aviso-borrador' },
+        el('strong', { text: C.OFERTA_AYUDA.borradorTitulo }),
+        el('p', { text: tipo === 'perfil' ? C.OFERTA_AYUDA.borradorAvisoPerfil : C.OFERTA_AYUDA.borradorAviso })),
+    el('div', { class: 'dpc-borrador-fijo' }, el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, err)];
 const conPrefijo = (pre, input) => el('div', { class: 'dpc-prefijo' }, pre, input);
 
 const botonCerrarGuia = (alCerrar) => el('button', { type: 'button', class: 'dp-btn-texto dpc-cerrar-guia', text: C.OFERTA_AYUDA.cerrar, onclick: alCerrar });
@@ -304,14 +308,14 @@ function camposProyecto(clave) {
         return t;
     };
     const guia = el('div', { class: 'dpc-guia', hidden: true },
-        pregunta(`${base}-v`, '¿Qué tipo de trabajo realizaste?', verbo, 'Elige el verbo que mejor describe tu participación.'),
+        pregunta(`${base}-v`, '¿Qué tipo de trabajo realizaste?', verbo, 'Elige el verbo que mejor describe tu participación. Abrirá la frase del borrador: en tu respuesta, continúa sin repetirlo.'),
         pregunta(`${base}-o`, '¿En qué consistió tu proyecto?', conPrefijo(preObj, gObj), 'Cuéntanos qué desarrollaste, investigaste o analizaste: una aplicación, un estudio, un trabajo académico, una iniciativa propia… Solo qué fue; tus tareas van en la siguiente pregunta.'),
         pregunta(`${base}-h`, '¿Qué hiciste tú para llevarlo a cabo?', gHizo, 'Describe tus tareas, decisiones y aportes concretos. Si fue grupal, céntrate en tu participación. Escríbelo en primera persona: «Diseñé…, programé…».'),
         pregunta(`${base}-m`, '¿Qué necesidad o problema buscaba atender?', conPrefijo(preMeta, gMeta), 'Para qué servía o qué querías conseguir; empieza con un verbo en infinitivo: solucionar, mejorar, investigar… Si ya lo dijiste arriba, déjalo vacío.', true),
         pregunta(`${base}-r`, '¿Qué resultado obtuviste?', conPrefijo(preRes, gRes), 'Escríbelo como frase, sin inventar cifras: «la usan compañeros de varios ciclos».', true),
         bloqueBorrador(borrador, errGuia),
         el('div', { class: 'dpc-acciones-guia' },
-            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
+            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: C.OFERTA_AYUDA.revisar, onclick: async () => {
                 const t = pintarBorrador();
                 if (!t) { errGuia.textContent = 'Falta lo principal: en qué consistió tu proyecto y qué hiciste tú.'; errGuia.hidden = false; return; }
                 if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu descripción', texto: 'Ya escribiste una descripción. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;
@@ -449,7 +453,7 @@ function camposExperiencia(clave) {
             'Un resultado o aporte, si lo hubo. No hace falta una cifra; si no hubo un resultado claro, déjalo vacío.', true),
         bloqueBorrador(borrador, errGuia),
         el('div', { class: 'dpc-acciones-guia' },
-            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
+            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: C.OFERTA_AYUDA.revisar, onclick: async () => {
                 const t = pintarBorrador();
                 if (!t) { errGuia.textContent = 'Falta lo principal: en qué consistía la actividad o qué hiciste.'; errGuia.hidden = false; return; }
                 if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu descripción', texto: 'Ya escribiste una descripción. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;
@@ -557,7 +561,7 @@ function camposLogroTexto(clave) {
         bloqueBorrador(borrador, errGuia),
         el('p', { class: 'dp-suave dpc-parcial', text: A.cierre }),
         el('div', { class: 'dpc-acciones-guia' },
-            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
+            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: C.OFERTA_AYUDA.revisar, onclick: async () => {
                 const x = pintarBorrador();
                 if (!x) { errGuia.textContent = 'Falta lo principal: qué hiciste o conseguiste.'; errGuia.hidden = false; return; }
                 if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu descripción', texto: 'Ya escribiste una descripción. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;
@@ -954,9 +958,9 @@ function pasoPerfil() {
         pregunta(`${base}-e`, A.pregEstudia, gEst, A.ayudaEstudia, true),
         pregunta(`${base}-l`, A.pregDestacar, el('div', {}, chips, ayudaDest, gLibre, avisoMax), A.ayudaLibre, true),
         pregunta(`${base}-b`, A.pregBusca, gBusca, A.ayudaBusca, true),
-        bloqueBorrador(borrador, errGuia),
+        bloqueBorrador(borrador, errGuia, 'perfil'),
         el('div', { class: 'dpc-acciones-guia' },
-            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
+            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: C.OFERTA_AYUDA.revisar, onclick: async () => {
                 const x = pintarBorrador();
                 if (!x) { errGuia.textContent = 'Responde al menos una pregunta para armar un borrador.'; errGuia.hidden = false; return; }
                 if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu perfil', texto: 'Ya escribiste un perfil. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;

@@ -300,6 +300,11 @@ export const OFERTA_AYUDA = {
     rehacer: 'Rehacer con ayuda',
     cerrar: 'Cerrar',
     icono: '✍️',
+    // El resultado de un asistente es un punto de partida, no un texto terminado: se dice con claridad y sin tono de error.
+    borradorTitulo: 'Tu borrador inicial',
+    borradorAviso: 'Hemos organizado tus respuestas en un primer texto. Revísalo y ajusta las frases para que se conecten, no repitan ideas y reflejen tu participación real. Puedes editarlo libremente.',
+    borradorAvisoPerfil: 'Hemos organizado tus respuestas en un primer texto. Revísalo y ajusta las frases para que se conecten y no repitan ideas. Puedes editarlo libremente.',
+    revisar: 'Revisar redacción',
 };
 
 // ───────────── Logros y reconocimientos (paso propio) ─────────────
@@ -342,7 +347,7 @@ export const LOGROS = {
         pregTipo: '¿Qué tipo de logro es?',
         ayudaTipo: 'Elige el que más se parezca; si ninguno encaja, sáltate esta pregunta.',
         pregHice: '¿Qué hiciste o conseguiste?',
-        ayudaHice: 'Elige el verbo y completa la frase con tus palabras.',
+        ayudaHice: 'Elige el verbo y completa la frase con tus palabras, sin repetirlo.',
         pregAlcance: '¿Quieres añadir un detalle?',
         ayudaAlcance: 'Dónde, con quién, durante cuánto tiempo o a quién benefició. Si no lo tienes claro, déjalo vacío.',
         cierre: 'No todos los logros necesitan cifras. Si no conoces una cantidad exacta, no la inventes. Los ejemplos son modelos de redacción: sustituye los datos por los tuyos.',
