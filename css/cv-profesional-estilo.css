@@ -208,7 +208,8 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 @media print { .dpc-tip, .dpc-pega { display: none !important; } }
 
 /* Plegado de tarjetas (todas las secciones con lista) y ayudas del paso Logros */
-.dpc .dp-lista-barra { display: flex; justify-content: flex-end; margin: 14px 0 -8px; }
+.dpc .dp-lista-pie { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; }
+.dpc .dp-lista-barra { display: flex; justify-content: flex-end; margin: 12px 0 0; }
 .dpc .dp-lista-barra .dp-btn-texto { font-size: 15px; color: var(--dpc-naranja-os); }
 .dpc .dpc-det .dpc-opciones { margin: 10px 0 4px; }
 .dpc .dpc-estructura { margin: 10px 0 12px; padding: 10px 14px; background: #F7F4EE; border-radius: 10px; font-size: 16px; line-height: 1.6; }
