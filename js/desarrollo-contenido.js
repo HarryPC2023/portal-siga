@@ -389,6 +389,14 @@ export const GUARDADO = {
     logro: { boton: 'Registrar logro', ok: 'Logro registrado en tu lista de logros.', falta: 'Describe tu logro para poder registrarlo.' },
 };
 
+// Vista previa dentro de la tarjeta: el mismo texto que saldrá en el CV, siempre al día.
+export const PREVIA = {
+    titulo: 'Así se verá en tu CV',
+    vivo: 'Se actualiza mientras completas',
+    proyecto: { vacio: 'Aquí aparecerá tu proyecto a medida que lo completes.', nota: 'Las herramientas y los métodos salen en la primera línea. No hace falta repetirlos en la descripción.' },
+    experiencia: { vacio: 'Aquí aparecerá tu experiencia a medida que la completes.', nota: 'Lo que escribas en «¿Qué hiciste?» aparece debajo del puesto.' },
+};
+
 // Campo plegable «Resultado o evidencia» del proyecto (se pliega igual que los grupos de herramientas).
 export const EVIDENCIA = {
     resumen: 'Resultado o evidencia',

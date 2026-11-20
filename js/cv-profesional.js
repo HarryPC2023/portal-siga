@@ -12,7 +12,7 @@ import { supabase } from './auth-siga.js?v=9';
 import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PERFIL } from './desarrollo-estado.js?v=2';
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=4';
-import { htmlCV } from './cv-documento.js?v=2';
+import { htmlCV, htmlItemPrevia } from './cv-documento.js?v=2';
 import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 
@@ -672,7 +672,9 @@ function crearTarjeta(tipo, item) {
         el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: G.boton, onclick: () => guardarTarjeta(tipo, item.id, clave) }),
         el('small', { class: 'dp-ayuda', text: C.GUARDADO.nota }),
         el('small', { class: 'dp-error', role: 'alert', hidden: true, 'data-falta': '' })) : null;
-    const cuerpo = el('div', { class: 'dp-tarjeta-cuerpo', id: `dp-cuerpo-${item.id}` }, ...CAMPOS_TARJETA[tipo](clave), cierre);
+    const previa = (tipo === 'proyecto' || tipo === 'experiencia') ? bloquePrevia(tipo, clave) : null;
+    const cuerpo = el('div', { class: 'dp-tarjeta-cuerpo', id: `dp-cuerpo-${item.id}` }, ...CAMPOS_TARJETA[tipo](clave), previa, cierre);
+    if (previa) { cuerpo.addEventListener('input', previa._pintar); cuerpo.addEventListener('change', previa._pintar); }
     const boton = el('button', {
         type: 'button', class: 'dp-tarjeta-toggle', 'aria-controls': cuerpo.id, 'aria-expanded': 'true',
         title: 'Plegar o desplegar',
@@ -686,6 +688,23 @@ function crearTarjeta(tipo, item) {
     });
     aplicarPliegue(tarjeta, tipo, clave);
     return tarjeta;
+}
+
+// «Así se verá en tu CV»: el mismo HTML que se imprime, con lo que hay escrito ahora mismo (aunque aún no se haya guardado).
+function bloquePrevia(tipo, clave) {
+    const P = C.PREVIA, T = P[tipo];
+    const cuerpo = el('div', { class: 'dpc-previa-cv' });
+    const pintar = () => {
+        const html = htmlItemPrevia(tipo, recolectar(clave) || leerItem(clave));
+        if (html) cuerpo.innerHTML = html;                          // el HTML sale de htmlItemPrevia, que escapa todo lo escrito
+        else cuerpo.replaceChildren(el('p', { class: 'dpc-previa-vacio', text: T.vacio }));
+    };
+    const caja = el('div', { class: 'dpc-previa', 'data-previa': '', 'data-pinta': '', role: 'group', 'aria-label': P.titulo },
+        el('div', { class: 'dpc-previa-cab' }, el('strong', { text: P.titulo }), el('span', { text: P.vivo })),
+        cuerpo, el('small', { class: 'dpc-previa-nota', text: T.nota }));
+    caja._pintar = pintar;
+    pintar();
+    return caja;
 }
 
 // «Registrar proyecto / experiencia / logro»: los datos ya se guardan solos; este botón los registra, cierra la tarjeta y la deja en la lista.
@@ -1454,7 +1473,7 @@ function mostrarModo() {
 function refrescarMemoria() {
     cv = D.leerCV();
     clearTimeout(refrescarMemoria.t);
-    refrescarMemoria.t = setTimeout(() => { dibujarPasos(); pintarHojas(); const r = $('[data-revision]'); if (r) pintarRevision(r); }, 120);
+    refrescarMemoria.t = setTimeout(() => { $$('[data-previa]').forEach((n) => n._pintar && n._pintar()); dibujarPasos(); pintarHojas(); const r = $('[data-revision]'); if (r) pintarRevision(r); }, 120);
 }
 
 // Llega algo de otro dispositivo: se actualiza lo que se ve SIN reconstruir el formulario.

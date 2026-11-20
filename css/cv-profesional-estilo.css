@@ -125,6 +125,15 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dpc-guardar .dp-ayuda { flex: 1 1 240px; margin: 0; }
 .dpc .dpc-guardar .dp-error { flex-basis: 100%; }
 .dpc .dpc-evidencia { margin-top: 18px; }
+.dpc .dpc-previa { margin-top: 24px; padding: 14px 16px; background: #FFF4EC; border: 1.5px solid #F4B88C; border-radius: 12px; }
+.dpc .dpc-previa-cab { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; color: var(--dpc-naranja-os); }
+.dpc .dpc-previa-cab strong { font-size: 16px; font-weight: 600; }
+.dpc .dpc-previa-cab span { font-size: 14px; }
+.dpc .dpc-previa-cv { margin: 10px 0 8px; padding: 12px 14px; background: #fff; border-radius: 8px; font-family: Georgia, 'Times New Roman', serif; color: #222; overflow-wrap: anywhere; }
+.dpc .dpc-previa-cv .dp-cv-p { margin: 0 0 4px; font-size: 16px; line-height: 1.5; }
+.dpc .dpc-previa-cv .dp-cv-item { margin: 0; }
+.dpc .dpc-previa-vacio { margin: 0; font-size: 15px; color: var(--dp-suave); font-family: inherit; }
+.dpc .dpc-previa-nota { display: block; font-size: 14px; color: var(--dpc-naranja-os); }
 .dpc .dpc-evidencia .dp-campo { margin-top: 10px; }
 .dpc .dp-quitar, .dpc .dp-btn-texto { font-size: 15px; }
 .dpc .dp-grupo { margin-top: 30px; }
@@ -247,10 +256,8 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 
 /* Asistentes: respuestas que crecen solas y borrador siempre a la vista */
 .dpc .dpc-crece { display: block; width: 100%; min-height: 0; resize: none; overflow: hidden; line-height: 1.45; }
-.dpc .dpc-borrador-fijo { position: sticky; bottom: 0; z-index: 3; margin: 22px 0 0; padding: 10px 0 12px; background: #FFFAF5; border-top: 1.5px solid #F4B88C; }
+.dpc .dpc-borrador-fijo { margin: 22px 0 0; }      /* «Así va quedando»: un bloque normal, no sigue al alumno al desplazarse */
 .dpc .dpc-guia .dpc-borrador-fijo .dpc-lab { margin-top: 0; }
-.dpc .dpc-borrador-fijo .dpc-borrador { max-height: 32vh; overflow-y: auto; }
-@media (max-width: 760px) { .dpc .dpc-borrador-fijo { position: static; border-top: 0; padding: 0; } }
 
 .dpc .dpc-aviso-borrador { margin: 22px 0 0; padding: 10px 14px; background: #fff; border: 1.5px solid #F4B88C; border-radius: 10px; }
 .dpc .dpc-aviso-borrador strong { font-size: 16px; font-weight: 600; color: var(--dpc-naranja-os); }

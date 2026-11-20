@@ -113,6 +113,13 @@ function htmlCertificaciones(lista) {
     }).join('') + '</ul>';
 }
 
+// Un solo proyecto o experiencia tal como saldrá en el CV (la usa la tarjeta del constructor). '' si todavía no hay nada que mostrar.
+export function htmlItemPrevia(tipo, item = {}) {
+    if (tipo === 'proyecto') return (t(item.nombre) || t(item.queHiciste) || t(item.herramientas) || t(item.evidencia)) ? htmlProyectos([item]) : '';
+    if (tipo === 'experiencia') return (t(item.puesto) || t(item.queHiciste)) ? htmlExperiencia([item]) : '';
+    return '';
+}
+
 export function htmlCV(cv = {}) {
     const d = cv.datos || {};
     const proyectos = (cv.proyectos || []).filter((p) => t(p.nombre) || t(p.queHiciste) || t(p.herramientas) || t(p.evidencia));
