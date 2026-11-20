@@ -114,7 +114,6 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dp-tarjeta-flecha { color: var(--dpc-naranja); width: 18px; flex: none; }
 .dpc .dp-tarjeta-resumen { font-weight: 400; color: var(--dp-suave); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .dpc .dp-tarjeta-cuerpo { margin-top: 6px; }
-.dpc .dp-tarjeta-cab { position: sticky; top: 0; z-index: 4; background: #fafcff; margin: 0 -4px; padding: 8px 4px; border-bottom: 1px solid var(--dp-borde); }     /* la cabecera acompaña mientras se escribe: el aviso de guardado siempre se ve */
 .dpc .dp-guardado { flex: none; font-size: 14px; color: #1E7B3A; white-space: nowrap; }
 .dpc .dp-guardado[data-guardado="reposo"], .dpc .dp-guardado[data-guardado="guardando"] { color: var(--dp-suave); }
 .dpc .dp-guardado[hidden] { display: none; }
