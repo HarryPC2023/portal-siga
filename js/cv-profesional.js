@@ -2,7 +2,7 @@
 //
 // Principios:
 //  • Los datos viven en SigaEstado (módulo «desarrollo»), vía js/desarrollo-estado.js. Aquí no hay tablas ni mecanismos propios.
-//  • Autoguardado silencioso: se guarda mientras escribe; solo se avisa si algo falla o si hay un conflicto real.
+//  • Autoguardado: se guarda mientras escribe. En cada tarjeta se ve «Guardando…» y «✓ Guardado»; los fallos y conflictos se avisan aparte.
 //  • NUNCA se reconstruye el formulario cuando llega un cambio de otro dispositivo: solo se actualizan los campos
 //    que el alumno no está escribiendo (ni tiene cambios sin guardar). Las listas se concilian elemento por elemento.
 //  • El CV es una copia propia: el paso «Formación» copia datos de SIGA pero jamás escribe en el perfil académico.
@@ -65,6 +65,14 @@ function limpiarSucios(clave) {
     for (const k of [...sucios]) if (k.startsWith(clave + '|')) sucios.delete(k);
 }
 
+// Indicador de la tarjeta («Guardando…» → «✓ Guardado»). Solo existe en las tarjetas de las listas.
+function marcarEstado(clave, estado) {
+    const n = $(`.dp-tarjeta[data-clave="${clave}"] [data-guardado]`);
+    if (!n) return;
+    n.dataset.guardado = estado;
+    n.textContent = estado === 'guardando' ? C.GUARDADO.guardando : estado === 'guardado' ? C.GUARDADO.guardado : '';
+}
+
 function flush(clave) {
     clearTimeout(temporizadores.get(clave)); temporizadores.delete(clave);
     const obj = recolectar(clave);
@@ -72,12 +80,14 @@ function flush(clave) {
     if (!obj) return;
     const actual = D.leerClave(clave);
     if (actual === undefined && esVacio(obj)) return;                       // no guardar filas vacías por solo pasar el cursor
-    if (JSON.stringify(actual ?? null) === JSON.stringify(obj)) return;     // nada nuevo
+    if (JSON.stringify(actual ?? null) === JSON.stringify(obj)) { if (($(`.dp-tarjeta[data-clave="${clave}"] [data-guardado]`) || {}).dataset?.guardado === 'guardando') marcarEstado(clave, 'guardado'); return; }     // nada nuevo
     D.guardarClave(clave, obj);
+    marcarEstado(clave, 'guardado');
     refrescarMemoria();
 }
 
 function programar(clave) {
+    marcarEstado(clave, 'guardando');
     clearTimeout(temporizadores.get(clave));
     temporizadores.set(clave, setTimeout(() => flush(clave), 400));
 }
@@ -257,6 +267,7 @@ function camposProyecto(clave) {
     const guardarCampo = (cambios) => {
         flush(clave);
         D.guardarClave(clave, { ...leerItem(clave), ...cambios });
+        marcarEstado(clave, 'guardado');
         refrescarMemoria();
     };
 
@@ -383,8 +394,25 @@ function camposProyecto(clave) {
     return [
         campo({ clave, nombre: 'nombre', etiqueta: 'Nombre del proyecto', placeholder: ej.nombre }),
         bloqueCategoria, bloqueModalidad, detPeriodo, bloqueDescripcion, bloqueHerr,
-        campo({ clave, nombre: 'evidencia', etiqueta: 'Resultado o evidencia', opcional: true, placeholder: 'Un repositorio, una presentación, una demostración, un documento o un resultado', area: true }),
+        bloqueEvidencia(clave),
     ];
+}
+
+// «Resultado o evidencia»: se pliega igual que los grupos de herramientas; se abre solo si ya tiene texto.
+function bloqueEvidencia(clave) {
+    const E = C.EVIDENCIA;
+    const campoEv = campo({ clave, nombre: 'evidencia', etiqueta: E.resumen, opcional: true, placeholder: E.placeholder, area: true });
+    $('label', campoEv).className = 'dp-solo-lector';                 // la etiqueta ya está en el resumen: se deja solo para lectores de pantalla
+    const area = $('textarea', campoEv);
+    const cuenta = el('span', { class: 'dpc-resumen' });
+    const pintar = () => { cuenta.textContent = area.value.trim() ? E.cuenta : ''; };
+    area.addEventListener('input', pintar);
+    pintar();
+    const det = el('details', { class: 'dpc-det dpc-evidencia', 'data-pinta': '', open: area.value.trim() ? true : null },
+        el('summary', {}, E.resumen, el('span', { class: 'dp-opc', text: ' (opcional)' }), cuenta),
+        el('small', { class: 'dp-ayuda', text: E.texto }), campoEv);
+    det._pintar = pintar;
+    return det;
 }
 
 // Experiencia: puesto, organización (opcional), periodo (opcional) y «¿Qué hiciste?» con ayuda guiada.
@@ -636,12 +664,18 @@ function crearTarjeta(tipo, item) {
             el('button', { type: 'button', class: 'dp-btn-texto', text: 'No', onclick: mostrarQuitar }));
     };
     mostrarQuitar();
-    const cuerpo = el('div', { class: 'dp-tarjeta-cuerpo', id: `dp-cuerpo-${item.id}` }, ...CAMPOS_TARJETA[tipo](clave));
+    const G = C.GUARDADO[tipo];
+    const estado = el('span', { class: 'dp-guardado', 'data-guardado': '', role: 'status' });
+    const cierre = G ? el('div', { class: 'dpc-guardar' },
+        el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: G.boton, onclick: () => guardarTarjeta(tipo, item.id, clave) }),
+        el('small', { class: 'dp-ayuda', text: C.GUARDADO.nota }),
+        el('small', { class: 'dp-error', role: 'alert', hidden: true, 'data-falta': '' })) : null;
+    const cuerpo = el('div', { class: 'dp-tarjeta-cuerpo', id: `dp-cuerpo-${item.id}` }, ...CAMPOS_TARJETA[tipo](clave), cierre);
     const boton = el('button', {
         type: 'button', class: 'dp-tarjeta-toggle', 'aria-controls': cuerpo.id, 'aria-expanded': 'true',
         title: 'Plegar o desplegar',
     }, el('span', { class: 'dp-tarjeta-flecha', 'aria-hidden': 'true', text: '▾' }), titulo, el('span', { class: 'dp-tarjeta-resumen', hidden: true }));
-    const tarjeta = el('div', { class: 'dp-tarjeta', 'data-id': item.id }, el('div', { class: 'dp-tarjeta-cab' }, boton, accion), cuerpo);
+    const tarjeta = el('div', { class: 'dp-tarjeta', 'data-id': item.id, 'data-clave': clave }, el('div', { class: 'dp-tarjeta-cab' }, boton, estado, accion), cuerpo);
     boton.addEventListener('click', () => {
         if (plegadas.has(item.id)) plegadas.delete(item.id);
         else { plegadas.add(item.id); if (cuerpo.contains(document.activeElement)) boton.focus(); }
@@ -650,6 +684,28 @@ function crearTarjeta(tipo, item) {
     });
     aplicarPliegue(tarjeta, tipo, clave);
     return tarjeta;
+}
+
+// «Guardar proyecto / experiencia / logro»: los datos ya se guardan solos; este botón confirma, cierra la tarjeta y la deja en la lista.
+function guardarTarjeta(tipo, id, clave) {
+    const G = C.GUARDADO[tipo];
+    const tarjeta = $(`.dp-tarjeta[data-id="${id}"]`);
+    if (!tarjeta || !G) return;
+    flush(clave);
+    const falta = $('[data-falta]', tarjeta);
+    if (!String((D.leerClave(clave) || {})[PRIMER_CAMPO[tipo]] || '').trim()) {
+        falta.textContent = G.falta; falta.hidden = false;
+        const campoPrimero = $(`[data-clave="${clave}"][data-campo="${PRIMER_CAMPO[tipo]}"]`, tarjeta);
+        if (campoPrimero) { campoPrimero.focus(); campoPrimero.addEventListener('input', () => { falta.hidden = true; }, { once: true }); }
+        return;
+    }
+    falta.hidden = true;
+    marcarEstado(clave, 'guardado');
+    plegadas.add(id);
+    aplicarPliegue(tarjeta, tipo, clave);
+    pintarBarra(tipo);
+    tarjeta.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    toast({ id: 'guardado', texto: G.ok });
 }
 
 function quitar(tipo, id, clave) {
