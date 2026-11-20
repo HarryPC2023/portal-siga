@@ -389,6 +389,12 @@ export const GUARDADO = {
     logro: { boton: 'Registrar logro', ok: 'Logro registrado en tu lista de logros.', falta: 'Describe tu logro para poder registrarlo.' },
 };
 
+// Ayuda permanente bajo «Desde» y «Hasta».
+export const PERIODO = {
+    ayuda: 'Escribe el mes y el año (marzo de 2024) o solo el año (2024). Si escribes 03/2024, lo dejamos como «marzo de 2024».',
+    sinFechas: 'Sin fechas, tu CV no muestra periodo.',
+};
+
 // Vista previa dentro de la tarjeta: el mismo texto que saldrá en el CV, siempre al día.
 export const PREVIA = {
     titulo: 'Así se verá en tu CV',

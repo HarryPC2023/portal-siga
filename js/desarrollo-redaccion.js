@@ -32,6 +32,33 @@ export const todasLasHerramientas = (g) => [...g.sw, ...g.eq, ...g.me];
 export const aplanarHerramientas = (g) => todasLasHerramientas(g).join(', ');
 
 // Texto de periodo para mostrar: «2024 – actualidad», «marzo de 2025 – noviembre de 2025», «2025» o '' si no hay fechas.
+// Fechas del CV: «03/2024», «03 del 2024», «mar 2024» o «Marzo, 2024» pasan a «marzo de 2024». Lo que no se reconoce (un año suelto, «2024 – 2025»,
+// «actualidad», cualquier otro texto) se devuelve igual: jamás se adivina lo que quiso decir el alumno.
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre'];
+const MES_POR_PALABRA = (() => {
+    const m = {};
+    const abre = { enero: ['ene'], febrero: ['feb'], marzo: ['mar'], abril: ['abr'], mayo: ['may'], junio: ['jun'], julio: ['jul'], agosto: ['ago'], octubre: ['oct'], noviembre: ['nov'], diciembre: ['dic'] };
+    MESES.forEach((n, i) => { m[n] = [i, n]; (abre[n] || []).forEach((a) => { m[a] = [i, n]; }); });
+    m.septiembre = [8, 'septiembre']; m.sept = [8, 'septiembre']; m.sep = [8, 'septiembre']; m.set = [8, 'setiembre'];     // respeta cómo lo escribe el alumno
+    return m;
+})();
+export function normalizarFecha(texto) {
+    const t = String(texto == null ? '' : texto).trim().replace(/\s+/g, ' ');
+    if (!t) return '';
+    const anio = '((?:19|20)\\d{2})';
+    let m = t.match(new RegExp('^(\\d{1,2})\\s*[/.\\-]\\s*' + anio + '$'));          // 03/2024, 3-2024, 03.2024
+    if (m) { const n = Number(m[1]); return n >= 1 && n <= 12 ? `${MESES[n - 1]} de ${m[2]}` : t; }
+    m = t.match(new RegExp('^([A-Za-zÁÉÍÓÚáéíóúÑñ]+)\\.?\\s*(?:,|/|-|de|del)?\\s*' + anio + '$'));   // mar 2024, Marzo, 2024, marzo del 2024
+    if (m) {
+        const clave = m[1].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const hit = MES_POR_PALABRA[clave];
+        if (hit) return `${hit[1]} de ${m[2]}`;
+    }
+    m = t.match(new RegExp('^(\\d{1,2})\\s+(?:de|del)\\s+' + anio + '$'));                  // 03 del 2024
+    if (m) { const n = Number(m[1]); return n >= 1 && n <= 12 ? `${MESES[n - 1]} de ${m[2]}` : t; }
+    return t;
+}
+
 export function textoPeriodo({ desde, hasta, sigue } = {}) {
     const d = t(desde), h = t(hasta);
     if (sigue) return d ? `${d} – actualidad` : 'En desarrollo';

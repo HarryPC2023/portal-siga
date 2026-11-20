@@ -13,7 +13,7 @@ import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PER
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=4';
 import { htmlCV, htmlItemPrevia } from './cv-documento.js?v=2';
-import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=2';
+import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, normalizarFecha, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 
 const D = crearDesarrollo(SigaEstado);
@@ -198,7 +198,15 @@ function crearPeriodo({ clave, base, textoSigue, alCambiar }) {
         el('summary', {}, 'Periodo ', el('span', { class: 'dp-opc', text: '(opcional)' }), resumen),
         el('div', { class: 'dpc-fechas' }, desde, hasta),
         el('label', { class: 'dp-casilla', for: chk.id }, chk, ' ' + textoSigue),
-        el('small', { class: 'dp-ayuda', text: 'Sin fechas, tu CV no muestra periodo. Basta con el año si no recuerdas el mes.' }));
+        el('small', { class: 'dp-ayuda', text: `${C.PERIODO.ayuda} ${C.PERIODO.sinFechas}` }));
+    // Al salir de «Desde» o «Hasta» se ordena la fecha («03/2024» → «marzo de 2024»). Lo que no se reconoce queda como lo escribió.
+    // «change» ocurre antes que el blur que guarda, así que se guarda ya corregido.
+    for (const input of $$('input[data-campo="desde"], input[data-campo="hasta"]', det)) {
+        input.addEventListener('change', () => {
+            const arreglado = normalizarFecha(input.value);
+            if (arreglado !== input.value.trim() || input.value !== arreglado) { input.value = arreglado; pintarPeriodo(det); alCambiar(); }
+        });
+    }
     det._pintar = () => { pintarPeriodo(det); alCambiar(); };
     chk.addEventListener('change', () => {
         if (chk.checked) $('input[data-campo="hasta"]', det).value = '';
