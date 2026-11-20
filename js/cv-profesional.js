@@ -15,6 +15,10 @@ import * as C from './desarrollo-contenido.js?v=4';
 import { htmlCV, htmlItemPrevia } from './cv-documento.js?v=2';
 import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, normalizarFecha, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
+import { FACULTADES } from '../intranotas/facultades-datos.js';
+
+// El perfil de SIGA guarda la carrera por su id («sistemas»); aquí se convierte en su nombre completo («Ingeniería de Sistemas»).
+const resolverCarrera = (id) => { for (const f of FACULTADES) { const c = f.carreras.find((x) => x.id === id); if (c) return c.nombre; } return ''; };
 
 const D = crearDesarrollo(SigaEstado);
 
@@ -894,7 +898,7 @@ function pasoFormacion() {
     const restablecer = el('button', {
         type: 'button', class: 'dp-btn dp-btn-chico', text: 'Restablecer datos de SIGA',
         onclick: async () => {
-            const s = await leerDatosSiga(supabase);
+            const s = await leerDatosSiga(supabase, { resolverCarrera });
             const nombres = [s.universidad && 'universidad', s.carrera && 'carrera', s.ingreso && 'año de ingreso'].filter(Boolean);
             const lista = nombres.length > 1 ? nombres.slice(0, -1).join(', ') + ' y ' + nombres[nombres.length - 1] : nombres[0];
             const si = await confirmarModal({
@@ -914,15 +918,18 @@ function pasoFormacion() {
         },
     });
     // Primera vez: copiar lo que SIGA ya sabe. No pisa nada que el alumno haya escrito mientras tanto.
-    if (D.leerClave(c) === undefined) {
-        leerDatosSiga(supabase).then((s) => {
+    // También se completa si la carrera quedó vacía (por ejemplo, un CV iniciado antes de que SIGA la leyera); nunca pisa lo escrito.
+    const previo = D.leerClave(c);
+    if (previo === undefined || !String(previo.carrera || '').trim()) {
+        leerDatosSiga(supabase, { resolverCarrera }).then((s) => {
             const actual = D.leerClave(c);
             if (actual === undefined) {
                 D.guardarClave(c, { universidad: s.universidad, carrera: s.carrera, ingreso: s.ingreso, cursos: [], promedio: '', desdeSiga: true });
             } else {
                 const mezcla = { ...actual };
-                for (const k of ['universidad', 'carrera', 'ingreso']) if (!mezcla[k] && s[k]) mezcla[k] = s[k];
-                D.guardarClave(c, mezcla);
+                let cambio = false;
+                for (const k of ['universidad', 'carrera', 'ingreso']) if (!mezcla[k] && s[k]) { mezcla[k] = s[k]; cambio = true; }
+                if (cambio) D.guardarClave(c, mezcla);
             }
             refrescarMemoria();
             if ($('#dpPanel') && $('[data-clave="cv:formacion"]')) { sincronizarCampos($('#dpPanel')); actualizarMarca(); }
