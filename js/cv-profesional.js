@@ -1521,7 +1521,8 @@ function dibujarPaso() {
             el('div', { class: 'dpc-seg', 'aria-hidden': 'true' }, ...C.PASOS.map(() => el('i'))),
             el('span', { text: `Paso ${paso + 1} de ${C.PASOS.length} · ${C.ETAPAS[p.id] || ''}` })),
         el('h2', { class: 'dp-paso-titulo' }, `${paso + 1}. ${p.titulo}`),
-        p.etiquetaPaso ? el('span', { class: 'dpc-recomendado', text: p.etiquetaPaso }) : null,
+        // replaceChildren es del navegador (no de el()): un null se escribiría como el texto «null», por eso se usa ...[].
+        ...(p.etiquetaPaso ? [el('span', { class: 'dpc-recomendado', text: p.etiquetaPaso })] : []),
         el('p', { class: 'dp-suave', text: p.porQue }),
         el('div', { class: 'dpc-listo', 'data-listo': '', hidden: true, role: 'status' }),
         cuerpo,
