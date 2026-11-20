@@ -898,6 +898,20 @@ function pasoDatos() {
         campo({ clave: c, nombre: 'distrito', etiqueta: 'Distrito', opcional: true, placeholder: 'Por ejemplo: Rímac' }));
 }
 
+// Avisos junto a los años de Formación: solo orientan, nunca impiden escribir.
+const avisoAnio = (v) => (String(v).trim() && !/^\d{4}$/.test(String(v).trim()) ? { nivel: 'aviso', mensaje: 'Escribe el año con 4 dígitos, por ejemplo 2027.' } : null);
+const avisoOrden = (entradaIngreso, egreso) => {
+    const i = String(entradaIngreso ? entradaIngreso.value : '').trim(), e = String(egreso).trim();
+    return /^\d{4}$/.test(i) && /^\d{4}$/.test(e) && Number(e) < Number(i) ? { nivel: 'error', mensaje: 'El año de egreso es anterior al de ingreso.' } : null;
+};
+function casillaEgresado(c) {
+    const chk = el('input', { type: 'checkbox', id: 'f-egresado' });
+    chk.dataset.clave = c; chk.dataset.campo = 'egresado';
+    chk.checked = !!(D.leerClave(c) || {}).egresado;
+    chk.addEventListener('change', () => { sucios.add(`${c}|egresado`); flush(c); });
+    return chk;
+}
+
 function pasoFormacion() {
     const c = CLAVE_FORMACION;
     const marca = el('span', { class: 'dp-etiqueta-siga', 'data-marca-siga': '' });
@@ -947,7 +961,12 @@ function pasoFormacion() {
         el('div', { class: 'dp-fila-siga' }, marca, restablecer),
         campo({ clave: c, nombre: 'universidad', etiqueta: 'Universidad', placeholder: 'Universidad Nacional de Ingeniería' }),
         campo({ clave: c, nombre: 'carrera', etiqueta: 'Carrera', placeholder: C.FORMACION.carrera, lista: listaCarreras, ayuda: 'Elige de la lista o escribe la tuya.' }),
-        campo({ clave: c, nombre: 'ingreso', etiqueta: 'Año de ingreso', placeholder: '2023', opcional: true, extra: { inputmode: 'numeric', maxlength: '4' } }),
+        el('div', { class: 'dpc-fechas' },
+            campo({ clave: c, nombre: 'ingreso', etiqueta: 'Año de ingreso', placeholder: '2023', opcional: true, extra: { inputmode: 'numeric', maxlength: '4' }, validar: (v) => avisoAnio(v) }),
+            campo({ clave: c, nombre: 'egreso', etiqueta: 'Año de egreso', placeholder: '2027', opcional: true, extra: { inputmode: 'numeric', maxlength: '4' },
+                validar: (v) => avisoAnio(v) || avisoOrden($('input[data-campo="ingreso"]', $('#dpPanel') || document), v) })),
+        el('label', { class: 'dp-casilla', for: 'f-egresado' }, casillaEgresado(c), ' Ya egresé'),
+        el('small', { class: 'dp-ayuda', text: C.FORMACION.ayudaPeriodo }),
         campo({ clave: c, nombre: 'cursos', etiqueta: 'Cursos relevantes', opcional: true, placeholder: C.FORMACION.cursos[sumaTexto((D.leerClave(c) || {}).carrera) % C.FORMACION.cursos.length], ayuda: 'Separa con comas. Hasta 5, relacionados con el puesto al que postulas.' }),
         campo({ clave: c, nombre: 'promedio', etiqueta: 'Promedio académico', opcional: true, placeholder: 'Déjalo vacío si no deseas incluirlo' }));
 }

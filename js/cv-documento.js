@@ -24,8 +24,27 @@ function htmlPerfil(texto) {
     return t(texto).split(/\n+/).map(t).filter(Boolean).map((l) => `<p class="dp-cv-p">${esc(l)}</p>`).join('');
 }
 
-function htmlFormacion(f = {}) {
-    const linea1 = unir([t(f.universidad), t(f.carrera), t(f.ingreso) ? `${esc(t(f.ingreso))} – actualidad` : ''].map((x, i) => (i < 2 ? esc(x) : x)));
+// Periodo de la carrera y situación del alumno, a partir de los años que puso (basta el año, no hace falta el mes).
+//   2023 – 2027 (previsto) · Estudiante      2019 – 2024 · Egresado      2023 – actualidad · Estudiante
+// «previsto» sale solo cuando el año de egreso es futuro (o es este año y no marcó «Ya egresé»). Sin año de egreso y sin marcar «Ya egresé»
+// se muestra «actualidad». Lo que no es un año de 4 dígitos se muestra tal cual lo escribió: no se adivina.
+export function periodoFormacion(f = {}, anio = new Date().getFullYear()) {
+    const ing = t(f.ingreso), egr = t(f.egreso);
+    const esAnio = (v) => /^\d{4}$/.test(v);
+    const nEgr = esAnio(egr) ? Number(egr) : null;
+    const previsto = nEgr !== null && (nEgr > anio || (nEgr === anio && f.egresado !== true));
+    const egresado = (f.egresado === true && !(nEgr !== null && nEgr > anio)) || (nEgr !== null && nEgr < anio);
+    let periodo = '';
+    if (ing && egr) periodo = `${ing} – ${egr}${previsto ? ' (previsto)' : ''}`;
+    else if (ing) periodo = egresado ? ing : `${ing} – actualidad`;
+    else if (egr) periodo = `${egr}${previsto ? ' (previsto)' : ''}`;
+    const situacion = egresado ? 'Egresado' : (ing || egr) ? 'Estudiante' : '';
+    return { periodo, situacion };
+}
+
+function htmlFormacion(f = {}, anio) {
+    const { periodo, situacion } = periodoFormacion(f, anio);
+    const linea1 = unir([t(f.universidad), t(f.carrera), periodo, situacion].map(esc));
     const cursos = (Array.isArray(f.cursos) ? f.cursos : []).map(t).filter(Boolean).slice(0, 5);
     const partes = [];
     if (linea1) partes.push(`<p class="dp-cv-p">${linea1}</p>`);
@@ -128,7 +147,7 @@ export function htmlCV(cv = {}) {
     const certificaciones = (cv.certificaciones || []).filter((c) => t(c.nombre) || t(c.institucion));
     const logros = (cv.logros || []).filter((l) => t(l.texto));
     const f = cv.formacion || {};
-    const hayFormacion = t(f.universidad) || t(f.carrera) || t(f.ingreso) || t(f.promedio) || (Array.isArray(f.cursos) && f.cursos.some((c) => t(c)));
+    const hayFormacion = t(f.universidad) || t(f.carrera) || t(f.ingreso) || t(f.egreso) || f.egresado === true || t(f.promedio) || (Array.isArray(f.cursos) && f.cursos.some((c) => t(c)));
 
     const contacto = unir([t(d.correo), t(d.telefono), t(d.linkedin), t(d.github), t(d.distrito)].map(esc));
     const cabecera = `<header class="dp-cv-cab"><h1 class="dp-cv-h1">${esc(t(d.nombre) || 'Tu nombre')}</h1>`

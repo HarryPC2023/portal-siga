@@ -525,6 +525,7 @@ CATALOGO.per = HABILIDADES_PERSONALES;
 // Formación: ejemplos neutros (no dependen de la carrera). Los cursos rotan entre facultades y solo se ven como ejemplo, nunca se guardan.
 export const FORMACION = {
     carrera: 'Nombre de tu carrera',
+    ayudaPeriodo: 'Basta con el año. Si sigues estudiando, pon el año en que esperas terminar (saldrá «previsto»); si no lo sabes, déjalo vacío y saldrá «actualidad». Marca «Ya egresé» solo si ya terminaste tus cursos.',
     cursos: ['Estadística, Programación, Gestión de proyectos', 'Mecánica de materiales, Dibujo técnico, Física', 'Costos, Contabilidad, Investigación de operaciones',
         'Química orgánica, Laboratorio, Estadística', 'Diseño de planos, Topografía, Presupuestos', 'Circuitos eléctricos, Control, Matemática'],
 };
