@@ -18,6 +18,9 @@ import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 import { FACULTADES } from '../intranotas/facultades-datos.js';
 
 // El perfil de SIGA guarda la carrera por su id («sistemas»); aquí se convierte en su nombre completo («Ingeniería de Sistemas»).
+// Todas las carreras de la UNI (nombre completo), con su facultad como descripción en la lista.
+const CARRERAS = FACULTADES.flatMap((f) => f.carreras.map((c) => ({ nombre: c.nombre, facultad: f.nombre })));
+const listaCarreras = { catalogo: CARRERAS.map((c) => c.nombre), descripcion: (n) => (CARRERAS.find((c) => c.nombre === n) || {}).facultad || '' };
 const resolverCarrera = (id) => { for (const f of FACULTADES) { const c = f.carreras.find((x) => x.id === id); if (c) return c.nombre; } return ''; };
 
 const D = crearDesarrollo(SigaEstado);
@@ -99,10 +102,14 @@ function programar(clave) {
 function flushTodo() { [...temporizadores.keys()].forEach(flush); }
 
 // ───────────── campos de formulario ─────────────
-function campo({ clave, nombre, etiqueta, placeholder = '', tipo = 'text', opcional = false, area = false, ayuda = '', extra = {}, validar = null }) {
+function campo({ clave, nombre, etiqueta, placeholder = '', tipo = 'text', opcional = false, area = false, ayuda = '', extra = {}, validar = null, lista = null }) {
     const id = `f-${clave.replace(/\W/g, '_')}-${nombre}`;
     const valor = (D.leerClave(clave) || {})[nombre];
-    const input = area ? el('textarea', { id, rows: 3, placeholder }) : el('input', { id, type: tipo, placeholder, autocomplete: 'off', ...extra });
+    // Con `lista`, el campo es un desplegable de opciones que además permite escribir cualquier otro texto.
+    const combo = lista ? campoConLista({ aria: etiqueta, catalogo: lista.catalogo, descripcion: lista.descripcion, placeholder, ocupado: () => false,
+        enviar: (v) => { combo.entrada.value = String(v || '').trim(); sucios.add(`${clave}|${nombre}`); flush(clave); } }) : null;
+    const input = combo ? combo.entrada : area ? el('textarea', { id, rows: 3, placeholder }) : el('input', { id, type: tipo, placeholder, autocomplete: 'off', ...extra });
+    if (combo) input.id = id;
     input.value = Array.isArray(valor) ? valor.join(', ') : (valor ?? '');
     input.dataset.clave = clave;
     input.dataset.campo = nombre;
@@ -119,7 +126,7 @@ function campo({ clave, nombre, etiqueta, placeholder = '', tipo = 'text', opcio
     if (validar) { input.addEventListener('input', revisar); revisar(); }
     return el('div', { class: 'dp-campo' },
         el('label', { for: id }, etiqueta, opcional ? el('span', { class: 'dp-opc', text: ' (opcional)' }) : null),
-        input,
+        combo ? combo.caja : input,
         aviso,
         ayuda ? el('small', { class: 'dp-ayuda', text: ayuda }) : null);
 }
@@ -245,9 +252,9 @@ function entradaCrece(attrs = {}) {
 // Escribir libre sigue siendo lo principal: Enter agrega lo que se escribió, esté o no en la lista. Las ideas ya agregadas no se vuelven a ofrecer.
 let contadorLista = 0;
 const sinTildes = (v) => String(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-function campoConLista({ aria, catalogo, ocupado, enviar, alIdea, descripcion, bloqueado }) {
+function campoConLista({ aria, catalogo, ocupado, enviar, alIdea, descripcion, bloqueado, placeholder }) {
     const I = C.IDEAS, id = `lista-ideas-${++contadorLista}`;
-    const entrada = el('input', { type: 'text', autocomplete: 'off', placeholder: I.placeholder, 'aria-label': aria, role: 'combobox', 'aria-expanded': 'false', 'aria-controls': id, 'aria-autocomplete': 'list' });
+    const entrada = el('input', { type: 'text', autocomplete: 'off', placeholder: placeholder || I.placeholder, 'aria-label': aria, role: 'combobox', 'aria-expanded': 'false', 'aria-controls': id, 'aria-autocomplete': 'list' });
     const lista = el('div', { id, role: 'listbox', class: 'dpc-lista-ideas', hidden: true, 'aria-label': aria });
     const flecha = el('button', { type: 'button', class: 'dpc-flecha-lista', 'aria-label': I.verTodas, tabindex: '-1', text: '▾' });
     const ideas = el('div', { class: 'dp-chips dpc-sugerencias' });
@@ -264,7 +271,8 @@ function campoConLista({ aria, catalogo, ocupado, enviar, alIdea, descripcion, b
     function cerrar() { lista.hidden = true; entrada.setAttribute('aria-expanded', 'false'); entrada.removeAttribute('aria-activedescendant'); activa = -1; }
     function elegir(x) { cerrar(); enviar(x); }
     function abrir() {
-        const q = sinTildes(entrada.value.trim());
+        const q0 = sinTildes(entrada.value.trim());
+        const q = catalogo.some((x) => sinTildes(x) === q0) ? '' : q0;     // si ya eligió una de la lista, al abrir se ve la lista completa para cambiarla
         if (bloqueado && bloqueado()) { cerrar(); return; }
         visibles = libres().filter((x) => !q || sinTildes(x).includes(q) || sinTildes(descr(x)).includes(q)).sort((a, b) => a.localeCompare(b, 'es'));
         if (!visibles.length) { cerrar(); return; }
@@ -938,7 +946,7 @@ function pasoFormacion() {
     return el('div', {},
         el('div', { class: 'dp-fila-siga' }, marca, restablecer),
         campo({ clave: c, nombre: 'universidad', etiqueta: 'Universidad', placeholder: 'Universidad Nacional de Ingeniería' }),
-        campo({ clave: c, nombre: 'carrera', etiqueta: 'Carrera', placeholder: C.FORMACION.carrera }),
+        campo({ clave: c, nombre: 'carrera', etiqueta: 'Carrera', placeholder: C.FORMACION.carrera, lista: listaCarreras, ayuda: 'Elige de la lista o escribe la tuya.' }),
         campo({ clave: c, nombre: 'ingreso', etiqueta: 'Año de ingreso', placeholder: '2023', opcional: true, extra: { inputmode: 'numeric', maxlength: '4' } }),
         campo({ clave: c, nombre: 'cursos', etiqueta: 'Cursos relevantes', opcional: true, placeholder: C.FORMACION.cursos[sumaTexto((D.leerClave(c) || {}).carrera) % C.FORMACION.cursos.length], ayuda: 'Separa con comas. Hasta 5, relacionados con el puesto al que postulas.' }),
         campo({ clave: c, nombre: 'promedio', etiqueta: 'Promedio académico', opcional: true, placeholder: 'Déjalo vacío si no deseas incluirlo' }));
