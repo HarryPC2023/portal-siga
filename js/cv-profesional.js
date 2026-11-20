@@ -209,6 +209,20 @@ function ofertaAyuda(textoBoton, alAbrir) {
     const enlace = el('button', { type: 'button', class: 'dp-btn-texto dpc-rehacer', text: O.rehacer, hidden: true, onclick: alAbrir });
     return { boton, enlace };
 }
+// Respuestas del asistente: caja que crece sola mientras se escribe (sin cortar el texto) y sin saltos de línea.
+function entradaCrece(attrs = {}) {
+    const ta = el('textarea', { rows: 1, class: 'dpc-crece', ...attrs });
+    const ajustar = () => { ta.style.height = 'auto'; if (ta.scrollHeight) ta.style.height = (ta.scrollHeight + 2) + 'px'; };
+    ta.addEventListener('input', () => { if (/\n/.test(ta.value)) ta.value = ta.value.replace(/\s*\n+\s*/g, ' '); ajustar(); });
+    ta.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+    ta._ajustar = ajustar;
+    return ta;
+}
+const ajustarCrecen = (raiz) => $$('textarea.dpc-crece', raiz).forEach((t) => t._ajustar && t._ajustar());
+// «Así va quedando» se queda a la vista mientras se responde (en pantallas grandes).
+const bloqueBorrador = (borrador, err) => el('div', { class: 'dpc-borrador-fijo' }, el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, err);
+const conPrefijo = (pre, input) => el('div', { class: 'dpc-prefijo' }, pre, input);
+
 const botonCerrarGuia = (alCerrar) => el('button', { type: 'button', class: 'dp-btn-texto dpc-cerrar-guia', text: C.OFERTA_AYUDA.cerrar, onclick: alCerrar });
 
 // ───────────── ejemplos rotativos (solo vista: nunca se guardan en el CV) ─────────────
@@ -267,10 +281,11 @@ function camposProyecto(clave) {
         ayuda: 'Basta con 2 o 3 líneas: qué es, qué hiciste y con qué. El detalle largo va en tu portafolio o LinkedIn.' });
     const area = $('textarea', areaCampo);
     const verbo = el('select', { id: `${base}-v` }, C.VERBOS_TRABAJO.map((v, i) => el('option', { value: String(i), text: v[0] })));
-    const gObj = el('input', { type: 'text', id: `${base}-o`, autocomplete: 'off', placeholder: `Ej.: ${ej.objeto}` });
-    const gHizo = el('input', { type: 'text', id: `${base}-h`, autocomplete: 'off', placeholder: `Ej.: ${ej.hizo}` });
-    const gMeta = el('input', { type: 'text', id: `${base}-m`, autocomplete: 'off', placeholder: `Ej.: ${ej.meta}` });
-    const gRes = el('input', { type: 'text', id: `${base}-r`, autocomplete: 'off', placeholder: `Ej.: ${ej.resultado}` });
+    const gObj = entradaCrece({ id: `${base}-o`, autocomplete: 'off', placeholder: `Ej. ${ej.objeto}` });
+    const gHizo = entradaCrece({ id: `${base}-h`, autocomplete: 'off', placeholder: `Ej. ${ej.hice.charAt(0).toUpperCase()}${ej.hice.slice(1)}` });
+    const gMeta = entradaCrece({ id: `${base}-m`, autocomplete: 'off', placeholder: `Ej. ${ej.meta}` });
+    const gRes = entradaCrece({ id: `${base}-r`, autocomplete: 'off', placeholder: `Ej. ${ej.resultado}` });
+    const preObj = el('span', { class: 'dpc-prefijo-txt' }), preMeta = el('span', { class: 'dpc-prefijo-txt', text: 'Con el objetivo de' }), preRes = el('span', { class: 'dpc-prefijo-txt' });
     const borrador = el('div', { class: 'dpc-borrador', 'aria-live': 'polite' });
     const errGuia = el('small', { class: 'dp-error', role: 'alert', hidden: true });
     const pregunta = (id, etiqueta, entrada, ayuda, opc) => el('div', { class: 'dpc-pregunta' },
@@ -278,23 +293,27 @@ function camposProyecto(clave) {
         ayuda ? el('small', { class: 'dp-ayuda', text: ayuda }) : null);
     pintarBorrador = () => {
         const it = leerItem(clave);
+        const vb = C.VERBOS_TRABAJO[Number(verbo.value)] || C.VERBOS_TRABAJO[0];
+        const abre = chkSigue.checked ? vb[1] : vb[2];
+        preObj.textContent = it.modalidad === 'equipo' ? 'En equipo, ' + abre.charAt(0).toLowerCase() + abre.slice(1) : abre;
+        preRes.textContent = chkSigue.checked ? 'Hasta ahora,' : 'Como resultado,';
         const t = armarBorrador({ verbo: Number(verbo.value), objeto: gObj.value, hizo: gHizo.value, meta: gMeta.value, resultado: gRes.value,
             equipo: it.modalidad === 'equipo', sigue: chkSigue.checked, herramientas: todasLasHerramientas(gruposDesde(it)) });
-        borrador.textContent = t || 'Completa «qué creaste» y «qué hiciste» y verás tu borrador aquí.';
+        borrador.textContent = t || 'Completa «en qué consistió» y «qué hiciste tú» y verás tu borrador aquí.';
         borrador.classList.toggle('vacio', !t);
         return t;
     };
     const guia = el('div', { class: 'dpc-guia', hidden: true },
         pregunta(`${base}-v`, '¿Qué tipo de trabajo realizaste?', verbo, 'Elige el verbo que mejor describe tu participación.'),
-        pregunta(`${base}-o`, '¿Qué creaste o realizaste?', gObj, 'Una aplicación, investigación, diseño, prototipo, análisis, propuesta, estudio…'),
-        pregunta(`${base}-h`, '¿Qué hiciste concretamente?', gHizo, 'Tus tareas, responsabilidades y aportes principales.'),
-        pregunta(`${base}-m`, '¿Qué problema, necesidad u objetivo tenía?', gMeta, 'Qué buscabas solucionar, mejorar, investigar o conseguir.', true),
-        pregunta(`${base}-r`, '¿Qué resultado obtuviste?', gRes, 'Escríbelo como frase, sin inventar cifras: «la usan compañeros de varios ciclos».', true),
-        el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, errGuia,
+        pregunta(`${base}-o`, '¿En qué consistió tu proyecto?', conPrefijo(preObj, gObj), 'Cuéntanos qué desarrollaste, investigaste o analizaste: una aplicación, un estudio, un trabajo académico, una iniciativa propia… Solo qué fue; tus tareas van en la siguiente pregunta.'),
+        pregunta(`${base}-h`, '¿Qué hiciste tú para llevarlo a cabo?', gHizo, 'Describe tus tareas, decisiones y aportes concretos. Si fue grupal, céntrate en tu participación. Escríbelo en primera persona: «Diseñé…, programé…».'),
+        pregunta(`${base}-m`, '¿Qué necesidad o problema buscaba atender?', conPrefijo(preMeta, gMeta), 'Para qué servía o qué querías conseguir; empieza con un verbo en infinitivo: solucionar, mejorar, investigar… Si ya lo dijiste arriba, déjalo vacío.', true),
+        pregunta(`${base}-r`, '¿Qué resultado obtuviste?', conPrefijo(preRes, gRes), 'Escríbelo como frase, sin inventar cifras: «la usan compañeros de varios ciclos».', true),
+        bloqueBorrador(borrador, errGuia),
         el('div', { class: 'dpc-acciones-guia' },
             el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
                 const t = pintarBorrador();
-                if (!t) { errGuia.textContent = 'Falta lo principal: qué creaste y qué hiciste.'; errGuia.hidden = false; return; }
+                if (!t) { errGuia.textContent = 'Falta lo principal: en qué consistió tu proyecto y qué hiciste tú.'; errGuia.hidden = false; return; }
                 if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu descripción', texto: 'Ya escribiste una descripción. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;
                 area.value = t; area.dispatchEvent(new Event('input', { bubbles: true })); flush(clave);
                 cerrarGuiaP(); area.focus();
@@ -306,7 +325,7 @@ function camposProyecto(clave) {
         const tiene = area.value.trim().length > 0, abierta = !guia.hidden;
         botonGuia.hidden = tiene || abierta; enlaceP.hidden = !tiene || abierta;
     };
-    function abrirGuiaP() { guia.hidden = false; botonGuia.setAttribute('aria-expanded', 'true'); actualizarOfertaP(); pintarBorrador(); gObj.focus(); }
+    function abrirGuiaP() { guia.hidden = false; botonGuia.setAttribute('aria-expanded', 'true'); actualizarOfertaP(); pintarBorrador(); ajustarCrecen(guia); gObj.focus(); }
     function cerrarGuiaP() { guia.hidden = true; botonGuia.setAttribute('aria-expanded', 'false'); actualizarOfertaP(); }
     guia.append(botonCerrarGuia(cerrarGuiaP));
     area.addEventListener('input', actualizarOfertaP);
@@ -397,11 +416,10 @@ function camposExperiencia(clave) {
     });
 
     // Preguntas 2 a 4: cada respuesta continúa un comienzo fijo, que cambia con el tiempo y los verbos elegidos
-    const gCon = el('input', { type: 'text', id: `${base}-c`, autocomplete: 'off', placeholder: 'Ej. ' + ej.contexto });
-    const gHizo = el('input', { type: 'text', id: `${base}-h`, autocomplete: 'off' });
-    const gRes = el('input', { type: 'text', id: `${base}-r`, autocomplete: 'off', placeholder: 'Ej. ' + ej.resultado });
+    const gCon = entradaCrece({ id: `${base}-c`, autocomplete: 'off', placeholder: 'Ej. ' + ej.contexto });
+    const gHizo = entradaCrece({ id: `${base}-h`, autocomplete: 'off' });
+    const gRes = entradaCrece({ id: `${base}-r`, autocomplete: 'off', placeholder: 'Ej. ' + ej.resultado });
     const preCon = el('span', { class: 'dpc-prefijo-txt' }), preHizo = el('span', { class: 'dpc-prefijo-txt' }), preRes = el('span', { class: 'dpc-prefijo-txt' });
-    const conPrefijo = (pre, input) => el('div', { class: 'dpc-prefijo' }, pre, input);
     const borrador = el('div', { class: 'dpc-borrador', 'aria-live': 'polite' });
     const errGuia = el('small', { class: 'dp-error', role: 'alert', hidden: true });
     const pregunta = (id, etiqueta, entrada, ayuda, opc) => el('div', { class: 'dpc-pregunta' },
@@ -429,7 +447,7 @@ function camposExperiencia(clave) {
             'Tus acciones: lo que hiciste tú, no el grupo. Completa la frase de modo que encaje con el verbo que elegiste.'),
         pregunta(`${base}-r`, '¿Qué se logró?', conPrefijo(preRes, gRes),
             'Un resultado o aporte, si lo hubo. No hace falta una cifra; si no hubo un resultado claro, déjalo vacío.', true),
-        el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, errGuia,
+        bloqueBorrador(borrador, errGuia),
         el('div', { class: 'dpc-acciones-guia' },
             el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
                 const t = pintarBorrador();
@@ -448,7 +466,7 @@ function camposExperiencia(clave) {
         botonGuia.hidden = tiene || abierta;
         enlace.hidden = !tiene || abierta;
     };
-    function abrirGuia() { guia.hidden = false; botonGuia.setAttribute('aria-expanded', 'true'); actualizarOferta(); pintarBorrador(); gCon.focus(); }
+    function abrirGuia() { guia.hidden = false; botonGuia.setAttribute('aria-expanded', 'true'); actualizarOferta(); pintarBorrador(); ajustarCrecen(guia); gCon.focus(); }
     function cerrarGuia() { guia.hidden = true; botonGuia.setAttribute('aria-expanded', 'false'); actualizarOferta(); }
     guia.append(botonCerrarGuia(() => cerrarGuia()));
     area.addEventListener('input', actualizarOferta);
@@ -502,8 +520,8 @@ function camposLogroTexto(clave) {
     let tipo = -1;       // solo vista, no se guarda; sin elegir se usa el primer tipo como base
     const chips = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': 'Tipo de logro' });
     const verbo = el('select', { id: `${base}-v`, 'aria-label': 'Verbo' });
-    const gA = el('input', { type: 'text', id: `${base}-a`, autocomplete: 'off' });
-    const gB = el('input', { type: 'text', id: `${base}-b`, autocomplete: 'off' });
+    const gA = entradaCrece({ id: `${base}-a`, autocomplete: 'off' });
+    const gB = entradaCrece({ id: `${base}-b`, autocomplete: 'off' });
     const preB = el('span', { class: 'dpc-prefijo-txt' });
     const borrador = el('div', { class: 'dpc-borrador', 'aria-live': 'polite' });
     const errGuia = el('small', { class: 'dp-error', role: 'alert', hidden: true });
@@ -532,12 +550,11 @@ function camposLogroTexto(clave) {
         });
         chips.append(b);
     });
-    const conPrefijo = (pre, input) => el('div', { class: 'dpc-prefijo' }, pre, input);
     const guia = el('div', { class: 'dpc-guia', hidden: true },
         pregunta(`${base}-t`, A.pregTipo, chips, A.ayudaTipo, true),
         pregunta(`${base}-v`, A.pregHice, el('div', { class: 'dpc-fila-verbo' }, verbo, gA), A.ayudaHice),
         pregunta(`${base}-b`, A.pregAlcance, conPrefijo(preB, gB), A.ayudaAlcance, true),
-        el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, errGuia,
+        bloqueBorrador(borrador, errGuia),
         el('p', { class: 'dp-suave dpc-parcial', text: A.cierre }),
         el('div', { class: 'dpc-acciones-guia' },
             el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
@@ -555,7 +572,7 @@ function camposLogroTexto(clave) {
         const tiene = area.value.trim().length > 0, abierta = !guia.hidden;
         boton.hidden = tiene || abierta; enlace.hidden = !tiene || abierta;
     };
-    function abrir() { guia.hidden = false; boton.setAttribute('aria-expanded', 'true'); actualizar(); pintarBorrador(); gA.focus(); }
+    function abrir() { guia.hidden = false; boton.setAttribute('aria-expanded', 'true'); actualizar(); pintarBorrador(); ajustarCrecen(guia); gA.focus(); }
     function cerrar() { guia.hidden = true; boton.setAttribute('aria-expanded', 'false'); actualizar(); }
     area.addEventListener('input', actualizar);
     pintarTipo(); pintarBorrador(); actualizar();
@@ -881,14 +898,14 @@ function pasoPerfil() {
     const avisoLargo = el('small', { class: 'dp-ayuda', hidden: true });
 
     // preguntas del asistente (solo vista; no se guardan)
-    const gEst = el('input', { type: 'text', id: `${base}-e`, autocomplete: 'off', placeholder: A.placeEstudia });
+    const gEst = entradaCrece({ id: `${base}-e`, autocomplete: 'off', placeholder: A.placeEstudia });
     let estTocado = false; gEst.addEventListener('input', () => { estTocado = true; });
     let seleccion = [];
     const chips = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': 'Elementos para destacar' });
     const ayudaDest = el('small', { class: 'dp-ayuda', text: A.ayudaDestacar });
     const avisoMax = el('small', { class: 'dp-ayuda', text: A.avisoMax, hidden: true });
-    const gLibre = el('input', { type: 'text', id: `${base}-l`, autocomplete: 'off', placeholder: 'Ej. ' + ejD });
-    const gBusca = el('input', { type: 'text', id: `${base}-b`, autocomplete: 'off', placeholder: 'Ej. ' + ejB });
+    const gLibre = entradaCrece({ id: `${base}-l`, autocomplete: 'off', placeholder: 'Ej. ' + ejD });
+    const gBusca = entradaCrece({ id: `${base}-b`, autocomplete: 'off', placeholder: 'Ej. ' + ejB });
     const borrador = el('div', { class: 'dpc-borrador', 'aria-live': 'polite' });
     const errGuia = el('small', { class: 'dp-error', role: 'alert', hidden: true });
 
@@ -937,7 +954,7 @@ function pasoPerfil() {
         pregunta(`${base}-e`, A.pregEstudia, gEst, A.ayudaEstudia, true),
         pregunta(`${base}-l`, A.pregDestacar, el('div', {}, chips, ayudaDest, gLibre, avisoMax), A.ayudaLibre, true),
         pregunta(`${base}-b`, A.pregBusca, gBusca, A.ayudaBusca, true),
-        el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, errGuia,
+        bloqueBorrador(borrador, errGuia),
         el('div', { class: 'dpc-acciones-guia' },
             el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
                 const x = pintarBorrador();
@@ -964,7 +981,7 @@ function pasoPerfil() {
         const f = cv.formacion || {}, car = String(f.carrera || '').trim(), uni = String(f.universidad || '').trim();
         if (!estTocado) gEst.value = car ? (uni ? `${car} en ${uni}` : car) : '';
         pintarChips();
-        guia.hidden = false; boton.setAttribute('aria-expanded', 'true'); revisarTexto(); pintarBorrador(); (gEst.value ? gLibre : gEst).focus();
+        guia.hidden = false; boton.setAttribute('aria-expanded', 'true'); revisarTexto(); pintarBorrador(); ajustarCrecen(guia); (gEst.value ? gLibre : gEst).focus();
     }
     function cerrar() { guia.hidden = true; boton.setAttribute('aria-expanded', 'false'); revisarTexto(); }
     area.addEventListener('input', revisarTexto);

@@ -49,7 +49,8 @@ export function armarBorrador({ verbo = 0, objeto, hizo, meta, resultado, equipo
     const m = sinPunto(meta), r = sinPunto(resultado);
     const hs = herramientas.map(t).filter(Boolean);
     let texto = `${abre} ${o}${m ? ' con el objetivo de ' + minuscula(m) : ''}.`;
-    texto += ` ${sigue ? 'Me encargo' : 'Me encargué'} de ${h}${hs.length ? ', utilizando ' + unir(hs) : ''}.`;
+    texto += ` ${h.charAt(0).toUpperCase()}${h.slice(1)}.`;                  // «¿Qué hiciste tú?»: frase del alumno, en primera persona, tal cual
+    if (hs.length) texto += ` ${sigue ? 'Utilizo' : 'Utilicé'} ${unir(hs)}.`;
     if (r) texto += ` ${sigue ? 'Hasta ahora, ' : 'Como resultado, '}${minuscula(r)}.`;
     return texto;
 }

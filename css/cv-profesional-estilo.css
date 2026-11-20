@@ -227,8 +227,15 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dp-lista-barra[hidden] { display: none; }
 
 /* Experiencia: respuestas que continúan un comienzo fijo (el verbo elegido, «La actividad consistía en»…) y enlace «Rehacer con ayuda» */
-.dpc .dpc-prefijo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.dpc .dpc-prefijo-txt { font-size: 16px; color: var(--dpc-naranja-os); font-weight: 600; white-space: nowrap; }
-.dpc .dpc-prefijo input { flex: 1 1 260px; min-width: 0; }
+.dpc .dpc-prefijo { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.dpc .dpc-prefijo-txt { font-size: 16px; color: var(--dpc-naranja-os); font-weight: 600; white-space: nowrap; padding-top: 11px; }
+.dpc .dpc-prefijo input, .dpc .dpc-prefijo textarea { flex: 1 1 260px; min-width: 0; }
 .dpc .dpc-rehacer { font-size: 15px; color: var(--dpc-naranja-os); margin-top: 8px; }
 .dpc .dpc-rehacer[hidden], .dpc .dpc-camino[hidden] { display: none; }
+
+/* Asistentes: respuestas que crecen solas y borrador siempre a la vista */
+.dpc .dpc-crece { display: block; width: 100%; min-height: 0; resize: none; overflow: hidden; line-height: 1.45; }
+.dpc .dpc-borrador-fijo { position: sticky; bottom: 0; z-index: 3; margin: 22px 0 0; padding: 10px 0 12px; background: #FFFAF5; border-top: 1.5px solid #F4B88C; }
+.dpc .dpc-guia .dpc-borrador-fijo .dpc-lab { margin-top: 0; }
+.dpc .dpc-borrador-fijo .dpc-borrador { max-height: 32vh; overflow-y: auto; }
+@media (max-width: 760px) { .dpc .dpc-borrador-fijo { position: static; border-top: 0; padding: 0; } }

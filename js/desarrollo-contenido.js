@@ -135,36 +135,36 @@ export const EJEMPLOS_CARRERA = {
         desc: 'Describe qué es tu proyecto, qué hiciste tú y con qué lo construiste.',
         herr: { sw: ['Python', 'JavaScript', 'SQL', 'Git'], eq: ['Arduino', 'Raspberry Pi'], me: ['Scrum', 'Pruebas con usuarios'] },
         variantes: [
-            { nombre: 'Control de inventario de una bodega pequeña', objeto: 'un sistema de control de inventario para una bodega pequeña', meta: 'llevar el registro de productos y existencias', hizo: 'diseñar la base de datos y programar el registro de movimientos', resultado: 'el encargado dejó de anotar el stock a mano' },
-            { nombre: 'Análisis de las notas de un curso con Python', objeto: 'un análisis de las notas de un curso', meta: 'identificar qué temas costaron más al grupo', hizo: 'limpiar los datos y graficar los resultados con Python', resultado: 'un informe con las conclusiones' },
-            { nombre: 'Sitio web de un club estudiantil', objeto: 'el sitio web de un club estudiantil', meta: 'dar a conocer las actividades del club', hizo: 'diseñar las páginas y publicarlas', resultado: 'el club lo usa para anunciar sus eventos' },
+            { nombre: 'Control de inventario de una bodega pequeña', objeto: 'un sistema de control de inventario para una bodega pequeña', meta: 'llevar el registro de productos y existencias', hizo: 'diseñar la base de datos y programar el registro de movimientos', hice: 'diseñé la base de datos y programé el registro de movimientos', resultado: 'el encargado dejó de anotar el stock a mano' },
+            { nombre: 'Análisis de las notas de un curso con Python', objeto: 'un análisis de las notas de un curso', meta: 'identificar qué temas costaron más al grupo', hizo: 'limpiar los datos y graficar los resultados con Python', hice: 'limpié los datos y grafiqué los resultados con Python', resultado: 'un informe con las conclusiones' },
+            { nombre: 'Sitio web de un club estudiantil', objeto: 'el sitio web de un club estudiantil', meta: 'dar a conocer las actividades del club', hizo: 'diseñar las páginas y publicarlas', hice: 'diseñé las páginas y las publiqué', resultado: 'el club lo usa para anunciar sus eventos' },
         ],
     },
     arq: {
         desc: 'Describe qué diseñaste o realizaste, tu aporte y los recursos que usaste.',
         herr: { sw: ['AutoCAD', 'Revit', 'SketchUp'], eq: ['Maqueta en cartón pluma', 'Cortadora láser'], me: ['Análisis de sitio', 'Diseño participativo'] },
         variantes: [
-            { nombre: 'Rediseño del aula de un colegio', objeto: 'el rediseño del aula de un colegio', meta: 'mejorar la iluminación y la circulación', hizo: 'levantar medidas y dibujar la propuesta en planos', resultado: 'la propuesta fue presentada en clase' },
-            { nombre: 'Maqueta de una vivienda unifamiliar', objeto: 'una vivienda unifamiliar', meta: 'mostrar su distribución y sus volúmenes', hizo: 'elaborar los planos y construir la maqueta', resultado: 'la maqueta fue evaluada en el curso' },
-            { nombre: 'Propuesta de centro cultural', objeto: 'la propuesta de un centro cultural', meta: 'dar un espacio público a un barrio sin equipamiento', hizo: 'elaborar los planos, cortes y la maqueta final', resultado: 'la propuesta fue presentada ante el jurado del curso' },
+            { nombre: 'Rediseño del aula de un colegio', objeto: 'el rediseño del aula de un colegio', meta: 'mejorar la iluminación y la circulación', hizo: 'levantar medidas y dibujar la propuesta en planos', hice: 'levanté medidas y dibujé la propuesta en planos', resultado: 'la propuesta fue presentada en clase' },
+            { nombre: 'Maqueta de una vivienda unifamiliar', objeto: 'una vivienda unifamiliar', meta: 'mostrar su distribución y sus volúmenes', hizo: 'elaborar los planos y construir la maqueta', hice: 'elaboré los planos y construí la maqueta', resultado: 'la maqueta fue evaluada en el curso' },
+            { nombre: 'Propuesta de centro cultural', objeto: 'la propuesta de un centro cultural', meta: 'dar un espacio público a un barrio sin equipamiento', hizo: 'elaborar los planos, cortes y la maqueta final', hice: 'elaboré los planos, los cortes y la maqueta final', resultado: 'la propuesta fue presentada ante el jurado del curso' },
         ],
     },
     civ: {
         desc: 'Describe qué analizaste o construiste, tu aporte y los recursos que usaste.',
         herr: { sw: ['SAP2000', 'AutoCAD', 'Excel'], eq: ['Estación total', 'Nivel óptico'], me: ['Método de rigidez', 'Ensayos de laboratorio'] },
         variantes: [
-            { nombre: 'Medición topográfica de un terreno', objeto: 'el levantamiento topográfico de un terreno', meta: 'obtener sus medidas y desniveles', hizo: 'tomar los datos en campo y procesarlos', resultado: 'un plano con curvas de nivel' },
-            { nombre: 'Diseño de un muro de contención', objeto: 'el diseño de un muro de contención', meta: 'verificar su estabilidad', hizo: 'calcular las fuerzas y dimensionar el muro', resultado: 'una memoria de cálculo para el curso' },
-            { nombre: 'Análisis académico de la estructura de un puente peatonal', objeto: 'el análisis académico de la estructura de un puente peatonal', meta: 'verificar que soporte las cargas de uso', hizo: 'calcular las cargas y modelar la estructura', resultado: 'un informe con las verificaciones de resistencia' },
+            { nombre: 'Medición topográfica de un terreno', objeto: 'el levantamiento topográfico de un terreno', meta: 'obtener sus medidas y desniveles', hizo: 'tomar los datos en campo y procesarlos', hice: 'tomé los datos en campo y los procesé', resultado: 'un plano con curvas de nivel' },
+            { nombre: 'Diseño de un muro de contención', objeto: 'el diseño de un muro de contención', meta: 'verificar su estabilidad', hizo: 'calcular las fuerzas y dimensionar el muro', hice: 'calculé las fuerzas y dimensioné el muro', resultado: 'una memoria de cálculo para el curso' },
+            { nombre: 'Análisis académico de la estructura de un puente peatonal', objeto: 'el análisis académico de la estructura de un puente peatonal', meta: 'verificar que soporte las cargas de uso', hizo: 'calcular las cargas y modelar la estructura', hice: 'calculé las cargas y modelé la estructura', resultado: 'un informe con las verificaciones de resistencia' },
         ],
     },
     gen: {
         desc: 'Describe qué hiciste, cuál fue tu aporte y qué recursos usaste.',
         herr: { sw: ['Excel', 'Word', 'PowerPoint'], eq: ['Instrumentos de medición'], me: ['Encuestas', 'Revisión bibliográfica'] },
         variantes: [
-            { nombre: 'Organización de un estudio de caso grupal', objeto: 'un estudio de caso en grupo', meta: 'analizar una situación real del curso', hizo: 'repartir tareas y redactar las conclusiones', resultado: 'el caso se presentó en clase' },
-            { nombre: 'Informe técnico de laboratorio', objeto: 'un informe técnico de laboratorio', meta: 'documentar un experimento y sus resultados', hizo: 'tomar las mediciones y redactar el informe', resultado: 'el informe fue evaluado por el docente' },
-            { nombre: 'Propuesta de mejora para un taller', objeto: 'una propuesta de mejora para un taller', meta: 'ordenar y hacer más seguro el espacio de trabajo', hizo: 'observar el taller y proponer cambios', resultado: 'la propuesta se presentó al docente a cargo' },
+            { nombre: 'Organización de un estudio de caso grupal', objeto: 'un estudio de caso en grupo', meta: 'analizar una situación real del curso', hizo: 'repartir tareas y redactar las conclusiones', hice: 'repartí tareas y redacté las conclusiones', resultado: 'el caso se presentó en clase' },
+            { nombre: 'Informe técnico de laboratorio', objeto: 'un informe técnico de laboratorio', meta: 'documentar un experimento y sus resultados', hizo: 'tomar las mediciones y redactar el informe', hice: 'tomé las mediciones y redacté el informe', resultado: 'el informe fue evaluado por el docente' },
+            { nombre: 'Propuesta de mejora para un taller', objeto: 'una propuesta de mejora para un taller', meta: 'ordenar y hacer más seguro el espacio de trabajo', hizo: 'observar el taller y proponer cambios', hice: 'observé el taller y propuse cambios', resultado: 'la propuesta se presentó al docente a cargo' },
         ],
     },
 };
