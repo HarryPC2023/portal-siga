@@ -39,7 +39,7 @@ export const PASOS = [
     },
     {
         id: 'logros', titulo: 'Logros', etiquetaPaso: 'Opcional',
-        porQue: 'Lo que te distingue de otra persona con tus mismos cursos.',
+        porQue: 'Reconocimientos y resultados que vale la pena destacar.',
         consejo: 'Describe qué hiciste y qué resultado tuvo. No inventes cifras: un hecho real y verificable pesa más que un número dudoso.',
     },
     {
@@ -218,51 +218,58 @@ export const CERTIFICACIONES = {
 
 // ───────────── Logros y reconocimientos (paso propio) ─────────────
 export const LOGROS = {
-    intro: 'Lo que te distingue de otra persona con tus mismos cursos. Si todavía no sabes qué poner, empieza por las ayudas de abajo.',
-    vacio: 'Todavía no agregaste ningún logro. Si algo de las ayudas de arriba te suena, empieza por ahí.',
-    placeholder: 'Ejemplo: Brindé asesorías a estudiantes de ciclos anteriores',
-    categorias: {
-        resumen: '¿Qué puede ser un logro?',
+    vacio: 'Todavía no agregaste ningún logro. Si algo de las ayudas te suena, empieza por ahí.',
+    placeholder: 'Ej. Brindé asesorías a 12 estudiantes durante un periodo académico.',
+    reconocer: {
+        resumen: '¿Qué puede considerarse un logro?',
+        texto: 'No necesitas haber ganado un concurso ni recibido un premio. También cuentan lo que organizaste, las responsabilidades que asumiste, las personas a las que ayudaste y los resultados que conseguiste. Piensa si alguna vez has:',
         items: [
-            ['Académico', 'una beca, un reconocimiento por tu rendimiento o la participación en un programa selectivo.'],
-            ['Competencias y concursos', 'hackatones, olimpiadas, concursos de tu facultad.'],
-            ['Liderazgo', 'haber coordinado un equipo, un evento o un centro estudiantil.'],
-            ['Impacto', 'algo que hiciste y tuvo un resultado que se pueda contar.'],
-            ['Apoyo a otros', 'asesorías, tutorías, voluntariado.'],
-        ],
-        cierre: 'Un proyecto cuenta lo que hiciste. Un logro cuenta lo que conseguiste o por lo que te reconocieron. Si es lo primero, va en Proyectos.',
-    },
-    preguntas: {
-        resumen: 'Preguntas para recordar',
-        items: [
-            '¿Alguna vez te eligieron, te premiaron o te felicitaron por algo?',
-            '¿Ayudaste a otros a aprobar o a entender un curso?',
-            '¿Algo que hiciste ahorró tiempo, resolvió un problema o lo usaron otras personas?',
-            '¿Te tocó liderar o coordinar a otros?',
+            'Obtenido un reconocimiento académico o una distinción.',
+            'Asumido un cargo de representación o liderazgo.',
+            'Organizado una actividad, evento o iniciativa.',
+            'Presentado un proyecto, investigación o ponencia.',
+            'Creado algo que otras personas llegaron a utilizar.',
+            'Ayudado a otros estudiantes mediante asesorías o tutorías.',
         ],
     },
-    describir: {
-        resumen: '¿Cómo lo describo?',
-        texto: 'Di qué hiciste y qué resultado tuvo, sin inventar cifras.',
-        antes: 'Fui buen asesor.',
-        mejor: 'Brindé asesorías de bases de datos a estudiantes de ciclos anteriores.',
-        cierre: 'Si no tienes un número exacto, describe el hecho. Un dato inventado le quita credibilidad a todo el CV.',
+    descubrir: {
+        resumen: '¿No sabes qué resultado destacar?',
+        texto: 'Una experiencia se vuelve logro cuando identificas qué conseguiste con ella. Al añadir un logro, debajo de su campo verás pistas cortas para encontrarlo. No necesitas responderlas todas.',
+    },
+    pistas: {
+        titulo: 'Pistas para destacar el resultado',
+        items: ['¿Qué conseguiste?', '¿A quiénes ayudaste?', '¿Qué responsabilidad asumiste?', '¿Qué mejoró o llegó a realizarse?', '¿Te reconocieron o te seleccionaron?'],
+    },
+    redactar: {
+        resumen: '¿Cómo puedes redactarlo?',
+        texto: 'Una forma sencilla: acción + resultado o alcance. Ejemplo: «Brindé asesorías a 12 estudiantes durante un periodo académico». Si quieres una estructura más parecida a tu experiencia, elige un tipo (es opcional; si ya sabes qué escribir, escribe directo):',
+        etiquetaEstructura: 'Cómo escribirlo: ',
+        etiquetaEjemplo: 'Ejemplo: ',
+        tipos: [
+            ['Reconocimiento', 'Qué distinción obtuviste y quién la otorgó.', 'Obtuve una beca por rendimiento académico otorgada por la universidad.'],
+            ['Liderazgo', 'Qué responsabilidad asumiste y durante qué periodo.', 'Representé a mi sección como delegado durante el periodo académico 2026-1.'],
+            ['Organización', 'Qué actividad organizaste y cuál fue su alcance.', 'Organicé una jornada académica con la participación de estudiantes de mi facultad.'],
+            ['Impacto', 'Qué hiciste y a quién benefició.', 'Elaboré una guía de estudio que otros compañeros de mi sección utilizaron.'],
+            ['Presentación académica', 'Qué trabajo presentaste y dónde.', 'Presenté un proyecto universitario en una feria académica.'],
+        ],
+        cierre: 'No todos los logros necesitan cifras. Si no conoces una cantidad exacta, no la inventes.',
+    },
+    donde: {
+        resumen: '¿No sabes dónde incluir algo?',
+        items: [
+            ['Proyectos', 'lo que hiciste o desarrollaste.'],
+            ['Logros', 'lo que conseguiste o el impacto que generaste.'],
+            ['Experiencia', 'las responsabilidades y funciones que desempeñaste, aunque hayan sido temporales.'],
+        ],
+        cierre: 'Una misma experiencia puede dar información a más de una sección, pero no repitas la misma descripción.',
     },
     respaldo: {
         etiqueta: 'Con qué lo respaldas',
         pista: 'Puedes añadir un dato o referencia para dar más contexto y credibilidad a tu logro.',
-        placeholder: 'Un enlace, un dato o una referencia',
-        ayudaResumen: '¿Qué puede servir como respaldo?',
-        ayuda: 'Un enlace público, el nombre de quien puede confirmarlo, una cifra real o una constancia que tú conservas. SIGA no guarda documentos.',
-        privacidad: 'Si pones un enlace, que sea http o https y que no muestre tu DNI, dirección o teléfono.',
+        placeholder: 'Una cantidad, un puesto obtenido, el nombre del evento o un enlace',
+        privacidad: 'Si pones un enlace, que no muestre tu DNI, dirección ni teléfono.',
     },
 };
-
-export const EJEMPLOS_LOGRO = [
-    'Brindé asesorías a 12 estudiantes durante un periodo académico',
-    'Obtuve el primer puesto en un concurso universitario de programación',
-    'Proyecto seleccionado para su presentación en una feria académica',
-];
 
 export const TIPOS_EXPERIENCIA = [
     'Voluntariados', 'Tutorías o asesorías', 'Organizaciones estudiantiles (IEEE, ACIA, LeadUNI…)', 'Delegado de aula o representación',

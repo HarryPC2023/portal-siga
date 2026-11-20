@@ -352,12 +352,13 @@ const CAMPOS_TARJETA = {
     certificacion: (clave) => camposCertificacion(clave),
     logro: (clave) => [
         campo({ clave, nombre: 'texto', etiqueta: 'Describe tu logro', placeholder: C.LOGROS.placeholder, area: true }),
+        el('div', { class: 'dpc-pistas' }, el('strong', { text: C.LOGROS.pistas.titulo + ':' }),
+            el('div', {}, C.LOGROS.pistas.items.map((t) => el('span', { class: 'dpc-pista', text: t })))),
         campo({
             clave, nombre: 'respaldo', etiqueta: C.LOGROS.respaldo.etiqueta, opcional: true, placeholder: C.LOGROS.respaldo.placeholder, ayuda: C.LOGROS.respaldo.pista,
             validar: (v) => (/^\s*[a-z][a-z0-9+.-]*:/i.test(v) ? analizarEnlaceWeb(v) : null),
         }),
-        el('details', { class: 'dpc-det' }, el('summary', { text: C.LOGROS.respaldo.ayudaResumen }),
-            el('p', { class: 'dp-suave', text: C.LOGROS.respaldo.ayuda }), el('p', { class: 'dpc-aviso-priv', text: C.LOGROS.respaldo.privacidad })),
+        el('p', { class: 'dpc-aviso-priv', text: C.LOGROS.respaldo.privacidad }),
     ],
     experiencia: (clave) => [
         campo({ clave, nombre: 'puesto', etiqueta: 'Puesto o actividad', placeholder: 'Voluntariado, negocio familiar, trabajo temporal…' }),
@@ -410,6 +411,7 @@ function crearTarjeta(tipo, item) {
         if (plegadas.has(item.id)) plegadas.delete(item.id);
         else { plegadas.add(item.id); if (cuerpo.contains(document.activeElement)) boton.focus(); }
         aplicarPliegue(tarjeta, tipo, clave);
+        pintarBarra(tipo);
     });
     aplicarPliegue(tarjeta, tipo, clave);
     return tarjeta;
@@ -447,7 +449,30 @@ function reconciliarLista(tipo) {
     if (tipo === 'proyecto') pintarSugerenciaProyectos();
     const vacio = $(`[data-vacio="${tipo}"]`);
     if (vacio) vacio.hidden = cont.querySelectorAll('.dp-tarjeta').length > 0;
+    pintarBarra(tipo);
     sincronizarCampos(cont);
+}
+
+// «Plegar todo» / «Desplegar todo»: solo se ve con 3 o más tarjetas. El pliegue es solo de vista (no se guarda).
+function pintarBarra(tipo) {
+    const barra = $(`[data-barra="${tipo}"]`), cont = $(`[data-lista="${tipo}"]`);
+    if (!barra || !cont) return;
+    const ts = $$('.dp-tarjeta', cont);
+    barra.hidden = ts.length < 3;
+    const todasPlegadas = ts.length > 0 && ts.every((t) => plegadas.has(t.dataset.id));
+    const b = $('button', barra);
+    b.textContent = todasPlegadas ? 'Desplegar todo' : 'Plegar todo';
+    b.dataset.accion = todasPlegadas ? 'desplegar' : 'plegar';
+}
+
+function plegarTodas(tipo, plegar) {
+    const cont = $(`[data-lista="${tipo}"]`);
+    if (!cont) return;
+    $$('.dp-tarjeta', cont).forEach((t) => {
+        if (plegar) plegadas.add(t.dataset.id); else plegadas.delete(t.dataset.id);
+        aplicarPliegue(t, tipo, D.claveDe(tipo, t.dataset.id));
+    });
+    pintarBarra(tipo);
 }
 
 function bloqueLista(tipo, { vacio, botonTexto, base }) {
@@ -456,15 +481,24 @@ function bloqueLista(tipo, { vacio, botonTexto, base }) {
     const boton = el('button', {
         type: 'button', class: 'dp-btn dp-btn-agregar', text: botonTexto,
         onclick: () => {
+            const previas = $$('.dp-tarjeta', cont).map((t) => t.dataset.id);
             const nuevo = D.nuevoElemento(tipo, base);
             refrescarMemoria();
             reconciliarLista(tipo);
+            previas.forEach((id) => {                       // las anteriores se pliegan: queda abierta solo la nueva
+                plegadas.add(id);
+                const anterior = $(`.dp-tarjeta[data-id="${id}"]`, cont);
+                if (anterior) aplicarPliegue(anterior, tipo, D.claveDe(tipo, id));
+            });
+            pintarBarra(tipo);
             const t = $(`.dp-tarjeta[data-id="${nuevo.id}"]`, cont);
             const primero = t && $('input, textarea', t);
             if (primero) primero.focus();
         },
     });
-    const bloque = el('div', {}, aviso, cont, boton);
+    const barra = el('div', { class: 'dp-lista-barra', 'data-barra': tipo, hidden: true },
+        el('button', { type: 'button', class: 'dp-btn-texto', text: 'Plegar todo', onclick: (e) => plegarTodas(tipo, e.currentTarget.dataset.accion !== 'desplegar') }));
+    const bloque = el('div', {}, aviso, barra, cont, boton);
     queueMicrotask(() => reconciliarLista(tipo));
     return bloque;
 }
@@ -586,16 +620,36 @@ function pasoCertificaciones() {
 function pasoLogros() {
     const L = C.LOGROS;
     const sinLogros = D.leerCV().logros.length === 0;
+    // Tipos de logro: solo ofrecen una estructura de ejemplo; no son obligatorios ni se guardan.
+    const estructura = el('div', { class: 'dpc-estructura', hidden: true });
+    const chips = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': 'Tipo de logro' });
+    L.redactar.tipos.forEach(([nombre, forma, ejemplo]) => {
+        const b = el('button', { type: 'button', class: 'dpc-op', 'aria-pressed': 'false', text: nombre });
+        b.addEventListener('click', () => {
+            const estabaActivo = b.getAttribute('aria-pressed') === 'true';
+            $$('.dpc-op', chips).forEach((x) => { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
+            if (estabaActivo) { estructura.hidden = true; return; }
+            b.classList.add('on'); b.setAttribute('aria-pressed', 'true');
+            estructura.hidden = false;
+            estructura.replaceChildren(
+                el('p', {}, el('strong', { text: L.redactar.etiquetaEstructura }), forma),
+                el('p', {}, el('strong', { text: L.redactar.etiquetaEjemplo }), `«${ejemplo}»`));
+        });
+        chips.append(b);
+    });
     const ayudas = el('div', { class: 'dpc-ayudas' },
         el('details', { class: 'dpc-det', open: sinLogros ? true : null },
-            el('summary', { text: L.categorias.resumen }),
-            el('ul', { class: 'dp-lista-ejemplos' }, L.categorias.items.map(([n, t]) => el('li', {}, el('strong', { text: n + ': ' }), t))),
-            el('p', { class: 'dp-suave dpc-parcial', text: L.categorias.cierre })),
-        listaAyuda(L.preguntas.resumen, itemsUl(L.preguntas.items)),
-        listaAyuda(L.describir.resumen, el('p', { class: 'dp-suave', text: L.describir.texto }),
-            el('p', { class: 'dpc-ejemplo' }, el('strong', { text: 'Antes: ' }), L.describir.antes, el('br'), el('strong', { text: 'Mejor: ' }), L.describir.mejor),
-            el('p', { class: 'dp-suave', text: L.describir.cierre })));
-    return el('div', {}, el('p', { class: 'dp-suave', text: L.intro }), ayudas,
+            el('summary', { text: L.reconocer.resumen }),
+            el('p', { class: 'dp-suave', text: L.reconocer.texto }),
+            itemsUl(L.reconocer.items)),
+        listaAyuda(L.descubrir.resumen, el('p', { class: 'dp-suave', text: L.descubrir.texto })),
+        listaAyuda(L.redactar.resumen,
+            el('p', { class: 'dp-suave', text: L.redactar.texto }), chips, estructura,
+            el('p', { class: 'dp-suave dpc-parcial', text: L.redactar.cierre })),
+        listaAyuda(L.donde.resumen,
+            el('ul', { class: 'dp-lista-ejemplos' }, L.donde.items.map(([n, t]) => el('li', {}, el('strong', { text: n + ': ' }), t))),
+            el('p', { class: 'dp-suave dpc-parcial', text: L.donde.cierre })));
+    return el('div', {}, ayudas,
         bloqueLista('logro', { vacio: L.vacio, botonTexto: '+ Añadir logro', base: { texto: '', respaldo: '' } }));
 }
 

@@ -206,3 +206,13 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 }
 @media (prefers-reduced-motion: reduce) { .dp-btn-primario { transition: none; } }
 @media print { .dpc-tip, .dpc-pega { display: none !important; } }
+
+/* Plegado de tarjetas (todas las secciones con lista) y ayudas del paso Logros */
+.dpc .dp-lista-barra { display: flex; justify-content: flex-end; margin: 14px 0 -8px; }
+.dpc .dp-lista-barra .dp-btn-texto { font-size: 15px; color: var(--dpc-naranja-os); }
+.dpc .dpc-det .dpc-opciones { margin: 10px 0 4px; }
+.dpc .dpc-estructura { margin: 10px 0 12px; padding: 10px 14px; background: #F7F4EE; border-radius: 10px; font-size: 16px; line-height: 1.6; }
+.dpc .dpc-estructura p { margin: 4px 0; }
+.dpc .dpc-pistas { margin: 10px 0 4px; font-size: 15px; color: var(--dp-suave); }
+.dpc .dpc-pista { display: inline-block; background: #FFF1E8; color: var(--dpc-naranja-os); border-radius: 999px; padding: 4px 12px; margin: 6px 6px 0 0; font-size: 14.5px; }
+.dpc .dp-lista-barra[hidden] { display: none; }
