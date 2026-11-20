@@ -43,9 +43,9 @@ export const PASOS = [
         consejo: 'Describe qué hiciste y qué resultado tuvo. No inventes cifras: un hecho real y verificable pesa más que un número dudoso.',
     },
     {
-        id: 'experiencia', titulo: 'Experiencia',
+        id: 'experiencia', titulo: 'Experiencia', etiquetaPaso: 'Opcional',
         porQue: 'No se limita a empleos formales. También cuenta cualquier experiencia donde hayas asumido responsabilidades, colaborado con otras personas o aportado valor.',
-        consejo: 'También cuentan voluntariados, trabajos independientes, participación en organizaciones, apoyo en negocios familiares o trabajos temporales. No todo tiene que ser un contrato formal.',
+        consejo: 'Lo que más aporta es lo que hiciste, más que el nombre del lugar. Si formas parte de un grupo o centro, cuenta qué responsabilidades asumiste o cómo colaboraste.',
     },
     {
         id: 'revision', titulo: 'Revisión',
@@ -240,6 +240,59 @@ export const CERTIFICACIONES = {
     conservar: 'Conserva tú los certificados y constancias: SIGA no guarda documentos, pero los necesitarás si una empresa los pide.',
     enlaceAyuda: 'Si hay un enlace donde se pueda verificar, añádelo. Es opcional.',
     enlacePrivacidad: 'No pegues enlaces que muestren tu DNI, dirección o teléfono.',
+};
+
+// ───────────── Experiencia (paso propio) ─────────────
+// Verbos para describir lo hecho: [infinitivo, presente (1.ª persona), pasado (1.ª persona), ejemplo de lo que sigue al verbo].
+// Son verbos neutros: no hay «Liderar» ni «Dirigir» a propósito. El borrador nunca convierte un verbo en otro más fuerte.
+export const VERBOS_EXPERIENCIA = [
+    ['Coordinar', 'Coordino', 'Coordiné', 'las tareas de un equipo de cinco personas'],
+    ['Apoyar', 'Apoyo', 'Apoyé', 'a mis compañeros durante las prácticas'],
+    ['Organizar', 'Organizo', 'Organicé', 'la lista de asistentes y los materiales'],
+    ['Enseñar', 'Enseño', 'Enseñé', 'a compañeros de ciclos anteriores a resolver ejercicios'],
+    ['Atender', 'Atiendo', 'Atendí', 'las consultas de los clientes y el registro de pedidos'],
+    ['Colaborar', 'Colaboro', 'Colaboré', 'con el equipo en la preparación de los materiales'],
+    ['Representar', 'Represento', 'Representé', 'a mi sección ante los docentes'],
+    ['Investigar', 'Investigo', 'Investigué', 'el tema y reuní datos para el informe'],
+];
+export const MAX_VERBOS_EXPERIENCIA = 3;
+
+export const EXPERIENCIA = {
+    resumen: '¿Qué puede considerarse experiencia?',
+    texto: 'No se limita a empleos formales ni a prácticas. Cuenta cualquier actividad donde hayas asumido responsabilidades, colaborado con otras personas o puesto tus conocimientos en práctica. Por ejemplo:',
+    items: [
+        'Ser delegado o representante de tu aula o sección.',
+        'Dar tutorías o apoyar a compañeros en un curso.',
+        'Participar como voluntario en una campaña o iniciativa.',
+        'Ayudar en un negocio familiar o en un emprendimiento.',
+        'Apoyar en un laboratorio, taller o grupo de investigación.',
+        'Organizar o colaborar en un evento académico.',
+        'Formar parte de centros de estudios, capítulos o grupos de tu facultad, destacando lo que hiciste allí.',
+        'Realizar trabajos independientes o temporales.',
+    ],
+    cierre: 'Pertenecer a una organización no es experiencia por sí solo: lo valioso es lo que hiciste allí.',
+    vacio: 'Todavía no agregaste ninguna experiencia. Si no tienes una que quieras registrar por ahora, puedes continuar con el siguiente paso.',
+    // Un ejemplo distinto por tarjeta (ver REGLAS DE LOS EJEMPLOS). Son modelos de redacción: no se guardan.
+    ejemplos: [
+        { puesto: 'Delegado de aula', hizo: 'Representé a mi sección ante los docentes y organicé la comunicación del grupo.', org: 'Mi sección de la facultad', contexto: 'ser el nexo entre los compañeros y los docentes de la sección', resultado: 'los avisos llegaban a todos a tiempo' },
+        { puesto: 'Tutor de un curso de ciclos iniciales', hizo: 'Resolví dudas y preparé ejercicios para compañeros de ciclos anteriores.', org: 'Tutorías de mi facultad', contexto: 'apoyar a compañeros de ciclos iniciales en un curso', resultado: 'varios compañeros resolvieron sus dudas antes de los exámenes' },
+        { puesto: 'Voluntario en una campaña de apoyo', hizo: 'Ayudé a clasificar y entregar donaciones durante la campaña.', org: 'Organización de voluntariado', contexto: 'recolectar y repartir donaciones para familias de mi distrito', resultado: 'las donaciones se entregaron en la fecha prevista' },
+        { puesto: 'Apoyo en el negocio familiar', hizo: 'Atendí a clientes y llevé el registro de ventas de cada semana.', org: 'Negocio familiar', contexto: 'ayudar en la atención y el control de ventas de un negocio de mi familia', resultado: 'el registro de ventas quedó al día cada semana' },
+        { puesto: 'Asistente en un laboratorio o taller', hizo: 'Ordené el material y apoyé a mis compañeros durante las prácticas.', org: 'Laboratorio de mi facultad', contexto: 'mantener ordenado el material y apoyar durante las prácticas', resultado: 'las prácticas empezaban a tiempo y con el material completo' },
+        { puesto: 'Organizador de un evento académico', hizo: 'Coordiné la lista de invitados y la logística del auditorio.', org: 'Jornada académica de mi facultad', contexto: 'preparar una jornada académica para estudiantes de la facultad', resultado: 'la jornada se realizó según lo programado' },
+        { puesto: 'Actividad independiente', hizo: 'Realicé encargos pequeños para personas de mi entorno y los entregué en el plazo acordado.', org: 'Por cuenta propia', contexto: 'resolver encargos pequeños para personas de mi entorno', resultado: 'los encargos se entregaron en el plazo acordado' },
+        { puesto: 'Integrante de un centro o capítulo estudiantil', hizo: 'Preparé materiales y participé en la organización de las reuniones.', org: 'Centro de estudios de mi facultad', contexto: 'colaborar en las actividades de un grupo estudiantil', resultado: 'las reuniones contaron con el material preparado' },
+        { puesto: 'Trabajo temporal', hizo: 'Atendí caja y ordené el inventario durante una campaña de verano.', org: 'Tienda de mi distrito', contexto: 'reforzar la atención de una tienda durante una campaña de verano', resultado: 'el inventario quedó ordenado al terminar la campaña' },
+        { puesto: 'Asistente de investigación', hizo: 'Recopilé datos y ayudé a organizar los resultados de un estudio.', org: 'Grupo de investigación de mi facultad', contexto: 'apoyar un estudio con la recopilación y el orden de datos', resultado: 'los datos quedaron listos para el análisis del equipo' },
+    ],
+};
+
+// Oferta de ayuda para redactar (la web la ofrece; el estudiante no tiene que pedirla).
+export const OFERTA_AYUDA = {
+    describir: 'Te ayudamos a describirlo',
+    redactar: 'Te ayudamos a redactarlo',
+    sub: 'Responde unas preguntas y revisa un borrador que puedes editar.',
+    rehacer: 'Rehacer con ayuda',
 };
 
 // ───────────── Logros y reconocimientos (paso propio) ─────────────

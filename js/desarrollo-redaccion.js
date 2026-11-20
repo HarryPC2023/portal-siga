@@ -2,7 +2,7 @@
 //
 // Archivo PURO: sin DOM, sin red y SIN IA. Solo ordena las respuestas en frases con una plantilla.
 // No inventa nada: lo que el alumno deja vacío no aparece, y nunca se fabrica un resultado.
-import { VERBOS_TRABAJO, PATRONES_CARRERA, DETALLE_IDIOMA } from './desarrollo-contenido.js?v=4';
+import { VERBOS_TRABAJO, VERBOS_EXPERIENCIA, PATRONES_CARRERA, DETALLE_IDIOMA } from './desarrollo-contenido.js?v=4';
 
 const t = (v) => (typeof v === 'string' ? v.trim() : '');
 const sinPunto = (v) => t(v).replace(/[.\s]+$/, '');
@@ -66,4 +66,36 @@ export function detalleIdioma(h = {}) {
         if (v && v !== general && ADJETIVO[v]) partes.push(`${enCV} ${ADJETIVO[v]}`);
     }
     return partes.join(', ');
+}
+
+
+// ───────────── Experiencia ─────────────
+// «Organicé y coordiné», «Apoyé e investigué»: une los verbos con la concordancia correcta (y → e ante «i-» / «hi-»).
+export function unirVerbos(lista) {
+    const v = lista.map(t).filter(Boolean).map((x, i) => (i ? minuscula(x) : x));   // solo el primero va con mayúscula
+    if (v.length <= 1) return v[0] || '';
+    const ultimo = v[v.length - 1];
+    const y = /^h?i(?![aeou])/i.test(ultimo) ? ' e ' : ' y ';
+    return v.slice(0, -1).join(', ') + y + ultimo;
+}
+
+// Verbos elegidos (posiciones en VERBOS_EXPERIENCIA) en la persona y el tiempo correctos. sigue → presente; si no, pasado.
+export function verbosConjugados(verbos = [], sigue = false) {
+    return unirVerbos(verbos.map((i) => (VERBOS_EXPERIENCIA[i] || [])[sigue ? 1 : 2]).filter(Boolean));
+}
+
+// Borrador de «¿Qué hiciste?». El alumno completa cada frase tras un comienzo fijo (el verbo, «La actividad consistía en»…),
+// así la oración siempre concuerda. NO añade verbos más fuertes, calificativos ni nada que el alumno no haya escrito:
+// lo que deja vacío no aparece.
+export function armarBorradorExperiencia({ verbos = [], contexto, hizo, resultado, sigue = false } = {}) {
+    const c = sinPunto(contexto), h = sinPunto(hizo), r = sinPunto(resultado);
+    if (!c && !h) return '';
+    const frases = [];
+    if (c) frases.push(`${sigue ? 'La actividad consiste en' : 'La actividad consistía en'} ${minuscula(c)}.`);
+    if (h) {
+        const vs = verbosConjugados(verbos, sigue);
+        frases.push(vs ? `${vs} ${minuscula(h)}.` : `${sigue ? 'Me encargo de' : 'Me encargué de'} ${minuscula(h)}.`);
+    }
+    if (r) frases.push(`${sigue ? 'Hasta ahora, ' : 'Como resultado, '}${minuscula(r)}.`);
+    return frases.join(' ');
 }

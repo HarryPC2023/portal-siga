@@ -217,3 +217,10 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dpc-pistas { margin: 10px 0 4px; font-size: 15px; color: var(--dp-suave); }
 .dpc .dpc-pista { display: inline-block; background: #FFF1E8; color: var(--dpc-naranja-os); border-radius: 999px; padding: 4px 12px; margin: 6px 6px 0 0; font-size: 14.5px; }
 .dpc .dp-lista-barra[hidden] { display: none; }
+
+/* Experiencia: respuestas que continúan un comienzo fijo (el verbo elegido, «La actividad consistía en»…) y enlace «Rehacer con ayuda» */
+.dpc .dpc-prefijo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dpc .dpc-prefijo-txt { font-size: 16px; color: var(--dpc-naranja-os); font-weight: 600; white-space: nowrap; }
+.dpc .dpc-prefijo input { flex: 1 1 260px; min-width: 0; }
+.dpc .dpc-rehacer { font-size: 15px; color: var(--dpc-naranja-os); margin-top: 8px; }
+.dpc .dpc-rehacer[hidden], .dpc .dpc-camino[hidden] { display: none; }

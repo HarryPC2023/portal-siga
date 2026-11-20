@@ -13,7 +13,7 @@ import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES } from './
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=4';
 import { htmlCV } from './cv-documento.js?v=2';
-import { armarBorrador, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=2';
+import { armarBorrador, armarBorradorExperiencia, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 
 const D = crearDesarrollo(SigaEstado);
@@ -175,6 +175,30 @@ function pintarPeriodo(det) {
     $('[data-resumen]', det).textContent = textoPeriodo({ desde: desde.value, hasta: hasta.value, sigue: chk.checked });
 }
 
+// Periodo opcional (Desde / Hasta / casilla «sigue»), común a Proyectos y Experiencia. La casilla desactiva «Hasta».
+function crearPeriodo({ clave, base, textoSigue, alCambiar }) {
+    const chk = el('input', { type: 'checkbox', id: `${base}-sigue` });
+    chk.dataset.clave = clave; chk.dataset.campo = 'sigue';
+    chk.checked = !!leerItem(clave).sigue;
+    const desde = campo({ clave, nombre: 'desde', etiqueta: 'Desde', placeholder: 'Ej.: 2024 o marzo de 2024' });
+    const hasta = campo({ clave, nombre: 'hasta', etiqueta: 'Hasta', placeholder: 'Ej.: 2025 o noviembre de 2025' });
+    const resumen = el('span', { class: 'dpc-resumen', 'data-resumen': '' });
+    const it0 = leerItem(clave);
+    const det = el('details', { class: 'dpc-det dpc-periodo', 'data-pinta': '', open: (it0.desde || it0.hasta || it0.sigue) ? true : null },
+        el('summary', {}, 'Periodo ', el('span', { class: 'dp-opc', text: '(opcional)' }), resumen),
+        el('div', { class: 'dpc-fechas' }, desde, hasta),
+        el('label', { class: 'dp-casilla', for: chk.id }, chk, ' ' + textoSigue),
+        el('small', { class: 'dp-ayuda', text: 'Sin fechas, tu CV no muestra periodo. Basta con el año si no recuerdas el mes.' }));
+    det._pintar = () => { pintarPeriodo(det); alCambiar(); };
+    chk.addEventListener('change', () => {
+        if (chk.checked) $('input[data-campo="hasta"]', det).value = '';
+        flush(clave); pintarPeriodo(det); alCambiar();
+    });
+    det.addEventListener('input', () => pintarPeriodo(det));
+    pintarPeriodo(det);
+    return { det, chk };
+}
+
 // ───────────── ejemplos rotativos (solo vista: nunca se guardan en el CV) ─────────────
 // Cada tarjeta nueva toma el PRIMER ejemplo de la lista que no esté en uso (si todos lo están, el menos usado).
 // Al borrar una tarjeta su ejemplo queda libre; las demás tarjetas no cambian. Al recargar se reasignan en orden.
@@ -224,25 +248,7 @@ function camposProyecto(clave) {
     pintarSel($('.dpc-opciones', bloqueCategoria));
 
     // 2. Periodo (opcional): una casilla «Sigue en desarrollo» desactiva «Hasta»
-    const chkSigue = el('input', { type: 'checkbox', id: `${base}-sigue` });
-    chkSigue.dataset.clave = clave; chkSigue.dataset.campo = 'sigue';
-    chkSigue.checked = !!leerItem(clave).sigue;
-    const desde = campo({ clave, nombre: 'desde', etiqueta: 'Desde', placeholder: 'Ej.: 2024 o marzo de 2024' });
-    const hasta = campo({ clave, nombre: 'hasta', etiqueta: 'Hasta', placeholder: 'Ej.: 2025 o noviembre de 2025' });
-    const resumen = el('span', { class: 'dpc-resumen', 'data-resumen': '' });
-    const it0 = leerItem(clave);
-    const detPeriodo = el('details', { class: 'dpc-det dpc-periodo', 'data-pinta': '', open: (it0.desde || it0.hasta || it0.sigue) ? true : null },
-        el('summary', {}, 'Periodo ', el('span', { class: 'dp-opc', text: '(opcional)' }), resumen),
-        el('div', { class: 'dpc-fechas' }, desde, hasta),
-        el('label', { class: 'dp-casilla', for: chkSigue.id }, chkSigue, ' Sigue en desarrollo'),
-        el('small', { class: 'dp-ayuda', text: 'Sin fechas, tu CV no muestra periodo. Basta con el año si no recuerdas el mes.' }));
-    detPeriodo._pintar = () => { pintarPeriodo(detPeriodo); pintarBorrador(); };
-    chkSigue.addEventListener('change', () => {
-        if (chkSigue.checked) $('input[data-campo="hasta"]', detPeriodo).value = '';
-        flush(clave); pintarPeriodo(detPeriodo); pintarBorrador();
-    });
-    detPeriodo.addEventListener('input', () => pintarPeriodo(detPeriodo));
-    pintarPeriodo(detPeriodo);
+    const { det: detPeriodo, chk: chkSigue } = crearPeriodo({ clave, base, textoSigue: 'Sigue en desarrollo', alCambiar: () => pintarBorrador() });
 
     // 3. Descripción: escribir directo o recibir orientación (sin IA: una plantilla que se puede editar)
     const areaCampo = campo({ clave, nombre: 'queHiciste', etiqueta: 'Describe tu proyecto', area: true, placeholder: ej.desc,
@@ -285,7 +291,7 @@ function camposProyecto(clave) {
     [verbo, gObj, gHizo, gMeta, gRes].forEach((n) => n.addEventListener('input', () => { errGuia.hidden = true; pintarBorrador(); }));
     const botonGuia = el('button', { type: 'button', class: 'dpc-camino', 'aria-expanded': 'false', onclick: () => {
         guia.hidden = !guia.hidden; botonGuia.setAttribute('aria-expanded', guia.hidden ? 'false' : 'true'); if (!guia.hidden) { pintarBorrador(); gObj.focus(); }
-    } }, el('strong', { text: 'Necesito orientación' }), el('span', { text: 'Responde unas preguntas y arma un borrador que puedes editar' }));
+    } }, el('strong', { text: C.OFERTA_AYUDA.describir }), el('span', { text: C.OFERTA_AYUDA.sub }));
     const bloqueDescripcion = el('div', {}, areaCampo, el('div', { class: 'dpc-caminos' }, botonGuia), guia);
 
     // 4. Herramientas y recursos, en tres grupos con escritura libre
@@ -339,6 +345,106 @@ function camposProyecto(clave) {
     ];
 }
 
+// Experiencia: puesto, organización (opcional), periodo (opcional) y «¿Qué hiciste?» con ayuda guiada.
+// El borrador no se escribe solo: el alumno completa cada frase tras un comienzo fijo (el verbo elegido, «La actividad consistía en»…),
+// así la oración siempre concuerda y nunca se añade nada que no haya dicho.
+function camposExperiencia(clave) {
+    const E = C.EXPERIENCIA, O = C.OFERTA_AYUDA;
+    const ej = E.ejemplos[indiceEjemplo('experiencia', clave, E.ejemplos.length)];
+    const base = 'x-' + clave.replace(/\W/g, '_');
+    let pintarBorrador = () => '';
+
+    const { det: detPeriodo, chk: chkSigue } = crearPeriodo({ clave, base, textoSigue: 'Sigo en esta actividad', alCambiar: () => pintarBorrador() });
+
+    const areaCampo = campo({ clave, nombre: 'queHiciste', etiqueta: '¿Qué hiciste?', area: true, placeholder: 'Ej. ' + ej.hizo,
+        ayuda: 'Empieza con un verbo y cuenta tu participación. Con 2 o 3 líneas basta.' });
+    const area = $('textarea', areaCampo);
+
+    // Pregunta 1: tipo de trabajo (hasta 3 verbos; solo vista, no se guarda)
+    let verbos = [];
+    const avisoVerbos = el('small', { class: 'dp-ayuda', text: `Puedes elegir hasta ${C.MAX_VERBOS_EXPERIENCIA}.` });
+    const chips = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': 'Tipo de trabajo' });
+    C.VERBOS_EXPERIENCIA.forEach((v, i) => {
+        const b = el('button', { type: 'button', class: 'dpc-op', 'aria-pressed': 'false', text: v[0] });
+        b.addEventListener('click', () => {
+            if (verbos.includes(i)) verbos = verbos.filter((x) => x !== i);
+            else if (verbos.length >= C.MAX_VERBOS_EXPERIENCIA) { avisoVerbos.textContent = `Elige hasta ${C.MAX_VERBOS_EXPERIENCIA}: con más, la frase se vuelve una lista.`; return; }
+            else verbos = [...verbos, i];
+            avisoVerbos.textContent = `Puedes elegir hasta ${C.MAX_VERBOS_EXPERIENCIA}.`;
+            $$('.dpc-op', chips).forEach((x, j) => { const on = verbos.includes(j); x.classList.toggle('on', on); x.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+            pintarBorrador();
+        });
+        chips.append(b);
+    });
+
+    // Preguntas 2 a 4: cada respuesta continúa un comienzo fijo, que cambia con el tiempo y los verbos elegidos
+    const gCon = el('input', { type: 'text', id: `${base}-c`, autocomplete: 'off', placeholder: 'Ej. ' + ej.contexto });
+    const gHizo = el('input', { type: 'text', id: `${base}-h`, autocomplete: 'off' });
+    const gRes = el('input', { type: 'text', id: `${base}-r`, autocomplete: 'off', placeholder: 'Ej. ' + ej.resultado });
+    const preCon = el('span', { class: 'dpc-prefijo-txt' }), preHizo = el('span', { class: 'dpc-prefijo-txt' }), preRes = el('span', { class: 'dpc-prefijo-txt' });
+    const conPrefijo = (pre, input) => el('div', { class: 'dpc-prefijo' }, pre, input);
+    const borrador = el('div', { class: 'dpc-borrador', 'aria-live': 'polite' });
+    const errGuia = el('small', { class: 'dp-error', role: 'alert', hidden: true });
+    const pregunta = (id, etiqueta, entrada, ayuda, opc) => el('div', { class: 'dpc-pregunta' },
+        el('label', { for: id }, etiqueta, opc ? el('span', { class: 'dp-opc', text: ' (opcional)' }) : null), entrada,
+        ayuda ? el('small', { class: 'dp-ayuda', text: ayuda }) : null);
+    const datos = () => ({ verbos, contexto: gCon.value, hizo: gHizo.value, resultado: gRes.value, sigue: chkSigue.checked });
+    pintarBorrador = () => {
+        const d = datos();
+        preCon.textContent = d.sigue ? 'La actividad consiste en' : 'La actividad consistía en';
+        const vs = verbosConjugados(verbos, d.sigue);
+        preHizo.textContent = vs || (d.sigue ? 'Me encargo de' : 'Me encargué de');
+        preRes.textContent = d.sigue ? 'Hasta ahora,' : 'Como resultado,';
+        const v0 = verbos.length ? C.VERBOS_EXPERIENCIA[verbos[0]][3] : 'ordenar el material y registrar su uso en cada práctica';
+        gHizo.placeholder = 'Ej. ' + v0;
+        const t = armarBorradorExperiencia(d);
+        borrador.textContent = t || 'Responde «en qué consistía» o «qué hiciste» y verás tu borrador aquí.';
+        borrador.classList.toggle('vacio', !t);
+        return t;
+    };
+    const guia = el('div', { class: 'dpc-guia', hidden: true },
+        pregunta(`${base}-v`, '¿Qué tipo de trabajo hiciste?', el('div', {}, chips, avisoVerbos)),
+        pregunta(`${base}-c`, '¿En qué consistía la actividad?', conPrefijo(preCon, gCon),
+            'Contexto: qué era y para qué existía. Cuéntalo como si se lo explicaras a alguien que no estuvo ahí.'),
+        pregunta(`${base}-h`, '¿Qué hiciste concretamente?', conPrefijo(preHizo, gHizo),
+            'Tus acciones: lo que hiciste tú, no el grupo. Completa la frase de modo que encaje con el verbo que elegiste.'),
+        pregunta(`${base}-r`, '¿Qué se logró?', conPrefijo(preRes, gRes),
+            'Un resultado o aporte, si lo hubo. No hace falta una cifra; si no hubo un resultado claro, déjalo vacío.', true),
+        el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, errGuia,
+        el('div', { class: 'dpc-acciones-guia' },
+            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
+                const t = pintarBorrador();
+                if (!t) { errGuia.textContent = 'Falta lo principal: en qué consistía la actividad o qué hiciste.'; errGuia.hidden = false; return; }
+                if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu descripción', texto: 'Ya escribiste una descripción. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;
+                area.value = t; area.dispatchEvent(new Event('input', { bubbles: true })); flush(clave);
+                cerrarGuia(); area.focus();
+            } }),
+            el('span', { class: 'dp-ayuda', text: 'Después podrás cambiar lo que quieras: la última palabra es tuya.' })));
+    [gCon, gHizo, gRes].forEach((n) => n.addEventListener('input', () => { errGuia.hidden = true; pintarBorrador(); }));
+
+    // La oferta de ayuda se ve con el campo vacío; con texto queda un enlace pequeño
+    const botonGuia = el('button', { type: 'button', class: 'dpc-camino', 'aria-expanded': 'false', onclick: () => abrirGuia() },
+        el('strong', { text: O.describir }), el('span', { text: O.sub }));
+    const enlace = el('button', { type: 'button', class: 'dp-btn-texto dpc-rehacer', text: O.rehacer, hidden: true, onclick: () => abrirGuia() });
+    const actualizarOferta = () => {
+        const tiene = area.value.trim().length > 0, abierta = !guia.hidden;
+        botonGuia.hidden = tiene || abierta;
+        enlace.hidden = !tiene || abierta;
+    };
+    function abrirGuia() { guia.hidden = false; botonGuia.setAttribute('aria-expanded', 'true'); actualizarOferta(); pintarBorrador(); gCon.focus(); }
+    function cerrarGuia() { guia.hidden = true; botonGuia.setAttribute('aria-expanded', 'false'); actualizarOferta(); }
+    area.addEventListener('input', actualizarOferta);
+    const bloqueDescripcion = el('div', { 'data-pinta': '' }, areaCampo, el('div', { class: 'dpc-caminos' }, botonGuia, enlace), guia);
+    bloqueDescripcion._pintar = actualizarOferta;
+    pintarBorrador(); actualizarOferta();
+
+    return [
+        campo({ clave, nombre: 'puesto', etiqueta: 'Puesto o actividad', placeholder: 'Ej. ' + ej.puesto }),
+        campo({ clave, nombre: 'organizacion', etiqueta: 'Organización o lugar', opcional: true, placeholder: 'Ej. ' + ej.org }),
+        detPeriodo, bloqueDescripcion,
+    ];
+}
+
 // Certificación o formación complementaria: nombre (tal como aparece en la constancia), institución, año, tipo y enlace, estos dos últimos opcionales.
 function camposCertificacion(clave) {
     const Cc = C.CERTIFICACIONES;
@@ -380,10 +486,7 @@ const CAMPOS_TARJETA = {
         }),
         el('p', { class: 'dpc-aviso-priv', text: C.LOGROS.respaldo.privacidad }),
     ],
-    experiencia: (clave) => [
-        campo({ clave, nombre: 'puesto', etiqueta: 'Puesto o actividad', placeholder: 'Voluntariado, negocio familiar, trabajo temporal…' }),
-        campo({ clave, nombre: 'queHiciste', etiqueta: '¿Qué hiciste?', placeholder: 'Empieza con un verbo y di el resultado', area: true }),
-    ],
+    experiencia: (clave) => camposExperiencia(clave),
 };
 const ROTULO = { proyecto: 'Proyecto', certificacion: 'Certificación', logro: 'Logro', experiencia: 'Experiencia' };
 
@@ -675,18 +778,16 @@ function pasoLogros() {
 }
 
 function pasoExperiencia() {
-    const casilla = el('input', { type: 'checkbox', id: 'dpSinExp' });
-    casilla.dataset.clave = CLAVE_AJUSTES; casilla.dataset.campo = 'sinExperiencia';
-    casilla.checked = !!(D.leerClave(CLAVE_AJUSTES) || {}).sinExperiencia;
-    const cuerpo = el('div', { class: 'dp-exp-cuerpo' }, bloqueLista('experiencia', {
-        vacio: 'Sin experiencias registradas.', botonTexto: '+ Añadir experiencia', base: { puesto: '', queHiciste: '' },
-    }), el('div', { class: 'dp-ideas' },
-        el('p', { class: 'dp-suave', text: 'También puedes incluir:' }),
-        el('div', {}, C.TIPOS_EXPERIENCIA.map((t) => el('span', { class: 'dp-chip dp-chip-lila', text: t })))));
-    const pintar = () => { cuerpo.classList.toggle('dp-atenuado', casilla.checked); };
-    casilla.addEventListener('change', () => { D.guardarClave(CLAVE_AJUSTES, { ...(D.leerClave(CLAVE_AJUSTES) || {}), sinExperiencia: casilla.checked }); pintar(); refrescarMemoria(); });
-    pintar();
-    return el('div', {}, el('label', { class: 'dp-casilla', for: 'dpSinExp' }, casilla, ' Aún no he trabajado (puedes saltar este paso)'), cuerpo);
+    const E = C.EXPERIENCIA;
+    const sinExperiencias = D.leerCV().experiencias.length === 0;
+    const ayudas = el('div', { class: 'dpc-ayudas' },
+        el('details', { class: 'dpc-det', open: sinExperiencias ? true : null },
+            el('summary', { text: E.resumen }),
+            el('p', { class: 'dp-suave', text: E.texto }),
+            itemsUl(E.items),
+            el('p', { class: 'dp-suave dpc-parcial', text: E.cierre })));
+    return el('div', {}, ayudas,
+        bloqueLista('experiencia', { vacio: E.vacio, botonTexto: '+ Añadir experiencia', base: { puesto: '', organizacion: '', desde: '', hasta: '', sigue: false, queHiciste: '' } }));
 }
 
 // Habilidades: cada una es un elemento independiente (chip). Cuatro categorías:

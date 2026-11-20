@@ -31,9 +31,9 @@ function htmlFormacion(f = {}) {
 }
 
 // «2024 – actualidad», «2025», «marzo de 2025 – noviembre de 2025» o '' si no puso fechas.
-function periodoDe(p) {
+function periodoDe(p, sinFechaSigue = 'En desarrollo') {
     const d = t(p.desde), h = t(p.hasta);
-    if (p.sigue) return d ? `${d} – actualidad` : 'En desarrollo';
+    if (p.sigue) return d ? `${d} – actualidad` : sinFechaSigue;
     if (d && h) return d === h ? d : `${d} – ${h}`;
     return d || h;
 }
@@ -50,10 +50,13 @@ function htmlProyectos(lista) {
 }
 
 function htmlExperiencia(lista) {
-    return lista.map((e) => '<div class="dp-cv-item">'
-        + (t(e.puesto) ? `<p class="dp-cv-p"><strong>${esc(t(e.puesto))}</strong></p>` : '')
+    return lista.map((e) => {
+        const titulo = unir([t(e.puesto) ? `<strong>${esc(t(e.puesto))}</strong>` : '', esc(t(e.organizacion)), esc(periodoDe(e, 'Actualidad'))]);
+        return '<div class="dp-cv-item">'
+        + (titulo ? `<p class="dp-cv-p">${titulo}</p>` : '')
         + (t(e.queHiciste) ? `<p class="dp-cv-p">${esc(t(e.queHiciste))}</p>` : '')
-        + '</div>').join('');
+        + '</div>';
+    }).join('');
 }
 
 function htmlHabilidades(lista) {
