@@ -133,7 +133,6 @@ export const PATRONES_CARRERA = [
 export const EJEMPLOS_CARRERA = {
     sis: {
         desc: 'Describe qué es tu proyecto, qué hiciste tú y con qué lo construiste.',
-        herr: { sw: ['Python', 'JavaScript', 'SQL', 'Git'], eq: ['Arduino', 'Raspberry Pi'], me: ['Scrum', 'Pruebas con usuarios'] },
         variantes: [
             { nombre: 'Control de inventario de una bodega pequeña', objeto: 'un sistema de control de inventario para una bodega pequeña', meta: 'llevar el registro de productos y existencias', hizo: 'diseñar la base de datos y programar el registro de movimientos', hice: 'diseñé la base de datos y programé el registro de movimientos', resultado: 'el encargado dejó de anotar el stock a mano' },
             { nombre: 'Análisis de las notas de un curso con Python', objeto: 'un análisis de las notas de un curso', meta: 'identificar qué temas costaron más al grupo', hizo: 'limpiar los datos y graficar los resultados con Python', hice: 'limpié los datos y grafiqué los resultados con Python', resultado: 'un informe con las conclusiones' },
@@ -142,7 +141,6 @@ export const EJEMPLOS_CARRERA = {
     },
     arq: {
         desc: 'Describe qué diseñaste o realizaste, tu aporte y los recursos que usaste.',
-        herr: { sw: ['AutoCAD', 'Revit', 'SketchUp'], eq: ['Maqueta en cartón pluma', 'Cortadora láser'], me: ['Análisis de sitio', 'Diseño participativo'] },
         variantes: [
             { nombre: 'Rediseño del aula de un colegio', objeto: 'el rediseño del aula de un colegio', meta: 'mejorar la iluminación y la circulación', hizo: 'levantar medidas y dibujar la propuesta en planos', hice: 'levanté medidas y dibujé la propuesta en planos', resultado: 'la propuesta fue presentada en clase' },
             { nombre: 'Maqueta de una vivienda unifamiliar', objeto: 'una vivienda unifamiliar', meta: 'mostrar su distribución y sus volúmenes', hizo: 'elaborar los planos y construir la maqueta', hice: 'elaboré los planos y construí la maqueta', resultado: 'la maqueta fue evaluada en el curso' },
@@ -151,7 +149,6 @@ export const EJEMPLOS_CARRERA = {
     },
     civ: {
         desc: 'Describe qué analizaste o construiste, tu aporte y los recursos que usaste.',
-        herr: { sw: ['SAP2000', 'AutoCAD', 'Excel'], eq: ['Estación total', 'Nivel óptico'], me: ['Método de rigidez', 'Ensayos de laboratorio'] },
         variantes: [
             { nombre: 'Medición topográfica de un terreno', objeto: 'el levantamiento topográfico de un terreno', meta: 'obtener sus medidas y desniveles', hizo: 'tomar los datos en campo y procesarlos', hice: 'tomé los datos en campo y los procesé', resultado: 'un plano con curvas de nivel' },
             { nombre: 'Diseño de un muro de contención', objeto: 'el diseño de un muro de contención', meta: 'verificar su estabilidad', hizo: 'calcular las fuerzas y dimensionar el muro', hice: 'calculé las fuerzas y dimensioné el muro', resultado: 'una memoria de cálculo para el curso' },
@@ -160,7 +157,6 @@ export const EJEMPLOS_CARRERA = {
     },
     gen: {
         desc: 'Describe qué hiciste, cuál fue tu aporte y qué recursos usaste.',
-        herr: { sw: ['Excel', 'Word', 'PowerPoint'], eq: ['Instrumentos de medición'], me: ['Encuestas', 'Revisión bibliográfica'] },
         variantes: [
             { nombre: 'Organización de un estudio de caso grupal', objeto: 'un estudio de caso en grupo', meta: 'analizar una situación real del curso', hizo: 'repartir tareas y redactar las conclusiones', hice: 'repartí tareas y redacté las conclusiones', resultado: 'el caso se presentó en clase' },
             { nombre: 'Informe técnico de laboratorio', objeto: 'un informe técnico de laboratorio', meta: 'documentar un experimento y sus resultados', hizo: 'tomar las mediciones y redactar el informe', hice: 'tomé las mediciones y redacté el informe', resultado: 'el informe fue evaluado por el docente' },
@@ -447,7 +443,7 @@ export const TIPOS_EXPERIENCIA = [
 
 // Cuatro categorías de habilidades. Las dos primeras admiten un nivel OPCIONAL; idiomas lleva nivel general (y detalle opcional); las personales no llevan nivel.
 export const HABILIDADES = {
-    tecnica: { titulo: 'Conocimientos técnicos', ayuda: 'Lo que sabes hacer y aplicar. Los ejemplos se adaptan a tu carrera. Nivel de dominio opcional.' },
+    tecnica: { titulo: 'Conocimientos técnicos', ayuda: 'Lo que sabes hacer y aplicar. Escribe lo tuyo o elige de la lista. Nivel de dominio opcional.' },
     herramienta: { titulo: 'Herramientas y tecnologías', ayuda: 'Programas, aplicaciones, equipos y recursos que sabes utilizar. Aquí van las que sabes usar, no solo las de un proyecto concreto. Nivel de dominio opcional.' },
     idioma: { titulo: 'Idiomas', ayuda: 'Indica tu nivel general y, si lo deseas, detalla tus niveles de comprensión auditiva, comprensión lectora, expresión oral y expresión escrita.' },
     personal: { titulo: 'Habilidades personales', ayuda: 'Selecciona hasta 5 que realmente te representen. Piensa en situaciones en las que las hayas demostrado: trabajos grupales, proyectos, actividades universitarias, voluntariado u otras experiencias. Por ejemplo, coordinar un equipo puede reflejar liderazgo.' },
@@ -464,13 +460,36 @@ export const DETALLE_IDIOMA = [   // [clave guardada, etiqueta del formulario, c
 export const AYUDA_QUE_INCLUIR = 'Piensa en los conocimientos que has adquirido en tus cursos, proyectos, investigaciones, actividades o experiencias. Incluye aquello que sabes aplicar y que puede aportar valor a tu perfil profesional. Cuentan los conocimientos de la universidad, no solo los de cursos externos o certificaciones, siempre que seas honesto con tu nivel.';
 export const AYUDA_NIVELES = 'Básico: conozco los fundamentos. Intermedio: lo he aplicado en trabajos o proyectos. Avanzado: lo uso con soltura en situaciones complejas. Es tu propia valoración y puedes dejarlo vacío.';
 export const AVISO_IDIOMAS = 'Niveles declarados por ti, no una certificación oficial.';
-// Ejemplos de conocimientos y herramientas según la carrera (orientativos: se puede escribir cualquier cosa). Deberían revisarlos estudiantes de cada facultad.
-export const EJEMPLOS_HABILIDADES = {
-    sis: { tec: ['Programación', 'Análisis de datos', 'Modelado de bases de datos'], her: ['Python', 'SQL', 'Git', 'Power BI'] },
-    arq: { tec: ['Diseño arquitectónico', 'Representación gráfica', 'Modelado 3D'], her: ['AutoCAD', 'Revit', 'SketchUp'] },
-    civ: { tec: ['Análisis estructural', 'Topografía', 'Presupuestos de obra'], her: ['SAP2000', 'AutoCAD', 'Excel'] },
-    qui: { tec: ['Análisis químico', 'Experimentación', 'Investigación'], her: ['MATLAB', 'Excel', 'Instrumentos de laboratorio'] },
-    gen: { tec: ['Análisis de datos', 'Investigación', 'Planificación'], her: ['Excel', 'Word', 'PowerPoint'] },
+// Ideas para elegir en Habilidades y en las herramientas de cada proyecto. UN SOLO catálogo para todos: no depende de la carrera.
+// Mezclan varias facultades y escalas; el alumno puede escribir lo que quiera (son solo ideas). Se muestran 6 a la vez (las primeras que no haya elegido)
+// y la lista completa, en orden alfabético, se abre desde el propio campo. Revisarlas con estudiantes o docentes de otras facultades antes de ampliarlas.
+const intercalar = (a, b, cada = 3) => { const s = []; let j = 0; a.forEach((x, i) => { s.push(x); if ((i + 1) % cada === 0 && j < b.length) s.push(b[j++]); }); while (j < b.length) s.push(b[j++]); return s; };
+const IDEAS_SW = ['Excel', 'AutoCAD', 'Python', 'Canva', 'SolidWorks', 'Power BI', 'MATLAB', 'Word', 'PowerPoint', 'Google Workspace', 'SQL', 'Git', 'Revit', 'SPSS', 'Photoshop',
+    'Notion', 'Trello', 'Minitab', 'LabVIEW', 'Primavera P6', 'ArcGIS', 'Figma', 'Visio', 'SAP2000', 'ETABS', 'Arena', 'ProModel', 'R', 'JavaScript', 'Java', 'ANSYS',
+    'Aspen HYSYS', 'SketchUp', 'MS Project', 'Tableau', 'Google Colab', 'Overleaf', 'Lumion'];
+const IDEAS_EQ = ['Multímetro', 'Impresora 3D', 'Estación total', 'Microscopio', 'Cámara fotográfica', 'Arduino', 'Raspberry Pi', 'Osciloscopio', 'Balanza analítica', 'Nivel óptico',
+    'Cortadora láser', 'Maqueta en cartón pluma', 'Dron', 'Torno', 'Fresadora', 'Soldadora', 'Protoboard', 'Sensores', 'Cinta métrica', 'Probetas y pipetas',
+    'Equipo de protección personal', 'Vernier', 'Mufla', 'Tableta gráfica', 'Proyector'];
+const IDEAS_ME = ['Encuestas', 'Entrevistas', 'Revisión bibliográfica', 'Observación en campo', 'Estudio de casos', 'Prototipado', 'Ensayos de laboratorio', 'Análisis estadístico',
+    'Scrum', 'Diseño de experimentos', 'Diagrama de flujo', 'Diagrama de Pareto', 'Simulación', 'Análisis FODA', 'Trabajo colaborativo', 'Modelado matemático', 'Muestreo',
+    'Benchmarking', 'Lluvia de ideas', 'Mapa de procesos', 'Cálculo de costos', 'Metodología Lean', 'Design Thinking', 'Análisis de datos', 'Gestión de proyectos',
+    'Pruebas con usuarios', 'Levantamiento topográfico'];
+const IDEAS_TEC = ['Análisis de datos', 'Investigación', 'Planificación', 'Programación', 'Dibujo técnico', 'Modelado 3D', 'Estadística', 'Gestión de proyectos', 'Presupuestos',
+    'Análisis estructural', 'Topografía', 'Análisis químico', 'Control de calidad', 'Optimización', 'Simulación de procesos', 'Bases de datos', 'Diseño de planos',
+    'Redacción técnica', 'Mecánica de materiales', 'Circuitos eléctricos', 'Termodinámica', 'Seguridad industrial', 'Análisis financiero', 'Gestión de inventarios',
+    'Mediciones y calibración', 'Experimentación', 'Investigación de operaciones', 'Diseño de producto', 'Contabilidad de costos', 'Cálculo numérico'];
+export const CATALOGO = { sw: IDEAS_SW, eq: IDEAS_EQ, me: IDEAS_ME, tec: IDEAS_TEC, her: intercalar(IDEAS_SW, IDEAS_EQ) };
+export const IDEAS = {
+    titulo: 'Ideas:',
+    placeholder: 'Escribe o elige de la lista',
+    verTodas: 'Ver todas las ideas',
+};
+
+// Formación: ejemplos neutros (no dependen de la carrera). Los cursos rotan entre facultades y solo se ven como ejemplo, nunca se guardan.
+export const FORMACION = {
+    carrera: 'Nombre de tu carrera',
+    cursos: ['Estadística, Programación, Gestión de proyectos', 'Mecánica de materiales, Dibujo técnico, Física', 'Costos, Contabilidad, Investigación de operaciones',
+        'Química orgánica, Laboratorio, Estadística', 'Diseño de planos, Topografía, Presupuestos', 'Circuitos eléctricos, Control, Matemática'],
 };
 export const NIVELES = ['Básico', 'Intermedio', 'Avanzado'];
 

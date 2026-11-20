@@ -236,6 +236,54 @@ function entradaCrece(attrs = {}) {
     ta._ajustar = ajustar;
     return ta;
 }
+// ───────────── campo «escribe o elige» ─────────────
+// Un campo de texto con lista desplegable de ideas (catálogo único, igual para todas las carreras) y, debajo, 6 ideas que se renuevan al elegir.
+// Escribir libre sigue siendo lo principal: Enter agrega lo que se escribió, esté o no en la lista. Las ideas ya agregadas no se vuelven a ofrecer.
+let contadorLista = 0;
+const sinTildes = (v) => String(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+function campoConLista({ aria, catalogo, ocupado, enviar, alIdea }) {
+    const I = C.IDEAS, id = `lista-ideas-${++contadorLista}`;
+    const entrada = el('input', { type: 'text', autocomplete: 'off', placeholder: I.placeholder, 'aria-label': aria, role: 'combobox', 'aria-expanded': 'false', 'aria-controls': id, 'aria-autocomplete': 'list' });
+    const lista = el('div', { id, role: 'listbox', class: 'dpc-lista-ideas', hidden: true, 'aria-label': aria });
+    const flecha = el('button', { type: 'button', class: 'dpc-flecha-lista', 'aria-label': I.verTodas, tabindex: '-1', text: '▾' });
+    const ideas = el('div', { class: 'dp-chips dpc-sugerencias' });
+    let visibles = [], activa = -1;
+    const libres = () => catalogo.filter((x) => !ocupado(x));
+    const marcar = (i) => {
+        activa = i;
+        const ops = $$('[role="option"]', lista);
+        ops.forEach((o, k) => { o.classList.toggle('activa', k === i); o.setAttribute('aria-selected', String(k === i)); });
+        if (i >= 0 && ops[i]) { entrada.setAttribute('aria-activedescendant', ops[i].id); if (ops[i].scrollIntoView) ops[i].scrollIntoView({ block: 'nearest' }); }
+        else entrada.removeAttribute('aria-activedescendant');
+    };
+    function cerrar() { lista.hidden = true; entrada.setAttribute('aria-expanded', 'false'); entrada.removeAttribute('aria-activedescendant'); activa = -1; }
+    function elegir(x) { cerrar(); enviar(x); }
+    function abrir() {
+        const q = sinTildes(entrada.value.trim());
+        visibles = libres().filter((x) => !q || sinTildes(x).includes(q)).sort((a, b) => a.localeCompare(b, 'es'));
+        if (!visibles.length) { cerrar(); return; }
+        lista.replaceChildren(...visibles.map((x, i) => el('div', { id: `${id}-${i}`, role: 'option', class: 'dpc-op-idea', 'aria-selected': 'false', text: x,
+            onmousedown: (e) => { e.preventDefault(); elegir(x); } })));
+        lista.hidden = false; entrada.setAttribute('aria-expanded', 'true'); activa = -1; entrada.removeAttribute('aria-activedescendant');
+    }
+    entrada.addEventListener('click', abrir);
+    entrada.addEventListener('input', abrir);
+    entrada.addEventListener('blur', () => setTimeout(cerrar, 120));
+    entrada.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') { e.preventDefault(); if (lista.hidden) abrir(); if (visibles.length) marcar(Math.min(activa + 1, visibles.length - 1)); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); if (visibles.length) marcar(Math.max(activa - 1, 0)); }
+        else if (e.key === 'Escape') cerrar();
+        else if (e.key === 'Enter') { e.preventDefault(); if (!lista.hidden && activa >= 0) elegir(visibles[activa]); else { cerrar(); enviar(entrada.value); } }
+    });
+    flecha.addEventListener('mousedown', (e) => e.preventDefault());
+    flecha.addEventListener('click', () => { if (lista.hidden) { entrada.focus(); abrir(); } else cerrar(); });
+    const pintarIdeas = () => ideas.replaceChildren(...libres().slice(0, 6).map((x) => el('button', { type: 'button', class: 'dp-chip dpc-sug', text: `+ ${x}`, onclick: () => (alIdea || enviar)(x) })));
+    const caja = el('div', { class: 'dpc-combo', 'data-combo': '' }, entrada, flecha, lista);
+    caja._refrescar = () => { pintarIdeas(); if (!lista.hidden) abrir(); };
+    pintarIdeas();
+    return { entrada, caja, ideas, refrescar: caja._refrescar };
+}
+
 const ajustarCrecen = (raiz) => $$('textarea.dpc-crece', raiz).forEach((t) => t._ajustar && t._ajustar());
 // Aviso «Tu borrador inicial» (informativo, no de error) y, debajo, «Así va quedando», que se queda a la vista mientras se responde (en pantallas grandes).
 const bloqueBorrador = (borrador, err, tipo = 'normal') => [
@@ -368,9 +416,11 @@ function camposProyecto(clave) {
     };
     for (const grupo of C.GRUPOS_HERRAMIENTAS) {
         const etiquetas = el('div', { class: 'dp-chips' });
-        const sugerencias = el('div', { class: 'dp-chips dpc-sugerencias' });
         const cuenta = el('span', { class: 'dpc-resumen' });
-        const entrada = el('input', { type: 'text', autocomplete: 'off', placeholder: 'Escribe y pulsa Enter', 'aria-label': `Añadir a ${grupo.nombre}` });
+        const combo = campoConLista({ aria: `Añadir a ${grupo.nombre}`, catalogo: C.CATALOGO[grupo.id],
+            ocupado: (x) => gruposDesde(leerItem(clave))[grupo.id].some((a) => a.toLowerCase() === x.toLowerCase()),
+            enviar: (v) => anadir(v) });
+        const entrada = combo.entrada;
         const error = el('small', { class: 'dp-error', role: 'alert', hidden: true });
         const anadir = (valor) => {
             const v = (valor || '').trim();
@@ -380,21 +430,19 @@ function camposProyecto(clave) {
             cambiarHerr(grupo.id, (l) => [...l, v]);
         };
         entrada.addEventListener('input', () => { error.hidden = true; });
-        entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); anadir(entrada.value); } });
         const pintar = () => {
             const actuales = gruposDesde(leerItem(clave))[grupo.id];
             cuenta.textContent = actuales.length ? ` · ${actuales.length}` : '';
             etiquetas.replaceChildren(...actuales.map((x, i) => el('span', { class: 'dp-chip dp-chip-hab' }, x,
                 el('button', { type: 'button', class: 'dp-chip-x', 'aria-label': `Quitar ${x}`, text: '×', onclick: () => cambiarHerr(grupo.id, (l) => { l.splice(i, 1); return l; }) }))));
-            sugerencias.replaceChildren(...(ej.herr[grupo.id] || []).filter((x) => !actuales.some((a) => a.toLowerCase() === x.toLowerCase()))
-                .map((x) => el('button', { type: 'button', class: 'dp-chip dpc-sug', text: `+ ${x}`, onclick: () => anadir(x) })));
+            combo.refrescar();
         };
         pintores.push(pintar);
         bloqueHerr.append(el('details', { class: 'dpc-det', open: (grupo.id === 'sw' || gruposDesde(leerItem(clave))[grupo.id].length) ? true : null },
             el('summary', {}, grupo.nombre, cuenta),
             el('small', { class: 'dp-ayuda', text: grupo.texto }), etiquetas,
-            el('div', { class: 'dp-agregar' }, entrada, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Añadir', onclick: () => anadir(entrada.value) })), error,
-            el('p', { class: 'dpc-sug-tit', text: 'Ideas para tu carrera:' }), sugerencias));
+            el('div', { class: 'dp-agregar' }, combo.caja, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Añadir', onclick: () => anadir(entrada.value) })), error,
+            el('p', { class: 'dpc-sug-tit', text: C.IDEAS.titulo }), combo.ideas));
     }
     bloqueHerr._pintar = () => { pintores.forEach((p) => p()); pintarBorrador(); };
     pintores.forEach((p) => p());
@@ -881,9 +929,9 @@ function pasoFormacion() {
     return el('div', {},
         el('div', { class: 'dp-fila-siga' }, marca, restablecer),
         campo({ clave: c, nombre: 'universidad', etiqueta: 'Universidad', placeholder: 'Universidad Nacional de Ingeniería' }),
-        campo({ clave: c, nombre: 'carrera', etiqueta: 'Carrera', placeholder: 'Ingeniería de Sistemas' }),
+        campo({ clave: c, nombre: 'carrera', etiqueta: 'Carrera', placeholder: C.FORMACION.carrera }),
         campo({ clave: c, nombre: 'ingreso', etiqueta: 'Año de ingreso', placeholder: '2023', opcional: true, extra: { inputmode: 'numeric', maxlength: '4' } }),
-        campo({ clave: c, nombre: 'cursos', etiqueta: 'Cursos relevantes', opcional: true, placeholder: 'Bases de Datos, Programación, Estadística', ayuda: 'Separa con comas. Hasta 5, relacionados con el puesto al que postulas.' }),
+        campo({ clave: c, nombre: 'cursos', etiqueta: 'Cursos relevantes', opcional: true, placeholder: C.FORMACION.cursos[sumaTexto((D.leerClave(c) || {}).carrera) % C.FORMACION.cursos.length], ayuda: 'Separa con comas. Hasta 5, relacionados con el puesto al que postulas.' }),
         campo({ clave: c, nombre: 'promedio', etiqueta: 'Promedio académico', opcional: true, placeholder: 'Déjalo vacío si no deseas incluirlo' }));
 }
 
@@ -1087,10 +1135,6 @@ function pasoPerfil() {
 // Lo ya guardado nunca se reescribe al abrir el paso: solo cambia lo que el alumno edita, y se conservan los campos que no conoce.
 const CICLO_NIVEL = ['', ...C.NIVELES];
 
-function ejemplosHabilidades() {
-    return C.EJEMPLOS_HABILIDADES[tipoCarrera((cv.formacion || {}).carrera)] || C.EJEMPLOS_HABILIDADES.gen;
-}
-
 // Actualiza UN elemento sin tocar los demás y conservando todos sus campos.
 function guardarHabilidad(id, cambios, quitar = []) {
     const actual = D.leerCV().habilidades.find((x) => x.id === id);
@@ -1105,10 +1149,11 @@ const yaExiste = (cat, nombre) => cv.habilidades.some((h) => h.categoria === cat
 
 function filaAgregar({ cat, info, conNivel }) {
     const chips = el('div', { class: 'dp-chips', 'data-chips': cat });
-    const sugerencias = el('div', { class: 'dp-chips dpc-sugerencias', 'data-sugerencias': cat });
-    const entrada = el('input', { type: 'text', placeholder: 'Escribe y pulsa Enter', 'aria-label': `Agregar a ${info.titulo}`, autocomplete: 'off', class: 'dp-entrada-chip' });
     const nivel = el('select', { 'aria-label': 'Nivel de dominio (opcional)' }, el('option', { value: '', text: 'Sin nivel' }), C.NIVELES.map((n) => el('option', { value: n, text: n })));
     const error = el('small', { class: 'dp-error', role: 'alert', hidden: true });
+    const combo = conNivel ? campoConLista({ aria: `Agregar a ${info.titulo}`, catalogo: C.CATALOGO[cat === 'tecnica' ? 'tec' : 'her'],
+        ocupado: (x) => yaExiste(cat, x), enviar: (v) => agregar(v, nivel.value), alIdea: (v) => agregar(v) }) : null;
+    const entrada = combo ? combo.entrada : el('input', { type: 'text', placeholder: 'Escribe y pulsa Enter', 'aria-label': `Agregar a ${info.titulo}`, autocomplete: 'off', class: 'dp-entrada-chip' });
     const agregar = (texto, niv = '') => {
         const nombre = String(texto || '').trim();
         if (!nombre) { error.textContent = 'Escribe algo antes de agregarlo.'; error.hidden = false; return; }
@@ -1118,13 +1163,12 @@ function filaAgregar({ cat, info, conNivel }) {
         entrada.value = ''; nivel.value = '';
         refrescarMemoria(); pintarChips();
     };
-    sugerencias._agregar = (t) => agregar(t);
     entrada.addEventListener('input', () => { error.hidden = true; });
-    entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); agregar(entrada.value, nivel.value); } });
+    if (!combo) entrada.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); agregar(entrada.value, nivel.value); } });
     return el('div', { class: 'dp-grupo' },
         el('h3', { text: info.titulo }), el('small', { class: 'dp-ayuda', text: info.ayuda }), chips,
-        el('div', { class: 'dp-agregar' }, entrada, conNivel ? nivel : null, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Agregar', onclick: () => agregar(entrada.value, nivel.value) })), error,
-        conNivel ? el('p', { class: 'dpc-sug-tit', text: 'Ideas para tu carrera:' }) : null, conNivel ? sugerencias : null);
+        el('div', { class: 'dp-agregar' }, combo ? combo.caja : entrada, conNivel ? nivel : null, el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Agregar', onclick: () => agregar(entrada.value, nivel.value) })), error,
+        combo ? el('p', { class: 'dpc-sug-tit', text: C.IDEAS.titulo }) : null, combo ? combo.ideas : null);
 }
 
 function grupoIdiomas() {
@@ -1263,15 +1307,7 @@ function pintarChips() {
         cont.dataset.firma = firma;
         cont.replaceChildren(...lista.map((h) => (cat === 'idioma' ? chipIdioma(h) : chipNivel(h))));
     }
-    for (const caja of $$('[data-sugerencias]')) {
-        const cat = caja.dataset.sugerencias;
-        const ej = ejemplosHabilidades()[cat === 'tecnica' ? 'tec' : 'her'] || [];
-        const quedan = ej.filter((x) => !yaExiste(cat, x));
-        const firma = quedan.join('|');
-        if (caja.dataset.firma === firma) continue;
-        caja.dataset.firma = firma;
-        caja.replaceChildren(...quedan.map((x) => el('button', { type: 'button', class: 'dp-chip dpc-sug', text: `+ ${x}`, onclick: () => caja._agregar(x) })));
-    }
+    $$('[data-combo]').forEach((n) => n._refrescar && n._refrescar());        // las ideas ofrecidas se renuevan al agregar una
     pintarPersonales();
     pintarDesdeProyectos();
 }
