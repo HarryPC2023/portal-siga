@@ -148,11 +148,10 @@ function evaluarLogros(lista = []) {
     return { estado: VERDE, mensaje: con.length === 1 ? 'Logro registrado.' : `${con.length} logros registrados.` };
 }
 
-function evaluarExperiencia(lista = [], ajustes = {}) {
+function evaluarExperiencia(lista = []) {
     const con = lista.filter((e) => txt(e.puesto) || txt(e.queHiciste));
     if (con.length) return { estado: GRIS, mensaje: `${con.length === 1 ? '1 experiencia registrada' : con.length + ' experiencias registradas'}. Es opcional.` };
-    if (ajustes && ajustes.sinExperiencia) return { estado: GRIS, mensaje: 'Opcional. Marcaste que aún no has trabajado: no es necesaria para tus primeras prácticas.' };
-    return { estado: GRIS, mensaje: 'Opcional. No es necesaria para tus primeras prácticas.' };
+    return { estado: GRIS, mensaje: 'Opcional. Si has participado en organizaciones, actividades o trabajos, puedes contar aquí qué hiciste y cómo contribuiste.' };
 }
 
 // ───────────── resultado completo ─────────────
@@ -171,7 +170,7 @@ export function evaluarCV(cv) {
         habilidades: evaluarHabilidades(lista(c.habilidades)),
         certificaciones: evaluarCertificaciones(lista(c.certificaciones)),
         logros: evaluarLogros(lista(c.logros)),
-        experiencia: evaluarExperiencia(lista(c.experiencias), c.ajustes || {}),
+        experiencia: evaluarExperiencia(lista(c.experiencias)),
     };
     const secciones = Object.keys(NOMBRES_SECCION).map((id) => ({ id, nombre: NOMBRES_SECCION[id], ...r[id] }));
     const resumen = { rojo: 0, ambar: 0, verde: 0, gris: 0 };
