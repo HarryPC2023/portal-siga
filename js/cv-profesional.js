@@ -518,7 +518,8 @@ function bloqueLista(tipo, { vacio, botonTexto, base }) {
     });
     const barra = el('div', { class: 'dp-lista-barra', 'data-barra': tipo, hidden: true },
         el('button', { type: 'button', class: 'dp-btn-texto', text: 'Plegar todo', onclick: (e) => plegarTodas(tipo, e.currentTarget.dataset.accion !== 'desplegar') }));
-    const bloque = el('div', {}, aviso, barra, cont, boton);
+    const pie = el('div', { class: 'dp-lista-pie' }, boton, barra);      // «+ Añadir» a la izquierda y «Plegar todo» a la derecha, a la vista donde se trabaja
+    const bloque = el('div', {}, aviso, cont, pie);
     queueMicrotask(() => reconciliarLista(tipo));
     return bloque;
 }
