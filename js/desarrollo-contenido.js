@@ -48,6 +48,11 @@ export const PASOS = [
         consejo: 'Lo que más aporta es lo que hiciste, más que el nombre del lugar. Si formas parte de un grupo o centro, cuenta qué responsabilidades asumiste o cómo colaboraste.',
     },
     {
+        id: 'perfil', titulo: 'Perfil profesional', etiquetaPaso: 'Recomendado',
+        porQue: 'Una breve presentación para explicar qué estudias, qué conocimientos o intereses quieres destacar y hacia dónde te gustaría orientar tu desarrollo profesional.',
+        consejo: 'Escríbelo en primera persona y con tus palabras. Tu perfil se construye con lo que sí tienes hoy: tu formación, lo que estás aprendiendo y lo que te interesa.',
+    },
+    {
         id: 'revision', titulo: 'Revisión',
         porQue: 'Mira qué le falta a tu CV. El semáforo orienta; tú decides qué hacer.',
         consejo: '',
@@ -366,6 +371,37 @@ export const LOGROS = {
     },
 };
 
+// ───────────── Perfil profesional (paso propio) ─────────────
+// Los ejemplos son modelos de redacción de distintas áreas (ver REGLAS DE LOS EJEMPLOS); no se guardan y no se atribuyen al estudiante.
+export const PERFIL = {
+    bienvenida: 'No necesitas experiencia para tener un perfil profesional',
+    bienvenidaTexto: 'Tu formación, tus conocimientos y tus intereses también cuentan.',
+    etiqueta: 'Tu presentación en pocas líneas',
+    placeholder: 'Cuenta qué estudias, qué quieres destacar y qué te interesa. Dos o tres frases bastan.',
+    asistente: {
+        pregEstudia: '¿Qué estudias?',
+        ayudaEstudia: 'Lo tomamos de tu paso Formación. Cámbialo si quieres.',
+        placeEstudia: 'Ej. tu carrera y tu universidad',
+        pregDestacar: '¿Qué conocimientos, herramientas o experiencias quieres destacar?',
+        ayudaDestacar: 'Puedes elegir hasta 3 elementos de tus proyectos y habilidades. Solo utilizaremos sus nombres.',
+        ayudaLibre: 'O escribe otros, separados por comas.',
+        avisoMax: 'Elige hasta 3: con más, la frase se vuelve una lista.',
+        pregBusca: '¿Qué te interesa o qué buscas?',
+        ayudaBusca: 'Escribe tu propia frase, con tu verbo: lo que quieres aprender, a qué área te orientas o qué tipo de oportunidad buscas.',
+    },
+    ejemplosDestacar: ['Excel', 'AutoCAD', 'Python', 'Estadística', 'Gestión de proyectos', 'Diseño estructural', 'Investigación', 'Organización de actividades', 'Trabajo en equipo', 'Participación en laboratorio'],
+    ejemplosBusca: [
+        'Busco una práctica preprofesional en el área de estructuras',
+        'Me interesa el análisis de datos aplicado a la gestión empresarial',
+        'Quiero aprender más sobre gestión y supervisión de obras',
+        'Me interesa participar en proyectos de investigación ambiental',
+    ],
+    genericas: ['proactivo', 'proactiva', 'responsable', 'dinámico', 'dinámica', 'apasionado', 'apasionada', 'comprometido', 'comprometida'],
+    avisoGenerica: 'Si usas palabras como «proactivo» o «responsable», pregúntate qué hiciste que lo demuestre.',
+    maxCaracteres: 450,
+    avisoLargo: 'Para un primer CV suelen bastar de tres a cinco líneas. Si puedes, acórtalo un poco.',
+};
+
 export const TIPOS_EXPERIENCIA = [
     'Voluntariados', 'Tutorías o asesorías', 'Organizaciones estudiantiles (IEEE, ACIA, LeadUNI…)', 'Delegado de aula o representación',
     'Organización de eventos', 'Freelance o actividades independientes', 'Apoyo en negocios familiares', 'Trabajos temporales',
@@ -454,6 +490,7 @@ export const ETAPAS = {
     certificaciones: 'Lo que aprendiste fuera del aula también cuenta',
     logros: 'Lo que te distingue: lo que conseguiste',
     experiencia: 'También cuenta lo que no fue un empleo formal',
+    perfil: 'Te presentas con tus propias palabras',
     revision: 'Último paso: revisa tu perfil y descárgalo',
 };
 // Se muestran SOLO cuando el semáforo de ese paso está en verde (así lo que dicen es cierto).

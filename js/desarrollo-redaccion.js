@@ -108,3 +108,25 @@ export function armarBorradorLogro({ verbo = '', a = '', conector = '', b = '' }
     const parteA = V ? `${V} ${minuscula(A)}` : A.charAt(0).toUpperCase() + A.slice(1);
     return `${parteA}${B && conector ? ' ' + conector + ' ' + minuscula(B) : ''}.`;
 }
+
+// Une nombres tal como el alumno los escribió (sin cambiar mayúsculas): «A», «A y B», «A, B y C». «e» ante «i» (y «hi»).
+export function unirNombres(lista = []) {
+    const v = lista.map(t).filter(Boolean);
+    if (v.length <= 1) return v[0] || '';
+    const ultimo = v[v.length - 1];
+    const y = /^h?i(?![aeou])/i.test(ultimo) ? ' e ' : ' y ';
+    return v.slice(0, -1).join(', ') + y + ultimo;
+}
+
+// Borrador del perfil: cada frase aparece solo si hay contenido. La última es del alumno, tal cual (solo se cuida el punto final).
+// Sin ciclo, sin adjetivos, sin nada que el alumno no haya elegido o escrito.
+export function armarBorradorPerfil({ estudia = '', destacar = [], busca = '' } = {}) {
+    const limpia = (x) => t(x).replace(/[.\s]+$/, '');
+    const frases = [];
+    const E = limpia(estudia), B = limpia(busca);
+    const D = unirNombres(destacar.map(limpia));
+    if (E) frases.push(`Estudiante de ${E}.`);
+    if (D) frases.push(`Quiero destacar ${D}.`);
+    if (B) frases.push(`${B.charAt(0).toUpperCase()}${B.slice(1)}.`);
+    return frases.join(' ');
+}

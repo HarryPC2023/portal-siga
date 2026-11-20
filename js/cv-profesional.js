@@ -9,11 +9,11 @@
 import { SigaEstado } from './sync-estado.js?v=1';
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { supabase } from './auth-siga.js?v=9';
-import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES } from './desarrollo-estado.js?v=2';
+import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PERFIL } from './desarrollo-estado.js?v=2';
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=4';
 import { htmlCV } from './cv-documento.js?v=2';
-import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=2';
+import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 
 const D = crearDesarrollo(SigaEstado);
@@ -41,7 +41,7 @@ let paso = 0;                        // índice en C.PASOS
 let modo = 'constructor';            // 'constructor' | 'previa'
 const sucios = new Set();            // «clave|campo» con texto escrito que aún no se manda a guardar
 const temporizadores = new Map();    // clave → temporizador del autoguardado
-const SECCION_DE_PASO = { datos: 'datos', formacion: 'formacion', proyectos: 'proyectos', habilidades: 'habilidades', certificaciones: 'certificaciones', logros: 'logros', experiencia: 'experiencia' };
+const SECCION_DE_PASO = { datos: 'datos', formacion: 'formacion', proyectos: 'proyectos', habilidades: 'habilidades', certificaciones: 'certificaciones', logros: 'logros', experiencia: 'experiencia', perfil: 'perfil' };
 const TIPO_DE_PASO = { proyectos: 'proyecto', certificaciones: 'certificacion', logros: 'logro', experiencia: 'experiencia' };
 const COLECCION = { proyecto: 'proyectos', certificacion: 'certificaciones', logro: 'logros', experiencia: 'experiencias', habilidad: 'habilidades' };
 
@@ -199,9 +199,7 @@ function crearPeriodo({ clave, base, textoSigue, alCambiar }) {
     return { det, chk };
 }
 
-// ───────────── ejemplos rotativos (solo vista: nunca se guardan en el CV) ─────────────
-// Cada tarjeta nueva toma el PRIMER ejemplo de la lista que no esté en uso (si todos lo están, el menos usado).
-// Al borrar una tarjeta su ejemplo queda libre; las demás tarjetas no cambian. Al recargar se reasignan en orden.
+// ───────────── oferta de ayuda para redactar ─────────────
 // Oferta de ayuda: botón con ✍️ (borde naranja) y, cuando el campo ya tiene texto, enlace pequeño «Rehacer con ayuda».
 function ofertaAyuda(textoBoton, alAbrir) {
     const O = C.OFERTA_AYUDA;
@@ -213,6 +211,9 @@ function ofertaAyuda(textoBoton, alAbrir) {
 }
 const botonCerrarGuia = (alCerrar) => el('button', { type: 'button', class: 'dp-btn-texto dpc-cerrar-guia', text: C.OFERTA_AYUDA.cerrar, onclick: alCerrar });
 
+// ───────────── ejemplos rotativos (solo vista: nunca se guardan en el CV) ─────────────
+// Cada tarjeta nueva toma el PRIMER ejemplo de la lista que no esté en uso (si todos lo están, el menos usado).
+// Al borrar una tarjeta su ejemplo queda libre; las demás tarjetas no cambian. Al recargar se reasignan en orden.
 const ejemplosAsignados = { proyecto: new Map(), certificacion: new Map(), logro: new Map(), experiencia: new Map() };
 const LISTA_DE_TIPO = { proyecto: 'proyectos', certificacion: 'certificaciones', logro: 'logros', experiencia: 'experiencias' };
 function indiceEjemplo(tipo, clave, total) {
@@ -860,6 +861,119 @@ function pasoExperiencia() {
         bloqueLista('experiencia', { vacio: E.vacio, botonTexto: '+ Añadir experiencia', base: { puesto: '', organizacion: '', desde: '', hasta: '', sigue: false, queHiciste: '' } }));
 }
 
+// ───────────── Perfil profesional ─────────────
+// La presentación es UN texto: lo que el alumno deja en el campo es lo que se guarda. El asistente solo propone un borrador.
+const sumaTexto = (v) => [...String(v || '')].reduce((a, c) => a + c.charCodeAt(0), 0);
+let avisoGenericaVisto = false;    // el aviso de palabras genéricas sale una sola vez por visita
+
+function pasoPerfil() {
+    const P = C.PERFIL, A = P.asistente, O = C.OFERTA_AYUDA, clave = CLAVE_PERFIL;
+    const base = 'p-perfil';
+    const semilla = sumaTexto((cv.formacion || {}).carrera);                  // el ejemplo cambia según la carrera, no se guarda
+    const ejB = P.ejemplosBusca[semilla % P.ejemplosBusca.length];
+    const nD = P.ejemplosDestacar.length;
+    const ejD = [P.ejemplosDestacar[semilla % nD], P.ejemplosDestacar[(semilla + 1) % nD]].join(', ');
+
+    const bienvenida = el('div', { class: 'dpc-bienvenida' }, el('strong', { text: P.bienvenida }), el('p', { text: P.bienvenidaTexto }));
+    const areaCampo = campo({ clave, nombre: 'texto', etiqueta: P.etiqueta, area: true, placeholder: P.placeholder });
+    const area = $('textarea', areaCampo); area.rows = 5;
+    const avisoGen = el('small', { class: 'dp-ayuda', text: P.avisoGenerica, hidden: true });
+    const avisoLargo = el('small', { class: 'dp-ayuda', hidden: true });
+
+    // preguntas del asistente (solo vista; no se guardan)
+    const gEst = el('input', { type: 'text', id: `${base}-e`, autocomplete: 'off', placeholder: A.placeEstudia });
+    let estTocado = false; gEst.addEventListener('input', () => { estTocado = true; });
+    let seleccion = [];
+    const chips = el('div', { class: 'dpc-opciones', role: 'group', 'aria-label': 'Elementos para destacar' });
+    const ayudaDest = el('small', { class: 'dp-ayuda', text: A.ayudaDestacar });
+    const avisoMax = el('small', { class: 'dp-ayuda', text: A.avisoMax, hidden: true });
+    const gLibre = el('input', { type: 'text', id: `${base}-l`, autocomplete: 'off', placeholder: 'Ej. ' + ejD });
+    const gBusca = el('input', { type: 'text', id: `${base}-b`, autocomplete: 'off', placeholder: 'Ej. ' + ejB });
+    const borrador = el('div', { class: 'dpc-borrador', 'aria-live': 'polite' });
+    const errGuia = el('small', { class: 'dp-error', role: 'alert', hidden: true });
+
+    const pregunta = (id, etiqueta, entrada, ayuda, opc) => el('div', { class: 'dpc-pregunta' },
+        el('label', { for: id }, etiqueta, opc ? el('span', { class: 'dp-opc', text: ' (opcional)' }) : null), entrada,
+        ayuda ? el('small', { class: 'dp-ayuda', text: ayuda }) : null);
+
+    const nombresPropios = () => {
+        const vistos = new Set(), lista = [];
+        [...(cv.proyectos || []), ...(cv.habilidades || [])].forEach((x) => {
+            const n = String(x.nombre || '').trim(), k = n.toLowerCase();
+            if (n && !vistos.has(k)) { vistos.add(k); lista.push(n); }
+        });
+        return lista.slice(0, 12);
+    };
+    const elementos = () => {
+        const libres = gLibre.value.split(',').map((x) => x.trim()).filter(Boolean);
+        const vistos = new Set(), todos = [];
+        [...seleccion, ...libres].forEach((n) => { const k = n.toLowerCase(); if (!vistos.has(k)) { vistos.add(k); todos.push(n); } });
+        return todos;
+    };
+    const pintarBorrador = () => {
+        const todos = elementos();
+        avisoMax.hidden = todos.length <= 3;
+        const x = armarBorradorPerfil({ estudia: gEst.value, destacar: todos.slice(0, 3), busca: gBusca.value });
+        borrador.textContent = x || 'Responde alguna pregunta y verás tu borrador aquí.';
+        borrador.classList.toggle('vacio', !x);
+        return x;
+    };
+    const pintarChips = () => {
+        const propios = nombresPropios();
+        seleccion = seleccion.filter((n) => propios.includes(n));
+        chips.hidden = !propios.length;
+        ayudaDest.textContent = propios.length ? A.ayudaDestacar : 'Aún no registraste proyectos ni habilidades. Escribe aquí lo que quieras destacar.';
+        chips.replaceChildren(...propios.map((n) => {
+            const b = el('button', { type: 'button', class: 'dpc-op' + (seleccion.includes(n) ? ' on' : ''), 'aria-pressed': seleccion.includes(n) ? 'true' : 'false', text: n });
+            b.addEventListener('click', () => {
+                seleccion = seleccion.includes(n) ? seleccion.filter((x) => x !== n) : [...seleccion, n];
+                pintarChips(); pintarBorrador();
+            });
+            return b;
+        }));
+    };
+
+    const guia = el('div', { class: 'dpc-guia', hidden: true },
+        pregunta(`${base}-e`, A.pregEstudia, gEst, A.ayudaEstudia, true),
+        pregunta(`${base}-l`, A.pregDestacar, el('div', {}, chips, ayudaDest, gLibre, avisoMax), A.ayudaLibre, true),
+        pregunta(`${base}-b`, A.pregBusca, gBusca, A.ayudaBusca, true),
+        el('span', { class: 'dpc-lab', text: 'Así va quedando' }), borrador, errGuia,
+        el('div', { class: 'dpc-acciones-guia' },
+            el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Usar este borrador y editarlo', onclick: async () => {
+                const x = pintarBorrador();
+                if (!x) { errGuia.textContent = 'Responde al menos una pregunta para armar un borrador.'; errGuia.hidden = false; return; }
+                if (area.value.trim() && !(await confirmarModal({ titulo: 'Reemplazar tu perfil', texto: 'Ya escribiste un perfil. Si usas el borrador, se reemplazará. Después podrás editarlo como quieras.', ok: 'Usar borrador' }))) return;
+                area.value = x; area.dispatchEvent(new Event('input', { bubbles: true })); flush(clave);
+                cerrar(); area.focus();
+            } }),
+            botonCerrarGuia(() => cerrar())));
+    [gEst, gLibre, gBusca].forEach((n) => n.addEventListener('input', () => { errGuia.hidden = true; pintarBorrador(); }));
+
+    const { boton, enlace } = ofertaAyuda(O.redactar, () => abrir());
+    const revisarTexto = () => {
+        const v = area.value, tiene = v.trim().length > 0, abierta = !guia.hidden;
+        bienvenida.hidden = tiene;
+        boton.hidden = tiene || abierta; enlace.hidden = !tiene || abierta;
+        const hay = P.genericas.some((w) => new RegExp(`(^|[^a-záéíóúñ])${w}($|[^a-záéíóúñ])`, 'i').test(v));
+        if (hay && !avisoGenericaVisto) { avisoGenericaVisto = true; avisoGen.hidden = false; } else if (!hay) avisoGen.hidden = true;
+        const largo = v.trim().length > P.maxCaracteres;
+        avisoLargo.hidden = !largo;
+        if (largo) avisoLargo.textContent = `${v.trim().length} caracteres. ${P.avisoLargo}`;
+    };
+    function abrir() {
+        const f = cv.formacion || {}, car = String(f.carrera || '').trim(), uni = String(f.universidad || '').trim();
+        if (!estTocado) gEst.value = car ? (uni ? `${car} en ${uni}` : car) : '';
+        pintarChips();
+        guia.hidden = false; boton.setAttribute('aria-expanded', 'true'); revisarTexto(); pintarBorrador(); (gEst.value ? gLibre : gEst).focus();
+    }
+    function cerrar() { guia.hidden = true; boton.setAttribute('aria-expanded', 'false'); revisarTexto(); }
+    area.addEventListener('input', revisarTexto);
+    pintarChips(); pintarBorrador(); revisarTexto();
+    const bloque = el('div', { 'data-pinta': '' }, bienvenida, areaCampo, avisoGen, avisoLargo, el('div', { class: 'dpc-caminos' }, boton, enlace), guia);
+    bloque._pintar = revisarTexto;
+    return bloque;
+}
+
 // Habilidades: cada una es un elemento independiente (chip). Cuatro categorías:
 //   tecnica / herramienta → nombre + nivel OPCIONAL (sin nivel se ve y se guarda igual que siempre)
 //   idioma               → nombre + nivel general + detalle opcional (au, le, or, es)
@@ -1213,7 +1327,7 @@ function pintarAvance(estado) {
 
 function dibujarPaso() {
     const p = C.PASOS[paso];
-    const cuerpo = { datos: pasoDatos, formacion: pasoFormacion, proyectos: pasoProyectos, habilidades: pasoHabilidades, certificaciones: pasoCertificaciones, logros: pasoLogros, experiencia: pasoExperiencia, revision: pasoRevision }[p.id]();
+    const cuerpo = { datos: pasoDatos, formacion: pasoFormacion, proyectos: pasoProyectos, habilidades: pasoHabilidades, certificaciones: pasoCertificaciones, logros: pasoLogros, experiencia: pasoExperiencia, perfil: pasoPerfil, revision: pasoRevision }[p.id]();
     const nav = el('div', { class: 'dp-nav' },
         paso > 0 ? el('button', { type: 'button', class: 'dp-btn', text: 'Anterior', onclick: () => irAPaso(paso - 1) }) : null,
         paso < C.PASOS.length - 1 ? el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: paso === C.PASOS.length - 2 ? 'Revisar con el semáforo' : 'Siguiente', onclick: () => irAPaso(paso + 1) }) : null,
@@ -1267,7 +1381,7 @@ function refrescarMemoria() {
 // Llega algo de otro dispositivo: se actualiza lo que se ve SIN reconstruir el formulario.
 function conciliar() {
     const id = C.PASOS[paso].id;
-    if (id === 'datos' || id === 'formacion') sincronizarCampos($('#dpPanel'));
+    if (id === 'datos' || id === 'formacion' || id === 'perfil') sincronizarCampos($('#dpPanel'));
     else if (TIPO_DE_PASO[id]) { reconciliarLista(TIPO_DE_PASO[id]); if (id === 'experiencia') sincronizarCampos($('#dpPanel')); }
     else if (id === 'habilidades') pintarChips();
     else if (id === 'revision') { const r = $('[data-revision]'); if (r) pintarRevision(r); }

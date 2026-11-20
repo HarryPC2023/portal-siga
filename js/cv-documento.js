@@ -20,6 +20,10 @@ function seccion(titulo, cuerpo) {
     return `<section class="dp-cv-sec"><h2 class="dp-cv-h2">${esc(titulo)}</h2>${cuerpo}</section>`;
 }
 
+function htmlPerfil(texto) {
+    return t(texto).split(/\n+/).map(t).filter(Boolean).map((l) => `<p class="dp-cv-p">${esc(l)}</p>`).join('');
+}
+
 function htmlFormacion(f = {}) {
     const linea1 = unir([t(f.universidad), t(f.carrera), t(f.ingreso) ? `${esc(t(f.ingreso))} – actualidad` : ''].map((x, i) => (i < 2 ? esc(x) : x)));
     const cursos = (Array.isArray(f.cursos) ? f.cursos : []).map(t).filter(Boolean).slice(0, 5);
@@ -124,6 +128,7 @@ export function htmlCV(cv = {}) {
         + (contacto ? `<p class="dp-cv-contacto">${contacto}</p>` : '') + '</header>';
 
     const partes = [];
+    if (t((cv.perfil || {}).texto)) partes.push(seccion('Perfil profesional', htmlPerfil(cv.perfil.texto)));
     if (hayFormacion) partes.push(seccion('Formación', htmlFormacion(f)));
     if (proyectos.length) partes.push(seccion('Proyectos', htmlProyectos(proyectos)));
     if (experiencias.length) partes.push(seccion('Experiencia', htmlExperiencia(experiencias)));

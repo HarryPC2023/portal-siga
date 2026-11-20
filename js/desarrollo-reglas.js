@@ -154,10 +154,17 @@ function evaluarExperiencia(lista = []) {
     return { estado: GRIS, mensaje: 'Opcional. Si has participado en organizaciones, actividades o trabajos, puedes contar aquí qué hiciste y cómo contribuiste.' };
 }
 
+// Perfil profesional: «Recomendado», nunca pendiente. Vacío o escrito, el estado es gris y no genera un «te falta».
+function evaluarPerfil(p = {}) {
+    if (txt(p.texto)) return { estado: GRIS, mensaje: 'Perfil registrado. Es una recomendación, no un requisito.' };
+    return { estado: GRIS, mensaje: 'Cuando quieras, puedes crear una presentación que reúna tu formación, tus conocimientos y tus intereses profesionales.' };
+}
+
 // ───────────── resultado completo ─────────────
 export const NOMBRES_SECCION = {
     datos: 'Datos básicos', formacion: 'Formación', proyectos: 'Proyectos',
     habilidades: 'Habilidades', certificaciones: 'Certificaciones', logros: 'Logros', experiencia: 'Experiencia',
+    perfil: 'Perfil profesional',
 };
 
 export function evaluarCV(cv) {
@@ -171,6 +178,7 @@ export function evaluarCV(cv) {
         certificaciones: evaluarCertificaciones(lista(c.certificaciones)),
         logros: evaluarLogros(lista(c.logros)),
         experiencia: evaluarExperiencia(lista(c.experiencias)),
+        perfil: evaluarPerfil(c.perfil || {}),
     };
     const secciones = Object.keys(NOMBRES_SECCION).map((id) => ({ id, nombre: NOMBRES_SECCION[id], ...r[id] }));
     const resumen = { rojo: 0, ambar: 0, verde: 0, gris: 0 };

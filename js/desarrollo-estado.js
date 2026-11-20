@@ -7,6 +7,7 @@
 //   cv:datos            → { nombre, correo, telefono, linkedin, github, distrito }
 //   cv:formacion        → { universidad, carrera, ingreso, cursos[], promedio }
 //   cv:ajustes          → { sinExperiencia }
+//   cv:perfil           → { texto }   (la presentación; lo que el alumno deja en el campo es lo que se guarda)
 //   proyecto:<id>       → { nombre, queHiciste, herramientas, evidencia, origen, orden }
 //   habilidad:<id>      → { categoria: 'tecnica'|'herramienta'|'idioma', nombre, nivel, orden }
 //   certificacion:<id>  → { nombre, institucion, anio, tipo, enlace, orden }   (tipo y enlace opcionales)
@@ -31,6 +32,7 @@ export const TIPOS = {
 export const CLAVE_DATOS = 'cv:datos';
 export const CLAVE_FORMACION = 'cv:formacion';
 export const CLAVE_AJUSTES = 'cv:ajustes';
+export const CLAVE_PERFIL = 'cv:perfil';
 
 const objeto = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
 
@@ -68,6 +70,7 @@ export function crearDesarrollo(estado) {
             datos: objeto(estado.leer(MODULO, CLAVE_DATOS)),
             formacion: objeto(estado.leer(MODULO, CLAVE_FORMACION)),
             ajustes: objeto(estado.leer(MODULO, CLAVE_AJUSTES)),
+            perfil: objeto(estado.leer(MODULO, CLAVE_PERFIL)),
             proyectos: coleccion('proyecto'),
             habilidades: coleccion('habilidad'),
             certificaciones: coleccion('certificacion'),
