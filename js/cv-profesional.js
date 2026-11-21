@@ -12,7 +12,9 @@ import { supabase } from './auth-siga.js?v=9';
 import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PERFIL } from './desarrollo-estado.js?v=2';
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=4';
-import { htmlCV, htmlItemPrevia } from './cv-documento.js?v=2';
+import { htmlItemPrevia } from './cv-documento.js?v=3';
+import { htmlHoja, DISENOS, COLORES, disenoDe, colorDe, variablesHoja, NOTA_FOTO, NOTA_FOTO_SILUETA, AVISO_UNA_HOJA, AVISO_FOTO_NO_GUARDADA, AVISO_FOTO_ERROR } from './cv-disenos.js?v=1';
+import { ajustarAUnaHoja, PARAMS_BASE } from './cv-ajuste.js?v=1';
 import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, textoPeriodo, normalizarFecha, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 import { FACULTADES } from '../intranotas/facultades-datos.js';
@@ -1409,6 +1411,7 @@ function pintarRevision(cont) {
             el('button', { type: 'button', class: 'dp-btn-texto', text: 'Ir al paso', onclick: () => irAPaso(PASO_DE_SECCION[s.id]) }))),
         el('div', { class: 'dp-aviso' }, el('strong', { text: C.AVISO_SEMAFORO_TITULO + '. ' }), C.AVISO_SEMAFORO),
         el('p', { class: 'dp-suave', text: C.NOTA_DESCARGA }),
+        panelDiseno(),
         el('div', { class: 'dp-acciones' },
             el('button', { type: 'button', class: 'dp-btn', text: 'Ver mi CV', onclick: () => abrirPrevia() }),
             el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Imprimir o guardar PDF', onclick: imprimir })),
@@ -1416,12 +1419,117 @@ function pintarRevision(cont) {
         el('div', { class: 'dpc-tip' }, el('b', { text: '💡 Consejo profesional:' }), ' ' + C.CONSEJO_PROFESIONAL));
 }
 
+// ───────────── foto del CV: solo en este dispositivo ─────────────
+// La foto NO se sube a SIGA ni a la cuenta: se guarda en este navegador (localStorage), ya recortada y reducida.
+// En otro dispositivo hay que subirla de nuevo. Sin foto, la vista previa muestra una silueta y el PDF sale sin ella.
+const CLAVE_FOTO = 'siga:cv:foto';
+let fotoMemoria = null;                                  // respaldo por si el navegador no deja guardar (modo privado, sin espacio)
+const FOTO_VALIDA = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
+function leerFoto() {
+    if (fotoMemoria) return fotoMemoria;
+    try { const v = localStorage.getItem(CLAVE_FOTO); return FOTO_VALIDA.test(v || '') ? v : null; } catch (e) { return null; }
+}
+function guardarFoto(url) {
+    fotoMemoria = url || null;
+    try { if (url) localStorage.setItem(CLAVE_FOTO, url); else localStorage.removeItem(CLAVE_FOTO); return true; } catch (e) { return false; }
+}
+
+// Recorta al centro (cuadrada) y reduce a 400 px: se ve nítida en la hoja y pesa pocos KB.
+function prepararFoto(archivo) {
+    return new Promise((resolve, reject) => {
+        if (!archivo || !/^image\//.test(archivo.type || '')) { reject(new Error('tipo')); return; }
+        const url = URL.createObjectURL(archivo);
+        const img = new Image();
+        img.onload = () => {
+            try {
+                const lado = Math.min(img.naturalWidth, img.naturalHeight);
+                if (!lado) throw new Error('vacia');
+                const salida = Math.min(400, lado);
+                const lienzo = document.createElement('canvas'); lienzo.width = salida; lienzo.height = salida;
+                const ctx = lienzo.getContext('2d');
+                ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, salida, salida);
+                ctx.drawImage(img, (img.naturalWidth - lado) / 2, (img.naturalHeight - lado) / 2, lado, lado, 0, 0, salida, salida);
+                resolve(lienzo.toDataURL('image/jpeg', 0.85));
+            } catch (e) { reject(e); } finally { URL.revokeObjectURL(url); }
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('lectura')); };
+        img.src = url;
+    });
+}
+
+let entradaFoto = null;
+function elegirFoto() {
+    if (!entradaFoto) {
+        entradaFoto = el('input', { type: 'file', accept: 'image/*', hidden: true, 'aria-hidden': 'true', tabindex: '-1' });
+        entradaFoto.addEventListener('change', async () => {
+            const f = entradaFoto.files && entradaFoto.files[0];
+            entradaFoto.value = '';
+            if (!f) return;
+            try {
+                const url = await prepararFoto(f);
+                if (!guardarFoto(url)) toast({ id: 'foto', texto: AVISO_FOTO_NO_GUARDADA });
+            } catch (e) { toast({ id: 'foto', texto: AVISO_FOTO_ERROR }); return; }
+            refrescarMemoria();
+        });
+        document.body.append(entradaFoto);
+    }
+    entradaFoto.click();
+}
+function quitarFoto() { guardarFoto(null); refrescarMemoria(); }
+
+// ───────────── diseño, color y foto elegidos ─────────────
+const ajustesCV = () => (cv && cv.ajustes) || {};
+function cambiarAjuste(cambios) { D.guardarClave(CLAVE_AJUSTES, { ...ajustesCV(), ...cambios }); refrescarMemoria(); }
+
+// Opciones de la hoja. En pantalla, sin foto se muestra una silueta (conEjemplo); en el PDF no.
+function opcionesHoja(conEjemplo) {
+    const dis = disenoDe(ajustesCV());
+    const foto = leerFoto();
+    return { diseno: dis.id, color: colorDe(ajustesCV(), dis), foto, ejemplo: conEjemplo && !foto };
+}
+function configurarHoja(a4, op, params) {
+    a4.dataset.diseno = op.diseno;
+    for (const [k, v] of Object.entries(variablesHoja(op.color, params))) a4.style.setProperty(k, v);
+}
+
+function panelDiseno() {
+    const dis = disenoDe(ajustesCV());
+    const color = colorDe(ajustesCV(), dis);
+    const foto = leerFoto();
+    const muestra = (id, c) => {
+        const b = el('button', { type: 'button', class: 'dpc-color', 'aria-label': c.nombre, 'aria-pressed': id === color ? 'true' : 'false', title: c.nombre, onclick: () => cambiarAjuste({ color: id }) });
+        b.style.setProperty('--c', c.ac);
+        return b;
+    };
+    return el('div', { class: 'dpc-diseno' },
+        el('h3', { class: 'dpc-diseno-t', text: 'Diseño de tu CV' }),
+        el('div', { class: 'dpc-disenos', role: 'group', 'aria-label': 'Diseño del CV' }, DISENOS.map((d) => el('button', {
+            type: 'button', class: 'dpc-diseno-op', 'aria-pressed': d.id === dis.id ? 'true' : 'false', onclick: () => cambiarAjuste({ diseno: d.id }),
+        }, el('strong', { text: d.nombre }), el('span', { text: d.descripcion })))),
+        el('div', { class: 'dpc-fila-op' },
+            el('span', { class: 'dpc-fila-et', text: 'Color' }),
+            el('div', { class: 'dpc-colores', role: 'group', 'aria-label': 'Color de acento' }, Object.entries(COLORES).map(([id, c]) => muestra(id, c)))),
+        el('div', { class: 'dpc-fila-op' },
+            el('span', { class: 'dpc-fila-et', text: 'Foto' }),
+            el('div', { class: 'dpc-foto-acc' },
+                el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: foto ? 'Cambiar foto' : 'Subir foto', onclick: elegirFoto }),
+                foto ? el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Quitar foto', onclick: quitarFoto }) : null)),
+        el('p', { class: 'dp-suave', text: foto ? NOTA_FOTO : NOTA_FOTO_SILUETA }),
+        el('p', { class: 'dp-suave', text: dis.nota }));
+}
+
 // ───────────── hoja A4: vista previa lateral, vista previa grande, medición e impresión ─────────────
 function pintarHojas() {
-    const html = htmlCV(cv);
-    $$('.dp-a4-in').forEach((n) => { if (!n.closest('#dpHojaImpresion')) n.innerHTML = html; });
+    medirAjuste();                                         // primero se mide: de ahí sale cuánto se compacta
+    const op = opcionesHoja(true);
+    const html = htmlHoja(cv, op);
+    for (const a4 of $$('.dp-a4')) {
+        if (a4.closest('#dpHojaImpresion') || a4.closest('#dpMedida')) continue;
+        configurarHoja(a4, op, ajusteActual.params);
+        $('.dp-a4-in', a4).innerHTML = html;
+    }
+    $$('[data-nota-diseno]').forEach((n) => { n.textContent = disenoDe(ajustesCV()).nota; });
     escalar();
-    medirAjuste();
 }
 
 function escalar() {
@@ -1434,20 +1542,23 @@ function escalar() {
     }
 }
 
-let ajusteActual = { pct: 0, cabe: true };
+let ajusteActual = { pct: 0, cabe: true, params: { ...PARAMS_BASE }, diseno: 'profesional' };
 function medirAjuste() {
     const medida = $('#dpMedida'); const sonda = $('#dpSonda');
     if (!medida || !sonda) return;
-    $('.dp-a4-in', medida).innerHTML = htmlCV(cv);
-    const disponible = sonda.offsetHeight;                      // 261 mm de alto útil (A4 menos márgenes) en píxeles
-    const usado = $('.dp-a4-in', medida).offsetHeight;
-    const pct = disponible ? Math.round((usado / disponible) * 100) : 0;
-    ajusteActual = { pct, cabe: pct <= 100 };
+    const op = opcionesHoja(true);
+    const a4 = $('.dp-a4', medida); const dentro = $('.dp-a4-in', a4);
+    configurarHoja(a4, op, PARAMS_BASE);
+    dentro.innerHTML = htmlHoja(cv, op);
+    // Alto útil: Moderno usa la hoja entera (297 mm); Profesional deja 14 mm de margen abajo.
+    sonda.style.height = op.diseno === 'moderno' ? '297mm' : 'calc(297mm - 14mm)';
+    ajusteActual = { ...ajustarAUnaHoja({ a4, dentro, disponible: sonda.offsetHeight }), diseno: op.diseno };
     // Mientras cabe en una hoja no se muestra nada (un % bajo desanima a quien recién empieza); solo se avisa si se pasa.
+    const aviso = op.diseno === 'moderno' ? AVISO_UNA_HOJA
+        : 'Tu CV supera una página. Revisa si puedes resumir algunas descripciones o eliminar información secundaria. Recuerda que dos páginas también son aceptables si el contenido lo justifica.';
     $$('[data-ajuste]').forEach((n) => {
         n.className = ajusteActual.cabe ? '' : 'dp-ajuste dp-ajuste-largo';
-        n.replaceChildren(...(ajusteActual.cabe ? [] : [el('strong', { text: '💡 Revisa la extensión: ' }),
-            'Tu CV supera una página. Revisa si puedes resumir algunas descripciones o eliminar información secundaria. Recuerda que dos páginas también son aceptables si el contenido lo justifica.']));
+        n.replaceChildren(...(ajusteActual.cabe ? [] : [el('strong', { text: '💡 Revisa la extensión: ' }), aviso]));
     });
 }
 
@@ -1464,9 +1575,19 @@ function nombreArchivoCV(nombre) {
 function imprimir() {
     flushTodo();
     cv = D.leerCV();
+    medirAjuste();                                        // con los datos recién leídos
     if (tituloOriginal === null) tituloOriginal = document.title;
     document.title = nombreArchivoCV((cv.datos || {}).nombre);
-    $('#dpHojaImpresion').innerHTML = `<div class="dp-a4 dp-impresion"><div class="dp-a4-in">${htmlCV(cv)}</div></div>`;
+    const op = opcionesHoja(false);                       // sin foto, la silueta NO sale en el PDF
+    const interior = `<div class="dp-a4-in">${htmlHoja(cv, op)}</div>`;
+    // Profesional: una tabla con cabecera y pie vacíos que se repiten en cada hoja = margen arriba y abajo también en la segunda hoja.
+    const cuerpo = op.diseno === 'profesional'
+        ? `<table class="cv-tabla"><thead><tr><td><div class="cv-esp"></div></td></tr></thead><tbody><tr><td>${interior}</td></tr></tbody><tfoot><tr><td><div class="cv-esp"></div></td></tr></tfoot></table>`
+        : interior;
+    const hoja = el('div', { class: 'dp-a4 dp-impresion' });
+    configurarHoja(hoja, op, ajusteActual.params);
+    hoja.innerHTML = cuerpo;
+    $('#dpHojaImpresion').replaceChildren(hoja);
     window.print();
 }
 window.addEventListener('afterprint', () => {
@@ -1613,7 +1734,7 @@ function armar() {
                 el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Imprimir o guardar PDF', onclick: imprimir })),
             el('div', { class: 'dp-a4-wrap dp-a4-grande' }, el('div', { class: 'dp-a4' }, el('div', { class: 'dp-a4-in' }))),
             el('p', { class: 'dp-suave', text: C.AYUDA_IMPRESION }),
-            el('p', { class: 'dp-suave', text: C.NOTA_ATS })),
+            el('p', { class: 'dp-suave', 'data-nota-diseno': '' })),
         // Medición de la página (fuera de pantalla): cuánto ocupa el CV frente al alto útil de un A4.
         el('div', { id: 'dpMedida', class: 'dp-medida', 'aria-hidden': 'true' }, el('div', { class: 'dp-a4' }, el('div', { class: 'dp-a4-in' })), el('div', { id: 'dpSonda', class: 'dp-sonda' })));
     if (typeof ResizeObserver !== 'undefined') { const ro = new ResizeObserver(() => escalar()); $$('.dp-a4-wrap').forEach((w) => ro.observe(w)); }

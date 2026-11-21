@@ -54,7 +54,7 @@ function htmlFormacion(f = {}, anio) {
 }
 
 // «2024 – actualidad», «2025», «marzo de 2025 – noviembre de 2025» o '' si no puso fechas.
-function periodoDe(p, sinFechaSigue = 'En desarrollo') {
+export function periodoDe(p, sinFechaSigue = 'En desarrollo') {
     const d = t(p.desde), h = t(p.hasta);
     if (p.sigue) return d ? `${d} – actualidad` : sinFechaSigue;
     if (d && h) return d === h ? d : `${d} – ${h}`;
@@ -103,7 +103,7 @@ function htmlHabilidades(lista) {
 
 // Texto libre del alumno → HTML seguro: todo se escapa y solo las direcciones http/https se vuelven enlaces
 // (se muestra la dirección completa, para que también se vea al imprimir).
-function conEnlaces(crudo) {
+export function conEnlaces(crudo) {
     const s = t(crudo);
     const re = /https?:\/\/[^\s<>"']+/gi;
     let salida = '', desde = 0, m;
@@ -121,7 +121,7 @@ function htmlLogros(lista) {
     return '<ul class="dp-cv-ul">' + lista.map((l) => `<li>${esc(t(l.texto))}${t(l.respaldo) ? ` — ${conEnlaces(l.respaldo)}` : ''}</li>`).join('') + '</ul>';
 }
 
-const TIPO_CERT = { certificacion: 'certificación', curso: 'curso', diplomado: 'diplomado', programa: 'programa' };
+export const TIPO_CERT = { certificacion: 'certificación', curso: 'curso', diplomado: 'diplomado', programa: 'programa' };
 
 function htmlCertificaciones(lista) {
     return '<ul class="dp-cv-ul">' + lista.map((c) => {

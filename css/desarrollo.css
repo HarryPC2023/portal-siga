@@ -261,12 +261,13 @@
 
 /* ───────────── impresión: solo la hoja del CV, en A4 real ───────────── */
 #dpHojaImpresion { display: none; }
-@page { size: A4; margin: 18mm 20mm; }
+/* Margen 0: cada diseño del CV pone el suyo (cv-disenos.css), así el encabezado y el lateral de color llegan al borde de la hoja. */
+@page { size: A4; margin: 0; }
 @media print {
-    html, body { background: #fff !important; }
+    html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
     body > *:not(#dpHojaImpresion) { display: none !important; }
     #dpHojaImpresion { display: block !important; }
-    #dpHojaImpresion .dp-a4 { width: auto; height: auto; padding: 0; transform: none; overflow: visible; border: 0; }
+    #dpHojaImpresion .dp-a4 { width: 210mm; height: auto; padding: 0; transform: none; overflow: visible; border: 0; }
     .dp-cv-sec, .dp-cv-item { break-inside: avoid; }
     .dp-cv-h2 { break-after: avoid; }
 }

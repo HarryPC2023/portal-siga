@@ -272,3 +272,19 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dpc-aviso-borrador strong { font-size: 15px; font-weight: 600; color: var(--dpc-naranja-os); }
 .dpc .dpc-aviso-borrador p { margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: var(--dp-suave); }
 .dpc .dpc-borrador-fijo { margin-top: 12px; }
+
+/* Diseño, color y foto del CV (paso Revisión) */
+.dpc .dpc-diseno { margin: 22px 0 6px; padding: 18px 18px 8px; border: 1.5px solid var(--dp-borde, #dfe3ec); border-radius: 14px; background: #fff; }
+.dpc .dpc-diseno-t { margin: 0 0 12px; font-size: 18px; }
+.dpc .dpc-disenos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.dpc .dpc-diseno-op { text-align: left; display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border: 1.5px solid var(--dp-borde, #dfe3ec); border-radius: 12px; background: #fff; color: inherit; font: inherit; cursor: pointer; }
+.dpc .dpc-diseno-op strong { font-size: 16px; }
+.dpc .dpc-diseno-op span { font-size: 14px; line-height: 1.45; opacity: .85; }
+.dpc .dpc-diseno-op[aria-pressed="true"] { border-color: #6600CC; box-shadow: 0 0 0 2px rgba(102, 0, 204, .18); }
+.dpc .dpc-diseno-op:focus-visible, .dpc .dpc-color:focus-visible { outline: 3px solid #6600CC; outline-offset: 2px; }
+.dpc .dpc-fila-op { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 0 0 12px; }
+.dpc .dpc-fila-et { min-width: 52px; font-weight: 600; font-size: 15px; }
+.dpc .dpc-colores { display: flex; flex-wrap: wrap; gap: 10px; }
+.dpc .dpc-color { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; background: var(--c, #4C2A85); box-shadow: 0 0 0 1.5px #b9bfcc; cursor: pointer; padding: 0; }
+.dpc .dpc-color[aria-pressed="true"] { box-shadow: 0 0 0 3px #1f2430; }
+.dpc .dpc-foto-acc { display: flex; flex-wrap: wrap; gap: 8px; }
