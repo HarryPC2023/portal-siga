@@ -58,6 +58,10 @@ function pintar(resumen) {
     $('#dpCta').textContent = resumen && resumen.empezado ? 'Continuar mi CV' : 'Empezar mi CV';
 }
 
+// TEMPORAL: ?vista=1 o ?vista=2 prueban dos tamaños de portada (ver css/desarrollo-portada.css). Sin parámetro no cambia nada.
+const vista = new URLSearchParams(location.search).get('vista');
+if (vista === '1' || vista === '2') { const m = $('#dpMain'); if (m) m.classList.add('dpp-v', `dpp-v${vista}`); }
+
 async function iniciar() {
     if (!(await accesoPermitido())) return;
     $('#dpLema').textContent = LEMA;
