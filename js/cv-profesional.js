@@ -13,7 +13,7 @@ import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PER
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=4';
 import { htmlCV, htmlItemPrevia } from './cv-documento.js?v=2';
-import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, tipoCarrera, textoPeriodo, normalizarFecha, detalleIdioma } from './desarrollo-redaccion.js?v=2';
+import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, textoPeriodo, normalizarFecha, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
 import { FACULTADES } from '../intranotas/facultades-datos.js';
 
@@ -328,7 +328,7 @@ function indiceEjemplo(tipo, clave, total) {
 }
 
 function camposProyecto(clave) {
-    const grupoEj = C.EJEMPLOS_CARRERA[tipoCarrera((cv.formacion || {}).carrera)] || C.EJEMPLOS_CARRERA.gen;
+    const grupoEj = C.EJEMPLOS_PROYECTO;                     // una sola lista de ejemplos, igual para todas las carreras
     const ej = { ...grupoEj, ...grupoEj.variantes[indiceEjemplo('proyecto', clave, grupoEj.variantes.length)] };
     const base = 'g-' + clave.replace(/\W/g, '_');
     let pintarBorrador = () => '';

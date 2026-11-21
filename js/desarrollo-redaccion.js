@@ -2,7 +2,7 @@
 //
 // Archivo PURO: sin DOM, sin red y SIN IA. Solo ordena las respuestas en frases con una plantilla.
 // No inventa nada: lo que el alumno deja vacío no aparece, y nunca se fabrica un resultado.
-import { VERBOS_TRABAJO, VERBOS_EXPERIENCIA, PATRONES_CARRERA, DETALLE_IDIOMA } from './desarrollo-contenido.js?v=4';
+import { VERBOS_TRABAJO, VERBOS_EXPERIENCIA, DETALLE_IDIOMA } from './desarrollo-contenido.js?v=4';
 
 const t = (v) => (typeof v === 'string' ? v.trim() : '');
 const sinPunto = (v) => t(v).replace(/[.\s]+$/, '');
@@ -10,13 +10,6 @@ const minuscula = (v) => v.charAt(0).toLowerCase() + v.slice(1);
 
 export function unir(lista) {
     return lista.length <= 1 ? (lista[0] || '') : lista.slice(0, -1).join(', ') + ' y ' + lista[lista.length - 1];
-}
-
-// «Ingeniería Civil» → 'civ'. Si no se reconoce la carrera, 'gen' (ejemplos generales).
-export function tipoCarrera(texto) {
-    const c = t(texto);
-    for (const [clave, patron] of PATRONES_CARRERA) if (patron.test(c)) return clave;
-    return 'gen';
 }
 
 // Herramientas de un proyecto en tres grupos. Los proyectos guardados antes (un solo texto «Python, SQL y Git»)

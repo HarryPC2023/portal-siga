@@ -122,47 +122,27 @@ export const GRUPOS_HERRAMIENTAS = [
 // 4. Rotación determinista: cada tarjeta nueva toma el PRIMER ejemplo de la lista que no esté en uso (si todos lo están, el menos usado). Nunca se guardan en el CV.
 // 5. Los ejemplos del campo no repiten los de las ayudas ("¿Cómo puedes redactarlo?"). Revisarlos con estudiantes o docentes de cada facultad.
 
-// Ejemplos orientativos según la carrera del alumno (no limitan: puede escribir cualquier proyecto). «gen» sirve para cualquier carrera.
-// Estos ejemplos deberían revisarlos estudiantes o docentes de cada facultad antes de ampliarlos.
-export const PATRONES_CARRERA = [
-    ['arq', /arquitect|urban/i],
-    ['civ', /civil|sanitari|hidr[aá]ulic/i],
-    ['qui', /qu[ií]mic/i],
-    ['sis', /sistemas|software|inform[aá]tic|computaci|ciencia de datos|inteligencia artificial/i],
-];
-export const EJEMPLOS_CARRERA = {
-    sis: {
-        desc: 'Describe qué es tu proyecto, qué hiciste tú y con qué lo construiste.',
-        variantes: [
-            { nombre: 'Control de inventario de una bodega pequeña', objeto: 'un sistema de control de inventario para una bodega pequeña', meta: 'llevar el registro de productos y existencias', hizo: 'diseñar la base de datos y programar el registro de movimientos', hice: 'diseñé la base de datos y programé el registro de movimientos', resultado: 'el encargado dejó de anotar el stock a mano' },
-            { nombre: 'Análisis de las notas de un curso con Python', objeto: 'un análisis de las notas de un curso', meta: 'identificar qué temas costaron más al grupo', hizo: 'limpiar los datos y graficar los resultados con Python', hice: 'limpié los datos y grafiqué los resultados con Python', resultado: 'un informe con las conclusiones' },
-            { nombre: 'Sitio web de un club estudiantil', objeto: 'el sitio web de un club estudiantil', meta: 'dar a conocer las actividades del club', hizo: 'diseñar las páginas y publicarlas', hice: 'diseñé las páginas y las publiqué', resultado: 'el club lo usa para anunciar sus eventos' },
-        ],
-    },
-    arq: {
-        desc: 'Describe qué diseñaste o realizaste, tu aporte y los recursos que usaste.',
-        variantes: [
-            { nombre: 'Rediseño del aula de un colegio', objeto: 'el rediseño del aula de un colegio', meta: 'mejorar la iluminación y la circulación', hizo: 'levantar medidas y dibujar la propuesta en planos', hice: 'levanté medidas y dibujé la propuesta en planos', resultado: 'la propuesta fue presentada en clase' },
-            { nombre: 'Maqueta de una vivienda unifamiliar', objeto: 'una vivienda unifamiliar', meta: 'mostrar su distribución y sus volúmenes', hizo: 'elaborar los planos y construir la maqueta', hice: 'elaboré los planos y construí la maqueta', resultado: 'la maqueta fue evaluada en el curso' },
-            { nombre: 'Propuesta de centro cultural', objeto: 'la propuesta de un centro cultural', meta: 'dar un espacio público a un barrio sin equipamiento', hizo: 'elaborar los planos, cortes y la maqueta final', hice: 'elaboré los planos, los cortes y la maqueta final', resultado: 'la propuesta fue presentada ante el jurado del curso' },
-        ],
-    },
-    civ: {
-        desc: 'Describe qué analizaste o construiste, tu aporte y los recursos que usaste.',
-        variantes: [
-            { nombre: 'Medición topográfica de un terreno', objeto: 'el levantamiento topográfico de un terreno', meta: 'obtener sus medidas y desniveles', hizo: 'tomar los datos en campo y procesarlos', hice: 'tomé los datos en campo y los procesé', resultado: 'un plano con curvas de nivel' },
-            { nombre: 'Diseño de un muro de contención', objeto: 'el diseño de un muro de contención', meta: 'verificar su estabilidad', hizo: 'calcular las fuerzas y dimensionar el muro', hice: 'calculé las fuerzas y dimensioné el muro', resultado: 'una memoria de cálculo para el curso' },
-            { nombre: 'Análisis académico de la estructura de un puente peatonal', objeto: 'el análisis académico de la estructura de un puente peatonal', meta: 'verificar que soporte las cargas de uso', hizo: 'calcular las cargas y modelar la estructura', hice: 'calculé las cargas y modelé la estructura', resultado: 'un informe con las verificaciones de resistencia' },
-        ],
-    },
-    gen: {
-        desc: 'Describe qué hiciste, cuál fue tu aporte y qué recursos usaste.',
-        variantes: [
-            { nombre: 'Organización de un estudio de caso grupal', objeto: 'un estudio de caso en grupo', meta: 'analizar una situación real del curso', hizo: 'repartir tareas y redactar las conclusiones', hice: 'repartí tareas y redacté las conclusiones', resultado: 'el caso se presentó en clase' },
-            { nombre: 'Informe técnico de laboratorio', objeto: 'un informe técnico de laboratorio', meta: 'documentar un experimento y sus resultados', hizo: 'tomar las mediciones y redactar el informe', hice: 'tomé las mediciones y redacté el informe', resultado: 'el informe fue evaluado por el docente' },
-            { nombre: 'Propuesta de mejora para un taller', objeto: 'una propuesta de mejora para un taller', meta: 'ordenar y hacer más seguro el espacio de trabajo', hizo: 'observar el taller y proponer cambios', hice: 'observé el taller y propuse cambios', resultado: 'la propuesta se presentó al docente a cargo' },
-        ],
-    },
+// Ejemplos de la tarjeta de Proyectos: UNA sola lista para todas las carreras (no hay ejemplos por carrera).
+// Son entregables y actividades que de verdad se hacen dentro de los cursos y de la vida universitaria en varias facultades, sin recursos especiales.
+// Cada tarjeta nueva toma el primero que no esté en uso: por eso van primero los más universales y al final los que dependen de participar en una organización o evento.
+// Solo orientan (placeholders): el estudiante escribe lo suyo, y los resultados no llevan cifras ni premios inventados. Revisarlos con estudiantes de distintas facultades.
+export const EJEMPLOS_PROYECTO = {
+    desc: 'Describe qué hiciste, cuál fue tu aporte y qué recursos usaste.',
+    variantes: [
+        { nombre: 'Informe técnico de laboratorio', objeto: 'un informe técnico de laboratorio', meta: 'documentar un experimento del curso y sus resultados', hizo: 'realizar las mediciones, procesar los datos y redactar el informe', hice: 'realicé las mediciones, procesé los datos y redacté el informe', resultado: 'el informe fue evaluado por el docente' },
+        { nombre: 'Investigación bibliográfica sobre un tema del curso', objeto: 'una investigación bibliográfica sobre un tema del curso', meta: 'reunir y comparar lo que dicen distintas fuentes', hizo: 'buscar fuentes confiables, resumirlas y contrastarlas', hice: 'busqué fuentes confiables, las resumí y las contrasté', resultado: 'un documento con las conclusiones y las referencias' },
+        { nombre: 'Análisis de los datos de un trabajo del curso', objeto: 'un análisis de los datos de un trabajo del curso', meta: 'responder una pregunta planteada en el trabajo', hizo: 'ordenar los datos, calcular indicadores y representar los resultados', hice: 'ordené los datos, calculé indicadores y representé los resultados', resultado: 'un informe con las conclusiones del análisis' },
+        { nombre: 'Banco de ejercicios resueltos para un curso', objeto: 'un banco de ejercicios resueltos de un curso', meta: 'ayudar a estudiantes de ciclos inferiores a practicar', hizo: 'resolver los ejercicios, explicar los pasos y ordenarlos por tema', hice: 'resolví los ejercicios, expliqué los pasos y los ordené por tema', resultado: 'el material se compartió con compañeros de ciclos inferiores' },
+        { nombre: 'Diseño de un sistema o elemento para un curso', objeto: 'el diseño de un sistema o elemento para un curso', meta: 'cumplir los requisitos planteados en el curso', hizo: 'realizar los cálculos y elaborar los planos o esquemas', hice: 'realicé los cálculos y elaboré los planos o esquemas', resultado: 'una memoria de cálculo con los planos o esquemas' },
+        { nombre: 'Propuesta de mejora de un servicio de la universidad', objeto: 'un diagnóstico y una propuesta de mejora de un servicio de la universidad', meta: 'reducir las dificultades que enfrentan sus usuarios', hizo: 'observar el servicio, recoger información y plantear alternativas', hice: 'observé el servicio, recogí información y planteé alternativas', resultado: 'la propuesta se presentó al docente del curso' },
+        { nombre: 'Hoja de cálculo para un trabajo o una actividad', objeto: 'una hoja de cálculo para organizar la información de una actividad', meta: 'ahorrar tiempo y evitar errores en los cálculos o registros', hizo: 'diseñar las tablas y programar las fórmulas', hice: 'diseñé las tablas y programé las fórmulas', resultado: 'el grupo la usó para llevar sus registros' },
+        { nombre: 'Prototipo o maqueta para un curso', objeto: 'un prototipo o una maqueta', meta: 'mostrar cómo funcionaría o se vería una solución', hizo: 'elegir los materiales o componentes y construir el modelo', hice: 'elegí los materiales o componentes y construí el modelo', resultado: 'el modelo se presentó y fue evaluado en el curso' },
+        { nombre: 'Comparación de alternativas para un problema', objeto: 'una comparación de alternativas para resolver un problema', meta: 'elegir la opción más adecuada según criterios definidos', hizo: 'definir los criterios, evaluar cada alternativa y justificar la elección', hice: 'definí los criterios, evalué cada alternativa y justifiqué la elección', resultado: 'un informe con la recomendación final' },
+        { nombre: 'Simulación de un proceso o sistema', objeto: 'un modelo de simulación de un proceso o sistema', meta: 'analizar su comportamiento en distintos escenarios', hizo: 'plantear el modelo, ejecutar la simulación y comparar los resultados', hice: 'planteé el modelo, ejecuté la simulación y comparé los resultados', resultado: 'un informe con los resultados de cada escenario' },
+        { nombre: 'Encuesta sobre un tema académico o universitario', objeto: 'una encuesta sobre un tema académico o universitario', meta: 'conocer la opinión de los estudiantes', hizo: 'elaborar el cuestionario, aplicarlo y analizar las respuestas', hice: 'elaboré el cuestionario, lo apliqué y analicé las respuestas', resultado: 'un informe con los resultados y gráficos' },
+        { nombre: 'Organización de un webinar, conversatorio o sesión de asesoría para estudiantes', objeto: 'un webinar, un conversatorio o una sesión de asesoría para estudiantes', meta: 'ofrecer a los estudiantes un espacio para aprender o resolver dudas', hizo: 'coordinar con los invitados o ponentes, preparar la convocatoria y organizar la sesión', hice: 'coordiné con los invitados o ponentes, preparé la convocatoria y organicé la sesión', resultado: 'la actividad se realizó con participación de estudiantes' },
+        { nombre: 'Participación en un concurso o feria académica', objeto: 'la participación en un concurso o feria académica', meta: 'presentar una propuesta ante un jurado o el público', hizo: 'preparar la propuesta y presentarla', hice: 'preparé la propuesta y la presenté', resultado: 'la propuesta fue presentada en el evento' },
+    ],
 };
 
 export const EJEMPLO_PROYECTO = {
