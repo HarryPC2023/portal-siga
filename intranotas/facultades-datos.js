@@ -30,7 +30,7 @@ export const FACULTADES = [
     icono: "assets/facultades/faua.png",
     carreras: [
       { id: "arquitectura", nombre: "Arquitectura", corto: "Arquitectura" },
-      { id: "urbanismo-artes", nombre: "Urbanismo y Artes", corto: "Urbanismo y Artes" },
+      { id: "urbanismo-artes", nombre: "Urbanismo", corto: "Urbanismo" },
     ],
   },
   {
@@ -45,7 +45,7 @@ export const FACULTADES = [
       { id: "fisica", nombre: "Física", corto: "Física" },
       { id: "quimica", nombre: "Química", corto: "Química" },
       { id: "matematicas", nombre: "Matemáticas", corto: "Matemáticas" },
-      { id: "ciencias-computacion", nombre: "Ciencias de la Computación", corto: "Cs. de la Computación" },
+      { id: "ciencias-computacion", nombre: "Ciencia de la Computación", corto: "Cs. de la Computación" },
     ],
   },
   {
@@ -57,7 +57,7 @@ export const FACULTADES = [
     icono: "assets/facultades/fia.png",
     carreras: [
       { id: "sanitaria", nombre: "Ingeniería Sanitaria", corto: "Sanitaria" },
-      { id: "higiene-seguridad", nombre: "Higiene y Seguridad Industrial", corto: "Higiene y Seguridad" },
+      { id: "higiene-seguridad", nombre: "Ingeniería de Higiene y Seguridad Industrial", corto: "Higiene y Seguridad" },
       { id: "ambiental", nombre: "Ingeniería Ambiental", corto: "Ambiental" },
     ],
   },
@@ -81,6 +81,8 @@ export const FACULTADES = [
       { id: "electrica", nombre: "Ingeniería Eléctrica", corto: "Eléctrica" },
       { id: "electronica", nombre: "Ingeniería Electrónica", corto: "Electrónica" },
       { id: "telecomunicaciones", nombre: "Ingeniería de Telecomunicaciones", corto: "Telecomunicaciones" },
+      { id: "ciberseguridad", nombre: "Ingeniería de Ciberseguridad", corto: "Ciberseguridad" },
+      { id: "biomedica", nombre: "Ingeniería Biomédica", corto: "Biomédica" },
     ],
   },
   {
@@ -132,9 +134,10 @@ export const FACULTADES = [
     icono: "assets/facultades/fim.png",
     carreras: [
       { id: "mecanica", nombre: "Ingeniería Mecánica", corto: "Mecánica" },
-      { id: "mecanica-electrica", nombre: "Ingeniería Mecánica-Eléctrica", corto: "Mecánica-Eléctrica" },
+      { id: "mecanica-electrica", nombre: "Ingeniería Mecánica y Eléctrica", corto: "Mecánica y Eléctrica" },
       { id: "mecatronica", nombre: "Ingeniería Mecatrónica", corto: "Mecatrónica" },
       { id: "naval", nombre: "Ingeniería Naval", corto: "Naval" },
+      { id: "aeroespacial", nombre: "Ingeniería Aeroespacial", corto: "Aeroespacial" },
     ],
   },
   {
