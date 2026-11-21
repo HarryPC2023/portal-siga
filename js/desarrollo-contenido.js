@@ -284,6 +284,17 @@ export const OFERTA_AYUDA = {
 };
 
 // ───────────── Logros y reconocimientos (paso propio) ─────────────
+// Ayuda «¿No sabes dónde incluir algo?»: la misma en Proyectos y en Logros, para que nunca digan cosas distintas.
+export const DONDE_INCLUIR = {
+    resumen: '¿No sabes dónde incluir algo?',
+    items: [
+        ['Proyectos', 'lo que hiciste o desarrollaste.'],
+        ['Logros', 'lo que conseguiste o el impacto que generaste.'],
+        ['Experiencia', 'las responsabilidades y funciones que desempeñaste, aunque hayan sido temporales.'],
+    ],
+    cierre: 'Una misma experiencia puede dar información a más de una sección, pero no repitas la misma descripción.',
+};
+
 export const LOGROS = {
     vacio: 'Todavía no agregaste ningún logro. Si algo de las ayudas te suena, empieza por ahí.',
     // Un ejemplo distinto por tarjeta (ver REGLAS DE LOS EJEMPLOS). Son modelos de redacción: no se guardan.
@@ -335,15 +346,7 @@ export const LOGROS = {
             { nombre: 'Presentación académica', verbos: ['Presenté', 'Expuse'], a: 'los resultados de un trabajo de laboratorio', conector: 'en', b: 'una exposición del curso' },
         ],
     },
-    donde: {
-        resumen: '¿No sabes dónde incluir algo?',
-        items: [
-            ['Proyectos', 'lo que hiciste o desarrollaste.'],
-            ['Logros', 'lo que conseguiste o el impacto que generaste.'],
-            ['Experiencia', 'las responsabilidades y funciones que desempeñaste, aunque hayan sido temporales.'],
-        ],
-        cierre: 'Una misma experiencia puede dar información a más de una sección, pero no repitas la misma descripción.',
-    },
+    donde: DONDE_INCLUIR,
     respaldo: {
         etiqueta: 'Con qué lo respaldas',
         pista: 'Puedes añadir un dato o referencia para dar más contexto y credibilidad a tu logro.',

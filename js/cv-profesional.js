@@ -989,7 +989,8 @@ function pasoProyectos() {
             el('ul', { class: 'dp-lista-ejemplos' }, C.CATEGORIAS_PROYECTO.map((c) => el('li', {}, el('strong', { text: c.nombre + ': ' }), c.texto))),
             el('p', { class: 'dp-suave dpc-parcial', text: A.parcial }),
             el('p', { class: 'dp-suave', text: A.preguntasTitulo }),
-            el('ul', { class: 'dp-lista-ejemplos' }, A.preguntas.map((q) => el('li', { text: q })))));
+            el('ul', { class: 'dp-lista-ejemplos' }, A.preguntas.map((q) => el('li', { text: q })))),
+        ayudaDonde());
     const sugerencia = el('div', { class: 'dpc-sugerencia', 'data-sug-proy': '' });
     queueMicrotask(pintarSugerenciaProyectos);
     return el('div', {}, ideas, bloqueLista('proyecto', {
@@ -1002,6 +1003,10 @@ function pasoProyectos() {
 function listaAyuda(resumen, ...cuerpo) {
     return el('details', { class: 'dpc-det', open: null }, el('summary', { text: resumen }), ...cuerpo);
 }
+// «¿No sabes dónde incluir algo?»: plegada, igual en Proyectos y en Logros.
+const ayudaDonde = () => listaAyuda(C.DONDE_INCLUIR.resumen,
+    el('ul', { class: 'dp-lista-ejemplos' }, C.DONDE_INCLUIR.items.map(([n, t]) => el('li', {}, el('strong', { text: n + ': ' }), t))),
+    el('p', { class: 'dp-suave dpc-parcial', text: C.DONDE_INCLUIR.cierre }));
 const itemsUl = (items) => el('ul', { class: 'dp-lista-ejemplos' }, items.map((x) => el('li', { text: x })));
 
 function pasoCertificaciones() {
@@ -1031,9 +1036,7 @@ function pasoLogros() {
             el('p', { class: 'dp-suave', text: L.reconocer.texto }),
             itemsUl(L.reconocer.items)),
         listaAyuda(L.descubrir.resumen, el('p', { class: 'dp-suave', text: L.descubrir.texto })),
-        listaAyuda(L.donde.resumen,
-            el('ul', { class: 'dp-lista-ejemplos' }, L.donde.items.map(([n, t]) => el('li', {}, el('strong', { text: n + ': ' }), t))),
-            el('p', { class: 'dp-suave dpc-parcial', text: L.donde.cierre })));
+        ayudaDonde());
     return el('div', {}, ayudas,
         bloqueLista('logro', { vacio: L.vacio, botonTexto: '+ Añadir logro', base: { texto: '', respaldo: '' } }));
 }
