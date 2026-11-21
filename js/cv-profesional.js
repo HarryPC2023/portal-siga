@@ -1412,6 +1412,7 @@ function pintarRevision(cont) {
         el('div', { class: 'dp-acciones' },
             el('button', { type: 'button', class: 'dp-btn', text: 'Ver mi CV', onclick: () => abrirPrevia() }),
             el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Imprimir o guardar PDF', onclick: imprimir })),
+        el('p', { class: 'dp-suave dpc-impresion', text: C.AYUDA_IMPRESION }),
         el('div', { class: 'dpc-tip' }, el('b', { text: '💡 Consejo profesional:' }), ' ' + C.CONSEJO_PROFESIONAL));
 }
 
@@ -1450,13 +1451,28 @@ function medirAjuste() {
     });
 }
 
+// El navegador usa el título de la página como nombre del PDF. Se cambia solo mientras se imprime y luego se restaura.
+let tituloOriginal = null;
+function nombreArchivoCV(nombre) {
+    const limpio = String(nombre || '')
+        .replace(/[\\/:*?"<>|\u0000-\u001f]/g, ' ')      // caracteres que los sistemas de archivos no admiten
+        .replace(/\s+/g, ' ').trim().slice(0, 60)
+        .replace(/[. ]+$/, '');                           // Windows no admite puntos ni espacios al final
+    return limpio ? `CV - ${limpio}` : 'CV';
+}
+
 function imprimir() {
     flushTodo();
     cv = D.leerCV();
+    if (tituloOriginal === null) tituloOriginal = document.title;
+    document.title = nombreArchivoCV((cv.datos || {}).nombre);
     $('#dpHojaImpresion').innerHTML = `<div class="dp-a4 dp-impresion"><div class="dp-a4-in">${htmlCV(cv)}</div></div>`;
     window.print();
 }
-window.addEventListener('afterprint', () => { const h = $('#dpHojaImpresion'); if (h) h.innerHTML = ''; });
+window.addEventListener('afterprint', () => {
+    const h = $('#dpHojaImpresion'); if (h) h.innerHTML = '';
+    if (tituloOriginal !== null) { document.title = tituloOriginal; tituloOriginal = null; }
+});
 
 // ───────────── pasos, estructura y navegación ─────────────
 function dibujarPasos() {

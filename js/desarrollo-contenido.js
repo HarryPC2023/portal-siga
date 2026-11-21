@@ -531,8 +531,7 @@ export const NOTA_DESCARGA = 'Puedes descargar tu CV aunque queden pasos en ámb
 
 // ───────────── impresión ─────────────
 export const AYUDA_IMPRESION =
-    'En la ventana de impresión elige «Guardar como PDF» y, en «Más ajustes», desactiva «Encabezados y pies de página». ' +
-    'Tamaño A4, márgenes «Predeterminado».';
+    'Antes de guardar: selecciona papel A4, márgenes predeterminados y desactiva «Encabezados y pies de página» (están en «Más ajustes»).';
 export const NOTA_ATS = 'Una sola columna, sin foto, tablas ni íconos: así lo leen mejor los filtros automáticos de las empresas.';
 
 // ───────────── avisos ─────────────

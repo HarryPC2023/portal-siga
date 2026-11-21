@@ -94,6 +94,11 @@ function evaluarFormacion(f = {}) {
     if (!txt(f.universidad)) faltan.push('tu universidad');
     if (!txt(f.carrera)) faltan.push('tu carrera');
     if (faltan.length) return { estado: ROJO, mensaje: `Falta ${unir(faltan)}.` };
+    // Verde siempre que estén universidad y carrera: el año de egreso es una oportunidad, nunca un requisito.
+    if (!txt(f.egreso)) {
+        const sugerencia = f.egresado === true ? 'Puedes añadir tu año de egreso.' : 'Puedes añadir tu año de egreso o el año previsto para completar tu formación.';
+        return { estado: VERDE, mensaje: `Formación académica registrada. ${sugerencia}` };
+    }
     return { estado: VERDE, mensaje: 'Formación académica registrada.' };
 }
 
