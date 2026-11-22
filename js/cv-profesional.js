@@ -11,7 +11,7 @@ import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { supabase } from './auth-siga.js?v=9';
 import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PERFIL } from './desarrollo-estado.js?v=2';
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
-import * as C from './desarrollo-contenido.js?v=4';
+import * as C from './desarrollo-contenido.js?v=5';
 import { htmlItemPrevia } from './cv-documento.js?v=3';
 import { htmlHoja, DISENOS, COLORES, disenoDe, colorDe, variablesHoja, NOTA_FOTO, NOTA_FOTO_SILUETA, NOTA_FOTO_MONOGRAMA, AVISO_UNA_HOJA, AVISO_FOTO_NO_GUARDADA, AVISO_FOTO_ERROR } from './cv-disenos.js?v=2';
 import { ajustarAUnaHoja, PARAMS_BASE } from './cv-ajuste.js?v=1';
@@ -705,6 +705,32 @@ const ROTULO = { proyecto: 'Proyecto', certificacion: 'Certificación', logro: '
 const PRIMER_CAMPO = { proyecto: 'nombre', certificacion: 'nombre', logro: 'texto', experiencia: 'puesto' };
 const SIN_TITULO = { proyecto: 'sin nombre todavía', certificacion: 'sin nombre todavía', logro: 'sin descripción todavía', experiencia: 'sin puesto todavía' };
 const plegadas = new Set();        // ids de tarjetas plegadas (solo vista: no se guarda en la base)
+const plegadoInicial = new Set();  // tipos de lista cuyo plegado de arranque ya se aplicó en esta carga de la página
+
+// Aviso suave de «empieza con lo que hiciste». Solo se enciende ante aperturas que claramente NO son un verbo (artículos, preposiciones,
+// sustantivos como «Proyecto» o terminados en -ción / -miento / -idad): ante la duda no avisa, porque un aviso equivocado molesta más de lo que ayuda.
+const DESC_VERBO = { proyecto: 'queHiciste', experiencia: 'queHiciste' };
+const APERTURA_SIN_VERBO = new Set(('el la los las un una unos unas lo mi mis su sus este esta estos estas ese esa para por con sin en de del al a y o que como sobre segun '
+    + 'durante mediante cuando donde tambien ademas actualmente parte soy estudiante miembro responsable encargado encargada '
+    + 'proyecto informe sistema analisis prototipo encuesta propuesta plataforma aplicacion herramienta actividad curso tarea funcion rol responsabilidad').split(' '));
+const avisoVerboCerrado = new Set();        // «clave|campo» donde el alumno ya pulsó «Entendido» (solo esta sesión)
+function empiezaSinVerbo(texto) {
+    const m = String(texto || '').trim().replace(/^[\s\-–—•*·"«¿¡(\d.)]+/u, '').match(/^\p{L}+/u);
+    if (!m) return false;
+    const w = sinTildes(m[0]);
+    return APERTURA_SIN_VERBO.has(w) || /(cion|sion|miento|idad|ismo)$/.test(w);
+}
+function pintarPistaVerbo(tipo, area) {
+    const cont = area.closest('.dp-campo'), llave = `${area.dataset.clave}|${area.dataset.campo}`;
+    if (!cont) return;
+    const hay = cont.querySelector('.dpc-pista-verbo');
+    const debe = empiezaSinVerbo(area.value) && !avisoVerboCerrado.has(llave);
+    if (!debe) { if (hay) hay.remove(); return; }
+    if (hay) return;
+    cont.append(el('div', { class: 'dpc-pista-verbo', role: 'status' },
+        el('span', { text: '💡 ' + C.PISTA_VERBO.texto }),
+        el('button', { type: 'button', class: 'dp-btn-texto', text: C.PISTA_VERBO.boton, onclick: () => { avisoVerboCerrado.add(llave); pintarPistaVerbo(tipo, area); } })));
+}
 
 function textoResumen(tipo, clave) {
     const v = String((D.leerClave(clave) || {})[PRIMER_CAMPO[tipo]] || '').trim().replace(/\s+/g, ' ');
@@ -747,6 +773,9 @@ function crearTarjeta(tipo, item) {
     const previa = (tipo === 'proyecto' || tipo === 'experiencia') ? bloquePrevia(tipo, clave) : null;
     const cuerpo = el('div', { class: 'dp-tarjeta-cuerpo', id: `dp-cuerpo-${item.id}` }, ...CAMPOS_TARJETA[tipo](clave), previa, cierre);
     if (previa) { cuerpo.addEventListener('input', previa._pintar); cuerpo.addEventListener('change', previa._pintar); }
+    if (DESC_VERBO[tipo]) {      // el aviso se evalúa al salir del campo, no mientras escribe
+        cuerpo.addEventListener('focusout', (e) => { if (e.target.matches && e.target.matches(`textarea[data-campo="${DESC_VERBO[tipo]}"]`)) pintarPistaVerbo(tipo, e.target); });
+    }
     const boton = el('button', {
         type: 'button', class: 'dp-tarjeta-toggle', 'aria-controls': cuerpo.id, 'aria-expanded': 'true',
         title: 'Plegar o desplegar',
@@ -884,7 +913,15 @@ function bloqueLista(tipo, { vacio, botonTexto, base }) {
         el('button', { type: 'button', class: 'dp-btn-texto', text: 'Plegar todo', onclick: (e) => plegarTodas(tipo, e.currentTarget.dataset.accion !== 'desplegar') }));
     const pie = el('div', { class: 'dp-lista-pie' }, boton, barra);      // «+ Añadir» a la izquierda y «Plegar todo» a la derecha, a la vista donde se trabaja
     const bloque = el('div', {}, aviso, cont, pie);
-    queueMicrotask(() => reconciliarLista(tipo));
+    queueMicrotask(() => {
+        // Al abrir la página con 2 o más tarjetas guardadas, arrancan todas plegadas (una lista larga abierta cansa); solo la primera vez por lista.
+        if (!plegadoInicial.has(tipo)) {
+            plegadoInicial.add(tipo);
+            const guardadas = cv[COLECCION[tipo]] || [];
+            if (guardadas.length >= 2) guardadas.forEach((i) => plegadas.add(i.id));
+        }
+        reconciliarLista(tipo);
+    });
     return bloque;
 }
 

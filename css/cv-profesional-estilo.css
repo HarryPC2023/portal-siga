@@ -273,6 +273,10 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dpc-aviso-borrador p { margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: var(--dp-suave); }
 .dpc .dpc-borrador-fijo { margin-top: 12px; }
 
+.dpc .dpc-pista-verbo { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 8px 0 0; padding: 8px 12px; background: #FFF7EE; border-radius: 10px; font-size: 14px; line-height: 1.5; color: var(--dp-suave); }
+.dpc .dpc-pista-verbo span { flex: 1 1 320px; }
+.dpc .dpc-pista-verbo .dp-btn-texto { margin-left: auto; font-size: 14px; }
+
 /* Diseño, color y foto del CV (paso Revisión) */
 .dpc .dpc-diseno { margin: 22px 0 6px; padding: 18px 18px 8px; border: 1.5px solid var(--dp-borde, #dfe3ec); border-radius: 14px; background: #fff; }
 .dpc .dpc-diseno-t { margin: 0 0 12px; font-size: 18px; }

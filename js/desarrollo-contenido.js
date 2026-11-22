@@ -582,3 +582,10 @@ export const COMPLETADO = {
 
 // Consejo sobre la extensión del CV: se muestra solo en el paso de Revisión.
 export const CONSEJO_PROFESIONAL = 'Para estudiantes y recién egresados, una página suele ser suficiente para mostrar la formación académica, los proyectos, las habilidades y los logros más importantes. Un CV no destaca por tener más páginas, sino por presentar la información más relevante de forma clara y concisa. Si tienes más experiencia o contenido relevante, puedes pasar de una página, siempre que cada sección aporte valor. Antes que añadir información por llenar espacio, prioriza aquello que mejor represente tu perfil profesional.';
+
+// Aviso suave bajo la descripción de un proyecto o una experiencia cuando empieza con un sustantivo («Proyecto de…», «Participación en…»).
+// Solo orienta: se descarta con un clic, no impide guardar y el sistema nunca cambia el texto del estudiante.
+export const PISTA_VERBO = {
+    texto: 'Una descripción suele quedar más clara si empieza con lo que hiciste, por ejemplo «Elaboré…», «Analicé…» u «Organicé…». Puedes revisarla o dejarla como está.',
+    boton: 'Entendido',
+};
