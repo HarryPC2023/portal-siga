@@ -161,6 +161,21 @@ function queHiciste(texto) {
     return '<ul class="cv-ul">' + ls.map((l) => `<li>${esc(l)}</li>`).join('') + '</ul>';
 }
 const parrafos = (ls) => ls.map((l) => `<p class="cv-p">${esc(l)}</p>`).join('');
+// Datos de contacto clicables en el PDF. El texto que se ve no cambia; solo se agrega el enlace cuando se puede armar uno seguro.
+function hrefContacto(c) {
+    const x = (c.texto || '').trim();
+    if (!x || /\s/.test(x)) return '';
+    if (c.icono === 'mail') return /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(x) ? `mailto:${x}` : '';
+    if (c.icono === 'linkedin' || c.icono === 'github') {
+        if (esEnlaceWeb(x)) return x;
+        return /^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+\/\S+$/i.test(x) && esEnlaceWeb('https://' + x) ? 'https://' + x : '';
+    }
+    return '';
+}
+const textoContacto = (c) => {
+    const h = hrefContacto(c);
+    return h ? `<a href="${esc(h)}" rel="noopener noreferrer" target="_blank">${esc(c.texto)}</a>` : esc(c.texto);
+};
 const sub = (txt) => (txt ? `<p class="cv-p cv-suave">${txt}</p>` : '');
 
 function itemsCertificaciones(lista) {
@@ -205,7 +220,7 @@ function htmlProfesional(cv, op) {
         sec('Proyectos', h.proyectos.map((p) => fila(
             (p.nombre ? `<p class="cv-p"><strong>${esc(p.nombre)}</strong></p>` : '')
             + queHiciste(p.queHiciste)
-            + (p.evidencia ? sub(`Resultado o evidencia: ${esc(p.evidencia)}`) : '')
+            + (p.evidencia ? sub(`Resultado o evidencia: ${conEnlaces(p.evidencia)}`) : '')
             + (p.herramientas ? sub(`<strong>Herramientas:</strong> ${esc(p.herramientas)}`) : ''), p.fecha)).join(''));
     }
     if (h.experiencias.length) {
@@ -223,7 +238,7 @@ function htmlProfesional(cv, op) {
     if (h.logros.length) sec('Logros', itemsLogros(h.logros));
     if (!cuerpo.length) cuerpo.push(VACIO);
 
-    const contacto = h.contacto.map((c) => `<span class="pf-c">${ico(c.icono)}<span>${esc(c.texto)}</span></span>`).join('');
+    const contacto = h.contacto.map((c) => `<span class="pf-c">${ico(c.icono)}<span>${textoContacto(c)}</span></span>`).join('');
     return `<div class="pf${conFoto ? ' pf-con-foto' : ''}">`
         + '<header class="pf-cab">'
         + '<svg class="pf-banda" viewBox="0 0 210 70" aria-hidden="true" focusable="false">'
@@ -269,7 +284,7 @@ function htmlModerno(cv, op) {
         sec('folder', 'Proyectos', h.proyectos.map((p) => item(p.fecha,
             (p.nombre ? `<p class="cv-p"><strong>${esc(p.nombre)}</strong></p>` : '')
             + queHiciste(p.queHiciste)
-            + (p.evidencia ? sub(`Resultado o evidencia: ${esc(p.evidencia)}`) : '')
+            + (p.evidencia ? sub(`Resultado o evidencia: ${conEnlaces(p.evidencia)}`) : '')
             + (p.herramientas ? sub(`<strong>Herramientas:</strong> ${esc(p.herramientas)}`) : ''))).join(''));
     }
     if (h.experiencias.length) {
@@ -287,7 +302,7 @@ function htmlModerno(cv, op) {
     const habil = grupo('Conocimientos', g.tecnica) + grupo('Herramientas', g.herramienta) + grupo('Personales', g.personal);
 
     const lateral = [];
-    if (h.contacto.length) lateral.push(`<section class="md-lsec"><h2 class="md-lt">Contacto</h2>${h.contacto.map((c) => `<p class="md-c">${ico(c.icono)}<span>${esc(c.texto)}</span></p>`).join('')}</section>`);
+    if (h.contacto.length) lateral.push(`<section class="md-lsec"><h2 class="md-lt">Contacto</h2>${h.contacto.map((c) => `<p class="md-c">${ico(c.icono)}<span>${textoContacto(c)}</span></p>`).join('')}</section>`);
     if (habil) lateral.push(`<section class="md-lsec"><h2 class="md-lt">Habilidades</h2>${habil}</section>`);
     if (g.idioma.length) lateral.push(`<section class="md-lsec"><h2 class="md-lt">Idiomas</h2>${g.idioma.map((x) => `<p class="cv-p">${esc(x)}</p>`).join('')}</section>`);
 
@@ -340,7 +355,7 @@ function htmlCreativo(cv, op) {
     const foto = esFotoValida(op.foto)
         ? `<img class="cv-foto cr-foto" src="${op.foto}" alt="">`
         : `<span class="cv-foto cr-foto cr-mono" aria-hidden="true">${esc(iniciales(h.nombre))}</span>`;
-    const contacto = h.contacto.map((c) => `<span class="cr-c">${ico(c.icono)}<span>${esc(c.texto)}</span></span>`).join('');
+    const contacto = h.contacto.map((c) => `<span class="cr-c">${ico(c.icono)}<span>${textoContacto(c)}</span></span>`).join('');
     const cabecera = '<header class="cr-cab">'
         + `<div class="cr-tit"><h1 class="cr-nombre ${claseNombre(h.nombre)}"><span class="cr-a">${esc(a)}</span>${b ? ` <span class="cr-b">${esc(b)}</span>` : ''}</h1>${h.subtitulo ? `<p class="cr-sub">${esc(h.subtitulo)}</p>` : ''}</div>`
         + foto
@@ -365,7 +380,7 @@ function htmlCreativo(cv, op) {
         + h.proyectos.map((p, i) => '<article class="cr-pj"><div class="cr-bar' + (i % 2 ? ' cr-bar2' : '') + '"></div><div class="cr-in">'
             + `<div class="cr-tt">${p.nombre ? `<strong>${esc(p.nombre)}</strong>` : '<span></span>'}${p.fecha ? `<span class="cr-f">${esc(p.fecha)}</span>` : ''}</div>`
             + queHiciste(p.queHiciste)
-            + (p.evidencia ? sub(`Resultado o evidencia: ${esc(p.evidencia)}`) : '')
+            + (p.evidencia ? sub(`Resultado o evidencia: ${conEnlaces(p.evidencia)}`) : '')
             + (p.herramientas ? `<div class="cr-chips"><span class="cr-vh">Herramientas: </span>${chips(p.herramientas.split(/\s*[,;·]\s*/).filter(Boolean), 'cr-k2')}</div>` : '')
             + '</div></article>').join('')
         + '</div></div>' : '';

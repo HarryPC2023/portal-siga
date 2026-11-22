@@ -13,7 +13,7 @@ import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PER
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=6';
 import { htmlItemPrevia } from './cv-documento.js?v=4';
-import { htmlHoja, DISENOS, COLORES, disenoDe, colorDe, variablesHoja, NOTA_FOTO, NOTA_FOTO_SILUETA, NOTA_FOTO_MONOGRAMA, AVISO_UNA_HOJA, AVISO_FOTO_NO_GUARDADA, AVISO_FOTO_ERROR } from './cv-disenos.js?v=3';
+import { htmlHoja, DISENOS, COLORES, disenoDe, colorDe, variablesHoja, NOTA_FOTO, NOTA_FOTO_SILUETA, NOTA_FOTO_MONOGRAMA, AVISO_UNA_HOJA, AVISO_FOTO_NO_GUARDADA, AVISO_FOTO_ERROR } from './cv-disenos.js?v=4';
 import { ajustarAUnaHoja, PARAMS_BASE } from './cv-ajuste.js?v=1';
 import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, textoPeriodo, normalizarFecha, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
