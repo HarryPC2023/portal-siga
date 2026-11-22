@@ -13,7 +13,7 @@ import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PER
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=4';
 import { htmlItemPrevia } from './cv-documento.js?v=3';
-import { htmlHoja, DISENOS, COLORES, disenoDe, colorDe, variablesHoja, NOTA_FOTO, NOTA_FOTO_SILUETA, AVISO_UNA_HOJA, AVISO_FOTO_NO_GUARDADA, AVISO_FOTO_ERROR } from './cv-disenos.js?v=1';
+import { htmlHoja, DISENOS, COLORES, disenoDe, colorDe, variablesHoja, NOTA_FOTO, NOTA_FOTO_SILUETA, NOTA_FOTO_MONOGRAMA, AVISO_UNA_HOJA, AVISO_FOTO_NO_GUARDADA, AVISO_FOTO_ERROR } from './cv-disenos.js?v=2';
 import { ajustarAUnaHoja, PARAMS_BASE } from './cv-ajuste.js?v=1';
 import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, textoPeriodo, normalizarFecha, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
@@ -1514,7 +1514,7 @@ function panelDiseno() {
             el('div', { class: 'dpc-foto-acc' },
                 el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: foto ? 'Cambiar foto' : 'Subir foto', onclick: elegirFoto }),
                 foto ? el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: 'Quitar foto', onclick: quitarFoto }) : null)),
-        el('p', { class: 'dp-suave', text: foto ? NOTA_FOTO : NOTA_FOTO_SILUETA }),
+        el('p', { class: 'dp-suave', text: foto ? NOTA_FOTO : (dis.id === 'creativo' ? NOTA_FOTO_MONOGRAMA : NOTA_FOTO_SILUETA) }),
         el('p', { class: 'dp-suave', text: dis.nota }));
 }
 
@@ -1550,11 +1550,11 @@ function medirAjuste() {
     const a4 = $('.dp-a4', medida); const dentro = $('.dp-a4-in', a4);
     configurarHoja(a4, op, PARAMS_BASE);
     dentro.innerHTML = htmlHoja(cv, op);
-    // Alto útil: Moderno usa la hoja entera (297 mm); Profesional deja 14 mm de margen abajo.
-    sonda.style.height = op.diseno === 'moderno' ? '297mm' : 'calc(297mm - 14mm)';
+    // Alto útil: Moderno usa la hoja entera (297 mm); Creativo, un milímetro menos (evita una segunda hoja en blanco); Profesional deja 14 mm de margen abajo.
+    sonda.style.height = op.diseno === 'moderno' ? '297mm' : op.diseno === 'creativo' ? '296mm' : 'calc(297mm - 14mm)';
     ajusteActual = { ...ajustarAUnaHoja({ a4, dentro, disponible: sonda.offsetHeight }), diseno: op.diseno };
     // Mientras cabe en una hoja no se muestra nada (un % bajo desanima a quien recién empieza); solo se avisa si se pasa.
-    const aviso = op.diseno === 'moderno' ? AVISO_UNA_HOJA
+    const aviso = disenoDe(ajustesCV()).unaHoja ? AVISO_UNA_HOJA
         : 'Tu CV supera una página. Revisa si puedes resumir algunas descripciones o eliminar información secundaria. Recuerda que dos páginas también son aceptables si el contenido lo justifica.';
     $$('[data-ajuste]').forEach((n) => {
         n.className = ajusteActual.cabe ? '' : 'dp-ajuste dp-ajuste-largo';

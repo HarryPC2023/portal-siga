@@ -1,4 +1,4 @@
-/* css/cv-disenos.css — Diseños de la hoja del CV: Profesional (una columna) y Moderno (banda + lateral).
+/* css/cv-disenos.css — Diseños de la hoja del CV: Profesional (una columna), Moderno (banda + lateral) y Creativo (tarjetas).
    La hoja es una A4 real (210 × 297 mm). Estas hojas llevan data-diseno y ponen su propio margen interno.
    Los colores salen de las variables --ac / --tint / --line; el espaciado, de --cv-fs / --cv-sec / --cv-lh / --cv-gp
    (las recorta el ajuste automático para que quepa en una página). El aire bajo los títulos es fijo. */
@@ -96,6 +96,89 @@
 .dp-a4 .md-h2 + .md-item { margin-top: 0; }
 .dp-a4 .md-fecha { display: block; font-weight: 700; color: var(--ac); font-size: .9em; letter-spacing: .03em; }
 
+/* ══════════ Creativo ══════════ */
+.dp-a4 .cr { position: relative; padding: 8.5mm 8.5mm 7mm; font-size: calc(var(--cv-fs, 11pt) - .4pt); line-height: calc(var(--cv-lh, 1.6) - .1); }
+
+/* Cabecera: tarjeta clara con un semidisco de color a la derecha y la foto (o las iniciales) dentro de un círculo.
+   El contacto va en cápsulas, en una fila; si no caben, pasan a otra línea. Su ancho máximo las deja siempre fuera del semidisco. */
+.dp-a4 .cr-cab { position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 50mm; padding: 5mm 7mm 3.9mm; border-radius: 7.2mm; background: var(--tint); }
+.dp-a4 .cr-cab::after { content: ""; position: absolute; width: 60.4mm; height: 60.4mm; right: -30.2mm; top: -9.2mm; border-radius: 50%; background: var(--ac); }
+.dp-a4 .cr-cab::before { content: ""; position: absolute; width: 3.6mm; height: 3.6mm; left: 141mm; top: 9.8mm; border-radius: 50%; background: var(--c2); }
+.dp-a4 .cr-tit { position: relative; z-index: 1; flex: 1; min-height: 28mm; max-width: 120mm; padding-bottom: 3mm; }
+.dp-a4 .cr-nombre { margin: 0; line-height: 1.04; color: #1f2328; }
+.dp-a4 .cr-nombre.cv-n1 { font-size: 30pt; }
+.dp-a4 .cr-nombre.cv-n2 { font-size: 25pt; }
+.dp-a4 .cr-nombre.cv-n3 { font-size: 21pt; }
+.dp-a4 .cr-nombre.cv-n4 { font-size: 18pt; }
+.dp-a4 .cr-a, .dp-a4 .cr-b { display: block; }
+.dp-a4 .cr-a { font-weight: 400; }
+.dp-a4 .cr-b { font-weight: 700; color: var(--ac); }
+.dp-a4 .cr-sub { margin: 2.3mm 0 0; font-size: 8.6pt; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--ac-dk); }
+.dp-a4 .cr-foto { position: absolute; z-index: 2; right: 11mm; top: 4.6mm; width: 29.5mm; height: 29.5mm; box-sizing: border-box; border: 1.6mm solid #fff; border-radius: 50%; }
+.dp-a4 .cr-mono { display: flex; align-items: center; justify-content: center; background: var(--tint2); color: var(--ac); font-size: 26pt; font-weight: 700; }
+.dp-a4 .cr-contacto { position: relative; z-index: 1; margin: 0; max-width: 160mm; display: flex; flex-wrap: wrap; gap: 1.6mm 2mm; }
+.dp-a4 .cr-c { display: inline-flex; align-items: center; gap: 1.5mm; padding: .9mm 2.8mm; border-radius: 99px; background: var(--tint2); color: var(--ac-dk); font-size: 9.2pt; line-height: 1.4; white-space: nowrap; }
+
+/* Franja «en cifras» */
+.dp-a4 .cr-cf { display: grid; grid-template-columns: repeat(var(--n, 4), 1fr); gap: 3mm; margin-top: calc(var(--cv-sec, 2) * 1.3mm); }
+.dp-a4 .cr-cf > div { display: flex; align-items: center; gap: 2.8mm; padding: 1.5mm 3.8mm; border: .3mm solid var(--line); border-radius: 5.2mm; }
+.dp-a4 .cr-cf b { font-size: 19pt; line-height: 1; color: var(--ac); }
+.dp-a4 .cr-cf span { font-size: 8.4pt; letter-spacing: .04em; text-transform: uppercase; color: #4a5568; line-height: 1.2; }
+
+/* Tarjetas */
+.dp-a4 .cr-g { display: grid; grid-template-columns: repeat(6, 1fr); gap: calc(var(--cv-gp, 1) * 2.6mm); margin-top: calc(var(--cv-gp, 1) * 2.6mm); }
+.dp-a4 .cr-s2 { grid-column: span 2; } .dp-a4 .cr-s3 { grid-column: span 3; } .dp-a4 .cr-s4 { grid-column: span 4; } .dp-a4 .cr-s6 { grid-column: span 6; }
+.dp-a4 .cr-s2, .dp-a4 .cr-s3, .dp-a4 .cr-s4, .dp-a4 .cr-s6 { min-width: 0; }
+.dp-a4 .cr-s2 > .cr-card, .dp-a4 .cr-s4 > .cr-card { height: 100%; box-sizing: border-box; }   /* perfil y formación miden lo mismo */
+.dp-a4 .cr-col { display: flex; flex-direction: column; gap: calc(var(--cv-gp, 1) * 2.6mm); }
+.dp-a4 .cr-card { padding: 2.9mm 4.9mm; border-radius: 5.2mm; break-inside: avoid; }
+.dp-a4 .cr-t { background: var(--tint); }
+.dp-a4 .cr-o { border: .3mm solid var(--line); }
+.dp-a4 .cr-ti { display: flex; align-items: center; gap: 2.4mm; margin: 0 0 2.4mm; font-size: .98em; font-weight: 700; color: var(--ac-dk); }
+.dp-a4 .cr-ti-s { margin: .5mm 0 2.4mm; }
+.dp-a4 .cr-md { width: 7.4mm; height: 7.4mm; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--ac); color: #fff; }
+.dp-a4 .cr-md .cv-ico { width: 4.2mm; height: 4.2mm; }
+.dp-a4 .cr-yr { display: inline-block; margin: .8mm 0 1mm; padding: .2mm 2.8mm; border-radius: 99px; background: var(--ac); color: #fff; font-weight: 700; font-size: .95em; }
+
+/* Proyectos */
+.dp-a4 .cr-proys { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--cv-gp, 1) * 2.6mm); }
+.dp-a4 .cr-proys > .cr-pj:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.dp-a4 .cr-pj { border: .3mm solid var(--line); border-radius: 5.2mm; overflow: hidden; break-inside: avoid; }
+.dp-a4 .cr-bar { height: 2mm; background: var(--ac); }
+.dp-a4 .cr-bar2 { background: var(--c2); }
+.dp-a4 .cr-in { padding: 2.4mm 4.9mm 1.2mm; }
+.dp-a4 .cr-tt { display: flex; justify-content: space-between; align-items: baseline; gap: 2.6mm; margin-bottom: .8mm; }
+.dp-a4 .cr-f { white-space: nowrap; color: #4a5568; font-size: .95em; }
+
+/* Etiquetas, niveles, línea de tiempo e idiomas */
+.dp-a4 .cr-chips { margin-top: 1.6mm; }
+.dp-a4 .cr-sh + .cr-chips { margin-top: 0; }
+.dp-a4 .cr-chip { display: inline-block; margin: 0 1.3mm 1.3mm 0; padding: .2mm 2.9mm; border-radius: 99px; font-size: .96em; line-height: 1.5; }
+.dp-a4 .cr-k1 { background: var(--tint2); color: var(--ac-dk); }
+.dp-a4 .cr-k2 { background: var(--c2-bg); color: var(--c2-tx); }
+.dp-a4 .cr-k3 { background: var(--c3-bg); color: var(--c3-tx); }
+.dp-a4 .cr-sh { margin: 1.6mm 0 .8mm; font-size: .95em; color: #4a5568; }
+.dp-a4 .cr-sh:first-of-type { margin-top: 0; }
+.dp-a4 .cr-hr { display: flex; align-items: center; justify-content: space-between; gap: 2mm; padding: .6mm 0; border-bottom: .25mm dashed var(--line); }
+.dp-a4 .cr-hr:last-of-type { border-bottom: 0; }
+.dp-a4 .cr-pts { display: inline-flex; gap: 1mm; }
+.dp-a4 .cr-pts u { display: block; width: 2.6mm; height: 2.6mm; box-sizing: border-box; border-radius: 50%; background: var(--c2); text-decoration: none; }
+.dp-a4 .cr-pts u.of { background: transparent; border: .5mm solid var(--c2); }
+.dp-a4 .cr-tl { position: relative; padding-left: 5.9mm; }
+.dp-a4 .cr-tl + .cr-tl { margin-top: 2mm; }
+.dp-a4 .cr-tl::before { content: ""; position: absolute; left: 1.3mm; top: 2.3mm; bottom: -1.2mm; width: .6mm; background: var(--line); }
+.dp-a4 .cr-tl:last-child::before { bottom: 0; }
+.dp-a4 .cr-tl > i { position: absolute; left: 0; top: 1.5mm; width: 3.2mm; height: 3.2mm; border-radius: 50%; background: var(--ac); }
+.dp-a4 .cr-idiomas { display: flex; flex-wrap: wrap; gap: 2mm 5.6mm; }
+.dp-a4 .cr-idi { display: flex; align-items: center; gap: 2.6mm; font-size: .96em; line-height: 1.3; }
+.dp-a4 .cr-det { font-size: .9em; }
+.dp-a4 .cr-anillo { width: 11mm; height: 11mm; flex: none; }
+.dp-a4 .cr-pista, .dp-a4 .cr-arco { fill: none; stroke-width: 5; }
+.dp-a4 .cr-pista { stroke: var(--tint2); }
+.dp-a4 .cr-arco { stroke: var(--ac); stroke-linecap: round; }
+/* Texto solo para quien lee la hoja con un lector o un filtro (el nivel de los puntos): no se ve, pero está. */
+.dp-a4 .cr-vh { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
 /* ══════════ Impresión ══════════ */
 /* Profesional: una tabla con cabecera y pie vacíos que se repiten en cada hoja = margen superior e inferior de 14 mm también
    en la segunda hoja. El encabezado de color sube sobre la cabecera vacía para llegar al borde de la primera hoja. */
@@ -106,7 +189,7 @@
 .cv-esp { height: 14mm; }
 .dp-impresion[data-diseno="profesional"] .pf-cab { margin-top: -14mm; }
 @media print {
-    .dp-a4[data-diseno] .pf-item, .dp-a4[data-diseno] .md-item { break-inside: avoid; }
+    .dp-a4[data-diseno] .pf-item, .dp-a4[data-diseno] .md-item, .dp-a4[data-diseno] .cr-card, .dp-a4[data-diseno] .cr-pj { break-inside: avoid; }
     .dp-a4[data-diseno] .pf-h2, .dp-a4[data-diseno] .md-h2 { break-after: avoid; }
     .dp-a4[data-diseno] .pf-hab, .dp-a4[data-diseno] .pf-hab-g, .dp-a4[data-diseno] .cv-ul li { break-inside: avoid; }
 }
