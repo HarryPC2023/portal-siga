@@ -108,6 +108,14 @@ export const CURSOS = [
                 titulo: 'PC3 — Modelado Conceptual de Datos',
                 periodo: '2026-2',
             },
+            {
+                id: 'mono-mcd-2026-2',
+                tipo: 'web',
+                evaluacion: null,
+                carpeta: 'mono',
+                titulo: 'Monografía — Modelado Conceptual de Datos',
+                periodo: '2026-2',
+            },
         ],
     },
 

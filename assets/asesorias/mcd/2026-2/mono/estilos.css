@@ -1,0 +1,2394 @@
+/* =====================================================================
+   BASE · Asesoría web interactiva (teoría) · estilos.css
+   Todo el CSS vive bajo .asesoria-mcd (el slug lo cambia preparar_asesoria.py).
+   El primer bloque es el TEMA: paleta, fuentes y radios. Es lo único que cambia entre asesorías.
+   ===================================================================== */
+
+/* ---------- TEMA (cambia por asesoría) · estilo «Hoja de cálculo» ---------- */
+.asesoria-mcd {
+  --hf: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  --bf: 'Atkinson Hyperlegible', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mf: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  --lf: 'Black Ops One', Impact, 'Arial Black', sans-serif;
+
+  --ink: #000000;
+  --ink2: #1A1A1A;
+  --pg: linear-gradient(#BFE9D2 1px, transparent 1px) 0 0 / 38px 30px, linear-gradient(90deg, #BFE9D2 1px, transparent 1px) 0 0 / 38px 30px, #E9FBF1;
+  --card: #FFFFFF;
+  --line: #A8DCC1;
+  --hdg: #0B7A52;
+  --por: #FFFFFF;
+  --acento: #E9F7B8;
+  --cta: #C2410C;
+  --cta-tx: #FFFFFF;
+  --crema: #E9F7B8;
+  --crema-bd: #5E7F00;
+  --logo: #0B7A52;
+
+  --k1: #0B7A52;
+  --k1-bg: #D8F3E4;
+  --k1-tx: #0B5A3C;
+  --k2: #C2410C;
+  --k2-bg: #FFE9DC;
+  --k2-tx: #8F2F05;
+  --k3: #7A43D6;
+  --k3-bg: #EFE7FD;
+  --k3-tx: #5A2FB0;
+  --k4: #C42A7C;
+  --k4-bg: #FBE0EF;
+  --k4-tx: #8F1559;
+  --ok: #16A34A;
+  --ok-bg: #DCFCE7;
+  --ok-tx: #14532D;
+  --bad: #E5533D;
+  --bad-bg: #FFE4DE;
+  --bad-tx: #7A2312;
+  --hint-bg: #EDE7FF;
+  --hint-bd: #8B5CF6;
+  --hint-tx: #3E2380;
+  --oA: #C2410C;
+  --oB: #7A43D6;
+  --oC: #0B7A52;
+
+  --r: 6px;
+  --r-hero: 6px;
+  --sombra: 0 4px 14px -8px rgba(11, 46, 34, .35);
+  --neon: 0 0 0 0;
+
+  --n1: #C42A7C;
+  --n1-bg: #FBE0EF;
+  --n1-tx: #8F1559;
+  --n2: #0B7A52;
+  --n2-bg: #D8F3E4;
+  --n2-tx: #0B5A3C;
+  --n3: #C2410C;
+  --n3-bg: #FFE9DC;
+  --n3-tx: #8F2F05;
+  --n4: #7A43D6;
+  --n4-bg: #EFE7FD;
+  --n4-tx: #5A2FB0;
+  --n5: #5E7F00;
+  --n5-bg: #EEF6C8;
+  --n5-tx: #3F5600;
+  --n6: #1D5FD1;
+  --n6-bg: #E3ECFC;
+  --n6-tx: #0F3F94;
+  --n7: #8A6500;
+  --n7-bg: #FBF0CC;
+  --n7-tx: #5E4400;
+  --n8: #0E7490;
+  --n8-bg: #DDF3F8;
+  --n8-tx: #0A5266;
+}
+
+/* ---------- Base ---------- */
+.asesoria-mcd,
+.asesoria-mcd * {
+  box-sizing: border-box;
+}
+
+.asesoria-mcd {
+  font-family: var(--bf);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--pg);
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+.asesoria-mcd h1,
+.asesoria-mcd h2,
+.asesoria-mcd h3,
+.asesoria-mcd h4 {
+  font-family: var(--hf);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.asesoria-mcd p {
+  margin: 0 0 .7em;
+}
+
+.asesoria-mcd img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.asesoria-mcd button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.asesoria-mcd :focus-visible {
+  outline: 3px solid var(--hint-bd);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.asesoria-mcd .muted {
+  color: var(--ink2);
+}
+
+.asesoria-mcd .wrap {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 28px 32px 64px;
+}
+
+.asesoria-mcd .sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Header (NO fijo: se queda arriba de la página y solo se ve al subir) ---------- */
+.asesoria-mcd .cab {
+  background: var(--hdg);
+  color: #fff;
+  box-shadow: 0 4px 18px -6px rgba(30, 27, 75, .4);
+  position: relative;
+  z-index: 5;
+}
+
+.asesoria-mcd .cab-in {
+  max-width: 1360px;
+  margin: 0 auto;
+  min-height: 84px;
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.asesoria-mcd .marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.asesoria-mcd .logo {
+  width: 60px;
+  height: 60px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--crema);
+  border: 1.5px solid var(--crema-bd);
+  border-radius: var(--r);
+  font-family: var(--lf);
+  font-weight: 400;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--logo);
+}
+
+.asesoria-mcd .marca-t {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.asesoria-mcd .marca-t b {
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asesoria-mcd .marca-t span {
+  font-size: .88rem;
+  opacity: .95;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asesoria-mcd .menu {
+  position: relative;
+  display: flex;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-bottom: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fi, 0px), #000 calc(100% - var(--fd, 0px)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--fi, 0px), #000 calc(100% - var(--fd, 0px)), transparent 100%);
+}
+
+.asesoria-mcd .menu::-webkit-scrollbar {
+  display: none;
+}
+
+/* Centrado seguro: si el menú no cabe, empieza en el primer elemento y se desliza (nunca queda cortado) */
+.asesoria-mcd .menu button:first-of-type {
+  margin-left: auto;
+}
+
+.asesoria-mcd .menu button:last-of-type {
+  margin-right: auto;
+}
+
+.asesoria-mcd .menu-flecha {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0 0 3px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, .75);
+  background: rgba(255, 255, 255, .2);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.asesoria-mcd .menu-flecha[hidden] {
+  display: none;
+}
+
+.asesoria-mcd .menu-flecha:hover {
+  background: rgba(255, 255, 255, .34);
+}
+
+.asesoria-mcd .menu-flecha.off {
+  opacity: .35;
+  pointer-events: none;
+}
+
+.asesoria-mcd .menu button {
+  flex: none;
+  background: none;
+  border: 0;
+  color: #fff;
+  font-family: var(--hf);
+  font-size: 1.12rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.asesoria-mcd .menu button[aria-current="page"] {
+  background: #fff;
+  color: var(--logo);
+}
+
+.asesoria-mcd .menu-ind {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 0;
+  border-radius: 4px;
+  background: var(--acento);
+  transition: left .25s ease, width .25s ease;
+  pointer-events: none;
+}
+
+.asesoria-mcd .imp {
+  position: relative;
+  flex: none;
+}
+
+.asesoria-mcd .imp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--crema);
+  color: var(--ink);
+  border: 1.5px solid var(--crema-bd);
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 700;
+}
+
+.asesoria-mcd .imp-emo {
+  font-style: normal;
+}
+
+.asesoria-mcd .imp-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  width: 372px;
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--sombra);
+  padding: 20px 22px;
+  z-index: 20;
+}
+
+.asesoria-mcd .imp-panel[hidden] {
+  display: none;
+}
+
+.asesoria-mcd .imp-intro {
+  margin: 0 0 14px;
+  font-size: .98rem;
+  line-height: 1.6;
+}
+
+.asesoria-mcd .imp-op {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  margin: 0 0 12px;
+}
+
+.asesoria-mcd .imp-op b {
+  display: block;
+  font-family: var(--hf);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.asesoria-mcd .imp-op small {
+  display: block;
+  font-size: .88rem;
+  color: var(--ink2);
+}
+
+.asesoria-mcd .imp-op .imp-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .imp-op[aria-pressed="true"] {
+  border-color: var(--k1);
+  background: var(--k1-bg);
+}
+
+.asesoria-mcd .imp-panel .nota {
+  font-size: .86rem;
+  color: var(--ink2);
+  margin: 6px 0 0;
+  line-height: 1.55;
+}
+
+/* ---------- Páginas ---------- */
+.asesoria-mcd .pagina {
+  display: none;
+}
+
+.asesoria-mcd .pagina.activa {
+  display: block;
+}
+
+.asesoria-mcd .sec-t {
+  font-size: 2.1rem;
+  margin: 0 0 18px;
+}
+
+.asesoria-mcd .sec-intro {
+  font-size: 1.05rem;
+  color: var(--ink2);
+  max-width: 78ch;
+  margin: 0 0 26px;
+}
+
+.asesoria-mcd .bloque {
+  margin: 0 0 48px;
+}
+
+.asesoria-mcd .bloque>h2 {
+  font-size: 1.6rem;
+  margin: 0 0 18px;
+}
+
+.asesoria-mcd .etq {
+  display: inline-block;
+  font-family: var(--mf);
+  font-weight: 700;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.asesoria-mcd .k1 .etq,
+.asesoria-mcd .etq.k1 {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .k2 .etq,
+.asesoria-mcd .etq.k2 {
+  background: var(--k2-bg);
+  color: var(--k2-tx);
+}
+
+.asesoria-mcd .k3 .etq,
+.asesoria-mcd .etq.k3 {
+  background: var(--k3-bg);
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd .k4 .etq,
+.asesoria-mcd .etq.k4 {
+  background: var(--k4-bg);
+  color: var(--k4-tx);
+}
+
+/* Botones */
+.asesoria-mcd .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-weight: 700;
+  border: 1.5px solid transparent;
+  background: #fff;
+  color: var(--ink);
+}
+
+.asesoria-mcd .btn.go {
+  background: var(--cta);
+  color: var(--cta-tx);
+  box-shadow: 0 8px 18px -8px var(--cta);
+}
+
+.asesoria-mcd .btn.sec {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.asesoria-mcd .btn:hover {
+  filter: brightness(1.05);
+}
+
+/* ---------- Portada (tarjeta grande, identidad de la primera asesoría) ---------- */
+.asesoria-mcd .portada {
+  position: relative;
+  overflow: hidden;
+  background: var(--por);
+  color: #fff;
+  border-radius: var(--r-hero);
+  padding: 52px 56px 48px;
+  margin: 0 0 52px;
+  box-shadow: var(--sombra);
+}
+
+.asesoria-mcd .portada::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  top: -70px;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, .32), transparent 70%);
+  pointer-events: none;
+}
+
+.asesoria-mcd .portada-in {
+  position: relative;
+  z-index: 1;
+  max-width: 880px;
+}
+
+.asesoria-mcd .portada h1 {
+  font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.asesoria-mcd .portada h1 span {
+  display: block;
+  color: var(--acento);
+}
+
+.asesoria-mcd .portada .lema {
+  font-size: 1.15rem;
+  margin: 18px 0 0;
+  max-width: 60ch;
+  color: #fff;
+}
+
+.asesoria-mcd .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.asesoria-mcd .chips li {
+  background: rgba(255, 255, 255, .2);
+  border: 1.5px solid rgba(255, 255, 255, .55);
+  border-radius: var(--r);
+  padding: 8px 16px;
+  font-size: .95rem;
+  font-weight: 600;
+}
+
+.asesoria-mcd .portada .acc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 30px 0 0;
+}
+
+.asesoria-mcd .portada .btn.sec {
+  background: rgba(255, 255, 255, .18);
+  color: #fff;
+  border-color: rgba(255, 255, 255, .7);
+}
+
+.asesoria-mcd .arte {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 290px;
+  opacity: .5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- Tarjetas ---------- */
+.asesoria-mcd .tarjetas {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: 22px;
+}
+
+.asesoria-mcd .card {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.asesoria-mcd .card .etq {
+  align-self: flex-start;
+}
+
+.asesoria-mcd .card h3 {
+  font-size: 1.2rem;
+}
+
+.asesoria-mcd .card p {
+  margin: 0;
+}
+
+.asesoria-mcd .card .mas {
+  margin-top: auto;
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.asesoria-mcd .card.k1 {
+  border-color: var(--k1);
+  box-shadow: var(--neon) var(--k1);
+}
+
+.asesoria-mcd .card.k2 {
+  border-color: var(--k2);
+  box-shadow: var(--neon) var(--k2);
+}
+
+.asesoria-mcd .card.k3 {
+  border-color: var(--k3);
+  box-shadow: var(--neon) var(--k3);
+}
+
+.asesoria-mcd .card.k4 {
+  border-color: var(--k4);
+  box-shadow: var(--neon) var(--k4);
+}
+
+.asesoria-mcd .k1 h3 {
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .k2 h3 {
+  color: var(--k2-tx);
+}
+
+.asesoria-mcd .k3 h3 {
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd .k4 h3 {
+  color: var(--k4-tx);
+}
+
+/* ---------- Acordeón: cada elemento abre y cierra por separado, en la MISMA página ---------- */
+.asesoria-mcd .acc-lista {
+  display: grid;
+  gap: 14px;
+}
+
+.asesoria-mcd .acc-item {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.asesoria-mcd .acc-item.k1 {
+  border-color: var(--k1);
+}
+
+.asesoria-mcd .acc-item.k2 {
+  border-color: var(--k2);
+}
+
+.asesoria-mcd .acc-item.k3 {
+  border-color: var(--k3);
+}
+
+.asesoria-mcd .acc-item.k4 {
+  border-color: var(--k4);
+}
+
+.asesoria-mcd .acc-h {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  background: none;
+  border: 0;
+  text-align: left;
+  font-family: var(--hf);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.asesoria-mcd .acc-h .etq {
+  margin-left: auto;
+}
+
+.asesoria-mcd .acc-h .chev {
+  width: 12px;
+  height: 12px;
+  border-right: 2.5px solid currentColor;
+  border-bottom: 2.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform .2s;
+  flex: none;
+  margin-left: 6px;
+}
+
+.asesoria-mcd .acc-h[aria-expanded="true"] .chev {
+  transform: rotate(225deg);
+}
+
+.asesoria-mcd .acc-b {
+  padding: 8px 26px 22px;
+  border-top: 1.5px solid var(--line);
+}
+
+.asesoria-mcd .acc-b[hidden] {
+  display: none;
+}
+
+/* ---------- Pestañas ---------- */
+.asesoria-mcd .tabs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.asesoria-mcd .tabs-bar button {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.asesoria-mcd .tabs-bar button[aria-selected="true"] {
+  background: var(--k1-bg);
+  border-color: var(--k1);
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .tab-panel {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 24px;
+}
+
+.asesoria-mcd .tab-panel[hidden] {
+  display: none;
+}
+
+/* ---------- Tabla ---------- */
+.asesoria-mcd .tabla-wrap {
+  overflow-x: auto;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+}
+
+.asesoria-mcd table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .98rem;
+}
+
+.asesoria-mcd th {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  text-align: left;
+  font-family: var(--hf);
+  font-weight: 600;
+  padding: 12px 16px;
+}
+
+.asesoria-mcd td {
+  padding: 11px 16px;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.asesoria-mcd tbody tr:nth-child(even) td {
+  background: #F7F8FF;
+}
+
+/* ---------- Imagen con visor ---------- */
+.asesoria-mcd .fig {
+  margin: 0;
+}
+
+.asesoria-mcd .zoom-b {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: #fff;
+  cursor: zoom-in;
+}
+
+.asesoria-mcd .fig figcaption {
+  font-size: .92rem;
+  color: var(--ink2);
+  margin-top: 8px;
+}
+
+.asesoria-mcd .visor {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(20, 18, 50, .88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.asesoria-mcd .visor[hidden] {
+  display: none;
+}
+
+.asesoria-mcd .visor img {
+  max-width: 100%;
+  max-height: calc(100vh - 110px);
+  border-radius: var(--r);
+  background: #fff;
+}
+
+.asesoria-mcd .visor-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  text-align: center;
+  color: #fff;
+  font-size: .95rem;
+  padding: 0 70px;
+}
+
+.asesoria-mcd .visor button {
+  position: absolute;
+  background: var(--crema);
+  color: var(--ink);
+  border: 1.5px solid var(--crema-bd);
+  border-radius: 10px;
+  width: 46px;
+  height: 46px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.asesoria-mcd .visor .v-x {
+  right: 18px;
+  top: 18px;
+}
+
+.asesoria-mcd .visor .v-p {
+  left: 16px;
+  top: 50%;
+}
+
+.asesoria-mcd .visor .v-n {
+  right: 16px;
+  top: 50%;
+}
+
+/* ---------- Avisos ---------- */
+.asesoria-mcd .aviso {
+  border: 1.5px solid;
+  border-radius: var(--r);
+  padding: 16px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.asesoria-mcd .aviso svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+/* Solo el título (primer hijo directo del texto del aviso) va en bloque: las negritas dentro de un párrafo se quedan en la línea */
+.asesoria-mcd .aviso>div>b:first-child {
+  display: block;
+  font-family: var(--hf);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.asesoria-mcd .aviso p:last-child {
+  margin: 0;
+}
+
+.asesoria-mcd .aviso.tip {
+  background: var(--k3-bg);
+  border-color: var(--k3);
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd .aviso.error {
+  background: var(--bad-bg);
+  border-color: var(--bad);
+  color: var(--bad-tx);
+}
+
+.asesoria-mcd .aviso.obs {
+  background: var(--k1-bg);
+  border-color: var(--k1);
+  color: var(--k1-tx);
+}
+
+/* Destello de una sola vez al llegar a un punto desde «Ver dónde se explicó» */
+.asesoria-mcd .flash {
+  animation: flash 1.6s ease-out 1;
+}
+
+@keyframes flash {
+  0% {
+    box-shadow: 0 0 0 6px var(--hint-bd);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* ---------- Ponte a prueba (cierre evaluativo) ---------- */
+.asesoria-mcd .pq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.asesoria-mcd .pq {
+  text-align: left;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--ink);
+}
+
+.asesoria-mcd .pq .n {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r);
+  display: grid;
+  place-items: center;
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+.asesoria-mcd .pq h3 {
+  font-size: 1.3rem;
+}
+
+.asesoria-mcd .pq .go-t {
+  margin-top: auto;
+  font-weight: 700;
+}
+
+.asesoria-mcd .pq.k1 {
+  border-color: var(--k1);
+  box-shadow: var(--neon) var(--k1);
+}
+
+.asesoria-mcd .pq.k1 .n {
+  background: var(--k1-tx);
+}
+
+.asesoria-mcd .pq.k2 {
+  border-color: var(--k2);
+  box-shadow: var(--neon) var(--k2);
+}
+
+.asesoria-mcd .pq.k2 .n {
+  background: var(--k2-tx);
+}
+
+.asesoria-mcd .pq.k3 {
+  border-color: var(--k3);
+  box-shadow: var(--neon) var(--k3);
+}
+
+.asesoria-mcd .pq.k3 .n {
+  background: var(--k3-tx);
+}
+
+.asesoria-mcd .pq.k4 {
+  border-color: var(--k4);
+  box-shadow: var(--neon) var(--k4);
+}
+
+.asesoria-mcd .pq.k4 .n {
+  background: var(--k4-tx);
+}
+
+.asesoria-mcd .pbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  border: 1.5px solid;
+  border-radius: var(--r);
+  background: var(--card);
+  margin: 0 0 26px;
+}
+
+.asesoria-mcd .pbar.k1 {
+  border-color: var(--k1);
+}
+
+.asesoria-mcd .pbar.k2 {
+  border-color: var(--k2);
+}
+
+.asesoria-mcd .pbar.k3 {
+  border-color: var(--k3);
+}
+
+.asesoria-mcd .pbar.k4 {
+  border-color: var(--k4);
+}
+
+.asesoria-mcd .pbar .volver {
+  background: none;
+  border: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.asesoria-mcd .pbar h3 {
+  font-size: 1.1rem;
+  flex: 1 1 200px;
+}
+
+.asesoria-mcd .dots {
+  display: flex;
+  align-items: center;
+}
+
+.asesoria-mcd .dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: .9rem;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  color: var(--ink2);
+}
+
+.asesoria-mcd .dot+.dot {
+  margin-left: 22px;
+  position: relative;
+}
+
+.asesoria-mcd .dot+.dot::before {
+  content: "";
+  position: absolute;
+  left: -23px;
+  top: 50%;
+  width: 22px;
+  height: 2px;
+  background: var(--line);
+}
+
+.asesoria-mcd .dot.act {
+  border-color: var(--hint-bd);
+  color: var(--hint-tx);
+  background: var(--hint-bg);
+}
+
+.asesoria-mcd .dot.hecho {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+  color: var(--ok-tx);
+}
+
+.asesoria-mcd .dot.ayuda {
+  background: var(--k3-bg);
+  border-color: var(--k3);
+  color: var(--k3-tx);
+}
+
+.asesoria-mcd .prob {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  margin: 0 0 26px;
+}
+
+.asesoria-mcd .prob .etq {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  margin-bottom: 8px;
+}
+
+.asesoria-mcd .dec h3 {
+  font-size: 2rem;
+  margin: 0 0 12px;
+}
+
+.asesoria-mcd .dec .intro {
+  color: var(--ink2);
+  font-size: 1.05rem;
+  margin: 0 0 22px;
+}
+
+.asesoria-mcd .alts {
+  display: grid;
+  gap: 14px;
+}
+
+.asesoria-mcd .alt {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  background: #fff;
+  color: var(--ink);
+  border: 2px solid;
+  border-radius: var(--r);
+  padding: 16px 20px;
+  font-size: 1.02rem;
+}
+
+.asesoria-mcd .alt .L {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+}
+
+.asesoria-mcd .alt.A {
+  border-color: var(--oA);
+}
+
+.asesoria-mcd .alt.A .L {
+  background: #C2410C;
+}
+
+.asesoria-mcd .alt.B {
+  border-color: var(--oB);
+}
+
+.asesoria-mcd .alt.B .L {
+  background: #6D28D9;
+}
+
+.asesoria-mcd .alt.C {
+  border-color: var(--oC);
+}
+
+.asesoria-mcd .alt.C .L {
+  background: #0F766E;
+}
+
+.asesoria-mcd .alt.dim {
+  opacity: .45;
+}
+
+.asesoria-mcd .alt.good {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+}
+
+.asesoria-mcd .alt.bad {
+  background: var(--bad-bg);
+  border-color: var(--bad);
+}
+
+.asesoria-mcd .alt:disabled {
+  cursor: default;
+}
+
+.asesoria-mcd .acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin: 22px 0 0;
+}
+
+.asesoria-mcd .pista {
+  background: var(--hint-bg);
+  color: var(--hint-tx);
+  border: 1.5px solid var(--hint-bd);
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 700;
+}
+
+.asesoria-mcd .fb {
+  margin: 22px 0 0;
+  border: 1.5px solid;
+  border-radius: var(--r);
+  padding: 16px 20px;
+}
+
+.asesoria-mcd .fb:empty {
+  display: none;
+}
+
+.asesoria-mcd .fb.ok {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+  color: var(--ok-tx);
+}
+
+.asesoria-mcd .fb.bad {
+  background: var(--bad-bg);
+  border-color: var(--bad);
+  color: var(--bad-tx);
+}
+
+.asesoria-mcd .fb.hint {
+  background: var(--hint-bg);
+  border-color: var(--hint-bd);
+  color: var(--hint-tx);
+}
+
+.asesoria-mcd .fb b.t {
+  display: block;
+  font-family: var(--hf);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.asesoria-mcd .fb .etq {
+  background: #fff;
+  color: var(--bad-tx);
+  border: 1.5px solid var(--bad);
+  margin: 4px 0 8px;
+}
+
+.asesoria-mcd .fb .ver {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.asesoria-mcd .fb p:last-child {
+  margin-bottom: 0;
+}
+
+.asesoria-mcd .fb-continuar {
+  margin-top: 28px;
+}
+
+.asesoria-mcd .sol {
+  background: var(--card);
+  border: 1.5px solid var(--ok);
+  border-radius: var(--r);
+  padding: 22px 26px;
+  box-shadow: var(--neon) var(--ok);
+  margin: 0 0 22px;
+}
+
+.asesoria-mcd .sol h3 {
+  margin: 0 0 10px;
+  font-size: 1.4rem;
+}
+
+.asesoria-mcd .reg {
+  margin: 48px 0 0;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 24px;
+}
+
+.asesoria-mcd .reg h3 {
+  font-size: 1.2rem;
+  margin: 0 0 6px;
+}
+
+.asesoria-mcd .reg ul {
+  margin: 8px 0 14px;
+  padding-left: 20px;
+}
+
+.asesoria-mcd .reg .ver {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.asesoria-mcd .reg .borrar {
+  background: none;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 16px;
+  color: var(--ink2);
+}
+
+/* Solo para impresión: el solucionario nace oculto y @media print lo muestra */
+.asesoria-mcd .solucionario {
+  display: none;
+}
+
+/* Flecha flotante para volver arriba (aparece pasando los 420 px) */
+.asesoria-mcd .flecha {
+  position: fixed;
+  right: 18px;
+  bottom: 22px;
+  z-index: 30;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r);
+  background: var(--crema);
+  border: 1.5px solid var(--crema-bd);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--sombra);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+
+.asesoria-mcd .flecha.ver {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .asesoria-mcd .arte {
+    display: none;
+  }
+
+  .asesoria-mcd .tarjetas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .asesoria-mcd .cab-in {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 10px 16px 0;
+    min-height: 0;
+  }
+
+  .asesoria-mcd .marca {
+    flex: 1 1 0;
+  }
+
+  .asesoria-mcd .menu {
+    order: 3;
+    flex: 1 1 100%;
+    padding-bottom: 8px;
+  }
+
+  .asesoria-mcd .menu-flecha {
+    display: none !important;
+  }
+
+  .asesoria-mcd .menu button {
+    padding: 8px 14px;
+    font-size: 1.02rem;
+  }
+
+  .asesoria-mcd .imp-btn span {
+    display: none;
+  }
+
+  .asesoria-mcd .imp-btn {
+    padding: 10px 14px;
+  }
+
+  .asesoria-mcd .wrap {
+    padding: 20px 16px 56px;
+  }
+
+  .asesoria-mcd .portada {
+    padding: 32px 24px;
+  }
+
+  .asesoria-mcd .tarjetas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .asesoria-mcd .imp-panel {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    top: 76px;
+    width: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .asesoria-mcd .logo {
+    width: 48px;
+    height: 48px;
+    font-size: 1.9rem;
+  }
+
+  .asesoria-mcd .marca-t b {
+    font-size: 1.05rem;
+  }
+
+  .asesoria-mcd .sec-t {
+    font-size: 1.7rem;
+  }
+
+  .asesoria-mcd .dec h3 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-height: 520px) and (max-width: 900px) {
+  .asesoria-mcd .cab-in {
+    flex-wrap: nowrap;
+    padding: 6px 14px;
+    gap: 10px;
+  }
+
+  .asesoria-mcd .marca-t span {
+    display: none;
+  }
+
+  .asesoria-mcd .menu {
+    order: 0;
+    flex: 1 1 auto;
+    padding-bottom: 6px;
+  }
+
+  .asesoria-mcd .logo {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .asesoria-mcd *,
+  .asesoria-mcd *::before,
+  .asesoria-mcd *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Impresión ---------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  .asesoria-mcd {
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 11pt;
+  }
+
+  .asesoria-mcd .cab,
+  .asesoria-mcd .flecha,
+  .asesoria-mcd .visor,
+  .asesoria-mcd .no-print,
+  .asesoria-mcd .portada .acc,
+  .asesoria-mcd .card .mas,
+  .asesoria-mcd .reg {
+    display: none !important;
+  }
+
+  .asesoria-mcd .wrap {
+    padding: 0;
+    max-width: none;
+  }
+
+  .asesoria-mcd .pagina {
+    display: block !important;
+    margin: 0 0 18pt;
+  }
+
+  .asesoria-mcd .pagina[data-tipo="cierre"] {
+    display: none !important;
+  }
+
+  .asesoria-mcd .acc-b[hidden],
+  .asesoria-mcd .tab-panel[hidden] {
+    display: block !important;
+  }
+
+  .asesoria-mcd .acc-h .chev {
+    display: none;
+  }
+
+  .asesoria-mcd .tab-panel::before {
+    content: attr(data-t);
+    display: block;
+    font-family: var(--hf);
+    font-weight: 600;
+    margin-bottom: 6pt;
+  }
+
+  .asesoria-mcd .tabs-bar {
+    display: none;
+  }
+
+  .asesoria-mcd .tab-panel {
+    margin-bottom: 8pt;
+  }
+
+  .asesoria-mcd .solucionario {
+    display: block;
+    page-break-before: always;
+  }
+
+  .asesoria-mcd .solucionario h2 {
+    font-size: 1.5rem;
+    margin: 0 0 10pt;
+  }
+
+  .asesoria-mcd .acc-item,
+  .asesoria-mcd .card,
+  .asesoria-mcd .fig,
+  .asesoria-mcd .aviso,
+  .asesoria-mcd .sol,
+  .asesoria-mcd tr,
+  .asesoria-mcd .sol-q,
+  .asesoria-mcd .sol-b {
+    break-inside: avoid;
+  }
+
+  .asesoria-mcd h1,
+  .asesoria-mcd h2,
+  .asesoria-mcd h3 {
+    break-after: avoid;
+  }
+
+  .asesoria-mcd .portada {
+    box-shadow: none;
+    padding: 20pt;
+  }
+
+  .asesoria-mcd .card,
+  .asesoria-mcd .acc-item {
+    box-shadow: none;
+  }
+
+  .asesoria-mcd.ahorro .portada {
+    background: #fff !important;
+    color: var(--ink);
+    border: 1.5px solid var(--k1);
+  }
+
+  .asesoria-mcd.ahorro .portada h1 span {
+    color: var(--k1-tx);
+  }
+
+  .asesoria-mcd.ahorro .chips li {
+    background: #fff;
+    border-color: var(--k1);
+    color: var(--ink);
+  }
+
+  .asesoria-mcd.ahorro .portada .lema {
+    color: var(--ink);
+  }
+
+  .asesoria-mcd.ahorro th,
+  .asesoria-mcd.ahorro .aviso,
+  .asesoria-mcd.ahorro .etq,
+  .asesoria-mcd.ahorro tbody tr:nth-child(even) td {
+    background: #fff !important;
+    border-color: currentColor;
+  }
+}
+
+/* =====================================================================
+   VARIANTES DE CONTENEDOR (opcionales) · catálogo de diseños para no repetir siempre el mismo
+   Nada se aplica solo. Dos formas de usarlo:
+   1) En un bloque del motor (tarjetas o acordeón): campo v en el bloque de ZONA 1, por ejemplo  v: 'bv-contorno vc-ciclo'.
+      Diseños de grupo: bv-contorno · bv-filo · bv-relleno (solo tarjetas) · bv-punteado · bv-neutro.
+   2) En HTML propio (bloque texto): clases v-contorno · v-ficha · v-filo · v-relleno · v-degradado · v-punteado · v-enfasis · v-neutro.
+   Colores: vc1…vc8 para elegir uno; vc-ciclo en el bloque o en el contenedor padre para que los hijos alternen sin repetir.
+   Los colores n1…n8 son de adorno. Los k1…k7 son categorías y no se usan de adorno. Cuándo usar cada una: GUIA_BASE.md, sección 4c.
+   ===================================================================== */
+.asesoria-mcd .vc1 {
+  --vc: var(--n1);
+  --vb: var(--n1-bg);
+  --vt: var(--n1-tx);
+}
+
+.asesoria-mcd .vc2 {
+  --vc: var(--n2);
+  --vb: var(--n2-bg);
+  --vt: var(--n2-tx);
+}
+
+.asesoria-mcd .vc3 {
+  --vc: var(--n3);
+  --vb: var(--n3-bg);
+  --vt: var(--n3-tx);
+}
+
+.asesoria-mcd .vc4 {
+  --vc: var(--n4);
+  --vb: var(--n4-bg);
+  --vt: var(--n4-tx);
+}
+
+.asesoria-mcd .vc5 {
+  --vc: var(--n5);
+  --vb: var(--n5-bg);
+  --vt: var(--n5-tx);
+}
+
+.asesoria-mcd .vc6 {
+  --vc: var(--n6);
+  --vb: var(--n6-bg);
+  --vt: var(--n6-tx);
+}
+
+.asesoria-mcd .vc7 {
+  --vc: var(--n7);
+  --vb: var(--n7-bg);
+  --vt: var(--n7-tx);
+}
+
+.asesoria-mcd .vc8 {
+  --vc: var(--n8);
+  --vb: var(--n8-bg);
+  --vt: var(--n8-tx);
+}
+
+.asesoria-mcd .vc-ciclo .tarjetas> :nth-child(8n+1),
+.asesoria-mcd .vc-ciclo .acc-lista> :nth-child(8n+1),
+.asesoria-mcd .vc-ciclo:not(.bloque)> :nth-child(8n+1) {
+  --vc: var(--n6);
+  --vb: var(--n6-bg);
+  --vt: var(--n6-tx);
+}
+
+.asesoria-mcd .vc-ciclo .tarjetas> :nth-child(8n+2),
+.asesoria-mcd .vc-ciclo .acc-lista> :nth-child(8n+2),
+.asesoria-mcd .vc-ciclo:not(.bloque)> :nth-child(8n+2) {
+  --vc: var(--n2);
+  --vb: var(--n2-bg);
+  --vt: var(--n2-tx);
+}
+
+.asesoria-mcd .vc-ciclo .tarjetas> :nth-child(8n+3),
+.asesoria-mcd .vc-ciclo .acc-lista> :nth-child(8n+3),
+.asesoria-mcd .vc-ciclo:not(.bloque)> :nth-child(8n+3) {
+  --vc: var(--n3);
+  --vb: var(--n3-bg);
+  --vt: var(--n3-tx);
+}
+
+.asesoria-mcd .vc-ciclo .tarjetas> :nth-child(8n+4),
+.asesoria-mcd .vc-ciclo .acc-lista> :nth-child(8n+4),
+.asesoria-mcd .vc-ciclo:not(.bloque)> :nth-child(8n+4) {
+  --vc: var(--n4);
+  --vb: var(--n4-bg);
+  --vt: var(--n4-tx);
+}
+
+.asesoria-mcd .vc-ciclo .tarjetas> :nth-child(8n+5),
+.asesoria-mcd .vc-ciclo .acc-lista> :nth-child(8n+5),
+.asesoria-mcd .vc-ciclo:not(.bloque)> :nth-child(8n+5) {
+  --vc: var(--n5);
+  --vb: var(--n5-bg);
+  --vt: var(--n5-tx);
+}
+
+.asesoria-mcd .vc-ciclo .tarjetas> :nth-child(8n+6),
+.asesoria-mcd .vc-ciclo .acc-lista> :nth-child(8n+6),
+.asesoria-mcd .vc-ciclo:not(.bloque)> :nth-child(8n+6) {
+  --vc: var(--n1);
+  --vb: var(--n1-bg);
+  --vt: var(--n1-tx);
+}
+
+.asesoria-mcd .vc-ciclo .tarjetas> :nth-child(8n+7),
+.asesoria-mcd .vc-ciclo .acc-lista> :nth-child(8n+7),
+.asesoria-mcd .vc-ciclo:not(.bloque)> :nth-child(8n+7) {
+  --vc: var(--n7);
+  --vb: var(--n7-bg);
+  --vt: var(--n7-tx);
+}
+
+.asesoria-mcd .vc-ciclo .tarjetas> :nth-child(8n+8),
+.asesoria-mcd .vc-ciclo .acc-lista> :nth-child(8n+8),
+.asesoria-mcd .vc-ciclo:not(.bloque)> :nth-child(8n+8) {
+  --vc: var(--n8);
+  --vb: var(--n8-bg);
+  --vt: var(--n8-tx);
+}
+
+.asesoria-mcd .bv-contorno :is(.card, .acc-item) {
+  background: #fff;
+  border: 2px solid var(--vc, var(--n1));
+  box-shadow: 0 0 14px -4px var(--vc, var(--n1));
+}
+
+.asesoria-mcd .bv-filo :is(.card, .acc-item) {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--vc, var(--n1));
+  box-shadow: none;
+}
+
+.asesoria-mcd .bv-relleno .card {
+  background: var(--vb, var(--n1-bg));
+  border: 1.5px solid transparent;
+  box-shadow: none;
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-mcd .bv-punteado :is(.card, .acc-item) {
+  background: #fff;
+  border: 2px dashed var(--vc, var(--n1));
+  box-shadow: none;
+}
+
+.asesoria-mcd .bv-neutro :is(.card, .acc-item) {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  box-shadow: var(--sombra);
+}
+
+.asesoria-mcd :is(.bv-contorno, .bv-filo, .bv-relleno, .bv-punteado) .card h3 {
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-mcd :is(.bv-contorno, .bv-filo, .bv-punteado) .card .etq {
+  background: var(--vb, var(--n1-bg));
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-mcd .bv-relleno .card .etq {
+  background: #fff;
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-mcd :is(.bv-contorno, .bv-filo, .bv-punteado) .acc-h .chev {
+  color: var(--vc, var(--n1));
+}
+
+.asesoria-mcd .v-contorno {
+  background: #fff;
+  border: 2px solid var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 14px 18px;
+  box-shadow: 0 0 14px -4px var(--vc, var(--n1));
+  color: var(--ink);
+}
+
+.asesoria-mcd .v-filo {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 14px 18px;
+  color: var(--ink);
+}
+
+.asesoria-mcd .v-relleno {
+  background: var(--vb, var(--n1-bg));
+  border: 1.5px solid transparent;
+  border-radius: var(--r);
+  padding: 12px 16px;
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-mcd .v-punteado {
+  background: #fff;
+  border: 2px dashed var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 14px 18px;
+  color: var(--ink);
+}
+
+.asesoria-mcd .v-degradado {
+  background: linear-gradient(20deg, var(--vb, var(--n1-bg)) 0%, #fff 100%);
+  border: 0;
+  border-radius: var(--r);
+  padding: 18px 20px;
+  color: var(--ink);
+}
+
+.asesoria-mcd .v-neutro {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  box-shadow: var(--sombra);
+  color: var(--ink);
+}
+
+.asesoria-mcd .v-enfasis {
+  background: #fff;
+  border: 3px solid var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 16px 20px;
+  box-shadow: 0 0 0 5px var(--vb, var(--n1-bg));
+  color: var(--ink);
+}
+
+.asesoria-mcd .v-ficha {
+  position: relative;
+  background: #fff;
+  border: 2px solid var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 34px 20px 18px;
+  box-shadow: 0 14px 28px -16px rgba(20, 33, 61, .45), 0 0 16px -4px var(--vc, var(--n1));
+  color: var(--ink);
+}
+
+.asesoria-mcd .v-ficha>.v-pestana {
+  position: absolute;
+  top: -17px;
+  left: 18px;
+  background: var(--vb, var(--n1-bg));
+  color: var(--vt, var(--n1-tx));
+  border: 2px solid var(--vc, var(--n1));
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  padding: 4px 14px 5px;
+  font-weight: 700;
+  font-size: .9rem;
+}
+
+.asesoria-mcd .v-etq {
+  display: inline-block;
+  border: 1.5px solid var(--vc, var(--n1));
+  background: var(--vb, var(--n1-bg));
+  color: var(--vt, var(--n1-tx));
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-weight: 700;
+  font-size: .88rem;
+}
+
+.asesoria-mcd :is(.v-contorno, .v-ficha, .v-enfasis, .v-filo) h3 {
+  color: var(--vt, var(--n1-tx));
+}
+
+@media print {
+
+  .asesoria-mcd.ahorro .bv-relleno .card,
+  .asesoria-mcd.ahorro .v-relleno,
+  .asesoria-mcd.ahorro .v-degradado,
+  .asesoria-mcd.ahorro .v-etq,
+  .asesoria-mcd.ahorro .v-ficha>.v-pestana {
+    background: #fff !important;
+  }
+
+  .asesoria-mcd .v-contorno,
+  .asesoria-mcd .v-ficha,
+  .asesoria-mcd .v-enfasis,
+  .asesoria-mcd .v-neutro {
+    box-shadow: none;
+  }
+
+  .asesoria-mcd :is(.v-contorno, .v-filo, .v-ficha, .v-punteado, .v-enfasis, .v-neutro) {
+    break-inside: avoid;
+  }
+}
+
+/* ---------- Diagramas SVG (estilo hoja de cálculo) ---------- */
+.asesoria-mcd .dgw {
+  overflow-x: auto;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  background: #fff;
+  padding: 8px;
+}
+
+.asesoria-mcd .dg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.asesoria-mcd .dg rect.ev {
+  fill: #FFE14D;
+  stroke: #8A6500;
+  stroke-width: 2;
+}
+
+.asesoria-mcd .dg rect.cu {
+  fill: #fff;
+  stroke: #0B7A52;
+  stroke-width: 2;
+}
+
+.asesoria-mcd .dg rect.ca {
+  fill: #FBE0EF;
+  stroke: #C42A7C;
+  stroke-width: 2;
+}
+
+.asesoria-mcd .dg rect.ct {
+  fill: #EFE7FD;
+  stroke: #7A43D6;
+  stroke-width: 2;
+}
+
+.asesoria-mcd .dg ellipse.re {
+  fill: #E9F7B8;
+  stroke: #5E7F00;
+  stroke-width: 1.6;
+}
+
+.asesoria-mcd .dg .ln {
+  stroke: #2F5646;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.asesoria-mcd .dg .sep {
+  stroke: #A8DCC1;
+  stroke-width: 1.2;
+}
+
+.asesoria-mcd .dg .mk {
+  fill: #2F5646;
+}
+
+.asesoria-mcd .dg text {
+  font-family: var(--bf);
+  fill: #0B2E22;
+  font-size: 12.5px;
+  text-anchor: middle;
+  font-weight: 600;
+}
+
+.asesoria-mcd .dg text.sm {
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.asesoria-mcd .dg text.at {
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+.asesoria-mcd .dg text.nt {
+  font-size: 12px;
+  fill: #A8310A;
+  font-weight: 700;
+}
+
+.asesoria-mcd .dg text.cd {
+  font-size: 12px;
+  font-weight: 700;
+  fill: #2F5646;
+}
+
+/* =====================================================================
+   ESTILO «HOJA DE CÁLCULO» · ajustes de esta asesoría (Monografía)
+   ===================================================================== */
+.asesoria-mcd .menu button {
+  border-radius: 8px 8px 0 0;
+}
+
+.asesoria-mcd .menu button[aria-current="page"] {
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .logo {
+  border-radius: 6px;
+}
+
+/* Portada: una «celda» blanca con borde verde y su referencia */
+.asesoria-mcd .portada {
+  overflow: visible;
+  background: #fff;
+  color: var(--ink);
+  border: 3px solid var(--k1);
+  border-radius: 6px;
+  box-shadow: none;
+  padding: 48px 56px 44px;
+  margin-top: 18px;
+}
+
+.asesoria-mcd .portada::after {
+  content: "B2";
+  display: block;
+  position: absolute;
+  left: 14px;
+  top: -14px;
+  right: auto;
+  width: auto;
+  height: auto;
+  border-radius: 6px;
+  background: var(--k1);
+  color: #fff;
+  font-family: var(--mf);
+  font-weight: 700;
+  font-size: .78rem;
+  padding: 2px 9px;
+  line-height: 1.5;
+}
+
+.asesoria-mcd .portada h1 {
+  color: var(--ink);
+  letter-spacing: -.02em;
+}
+
+.asesoria-mcd .portada h1 span {
+  color: var(--k2);
+}
+
+.asesoria-mcd .portada .lema {
+  color: var(--ink);
+}
+
+.asesoria-mcd .portada .chips li {
+  background: #E9F7B8;
+  color: var(--ink);
+  border: 1.5px solid #5E7F00;
+  border-radius: 6px;
+}
+
+.asesoria-mcd .portada .btn.sec {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--k1);
+}
+
+.asesoria-mcd .arte {
+  opacity: .9;
+  width: 320px;
+}
+
+/* Pestañas como hojas de Excel */
+.asesoria-mcd .tabs-bar {
+  gap: 0;
+  margin: 0;
+  border-bottom: 4px solid var(--k1);
+  align-items: flex-end;
+}
+
+.asesoria-mcd .tabs-bar button {
+  border-radius: 8px 8px 0 0;
+  border: 2px solid var(--line);
+  border-bottom: 0;
+  background: #E9FBF1;
+  margin-right: 4px;
+  padding: 8px 16px;
+  font-family: var(--mf);
+  font-size: .92rem;
+}
+
+.asesoria-mcd .tabs-bar button[aria-selected="true"] {
+  background: #fff;
+  border-color: var(--k1);
+  color: var(--k1-tx);
+  position: relative;
+  top: 4px;
+  padding-bottom: 12px;
+}
+
+.asesoria-mcd .tab-panel {
+  border-color: var(--k1);
+  border-radius: 0 12px 12px 12px;
+  border-top: 0;
+}
+
+/* Tablas: encabezados de color y filas alternadas */
+.asesoria-mcd .tabla-wrap {
+  border-radius: 6px;
+}
+
+.asesoria-mcd th {
+  font-family: var(--mf);
+  font-size: .85rem;
+  color: #fff;
+  background: var(--k1);
+}
+
+.asesoria-mcd th:nth-child(4n+2) {
+  background: #A93A0A;
+}
+
+.asesoria-mcd th:nth-child(4n+3) {
+  background: #6B35C7;
+}
+
+.asesoria-mcd th:nth-child(4n+4) {
+  background: #B02270;
+}
+
+.asesoria-mcd td {
+  border: 1px solid #BFE9D2;
+}
+
+.asesoria-mcd tbody tr:nth-child(even) td {
+  background: #F1FBF5;
+}
+
+.asesoria-mcd .acc-item {
+  border-radius: 6px;
+}
+
+.asesoria-mcd .acc-h {
+  font-family: var(--hf);
+}
+
+.asesoria-mcd .btn {
+  border-radius: 6px;
+}
+
+.asesoria-mcd .btn.go {
+  box-shadow: none;
+}
+
+.asesoria-mcd .card {
+  box-shadow: none;
+}
+
+.asesoria-mcd .pq,
+.asesoria-mcd .sol {
+  box-shadow: none;
+}
+
+/* Piezas propias del contenido */
+.asesoria-mcd .ej {
+  margin: 0 0 12px;
+}
+
+.asesoria-mcd .sub-t {
+  font-size: 1.1rem;
+  margin: 22px 0 10px;
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .sep-v {
+  height: 0;
+  border-top: 2px dashed var(--line);
+  margin: 22px 0;
+}
+
+.asesoria-mcd .mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 0 0 18px;
+}
+
+.asesoria-mcd .mini {
+  min-width: 0;
+}
+
+.asesoria-mcd .mini h4 {
+  font-size: .95rem;
+  margin: 0 0 6px;
+  color: var(--k1-tx);
+}
+
+.asesoria-mcd .enun {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--k1);
+  border-radius: 6px;
+  padding: 12px 16px;
+}
+
+.asesoria-mcd .aplica {
+  background: var(--k3-bg);
+  color: var(--k3-tx);
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+.asesoria-mcd .leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  font-size: .9rem;
+  margin: 0 0 10px;
+}
+
+.asesoria-mcd .lg {
+  display: inline-block;
+  width: 22px;
+  height: 14px;
+  border-radius: 3px;
+  border: 2px solid;
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+
+.asesoria-mcd .lg.ev {
+  background: #FFE14D;
+  border-color: #8A6500;
+}
+
+.asesoria-mcd .lg.cu {
+  background: #fff;
+  border-color: #0B7A52;
+}
+
+.asesoria-mcd .lg.ca {
+  background: #FBE0EF;
+  border-color: #C42A7C;
+}
+
+.asesoria-mcd .lg.re {
+  background: #E9F7B8;
+  border-color: #5E7F00;
+  border-radius: 8px;
+}
+
+.asesoria-mcd .chips-l {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0 0 12px;
+  list-style: none;
+}
+
+.asesoria-mcd .chips-l li {
+  background: #E9F7B8;
+  border: 1.5px solid #5E7F00;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-weight: 600;
+  font-size: .92rem;
+}
+
+.asesoria-mcd .chk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.asesoria-mcd .chk-g h3 {
+  font-size: 1rem;
+  color: var(--k1-tx);
+  margin: 0 0 8px;
+}
+
+.asesoria-mcd .chk {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0 0 8px;
+  cursor: pointer;
+}
+
+.asesoria-mcd .chk input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--k1);
+}
+
+.asesoria-mcd code {
+  font-family: var(--mf);
+  font-size: .9em;
+  background: #F1FBF5;
+  border: 1px solid #BFE9D2;
+  border-radius: 4px;
+  padding: 0 5px;
+  color: var(--ink);
+}
+
+.asesoria-mcd .alt .L {
+  border-radius: 4px;
+}
+
+@media (max-width: 860px) {
+  .asesoria-mcd .portada {
+    padding: 30px 20px 28px;
+  }
+}
+
+@media print {
+  .asesoria-mcd .portada::after {
+    background: #fff !important;
+    color: var(--ink);
+    border: 1.5px solid var(--k1);
+  }
+
+  .asesoria-mcd.ahorro th {
+    color: var(--ink) !important;
+  }
+
+  .asesoria-mcd.ahorro .lg {
+    background: #fff !important;
+  }
+}
+
+/* Ajustes de la portada y la marca */
+.asesoria-mcd .portada h1 span {
+  font-size: .5em;
+  line-height: 1.2;
+  margin-top: 10px;
+}
+
+/* Tipografía: cuerpo más grande y en negro; diagramas conservan IBM Plex Sans */
+.asesoria-mcd {
+  font-size: 17.5px;
+}
+
+.asesoria-mcd .dg text {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+.asesoria-mcd .sec-intro {
+  max-width: none;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+.asesoria-mcd .muted {
+  color: #1A1A1A;
+}
+
+.asesoria-mcd .card p,
+.asesoria-mcd td,
+.asesoria-mcd .acc-b {
+  color: var(--ink);
+}
+
+/* Espaciado parejo: lo de adentro no deja margen sobrante arriba ni abajo */
+.asesoria-mcd .acc-b {
+  padding: 20px 26px;
+}
+
+.asesoria-mcd .tab-panel {
+  padding: 20px 24px;
+}
+
+.asesoria-mcd :is(.acc-b, .tab-panel, .card, .aviso, .v-contorno, .v-ficha, .v-filo, .v-relleno, .v-punteado, .v-degradado, .v-enfasis, .v-neutro, .enun, .aplica)> :first-child {
+  margin-top: 0;
+}
+
+.asesoria-mcd :is(.acc-b, .tab-panel, .card, .aviso, .v-contorno, .v-ficha, .v-filo, .v-relleno, .v-punteado, .v-degradado, .v-enfasis, .v-neutro, .enun, .aplica)> :last-child {
+  margin-bottom: 0;
+}
+
+.asesoria-mcd .acc-b>p:last-child,
+.asesoria-mcd .tab-panel>p:last-child {
+  margin-bottom: 0;
+}
+
+/* Fórmulas completas en una sola línea */
+.asesoria-mcd td>code:only-child {
+  white-space: nowrap;
+}
