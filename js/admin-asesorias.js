@@ -25,7 +25,7 @@
 // asesorias_propuestas y notificaciones (avisos personales).
 // El SQL está en asesorias-admin.sql y notificaciones-personales.sql.
 import { supabase } from './auth-siga.js?v=9';
-import { CURSOS, EVALUACIONES, PEDIBLES, MONO, NOMBRE_MONO, estadoEvaluacion, rutaRecurso } from './asesorias-cursos.js?v=1';
+import { CURSOS, EVALUACIONES, PEDIBLES, MONO, NOMBRE_MONO, NOMBRE_EVALUACION, estadoEvaluacion, rutaRecurso } from './asesorias-cursos.js?v=1';
 
 const LS_VISTO = 'siga_admin_visto_demanda';
 const $ = (id) => document.getElementById(id);
@@ -163,6 +163,19 @@ const etqPedible = (ev) => (ev === MONO
     ? `<span title="${NOMBRE_MONO}">Mono</span>`
     : esc(ev));
 
+// Nombre completo de una evaluación o de la monografía (PC3 -> «Práctica calificada 3»).
+const nombreEval = (ev) => {
+    const cod = String(ev || '').toUpperCase();
+    return cod === MONO ? NOMBRE_MONO : (NOMBRE_EVALUACION[cod] || cod);
+};
+
+// Etiqueta GRANDE y de color de una evaluación (cada una con su tono, ver .da-ev-* en admin-asesorias.css).
+const tagEval = (ev) => {
+    const cod = String(ev || '').toUpperCase();
+    const clase = cod.toLowerCase().replace(/[^a-z0-9]/g, '');
+    return `<span class="da-ev da-ev-${esc(clase)}" title="${esc(nombreEval(cod))}">${cod === MONO ? 'Mono' : esc(cod)}</span>`;
+};
+
 // Mensajito de resultado debajo de la ayuda del bloque (se borra solo).
 function estado(texto) {
     const el = $('daEstado');
@@ -283,7 +296,7 @@ async function pintarConteo(abrir = new Set()) {
     // HTML de una fila (evaluación) con su lista desplegable de personas. `i` es su posición en `filas`.
     const filaHTML = (f, i) => {
         const etiqueta = f.evaluacion
-            ? etqPedible(f.evaluacion)
+            ? tagEval(f.evaluacion)
             :`<span title="Votos de cuando no se podía elegir una evaluación">${ETQ_SIN_EV}</span>`;
         const quienes = [...f.filas]
             .sort((a, b) => (Date.parse(b.creado_en) || 0) - (Date.parse(a.creado_en) || 0))
@@ -545,7 +558,7 @@ async function pintarSinRegistro() {
 
     cont.innerHTML = '<p class="da-vacio">Revisando las asesorías publicadas…</p>';
     const resultados = await Promise.all(web.map(async ({ curso, r }) => {
-        const etiqueta = `${curso.nombre} · ${String(r.evaluacion || '').toUpperCase()} · ${r.periodo || ''}`;
+        const etiqueta = `${curso.nombre} · ${String(r.evaluacion || r.carpeta || 'general').toUpperCase()} · ${r.periodo || ''}`;
         try {
             const resp = await fetch(rutaRecurso(curso, r), { cache: 'no-store' });
             if (!resp.ok) return { etiqueta, estado: 'error', detalle: `no se pudo leer (error ${resp.status})` };
@@ -639,9 +652,23 @@ async function pintarUso(abrir = new Set(), { recargar = true } = {}) {
     // Filtros: tus pruebas, periodo y búsqueda por persona (nombre o código, sin importar tildes ni mayúsculas).
     const desde = inicioDeRango(usoRango);
     const q = sinTildes(usoBusqueda);
-    const eventos = data.filter((r) => (usoIncluirYo || r.user_id !== yo)
-        && (!desde || (Date.parse(r.creado_en) || 0) >= desde)
+    // `base`: sin el filtro de periodo; sirve para calcular «últimos 7 días» aunque se esté mirando «Hoy».
+    const base = data.filter((r) => (usoIncluirYo || r.user_id !== yo)
         && (!q || sinTildes(quien(mapa, r.user_id)).includes(q) || sinTildes(`${nombreCursoPorSlug(r.curso)} ${r.evaluacion} ${r.periodo}`).includes(q)));
+    const eventos = base.filter((r) => !desde || (Date.parse(r.creado_en) || 0) >= desde);
+
+    // Personas con actividad en los últimos 7 días, por asesoría y por curso (sirve para ver si una asesoría sigue viva).
+    const hace7 = Date.now() - 7 * 86400000;
+    const semAsesoria = new Map();
+    const semCurso = new Map();
+    base.forEach((r) => {
+        if ((Date.parse(r.creado_en) || 0) < hace7) return;
+        const k = `${r.curso}|${r.periodo}|${r.evaluacion}`;
+        if (!semAsesoria.has(k)) semAsesoria.set(k, new Set());
+        semAsesoria.get(k).add(r.user_id);
+        if (!semCurso.has(r.curso)) semCurso.set(r.curso, new Set());
+        semCurso.get(r.curso).add(r.user_id);
+    });
 
     const resumenEl = $('daUsoResumen');
     if (resumenEl) {
@@ -730,22 +757,57 @@ async function pintarUso(abrir = new Set(), { recargar = true } = {}) {
         return `${cab}<li class="da-tabla-li"><div class="da-tabla-caja"><table class="da-tabla"><thead>${encabezado}</thead><tbody>${filasTabla}</tbody></table></div></li>`;
     };
 
+    // Mini-contador (personas distintas). En gris si es 0.
+    const chipUso = (clase, icono, n, uno, varios) => `<span class="da-chip da-chip-${clase}${n ? '' : ' cero'}" title="${plural(n, 'persona', 'personas')} ${n === 1 ? uno : varios}">${icono} ${n}</span>`;
+    const chip7d = (n) => `<span class="da-chip da-chip-7d${n ? '' : ' cero'}" title="${plural(n, 'persona', 'personas')} con actividad en los últimos 7 días">📈 7 d · ${n}</span>`;
+
+    // Resumen por curso: suma de todas sus asesorías (personas distintas del curso, no la suma de las filas).
+    const resumenCurso = new Map();
+    eventos.forEach((e) => {
+        if (!resumenCurso.has(e.curso)) resumenCurso.set(e.curso, { personas: new Set(), abrieron: new Set(), imprimieron: new Set(), excel: new Set(), aperturas: 0 });
+        const c = resumenCurso.get(e.curso);
+        c.personas.add(e.user_id);
+        if (e.accion === 'abrio') { c.abrieron.add(e.user_id); c.aperturas += 1; }
+        if (e.accion === 'imprimio') c.imprimieron.add(e.user_id);
+        if (e.accion === 'excel') c.excel.add(e.user_id);
+    });
+    const cabeceraCurso = (curso) => {
+        const c = resumenCurso.get(curso);
+        const n = filas.filter((x) => x.curso === curso).length;
+        return `
+        <div class="da-uso-curso">
+            <span class="da-uso-curso-nombre">${esc(nombreCursoPorSlug(curso))} <small>· ${plural(n, 'asesoría', 'asesorías')}</small></span>
+            <span class="da-chips da-uso-curso-chips">
+                <span class="da-chip da-chip-tot" title="Personas distintas con actividad en este curso">👥 ${plural(c.personas.size, 'persona', 'personas')}</span>
+                ${chipUso('ojo', '👁', c.abrieron.size, 'abrió', 'abrieron')}
+                <span class="da-chip da-chip-ap" title="Veces que se abrieron sus asesorías en total">${c.aperturas} ${c.aperturas === 1 ? 'apertura' : 'aperturas'}</span>
+                ${chipUso('imp', '🖨️', c.imprimieron.size, 'imprimió', 'imprimieron')}
+                ${chipUso('xls', '📊', c.excel.size, 'descargó Excel', 'descargaron Excel')}
+                ${chip7d((semCurso.get(curso) || new Set()).size)}
+            </span>
+        </div>`;
+    };
+
+    let cursoAnterior = null;
     cont.innerHTML = filas.map((f, i) => {
         const de = (a) => f.eventos.filter((e) => e.accion === a);
-        // Mini-contadores de la fila (personas distintas): 👁 abrieron · 🖨 imprimieron · 📊 descargaron Excel. En gris si es 0.
+        // Mini-contadores de la fila (personas distintas): 👁 abrieron · 🖨 imprimieron · 📊 descargaron Excel · 📈 últimos 7 días.
         const chips = [
-            ['ojo', '👁', f.abrieron, 'abrió', 'abrieron'],
-            ['imp', '🖨️', f.imprimieron, 'imprimió', 'imprimieron'],
-            ['xls', '📊', f.excelPersonas, 'descargó Excel', 'descargaron Excel'],
-        ].map(([clase, icono, n, uno, varios]) => `<span class="da-chip da-chip-${clase}${n ? '' : ' cero'}" title="${plural(n, 'persona', 'personas')} ${n === 1 ? uno : varios}">${icono} ${n}</span>`).join('');
+            chipUso('ojo', '👁', f.abrieron, 'abrió', 'abrieron'),
+            chipUso('imp', '🖨️', f.imprimieron, 'imprimió', 'imprimieron'),
+            chipUso('xls', '📊', f.excelPersonas, 'descargó Excel', 'descargaron Excel'),
+            chip7d((semAsesoria.get(f.clave) || new Set()).size),
+        ].join('');
+        const cabecera = f.curso !== cursoAnterior ? cabeceraCurso(f.curso) : '';
+        cursoAnterior = f.curso;
         const detalle = [
             seccionUso('👁 Abrieron', de('abrio'), false, 'volvieron a abrirla'),
             seccionUso('🖨️ Imprimieron / PDF', de('imprimio'), false, 'imprimieron más de una vez'),
             seccionUso('📊 Descargaron Excel', de('excel'), true, 'descargaron más de una vez'),
         ].join('');
-        return `
+        return `${cabecera}
         <div class="da-fila" role="button" tabindex="0" aria-expanded="false" data-clave="${esc(f.clave)}" data-quienes="daU${i}">
-            <div class="da-nombre">${esc(nombreCursoPorSlug(f.curso))} <small>· ${esc(String(f.evaluacion).toUpperCase())} · ${esc(f.periodo)}</small> <span class="da-chips">${chips}</span></div>
+            <div class="da-nombre">${tagEval(f.evaluacion)} <small>${esc(nombreEval(f.evaluacion))} · ${esc(f.periodo)}</small> <span class="da-chips">${chips}</span></div>
             <div class="da-num">${plural(f.personas, 'persona', 'personas')} <span class="da-flecha">▾</span></div>
             <div class="da-barra"><i style="width:${Math.max(6, Math.round((100 * f.personas) / max))}%"></i></div>
         </div>

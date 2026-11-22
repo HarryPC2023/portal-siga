@@ -675,3 +675,84 @@
 .da-curso-cuerpo[hidden] {
     display: none;
 }
+
+/* ---------- Uso: etiqueta de color por evaluación, resumen por curso y «7 d» ---------- */
+.da-ev {
+    display: inline-block;
+    min-width: 46px;
+    padding: 2px 9px;
+    margin-right: 4px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #fff;
+    text-align: center;
+    background: #555;
+    border-radius: 6px;
+    vertical-align: middle;
+}
+
+.da-ev-mono { background: #C2185B; }
+.da-ev-pc1 { background: #2457C5; }
+.da-ev-pc2 { background: #0B7A90; }
+.da-ev-pc3 { background: #137A52; }
+.da-ev-pc4 { background: #5B8C00; }
+.da-ev-ep { background: #C2610A; }
+.da-ev-ef { background: #C62828; }
+.da-ev-es { background: #6600CC; }
+
+/* Cabecera de cada curso en «Por asesoría»: totales del curso sumando todas sus asesorías */
+.da-uso-curso {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin: 14px 0 2px;
+    padding: 8px 12px;
+    background: #F8F1FE;
+    border: 1px solid #D9BDF5;
+    border-left: 4px solid #6600CC;
+    border-radius: 8px;
+}
+
+.da-uso-curso:first-child {
+    margin-top: 4px;
+}
+
+.da-uso-curso-nombre {
+    flex: 1 1 220px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #3A1670;
+}
+
+.da-uso-curso-nombre small {
+    font-weight: 400;
+    color: #666;
+}
+
+.da-uso-curso-chips {
+    margin-left: 0;
+}
+
+.da-uso-curso + .da-fila {
+    border-top: 0;
+}
+
+.da-chip-tot {
+    color: #3A1670;
+    background: #fff;
+    border-color: #D9BDF5;
+}
+
+.da-chip-ap {
+    color: #6600CC;
+    background: #fff;
+    border-color: #E5D5F7;
+}
+
+.da-chip-7d {
+    color: #B35900;
+    background: #FFF1E0;
+    border-color: #FFDDB3;
+}
