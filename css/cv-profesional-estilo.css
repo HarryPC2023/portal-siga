@@ -31,6 +31,8 @@
 .dpc .dp-paso { gap: 9px; border: 1.5px solid rgba(0, 0, 0, .08); border-radius: 999px; padding: 11px 20px 11px 15px; background: #fff;
                 font: 700 17px 'Chakra Petch', sans-serif; color: #14213D; box-shadow: 0 6px 14px rgba(30, 37, 48, .08); }
 .dpc .dp-paso-n { font-weight: 700; }
+/* En el celular también se lee el nombre de cada paso (se desliza con el dedo, como las pestañas de Asesorías): nadie memoriza qué número es cuál. */
+.dpc .dp-paso .dp-paso-t { display: inline; }
 .dpc .dp-paso .dp-punto { width: 14px; height: 14px; }
 .dpc .dp-paso .dp-rojo, .dpc .dp-paso .dp-rev { background: #b4bac8; }          /* sin empezar = gris, no rojo */
 .dpc .dp-paso-activo { background: var(--dpc-naranja); border-color: var(--dpc-naranja); color: #fff; box-shadow: 0 5px 0 var(--dpc-naranja-os); }
