@@ -8,6 +8,8 @@
 }
 /* Que los colores de fondo salgan también al imprimir, aunque la persona no active «Gráficos de fondo». */
 .dp-a4[data-diseno], .dp-a4[data-diseno] * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+/* La hoja impresa vive fuera de .dp-wrap: sin esto se medía con otro modelo de cajas que la vista previa y el PDF salía más alto. */
+.dp-a4, .dp-a4 *, .dp-a4 *::before, .dp-a4 *::after { box-sizing: border-box; }
 .dp-a4[data-diseno] .dp-a4-in { position: relative; }
 :where(.dp-a4[data-diseno]) h1, :where(.dp-a4[data-diseno]) h2, :where(.dp-a4[data-diseno]) p, :where(.dp-a4[data-diseno]) ul { margin: 0; }   /* :where → no pisa los márgenes de cada diseño */
 

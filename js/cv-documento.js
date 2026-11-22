@@ -16,14 +16,6 @@ export function esc(valor) {
 const t = (v) => (typeof v === 'string' ? v.trim() : '');
 const unir = (partes, sep = ' · ') => partes.filter(Boolean).join(sep);
 
-function seccion(titulo, cuerpo) {
-    return `<section class="dp-cv-sec"><h2 class="dp-cv-h2">${esc(titulo)}</h2>${cuerpo}</section>`;
-}
-
-function htmlPerfil(texto) {
-    return t(texto).split(/\n+/).map(t).filter(Boolean).map((l) => `<p class="dp-cv-p">${esc(l)}</p>`).join('');
-}
-
 // Periodo de la carrera y situación del alumno, a partir de los años que puso (basta el año, no hace falta el mes).
 //   2023 – 2027 (previsto) · Estudiante      2019 – 2024 · Egresado      2023 – actualidad · Estudiante
 // «previsto» sale solo cuando el año de egreso es futuro (o es este año y no marcó «Ya egresé»). Sin año de egreso y sin marcar «Ya egresé»
@@ -40,17 +32,6 @@ export function periodoFormacion(f = {}, anio = new Date().getFullYear()) {
     else if (egr) periodo = `${egr}${previsto ? ' (previsto)' : ''}`;
     const situacion = egresado ? 'Egresado' : (ing || egr) ? 'Estudiante' : '';
     return { periodo, situacion };
-}
-
-function htmlFormacion(f = {}, anio) {
-    const { periodo, situacion } = periodoFormacion(f, anio);
-    const linea1 = unir([t(f.universidad), t(f.carrera), periodo, situacion].map(esc));
-    const cursos = (Array.isArray(f.cursos) ? f.cursos : []).map(t).filter(Boolean).slice(0, 5);
-    const partes = [];
-    if (linea1) partes.push(`<p class="dp-cv-p">${linea1}</p>`);
-    if (cursos.length) partes.push(`<p class="dp-cv-p dp-cv-suave">Cursos relevantes: ${esc(cursos.join(', '))}</p>`);
-    if (t(f.promedio)) partes.push(`<p class="dp-cv-p dp-cv-suave">Promedio académico: ${esc(t(f.promedio))}</p>`);
-    return partes.join('');
 }
 
 // «2024 – actualidad», «2025», «marzo de 2025 – noviembre de 2025» o '' si no puso fechas.
@@ -82,25 +63,6 @@ function htmlExperiencia(lista) {
     }).join('');
 }
 
-function htmlHabilidades(lista) {
-    const de = (cat) => lista.filter((h) => h.categoria === cat && t(h.nombre));
-    const conNivel = (h) => t(h.nombre) + (t(h.nivel) ? ` (${t(h.nivel).toLowerCase()})` : '');   // sin nivel: solo el nombre, como siempre
-    const filas = [];
-    const tec = de('tecnica').map(conNivel);
-    const her = de('herramienta').map(conNivel);
-    // Idiomas: igual que antes («Inglés (intermedio)»); si completó el detalle: «Inglés (intermedio; lectura avanzada, expresión oral básica)».
-    const idi = de('idioma').map((h) => {
-        const dentro = [t(h.nivel).toLowerCase(), detalleIdioma(h)].filter(Boolean).join('; ');
-        return t(h.nombre) + (dentro ? ` (${dentro})` : '');
-    });
-    const per = de('personal').map((h) => t(h.nombre));
-    if (tec.length) filas.push(`<p class="dp-cv-p"><strong>Conocimientos:</strong> ${esc(tec.join(', '))}</p>`);
-    if (her.length) filas.push(`<p class="dp-cv-p"><strong>Herramientas:</strong> ${esc(her.join(', '))}</p>`);
-    if (idi.length) filas.push(`<p class="dp-cv-p"><strong>Idiomas:</strong> ${esc(idi.join(', '))}</p>`);
-    if (per.length) filas.push(`<p class="dp-cv-p"><strong>Habilidades personales:</strong> ${esc(per.join(', '))}</p>`);
-    return filas.join('');
-}
-
 // Texto libre del alumno → HTML seguro: todo se escapa y solo las direcciones http/https se vuelven enlaces
 // (se muestra la dirección completa, para que también se vea al imprimir).
 export function conEnlaces(crudo) {
@@ -117,53 +79,11 @@ export function conEnlaces(crudo) {
     return salida + esc(s.slice(desde));
 }
 
-function htmlLogros(lista) {
-    return '<ul class="dp-cv-ul">' + lista.map((l) => `<li>${esc(t(l.texto))}${t(l.respaldo) ? ` — ${conEnlaces(l.respaldo)}` : ''}</li>`).join('') + '</ul>';
-}
-
 export const TIPO_CERT = { certificacion: 'certificación', curso: 'curso', diplomado: 'diplomado', programa: 'programa' };
-
-function htmlCertificaciones(lista) {
-    return '<ul class="dp-cv-ul">' + lista.map((c) => {
-        const nombre = esc(t(c.nombre)) + (TIPO_CERT[t(c.tipo)] ? ` (${TIPO_CERT[t(c.tipo)]})` : '');
-        const resto = [esc(t(c.institucion)), esc(t(c.anio))].filter(Boolean).join(' · ');
-        const enlace = esEnlaceWeb(c.enlace) ? ` — <a href="${esc(t(c.enlace))}" rel="noopener noreferrer" target="_blank">${esc(t(c.enlace))}</a>` : '';
-        return `<li>${[nombre, resto].filter(Boolean).join(' · ')}${enlace}</li>`;
-    }).join('') + '</ul>';
-}
 
 // Un solo proyecto o experiencia tal como saldrá en el CV (la usa la tarjeta del constructor). '' si todavía no hay nada que mostrar.
 export function htmlItemPrevia(tipo, item = {}) {
     if (tipo === 'proyecto') return (t(item.nombre) || t(item.queHiciste) || t(item.herramientas) || t(item.evidencia)) ? htmlProyectos([item]) : '';
     if (tipo === 'experiencia') return (t(item.puesto) || t(item.queHiciste)) ? htmlExperiencia([item]) : '';
     return '';
-}
-
-export function htmlCV(cv = {}) {
-    const d = cv.datos || {};
-    const proyectos = (cv.proyectos || []).filter((p) => t(p.nombre) || t(p.queHiciste) || t(p.herramientas) || t(p.evidencia));
-    const experiencias = (cv.experiencias || []).filter((e) => t(e.puesto) || t(e.queHiciste));
-    const habilidades = (cv.habilidades || []).filter((h) => t(h.nombre));
-    const certificaciones = (cv.certificaciones || []).filter((c) => t(c.nombre) || t(c.institucion));
-    const logros = (cv.logros || []).filter((l) => t(l.texto));
-    const f = cv.formacion || {};
-    const hayFormacion = t(f.universidad) || t(f.carrera) || t(f.ingreso) || t(f.egreso) || f.egresado === true || t(f.promedio) || (Array.isArray(f.cursos) && f.cursos.some((c) => t(c)));
-
-    const contacto = unir([t(d.correo), t(d.telefono), t(d.linkedin), t(d.github), t(d.distrito)].map(esc));
-    const cabecera = `<header class="dp-cv-cab"><h1 class="dp-cv-h1">${esc(t(d.nombre) || 'Tu nombre')}</h1>`
-        + (contacto ? `<p class="dp-cv-contacto">${contacto}</p>` : '') + '</header>';
-
-    const partes = [];
-    if (t((cv.perfil || {}).texto)) partes.push(seccion('Perfil profesional', htmlPerfil(cv.perfil.texto)));
-    if (hayFormacion) partes.push(seccion('Formación', htmlFormacion(f)));
-    if (proyectos.length) partes.push(seccion('Proyectos', htmlProyectos(proyectos)));
-    if (experiencias.length) partes.push(seccion('Experiencia', htmlExperiencia(experiencias)));
-    if (certificaciones.length) partes.push(seccion('Certificaciones y formación complementaria', htmlCertificaciones(certificaciones)));
-    if (habilidades.length) partes.push(seccion('Habilidades', htmlHabilidades(habilidades)));
-    if (logros.length) partes.push(seccion('Logros', htmlLogros(logros)));
-
-    if (!partes.length && !t(d.nombre) && !contacto) {
-        return cabecera + '<p class="dp-cv-p dp-cv-suave">Tu CV aparecerá aquí a medida que completes los pasos.</p>';
-    }
-    return cabecera + partes.join('');
 }

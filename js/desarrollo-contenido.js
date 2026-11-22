@@ -530,9 +530,27 @@ export const AVISO_SEMAFORO =
 export const NOTA_DESCARGA = 'Puedes descargar tu CV aunque queden pasos en ámbar o rojo: el semáforo orienta, tú decides.';
 
 // ───────────── impresión ─────────────
-export const AYUDA_IMPRESION =
-    'Antes de guardar: selecciona papel A4, márgenes predeterminados y desactiva «Encabezados y pies de página» (están en «Más ajustes»).';
-export const NOTA_ATS = 'Una sola columna, sin foto, tablas ni íconos: así lo leen mejor los filtros automáticos de las empresas.';
+export const AYUDA_PDF_TITULO = '¿Cómo guardar mi CV en PDF?';
+export const AYUDA_PDF_INTRO = 'La ventana de impresión cambia un poco según el navegador. En general:';
+export const AYUDA_PDF_PASOS = [
+    'Pulsa «Imprimir o guardar PDF».',
+    'En «Destino», elige «Guardar como PDF».',
+    'Selecciona papel A4.',
+    'Si aparece la opción «Encabezados y pies de página», desactívala (suele estar en «Más ajustes»).',
+    'Guarda el documento.',
+];
+export const SEMAFORO_TITULO = '¿Cómo funciona el semáforo?';
+export const PAGINAS_TITULO = '¿Cuántas páginas debe tener mi CV?';
+export const CONSEJO_PORTAFOLIO = '💡 Consejo: Si tienes proyectos, investigaciones o trabajos destacados, puedes complementarlos con un portafolio web.';
+export const CAMBIAR_A_PROFESIONAL = 'Cambiar a Profesional';
+export const AVISO_NO_CABE = 'Este diseño está pensado para una sola página y tu contenido supera ese espacio. Puedes elegir el diseño Profesional para continuar con un formato que admite más contenido.';
+export const resumenSemaforo = (r) => {
+    const n = (k, color) => (r[k] ? `${r[k]} ${r[k] === 1 ? 'sección' : 'secciones'} en ${color}` : '');
+    const partes = [n('verde', 'verde'), n('ambar', 'ámbar'), n('rojo', 'rojo')].filter(Boolean);
+    if (!partes.length) return '';
+    const ult = partes.pop();
+    return 'Resumen: ' + (partes.length ? partes.join(', ') + ' y ' + ult : ult) + '.';
+};
 
 // ───────────── avisos ─────────────
 export const AVISO_CONFLICTO = 'Este dato se cambió desde otro dispositivo al mismo tiempo. Mostramos la versión más reciente.';

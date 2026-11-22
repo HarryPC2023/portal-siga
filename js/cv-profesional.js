@@ -11,9 +11,9 @@ import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { supabase } from './auth-siga.js?v=9';
 import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PERFIL } from './desarrollo-estado.js?v=2';
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
-import * as C from './desarrollo-contenido.js?v=5';
-import { htmlItemPrevia } from './cv-documento.js?v=3';
-import { htmlHoja, DISENOS, COLORES, disenoDe, colorDe, variablesHoja, NOTA_FOTO, NOTA_FOTO_SILUETA, NOTA_FOTO_MONOGRAMA, AVISO_UNA_HOJA, AVISO_FOTO_NO_GUARDADA, AVISO_FOTO_ERROR } from './cv-disenos.js?v=2';
+import * as C from './desarrollo-contenido.js?v=6';
+import { htmlItemPrevia } from './cv-documento.js?v=4';
+import { htmlHoja, DISENOS, COLORES, disenoDe, colorDe, variablesHoja, NOTA_FOTO, NOTA_FOTO_SILUETA, NOTA_FOTO_MONOGRAMA, AVISO_UNA_HOJA, AVISO_FOTO_NO_GUARDADA, AVISO_FOTO_ERROR } from './cv-disenos.js?v=3';
 import { ajustarAUnaHoja, PARAMS_BASE } from './cv-ajuste.js?v=1';
 import { armarBorrador, armarBorradorExperiencia, armarBorradorLogro, armarBorradorPerfil, verbosConjugados, gruposDesde, aplanarHerramientas, todasLasHerramientas, textoPeriodo, normalizarFecha, detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { leerDatosSiga } from './desarrollo-siga.js?v=1';
@@ -1438,22 +1438,48 @@ function pasoRevision() {
     return cont;
 }
 
+// Qué desplegables de Ayuda están abiertos: la pantalla se repinta con cada cambio y no debe cerrarlos.
+const ayudasAbiertas = new Set();
+function desplegable(id, titulo, ...contenido) {
+    const d = el('details', { class: 'dpc-det dpc-ayuda', open: ayudasAbiertas.has(id) ? true : null }, el('summary', { text: titulo }), ...contenido);
+    d.addEventListener('toggle', () => { if (d.open) ayudasAbiertas.add(id); else ayudasAbiertas.delete(id); });
+    return d;
+}
+function ayudaPdf() {
+    return desplegable('pdf', C.AYUDA_PDF_TITULO,
+        el('p', { class: 'dp-suave', text: C.AYUDA_PDF_INTRO }),
+        el('ol', { class: 'dpc-pasos-pdf' }, C.AYUDA_PDF_PASOS.map((t) => el('li', { text: t }))));
+}
+
 function pintarRevision(cont) {
     const r = evaluarCV(cv);
-    cont.replaceChildren(
+    const resumen = C.resumenSemaforo(r.resumen || {});
+    const noCabe = !ajusteActual.cabe && disenoDe(ajustesCV()).unaHoja;
+    cont.replaceChildren(...[
+        // 1 · Resultado
         el('div', { class: 'dp-leyenda' }, C.LEYENDA.map((l) => el('span', { class: 'dp-leyenda-item' }, el('span', { class: `dp-punto dp-${l.estado}` }), el('b', { text: l.nombre + ': ' }), l.texto))),
         ...r.secciones.map((s) => el('div', { class: `dp-fila dp-fila-${s.estado}` },
             el('span', { class: `dp-punto dp-${s.estado}`, 'aria-hidden': 'true' }),
             el('div', { class: 'dp-fila-texto' }, el('strong', {}, s.nombre, el('span', { class: 'dp-solo-lector', text: ` (${ROTULO_ESTADO[s.estado]})` })), el('span', { text: s.mensaje })),
             el('button', { type: 'button', class: 'dp-btn-texto', text: 'Ir al paso', onclick: () => irAPaso(PASO_DE_SECCION[s.id]) }))),
-        el('div', { class: 'dp-aviso' }, el('strong', { text: C.AVISO_SEMAFORO_TITULO + '. ' }), C.AVISO_SEMAFORO),
-        el('p', { class: 'dp-suave', text: C.NOTA_DESCARGA }),
+        resumen ? el('p', { class: 'dpc-resumen-sem', text: resumen }) : null,
+        // 2 · Decisión
         panelDiseno(),
+        noCabe ? el('div', { class: 'dp-ajuste dp-ajuste-largo dpc-no-cabe', role: 'status' },
+            el('span', { text: C.AVISO_NO_CABE }),
+            el('button', { type: 'button', class: 'dp-btn dp-btn-chico', text: C.CAMBIAR_A_PROFESIONAL, onclick: () => cambiarAjuste({ diseno: 'profesional' }) })) : null,
         el('div', { class: 'dp-acciones' },
             el('button', { type: 'button', class: 'dp-btn', text: 'Ver mi CV', onclick: () => abrirPrevia() }),
             el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Imprimir o guardar PDF', onclick: imprimir })),
-        el('p', { class: 'dp-suave dpc-impresion', text: C.AYUDA_IMPRESION }),
-        el('div', { class: 'dpc-tip' }, el('b', { text: '💡 Consejo profesional:' }), ' ' + C.CONSEJO_PROFESIONAL));
+        // 3 · Tranquilidad
+        el('p', { class: 'dp-suave dpc-tranquilo', text: C.NOTA_DESCARGA }),
+        // 4 · Ayuda
+        el('div', { class: 'dpc-ayudas' },
+            desplegable('semaforo', C.SEMAFORO_TITULO, el('p', { class: 'dp-suave' }, el('strong', { text: C.AVISO_SEMAFORO_TITULO + '. ' }), C.AVISO_SEMAFORO)),
+            ayudaPdf(),
+            desplegable('paginas', C.PAGINAS_TITULO, el('p', { class: 'dp-suave', text: C.CONSEJO_PROFESIONAL }))),
+        // 5 · Inspiración
+        el('p', { class: 'dpc-portafolio', text: C.CONSEJO_PORTAFOLIO })].filter(Boolean));
 }
 
 // ───────────── foto del CV: solo en este dispositivo ─────────────
@@ -1770,7 +1796,7 @@ function armar() {
                 el('span', { 'data-ajuste': '' }),
                 el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: 'Imprimir o guardar PDF', onclick: imprimir })),
             el('div', { class: 'dp-a4-wrap dp-a4-grande' }, el('div', { class: 'dp-a4' }, el('div', { class: 'dp-a4-in' }))),
-            el('p', { class: 'dp-suave', text: C.AYUDA_IMPRESION }),
+            ayudaPdf(),
             el('p', { class: 'dp-suave', 'data-nota-diseno': '' })),
         // Medición de la página (fuera de pantalla): cuánto ocupa el CV frente al alto útil de un A4.
         el('div', { id: 'dpMedida', class: 'dp-medida', 'aria-hidden': 'true' }, el('div', { class: 'dp-a4' }, el('div', { class: 'dp-a4-in' })), el('div', { id: 'dpSonda', class: 'dp-sonda' })));

@@ -8,7 +8,7 @@
 //     después el lateral. La posición en la hoja la decide el CSS, no el orden del HTML.
 //   · La foto es opcional. Sin foto, la vista previa muestra una silueta de ejemplo (opciones.ejemplo) y el PDF no la incluye.
 
-import { esc, periodoFormacion, periodoDe, conEnlaces, TIPO_CERT } from './cv-documento.js?v=3';
+import { esc, periodoFormacion, periodoDe, conEnlaces, TIPO_CERT } from './cv-documento.js?v=4';
 import { detalleIdioma } from './desarrollo-redaccion.js?v=2';
 import { esEnlaceWeb } from './desarrollo-reglas.js?v=2';
 
@@ -35,7 +35,7 @@ export const DISENOS = [
 export const NOTA_FOTO = 'Tu foto se guarda solo en este dispositivo: no se sube a SIGA. Para verla en otro dispositivo, súbela allí también.';
 export const NOTA_FOTO_MONOGRAMA = 'Si no subes una foto, el diseño Creativo muestra tus iniciales dentro del círculo.';
 export const NOTA_FOTO_SILUETA = 'La silueta es solo un ejemplo para que veas cómo queda el diseño. Si no subes una foto, tu CV sale sin ella.';
-export const AVISO_UNA_HOJA = 'Este diseño ocupa una sola hoja y tu CV es más largo. Resume algunas descripciones o prueba el diseño Profesional, que admite más de una página.';
+export const AVISO_UNA_HOJA = 'Este diseño está pensado para una sola página y tu contenido supera ese espacio. Puedes elegir el diseño Profesional para continuar con un formato que admite más contenido.';
 export const AVISO_FOTO_NO_GUARDADA = 'La foto se verá mientras tengas esta página abierta, pero tu navegador no permitió guardarla en este dispositivo.';
 export const AVISO_FOTO_ERROR = 'No pudimos usar esa imagen. Prueba con otra foto (JPG, PNG o WebP).';
 

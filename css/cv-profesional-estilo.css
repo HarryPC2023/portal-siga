@@ -74,6 +74,16 @@
 .dp-btn-primario { background: #E8590C; border-color: #E8590C; color: #fff; box-shadow: 0 5px 0 #A83F06; transition: transform .15s ease, box-shadow .15s ease; }
 .dp-btn-primario:hover { background: #E8590C; border-color: #E8590C; transform: translateY(2px); box-shadow: 0 3px 0 #A83F06; }
 
+/* Revisión: resumen, aviso de «no cabe», ayudas plegadas y consejo del portafolio */
+.dpc .dpc-resumen-sem { margin: 14px 0 0; font-size: 15.5px; font-weight: 500; }
+.dpc .dpc-no-cabe { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 14px 0 0; font-size: 15px; padding: 12px 14px; }
+.dpc .dpc-no-cabe span { flex: 1 1 320px; }
+.dpc .dpc-tranquilo { margin: 10px 0 0; }
+.dpc .dpc-ayudas { margin-top: 22px; }
+.dpc .dpc-ayudas .dpc-det { margin-top: 10px; }
+.dpc .dpc-pasos-pdf { margin: 0 0 12px; padding-left: 22px; line-height: 1.6; font-size: 15px; }
+.dpc .dpc-portafolio { margin: 22px 0 0; font-size: 15px; color: var(--dp-suave); }
+
 /* aviso de hoja: solo aparece si el CV pasa de una página */
 [data-ajuste]:empty { display: none; }
 .dpc .dp-ajuste { font-size: 14px; }
