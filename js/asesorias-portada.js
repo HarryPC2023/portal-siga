@@ -6,6 +6,7 @@ import { supabase, obtenerSesion } from './auth-siga.js?v=9';
 import {
     CURSOS, EVALUACIONES, NOMBRE_EVALUACION, tieneContenido, ciclosDisponibles, planDelCurso,
     estadoEvaluacion, recursosGenerales, cursoTieneNovedad, recursosNuevos,
+    MONO, NOMBRE_MONO, ofreceMono,
 } from './asesorias-cursos.js?v=1';
 import {
     esc, coincideCurso, estiloAttr, estiloCurso, botcitoSVG, cargarMisVotos, alternarVoto,
@@ -94,8 +95,12 @@ function tira(curso) {
         }
         return con ? enlace(ev, false, ev, nombre) : `<span class="an-p">${ev}</span>`;
     }).join('');
+    // Mono (monografía): enlace si ya está publicada; si no, botón para pedirla (solo en los cursos que la ofrecen).
     const hayMono = recursosGenerales(curso).some((r) => (r.estado || 'disponible') === 'disponible');
-    return pills + (hayMono ? enlace('mono', true, 'Mono', 'Material del curso') : '');
+    if (hayMono) return pills + enlace('mono', true, 'Mono', 'Material del curso');
+    if (!ofreceMono(curso)) return pills;
+    if (estadoEvaluacion(curso, MONO) === 'preparacion') return `${pills}<span class="an-p">Mono</span>`;
+    return `${pills}<button type="button" class="an-p an-p-pedir" data-pv="${esc(curso.codigo)}|${MONO}" aria-pressed="false" title="Pedir: ${NOMBRE_MONO}" aria-label="Pedir ${NOMBRE_MONO} de ${esc(curso.nombre)}">Mono</button>`;
 }
 
 function tarjeta(curso) {
@@ -119,7 +124,8 @@ function tarjeta(curso) {
 
 // Pastilla de evaluación pedida: verde y con ✓ (como "Anotado ✓" de la página del curso).
 function marcarPastilla(btn, activo) {
-    const ev = btn.dataset.pv.split('|')[1];
+    const codigoEv = btn.dataset.pv.split('|')[1];
+    const ev = codigoEv === MONO ? 'Mono' : codigoEv;
     btn.textContent = activo ? `${ev} ✓` : ev;
     btn.classList.toggle('an-pedida', activo);
     btn.setAttribute('aria-pressed', String(activo));

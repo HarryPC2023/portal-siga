@@ -65,6 +65,15 @@ export const NOMBRE_EVALUACION = {
     ES: 'Examen sustitutorio',
 };
 
+// Monografía: es el material general del curso (no una evaluación, por eso no está en
+// EVALUACIONES), pero se puede pedir con «Lo necesito» igual que ellas, con este código.
+// Un curso la ofrece si tiene `monografia: true` en el catálogo o si ya publicó material general.
+export const MONO = 'MONO';
+export const NOMBRE_MONO = 'Monografía';
+
+// Todo lo que se puede pedir con «Lo necesito», en el orden en que se muestra (primero el material del curso).
+export const PEDIBLES = [MONO, ...EVALUACIONES];
+
 export const CURSOS = [
     // ───────────── Ciclo 1 ─────────────
     {
@@ -99,7 +108,7 @@ export const CURSOS = [
     { codigo: 'FB403', slug: 'ecuaciones-diferenciales', nombre: 'Ecuaciones Diferenciales', ciclo: 4, creditos: 5, recursos: [] },
     { codigo: 'FB405', slug: 'estadistica-aplicada', nombre: 'Estadística Aplicada', ciclo: 4, creditos: 3, recursos: [] },
     {
-        codigo: 'SI405', slug: 'mcd', nombre: 'Modelado Conceptual de Datos', ciclo: 4, creditos: 3,
+        codigo: 'SI405', slug: 'mcd', nombre: 'Modelado Conceptual de Datos', ciclo: 4, creditos: 3, monografia: true,
         recursos: [
             {
                 id: 'pc3-mcd-2026-2',
@@ -122,7 +131,7 @@ export const CURSOS = [
     // ───────────── Ciclo 5 ─────────────
     { codigo: 'SI501', slug: 'investigacion-operaciones-i', nombre: 'Investigación de Operaciones I', ciclo: 5, creditos: 3, recursos: [] },
     {
-        codigo: 'SI505', slug: 'dbd', nombre: 'Diseño de Base de Datos', ciclo: 5, creditos: 3,
+        codigo: 'SI505', slug: 'dbd', nombre: 'Diseño de Base de Datos', ciclo: 5, creditos: 3, monografia: true,
         recursos: [
             {
                 id: 'pc1-dbd',
@@ -150,8 +159,11 @@ export function cursoPorCodigo(codigo) {
 }
 
 // 'disponible' | 'preparacion' | 'falta' para una evaluación de un curso.
+// También sirve para 'MONO' (la monografía): mira el material general del curso.
 export function estadoEvaluacion(curso, evaluacion) {
-    const rs = curso.recursos.filter((r) => r.evaluacion === evaluacion);
+    const rs = evaluacion === MONO
+        ? curso.recursos.filter((r) => r.evaluacion === null)
+        : curso.recursos.filter((r) => r.evaluacion === evaluacion);
     if (rs.some((r) => (r.estado || 'disponible') === 'disponible')) return 'disponible';
     if (rs.some((r) => r.estado === 'preparacion')) return 'preparacion';
     return 'falta';
@@ -160,6 +172,12 @@ export function estadoEvaluacion(curso, evaluacion) {
 // Materiales generales del curso (monografías, teoría, guías).
 export function recursosGenerales(curso) {
     return curso.recursos.filter((r) => r.evaluacion === null);
+}
+
+// ¿El curso muestra la opción «Mono» (monografía)? Sí si está marcado `monografia: true`
+// o si ya tiene material general publicado.
+export function ofreceMono(curso) {
+    return curso.monografia === true || recursosGenerales(curso).length > 0;
 }
 
 // Ruta de la asesoría web: se calcula con curso + periodo + evaluación (o

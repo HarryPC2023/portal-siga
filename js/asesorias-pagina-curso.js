@@ -8,6 +8,7 @@ import { abrirVisorPDF, abrirVisorWeb } from './asesorias-visor.js?v=2';
 import {
     CURSOS, EVALUACIONES, NOMBRE_EVALUACION, cursoPorSlug, estadoEvaluacion,
     recursosGenerales, tieneContenido, esNuevo, rutaRecurso, recursosOrdenados,
+    MONO, NOMBRE_MONO, ofreceMono,
 } from './asesorias-cursos.js?v=1';
 import {
     PORTADA, esc, estiloAttr, estiloCurso, cargarMisVotos, alternarVoto, claveVoto,
@@ -47,6 +48,33 @@ function filaGeneral(r) {
                 <div class="an-det">${recursoHTML(r)}</div>
             </div>
         </div>`;
+}
+
+// Fila «Mono» de un curso que aún no tiene monografía publicada: se puede pedir con «Lo necesito»
+// (o muestra «En preparación»). Se guarda con el código MONO, igual que las evaluaciones.
+function filaMonoPedir() {
+    if (estadoEvaluacion(curso, MONO) === 'preparacion') {
+        return `
+        <div class="an-ev" data-fila="mono">
+            <div class="an-dot an-dot-prep">◷</div>
+            <div class="an-ev-card"><div class="an-ev-top" style="cursor:default"><b>Mono</b><span class="an-t">${NOMBRE_MONO}</span><span class="an-est an-est-prep">En preparación</span></div></div>
+        </div>`;
+    }
+    return `
+        <div class="an-ev" data-fila="mono">
+            <div class="an-dot an-dot-falta">+</div>
+            <div class="an-ev-card">
+                <button type="button" class="an-ev-top" data-estado="falta" data-ev="${MONO}"><b>Mono</b><span class="an-t">${NOMBRE_MONO}</span><span class="an-est an-est-falta" data-etq>Lo necesito</span></button>
+            </div>
+        </div>`;
+}
+
+// Bloque «Material del curso»: la monografía publicada, o la opción de pedirla si el curso la ofrece.
+function bloqueMaterial() {
+    const generales = recursosOrdenados(curso, null);
+    if (generales.length) return `<div class="an-grp">Material del curso</div>${generales.map(filaGeneral).join('')}`;
+    if (ofreceMono(curso)) return `<div class="an-grp">Material del curso</div>${filaMonoPedir()}`;
+    return '';
 }
 
 function filaEvaluacion(ev) {
@@ -104,19 +132,19 @@ function pintar() {
             <div class="an-curso-grid" id="anGrid">
                 <section class="an-ruta">
                     <h2>Ruta de evaluaciones</h2>
-                    <p class="an-ruta-nota">Este curso aún no tiene material. Toca «Lo necesito» en la evaluación que quieras: así sabemos cuál preparar primero.</p>
+                    <p class="an-ruta-nota">Este curso aún no tiene material. Toca «Lo necesito» en lo que quieras: así sabemos qué preparar primero.</p>
+                    ${bloqueMaterial()}
                     <div class="an-grp">Evaluaciones</div>
                     ${EVALUACIONES.map(filaEvaluacion).join('')}
                 </section>
             </div>`;
         return;
     }
-    const generales = recursosOrdenados(curso, null);
     raiz.innerHTML = `${cabecera()}
         <div class="an-curso-grid" id="anGrid">
             <section class="an-ruta">
                 <h2>Ruta de evaluaciones</h2>
-                ${generales.length ? `<div class="an-grp">Material del curso</div>${generales.map(filaGeneral).join('')}` : ''}
+                ${bloqueMaterial()}
                 <div class="an-grp">Evaluaciones</div>
                 ${EVALUACIONES.map(filaEvaluacion).join('')}
             </section>

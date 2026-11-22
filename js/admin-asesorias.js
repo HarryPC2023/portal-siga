@@ -25,7 +25,7 @@
 // asesorias_propuestas y notificaciones (avisos personales).
 // El SQL está en asesorias-admin.sql y notificaciones-personales.sql.
 import { supabase } from './auth-siga.js?v=9';
-import { CURSOS, EVALUACIONES, estadoEvaluacion, rutaRecurso } from './asesorias-cursos.js?v=1';
+import { CURSOS, EVALUACIONES, PEDIBLES, MONO, NOMBRE_MONO, estadoEvaluacion, rutaRecurso } from './asesorias-cursos.js?v=1';
 
 const LS_VISTO = 'siga_admin_visto_demanda';
 const $ = (id) => document.getElementById(id);
@@ -158,6 +158,11 @@ function marcarVista() {
 // ───────────── Bloque 1: lo que más piden (quién, avisar y eliminar) ─────────────
 const ETQ_SIN_EV = 'Sin evaluación específica';
 
+// Etiqueta corta de lo pedido: «Mono» para la monografía, el código para las evaluaciones.
+const etqPedible = (ev) => (ev === MONO
+    ? `<span title="${NOMBRE_MONO}">Mono</span>`
+    : esc(ev));
+
 // Mensajito de resultado debajo de la ayuda del bloque (se borra solo).
 function estado(texto) {
     const el = $('daEstado');
@@ -182,14 +187,17 @@ function infoAviso(codigo, evaluacion) {
     if (!curso) return { publicada: false };
     if (evaluacion) {
         if (estadoEvaluacion(curso, evaluacion) !== 'disponible') return { publicada: false };
+        const esMono = evaluacion === MONO;
         return {
             publicada: true,
             origen: `demanda:${codigo}:${evaluacion}`,
             titulo: 'Ya está la asesoría que pediste',
-            mensaje: `«${evaluacion} · ${recorte(curso.nombre, 70)}» ya está en Asesorías.`,
-            enlace: `asesorias-curso.html?c=${curso.slug}&ev=${evaluacion}`,
+            mensaje: `«${esMono ? NOMBRE_MONO : evaluacion} · ${recorte(curso.nombre, 70)}» ya está en Asesorías.`,
+            enlace: `asesorias-curso.html?c=${curso.slug}&ev=${esMono ? 'mono' : evaluacion}`,
         };
     }
+    // (La monografía NO entra en esta lista a propósito: tiene su propia fila de pedidos, y así
+    // publicarla no vuelve a dejar "por avisar" a quienes votaron cuando no se podía elegir.)
     const lista = EVALUACIONES.filter((e) => estadoEvaluacion(curso, e) === 'disponible');
     if (!lista.length) return { publicada: false };
     return {
@@ -248,7 +256,7 @@ async function pintarConteo(abrir = new Set()) {
         // Orden alfabético por curso y, dentro del curso, por el orden de las evaluaciones (PC1, PC2, EP, PC3…).
         // La barra de cada fila sigue mostrando cuánta demanda tiene, comparada con la más pedida.
         .sort((a, b) => nombreCurso(a.codigo_curso).localeCompare(nombreCurso(b.codigo_curso), 'es', { sensitivity: 'base' })
-            || EVALUACIONES.indexOf(String(a.evaluacion || '').toUpperCase()) - EVALUACIONES.indexOf(String(b.evaluacion || '').toUpperCase()));
+            || PEDIBLES.indexOf(String(a.evaluacion || '').toUpperCase()) - PEDIBLES.indexOf(String(b.evaluacion || '').toUpperCase()));
 
     // Quiénes ya recibieron cada aviso (para "Avisados X de Y"). Tú puedes leer
     // todas las notificaciones (política notif_select); si no se pudiera, se oculta ese dato.
@@ -275,8 +283,8 @@ async function pintarConteo(abrir = new Set()) {
     // HTML de una fila (evaluación) con su lista desplegable de personas. `i` es su posición en `filas`.
     const filaHTML = (f, i) => {
         const etiqueta = f.evaluacion
-            ? esc(f.evaluacion)
-            : `<span title="Votos de cuando no se podía elegir una evaluación">${ETQ_SIN_EV}</span>`;
+            ? etqPedible(f.evaluacion)
+            :`<span title="Votos de cuando no se podía elegir una evaluación">${ETQ_SIN_EV}</span>`;
         const quienes = [...f.filas]
             .sort((a, b) => (Date.parse(b.creado_en) || 0) - (Date.parse(a.creado_en) || 0))
             .map((r) => {
@@ -318,7 +326,7 @@ async function pintarConteo(abrir = new Set()) {
         // Personas sin avisar en evaluaciones ya publicadas (cada persona cuenta una sola vez).
         const porAvisar = new Set(items.filter(({ f }) => f.aviso.publicada).flatMap(({ f }) => f.pendientes)).size;
         const abierto = demCursoAbierto.has(codigo) ? demCursoAbierto.get(codigo) : porAvisar > 0;
-        const chips = items.map(({ f }) => `<span class="da-chip-ev" title="${esc(f.evaluacion || ETQ_SIN_EV)}: ${plural(f.ids.length, 'persona', 'personas')}">${esc(f.evaluacion || 'Sin eval.')} ${f.ids.length}</span>`).join('');
+        const chips = items.map(({ f }) => `<span class="da-chip-ev" title="${esc(f.evaluacion === MONO ? NOMBRE_MONO : (f.evaluacion || ETQ_SIN_EV))}: ${plural(f.ids.length, 'persona', 'personas')}">${f.evaluacion ? etqPedible(f.evaluacion) : 'Sin eval.'} ${f.ids.length}</span>`).join('');
         return `
         <div class="da-curso" data-codigo="${esc(codigo)}" data-n="${esc(sinTildes(nombre))}" data-por-avisar="${porAvisar ? '1' : '0'}">
             <button type="button" class="da-curso-cab" aria-expanded="${abierto}">
@@ -331,6 +339,11 @@ async function pintarConteo(abrir = new Set()) {
             <div class="da-curso-cuerpo"${abierto ? '' : ' hidden'}>${items.map(({ f, i }) => filaHTML(f, i)).join('')}</div>
         </div>`;
     }).join('') + '<p class="da-vacio" id="daConteoVacio" hidden>Ningún curso con pedidos coincide con estos filtros. Aquí solo aparecen los cursos que alguien pidió con «Lo necesito».</p>';
+
+    // Claves de las filas ya publicadas con personas sin avisar (solo si su curso no fue cerrado a mano).
+    const filasPorAvisar = new Set(filas
+        .filter((f) => f.aviso.publicada && f.pendientes.length && demCursoAbierto.get(f.codigo_curso) !== false)
+        .map((f) => f.clave));
 
     // Al tocar una fila se despliega la lista de quiénes lo pidieron.
     cont.querySelectorAll('.da-fila').forEach((fila) => {
@@ -345,8 +358,12 @@ async function pintarConteo(abrir = new Set()) {
         fila.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternar(); }
         });
-        if (abrir.has(fila.dataset.clave)) alternar();
+        // Las filas con gente por avisar se abren solas, para que se vea el botón «Avisar que ya está».
+        if (abrir.has(fila.dataset.clave) || filasPorAvisar.has(fila.dataset.clave)) alternar();
     });
+    if (!leyoAvisos && filasPorAvisar.size) {
+        estado('No pude leer los avisos ya enviados (tabla notificaciones), por eso «Por avisar» puede no desaparecer. Mira la consola con F12.');
+    }
     cont.querySelectorAll('[data-avisar]').forEach((b) => b.addEventListener('click', () => avisarGrupo(filas[Number(b.dataset.avisar)], b)));
     cont.querySelectorAll('[data-eliminar]').forEach((b) => b.addEventListener('click', () => eliminarGrupo(filas[Number(b.dataset.eliminar)], b)));
     cont.querySelectorAll('.da-curso-cab').forEach((cab) => cab.addEventListener('click', () => {
@@ -388,7 +405,7 @@ async function avisarGrupo(f, btn) {
 // Borra TODOS los pedidos de esa fila. No se puede deshacer.
 async function eliminarGrupo(f, btn) {
     const n = f.filas.length;
-    const que = f.evaluacion ? `${f.evaluacion} · ${nombreCurso(f.codigo_curso)}` : `${nombreCurso(f.codigo_curso)} (${ETQ_SIN_EV.toLowerCase()})`;
+    const que = f.evaluacion ? `${f.evaluacion === MONO ? NOMBRE_MONO : f.evaluacion} · ${nombreCurso(f.codigo_curso)}` : `${nombreCurso(f.codigo_curso)} (${ETQ_SIN_EV.toLowerCase()})`;
     const ok = await confirmar(
         `Se borrarán ${n} ${n === 1 ? 'pedido' : 'pedidos'} de «${que}». No se puede deshacer.`,
         { titulo: '¿Eliminar estos pedidos?', textoBoton: 'Sí, eliminar' },
@@ -661,7 +678,7 @@ async function pintarUso(abrir = new Set(), { recargar = true } = {}) {
     // Orden alfabético por curso; dentro del curso, por evaluación (PC1, PC2, EP, PC3…) y luego periodo (el más reciente primero).
     // La barra de cada fila sigue mostrando cuánta gente tuvo, comparada con la asesoría más usada.
     }).sort((a, b) => nombreCursoPorSlug(a.curso).localeCompare(nombreCursoPorSlug(b.curso), 'es', { sensitivity: 'base' })
-        || EVALUACIONES.indexOf(String(a.evaluacion).toUpperCase()) - EVALUACIONES.indexOf(String(b.evaluacion).toUpperCase())
+        || PEDIBLES.indexOf(String(a.evaluacion).toUpperCase()) - PEDIBLES.indexOf(String(b.evaluacion).toUpperCase())
         || String(b.periodo).localeCompare(String(a.periodo)));
 
     pintarTarjetasUso(eventos, filas);
