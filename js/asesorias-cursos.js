@@ -140,6 +140,14 @@ export const CURSOS = [
                 titulo: 'PC1 - Diseño de Base de Datos',
                 periodo: '2026-1',
             },
+            {
+                id: 'mono-dbd-2026-2',
+                tipo: 'web',
+                evaluacion: null,
+                carpeta: 'mono',
+                titulo: 'Monografía — Diseño de Base de Datos',
+                periodo: '2026-2',
+            },
         ],
     },
 

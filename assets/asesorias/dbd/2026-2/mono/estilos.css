@@ -1,0 +1,2342 @@
+/* =====================================================================
+   Asesoría Monografía DBD 26-2 · estilos.css (base de asesorías web + estilo A «Cuaderno de sustentación»)
+   Todo el CSS vive bajo .asesoria-dbd. El primer bloque es el TEMA.
+   ===================================================================== */
+
+/* ---------- TEMA (cambia por asesoría) ---------- */
+.asesoria-dbd {
+  --hf: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --bf: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mf: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  --lf: 'Black Ops One', Impact, 'Arial Black', sans-serif;
+
+  /* Paleta (estilo A · Cuaderno de sustentación) */
+  --ink: #2B1B17;
+  --ink2: #5B4A44;
+  --pg: linear-gradient(#F1E3CB 1px, transparent 1px) 0 0 / 26px 26px, linear-gradient(90deg, #F1E3CB 1px, transparent 1px) 0 0 / 26px 26px, #FFF8EC;
+  --card: #FFFFFF;
+  --line: #EAD7BF;
+  --hdg: linear-gradient(105deg, #B93A1E 0%, #8E3FB5 100%);
+  --por: linear-gradient(120deg, #B93A1E 0%, #A63A7A 55%, #6B4CE6 100%);
+  --acento: #FFD76A;
+  --cta: #0F6B3F;
+  --cta-tx: #FFFFFF;
+  --crema: #FFF6E8;
+  --crema-bd: #F0C36D;
+  --logo: #B93A1E;
+
+  /* Categorías (un color = una categoría): k1 = PC1 prototipos · k2 = PC3 tablas · k3 = PC4 batch · k4 = consulta crítica (lo nuevo) */
+  --k1: #6B4CE6;
+  --k1-bg: #EAE4FF;
+  --k1-tx: #3E2A9E;
+  --k2: #1F8A5B;
+  --k2-bg: #DDF3E8;
+  --k2-tx: #0F5A3A;
+  --k3: #E08A00;
+  --k3-bg: #FFF0D1;
+  --k3-tx: #6B3F00;
+  --k4: #E4572E;
+  --k4-bg: #FFE6DC;
+  --k4-tx: #8A2410;
+  --ok: #16A34A;
+  --ok-bg: #DCFCE7;
+  --ok-tx: #14532D;
+  --bad: #E5533D;
+  --bad-bg: #FFE4DE;
+  --bad-tx: #7A2312;
+  --hint-bg: #EDE7FF;
+  --hint-bd: #8B5CF6;
+  --hint-tx: #3E2380;
+  --oA: #F97316;
+  --oB: #8B5CF6;
+  --oC: #0EA5A4;
+
+  --r: 12px;
+  --r-hero: 14px;
+  --sombra: 0 6px 22px -10px rgba(43, 27, 23, .28);
+  --neon: 0 0 16px -3px;
+
+  /* Colores de ADORNO de las variantes de contenedor (no significan nada) */
+  --n1: #C2255C;
+  --n1-bg: #FFE0EB;
+  --n1-tx: #7A1237;
+  --n2: #0C8599;
+  --n2-bg: #D9F2F6;
+  --n2-tx: #064E5B;
+  --n3: #1971C2;
+  --n3-bg: #DCEBFA;
+  --n3-tx: #0E4478;
+  --n4: #9C36B5;
+  --n4-bg: #F3E1F8;
+  --n4-tx: #5E1C73;
+  --n5: #5C940D;
+  --n5-bg: #E8F3D6;
+  --n5-tx: #2F4D06;
+  --n6: #4263EB;
+  --n6-bg: #E3E9FD;
+  --n6-tx: #213A9E;
+  --n7: #A66A00;
+  --n7-bg: #F8EDD4;
+  --n7-tx: #5E3C00;
+  --n8: #087F5B;
+  --n8-bg: #D8F3EA;
+  --n8-tx: #04503A;
+}
+
+/* ---------- Base ---------- */
+.asesoria-dbd,
+.asesoria-dbd * {
+  box-sizing: border-box;
+}
+
+.asesoria-dbd {
+  font-family: var(--bf);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--pg);
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+.asesoria-dbd h1,
+.asesoria-dbd h2,
+.asesoria-dbd h3,
+.asesoria-dbd h4 {
+  font-family: var(--hf);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.asesoria-dbd p {
+  margin: 0 0 .7em;
+}
+
+.asesoria-dbd img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.asesoria-dbd button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.asesoria-dbd :focus-visible {
+  outline: 3px solid var(--hint-bd);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.asesoria-dbd .muted {
+  color: var(--ink2);
+}
+
+.asesoria-dbd .wrap {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 28px 32px 64px;
+}
+
+.asesoria-dbd .sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Header (NO fijo: se queda arriba de la página y solo se ve al subir) ---------- */
+.asesoria-dbd .cab {
+  background: var(--hdg);
+  color: #fff;
+  box-shadow: 0 4px 18px -6px rgba(43, 27, 23, .4);
+  position: relative;
+  z-index: 5;
+}
+
+.asesoria-dbd .cab-in {
+  max-width: 1360px;
+  margin: 0 auto;
+  min-height: 84px;
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.asesoria-dbd .marca {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.asesoria-dbd .logo {
+  width: 60px;
+  height: 60px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--crema);
+  border: 1.5px solid var(--crema-bd);
+  border-radius: var(--r);
+  font-family: var(--lf);
+  font-weight: 400;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--logo);
+}
+
+.asesoria-dbd .marca-t {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.asesoria-dbd .marca-t b {
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asesoria-dbd .marca-t span {
+  font-size: .88rem;
+  opacity: .95;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.asesoria-dbd .menu {
+  position: relative;
+  display: flex;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-bottom: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fi, 0px), #000 calc(100% - var(--fd, 0px)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--fi, 0px), #000 calc(100% - var(--fd, 0px)), transparent 100%);
+}
+
+.asesoria-dbd .menu::-webkit-scrollbar {
+  display: none;
+}
+
+.asesoria-dbd .menu button:first-of-type {
+  margin-left: auto;
+}
+
+.asesoria-dbd .menu button:last-of-type {
+  margin-right: auto;
+}
+
+.asesoria-dbd .menu-flecha {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0 0 3px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, .75);
+  background: rgba(255, 255, 255, .2);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.asesoria-dbd .menu-flecha[hidden] {
+  display: none;
+}
+
+.asesoria-dbd .menu-flecha:hover {
+  background: rgba(255, 255, 255, .34);
+}
+
+.asesoria-dbd .menu-flecha.off {
+  opacity: .35;
+  pointer-events: none;
+}
+
+.asesoria-dbd .menu button {
+  flex: none;
+  background: none;
+  border: 0;
+  color: #fff;
+  font-family: var(--hf);
+  font-size: 1.12rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.asesoria-dbd .menu button[aria-current="page"] {
+  background: #fff;
+  color: var(--logo);
+}
+
+.asesoria-dbd .menu-ind {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 0;
+  border-radius: 4px;
+  background: var(--acento);
+  transition: left .25s ease, width .25s ease;
+  pointer-events: none;
+}
+
+.asesoria-dbd .imp {
+  position: relative;
+  flex: none;
+}
+
+.asesoria-dbd .imp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--crema);
+  color: var(--ink);
+  border: 1.5px solid var(--crema-bd);
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 700;
+}
+
+.asesoria-dbd .imp-emo {
+  font-style: normal;
+}
+
+.asesoria-dbd .imp-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  width: 372px;
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--sombra);
+  padding: 20px 22px;
+  z-index: 20;
+}
+
+.asesoria-dbd .imp-panel[hidden] {
+  display: none;
+}
+
+.asesoria-dbd .imp-intro {
+  margin: 0 0 14px;
+  font-size: .98rem;
+  line-height: 1.6;
+}
+
+.asesoria-dbd .imp-op {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  margin: 0 0 12px;
+}
+
+.asesoria-dbd .imp-op b {
+  display: block;
+  font-family: var(--hf);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.asesoria-dbd .imp-op small {
+  display: block;
+  font-size: .88rem;
+  color: var(--ink2);
+}
+
+.asesoria-dbd .imp-op .imp-ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--k1-tx);
+}
+
+.asesoria-dbd .imp-op[aria-pressed="true"] {
+  border-color: var(--k1);
+  background: var(--k1-bg);
+}
+
+.asesoria-dbd .imp-panel .nota {
+  font-size: .86rem;
+  color: var(--ink2);
+  margin: 6px 0 0;
+  line-height: 1.55;
+}
+
+/* ---------- Páginas ---------- */
+.asesoria-dbd .pagina {
+  display: none;
+}
+
+.asesoria-dbd .pagina.activa {
+  display: block;
+}
+
+.asesoria-dbd .sec-t {
+  font-size: 2.1rem;
+  margin: 0 0 18px;
+}
+
+.asesoria-dbd .sec-intro {
+  font-size: 1.05rem;
+  color: var(--ink2);
+  max-width: 78ch;
+  margin: 0 0 26px;
+}
+
+.asesoria-dbd .bloque {
+  margin: 0 0 48px;
+}
+
+.asesoria-dbd .bloque>h2 {
+  font-size: 1.6rem;
+  margin: 0 0 18px;
+}
+
+.asesoria-dbd .etq {
+  display: inline-block;
+  font-family: var(--mf);
+  font-weight: 700;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.asesoria-dbd .k1 .etq,
+.asesoria-dbd .etq.k1 {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+}
+
+.asesoria-dbd .k2 .etq,
+.asesoria-dbd .etq.k2 {
+  background: var(--k2-bg);
+  color: var(--k2-tx);
+}
+
+.asesoria-dbd .k3 .etq,
+.asesoria-dbd .etq.k3 {
+  background: var(--k3-bg);
+  color: var(--k3-tx);
+}
+
+.asesoria-dbd .k4 .etq,
+.asesoria-dbd .etq.k4 {
+  background: var(--k4-bg);
+  color: var(--k4-tx);
+}
+
+/* Botones */
+.asesoria-dbd .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-weight: 700;
+  border: 1.5px solid transparent;
+  background: #fff;
+  color: var(--ink);
+}
+
+.asesoria-dbd .btn.go {
+  background: var(--cta);
+  color: var(--cta-tx);
+  box-shadow: 0 8px 18px -8px var(--cta);
+}
+
+.asesoria-dbd .btn.sec {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.asesoria-dbd .btn:hover {
+  filter: brightness(1.05);
+}
+
+/* ---------- Portada ---------- */
+.asesoria-dbd .portada {
+  position: relative;
+  overflow: hidden;
+  background: var(--por);
+  color: #fff;
+  border-radius: var(--r-hero);
+  padding: 52px 56px 48px;
+  margin: 0 0 52px;
+  box-shadow: var(--sombra);
+}
+
+.asesoria-dbd .portada::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  top: -70px;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, .32), transparent 70%);
+  pointer-events: none;
+}
+
+.asesoria-dbd .portada-in {
+  position: relative;
+  z-index: 1;
+  max-width: 880px;
+}
+
+.asesoria-dbd .portada h1 {
+  font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.asesoria-dbd .portada h1 span {
+  display: block;
+  color: var(--acento);
+}
+
+.asesoria-dbd .portada .lema {
+  font-size: 1.15rem;
+  margin: 18px 0 0;
+  max-width: 60ch;
+  color: #fff;
+}
+
+.asesoria-dbd .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.asesoria-dbd .chips li {
+  background: rgba(255, 255, 255, .2);
+  border: 1.5px solid rgba(255, 255, 255, .55);
+  border-radius: var(--r);
+  padding: 8px 16px;
+  font-size: .95rem;
+  font-weight: 600;
+}
+
+.asesoria-dbd .portada .acc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 30px 0 0;
+}
+
+.asesoria-dbd .portada .btn.sec {
+  background: rgba(255, 255, 255, .18);
+  color: #fff;
+  border-color: rgba(255, 255, 255, .7);
+}
+
+.asesoria-dbd .arte {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 290px;
+  opacity: .5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- Tarjetas ---------- */
+.asesoria-dbd .tarjetas {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: 22px;
+}
+
+.asesoria-dbd .card {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.asesoria-dbd .card .etq {
+  align-self: flex-start;
+}
+
+.asesoria-dbd .card h3 {
+  font-size: 1.2rem;
+}
+
+.asesoria-dbd .card p {
+  margin: 0;
+}
+
+.asesoria-dbd .card .mas {
+  margin-top: auto;
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.asesoria-dbd .card.k1 {
+  border-color: var(--k1);
+  box-shadow: var(--neon) var(--k1);
+}
+
+.asesoria-dbd .card.k2 {
+  border-color: var(--k2);
+  box-shadow: var(--neon) var(--k2);
+}
+
+.asesoria-dbd .card.k3 {
+  border-color: var(--k3);
+  box-shadow: var(--neon) var(--k3);
+}
+
+.asesoria-dbd .card.k4 {
+  border-color: var(--k4);
+  box-shadow: var(--neon) var(--k4);
+}
+
+.asesoria-dbd .k1 h3 {
+  color: var(--k1-tx);
+}
+
+.asesoria-dbd .k2 h3 {
+  color: var(--k2-tx);
+}
+
+.asesoria-dbd .k3 h3 {
+  color: var(--k3-tx);
+}
+
+.asesoria-dbd .k4 h3 {
+  color: var(--k4-tx);
+}
+
+/* ---------- Acordeón ---------- */
+.asesoria-dbd .acc-lista {
+  display: grid;
+  gap: 14px;
+}
+
+.asesoria-dbd .acc-item {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.asesoria-dbd .acc-item.k1 {
+  border-color: var(--k1);
+}
+
+.asesoria-dbd .acc-item.k2 {
+  border-color: var(--k2);
+}
+
+.asesoria-dbd .acc-item.k3 {
+  border-color: var(--k3);
+}
+
+.asesoria-dbd .acc-item.k4 {
+  border-color: var(--k4);
+}
+
+.asesoria-dbd .acc-h {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  background: none;
+  border: 0;
+  text-align: left;
+  font-family: var(--hf);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.asesoria-dbd .acc-h .etq {
+  margin-left: auto;
+}
+
+.asesoria-dbd .acc-h .chev {
+  width: 12px;
+  height: 12px;
+  border-right: 2.5px solid currentColor;
+  border-bottom: 2.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform .2s;
+  flex: none;
+  margin-left: 6px;
+}
+
+.asesoria-dbd .acc-h[aria-expanded="true"] .chev {
+  transform: rotate(225deg);
+}
+
+.asesoria-dbd .acc-b {
+  padding: 8px 26px 22px;
+  border-top: 1.5px solid var(--line);
+}
+
+.asesoria-dbd .acc-b[hidden] {
+  display: none;
+}
+
+/* ---------- Pestañas ---------- */
+.asesoria-dbd .tabs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.asesoria-dbd .tabs-bar button {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.asesoria-dbd .tabs-bar button[aria-selected="true"] {
+  background: var(--k1-bg);
+  border-color: var(--k1);
+  color: var(--k1-tx);
+}
+
+.asesoria-dbd .tab-panel {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 24px;
+}
+
+.asesoria-dbd .tab-panel[hidden] {
+  display: none;
+}
+
+/* ---------- Tabla ---------- */
+.asesoria-dbd .tabla-wrap {
+  overflow-x: auto;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+}
+
+.asesoria-dbd table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .98rem;
+}
+
+.asesoria-dbd th {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  text-align: left;
+  font-family: var(--hf);
+  font-weight: 600;
+  padding: 12px 16px;
+}
+
+.asesoria-dbd td {
+  padding: 11px 16px;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.asesoria-dbd tbody tr:nth-child(even) td {
+  background: #FFF8EC;
+}
+
+/* ---------- Imagen con visor ---------- */
+.asesoria-dbd .fig {
+  margin: 0;
+}
+
+.asesoria-dbd .zoom-b {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: #fff;
+  cursor: zoom-in;
+}
+
+.asesoria-dbd .fig figcaption {
+  font-size: .92rem;
+  color: var(--ink2);
+  margin-top: 8px;
+}
+
+.asesoria-dbd .visor {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(43, 27, 23, .88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.asesoria-dbd .visor[hidden] {
+  display: none;
+}
+
+.asesoria-dbd .visor img {
+  max-width: 100%;
+  max-height: calc(100vh - 110px);
+  border-radius: var(--r);
+  background: #fff;
+}
+
+.asesoria-dbd .visor-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  text-align: center;
+  color: #fff;
+  font-size: .95rem;
+  padding: 0 70px;
+}
+
+.asesoria-dbd .visor button {
+  position: absolute;
+  background: var(--crema);
+  color: var(--ink);
+  border: 1.5px solid var(--crema-bd);
+  border-radius: 10px;
+  width: 46px;
+  height: 46px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.asesoria-dbd .visor .v-x {
+  right: 18px;
+  top: 18px;
+}
+
+.asesoria-dbd .visor .v-p {
+  left: 16px;
+  top: 50%;
+}
+
+.asesoria-dbd .visor .v-n {
+  right: 16px;
+  top: 50%;
+}
+
+/* ---------- Avisos ---------- */
+.asesoria-dbd .aviso {
+  border: 1.5px solid;
+  border-radius: var(--r);
+  padding: 16px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.asesoria-dbd .aviso svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+.asesoria-dbd .aviso>div>b:first-child {
+  display: block;
+  font-family: var(--hf);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.asesoria-dbd .aviso p:last-child {
+  margin: 0;
+}
+
+.asesoria-dbd .aviso.tip {
+  background: var(--k3-bg);
+  border-color: var(--k3);
+  color: var(--k3-tx);
+}
+
+.asesoria-dbd .aviso.error {
+  background: var(--bad-bg);
+  border-color: var(--bad);
+  color: var(--bad-tx);
+}
+
+.asesoria-dbd .aviso.obs {
+  background: var(--k1-bg);
+  border-color: var(--k1);
+  color: var(--k1-tx);
+}
+
+/* Destello de una sola vez al llegar a un punto desde «Ver dónde se explicó» */
+.asesoria-dbd .flash {
+  animation: flash 1.6s ease-out 1;
+}
+
+@keyframes flash {
+  0% {
+    box-shadow: 0 0 0 6px var(--hint-bd);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* ---------- Ponte a prueba (cierre evaluativo) ---------- */
+.asesoria-dbd .pq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.asesoria-dbd .pq {
+  text-align: left;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--ink);
+}
+
+.asesoria-dbd .pq .n {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r);
+  display: grid;
+  place-items: center;
+  font-family: var(--hf);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+.asesoria-dbd .pq h3 {
+  font-size: 1.3rem;
+}
+
+.asesoria-dbd .pq .go-t {
+  margin-top: auto;
+  font-weight: 700;
+}
+
+.asesoria-dbd .pq.k1 {
+  border-color: var(--k1);
+  box-shadow: var(--neon) var(--k1);
+}
+
+.asesoria-dbd .pq.k1 .n {
+  background: var(--k1-tx);
+}
+
+.asesoria-dbd .pq.k2 {
+  border-color: var(--k2);
+  box-shadow: var(--neon) var(--k2);
+}
+
+.asesoria-dbd .pq.k2 .n {
+  background: var(--k2-tx);
+}
+
+.asesoria-dbd .pq.k3 {
+  border-color: var(--k3);
+  box-shadow: var(--neon) var(--k3);
+}
+
+.asesoria-dbd .pq.k3 .n {
+  background: var(--k3-tx);
+}
+
+.asesoria-dbd .pq.k4 {
+  border-color: var(--k4);
+  box-shadow: var(--neon) var(--k4);
+}
+
+.asesoria-dbd .pq.k4 .n {
+  background: var(--k4-tx);
+}
+
+.asesoria-dbd .pbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  border: 1.5px solid;
+  border-radius: var(--r);
+  background: var(--card);
+  margin: 0 0 26px;
+}
+
+.asesoria-dbd .pbar.k1 {
+  border-color: var(--k1);
+}
+
+.asesoria-dbd .pbar.k2 {
+  border-color: var(--k2);
+}
+
+.asesoria-dbd .pbar.k3 {
+  border-color: var(--k3);
+}
+
+.asesoria-dbd .pbar.k4 {
+  border-color: var(--k4);
+}
+
+.asesoria-dbd .pbar .volver {
+  background: none;
+  border: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.asesoria-dbd .pbar h3 {
+  font-size: 1.1rem;
+  flex: 1 1 200px;
+}
+
+.asesoria-dbd .dots {
+  display: flex;
+  align-items: center;
+}
+
+.asesoria-dbd .dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: .9rem;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  color: var(--ink2);
+}
+
+.asesoria-dbd .dot+.dot {
+  margin-left: 22px;
+  position: relative;
+}
+
+.asesoria-dbd .dot+.dot::before {
+  content: "";
+  position: absolute;
+  left: -23px;
+  top: 50%;
+  width: 22px;
+  height: 2px;
+  background: var(--line);
+}
+
+.asesoria-dbd .dot.act {
+  border-color: var(--hint-bd);
+  color: var(--hint-tx);
+  background: var(--hint-bg);
+}
+
+.asesoria-dbd .dot.hecho {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+  color: var(--ok-tx);
+}
+
+.asesoria-dbd .dot.ayuda {
+  background: var(--k3-bg);
+  border-color: var(--k3);
+  color: var(--k3-tx);
+}
+
+.asesoria-dbd .prob {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 24px;
+  margin: 0 0 26px;
+}
+
+.asesoria-dbd .prob .etq {
+  background: var(--k1-bg);
+  color: var(--k1-tx);
+  margin-bottom: 8px;
+}
+
+.asesoria-dbd .dec h3 {
+  font-size: 2rem;
+  margin: 0 0 12px;
+}
+
+.asesoria-dbd .dec .intro {
+  color: var(--ink2);
+  font-size: 1.05rem;
+  margin: 0 0 22px;
+}
+
+.asesoria-dbd .alts {
+  display: grid;
+  gap: 14px;
+}
+
+.asesoria-dbd .alt {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  background: #fff;
+  color: var(--ink);
+  border: 2px solid;
+  border-radius: var(--r);
+  padding: 16px 20px;
+  font-size: 1.02rem;
+}
+
+.asesoria-dbd .alt .L {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+}
+
+.asesoria-dbd .alt.A {
+  border-color: var(--oA);
+}
+
+.asesoria-dbd .alt.A .L {
+  background: #C2410C;
+}
+
+.asesoria-dbd .alt.B {
+  border-color: var(--oB);
+}
+
+.asesoria-dbd .alt.B .L {
+  background: #6D28D9;
+}
+
+.asesoria-dbd .alt.C {
+  border-color: var(--oC);
+}
+
+.asesoria-dbd .alt.C .L {
+  background: #0F766E;
+}
+
+.asesoria-dbd .alt.dim {
+  opacity: .45;
+}
+
+.asesoria-dbd .alt.good {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+}
+
+.asesoria-dbd .alt.bad {
+  background: var(--bad-bg);
+  border-color: var(--bad);
+}
+
+.asesoria-dbd .alt:disabled {
+  cursor: default;
+}
+
+.asesoria-dbd .acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin: 22px 0 0;
+}
+
+.asesoria-dbd .pista {
+  background: var(--hint-bg);
+  color: var(--hint-tx);
+  border: 1.5px solid var(--hint-bd);
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: 700;
+}
+
+.asesoria-dbd .fb {
+  margin: 22px 0 0;
+  border: 1.5px solid;
+  border-radius: var(--r);
+  padding: 16px 20px;
+}
+
+.asesoria-dbd .fb:empty {
+  display: none;
+}
+
+.asesoria-dbd .fb.ok {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+  color: var(--ok-tx);
+}
+
+.asesoria-dbd .fb.bad {
+  background: var(--bad-bg);
+  border-color: var(--bad);
+  color: var(--bad-tx);
+}
+
+.asesoria-dbd .fb.hint {
+  background: var(--hint-bg);
+  border-color: var(--hint-bd);
+  color: var(--hint-tx);
+}
+
+.asesoria-dbd .fb b.t {
+  display: block;
+  font-family: var(--hf);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.asesoria-dbd .fb .etq {
+  background: #fff;
+  color: var(--bad-tx);
+  border: 1.5px solid var(--bad);
+  margin: 4px 0 8px;
+}
+
+.asesoria-dbd .fb .ver {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.asesoria-dbd .fb p:last-child {
+  margin-bottom: 0;
+}
+
+.asesoria-dbd .fb-continuar {
+  margin-top: 28px;
+}
+
+.asesoria-dbd .sol {
+  background: var(--card);
+  border: 1.5px solid var(--ok);
+  border-radius: var(--r);
+  padding: 22px 26px;
+  box-shadow: var(--neon) var(--ok);
+  margin: 0 0 22px;
+}
+
+.asesoria-dbd .sol h3 {
+  margin: 0 0 10px;
+  font-size: 1.4rem;
+}
+
+.asesoria-dbd .reg {
+  margin: 48px 0 0;
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 20px 24px;
+}
+
+.asesoria-dbd .reg h3 {
+  font-size: 1.2rem;
+  margin: 0 0 6px;
+}
+
+.asesoria-dbd .reg ul {
+  margin: 8px 0 14px;
+  padding-left: 20px;
+}
+
+.asesoria-dbd .reg .ver {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.asesoria-dbd .reg .borrar {
+  background: none;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 16px;
+  color: var(--ink2);
+}
+
+/* Solo para impresión: el solucionario nace oculto y @media print lo muestra */
+.asesoria-dbd .solucionario {
+  display: none;
+}
+
+/* Flecha flotante para volver arriba (aparece pasando los 420 px) */
+.asesoria-dbd .flecha {
+  position: fixed;
+  right: 18px;
+  bottom: 22px;
+  z-index: 30;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r);
+  background: var(--crema);
+  border: 1.5px solid var(--crema-bd);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--sombra);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+
+.asesoria-dbd .flecha.ver {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .asesoria-dbd .arte {
+    display: none;
+  }
+
+  .asesoria-dbd .tarjetas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .asesoria-dbd .cab-in {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 10px 16px 0;
+    min-height: 0;
+  }
+
+  .asesoria-dbd .marca {
+    flex: 1 1 0;
+  }
+
+  .asesoria-dbd .menu {
+    order: 3;
+    flex: 1 1 100%;
+    padding-bottom: 8px;
+  }
+
+  .asesoria-dbd .menu-flecha {
+    display: none !important;
+  }
+
+  .asesoria-dbd .menu button {
+    padding: 8px 14px;
+    font-size: 1.02rem;
+  }
+
+  .asesoria-dbd .imp-btn span {
+    display: none;
+  }
+
+  .asesoria-dbd .imp-btn {
+    padding: 10px 14px;
+  }
+
+  .asesoria-dbd .wrap {
+    padding: 20px 16px 56px;
+  }
+
+  .asesoria-dbd .portada {
+    padding: 32px 24px;
+  }
+
+  .asesoria-dbd .tarjetas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .asesoria-dbd .imp-panel {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    top: 76px;
+    width: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .asesoria-dbd .logo {
+    width: 48px;
+    height: 48px;
+    font-size: 1.9rem;
+  }
+
+  .asesoria-dbd .marca-t b {
+    font-size: 1.05rem;
+  }
+
+  .asesoria-dbd .sec-t {
+    font-size: 1.7rem;
+  }
+
+  .asesoria-dbd .dec h3 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-height: 520px) and (max-width: 900px) {
+  .asesoria-dbd .cab-in {
+    flex-wrap: nowrap;
+    padding: 6px 14px;
+    gap: 10px;
+  }
+
+  .asesoria-dbd .marca-t span {
+    display: none;
+  }
+
+  .asesoria-dbd .menu {
+    order: 0;
+    flex: 1 1 auto;
+    padding-bottom: 6px;
+  }
+
+  .asesoria-dbd .logo {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .asesoria-dbd *,
+  .asesoria-dbd *::before,
+  .asesoria-dbd *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Impresión ---------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  .asesoria-dbd {
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 11pt;
+  }
+
+  .asesoria-dbd .cab,
+  .asesoria-dbd .flecha,
+  .asesoria-dbd .visor,
+  .asesoria-dbd .no-print,
+  .asesoria-dbd .portada .acc,
+  .asesoria-dbd .card .mas,
+  .asesoria-dbd .reg {
+    display: none !important;
+  }
+
+  .asesoria-dbd .wrap {
+    padding: 0;
+    max-width: none;
+  }
+
+  .asesoria-dbd .pagina {
+    display: block !important;
+    margin: 0 0 18pt;
+  }
+
+  .asesoria-dbd .pagina[data-tipo="cierre"] {
+    display: none !important;
+  }
+
+  .asesoria-dbd .acc-b[hidden],
+  .asesoria-dbd .tab-panel[hidden] {
+    display: block !important;
+  }
+
+  .asesoria-dbd .acc-h .chev {
+    display: none;
+  }
+
+  .asesoria-dbd .tab-panel::before {
+    content: attr(data-t);
+    display: block;
+    font-family: var(--hf);
+    font-weight: 600;
+    margin-bottom: 6pt;
+  }
+
+  .asesoria-dbd .tabs-bar {
+    display: none;
+  }
+
+  .asesoria-dbd .tab-panel {
+    margin-bottom: 8pt;
+  }
+
+  .asesoria-dbd .solucionario {
+    display: block;
+    page-break-before: always;
+  }
+
+  .asesoria-dbd .solucionario h2 {
+    font-size: 1.5rem;
+    margin: 0 0 10pt;
+  }
+
+  .asesoria-dbd .acc-item,
+  .asesoria-dbd .card,
+  .asesoria-dbd .fig,
+  .asesoria-dbd .aviso,
+  .asesoria-dbd .sol,
+  .asesoria-dbd tr,
+  .asesoria-dbd .sol-q,
+  .asesoria-dbd .sol-b {
+    break-inside: avoid;
+  }
+
+  .asesoria-dbd h1,
+  .asesoria-dbd h2,
+  .asesoria-dbd h3 {
+    break-after: avoid;
+  }
+
+  .asesoria-dbd .portada {
+    box-shadow: none;
+    padding: 20pt;
+  }
+
+  .asesoria-dbd .card,
+  .asesoria-dbd .acc-item {
+    box-shadow: none;
+  }
+
+  .asesoria-dbd.ahorro .portada {
+    background: #fff !important;
+    color: var(--ink);
+    border: 1.5px solid var(--k1);
+  }
+
+  .asesoria-dbd.ahorro .portada h1 span {
+    color: var(--k1-tx);
+  }
+
+  .asesoria-dbd.ahorro .chips li {
+    background: #fff;
+    border-color: var(--k1);
+    color: var(--ink);
+  }
+
+  .asesoria-dbd.ahorro .portada .lema {
+    color: var(--ink);
+  }
+
+  .asesoria-dbd.ahorro th,
+  .asesoria-dbd.ahorro .aviso,
+  .asesoria-dbd.ahorro .etq,
+  .asesoria-dbd.ahorro tbody tr:nth-child(even) td {
+    background: #fff !important;
+    border-color: currentColor;
+  }
+}
+
+/* =====================================================================
+   VARIANTES DE CONTENEDOR (catálogo de la base) · cuándo usar cada una: GUIA_BASE.md, sección 4c
+   ===================================================================== */
+.asesoria-dbd .vc1 {
+  --vc: var(--n1);
+  --vb: var(--n1-bg);
+  --vt: var(--n1-tx);
+}
+
+.asesoria-dbd .vc2 {
+  --vc: var(--n2);
+  --vb: var(--n2-bg);
+  --vt: var(--n2-tx);
+}
+
+.asesoria-dbd .vc3 {
+  --vc: var(--n3);
+  --vb: var(--n3-bg);
+  --vt: var(--n3-tx);
+}
+
+.asesoria-dbd .vc4 {
+  --vc: var(--n4);
+  --vb: var(--n4-bg);
+  --vt: var(--n4-tx);
+}
+
+.asesoria-dbd .vc5 {
+  --vc: var(--n5);
+  --vb: var(--n5-bg);
+  --vt: var(--n5-tx);
+}
+
+.asesoria-dbd .vc6 {
+  --vc: var(--n6);
+  --vb: var(--n6-bg);
+  --vt: var(--n6-tx);
+}
+
+.asesoria-dbd .vc7 {
+  --vc: var(--n7);
+  --vb: var(--n7-bg);
+  --vt: var(--n7-tx);
+}
+
+.asesoria-dbd .vc8 {
+  --vc: var(--n8);
+  --vb: var(--n8-bg);
+  --vt: var(--n8-tx);
+}
+
+.asesoria-dbd .vc-ciclo .tarjetas> :nth-child(8n+1),
+.asesoria-dbd .vc-ciclo .acc-lista> :nth-child(8n+1),
+.asesoria-dbd .vc-ciclo:not(.bloque)> :nth-child(8n+1) {
+  --vc: var(--n6);
+  --vb: var(--n6-bg);
+  --vt: var(--n6-tx);
+}
+
+.asesoria-dbd .vc-ciclo .tarjetas> :nth-child(8n+2),
+.asesoria-dbd .vc-ciclo .acc-lista> :nth-child(8n+2),
+.asesoria-dbd .vc-ciclo:not(.bloque)> :nth-child(8n+2) {
+  --vc: var(--n2);
+  --vb: var(--n2-bg);
+  --vt: var(--n2-tx);
+}
+
+.asesoria-dbd .vc-ciclo .tarjetas> :nth-child(8n+3),
+.asesoria-dbd .vc-ciclo .acc-lista> :nth-child(8n+3),
+.asesoria-dbd .vc-ciclo:not(.bloque)> :nth-child(8n+3) {
+  --vc: var(--n3);
+  --vb: var(--n3-bg);
+  --vt: var(--n3-tx);
+}
+
+.asesoria-dbd .vc-ciclo .tarjetas> :nth-child(8n+4),
+.asesoria-dbd .vc-ciclo .acc-lista> :nth-child(8n+4),
+.asesoria-dbd .vc-ciclo:not(.bloque)> :nth-child(8n+4) {
+  --vc: var(--n4);
+  --vb: var(--n4-bg);
+  --vt: var(--n4-tx);
+}
+
+.asesoria-dbd .vc-ciclo .tarjetas> :nth-child(8n+5),
+.asesoria-dbd .vc-ciclo .acc-lista> :nth-child(8n+5),
+.asesoria-dbd .vc-ciclo:not(.bloque)> :nth-child(8n+5) {
+  --vc: var(--n5);
+  --vb: var(--n5-bg);
+  --vt: var(--n5-tx);
+}
+
+.asesoria-dbd .vc-ciclo .tarjetas> :nth-child(8n+6),
+.asesoria-dbd .vc-ciclo .acc-lista> :nth-child(8n+6),
+.asesoria-dbd .vc-ciclo:not(.bloque)> :nth-child(8n+6) {
+  --vc: var(--n1);
+  --vb: var(--n1-bg);
+  --vt: var(--n1-tx);
+}
+
+.asesoria-dbd .vc-ciclo .tarjetas> :nth-child(8n+7),
+.asesoria-dbd .vc-ciclo .acc-lista> :nth-child(8n+7),
+.asesoria-dbd .vc-ciclo:not(.bloque)> :nth-child(8n+7) {
+  --vc: var(--n7);
+  --vb: var(--n7-bg);
+  --vt: var(--n7-tx);
+}
+
+.asesoria-dbd .vc-ciclo .tarjetas> :nth-child(8n+8),
+.asesoria-dbd .vc-ciclo .acc-lista> :nth-child(8n+8),
+.asesoria-dbd .vc-ciclo:not(.bloque)> :nth-child(8n+8) {
+  --vc: var(--n8);
+  --vb: var(--n8-bg);
+  --vt: var(--n8-tx);
+}
+
+.asesoria-dbd .bv-contorno :is(.card, .acc-item) {
+  background: #fff;
+  border: 2px solid var(--vc, var(--n1));
+  box-shadow: 0 0 14px -4px var(--vc, var(--n1));
+}
+
+.asesoria-dbd .bv-filo :is(.card, .acc-item) {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--vc, var(--n1));
+  box-shadow: none;
+}
+
+.asesoria-dbd .bv-relleno .card {
+  background: var(--vb, var(--n1-bg));
+  border: 1.5px solid transparent;
+  box-shadow: none;
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-dbd .bv-punteado :is(.card, .acc-item) {
+  background: #fff;
+  border: 2px dashed var(--vc, var(--n1));
+  box-shadow: none;
+}
+
+.asesoria-dbd .bv-neutro :is(.card, .acc-item) {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  box-shadow: var(--sombra);
+}
+
+.asesoria-dbd :is(.bv-contorno, .bv-filo, .bv-relleno, .bv-punteado) .card h3 {
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-dbd :is(.bv-contorno, .bv-filo, .bv-punteado) .card .etq {
+  background: var(--vb, var(--n1-bg));
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-dbd .bv-relleno .card .etq {
+  background: #fff;
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-dbd :is(.bv-contorno, .bv-filo, .bv-punteado) .acc-h .chev {
+  color: var(--vc, var(--n1));
+}
+
+.asesoria-dbd .v-contorno {
+  background: #fff;
+  border: 2px solid var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 14px 18px;
+  box-shadow: 0 0 14px -4px var(--vc, var(--n1));
+  color: var(--ink);
+}
+
+.asesoria-dbd .v-filo {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 14px 18px;
+  color: var(--ink);
+}
+
+.asesoria-dbd .v-relleno {
+  background: var(--vb, var(--n1-bg));
+  border: 1.5px solid transparent;
+  border-radius: var(--r);
+  padding: 12px 16px;
+  color: var(--vt, var(--n1-tx));
+}
+
+.asesoria-dbd .v-punteado {
+  background: #fff;
+  border: 2px dashed var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 14px 18px;
+  color: var(--ink);
+}
+
+.asesoria-dbd .v-degradado {
+  background: linear-gradient(20deg, var(--vb, var(--n1-bg)) 0%, #fff 100%);
+  border: 0;
+  border-radius: var(--r);
+  padding: 18px 20px;
+  color: var(--ink);
+}
+
+.asesoria-dbd .v-neutro {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  padding: 14px 18px;
+  box-shadow: var(--sombra);
+  color: var(--ink);
+}
+
+.asesoria-dbd .v-enfasis {
+  background: #fff;
+  border: 3px solid var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 16px 20px;
+  box-shadow: 0 0 0 5px var(--vb, var(--n1-bg));
+  color: var(--ink);
+}
+
+.asesoria-dbd .v-ficha {
+  position: relative;
+  background: #fff;
+  border: 2px solid var(--vc, var(--n1));
+  border-radius: var(--r);
+  padding: 34px 20px 18px;
+  box-shadow: 0 14px 28px -16px rgba(43, 27, 23, .45), 0 0 16px -4px var(--vc, var(--n1));
+  color: var(--ink);
+}
+
+.asesoria-dbd .v-ficha>.v-pestana {
+  position: absolute;
+  top: -17px;
+  left: 18px;
+  background: var(--vb, var(--n1-bg));
+  color: var(--vt, var(--n1-tx));
+  border: 2px solid var(--vc, var(--n1));
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  padding: 4px 14px 5px;
+  font-weight: 700;
+  font-size: .9rem;
+}
+
+.asesoria-dbd .v-etq {
+  display: inline-block;
+  border: 1.5px solid var(--vc, var(--n1));
+  background: var(--vb, var(--n1-bg));
+  color: var(--vt, var(--n1-tx));
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-weight: 700;
+  font-size: .88rem;
+}
+
+.asesoria-dbd :is(.v-contorno, .v-ficha, .v-enfasis, .v-filo) h3 {
+  color: var(--vt, var(--n1-tx));
+}
+
+@media print {
+
+  .asesoria-dbd.ahorro .bv-relleno .card,
+  .asesoria-dbd.ahorro .v-relleno,
+  .asesoria-dbd.ahorro .v-degradado,
+  .asesoria-dbd.ahorro .v-etq,
+  .asesoria-dbd.ahorro .v-ficha>.v-pestana {
+    background: #fff !important;
+  }
+
+  .asesoria-dbd .v-contorno,
+  .asesoria-dbd .v-ficha,
+  .asesoria-dbd .v-enfasis,
+  .asesoria-dbd .v-neutro {
+    box-shadow: none;
+  }
+
+  .asesoria-dbd :is(.v-contorno, .v-filo, .v-ficha, .v-punteado, .v-enfasis, .v-neutro) {
+    break-inside: avoid;
+  }
+}
+
+/* =====================================================================
+   PROPIO DE ESTA ASESORÍA (no va a la plantilla): fichas de bloque, íconos, calculadora, sello y hoja de sustentación
+   ===================================================================== */
+.asesoria-dbd .f-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 6px 16px;
+  margin: 14px 0;
+  align-items: start;
+}
+
+.asesoria-dbd .f-row ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.asesoria-dbd .f-row p:last-child {
+  margin-bottom: 0;
+}
+
+.asesoria-dbd .acc-b>.f-row:first-child {
+  margin-top: 10px;
+}
+
+.asesoria-dbd .sello {
+  display: inline-block;
+  border: 2px solid var(--k4);
+  color: var(--k4-tx);
+  background: var(--k4-bg);
+  border-radius: 6px;
+  padding: 2px 10px;
+  font-family: var(--mf);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  margin-bottom: 10px;
+}
+
+.asesoria-dbd .ic-pantalla .acc-h::before,
+.asesoria-dbd .ic-tabla .acc-h::before,
+.asesoria-dbd .ic-ruta .acc-h::before,
+.asesoria-dbd .ic-reloj .acc-h::before,
+.asesoria-dbd .ic-barras .acc-h::before,
+.asesoria-dbd .ic-lupa .acc-h::before,
+.asesoria-dbd .ic-balanza .acc-h::before {
+  content: "";
+  flex: none;
+  width: 24px;
+  height: 24px;
+  background: var(--vc, var(--ink));
+  -webkit-mask: var(--ic) center / contain no-repeat;
+  mask: var(--ic) center / contain no-repeat;
+}
+
+.asesoria-dbd .ic-pantalla {
+  --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='13' rx='2'/%3E%3Cpath d='M8 21h8M12 17v4'/%3E%3C/svg%3E");
+}
+
+.asesoria-dbd .ic-tabla {
+  --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M3 15h18M9 4v16'/%3E%3C/svg%3E");
+}
+
+.asesoria-dbd .ic-ruta {
+  --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='5' cy='12' r='2'/%3E%3Ccircle cx='19' cy='12' r='2'/%3E%3Cpath d='M7 12h10M14 9l3 3-3 3'/%3E%3C/svg%3E");
+}
+
+.asesoria-dbd .ic-reloj {
+  --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E");
+}
+
+.asesoria-dbd .ic-barras {
+  --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 20V11M11 20V4M17 20v-7M3 20h18'/%3E%3C/svg%3E");
+}
+
+.asesoria-dbd .ic-lupa {
+  --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-5-5'/%3E%3C/svg%3E");
+}
+
+.asesoria-dbd .ic-balanza {
+  --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v18M6 21h12M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z'/%3E%3C/svg%3E");
+}
+
+/* Calculadora de costo de acceso */
+.asesoria-dbd .calc {
+  display: grid;
+  gap: 18px;
+}
+
+.asesoria-dbd .calc-in {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+
+.asesoria-dbd .calc label {
+  display: grid;
+  gap: 4px;
+  font-weight: 600;
+  font-size: .92rem;
+}
+
+.asesoria-dbd .calc label small {
+  font-weight: 400;
+  color: var(--ink2);
+}
+
+.asesoria-dbd .calc input {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  width: 100%;
+}
+
+.asesoria-dbd .calc-res {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.asesoria-dbd .calc-box {
+  border-radius: var(--r);
+  padding: 14px 18px;
+}
+
+.asesoria-dbd .calc-box.antes {
+  background: var(--k4-bg);
+  color: var(--k4-tx);
+}
+
+.asesoria-dbd .calc-box.desp {
+  background: var(--k2-bg);
+  color: var(--k2-tx);
+}
+
+.asesoria-dbd .calc-box b {
+  display: block;
+  font-family: var(--hf);
+  font-size: 1.9rem;
+  line-height: 1.15;
+}
+
+.asesoria-dbd .calc-barra {
+  height: 14px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1.5px solid currentColor;
+  overflow: hidden;
+  margin: 6px 0 4px;
+}
+
+.asesoria-dbd .calc-barra i {
+  display: block;
+  height: 100%;
+  background: currentColor;
+}
+
+.asesoria-dbd .calc-nota {
+  font-size: .92rem;
+  color: var(--ink2);
+  margin: 0;
+}
+
+.asesoria-dbd .calc-linea {
+  background: var(--k3-bg);
+  color: var(--k3-tx);
+  border-radius: var(--r);
+  padding: 12px 18px;
+}
+
+/* Hoja de sustentación: una sola página al imprimir */
+.asesoria-dbd .hoja table {
+  font-size: .92rem;
+}
+
+.asesoria-dbd .hoja th,
+.asesoria-dbd .hoja td {
+  padding: 8px 12px;
+}
+
+@media print {
+  .asesoria-dbd .hoja {
+    break-before: page;
+    break-after: page;
+  }
+
+  .asesoria-dbd .hoja-aviso {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+
+  .asesoria-dbd .calc-in,
+  .asesoria-dbd .calc-res {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .asesoria-dbd .f-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Imágenes y tablas de ejemplo dentro de los acordeones ---------- */
+.asesoria-dbd .fig img {
+  display: block;
+  max-width: 100%;
+  max-height: 520px;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  background: #fff;
+}
+
+.asesoria-dbd .figs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.asesoria-dbd .ej {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1.5px dashed var(--line);
+}
+
+.asesoria-dbd .ej h4 {
+  margin: 0 0 10px;
+  font-family: var(--hf);
+  font-size: 1rem;
+  color: var(--ink2);
+}
+
+.asesoria-dbd .tb2 {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.asesoria-dbd .tb2 caption {
+  caption-side: top;
+  text-align: left;
+  font-family: var(--hf);
+  font-weight: 600;
+  padding: 10px 16px;
+  background: var(--k2-bg);
+  color: var(--k2-tx);
+}
+
+.asesoria-dbd .tb2 th {
+  font-size: .9rem;
+  padding: 8px 12px;
+}
+
+.asesoria-dbd .tb2 td {
+  padding: 7px 12px;
+  font-size: .92rem;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .asesoria-dbd .tb2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .asesoria-dbd .fig img {
+    max-height: 340px;
+  }
+
+  .asesoria-dbd .tb2 {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.asesoria-dbd .tab-panel h4 {
+  margin: 20px 0 8px;
+  font-family: var(--hf);
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+
+.asesoria-dbd .tab-panel .ej-sis {
+  margin: 0 0 12px;
+}
+
+.asesoria-dbd .tab-panel .tb2:last-child,
+.asesoria-dbd .tab-panel .figs:last-child {
+  margin-bottom: 0;
+}
+
+/* Gráficos reconstruidos (SVG propio) y tablas de hostigamiento */
+.svfig {
+  margin: 14px 0;
+  padding: 12px;
+  border: 1.5px solid var(--borde, #d8dbe8);
+  border-radius: 14px;
+  background: #fff;
+  overflow-x: auto
+}
+
+.svfig .sv {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  font-size: 12px
+}
+
+.svfig figcaption {
+  margin: 8px 2px 0;
+  font-size: .85rem;
+  opacity: .8;
+  text-align: center
+}
+
+.dg {
+  margin: 14px 0;
+  padding: 14px;
+  border: 1.5px solid var(--borde, #d8dbe8);
+  border-radius: 14px;
+  background: var(--fondo-t, #fff);
+  overflow-x: auto
+}
+
+.dg-cap {
+  font-weight: 800;
+  font-size: .95rem;
+  margin: 0 0 10px;
+  color: var(--k1, #4b3fd1)
+}
+
+.dg-nota {
+  margin: 12px 0 0;
+  font-size: .88rem;
+  padding: 8px 12px;
+  border-left: 4px solid var(--k1, #4b3fd1);
+  background: rgba(120, 120, 200, .08);
+  border-radius: 6px
+}
+
+.dg-at {
+  margin: 10px 0
+}
+
+.mh table {
+  font-size: .8rem;
+  white-space: nowrap
+}
+
+.mh caption {
+  font-weight: 800;
+  text-align: left;
+  padding: 6px 10px;
+  background: #FFF3A8;
+  border: 1px solid #C9A800
+}
+
+.mh thead th {
+  background: #FFF1CC;
+  position: sticky;
+  top: 0
+}
+
+.mh tbody th {
+  text-align: left
+}
+
+.mh tbody:nth-of-type(5n+1) {
+  background: #EAF3FF
+}
+
+.mh tbody:nth-of-type(5n+2) {
+  background: #FFF0F6
+}
+
+.mh tbody:nth-of-type(5n+3) {
+  background: #EAFBF0
+}
+
+.mh tbody:nth-of-type(5n+4) {
+  background: #F4ECFF
+}
+
+.mh tbody:nth-of-type(5n+5) {
+  background: #FFF6E0
+}
+
+.mh tbody {
+  border-top: 3px solid #fff
+}
+
+.mh tbody th,
+.mh tbody td {
+  background: transparent !important
+}
+
+.mh-e {
+  display: inline-block;
+  padding: 1px 9px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: .74rem
+}
+
+.mh-ok {
+  background: #C9F0D6;
+  color: #145A32
+}
+
+.mh-no {
+  background: #FAD0D0;
+  color: #7B1D1D
+}
+
+@media print {
+
+  .svfig,
+  .dg {
+    overflow: visible;
+    break-inside: avoid
+  }
+
+  .svfig .sv {
+    min-width: 0 !important
+  }
+
+  .svfig,
+  .mh {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact
+  }
+}
