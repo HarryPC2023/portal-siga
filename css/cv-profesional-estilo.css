@@ -304,3 +304,13 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dpc-color { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; background: var(--c, #4C2A85); box-shadow: 0 0 0 1.5px #b9bfcc; cursor: pointer; padding: 0; }
 .dpc .dpc-color[aria-pressed="true"] { box-shadow: 0 0 0 3px #1f2430; }
 .dpc .dpc-foto-acc { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ───── hoja de CV que se arma (a la derecha de la cabecera; se llena con el semáforo) ───── */
+.dpc .dp-hero-chico { position: relative; }
+.dpc-hoja { display: none; }
+.dpc-hoja svg { display: block; width: 100%; height: auto; }
+.dpc-hoja svg text { font-family: 'Montserrat Alternates', 'Figtree', sans-serif; }
+@media (min-width: 900px) {
+    .dpc .dp-hero-chico { padding-right: 250px; min-height: 270px; }
+    .dpc-hoja { display: block; position: absolute; right: 10px; top: -8px; width: 210px; }
+}
