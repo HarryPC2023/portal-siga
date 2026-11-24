@@ -1,0 +1,141 @@
+/* css/proyectos-practicos.css — Portada de «Proyectos Prácticos» (proyectos-practicos.html).
+   Todo lleva el prefijo pp- para no chocar con nada. El fondo es el degradado de SIGA (lo pone dashboard.css en el body).
+   Cuatro niveles de letra: 1) Monoton (título), 2) Racing Sans One (subtítulos), 3) Montserrat Alternates (etiquetas y botones), 4) Poppins (texto).
+   Ningún texto va en gris: tinta #14213D y cuerpo #1B2745. */
+
+.pp, .pp-ficha { --tinta: #14213D; --cuerpo: #1B2745; --azul: #2F63D6; --morado: #6600CC; --rosa: #C21F5B; --verde: #0B7A5A; --ambar: #9A5B00;
+      font-family: 'Poppins', sans-serif; color: var(--cuerpo); }
+.pp { max-width: 1200px; margin: 0 auto; padding: 38px 28px 90px; box-sizing: border-box; }
+.pp[hidden] { display: none; }
+.pp *, .pp *::before, .pp *::after, .pp-ficha *, .pp-ficha *::before, .pp-ficha *::after { box-sizing: border-box; }
+.pp a { text-decoration: none; }
+
+.pp-volver { display: inline-block; font: 700 14px 'Montserrat Alternates', sans-serif; color: var(--azul); margin-bottom: 6px; }
+.pp-volver:hover { text-decoration: underline; }
+
+/* ───── hero ───── */
+.pp-hero { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; padding: 18px 0 20px; }
+.pp-hero-texto { flex: 1 1 440px; min-width: 0; }
+.pp-hero-img { flex: 1 1 520px; min-width: 0; }
+.pp-hero-img img { width: 100%; height: auto; display: block; mix-blend-mode: multiply; }
+.pp-pildora { display: inline-block; font: 400 16px 'Racing Sans One', sans-serif; letter-spacing: .06em; color: #4A3B00; padding: 8px 24px; border-radius: 999px;
+              border: 1px solid rgba(0, 0, 0, .1); background: linear-gradient(120deg, #FDFCF7, #F5EFDE 50%, #FDFCF7); box-shadow: 0 6px 14px rgba(0, 0, 0, .07); }
+.pp-h1 { font: 400 clamp(26px, 3.4vw, 40px)/1.2 'Monoton', sans-serif; text-transform: uppercase; margin: 18px 0 14px; color: var(--tinta); overflow-wrap: anywhere; }
+.pp-h1 span { background: linear-gradient(90deg, #2F63D6, #6600CC); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.pp-sub { font: 700 24px/1.3 'Montserrat Alternates', sans-serif; margin: 0 0 12px; color: var(--tinta); }
+.pp-intro { font-size: 17px; line-height: 1.65; margin: 0 0 22px; max-width: 540px; }
+.pp-botones { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.pp-btn { display: inline-flex; align-items: center; gap: 8px; font: 700 16px 'Montserrat Alternates', sans-serif; padding: 14px 24px; border-radius: 12px;
+          border: 2px solid transparent; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.pp-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(20, 33, 61, .16); }
+.pp-btn:focus-visible, .pp-chip-btn:focus-visible, .pp-area:focus-visible, .pp-idea:focus-visible, .pp-pastilla:focus-visible, .pp-cerrar:focus-visible, .pp-guardar:focus-visible
+    { outline: 3px solid #FFB000; outline-offset: 3px; }
+.pp-btn-azul { background: var(--azul); border-color: var(--azul); color: #fff; }
+.pp-btn-blanco { background: #fff; border-color: var(--morado); color: var(--tinta); }
+.pp-btn-ambar { background: #fff; border-color: var(--ambar); color: var(--tinta); font-size: 16px; padding: 12px 22px; }
+.pp-btn-rosa { background: var(--rosa); border-color: var(--rosa); color: #fff; font-size: 17px; padding: 15px 28px; }
+
+/* ───── tres pasos ───── */
+.pp-pasos { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; }
+.pp-paso { flex: 1 1 260px; border: 2px solid var(--c); background: var(--f); border-radius: 14px; padding: 16px 18px; display: flex; gap: 14px; align-items: center; }
+.pp-paso-ico { width: 48px; height: 48px; flex: none; border-radius: 50%; background: #fff; border: 2px solid var(--c); display: flex; align-items: center; justify-content: center; color: var(--c); }
+.pp-paso b { display: block; font: 400 22px 'Racing Sans One', sans-serif; color: var(--tinta); }
+.pp-paso span:not(.pp-paso-ico) { display: block; margin-top: 2px; font-size: 14px; }
+
+/* ───── títulos de sección ───── */
+.pp-h2 { font: 400 36px/1.15 'Racing Sans One', sans-serif; margin: 46px 0 6px; color: var(--tinta); }
+.pp-h2 span { color: var(--morado); }
+.pp-h2-solo { margin: 0; }
+.pp-lead { margin: 0 0 16px; font-size: 16px; }
+
+/* ───── áreas ───── */
+.pp-areas { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+.pp-area { font: inherit; text-align: left; cursor: pointer; border: 2px solid var(--c); background: var(--f); border-radius: 16px; padding: 16px 18px;
+           display: flex; gap: 16px; align-items: center; color: inherit; transition: transform .15s ease, box-shadow .15s ease; }
+.pp-area:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(20, 33, 61, .14); }
+.pp-area[aria-pressed="true"] { box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 28%, transparent), 0 8px 18px rgba(20, 33, 61, .14); border-width: 3px; padding: 15px 17px; }
+.pp-area-ico { width: 78px; height: 78px; flex: none; border-radius: 50%; background: #fff; border: 2px solid var(--c); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.pp-area-ico img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pp-area-nombre { display: block; margin: 0; font: 700 18px/1.2 'Montserrat Alternates', sans-serif; color: var(--tinta); }
+.pp-area-frase { display: block; margin: 5px 0 0; font-size: 14px; line-height: 1.45; }
+.pp-area-n { display: inline-block; margin-top: 6px; font: 700 12px 'Montserrat Alternates', sans-serif; color: var(--c); }
+
+/* ───── buscador y pastillas ───── */
+.pp-filtros { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.pp-buscar { flex: 1 1 420px; display: flex; align-items: center; gap: 10px; background: #fff; border: 2px solid var(--azul); border-radius: 12px; padding: 12px 16px; }
+.pp-buscar input { flex: 1; border: 0; outline: 0; background: transparent; font: 400 16px 'Poppins', sans-serif; color: var(--cuerpo); min-width: 0; }
+.pp-buscar input::placeholder { color: #3B4766; opacity: 1; }
+.pp-buscar:focus-within { box-shadow: 0 0 0 4px rgba(47, 99, 214, .2); }
+.pp-pastillas { display: flex; flex-wrap: wrap; gap: 10px; }
+.pp-pastilla { font: 700 14px 'Montserrat Alternates', sans-serif; border: 2px solid var(--c); background: #fff; border-radius: 999px; padding: 8px 16px; color: var(--tinta); cursor: pointer; }
+.pp-pastilla[aria-pressed="true"] { background: var(--c); color: #fff; }
+
+/* ───── cabecera de ideas ───── */
+.pp-cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 10px; margin: 44px 0 14px; scroll-margin-top: 90px; }
+.pp-cab-acciones { display: flex; flex-wrap: wrap; gap: 10px; }
+.pp-chip-btn { display: inline-flex; align-items: center; gap: 8px; font: 700 14px 'Montserrat Alternates', sans-serif; border: 2px solid var(--morado); background: #fff; color: var(--tinta);
+               border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+.pp-chip-btn[aria-pressed="true"] { background: var(--morado); color: #fff; }
+.pp-chip-btn[hidden] { display: none; }
+
+/* ───── tarjetas de ideas ───── */
+.pp-ideas { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.pp-idea { position: relative; border: 2px solid var(--c); background: #fff; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;
+           transition: transform .15s ease, box-shadow .15s ease; }
+.pp-idea:hover { transform: translateY(-3px); box-shadow: 0 12px 22px rgba(20, 33, 61, .16); }
+.pp-idea-top { background: var(--f); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.pp-etq { font: 700 13px 'Montserrat Alternates', sans-serif; border: 2px solid var(--c); background: #fff; border-radius: 999px; padding: 4px 12px; color: var(--tinta); }
+.pp-guardar { width: 34px; height: 34px; flex: none; border-radius: 10px; border: 2px solid var(--c); background: #fff; color: var(--c); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+.pp-guardar[aria-pressed="true"] { background: var(--c); color: #fff; }
+.pp-guardar[aria-pressed="true"] svg { fill: currentColor; }
+.pp-idea-cuerpo { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.pp-idea-t { margin: 0; font: 400 24px/1.2 'Racing Sans One', sans-serif; color: var(--tinta); }
+.pp-idea-d { margin: 0; font-size: 15px; line-height: 1.55; flex: 1; }
+.pp-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.pp-tag { font: 500 13px 'Montserrat Alternates', sans-serif; border: 2px solid var(--c); border-radius: 999px; padding: 3px 12px; color: var(--tinta); }
+.pp-tag-s { font: 400 13px 'Poppins', sans-serif; background: var(--f); border: 0; border-radius: 999px; padding: 3px 12px; color: var(--tinta); }
+.pp-ver { align-self: flex-start; font: 700 14px 'Montserrat Alternates', sans-serif; color: var(--c); background: none; border: 0; padding: 0; cursor: pointer; }
+.pp-vacio { margin: 10px 0; font-size: 16px; font-weight: 500; color: var(--tinta); background: #fff; border: 2px dashed var(--azul); border-radius: 12px; padding: 18px 20px; }
+.pp-vacio[hidden] { display: none; }
+
+/* ───── sorpréndeme y comunidad ───── */
+.pp-sorprende { margin-top: 20px; border: 2px solid var(--ambar); background: #FFF1CC; border-radius: 14px; padding: 16px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+.pp-sorprende-t { margin: 0; font: 400 24px 'Racing Sans One', sans-serif; color: var(--tinta); }
+.pp-sorprende-s { margin: 4px 0 0; font-size: 15px; }
+.pp-comunidad { margin-top: 34px; border: 2px solid var(--rosa); background: #FFE3EC; border-radius: 18px; padding: 26px 28px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; scroll-margin-top: 90px; }
+.pp-comunidad-txt { flex: 1 1 440px; }
+.pp-comunidad-txt p { margin: 0; font-size: 15px; line-height: 1.6; }
+.pp-comunidad-t { font: 400 32px/1.15 'Racing Sans One', sans-serif !important; color: var(--tinta); margin-bottom: 8px !important; }
+.pp-comunidad-f { font: 700 17px 'Montserrat Alternates', sans-serif !important; color: var(--tinta); margin-bottom: 6px !important; }
+.pp-nota { margin-top: 8px !important; font-weight: 600; color: var(--tinta); }
+.pp-cierre { text-align: center; margin: 22px 0 0; font-size: 15px; font-weight: 500; color: var(--tinta); }
+
+/* ───── ficha de una idea ───── */
+.pp-ficha { --c: var(--azul); --f: #E4EEFF; border: 3px solid var(--c); border-radius: 18px; padding: 0; width: min(760px, calc(100vw - 28px)); max-height: calc(100vh - 40px); overflow: hidden;
+            background: #fff; color: var(--cuerpo); font-family: 'Poppins', sans-serif; }
+.pp-ficha[open] { display: flex; flex-direction: column; }
+.pp-ficha::backdrop { background: rgba(20, 33, 61, .55); }
+.pp-ficha-cab { background: var(--f); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 2px solid var(--c); flex: none; }
+.pp-cerrar { width: 36px; height: 36px; border-radius: 10px; border: 2px solid var(--c); background: #fff; color: var(--tinta); font: 700 16px 'Montserrat Alternates', sans-serif; cursor: pointer; }
+.pp-ficha-cuerpo { padding: 20px 24px 26px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+.pp-ficha h3 { margin: 0; font: 400 32px/1.15 'Racing Sans One', sans-serif; color: var(--tinta); }
+.pp-ficha-res { margin: 0; font-size: 16px; line-height: 1.6; }
+.pp-bloque { border: 2px solid var(--c); border-radius: 14px; padding: 12px 16px; background: #fff; }
+.pp-bloque h4 { margin: 0 0 6px; font: 700 15px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
+.pp-bloque p, .pp-bloque li { margin: 0; font-size: 15px; line-height: 1.6; }
+.pp-bloque ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.pp-bloque-sector { background: var(--f); }
+.pp-ficha-pie { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.pp-ficha-pie .pp-btn { font-size: 15px; padding: 11px 20px; }
+.pp-aviso { margin: 0; font-size: 13px; line-height: 1.5; font-weight: 500; color: var(--tinta); }
+
+@media (max-width: 640px) {
+    .pp { padding: 26px 16px 80px; }
+    .pp-h2 { font-size: 28px; }
+    .pp-comunidad-t { font-size: 26px !important; }
+    .pp-ficha-cuerpo { padding: 16px 16px 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .pp-btn, .pp-area, .pp-idea { transition: none; }
+}

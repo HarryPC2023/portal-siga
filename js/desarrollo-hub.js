@@ -6,7 +6,7 @@ import { SigaEstado } from './sync-estado.js?v=1';
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { crearDesarrollo } from './desarrollo-estado.js?v=2';
 import { evaluarCV } from './desarrollo-reglas.js?v=2';
-import { LEMA, PARTES_HUB, NOTA_PRIVACIDAD } from './desarrollo-contenido.js?v=6';
+import { LEMA, PARTES_HUB, NOTA_PRIVACIDAD } from './desarrollo-contenido.js?v=7';
 
 const $ = (s) => document.querySelector(s);
 
@@ -38,12 +38,12 @@ const COLORES = ['', 'o', 'a'];            // verde · naranja · azul, en el or
 function tarjeta(parte, i, resumen) {
     const activa = parte.disponible;
     const pie = activa
-        ? el('a', { class: 'dpp-btn', href: parte.enlace, text: resumen && resumen.empezado ? 'Continuar mi CV →' : 'Empezar mi CV →' })
+        ? el('a', { class: 'dpp-btn', href: parte.enlace, text: parte.boton || (resumen && resumen.empezado ? 'Continuar mi CV →' : 'Empezar mi CV →') })
         : el('span', { class: 'dpp-pro', text: 'Próximamente' });
     return el('article', { class: `dpp-card ${COLORES[i] || ''}${activa ? ' act' : ''}`.trim() },
         el('span', { class: 'dpp-nodo', 'aria-hidden': 'true' }),
         el('div', { class: 'dpp-num', text: String(i + 1).padStart(2, '0') }),
-        el('span', { class: 'dpp-et', text: parte.etiqueta + (activa ? ' · estás aquí' : '') }),
+        el('span', { class: 'dpp-et', text: parte.etiqueta + (activa && parte.id === 'cv' ? ' · estás aquí' : '') }),
         el('h3', { text: parte.titulo }),
         el('p', { class: 'dpp-sub', text: parte.subtitulo }),
         el('p', { class: 'dpp-texto', text: parte.texto }),

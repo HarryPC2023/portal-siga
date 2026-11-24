@@ -104,8 +104,8 @@ export const SUGERENCIA_PROYECTOS_PRACTICOS = {
     textoSin: 'Si todavía no tienes proyectos, en Proyectos Prácticos descubres qué construir con lo que aprendes en tus cursos.',
     textoCon: '¿Quieres tener más proyectos para mostrar? En Proyectos Prácticos descubres qué construir con lo que aprendes en tus cursos.',
     boton: 'Ir a Proyectos Prácticos →',
-    // Hoy apunta a la portada (donde está la tarjeta). Cuando la sección exista, cambiar por su página (p. ej. 'proyectos-practicos.html').
-    enlace: 'desarrollo.html',
+    // Lleva directo a la página de Proyectos Prácticos (antes apuntaba a la portada de Desarrollo profesional).
+    enlace: 'proyectos-practicos.html',
 };
 
 // Tres grupos de herramientas, con escritura libre: las sugerencias solo orientan.
@@ -561,7 +561,7 @@ export const PARTES_HUB = [
     {
         id: 'proyectos', etiqueta: 'Crea experiencia', titulo: 'Proyectos Prácticos', subtitulo: 'Aprendizaje aplicado y generación de proyectos',
         texto: 'Descubre qué puedes construir con lo que aprendes en tus cursos, aunque aún no tengas experiencia que mostrar.',
-        disponible: false,
+        disponible: true, enlace: 'proyectos-practicos.html', boton: 'Explorar ideas →',
     },
     {
         id: 'cv', etiqueta: 'Impulsa tu perfil', titulo: 'CV Profesional', subtitulo: 'Presentación profesional',
