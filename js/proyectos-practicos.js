@@ -60,16 +60,17 @@ async function conectarNube() {
         const viejas = leerLocal();
         viejas.forEach((id) => { if (IDEAS.some((i) => i.id === id) && SigaEstado.leer(MODULO, PREFIJO + id) === undefined) SigaEstado.guardar(MODULO, PREFIJO + id, { t: Date.now() }); });
         if (viejas.size) { try { localStorage.removeItem(CLAVE_GUARDADAS); } catch (e) { /* nada */ } }
-        SigaEstado.alCambiar(MODULO, null, (e) => { if (e.clave && e.clave.startsWith(PREFIJO)) { estado.guardadas = leerGuardadas(); repintarTodo(); } });
+        SigaEstado.alCambiar(MODULO, null, (e) => { if (e.clave && e.clave.startsWith(PREFIJO)) { estado.guardadas = leerGuardadas(); estado.destacadas = destacadasDeLaSemana(new Date(), 4, estado.guardadas); repintarTodo(); } });
     } catch (e) { enNube = false; }
     estado.guardadas = leerGuardadas();
 }
 
-const estado = { area: null, intencion: null, q: '', verTodas: false, guardadas: new Set(), ultimaSorpresa: null };
+const estado = { area: null, intencion: null, q: '', verTodas: false, guardadas: new Set(), ultimaSorpresa: null, destacadas: [] };
 
 function alternarGuardada(id) {
     guardarUna(id, !estado.guardadas.has(id));
     estado.guardadas = leerGuardadas();
+    estado.destacadas = destacadasDeLaSemana(new Date(), 4, estado.guardadas);   // lo guardado sale de «Ideas para explorar» y entra la siguiente
     repintarTodo();
     actualizarBotonFicha();
 }
@@ -94,12 +95,16 @@ function ideasFiltradas() {
 }
 
 // «Destacadas»: 4 ideas elegidas a mano (DESTACADAS) que van rotando solas: cada semana empieza en un punto distinto de la lista.
-export function destacadasDeLaSemana(fecha = new Date(), cuantas = 4) {
+// Las que ya guardaste no entran (tienen su propia sección): se reemplazan por las siguientes de la lista. Se recalculan al abrir la
+// página y cada vez que guardas o quitas una idea. Si casi todas están guardadas, se completan con ellas.
+export function destacadasDeLaSemana(fecha = new Date(), cuantas = 4, guardadas = new Set()) {
     const pool = DESTACADAS.map((id) => IDEAS.find((i) => i.id === id)).filter(Boolean);
     if (pool.length <= cuantas) return pool;
     const semana = Math.floor(fecha.getTime() / (7 * 24 * 3600 * 1000));
     const ini = (semana * cuantas) % pool.length;
-    return Array.from({ length: cuantas }, (_, k) => pool[(ini + k) % pool.length]);
+    const girada = pool.map((_, k) => pool[(ini + k) % pool.length]);
+    const nuevas = girada.filter((i) => !guardadas.has(i.id));
+    return [...nuevas, ...girada.filter((i) => guardadas.has(i.id))].slice(0, cuantas);
 }
 
 /* ───── pintado ───── */
@@ -154,11 +159,12 @@ function tarjeta(i, extra = {}) {
 
 function pintarIdeas() {
     const filtrando = hayFiltros() || estado.verTodas;
-    const lista = filtrando ? ideasFiltradas() : destacadasDeLaSemana();
+    const lista = filtrando ? ideasFiltradas() : estado.destacadas;
     const ar = estado.area ? areaDe(estado.area) : null;
     $('#ppSubIdeas').textContent = !filtrando ? 'Destacadas — Ideas seleccionadas para inspirarte.'
         : ar ? `Ideas en ${ar.nombre}` : hayFiltros() ? 'Ideas que coinciden con tu búsqueda' : `Todas las ideas del catálogo (${IDEAS.length})`;
     $('#ppIdeas').replaceChildren(...lista.map((i) => tarjeta(i)));
+    $('#ppIdeas').classList.toggle('pp-ideas-4', !filtrando && lista.length === 4);
     $('#ppVacio').hidden = lista.length > 0;
     $('#ppLimpiar').hidden = !hayFiltros();
     const vt = $('#ppVerTodas');
@@ -351,8 +357,10 @@ function conectar() {
 async function iniciar() {
     if (!(await accesoPermitido())) return;
     estado.guardadas = leerGuardadas();
+    estado.destacadas = destacadasDeLaSemana(new Date(), 4, estado.guardadas);
     pintarAreas(); pintarIntenciones(); repintarTodo(); conectar();
     await conectarNube();            // la cuenta puede tardar: la página ya se ve y luego se actualizan las guardadas
+    estado.destacadas = destacadasDeLaSemana(new Date(), 4, estado.guardadas);
     repintarTodo();
 }
 

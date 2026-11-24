@@ -143,6 +143,12 @@
 .pp-ficha-pie .pp-btn { font-size: 15px; padding: 11px 20px; }
 .pp-aviso { margin: 0; font-size: 13px; line-height: 1.5; font-weight: 500; color: var(--tinta); }
 
+/* Destacadas: son 4, así que van en 4 columnas (2 y 2 en pantallas medianas) para que no quede una sola tarjeta huérfana abajo. */
+.pp-ideas-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pp-ideas-4 .pp-idea-t { font-size: 21px; }
+@media (max-width: 1000px) { .pp-ideas-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .pp-ideas-4 { grid-template-columns: 1fr; } }
+
 /* ───── «Para ir más lejos» (ampliaciones opcionales de una idea) ───── */
 .pp-bloque-mas { background: var(--f); border-style: dashed; }
 .pp-mas-aviso { margin: 0 0 8px !important; font-size: 13.5px !important; font-weight: 500; }
@@ -178,7 +184,7 @@
 .pp-quiz-acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 
 @media (max-width: 720px) {
-    .pp-h1 { white-space: normal; font-size: clamp(26px, 9vw, 44px); }
+    .pp-h1 { white-space: normal; font-size: clamp(19px, 6.6vw, 44px); letter-spacing: .02em; }
 }
 @media (max-width: 640px) {
     .pp { padding: 26px 16px 80px; }
