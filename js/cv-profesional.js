@@ -1666,35 +1666,37 @@ function dibujarPasos() {
         type: 'button', class: `dp-paso${i === paso ? ' dp-paso-activo' : ''}`, 'aria-current': i === paso ? 'step' : null, onclick: () => irAPaso(i),
     }, el('span', { class: `dp-punto dp-${SECCION_DE_PASO[p.id] ? estado[SECCION_DE_PASO[p.id]] : 'rev'}` }), el('span', { class: 'dp-paso-n', text: String(i + 1) }), el('span', { class: 'dp-paso-t', text: p.titulo }))));
     pintarAvance(estado);
-    pintarHoja(estado);
+    pintarHoja();
     mostrarPasoActivo();
 }
 
-// Hoja de CV de la cabecera: una cinta por paso; se «enciende» cuando el semáforo del paso está en verde, a medias en ámbar y punteada si falta.
+// Hoja de CV de la cabecera: tres hojas fijas (recién empiezas → a la mitad → CV completo) que muestran el camino del CV. Son ilustración: no dependen del semáforo.
 const HOJA_CINTAS = [
-    { id: 'formacion', n: 'Formación', c: '#2F6BFF' }, { id: 'habilidades', n: 'Habilidades', c: '#00A86B' }, { id: 'certificaciones', n: 'Certificaciones', c: '#00A99D' },
-    { id: 'proyectos', n: 'Proyectos', c: '#7A1CFF' }, { id: 'experiencia', n: 'Experiencia', c: '#D97800' }, { id: 'logros', n: 'Logros', c: '#E5192E' },
+    { n: 'Formación', c: '#2F6BFF' }, { n: 'Habilidades', c: '#00A86B' }, { n: 'Certificaciones', c: '#00A99D' },
+    { n: 'Proyectos', c: '#7A1CFF' }, { n: 'Experiencia', c: '#D97800' }, { n: 'Logros', c: '#E5192E' },
 ];
-function pintarHoja(estado) {
-    const cont = $('#dpHoja'); if (!cont) return;
+function svgHoja(hechas, sello) {
     const tinte = (c) => `color-mix(in srgb,${c} 16%,#fff)`, INK = '#14213D';
-    const hechos = HOJA_CINTAS.filter((x) => estado[x.id] === 'verde').length;
-    const completo = hechos === HOJA_CINTAS.length && estado.datos === 'verde';
-    let s = '<svg viewBox="0 0 230 290"><g transform="rotate(-4 115 150)">';
+    let s = '<svg viewBox="0 0 230 290" aria-hidden="true"><g transform="rotate(-4 115 150)">';
     s += `<rect x="22" y="14" width="186" height="262" rx="8" fill="#000" opacity=".1" transform="translate(5 6)"/><rect x="22" y="14" width="186" height="262" rx="8" fill="#fff" stroke="${INK}" stroke-width="2.5"/>`;
-    const cab = estado.datos === 'verde';
-    s += `<circle cx="62" cy="55" r="26" fill="${cab ? '#CFE0FF' : '#E3ECFB'}" stroke="${INK}" stroke-width="2"/><g transform="translate(62 60) scale(.85)"><circle cx="0" cy="-8" r="9" fill="#6E86C9"/><path d="M-17 18c0-12 8-18 17-18s17 6 17 18z" fill="#6E86C9"/></g>`;
+    s += `<circle cx="62" cy="55" r="26" fill="#E3ECFB" stroke="${INK}" stroke-width="2"/><g transform="translate(62 60) scale(.85)"><circle cx="0" cy="-8" r="9" fill="#6E86C9"/><path d="M-17 18c0-12 8-18 17-18s17 6 17 18z" fill="#6E86C9"/></g>`;
     s += `<rect x="98" y="38" width="86" height="9" rx="4" fill="${INK}"/><rect x="98" y="54" width="62" height="6" rx="3" fill="#9FB1D9"/><rect x="98" y="66" width="72" height="6" rx="3" fill="#9FB1D9"/>`;
     HOJA_CINTAS.forEach((x, i) => {
-        const e = estado[x.id], on = e === 'verde', medio = e === 'ambar', y = 96 + i * 28;
-        s += `<rect x="34" y="${y}" width="162" height="22" rx="11" fill="${on ? x.c : tinte(x.c)}" stroke="${on || medio ? INK : x.c}" stroke-width="2"${on || medio ? '' : ' stroke-dasharray="5 4"'}/>`;
-        if (medio) s += `<rect x="34" y="${y}" width="81" height="22" rx="11" fill="${x.c}" opacity=".35"/>`;
+        const on = i < hechas, y = 96 + i * 28;
+        s += `<rect x="34" y="${y}" width="162" height="22" rx="11" fill="${on ? x.c : tinte(x.c)}" stroke="${on ? INK : x.c}" stroke-width="2"${on ? '' : ' stroke-dasharray="5 4"'}/>`;
         s += `<text x="48" y="${y + 15}" font-size="10.5" font-weight="700" fill="${on ? '#fff' : INK}">${x.n}</text>`;
         if (on) s += `<path d="M176 ${y + 11}l4 4 7-8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`;
     });
     s += '</g>';
-    if (completo) s += '<g transform="rotate(8 175 270)"><rect x="128" y="256" width="92" height="28" rx="6" fill="#fff" stroke="#E5192E" stroke-width="3"/><text x="174" y="275" text-anchor="middle" font-size="13" font-weight="700" fill="#E5192E">¡LISTO!</text></g>';
-    cont.innerHTML = s + '</svg>';
+    if (sello) s += '<g transform="rotate(8 175 270)"><rect x="128" y="256" width="92" height="28" rx="6" fill="#fff" stroke="#E5192E" stroke-width="3"/><text x="174" y="275" text-anchor="middle" font-size="13" font-weight="700" fill="#E5192E">¡LISTO!</text></g>';
+    return s + '</svg>';
+}
+function pintarHoja() {
+    const cont = $('#dpHoja'); if (!cont || cont.dataset.listo) return;
+    cont.dataset.listo = '1';
+    const etapas = [[0, 'Recién empiezas'], [3, 'A la mitad'], [6, 'CV completo']];
+    cont.innerHTML = '<div class="dpc-tres">' + etapas.map(([n, t], i) =>
+        (i ? '<span class="dpc-fl">→</span>' : '') + `<div class="dpc-h">${svgHoja(n, n === 6)}<small>${t}</small></div>`).join('') + '</div>';
 }
 
 // Barra de pasos con flechas < > (como la de Asesorías): las flechas solo aparecen si hay pasos que no caben.

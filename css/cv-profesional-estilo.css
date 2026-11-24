@@ -305,12 +305,17 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc .dpc-color[aria-pressed="true"] { box-shadow: 0 0 0 3px #1f2430; }
 .dpc .dpc-foto-acc { display: flex; flex-wrap: wrap; gap: 8px; }
 
-/* ───── hoja de CV que se arma (a la derecha de la cabecera; se llena con el semáforo) ───── */
+/* ───── las tres hojas de CV de la cabecera (recién empiezas → a la mitad → completo) ───── */
 .dpc .dp-hero-chico { position: relative; }
-.dpc-hoja { display: none; }
-.dpc-hoja svg { display: block; width: 100%; height: auto; }
-.dpc-hoja svg text { font-family: 'Montserrat Alternates', 'Figtree', sans-serif; }
+.dpc-hoja { margin-top: 14px; max-width: 420px; }
+.dpc-tres { display: flex; align-items: flex-end; gap: 4px; }
+.dpc-h { flex: 1 1 0; min-width: 0; text-align: center; }
+.dpc-h svg { display: block; width: 100%; height: auto; }
+.dpc-h svg text { font-family: 'Montserrat Alternates', 'Figtree', sans-serif; }
+.dpc-h small { display: block; margin-top: 2px; font: 700 11.5px 'Figtree', sans-serif; color: #1E2530; }
+.dpc-fl { flex: none; font: 700 20px 'Figtree', sans-serif; color: #E8590C; padding-bottom: 48px; }
 @media (min-width: 900px) {
-    .dpc .dp-hero-chico { padding-right: 250px; min-height: 270px; }
-    .dpc-hoja { display: block; position: absolute; right: 10px; top: -8px; width: 210px; }
+    .dpc .dp-hero-chico { padding-right: 470px; min-height: 270px; }
+    .dpc-hoja { position: absolute; right: 10px; top: -8px; width: 450px; max-width: none; margin: 0; }
 }
+html[data-tema="oscuro"] .dpc-h small { color: #F1EEFF; }
