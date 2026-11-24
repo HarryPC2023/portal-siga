@@ -9,7 +9,7 @@
 .dpc .dp-hero-chico > * { justify-self: start; }   /* la etiqueta no se estira a todo el ancho */
 .dpc .dp-volver { font: 700 16px 'Figtree', sans-serif; margin-bottom: 14px; }
 .dpc .dp-pildora { font-size: 14px; letter-spacing: .04em; padding: 10px 30px; }
-.dpc .dp-hero h1, .dpc .dp-hero-chico h1 { font: 400 clamp(26px, 2.5vw, 38px)/1.1 'Russo One', sans-serif; margin: 18px 0 12px; color: #1E2530; }
+.dpc .dp-hero h1, .dpc .dp-hero-chico h1 { font: 400 clamp(34px, 3.7vw, 54px)/1.08 'Russo One', sans-serif; margin: 18px 0 12px; color: #1E2530; }
 .dpc .dp-hero h1 em { font-style: normal; background: none; -webkit-text-fill-color: currentColor; color: var(--dpc-naranja); }
 .dpc .dp-hero .dp-suave { font-size: 17px; line-height: 1.6; color: var(--dpc-suave); max-width: none; margin: 0 0 30px; }
 
@@ -73,8 +73,8 @@
 .dpc .dp-btn:hover { border-color: var(--dpc-naranja); }
 
 /* botón principal naranja con relieve (también en los avisos y cuadros de confirmación, que cuelgan del body) */
-.dp-btn-primario { background: #E8590C; border-color: #E8590C; color: #fff; box-shadow: 0 5px 0 #A83F06; transition: transform .15s ease, box-shadow .15s ease; }
-.dp-btn-primario:hover { background: #E8590C; border-color: #E8590C; transform: translateY(2px); box-shadow: 0 3px 0 #A83F06; }
+.dp-btn-primario { background: #fff; border: 2px solid #FF6A00; color: #B83C00; box-shadow: 0 0 0 3px rgba(255, 106, 0, .16), 0 0 14px rgba(255, 106, 0, .42); transition: box-shadow .15s ease, background .15s ease; }
+.dp-btn-primario:hover { background: #FFF3E8; border-color: #FF6A00; box-shadow: 0 0 0 4px rgba(255, 106, 0, .24), 0 0 20px rgba(255, 106, 0, .6); }
 
 /* Revisión: resumen, aviso de «no cabe», ayudas plegadas y consejo del portafolio */
 .dpc .dpc-resumen-sem { margin: 14px 0 0; font-size: 15.5px; font-weight: 500; }
