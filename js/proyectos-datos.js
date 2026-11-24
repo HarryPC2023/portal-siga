@@ -4,6 +4,8 @@
 // (debe ser un `id` de AREAS), y escribe los textos. No hay que tocar proyectos-practicos.js ni el HTML.
 // Las ideas de aquí son un punto de partida para descubrir posibilidades, no un manual de ejecución:
 // ningún campo es obligatorio salvo id, area, titulo y resumen.
+// `ampliaciones` (opcional, máximo 3) = «Para ir más lejos»: { titulo, aporta }. Cada una abre una perspectiva distinta (otro público, otro formato, otra mirada),
+// no «más funciones». El alcance inicial (`desarrollar`) debe bastarse solo y poder hacerse sin permiso de terceros; las ampliaciones nunca lo corrigen.
 // `carreras` («Puede interesar a») son ejemplos para que quien busca por su carrera encuentre la idea; NO restringen quién puede hacerla.
 
 export const AREAS = [
@@ -38,7 +40,7 @@ export const IDEAS = [
         datos: 'ficticios', tipo: 'Prototipo', tiempo: '~30 h', etiquetas: ['Software', 'Organización'], intencion: ['crear', 'resolver'],
         problema: 'Reservar un laboratorio o una sala suele depender de mensajes sueltos, hojas compartidas o ir a preguntar en persona, y los cruces de horario son frecuentes.',
         desarrollar: 'Un prototipo con calendario por espacio, reservas por bloques de hora y un aviso cuando alguien intenta reservar algo ya ocupado. Puede ser una hoja de cálculo bien armada o una web sencilla.',
-        objetivos: ['Entender cómo se organiza hoy la reserva de un espacio real.', 'Diseñar las reglas: quién reserva, por cuánto tiempo y cómo se cancela.', 'Probar el prototipo con algunas personas y ajustar lo que no funcione.'],
+        objetivos: ['Entender cómo se organiza hoy la reserva de un espacio real.', 'Diseñar las reglas: quién reserva, por cuánto tiempo y cómo se cancela.', 'Probar el prototipo tú o con alguien cercano y ajustar lo que no funcione.'],
         habilidades: ['Levantar requerimientos', 'Diseño de interfaces sencillas', 'Manejo de datos de horarios'],
         herramientas: ['Hoja de cálculo', 'Un formulario en línea', 'Un lenguaje web si quieres ir más lejos'],
         lineamientos: ['Empieza con un solo espacio y pocas reglas.', 'No guardes datos personales que no necesites.', 'Pide permiso a quien administre el espacio antes de probarlo con otros.'],
@@ -56,6 +58,11 @@ export const IDEAS = [
         habilidades: ['Mapeo de procesos', 'Redacción clara para pacientes', 'Análisis básico de datos'],
         herramientas: ['Hoja de cálculo', 'Diagramas de flujo', 'Mensajería o correo para la simulación'],
         lineamientos: ['Usa datos ficticios: nunca información real de pacientes.', 'Los mensajes deben ser breves y respetuosos.', 'Aclara que es una simulación y no un servicio médico.'],
+        ampliaciones: [
+            { titulo: 'Otro público', aporta: 'Explora cómo adaptar los mensajes para personas mayores o que casi no usan el celular.' },
+            { titulo: 'Otra mirada', aporta: 'Descubre cuánto tiempo y dinero se pierde por cada cita que nadie ocupa, y qué ahorro traería recuperarla.' },
+            { titulo: 'Otro formato', aporta: 'Imagina una forma de reprogramar la cita desde un enlace, sin llamar a nadie.' },
+        ],
         otroSector: 'Sirve igual para peluquerías, academias, talleres mecánicos o cualquier negocio que trabaje con citas.',
     },
     {
@@ -65,11 +72,16 @@ export const IDEAS = [
         resumen: 'Descubre cuánto papel se consume en un espacio real y qué formas concretas habría de reducirlo.',
         datos: 'propios', tipo: 'Análisis', tiempo: '~10 h', etiquetas: ['Medición', 'Reducción de residuos'], intencion: ['investigar', 'resolver'],
         problema: 'Se imprime mucho papel que termina sin usarse, pero casi nadie sabe cuánto ni dónde ocurre, así que es difícil cambiar los hábitos.',
-        desarrollar: 'Una medición sencilla durante unos días (conteo de hojas, tipos de impresión, qué se descarta) y una propuesta de dos o tres cambios que se puedan probar.',
+        desarrollar: 'Una medición sencilla durante unos días y una propuesta de dos o tres cambios para reducir el desperdicio.',
         objetivos: ['Definir qué se va a medir y en qué lugar.', 'Recoger datos durante una semana.', 'Proponer cambios y estimar cuánto papel se ahorraría.'],
         habilidades: ['Diseño de una medición', 'Gráficos simples', 'Comunicación de resultados'],
         herramientas: ['Hoja de cálculo', 'Fichas de registro en papel o en línea'],
         lineamientos: ['Avisa y pide permiso en el lugar donde midas.', 'Registra cantidades, no personas.', 'Presenta resultados sin culpar a nadie.'],
+        ampliaciones: [
+            { titulo: 'Comparar espacios', aporta: 'Contrasta cuánto papel se usa en aulas, oficinas y laboratorios, y por qué cambia.' },
+            { titulo: 'Traducirlo a impacto', aporta: 'Convierte las hojas en algo que se entienda a simple vista: dinero, árboles o tiempo de impresión.' },
+            { titulo: 'Cambiar hábitos', aporta: 'Diseña una campaña breve para reducir el papel y descubre cómo la recibirían tus compañeros.' },
+        ],
         otroSector: 'La misma medición funciona con energía, agua o comida en un colegio, un restaurante o una oficina.',
     },
     {
@@ -98,6 +110,11 @@ export const IDEAS = [
         habilidades: ['Observación sistemática', 'Croquis y planos simples', 'Argumentar una propuesta'],
         herramientas: ['Hoja de registro', 'Mapa o croquis', 'Fotografías del lugar (sin mostrar rostros)'],
         lineamientos: ['Observa desde un lugar seguro, sin invadir la vía.', 'No grabes ni fotografíes a personas identificables.', 'Presenta tus ideas como propuestas, no como críticas.'],
+        ampliaciones: [
+            { titulo: 'Observar más', aporta: 'Explora si cambia el panorama en otros días, horarios o con lluvia.' },
+            { titulo: 'Comparar con otro lugar', aporta: 'Descubre qué hace distinto a otro cruce, de otro distrito, que sí funciona bien.' },
+            { titulo: 'Mostrar la mejora', aporta: 'Imagina cómo se vería el cruce antes y después, con un dibujo o una maqueta sencilla.' },
+        ],
         otroSector: 'El mismo método sirve para analizar colas en una ventanilla, el flujo en un mercado o el tránsito dentro de una planta.',
     },
     {
@@ -140,6 +157,11 @@ export const IDEAS = [
         habilidades: ['Lectura de normas', 'Redacción sencilla', 'Diseño de piezas gráficas'],
         herramientas: ['Un editor de presentaciones o de diseño', 'Fuentes oficiales de protección al consumidor'],
         lineamientos: ['Cita la norma o la institución de la que tomas cada dato.', 'Aclara que es información general y no asesoría legal.', 'Revisa que la información siga vigente.'],
+        ampliaciones: [
+            { titulo: 'Otro formato', aporta: 'Descubre cómo convertir la guía en tarjetas para redes o en un video corto.' },
+            { titulo: 'Otro público', aporta: 'Explora cómo explicarla a quien compra en línea por primera vez o a personas mayores.' },
+            { titulo: 'Casos simulados', aporta: 'Imagina un reclamo paso a paso, con un ejemplo ficticio, para ver cómo se vive de principio a fin.' },
+        ],
         otroSector: 'El mismo formato sirve para derechos laborales, de los estudiantes, de los pacientes o de los inquilinos.',
     },
     {
@@ -163,8 +185,8 @@ export const IDEAS = [
         resumen: 'Imagina cómo orientar mejor a quienes se pierden en un espacio, y prueba tus señales con un prototipo.',
         datos: 'propios', tipo: 'Diseño', tiempo: '~15 h', etiquetas: ['Diseño gráfico', 'Experiencia de usuario'], intencion: ['crear', 'resolver'],
         problema: 'Hay lugares donde los visitantes y los alumnos nuevos no encuentran lo que buscan, y las señales existentes son confusas, pequeñas o inexistentes.',
-        desarrollar: 'Un recorrido de prueba con personas que no conocen el lugar, un conjunto de señales rediseñadas y un prototipo impreso o digital para comprobar si ayudan.',
-        objetivos: ['Observar dónde y por qué se pierde la gente.', 'Diseñar un sistema de señales coherente.', 'Probarlo con quienes no conocen el espacio.'],
+        desarrollar: 'Un recorrido de prueba con una o dos personas que no conocen el lugar (o un recorrido propio si no consigues participantes), un conjunto de señales rediseñadas y un prototipo impreso o digital para comprobar si ayudan.',
+        objetivos: ['Observar dónde y por qué se pierde la gente.', 'Diseñar un sistema de señales coherente.', 'Probarlo con una o dos personas que no conozcan el espacio o, si no las consigues, haciendo tú mismo el recorrido.'],
         habilidades: ['Observación', 'Diseño gráfico básico', 'Pruebas con usuarios'],
         herramientas: ['Un editor de diseño', 'Planos o croquis del lugar', 'Impresiones de prueba'],
         lineamientos: ['Pide autorización antes de colocar cualquier prototipo.', 'Cuida el contraste y el tamaño de las letras.', 'Retira el material al terminar la prueba.'],
@@ -205,7 +227,7 @@ export const IDEAS = [
 export const FUENTES = {
     ficticios: { corto: 'ficticios', largo: 'ficticios: puedes hacerlo sin pedir permiso a nadie' },
     publicos: { corto: 'públicos', largo: 'públicos: salen de fuentes abiertas' },
-    propios: { corto: 'los que midas u observes tú', largo: 'los que midas u observes tú' },
+    propios: { corto: 'mediciones propias', largo: 'mediciones propias: las que tú mismo tomes u observes' },
 };
 
 // Ideas que pueden salir en «Destacadas». Las elige una persona (calidad y diversidad, no popularidad); cada semana se muestran 4 seguidas

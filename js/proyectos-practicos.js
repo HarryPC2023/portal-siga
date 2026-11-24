@@ -5,7 +5,7 @@
 // claves «ideaguardada:<id>») para verse igual en PC y celular; si no hay sesión, quedan en este navegador (localStorage).
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { SigaEstado } from './sync-estado.js?v=1';
-import { AREAS, INTENCIONES, IDEAS, FUENTES, DESTACADAS } from './proyectos-datos.js?v=2';
+import { AREAS, INTENCIONES, IDEAS, FUENTES, DESTACADAS } from './proyectos-datos.js?v=3';
 
 const $ = (s) => document.querySelector(s);
 const CLAVE_GUARDADAS = 'siga_pp_guardadas_v1';
@@ -183,6 +183,12 @@ function bloque(titulo, contenido, extra = '') {
         Array.isArray(contenido) ? el('ul', {}, contenido.map((t) => el('li', { text: t }))) : el('p', { text: contenido }));
 }
 
+function bloqueAmpliaciones(lista) {
+    return el('section', { class: 'pp-bloque pp-bloque-mas' }, el('h4', { text: 'Para ir más lejos' }),
+        el('p', { class: 'pp-mas-aviso', text: 'Opcional. Explora estas posibilidades si te interesa. Puedes elegir alguna, varias o quedarte con el alcance inicial. No tienen un tiempo definido.' }),
+        el('div', { class: 'pp-mas-lista' }, lista.map((x) => el('div', { class: 'pp-mas-fila' }, el('b', { text: x.titulo }), el('span', { text: x.aporta })))));
+}
+
 function actualizarBotonFicha() {
     const b = $('#ppFichaGuardar');
     if (!b || !ideaAbierta) return;
@@ -208,7 +214,8 @@ function abrirFicha(id) {
             (i.etiquetas || []).map((t) => el('span', { class: 'pp-tag-s', text: t }))),
         FUENTES[i.datos] ? el('p', { class: 'pp-meta' }, el('b', { text: 'Datos: ' }), FUENTES[i.datos].largo) : null,
         i.problema ? bloque('El problema', i.problema) : null,
-        i.desarrollar ? bloque('Qué se podría desarrollar', i.desarrollar) : null,
+        i.desarrollar ? bloque('Alcance inicial', i.desarrollar) : null,
+        i.ampliaciones && i.ampliaciones.length ? bloqueAmpliaciones(i.ampliaciones) : null,
         i.objetivos && i.objetivos.length ? bloque('Objetivos', i.objetivos) : null,
         i.habilidades && i.habilidades.length ? bloque('Conocimientos y habilidades que se practican', i.habilidades) : null,
         i.herramientas && i.herramientas.length ? bloque('Herramientas que podrían servir', i.herramientas) : null,
