@@ -320,3 +320,14 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
     .dpc-h small { font-size: 13.5px; }
 }
 html[data-tema="oscuro"] .dpc-h small { color: #F1EEFF; }
+
+/* ───── borrar todo (por paso y de todo el CV): rojo neón, aparte de «Siguiente» ───── */
+.dp-btn-borrar { background: #fff; border: 2px solid #E5192E; color: #B3121F; box-shadow: 0 0 0 3px rgba(229, 25, 46, .14), 0 0 12px rgba(229, 25, 46, .38); }
+.dp-btn-borrar:hover { background: #FFF1F2; border-color: #E5192E; box-shadow: 0 0 0 4px rgba(229, 25, 46, .22), 0 0 18px rgba(229, 25, 46, .55); }
+.dpc .dp-nav .dp-btn-borrar { margin-left: auto; }
+.dpc-conf-borrar { margin-top: 16px; border: 2px solid #E5192E; border-radius: 12px; padding: 14px 18px; background: #FFF1F2; box-shadow: 0 0 0 3px rgba(229, 25, 46, .12); font-size: 15.5px; line-height: 1.5; }
+.dpc-conf-borrar strong { display: block; margin-bottom: 4px; }
+.dpc-conf-borrar p { margin: 0 0 12px; }
+.dpc-zona-borrar { margin-top: 26px; border: 2px dashed #E5192E; border-radius: 14px; padding: 18px 22px; background: #fff; }
+.dpc-zona-borrar strong { font-size: 17px; }
+.dpc-zona-borrar p { margin: 6px 0 14px; }

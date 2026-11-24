@@ -109,6 +109,12 @@ export function crearDesarrollo(estado) {
         catch (e) { console.error('desarrollo: no se pudo borrar', e); return false; }
     }
 
+    // Borra una clave suelta (cv:datos, cv:perfil…), no un elemento de lista.
+    function borrarClave(clave) {
+        try { estado.borrar(MODULO, clave); ultimoEnviado.delete(clave); return true; }
+        catch (e) { console.error('desarrollo: no se pudo borrar', clave, e); return false; }
+    }
+
     // Avisos de cambios que llegan de OTRO dispositivo u otra pestaña (los propios se ignoran).
     function alCambiar(fn) {
         return estado.alCambiar(MODULO, null, (ev) => { if (ev.origen !== 'local') fn(ev); });
@@ -129,7 +135,7 @@ export function crearDesarrollo(estado) {
     }
 
     return {
-        leerCV, leerClave, guardarClave, nuevoElemento, guardarElemento, quitarElemento,
+        leerCV, leerClave, guardarClave, borrarClave, nuevoElemento, guardarElemento, quitarElemento,
         alCambiar, alConflicto, recuperarMia, claveDe,
         estadoSync: () => estado.estado(),
         sincronizar: () => estado.sincronizar(),

@@ -9,7 +9,7 @@
 import { SigaEstado } from './sync-estado.js?v=1';
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { supabase } from './auth-siga.js?v=9';
-import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PERFIL } from './desarrollo-estado.js?v=2';
+import { crearDesarrollo, CLAVE_DATOS, CLAVE_FORMACION, CLAVE_AJUSTES, CLAVE_PERFIL } from './desarrollo-estado.js?v=3';
 import { evaluarCV, analizarEnlaceWeb } from './desarrollo-reglas.js?v=2';
 import * as C from './desarrollo-contenido.js?v=7';
 import { htmlItemPrevia } from './cv-documento.js?v=4';
@@ -180,6 +180,77 @@ function toast({ id, texto, boton, alBoton, persistente = false }) {
     if (!persistente) setTimeout(quitar, 14000);
 }
 const quitarToast = (id) => { const n = $(`[data-toast="${id}"]`); if (n) n.remove(); };
+
+// ───────────── borrar todo: por paso y de todo el CV (con confirmación y «Deshacer») ─────────────
+const BORRABLE = {
+    datos: { claves: [CLAVE_DATOS] }, formacion: { claves: [CLAVE_FORMACION] }, perfil: { claves: [CLAVE_PERFIL] },
+    proyectos: { tipo: 'proyecto' }, habilidades: { tipo: 'habilidad' }, certificaciones: { tipo: 'certificacion' }, logros: { tipo: 'logro' }, experiencia: { tipo: 'experiencia' },
+};
+// Formación no se borra del todo: queda vacía y marcada, para que SIGA no vuelva a prellenarla sola (el botón «Restablecer datos de SIGA» sigue ahí).
+const FORMACION_VACIA = { universidad: '', carrera: '', ingreso: '', cursos: [], promedio: '', sinSiga: true };
+
+// Lo que hay guardado en esos pasos: [{ clave, valor }]
+function guardadoDe(ids, conAjustes) {
+    const todo = D.leerCV(), res = [];
+    for (const id of ids) {
+        const b = BORRABLE[id]; if (!b) continue;
+        if (b.claves) b.claves.forEach((clave) => { const v = D.leerClave(clave); if (v !== undefined) res.push({ clave, valor: JSON.parse(JSON.stringify(v)) }); });
+        else (todo[COLECCION[b.tipo]] || []).forEach(({ id: eid, ...valor }) => res.push({ clave: D.claveDe(b.tipo, eid), valor: JSON.parse(JSON.stringify(valor)) }));
+    }
+    if (conAjustes) { const v = D.leerClave(CLAVE_AJUSTES); if (v !== undefined) res.push({ clave: CLAVE_AJUSTES, valor: JSON.parse(JSON.stringify(v)) }); }
+    return res;
+}
+
+function borrarPasos(ids, { nombre, mensaje, conAjustes }) {
+    flushTodo();
+    const snap = guardadoDe(ids, conAjustes);
+    if (!snap.some((x) => !esVacio({ ...x.valor, sinSiga: false }))) { toast({ id: 'borrado', texto: `No hay nada escrito en ${nombre}.` }); return; }
+    for (const { clave } of snap) {
+        if (clave === CLAVE_FORMACION) D.guardarClave(clave, { ...FORMACION_VACIA });
+        else D.borrarClave(clave);
+    }
+    cv = D.leerCV(); refrescarMemoria(); dibujarPaso();
+    toast({ id: 'borrado', texto: mensaje || `Listo. Se borró lo de ${nombre}.`, boton: 'Deshacer', alBoton: () => {
+        for (const { clave, valor } of snap) D.guardarClave(clave, valor);
+        cv = D.leerCV(); refrescarMemoria(); dibujarPaso();
+    } });
+}
+
+// Pide confirmar ahí mismo (sin ventana emergente), justo debajo de `ancla`.
+function confirmarBorrado(ancla, { ids, nombre, titulo, texto, mensaje, conAjustes }) {
+    $$('.dpc-conf-borrar').forEach((n) => n.remove());
+    const bNo = el('button', { type: 'button', class: 'dp-btn', text: 'Cancelar' });
+    const bSi = el('button', { type: 'button', class: 'dp-btn dp-btn-borrar', text: 'Sí, borrar' });
+    const caja = el('div', { class: 'dpc-conf-borrar', role: 'alertdialog', 'aria-label': titulo },
+        el('strong', { text: titulo }), el('p', { text: texto }), el('div', { class: 'dp-acciones' }, bSi, bNo));
+    bNo.addEventListener('click', () => { caja.remove(); if (ancla.focus) ancla.focus(); });
+    bSi.addEventListener('click', () => { caja.remove(); borrarPasos(ids, { nombre, mensaje, conAjustes }); });
+    ancla.after(caja);
+    bNo.focus();
+}
+
+function botonBorrarPaso(p, nav) {
+    const lista = !!BORRABLE[p.id].tipo;
+    const b = el('button', { type: 'button', class: 'dp-btn dp-btn-borrar', text: 'Borrar todo' });
+    b.addEventListener('click', () => confirmarBorrado(nav, {
+        ids: [p.id], nombre: p.titulo,
+        titulo: `¿Borrar todo lo que escribiste en ${p.titulo}?`,
+        texto: (lista ? 'Se quitan todos los elementos de esta lista en este CV.' : 'Se vacían estos campos en este CV.') + (p.id === 'formacion' ? ' Tu perfil de SIGA no se modifica.' : '') + ' Después tendrás unos segundos para deshacerlo.',
+    }));
+    return b;
+}
+
+function zonaBorrarTodo() {
+    const b = el('button', { type: 'button', class: 'dp-btn dp-btn-borrar', text: 'Borrar todo mi CV' });
+    b.addEventListener('click', () => confirmarBorrado(b, {
+        ids: Object.keys(BORRABLE), nombre: 'tu CV', conAjustes: true, mensaje: 'Listo. Se borró todo tu CV.',
+        titulo: '¿Borrar todo tu CV?',
+        texto: 'Se vacían todos los pasos. Como el CV se guarda en tu cuenta, también se borra en tu celular y en tus otros dispositivos. Tu foto y tu perfil de SIGA no se modifican. Después tendrás unos segundos para deshacerlo.',
+    }));
+    return el('div', { class: 'dpc-zona-borrar' },
+        el('strong', { text: '¿Quieres empezar de cero?' }),
+        el('p', { class: 'dp-suave', text: 'Borra todo lo escrito en todos los pasos: datos, formación, proyectos, habilidades, certificaciones, logros, experiencia y perfil.' }), b);
+}
 
 // ───────────── tarjetas de las colecciones (proyectos, logros, experiencia) ─────────────
 // ───────────── proyecto: categoría, equipo, periodo, descripción guiada y herramientas ─────────────
@@ -970,7 +1041,7 @@ function pasoFormacion() {
             if (!si) return;
             flush(c);
             const actual = D.leerClave(c) || {};
-            const nuevo = { ...actual, universidad: s.universidad || actual.universidad || '', carrera: s.carrera || actual.carrera || '', ingreso: s.ingreso || actual.ingreso || '', desdeSiga: true };
+            const nuevo = { ...actual, universidad: s.universidad || actual.universidad || '', carrera: s.carrera || actual.carrera || '', ingreso: s.ingreso || actual.ingreso || '', desdeSiga: true, sinSiga: false };
             limpiarSucios(c);
             D.guardarClave(c, nuevo);
             refrescarMemoria();
@@ -981,7 +1052,7 @@ function pasoFormacion() {
     // Primera vez: copiar lo que SIGA ya sabe. No pisa nada que el alumno haya escrito mientras tanto.
     // También se completa si la carrera quedó vacía (por ejemplo, un CV iniciado antes de que SIGA la leyera); nunca pisa lo escrito.
     const previo = D.leerClave(c);
-    if (previo === undefined || !String(previo.carrera || '').trim()) {
+    if (previo === undefined || (!String(previo.carrera || '').trim() && !previo.sinSiga)) {
         leerDatosSiga(supabase, { resolverCarrera }).then((s) => {
             const actual = D.leerClave(c);
             if (actual === undefined) {
@@ -1479,7 +1550,9 @@ function pintarRevision(cont) {
             ayudaPdf(),
             desplegable('paginas', C.PAGINAS_TITULO, el('p', { class: 'dp-suave', text: C.CONSEJO_PROFESIONAL }))),
         // 5 · Inspiración
-        el('p', { class: 'dpc-portafolio', text: C.CONSEJO_PORTAFOLIO })].filter(Boolean));
+        el('p', { class: 'dpc-portafolio', text: C.CONSEJO_PORTAFOLIO }),
+        // 6 · Empezar de cero
+        zonaBorrarTodo()].filter(Boolean));
 }
 
 // ───────────── foto del CV: solo en este dispositivo ─────────────
@@ -1749,6 +1822,7 @@ function dibujarPaso() {
         paso > 0 ? el('button', { type: 'button', class: 'dp-btn', text: 'Anterior', onclick: () => irAPaso(paso - 1) }) : null,
         paso < C.PASOS.length - 1 ? el('button', { type: 'button', class: 'dp-btn dp-btn-primario', text: paso === C.PASOS.length - 2 ? 'Revisar con el semáforo' : 'Siguiente', onclick: () => irAPaso(paso + 1) }) : null,
         el('button', { type: 'button', class: 'dp-btn dp-solo-cel', text: 'Ver vista previa', onclick: () => abrirPrevia() }));
+    if (BORRABLE[p.id]) nav.append(botonBorrarPaso(p, nav));
     $('#dpPanel').replaceChildren(
         el('div', { class: 'dpc-avance' },
             el('div', { class: 'dpc-seg', 'aria-hidden': 'true' }, ...C.PASOS.map(() => el('i'))),
