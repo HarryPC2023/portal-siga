@@ -143,6 +143,14 @@
 .pp-ficha-pie .pp-btn { font-size: 15px; padding: 11px 20px; }
 .pp-aviso { margin: 0; font-size: 13px; line-height: 1.5; font-weight: 500; color: var(--tinta); }
 
+/* ───── «Para ir más lejos» (ampliaciones opcionales de una idea) ───── */
+.pp-bloque-mas { background: var(--f); border-style: dashed; }
+.pp-mas-aviso { margin: 0 0 8px !important; font-size: 13.5px !important; font-weight: 500; }
+.pp-mas-fila { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 10px; padding: 8px 0; border-top: 1px solid color-mix(in srgb, var(--n, var(--c)) 35%, transparent); font-size: 15px; line-height: 1.5; }
+.pp-mas-fila:first-child { border-top: 0; }
+.pp-mas-fila b { font: 700 14px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
+@media (max-width: 560px) { .pp-mas-fila { grid-template-columns: 1fr; gap: 2px; } }
+
 /* ───── ideas para explorar, guardadas y cuestionario ───── */
 .pp-btn-azulneon { --n: var(--n-azul); background: #fff; border-color: var(--n-azul); color: var(--tinta); font-size: 15px; padding: 12px 22px; }
 .pp-btn-rojo { --n: #E5192E; background: #fff; border-color: #E5192E; color: var(--tinta); font-size: 16px; padding: 12px 22px; }
