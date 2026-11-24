@@ -125,7 +125,7 @@
 .pp-cierre { text-align: center; margin: 22px 0 0; font-size: 15px; font-weight: 500; color: var(--tinta); }
 
 /* ───── ficha de una idea ───── */
-.pp-ficha { --c: var(--azul); --f: #E4EEFF; border: 3px solid var(--n, var(--c)); border-radius: 18px; padding: 0; width: min(760px, calc(100vw - 28px)); max-height: calc(100vh - 40px); overflow: hidden;
+.pp-ficha { margin: auto; --c: var(--azul); --f: #E4EEFF; border: 3px solid var(--n, var(--c)); border-radius: 18px; padding: 0; width: min(760px, calc(100vw - 28px)); max-height: calc(100vh - 40px); overflow: hidden;
             background: #fff; color: var(--cuerpo); font-family: 'Poppins', sans-serif; }
 .pp-ficha[open] { display: flex; flex-direction: column; }
 .pp-ficha::backdrop { background: rgba(20, 33, 61, .55); }
@@ -149,13 +149,13 @@
 @media (max-width: 1000px) { .pp-ideas-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .pp-ideas-4 { grid-template-columns: 1fr; } }
 
-/* ───── «Para ir más lejos» (ampliaciones opcionales de una idea) ───── */
-.pp-bloque-mas { background: var(--f); border-style: dashed; }
-.pp-mas-aviso { margin: 0 0 8px !important; font-size: 13.5px !important; font-weight: 500; }
-.pp-mas-fila { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 10px; padding: 8px 0; border-top: 1px solid color-mix(in srgb, var(--n, var(--c)) 35%, transparent); font-size: 15px; line-height: 1.5; }
-.pp-mas-fila:first-child { border-top: 0; }
-.pp-mas-fila b { font: 700 14px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
-@media (max-width: 560px) { .pp-mas-fila { grid-template-columns: 1fr; gap: 2px; } }
+/* ───── «Para ir más lejos» (ampliaciones opcionales de una idea): sin relleno, con una línea vertical del color del área a la izquierda de cada una ───── */
+.pp-bloque-mas { background: #fff; }
+.pp-mas-aviso { margin: 0 0 12px !important; font-size: 13.5px !important; font-weight: 500; }
+.pp-mas-lista { display: grid; gap: 14px; }
+.pp-mas-fila { border-left: 3px solid var(--n, var(--c)); padding: 2px 0 2px 14px; }
+.pp-mas-fila b { display: block; font: 700 15px 'Montserrat Alternates', sans-serif; color: var(--tinta); margin-bottom: 2px; }
+.pp-mas-fila span { display: block; font-size: 15px; line-height: 1.55; }
 
 /* ───── ideas para explorar, guardadas y cuestionario ───── */
 .pp-btn-azulneon { --n: var(--n-azul); background: #fff; border-color: var(--n-azul); color: var(--tinta); font-size: 15px; padding: 12px 22px; }
