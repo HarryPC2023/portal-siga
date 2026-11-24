@@ -9,7 +9,7 @@
 .dpc .dp-hero-chico > * { justify-self: start; }   /* la etiqueta no se estira a todo el ancho */
 .dpc .dp-volver { font: 700 16px 'Figtree', sans-serif; margin-bottom: 14px; }
 .dpc .dp-pildora { font-size: 14px; letter-spacing: .04em; padding: 10px 30px; }
-.dpc .dp-hero h1, .dpc .dp-hero-chico h1 { font: 400 clamp(30px, 3.2vw, 44px)/1.1 'Russo One', sans-serif; margin: 18px 0 12px; color: #1E2530; }
+.dpc .dp-hero h1, .dpc .dp-hero-chico h1 { font: 400 clamp(26px, 2.5vw, 38px)/1.1 'Russo One', sans-serif; margin: 18px 0 12px; color: #1E2530; }
 .dpc .dp-hero h1 em { font-style: normal; background: none; -webkit-text-fill-color: currentColor; color: var(--dpc-naranja); }
 .dpc .dp-hero .dp-suave { font-size: 17px; line-height: 1.6; color: var(--dpc-suave); max-width: none; margin: 0 0 30px; }
 
@@ -315,7 +315,8 @@ html[data-tema="oscuro"] .dpc .dp-hero .dp-suave { color: var(--hero-texto, #cbc
 .dpc-h small { display: block; margin-top: 2px; font: 700 11.5px 'Figtree', sans-serif; color: #1E2530; }
 .dpc-fl { flex: none; font: 700 20px 'Figtree', sans-serif; color: #E8590C; padding-bottom: 48px; }
 @media (min-width: 900px) {
-    .dpc .dp-hero-chico { padding-right: 470px; min-height: 270px; }
-    .dpc-hoja { position: absolute; right: 10px; top: -8px; width: 450px; max-width: none; margin: 0; }
+    .dpc .dp-hero-chico { padding-right: calc(min(560px, 38vw) + 30px); min-height: 310px; }
+    .dpc-hoja { position: absolute; right: 10px; top: 50%; transform: translateY(-46%); width: min(560px, 38vw); max-width: none; margin: 0; }
+    .dpc-h small { font-size: 13.5px; }
 }
 html[data-tema="oscuro"] .dpc-h small { color: #F1EEFF; }
