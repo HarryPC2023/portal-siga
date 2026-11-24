@@ -15,7 +15,7 @@
 .pp-volver:hover { text-decoration: underline; }
 
 /* Brillo neón: borde de color vivo + halo suave del mismo color. El texto sigue en tinta oscura (la legibilidad no depende del neón). */
-.pp-paso, .pp-area, .pp-idea, .pp-pastilla, .pp-buscar, .pp-sorprende, .pp-comunidad, .pp-chip-btn, .pp-btn-blanco, .pp-btn-ambar, .pp-btn-neon, .pp-ficha, .pp-vacio
+.pp-paso, .pp-area, .pp-idea, .pp-pastilla, .pp-buscar, .pp-sorprende, .pp-comunidad, .pp-chip-btn, .pp-btn-blanco, .pp-btn-ambar, .pp-btn-neon, .pp-btn-azulneon, .pp-btn-rojo, .pp-quiz, .pp-ficha, .pp-vacio
     { box-shadow: 0 0 0 3px color-mix(in srgb, var(--n, var(--c)) 16%, transparent), 0 0 16px color-mix(in srgb, var(--n, var(--c)) 42%, transparent); }
 
 /* ───── título ───── */
@@ -113,7 +113,7 @@
 .pp-vacio a { color: var(--azul); font-weight: 700; }
 
 /* ───── sorpréndeme y comunidad ───── */
-.pp-sorprende { --n: var(--n-ambar); margin-top: 20px; border: 2px solid var(--n-ambar); background: #FFF1CC; border-radius: 14px; padding: 16px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+.pp-sorprende { --n: #E5192E; margin-top: 20px; border: 2px solid #E5192E; background: #fff; border-radius: 14px; padding: 16px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
 .pp-sorprende-t { margin: 0; font: 400 24px 'Racing Sans One', sans-serif; color: var(--tinta); }
 .pp-sorprende-s { margin: 4px 0 0; font-size: 15px; }
 .pp-comunidad { --n: var(--n-rosa); margin-top: 34px; border: 2px solid var(--n-rosa); background: #FFE3EC; border-radius: 18px; padding: 26px 28px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: center; scroll-margin-top: 90px; }
@@ -142,6 +142,32 @@
 .pp-ficha-pie { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .pp-ficha-pie .pp-btn { font-size: 15px; padding: 11px 20px; }
 .pp-aviso { margin: 0; font-size: 13px; line-height: 1.5; font-weight: 500; color: var(--tinta); }
+
+/* ───── ideas para explorar, guardadas y cuestionario ───── */
+.pp-btn-azulneon { --n: var(--n-azul); background: #fff; border-color: var(--n-azul); color: var(--tinta); font-size: 15px; padding: 12px 22px; }
+.pp-btn-rojo { --n: #E5192E; background: #fff; border-color: #E5192E; color: var(--tinta); font-size: 16px; padding: 12px 22px; }
+.pp-sub-ideas { margin: 4px 0 0; font-size: 15px; line-height: 1.6; }
+.pp-guardadas { margin-top: 44px; scroll-margin-top: 90px; }
+.pp-guardadas .pp-ideas { margin-top: 14px; }
+.pp-guardadas .pp-ideas:empty { display: none; }
+.pp-meta { margin: 0; font-size: 13.5px; line-height: 1.55; }
+.pp-meta b { font-weight: 600; }
+.pp-quiz { --n: var(--n-azul); margin-top: 44px; border: 2px solid var(--n-azul); background: linear-gradient(135deg, #F3FAFE, #F6F2FF); border-radius: 16px; padding: 20px 24px; }
+.pp-quiz-cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; }
+.pp-quiz-cuerpo { margin-top: 18px; }
+.pp-quiz-cuerpo[hidden] { display: none; }
+.pp-preg { margin: 0 0 16px; border: 0; padding: 0; }
+.pp-preg legend { padding: 0; font: 700 15px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
+.pp-preg-n { display: block; margin: 0 0 4px; font: 700 12px 'Montserrat Alternates', sans-serif; color: var(--azul); }
+.pp-opciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.pp-opc { font: 700 13px 'Montserrat Alternates', sans-serif; border: 2px solid var(--n, var(--c)); background: #fff; border-radius: 999px; padding: 8px 15px; color: var(--tinta); cursor: pointer; }
+.pp-opc[aria-pressed="true"] { background: var(--f, #E4EEFF); box-shadow: 0 0 0 3px color-mix(in srgb, var(--n, var(--c)) 22%, transparent), 0 0 12px color-mix(in srgb, var(--n, var(--c)) 45%, transparent); }
+.pp-opc:focus-visible { outline: 3px solid #FFB000; outline-offset: 3px; }
+.pp-nota-preg { margin: 6px 0 0; font-size: 13.5px; font-weight: 500; color: var(--tinta); }
+.pp-quiz-res { margin-top: 8px; }
+.pp-quiz-res h3 { margin: 0; font: 400 24px 'Racing Sans One', sans-serif; color: var(--tinta); }
+.pp-quiz-res .pp-ideas { margin-top: 12px; }
+.pp-quiz-acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 
 @media (max-width: 720px) {
     .pp-h1 { white-space: normal; font-size: clamp(26px, 9vw, 44px); }

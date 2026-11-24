@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/tema-siga.css?v=1">
-  <link rel="stylesheet" href="css/proyectos-practicos.css?v=4">
+  <link rel="stylesheet" href="css/proyectos-practicos.css?v=5">
   <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
   <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
@@ -45,7 +45,7 @@
     <section class="pp-hero">
       <div class="pp-hero-texto">
         <p class="pp-sub">Descubre todo lo que puedes crear con lo que sabes</p>
-        <p class="pp-intro">Explora ideas, encuentra nuevas aplicaciones para tus conocimientos y descubre oportunidades en distintos sectores. Las ideas de hoy pueden convertirse en las soluciones del mañana.</p>
+        <p class="pp-intro">Explora ideas, encuentra nuevas aplicaciones para tus conocimientos y descubre oportunidades en distintas áreas. Las ideas de hoy pueden convertirse en las soluciones del mañana.</p>
         <div class="pp-botones">
           <a class="pp-btn pp-btn-azul" href="#ideas">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Explorar ideas</a>
@@ -62,7 +62,7 @@
     <section class="pp-pasos" aria-label="Cómo funciona">
       <div class="pp-paso" style="--c:#2F6BFF; --f:#E4EEFF">
         <span class="pp-paso-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span>
-        <div><b>Explora</b><span>Recorre sectores e ideas distintas</span></div>
+        <div><b>Explora</b><span>Recorre áreas e ideas distintas</span></div>
       </div>
       <div class="pp-paso" style="--c:#FF2E7E; --f:#FFE3EC">
         <span class="pp-paso-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg></span>
@@ -76,7 +76,7 @@
 
     <!-- áreas -->
     <h2 class="pp-h2">Tu carrera es el punto de partida, <span>no el límite</span></h2>
-    <p class="pp-lead">Elige un sector y mira qué podrías crear en él.</p>
+    <p class="pp-lead">Explora diferentes áreas y descubre todo lo que podrías crear con tus conocimientos.</p>
     <section class="pp-areas" id="ppAreas" aria-label="Áreas temáticas"></section>
 
     <!-- buscador e intenciones -->
@@ -86,30 +86,49 @@
         <input type="search" id="ppBuscar" placeholder="Busca por tema, por carrera o por lo que quieres crear" autocomplete="off" aria-label="Buscar ideas por tema, carrera o lo que quieres crear">
       </label>
       <div class="pp-pastillas" id="ppIntenciones"></div>
-      <p class="pp-ayuda-busq">Puedes escribir un tema (<button type="button" class="pp-ej" data-q="salud">salud</button>), tu carrera (<button type="button" class="pp-ej" data-q="arquitectura">arquitectura</button>) o lo que quieres hacer (<button type="button" class="pp-ej" data-q="guía">una guía</button>, <button type="button" class="pp-ej" data-q="prototipo">un prototipo</button>). La carrera es un punto de partida: aparecen también ideas de otros sectores.</p>
+      <p class="pp-ayuda-busq">Puedes escribir un tema (<button type="button" class="pp-ej" data-q="salud">salud</button>), tu carrera (<button type="button" class="pp-ej" data-q="arquitectura">arquitectura</button>) o lo que quieres hacer (<button type="button" class="pp-ej" data-q="guía">una guía</button>, <button type="button" class="pp-ej" data-q="prototipo">un prototipo</button>). La carrera es un punto de partida: aparecen también ideas de otras áreas.</p>
     </section>
 
-    <!-- ideas -->
+    <!-- ideas para explorar -->
     <div class="pp-cab" id="ideas">
-      <h2 class="pp-h2 pp-h2-solo" id="ppTituloIdeas">Ideas destacadas</h2>
+      <div>
+        <h2 class="pp-h2 pp-h2-solo" id="ppTituloIdeas">Ideas para explorar</h2>
+        <p class="pp-sub-ideas" id="ppSubIdeas"></p>
+      </div>
       <div class="pp-cab-acciones">
-        <button type="button" class="pp-chip-btn" id="ppSoloGuardadas" aria-pressed="false">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4z"/></svg>
-          <span id="ppTxtGuardadas">Mis ideas guardadas (0)</span>
-        </button>
         <button type="button" class="pp-chip-btn" id="ppLimpiar" hidden>Quitar filtros</button>
+        <button type="button" class="pp-chip-btn" id="ppVerTodas">Ver todas →</button>
       </div>
     </div>
     <section class="pp-ideas" id="ppIdeas" aria-live="polite"></section>
     <p class="pp-vacio" id="ppVacio" hidden>No encontramos ideas con esos filtros. Prueba con un tema, una carrera o una palabra más general, o quita algún filtro. ¿Falta una idea? <a href="#proponer">Propónla</a>.</p>
 
+    <!-- mis ideas guardadas -->
+    <section class="pp-guardadas" id="guardadas" aria-labelledby="ppTituloGuardadas">
+      <h2 class="pp-h2 pp-h2-solo" id="ppTituloGuardadas">Mis ideas guardadas</h2>
+      <p class="pp-sub-ideas" id="ppVacioGuardadas">Aquí encontrarás las ideas que quieras conservar para después. Todavía no guardaste ninguna: toca el marcador de una idea para que aparezca aquí.</p>
+      <section class="pp-ideas" id="ppGuardadas"></section>
+    </section>
+
+    <!-- encuentra una idea para empezar (opcional) -->
+    <section class="pp-quiz" id="ppQuiz" aria-labelledby="ppQuizT">
+      <div class="pp-quiz-cab">
+        <div>
+          <p class="pp-sorprende-t" id="ppQuizT">Encuentra una idea para empezar</p>
+          <p class="pp-sorprende-s">Responde tres preguntas y descubre proyectos que podrían interesarte. Es opcional: también puedes explorar por tu cuenta.</p>
+        </div>
+        <button type="button" class="pp-btn pp-btn-azulneon" id="ppQuizAbrir" aria-expanded="false" aria-controls="ppQuizCuerpo">Responder tres preguntas</button>
+      </div>
+      <div class="pp-quiz-cuerpo" id="ppQuizCuerpo" hidden></div>
+    </section>
+
     <!-- sorpréndeme -->
     <section class="pp-sorprende">
       <div>
-        <p class="pp-sorprende-t">¿No sabes por dónde empezar?</p>
-        <p class="pp-sorprende-s">Deja que una idea te sorprenda.</p>
+        <p class="pp-sorprende-t">¿Prefieres que te sorprendamos?</p>
+        <p class="pp-sorprende-s">Una idea de cualquier área, incluso de una que no habrías elegido.</p>
       </div>
-      <button type="button" class="pp-btn pp-btn-ambar" id="ppSorprende">Sorpréndeme</button>
+      <button type="button" class="pp-btn pp-btn-rojo" id="ppSorprende">Sorpréndeme</button>
     </section>
 
     <!-- comunidad -->
@@ -145,7 +164,7 @@
 
   <script src="js/landing.js"></script>
   <script type="module" src="js/gate.js"></script>
-  <script type="module" src="js/proyectos-practicos.js?v=2"></script>
+  <script type="module" src="js/proyectos-practicos.js?v=3"></script>
   <script src="js/tema-siga.js?v=1"></script>
   <script type="module" src="js/carnet-aviso.js"></script>
 
