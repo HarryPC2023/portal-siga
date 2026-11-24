@@ -4,33 +4,35 @@
 // (debe ser un `id` de AREAS), y escribe los textos. No hay que tocar proyectos-practicos.js ni el HTML.
 // Las ideas de aquí son un punto de partida para descubrir posibilidades, no un manual de ejecución:
 // ningún campo es obligatorio salvo id, area, titulo y resumen.
+// `carreras` («Puede interesar a») son ejemplos para que quien busca por su carrera encuentre la idea; NO restringen quién puede hacerla.
 
 export const AREAS = [
-    { id: 'tecnologia', nombre: 'Tecnología e innovación', frase: 'Apps, datos y sistemas que resuelven problemas.', c: '#2455C4', f: '#E4EEFF' },
-    { id: 'salud', nombre: 'Salud y bienestar', frase: 'Cuidar a las personas con ideas y tecnología.', c: '#C21F5B', f: '#FFE3EC' },
-    { id: 'ambiente', nombre: 'Medio ambiente y sostenibilidad', frase: 'Menos residuos y más energía limpia.', c: '#0B7A5A', f: '#DDF5E9' },
-    { id: 'negocios', nombre: 'Negocios y economía', frase: 'Convierte una idea en un negocio que funcione.', c: '#8A5200', f: '#FFF1CC' },
-    { id: 'ciudades', nombre: 'Ciudades e infraestructura', frase: 'Moverse, vivir y construir mejor.', c: '#006C9C', f: '#DDF3FC' },
-    { id: 'educacion', nombre: 'Educación y aprendizaje', frase: 'Nuevas formas de enseñar y aprender.', c: '#5B00B8', f: '#EEE6FD' },
-    { id: 'sociedad', nombre: 'Sociedad y desarrollo', frase: 'Proyectos que ayudan a tu comunidad.', c: '#B34700', f: '#FFE9D6' },
-    { id: 'derecho', nombre: 'Derecho, gobierno y ciudadanía', frase: 'Derechos claros y justicia para todos.', c: '#A01C42', f: '#FBE1E8' },
-    { id: 'ciencias', nombre: 'Ciencias básicas', frase: 'Preguntas que se responden con datos.', c: '#007A70', f: '#D9F5F1' },
-    { id: 'arte', nombre: 'Arte, diseño y comunicación', frase: 'Ideas que se ven, se oyen y se cuentan.', c: '#9B1FB0', f: '#FAE3FD' },
-    { id: 'agricultura', nombre: 'Agricultura y alimentación', frase: 'Del campo a tu mesa, con menos desperdicio.', c: '#3F6B0A', f: '#EBF8D3' },
-    { id: 'industria', nombre: 'Industria y producción', frase: 'Producir mejor, con menos costo y riesgo.', c: '#3D4B66', f: '#E4E9F2' },
+    { id: 'tecnologia', nombre: 'Tecnología e innovación', frase: 'Apps, datos y sistemas que resuelven problemas.', c: '#2455C4', f: '#E4EEFF', n: '#2F6BFF' },
+    { id: 'salud', nombre: 'Salud y bienestar', frase: 'Cuidar a las personas con ideas y tecnología.', c: '#C21F5B', f: '#FFE3EC', n: '#FF2E7E' },
+    { id: 'ambiente', nombre: 'Medio ambiente y sostenibilidad', frase: 'Menos residuos y más energía limpia.', c: '#0B7A5A', f: '#DDF5E9', n: '#00A86B' },
+    { id: 'negocios', nombre: 'Negocios y economía', frase: 'Convierte una idea en un negocio que funcione.', c: '#8A5200', f: '#FFF1CC', n: '#D97800' },
+    { id: 'ciudades', nombre: 'Ciudades e infraestructura', frase: 'Moverse, vivir y construir mejor.', c: '#006C9C', f: '#DDF3FC', n: '#0096D6' },
+    { id: 'educacion', nombre: 'Educación y aprendizaje', frase: 'Nuevas formas de enseñar y aprender.', c: '#5B00B8', f: '#EEE6FD', n: '#7A1CFF' },
+    { id: 'sociedad', nombre: 'Sociedad y desarrollo', frase: 'Proyectos que ayudan a tu comunidad.', c: '#B34700', f: '#FFE9D6', n: '#FF6A00' },
+    { id: 'derecho', nombre: 'Derecho, gobierno y ciudadanía', frase: 'Derechos claros y justicia para todos.', c: '#A01C42', f: '#FBE1E8', n: '#E8174B' },
+    { id: 'ciencias', nombre: 'Ciencias básicas', frase: 'Preguntas que se responden con datos.', c: '#007A70', f: '#D9F5F1', n: '#00A99D' },
+    { id: 'arte', nombre: 'Arte, diseño y comunicación', frase: 'Ideas que se ven, se oyen y se cuentan.', c: '#9B1FB0', f: '#FAE3FD', n: '#C81EE6' },
+    { id: 'agricultura', nombre: 'Agricultura y alimentación', frase: 'Del campo a tu mesa, con menos desperdicio.', c: '#3F6B0A', f: '#EBF8D3', n: '#4FA800' },
+    { id: 'industria', nombre: 'Industria y producción', frase: 'Producir mejor, con menos costo y riesgo.', c: '#3D4B66', f: '#E4E9F2', n: '#5B6B8A' },
 ];
 
 // Las cuatro «puertas» para descubrir según lo que la persona quiere hacer. Una idea puede estar en varias.
 export const INTENCIONES = [
-    { id: 'crear', nombre: 'Crear algo nuevo', c: '#2F63D6' },
-    { id: 'resolver', nombre: 'Resolver un problema', c: '#C21F5B' },
-    { id: 'investigar', nombre: 'Investigar un tema', c: '#0B7A5A' },
-    { id: 'otro-sector', nombre: 'Aplicar lo que sé en otro sector', c: '#9A5B00' },
+    { id: 'crear', nombre: 'Crear algo nuevo', c: '#2F63D6', n: '#2F6BFF' },
+    { id: 'resolver', nombre: 'Resolver un problema', c: '#C21F5B', n: '#FF2E7E' },
+    { id: 'investigar', nombre: 'Investigar un tema', c: '#0B7A5A', n: '#00A86B' },
+    { id: 'otro-sector', nombre: 'Aplicar lo que sé en otro sector', c: '#9A5B00', n: '#D97800' },
 ];
 
 export const IDEAS = [
     {
         id: 'reservas-laboratorios', area: 'tecnologia',
+        carreras: ['Ingeniería de Sistemas', 'Ingeniería de Software', 'Ingeniería Industrial', 'Ciberseguridad', 'Administración', 'Estadística'],
         titulo: 'Reservar laboratorios y salas sin mandar mensajes',
         resumen: 'Un sistema sencillo para ver qué espacios están libres, reservarlos y evitar cruces de horario.',
         tipo: 'Prototipo', tiempo: '~30 h', etiquetas: ['Software', 'Organización'], intencion: ['crear', 'resolver'],
@@ -44,6 +46,7 @@ export const IDEAS = [
     },
     {
         id: 'citas-consultorio', area: 'salud',
+        carreras: ['Medicina', 'Enfermería', 'Psicología', 'Ingeniería de Sistemas', 'Ingeniería Industrial', 'Administración'],
         titulo: 'Menos citas perdidas en un consultorio',
         resumen: 'Un prototipo de recordatorios y reprogramación para un consultorio pequeño, probado con un caso simulado.',
         tipo: 'Prototipo', tiempo: '~15 h', etiquetas: ['Procesos', 'Atención al paciente'], intencion: ['resolver', 'crear'],
@@ -57,6 +60,7 @@ export const IDEAS = [
     },
     {
         id: 'papel-facultad', area: 'ambiente',
+        carreras: ['Ingeniería Ambiental', 'Ingeniería Industrial', 'Química', 'Biología', 'Administración', 'Educación'],
         titulo: '¿Cuánto papel se desperdicia en tu facultad?',
         resumen: 'Mide el consumo de papel en un espacio real y propone formas concretas de reducirlo.',
         tipo: 'Análisis', tiempo: '~10 h', etiquetas: ['Medición', 'Reducción de residuos'], intencion: ['investigar', 'resolver'],
@@ -70,6 +74,7 @@ export const IDEAS = [
     },
     {
         id: 'costos-negocio', area: 'negocios',
+        carreras: ['Economía', 'Administración', 'Contabilidad', 'Ingeniería Industrial', 'Ingeniería Económica', 'Estadística'],
         titulo: '¿Cuánto cuesta realmente un negocio pequeño?',
         resumen: 'Calcula los costos reales de una bodega, un puesto o un servicio y descubre cuál es su precio justo.',
         tipo: 'Análisis', tiempo: '~12 h', etiquetas: ['Costos', 'Emprendimiento'], intencion: ['investigar', 'otro-sector'],
@@ -83,6 +88,7 @@ export const IDEAS = [
     },
     {
         id: 'cruces-peatonales', area: 'ciudades',
+        carreras: ['Ingeniería Civil', 'Arquitectura', 'Urbanismo', 'Ingeniería de Transporte', 'Sociología', 'Psicología'],
         titulo: 'Los cruces más difíciles para peatones cerca de tu campus',
         resumen: 'Observa cómo se cruza una pista cercana y propone mejoras sencillas para que sea más segura.',
         tipo: 'Investigación', tiempo: '~15 h', etiquetas: ['Seguridad vial', 'Observación'], intencion: ['investigar', 'resolver'],
@@ -96,6 +102,7 @@ export const IDEAS = [
     },
     {
         id: 'costo-taller-escolar', area: 'educacion',
+        carreras: ['Educación', 'Administración', 'Contabilidad', 'Psicología', 'Economía'],
         titulo: '¿Cuánto cuesta realmente un taller escolar?',
         resumen: 'Costea materiales, tiempo y local de una actividad y propone un precio justo con una hoja de costos.',
         tipo: 'Análisis', tiempo: '~8 h', etiquetas: ['Costos', 'Educación'], intencion: ['investigar', 'resolver'],
@@ -109,6 +116,7 @@ export const IDEAS = [
     },
     {
         id: 'servicios-gratuitos', area: 'sociedad',
+        carreras: ['Trabajo Social', 'Sociología', 'Derecho', 'Comunicaciones', 'Ingeniería de Sistemas', 'Educación'],
         titulo: 'Un mapa de servicios gratuitos de tu distrito',
         resumen: 'Reúne en un solo lugar dónde conseguir ayuda, orientación y servicios sin costo cerca de ti.',
         tipo: 'Guía', tiempo: '~10 h', etiquetas: ['Comunidad', 'Información útil'], intencion: ['crear', 'resolver'],
@@ -122,6 +130,7 @@ export const IDEAS = [
     },
     {
         id: 'derechos-consumidor', area: 'derecho',
+        carreras: ['Derecho', 'Comunicaciones', 'Diseño Gráfico', 'Economía', 'Administración'],
         titulo: 'Guía visual de derechos del consumidor',
         resumen: 'Cuatro pantallas con situaciones cotidianas, como compras en línea y garantías, listas para compartir.',
         tipo: 'Guía', tiempo: '~10 h', etiquetas: ['Divulgación', 'Derechos'], intencion: ['crear', 'resolver'],
@@ -135,6 +144,7 @@ export const IDEAS = [
     },
     {
         id: 'dureza-agua', area: 'ciencias',
+        carreras: ['Química', 'Física', 'Biología', 'Ingeniería Química', 'Ingeniería Ambiental', 'Matemática'],
         titulo: 'Comparar la dureza del agua en distintos lugares',
         resumen: 'Un experimento sencillo para medir y comparar el agua de varios lugares y entender qué la diferencia.',
         tipo: 'Investigación', tiempo: '~12 h', etiquetas: ['Experimento', 'Datos'], intencion: ['investigar'],
@@ -148,6 +158,7 @@ export const IDEAS = [
     },
     {
         id: 'senaletica-espacio', area: 'arte',
+        carreras: ['Arquitectura', 'Diseño Gráfico', 'Comunicaciones', 'Psicología', 'Ingeniería de Sistemas'],
         titulo: 'Rediseñar la señalética de un espacio de tu universidad',
         resumen: 'Detecta dónde la gente se pierde y propone señales más claras, con un prototipo para probarlas.',
         tipo: 'Diseño', tiempo: '~15 h', etiquetas: ['Diseño gráfico', 'Experiencia de usuario'], intencion: ['crear', 'resolver'],
@@ -161,6 +172,7 @@ export const IDEAS = [
     },
     {
         id: 'calendario-huerto', area: 'agricultura',
+        carreras: ['Agronomía', 'Biología', 'Ingeniería Ambiental', 'Estadística', 'Ingeniería de Sistemas', 'Educación'],
         titulo: 'Un calendario de siembra para un huerto pequeño',
         resumen: 'Cruza datos del clima con los cultivos que más se adaptan para decidir qué sembrar y cuándo.',
         tipo: 'Guía', tiempo: '~10 h', etiquetas: ['Datos del clima', 'Huertos'], intencion: ['crear', 'otro-sector'],
@@ -174,6 +186,7 @@ export const IDEAS = [
     },
     {
         id: 'tiempos-proceso', area: 'industria',
+        carreras: ['Ingeniería Industrial', 'Administración', 'Ingeniería Mecánica', 'Ingeniería Química', 'Medicina', 'Ingeniería de Sistemas'],
         titulo: 'Dónde se pierde el tiempo en un proceso de producción',
         resumen: 'Dibuja las etapas de un proceso y detecta esperas, repeticiones y desperdicios que se pueden reducir.',
         tipo: 'Análisis', tiempo: '~15 h', etiquetas: ['Procesos', 'Mejora'], intencion: ['investigar', 'resolver', 'otro-sector'],

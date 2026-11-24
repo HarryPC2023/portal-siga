@@ -62,8 +62,11 @@ function ideasFiltradas() {
         if (estado.soloGuardadas && !estado.guardadas.has(i.id)) return false;
         if (q) {
             const a = areaDe(i.area);
-            const texto = norm([i.titulo, i.resumen, i.tipo, (i.etiquetas || []).join(' '), a ? a.nombre : ''].join(' '));
-            if (!q.split(/\s+/).every((p) => texto.includes(p))) return false;
+            // Se busca en el tema, la carrera («Puede interesar a»), lo que se practica y lo que se podría desarrollar.
+            const texto = norm([i.titulo, i.resumen, i.tipo, (i.etiquetas || []).join(' '), a ? a.nombre : '', (i.carreras || []).join(' '),
+                (i.habilidades || []).join(' '), (i.herramientas || []).join(' '), i.problema, i.desarrollar, i.otroSector].join(' '));
+            const coincide = (p) => texto.includes(p) || (p.length > 4 && texto.includes(p.replace(/(es|s)$/, '')));   // «guías» ≈ «guía»
+            if (!q.split(/\s+/).every(coincide)) return false;
         }
         return true;
     });
@@ -74,7 +77,7 @@ const hayFiltros = () => !!(estado.area || estado.intencion || estado.q.trim() |
 function pintarAreas() {
     $('#ppAreas').replaceChildren(...AREAS.map((a) => {
         const n = IDEAS.filter((i) => i.area === a.id).length;
-        const b = el('button', { type: 'button', class: 'pp-area', style: `--c:${a.c}; --f:${a.f}`, 'aria-pressed': String(estado.area === a.id) },
+        const b = el('button', { type: 'button', class: 'pp-area', style: `--c:${a.c}; --f:${a.f}; --n:${a.n || a.c}`, 'aria-pressed': String(estado.area === a.id) },
             el('span', { class: 'pp-area-ico' }, el('img', { src: `assets/proyectos/icono-${a.id}.png`, alt: '', loading: 'lazy' })),
             el('span', {},
                 el('span', { class: 'pp-area-nombre', text: a.nombre }),
@@ -91,7 +94,7 @@ function pintarAreas() {
 
 function pintarIntenciones() {
     $('#ppIntenciones').replaceChildren(...INTENCIONES.map((it) => {
-        const b = el('button', { type: 'button', class: 'pp-pastilla', style: `--c:${it.c}`, 'aria-pressed': String(estado.intencion === it.id), text: it.nombre });
+        const b = el('button', { type: 'button', class: 'pp-pastilla', style: `--c:${it.c}; --n:${it.n || it.c}`, 'aria-pressed': String(estado.intencion === it.id), text: it.nombre });
         b.addEventListener('click', () => { estado.intencion = estado.intencion === it.id ? null : it.id; pintarIntenciones(); pintarIdeas(); });
         return b;
     }));
@@ -103,7 +106,7 @@ function tarjeta(i) {
     const btnG = el('button', { type: 'button', class: 'pp-guardar', 'aria-pressed': String(guardada), 'aria-label': guardada ? 'Quitar de mis ideas guardadas' : 'Guardar esta idea', title: guardada ? 'Quitar de guardadas' : 'Guardar idea' }, iconoMarcador(18));
     btnG.addEventListener('click', (e) => { e.stopPropagation(); alternarGuardada(i.id); });
     const btnVer = el('button', { type: 'button', class: 'pp-ver', text: 'Ver la idea completa →' });
-    const card = el('article', { class: 'pp-idea', style: `--c:${a.c}; --f:${a.f}` },
+    const card = el('article', { class: 'pp-idea', style: `--c:${a.c}; --f:${a.f}; --n:${a.n || a.c}` },
         el('div', { class: 'pp-idea-top' }, el('span', { class: 'pp-etq', text: a.nombre }), btnG),
         el('div', { class: 'pp-idea-cuerpo' },
             el('h3', { class: 'pp-idea-t', text: i.titulo }),
@@ -146,7 +149,7 @@ function abrirFicha(id) {
     ideaAbierta = i;
     const a = areaDe(i.area) || { nombre: '', c: '#2F63D6', f: '#E4EEFF' };
     const dlg = $('#ppFicha');
-    dlg.style.setProperty('--c', a.c); dlg.style.setProperty('--f', a.f);
+    dlg.style.setProperty('--c', a.c); dlg.style.setProperty('--f', a.f); dlg.style.setProperty('--n', a.n || a.c);
     $('#ppFichaArea').textContent = a.nombre;
     const btnG = el('button', { type: 'button', class: 'pp-btn pp-btn-blanco', id: 'ppFichaGuardar' });
     btnG.addEventListener('click', () => alternarGuardada(i.id));
@@ -164,6 +167,9 @@ function abrirFicha(id) {
         i.herramientas && i.herramientas.length ? bloque('Herramientas que podrían servir', i.herramientas) : null,
         i.lineamientos && i.lineamientos.length ? bloque('Lineamientos y cuidados', i.lineamientos) : null,
         i.otroSector ? bloque('El mismo concepto en otro sector', i.otroSector, 'pp-bloque-sector') : null,
+        i.carreras && i.carreras.length ? el('section', { class: 'pp-bloque' }, el('h4', { text: 'Puede interesar a' }),
+            el('div', { class: 'pp-tags' }, i.carreras.map((t) => el('span', { class: 'pp-tag-s', text: t }))),
+            el('p', { class: 'pp-aviso', text: 'Son ejemplos, no una lista cerrada: la idea puede hacerla cualquier persona, de cualquier carrera.' })) : null,
         el('div', { class: 'pp-ficha-pie' }, btnG),
         el('p', { class: 'pp-aviso', text: 'Es una idea para inspirarte: puedes adaptarla, hacerla más pequeña o más grande, o usarla en otro sector.' }));
     actualizarBotonFicha();
@@ -180,6 +186,10 @@ function cerrarFicha() {
 /* ───── arranque ───── */
 function conectar() {
     $('#ppBuscar').addEventListener('input', (e) => { estado.q = e.target.value; pintarIdeas(); });
+    document.querySelectorAll('.pp-ej').forEach((b) => b.addEventListener('click', () => {
+        estado.q = b.dataset.q; $('#ppBuscar').value = estado.q; pintarIdeas();
+        $('#ideas').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
     $('#ppSoloGuardadas').addEventListener('click', () => { estado.soloGuardadas = !estado.soloGuardadas; pintarIdeas(); });
     $('#ppLimpiar').addEventListener('click', () => {
         estado.area = null; estado.intencion = null; estado.q = ''; estado.soloGuardadas = false;
