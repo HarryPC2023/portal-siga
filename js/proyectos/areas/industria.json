@@ -1,0 +1,61 @@
+{
+ "area": "industria",
+ "ideas": [
+  {
+   "id": "tiempos-proceso",
+   "area": "industria",
+   "areas2": [],
+   "titulo": "Dónde se pierde el tiempo en un proceso de producción",
+   "resumen": "Descubre cómo dibujar las etapas de un proceso para detectar esperas, repeticiones y desperdicios que se podrían reducir.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Procesos",
+    "Mejora"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: puedes hacerlo sin pedir permiso a nadie",
+   "carreras": [
+    "Ingeniería Industrial",
+    "Administración",
+    "Ingeniería Mecánica",
+    "Ingeniería Química",
+    "Medicina",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "En muchos procesos, desde una panadería hasta un taller, una parte importante del tiempo se va en esperas, traslados y tareas repetidas que nadie ha medido."
+   ],
+   "desarrollar": [
+    "Un diagrama del proceso con tiempos aproximados por etapa, el señalamiento de dónde se pierde más tiempo y dos o tres mejoras posibles con su efecto estimado."
+   ],
+   "objetivos": [
+    "Describir el proceso paso a paso.",
+    "Medir o estimar el tiempo de cada etapa.",
+    "Proponer mejoras y estimar cuánto tiempo ahorrarían."
+   ],
+   "habilidades": [
+    "Diagramas de flujo",
+    "Medición de tiempos",
+    "Pensamiento crítico"
+   ],
+   "herramientas": [
+    "Cronómetro",
+    "Hoja de cálculo",
+    "Un editor de diagramas"
+   ],
+   "lineamientos": [
+    "Puede ser un proceso real al que tengas acceso o uno simulado.",
+    "Cuida la seguridad si observas un lugar de trabajo.",
+    "Pide permiso antes de medir a personas trabajando."
+   ],
+   "otroSector": "El mismo análisis sirve para un hospital, una cocina, una oficina, un banco o un servicio de atención al cliente."
+  }
+ ]
+}

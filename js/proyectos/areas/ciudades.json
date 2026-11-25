@@ -1,0 +1,607 @@
+{
+ "area": "ciudades",
+ "ideas": [
+  {
+   "id": "esta-tu-casa-o-tu-salon-listo-para-un-sismo",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Está tu casa o tu salón listo para un sismo?",
+   "resumen": "Imagina cómo identificar los riesgos de un espacio cotidiano frente a un sismo y cómo diseñar un plan sencillo para que las personas sepan qué hacer, adónde ir y qué tener a la mano.",
+   "tipo": "Plan",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Gestión de riesgos",
+    "Seguridad"
+   ],
+   "intencion": [
+    "resolver",
+    "crear",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes usar el plano de tu casa, de tu salón de clases o de un espacio inventado.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Arquitectura",
+    "Ingeniería de Sistemas",
+    "Comunicaciones",
+    "Educación",
+    "Administración"
+   ],
+   "problema": [
+    "En zonas con actividad sísmica, casi todas las personas saben que \"algún día\" puede temblar fuerte, pero pocas tienen un plan concreto. Los muebles altos sin sujetar, las rutas de salida bloqueadas o la falta de un punto de reunión conocido pueden convertir un evento manejable en una situación de riesgo.",
+    "Además, la información suele estar dispersa: carteles que nadie lee, mensajes que se olvidan o indicaciones que cada persona entiende de forma distinta. En un momento de tensión, un plan complicado simplemente no se usa."
+   ],
+   "desarrollar": [
+    "Un plan básico para un espacio concreto que incluya un plano sencillo con zonas seguras, rutas de salida y puntos de reunión, una lista de elementos de riesgo detectados y una lista de suministros de emergencia.",
+    "El resultado puede ser un documento visual, un afiche, una hoja de cálculo o una pequeña página web que cualquier persona pueda entender en menos de dos minutos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Simular una evacuación",
+     "aporta": "estima cuánto tardarían distintas personas en salir y qué cuellos de botella aparecerían en puertas o pasillos."
+    },
+    {
+     "titulo": "Medir si el plan funciona",
+     "aporta": "realiza un simulacro con personas voluntarias y registra qué dudas o errores aparecen."
+    },
+    {
+     "titulo": "Adaptar el plan",
+     "aporta": "explora cómo cambiaría para personas mayores, niños o personas con movilidad reducida."
+    }
+   ],
+   "objetivos": [
+    "Identificar los riesgos físicos y de organización de un espacio frente a un sismo.",
+    "Diseñar rutas de salida y puntos de reunión claros.",
+    "Elaborar una lista de suministros básicos de emergencia.",
+    "Comunicar el plan de forma simple y fácil de recordar.",
+    "Comprobar si otras personas entienden el plan sin necesidad de explicación adicional."
+   ],
+   "habilidades": [
+    "Identificación y análisis de riesgos.",
+    "Diseño de planos y esquemas.",
+    "Comunicación clara de información.",
+    "Planificación de contingencias.",
+    "Empatía y pensamiento centrado en las personas."
+   ],
+   "herramientas": [
+    "Programas de dibujo o diseño sencillo.",
+    "Hoja de cálculo para la lista de riesgos y suministros.",
+    "Herramientas de presentación o edición de afiches.",
+    "Herramientas web básicas si deseas crear una versión digital."
+   ],
+   "lineamientos": [
+    "Basa el plan en guías oficiales de defensa civil y gestión del riesgo de desastres, y no inventes recomendaciones técnicas. Este proyecto no reemplaza una evaluación estructural: si sospechas de problemas en una edificación, consulta a profesionales calificados.",
+    "Si realizas un simulacro, hazlo con previo aviso, sin correr y sin poner a nadie en riesgo. Evita recopilar información personal innecesaria de las personas que participen."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a planes de emergencia de oficinas, colegios, talleres, locales comerciales, laboratorios o eventos con mucha asistencia, y a otros tipos de emergencia como incendios o cortes prolongados de servicios."
+  },
+  {
+   "id": "que-deja-de-funcionar-si-se-va-la-luz-o-el-internet",
+   "area": "ciudades",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "¿Qué deja de funcionar si se va la luz o el internet?",
+   "resumen": "Investiga de qué depende realmente tu vida diaria de la electricidad y la conexión a internet, y cómo prepararte para seguir estudiando, trabajando y comunicándote cuando uno de los dos servicios falla durante varias horas.",
+   "tipo": "Plan",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Gestión de riesgos",
+    "Continuidad",
+    "Energía"
+   ],
+   "intencion": [
+    "resolver",
+    "crear",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes analizar tu propia casa, un departamento compartido o un negocio pequeño inventado.",
+   "carreras": [
+    "Ingeniería Eléctrica",
+    "Ingeniería Electrónica",
+    "Ingeniería de Telecomunicaciones",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas",
+    "Ingeniería Ambiental",
+    "Administración"
+   ],
+   "problema": [
+    "Un corte de luz o de internet parece un inconveniente menor hasta que coincide con una entrega, una clase virtual, un examen en línea o una llamada importante. En ese momento se descubre que muchas cosas dependían de esos servicios sin que nadie lo hubiera notado: la bomba de agua, el router, la carga del celular, las alarmas, los archivos que solo están en la nube o las conexiones de trabajo.",
+    "Como estas interrupciones no suelen avisar con anticipación, la mayoría de las personas improvisa. Y cuando se improvisa bajo presión, se pierden tiempo, trabajo y a veces dinero."
+   ],
+   "desarrollar": [
+    "Un inventario de todo lo que depende de la luz y del internet en un espacio concreto, clasificado según qué tan crítico es y cuánto tiempo podría pasar sin funcionar.",
+    "A partir de ese inventario, un plan para tres escenarios de duración, como unas 2 horas, una jornada y un día completo, con acciones concretas para cada uno.",
+    "El resultado puede ser una tabla de dependencias, un diagrama o una guía de una página que cualquiera pueda consultar rápidamente."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Autonomía de energía",
+     "aporta": "calcula cuánto tiempo podrían funcionar tus dispositivos con baterías externas y qué prioridades conviene proteger."
+    },
+    {
+     "titulo": "Trabajo sin conexión",
+     "aporta": "explora cómo organizar tus archivos y tareas para poder avanzar aunque no haya internet."
+    },
+    {
+     "titulo": "Impacto en un negocio",
+     "aporta": "estima cuánto costaría una interrupción de varias horas en un negocio pequeño y qué medidas reducirían ese costo."
+    }
+   ],
+   "objetivos": [
+    "Identificar las dependencias de electricidad e internet en un espacio cotidiano.",
+    "Clasificar esas dependencias según su importancia.",
+    "Diseñar acciones preventivas y de respuesta para distintos tiempos de interrupción.",
+    "Presentar el plan en un formato breve que se pueda usar en el momento.",
+    "Comprobar si otra persona sabría qué hacer al leerlo, sin necesidad de explicaciones."
+   ],
+   "habilidades": [
+    "Análisis de dependencias y riesgos.",
+    "Planificación de contingencias.",
+    "Conceptos básicos de energía y comunicaciones.",
+    "Organización de información.",
+    "Comunicación clara y breve."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas de diagramas.",
+    "Editor de documentos o presentaciones.",
+    "Aplicaciones de notas y almacenamiento con acceso sin conexión."
+   ],
+   "lineamientos": [
+    "No manipules instalaciones eléctricas ni intentes soluciones improvisadas con la red de tu hogar: ante cualquier duda, consulta a un profesional. Si consideras generadores, velas o fuentes de calor, investiga primero sus riesgos de incendio e intoxicación, y nunca uses equipos de combustión en espacios cerrados.",
+    "Si en el hogar hay personas que dependen de equipos eléctricos por razones de salud, ese plan debe elaborarse con orientación profesional y no solo con este ejercicio."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a planes de continuidad en colegios, laboratorios, talleres, consultorios, tiendas, oficinas o centros de datos, y a la preparación frente a otros eventos que interrumpen servicios básicos."
+  },
+  {
+   "id": "por-donde-camina-realmente-tu-barrio",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Por dónde camina realmente tu barrio?",
+   "resumen": "Explora cómo se desplazan las personas en una zona determinada para descubrir qué rutas se utilizan con mayor frecuencia, dónde se producen congestiones y qué oportunidades existen para mejorar la movilidad.",
+   "tipo": "Investigación",
+   "tiempo": "1 a 2 meses",
+   "horas": 39,
+   "etiquetas": [
+    "Movilidad",
+    "Datos",
+    "Comunidad"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "observaciones propias o públicos: puedes registrar tus propias observaciones o utilizar información abierta disponible en mapas, municipios o fuentes de transporte.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Civil",
+    "Ingeniería de Transporte",
+    "Arquitectura",
+    "Urbanismo",
+    "Estadística",
+    "Geografía",
+    "Administración Pública",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Todos los días miles de personas se desplazan para estudiar, trabajar, realizar compras o acceder a servicios. Sin embargo, gran parte de las decisiones relacionadas con la movilidad se toman a partir de percepciones y no de observaciones sistemáticas.",
+    "Una calle puede parecer muy transitada porque siempre la observamos en hora punta, mientras que otra podría concentrar la mayor parte de los desplazamientos del barrio sin que resulte evidente. Del mismo modo, algunos cruces, paraderos o rutas pueden generar retrasos frecuentes que pasan desapercibidos porque nadie recopila información sobre ellos.",
+    "Comprender cómo se mueve una comunidad es el primer paso para detectar problemas y proponer mejoras fundamentadas."
+   ],
+   "desarrollar": [
+    "Selecciona una zona específica y registra durante varias semanas información relacionada con desplazamientos, flujo de personas o utilización de rutas.",
+    "El proyecto puede incluir:",
+    {
+     "lista": [
+      "Rutas más utilizadas.",
+      "Horarios de mayor movimiento.",
+      "Puntos de congestión.",
+      "Lugares de cruce frecuente.",
+      "Tiempos aproximados de recorrido."
+     ]
+    },
+    "Utiliza los datos recogidos para construir mapas, gráficos o visualizaciones que permitan identificar patrones de movilidad."
+   ],
+   "objetivos": [
+    "Diseñar una estrategia para observar y registrar desplazamientos.",
+    "Identificar las rutas con mayor utilización.",
+    "Detectar posibles puntos de congestión o demora.",
+    "Visualizar tendencias mediante gráficos o mapas.",
+    "Elaborar conclusiones basadas en la evidencia recopilada."
+   ],
+   "habilidades": [
+    "Observación sistemática.",
+    "Análisis de datos.",
+    "Interpretación de patrones.",
+    "Cartografía básica.",
+    "Visualización de información.",
+    "Investigación aplicada."
+   ],
+   "herramientas": [
+    "Hojas de cálculo.",
+    "Aplicaciones de mapas.",
+    "Herramientas de visualización de datos.",
+    "Formularios de registro.",
+    "Software de elaboración de mapas."
+   ],
+   "lineamientos": [
+    "Realiza las observaciones desde espacios públicos y seguros. No recopiles información personal ni datos que permitan identificar a individuos concretos.",
+    "Documenta siempre cuándo, dónde y cómo se realizaron las observaciones para facilitar la interpretación de los resultados.",
+    "Los datos obtenidos representan únicamente el periodo y las condiciones observadas, por lo que deben interpretarse dentro de ese contexto."
+   ],
+   "otroSector": "La misma metodología puede utilizarse para analizar el flujo de clientes en un centro comercial, visitantes en un museo, usuarios de una biblioteca, vehículos en una carretera o personas dentro de un evento."
+  },
+  {
+   "id": "un-mapa-de-los-lugares-que-si-son-accesibles",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Un mapa de los lugares que sí son accesibles",
+   "resumen": "Imagina cómo identificar, registrar y visualizar espacios accesibles para personas con distintas necesidades de movilidad, creando una herramienta que facilite la planificación de desplazamientos y el acceso a lugares de uso cotidiano.",
+   "tipo": "Guía",
+   "tiempo": "1 a 3 meses",
+   "horas": 52,
+   "etiquetas": [
+    "Accesibilidad",
+    "Inclusión",
+    "Información geográfica"
+   ],
+   "intencion": [
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "observaciones propias y fuentes públicas: puedes recopilar información visitando espacios o consultando información institucional disponible.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Arquitectura",
+    "Urbanismo",
+    "Ingeniería Civil",
+    "Diseño UX",
+    "Trabajo Social",
+    "Geografía",
+    "Administración Pública",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Muchas personas dan por sentado que pueden acceder sin dificultades a edificios, comercios, instituciones o espacios públicos. Sin embargo, para alguien con movilidad reducida, una rampa inexistente, una vereda en mal estado o una entrada demasiado estrecha pueden convertirse en barreras importantes.",
+    "Aunque algunos lugares cuentan con infraestructura accesible, esta información suele estar dispersa o simplemente no se encuentra disponible de forma sencilla. Como resultado, las personas deben averiguar por su cuenta si podrán acceder a un lugar antes de desplazarse.",
+    "La falta de información también dificulta identificar qué espacios necesitan mejoras y cuáles ya cuentan con condiciones adecuadas de accesibilidad."
+   ],
+   "desarrollar": [
+    "Selecciona una zona determinada y registra información básica sobre distintos espacios.",
+    "Por ejemplo:",
+    {
+     "lista": [
+      "Existencia de rampas.",
+      "Accesos alternativos.",
+      "Ascensores.",
+      "Baños accesibles.",
+      "Señalización.",
+      "Estado de circulación de veredas y accesos."
+     ]
+    },
+    "Con los datos recopilados, construye un mapa o directorio digital que permita consultar fácilmente esta información."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar zonas",
+     "aporta": "analiza qué barrios o sectores presentan mejores condiciones de accesibilidad."
+    },
+    {
+     "titulo": "Indicadores visuales",
+     "aporta": "diseña una forma sencilla de representar distintos niveles de accesibilidad."
+    },
+    {
+     "titulo": "Actualización colaborativa",
+     "aporta": "imagina cómo otras personas podrían contribuir a mantener la información actualizada."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué elementos facilitan o dificultan la accesibilidad.",
+    "Diseñar una metodología de registro clara y consistente.",
+    "Organizar la información de manera comprensible.",
+    "Crear una visualización que facilite la consulta de los datos.",
+    "Detectar oportunidades de mejora en los espacios observados."
+   ],
+   "habilidades": [
+    "Recolección de información en campo.",
+    "Organización de datos.",
+    "Diseño de sistemas de información.",
+    "Cartografía básica.",
+    "Diseño centrado en las personas.",
+    "Comunicación visual."
+   ],
+   "herramientas": [
+    "Aplicaciones de mapas.",
+    "Formularios digitales.",
+    "Hojas de cálculo.",
+    "Herramientas de visualización geográfica.",
+    "Sistemas web si deseas ampliar el proyecto."
+   ],
+   "lineamientos": [
+    "Procura registrar únicamente información observable y verificable. Evita asumir condiciones que no hayas podido confirmar directamente.",
+    "Si utilizas fotografías, evita mostrar personas identificables y céntrate en la infraestructura del lugar.",
+    "Cuando existan limitaciones o cambios temporales en el espacio, indícalos claramente para evitar interpretaciones incorrectas."
+   ],
+   "otroSector": "La misma metodología puede utilizarse para crear mapas de puntos de reciclaje, espacios culturales, zonas seguras para peatones, servicios comunitarios, áreas deportivas o lugares de interés turístico."
+  },
+  {
+   "id": "un-simulador-de-trafico-urbano",
+   "area": "ciudades",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "Un simulador de tráfico urbano",
+   "resumen": "Imagina cómo se comporta el tráfico cuando cambian las condiciones de una ciudad. Descubre cómo influyen los semáforos, la cantidad de vehículos, la distribución de carriles y otros factores sobre la congestión, los tiempos de viaje y la utilización de las vías.",
+   "tipo": "Simulación",
+   "tiempo": "2 a 6 meses",
+   "horas": 104,
+   "etiquetas": [
+    "Modelamiento",
+    "Transporte",
+    "Sistemas complejos"
+   ],
+   "intencion": [
+    "crear",
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos y simulados: puedes utilizar información abierta sobre tránsito, planos urbanos simplificados o escenarios completamente simulados.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Civil",
+    "Ingeniería de Transporte",
+    "Ingeniería Industrial",
+    "Matemática",
+    "Estadística",
+    "Ciencia de Datos",
+    "Investigación Operativa"
+   ],
+   "problema": [
+    "Las ciudades dependen de miles de decisiones simultáneas tomadas por conductores, peatones, semáforos y sistemas de transporte. Aunque una calle pueda parecer fluida de manera individual, pequeñas alteraciones en un punto específico pueden generar efectos que se propagan a zonas mucho más amplias.",
+    "Una intersección mal configurada, un semáforo con tiempos inadecuados o un aumento temporal de vehículos puede provocar congestiones que afectan a cientos o miles de personas. Comprender estas dinámicas resulta complicado porque el tráfico es un sistema complejo donde numerosas variables interactúan al mismo tiempo.",
+    "Realizar cambios directamente en una ciudad real suele ser costoso y arriesgado. Por ello, los simuladores permiten experimentar con distintos escenarios antes de aplicar modificaciones en el mundo real."
+   ],
+   "desarrollar": [
+    "Construye un simulador capaz de representar una intersección o una pequeña red vial.",
+    "El sistema puede incluir:",
+    {
+     "lista": [
+      "Vehículos que llegan desde distintas direcciones.",
+      "Semáforos programables.",
+      "Carriles de circulación.",
+      "Filas de espera.",
+      "Tiempos de desplazamiento.",
+      "Indicadores de congestión."
+     ]
+    },
+    "Permite modificar parámetros como la duración de los semáforos, la cantidad de vehículos o la configuración de las vías para comparar diferentes escenarios."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Expandir la red vial",
+     "aporta": "incorpora varias intersecciones conectadas y analiza cómo los problemas se propagan entre ellas."
+    },
+    {
+     "titulo": "Comparar estrategias de control",
+     "aporta": "estudia diferentes configuraciones de semáforos y evalúa cuál reduce mejor la congestión."
+    },
+    {
+     "titulo": "Incorporar transporte público",
+     "aporta": "analiza cómo cambian los resultados cuando se priorizan autobuses, tranvías u otros medios de transporte colectivo."
+    }
+   ],
+   "objetivos": [
+    "Definir reglas básicas de circulación.",
+    "Modelar la llegada y movimiento de vehículos.",
+    "Implementar semáforos y sistemas de control.",
+    "Medir indicadores como tiempos de espera y niveles de congestión.",
+    "Comparar distintos escenarios de operación.",
+    "Interpretar los resultados obtenidos y explicar su impacto."
+   ],
+   "habilidades": [
+    "Programación.",
+    "Simulación de eventos discretos.",
+    "Matemática aplicada.",
+    "Modelamiento de sistemas.",
+    "Visualización de datos.",
+    "Análisis de procesos complejos."
+   ],
+   "herramientas": [
+    "Python.",
+    "SimPy u otras bibliotecas de simulación.",
+    "Pygame o tecnologías web para visualización.",
+    "Herramientas de gráficos y análisis.",
+    "Hojas de cálculo para experimentación inicial."
+   ],
+   "lineamientos": [
+    "Utiliza escenarios simulados o información pública adecuadamente documentada. Explica claramente los supuestos utilizados para construir el modelo y las limitaciones de la simulación.",
+    "Recuerda que el comportamiento observado corresponde al sistema modelado y no sustituye un estudio profesional de ingeniería de tránsito. Las conclusiones deben interpretarse dentro del contexto del modelo desarrollado."
+   ],
+   "otroSector": "La misma metodología puede aplicarse al estudio de evacuaciones, movimiento de personas en edificios, procesos logísticos, distribución de mercancías, circulación dentro de fábricas, atención de usuarios en servicios o transporte de materiales."
+  },
+  {
+   "id": "un-recomendador-de-rutas-de-transporte",
+   "area": "ciudades",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "Un recomendador de rutas de transporte",
+   "resumen": "Investiga cómo diferentes algoritmos pueden ayudar a encontrar rutas entre un origen y un destino considerando criterios más allá de la distancia. Descubre cómo factores como el tiempo de viaje, los transbordos, la accesibilidad o las preferencias de cada persona pueden influir en la elección de una ruta.",
+   "tipo": "Prototipo",
+   "tiempo": "2 a 6 meses",
+   "horas": 104,
+   "etiquetas": [
+    "Algoritmos",
+    "Geolocalización",
+    "Transporte"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: mapas, redes de transporte y conjuntos de datos abiertos disponibles para análisis y experimentación.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Transporte",
+    "Ingeniería Civil",
+    "Matemática",
+    "Ingeniería Industrial",
+    "Ciencia de Datos",
+    "Geografía",
+    "Investigación Operativa"
+   ],
+   "problema": [
+    "Cuando una persona se desplaza por una ciudad, la ruta más corta no siempre es la más conveniente. Un recorrido puede implicar menos distancia, pero requerir más transbordos. Otro puede ser más largo, pero permitir un viaje más cómodo o rápido. Del mismo modo, lo que resulta adecuado para una persona puede no serlo para otra.",
+    "Por ejemplo, alguien podría preferir minimizar el tiempo total de viaje, mientras que otra persona podría priorizar reducir la cantidad de cambios de transporte o evitar trayectos con muchas pendientes. Estas diferencias convierten la búsqueda de rutas en un problema más complejo de lo que parece a simple vista.",
+    "Los sistemas modernos de navegación utilizan algoritmos capaces de analizar miles de posibilidades para recomendar alternativas según diferentes criterios. Comprender cómo funcionan estos sistemas permite descubrir cómo la tecnología ayuda a resolver problemas cotidianos de movilidad."
+   ],
+   "desarrollar": [
+    "Construye una herramienta capaz de representar una red de rutas conectadas y calcular caminos entre distintos puntos.",
+    "El sistema puede incluir:",
+    {
+     "lista": [
+      "Origen y destino.",
+      "Distancia entre puntos.",
+      "Conexiones disponibles.",
+      "Tiempo estimado de recorrido.",
+      "Número de transbordos.",
+      "Comparación entre distintas alternativas."
+     ]
+    },
+    "Diseña una interfaz que permita consultar rutas y visualizar los recorridos generados por el algoritmo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Múltiples criterios",
+     "aporta": "permite que el usuario decida si prefiere minimizar tiempo, distancia o cantidad de conexiones."
+    },
+    {
+     "titulo": "Accesibilidad",
+     "aporta": "incorpora criterios relacionados con movilidad reducida o facilidad de acceso."
+    },
+    {
+     "titulo": "Información dinámica",
+     "aporta": "explora cómo cambiarían las recomendaciones cuando existen retrasos, cierres de vías o congestión."
+    }
+   ],
+   "objetivos": [
+    "Representar una red de transporte mediante estructuras adecuadas.",
+    "Implementar algoritmos de búsqueda de rutas.",
+    "Definir criterios para comparar alternativas.",
+    "Diseñar una forma clara de mostrar los resultados.",
+    "Evaluar cómo cambian las recomendaciones según las preferencias elegidas.",
+    "Analizar las ventajas y limitaciones de los distintos enfoques utilizados."
+   ],
+   "habilidades": [
+    "Teoría de grafos.",
+    "Algoritmos de búsqueda.",
+    "Geolocalización.",
+    "Desarrollo de software.",
+    "Diseño de interfaces.",
+    "Análisis de datos espaciales.",
+    "Resolución de problemas."
+   ],
+   "herramientas": [
+    "Python o JavaScript.",
+    "NetworkX u otras bibliotecas de grafos.",
+    "OpenStreetMap.",
+    "Bases de datos geográficas (opcional).",
+    "Herramientas de visualización cartográfica.",
+    "Frameworks web para construir la interfaz."
+   ],
+   "lineamientos": [
+    "Diferencia claramente entre rutas calculadas por el modelo y servicios de transporte realmente disponibles. Documenta la procedencia de los datos utilizados y especifica cuándo una ruta se basa en información simulada.",
+    "Explica los criterios empleados por el algoritmo para generar recomendaciones y evita presentar una alternativa como universalmente mejor para todos los usuarios.",
+    "Si trabajas con datos abiertos de transporte, indica la fecha de actualización y las posibles limitaciones de la información utilizada."
+   ],
+   "otroSector": "La misma lógica puede aplicarse a recorridos de reparto, rutas de evacuación, planificación logística, movimiento de materiales dentro de almacenes, distribución de productos o desplazamientos dentro de instalaciones industriales de gran tamaño."
+  },
+  {
+   "id": "cruces-peatonales",
+   "area": "ciudades",
+   "areas2": [],
+   "titulo": "Los cruces más difíciles para peatones cerca de tu centro de estudios",
+   "resumen": "Observa cómo se cruza una pista cercana e imagina mejoras sencillas para que sea más segura.",
+   "tipo": "Investigación",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Seguridad vial",
+    "Observación"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes",
+   "carreras": [
+    "Ingeniería Civil",
+    "Arquitectura",
+    "Urbanismo",
+    "Ingeniería de Transporte",
+    "Sociología",
+    "Psicología"
+   ],
+   "problema": [
+    "Hay cruces donde las personas esperan poco, corren o cruzan por donde no deben, y rara vez se registra por qué ocurre."
+   ],
+   "desarrollar": [
+    "Un registro de observación por franjas horarias (cuántos cruzan, cuánto esperan, qué dificulta el paso) y un croquis con dos o tres mejoras posibles."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Observar más",
+     "aporta": "Explora si cambia el panorama en otros días, horarios o con lluvia."
+    },
+    {
+     "titulo": "Comparar con otro lugar",
+     "aporta": "Descubre qué hace distinto a otro cruce, de otro distrito, que sí funciona bien."
+    },
+    {
+     "titulo": "Mostrar la mejora",
+     "aporta": "Imagina cómo se vería el cruce antes y después, con un dibujo o una maqueta sencilla."
+    }
+   ],
+   "objetivos": [
+    "Elegir un cruce y definir qué observar.",
+    "Registrar datos en distintas horas.",
+    "Proponer mejoras viables con un croquis claro."
+   ],
+   "habilidades": [
+    "Observación sistemática",
+    "Croquis y planos simples",
+    "Argumentar una propuesta"
+   ],
+   "herramientas": [
+    "Hoja de registro",
+    "Mapa o croquis",
+    "Fotografías del lugar (sin mostrar rostros)"
+   ],
+   "lineamientos": [
+    "Observa desde un lugar seguro, sin invadir la vía.",
+    "No grabes ni fotografíes a personas identificables.",
+    "Presenta tus ideas como propuestas, no como críticas."
+   ],
+   "otroSector": "El mismo método sirve para analizar colas en una ventanilla, el flujo en un mercado o el tránsito dentro de una planta."
+  }
+ ]
+}

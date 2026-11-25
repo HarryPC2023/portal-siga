@@ -1,0 +1,322 @@
+{
+ "area": "sociedad",
+ "ideas": [
+  {
+   "id": "como-reconocer-una-noticia-sospechosa-en-internet",
+   "area": "sociedad",
+   "areas2": [
+    "educacion",
+    "tecnologia"
+   ],
+   "titulo": "¿Cómo reconocer una noticia sospechosa en internet?",
+   "resumen": "Imagina cómo evaluar la confiabilidad de una noticia, publicación o contenido digital antes de compartirlo. Descubre qué señales pueden indicar que una información necesita verificarse y diseña una guía práctica que ayude a otras personas a tomar decisiones mejor informadas.",
+   "tipo": "Guía",
+   "tiempo": "1 a 4 semanas",
+   "horas": 15,
+   "etiquetas": [
+    "Alfabetización digital",
+    "Verificación",
+    "Pensamiento crítico"
+   ],
+   "intencion": [
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: puedes utilizar publicaciones, artículos, imágenes y fuentes abiertas disponibles en internet.",
+   "carreras": [
+    "Comunicaciones",
+    "Periodismo",
+    "Derecho",
+    "Educación",
+    "Ingeniería de Sistemas",
+    "Ciencia de Datos",
+    "Psicología",
+    "Ciencias Políticas",
+    "Marketing"
+   ],
+   "problema": [
+    "Cada día circulan miles de publicaciones en redes sociales, aplicaciones de mensajería, blogs y sitios web. Algunas contienen información correcta y verificable, pero otras presentan datos incompletos, imágenes sacadas de contexto, titulares engañosos o afirmaciones sin evidencia suficiente.",
+    "La rapidez con la que se comparte información hace que muchas personas difundan contenidos sin comprobar quién los publicó, cuándo se publicó o si existen fuentes confiables que respalden lo que se afirma.",
+    "En algunos casos el problema no es que una noticia sea completamente falsa, sino que presenta información incompleta, desactualizada o fuera de contexto. Por eso resulta importante desarrollar habilidades que permitan analizar críticamente lo que vemos antes de aceptarlo o compartirlo."
+   ],
+   "desarrollar": [
+    "Diseña una guía visual sencilla que ayude a revisar una noticia paso a paso antes de compartirla.",
+    "Por ejemplo, la guía puede incluir preguntas como:",
+    {
+     "lista": [
+      "¿Quién publicó la información?",
+      "¿Cuál es la fuente original?",
+      "¿Cuándo fue publicada?",
+      "¿Otras fuentes confiables informan lo mismo?",
+      "¿La imagen pertenece realmente al hecho que se describe?",
+      "¿Existen evidencias que respalden la afirmación?"
+     ]
+    },
+    "Presenta las comprobaciones mediante diagramas, tarjetas visuales, una infografía o una página interactiva fácil de consultar."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Casos prácticos",
+     "aporta": "desarrolla ejemplos simulados para mostrar cómo aplicar el proceso de verificación."
+    },
+    {
+     "titulo": "Versiones especializadas",
+     "aporta": "adapta la guía a temas específicos como salud, tecnología, economía o ciencia."
+    },
+    {
+     "titulo": "Diseño interactivo",
+     "aporta": "transforma las comprobaciones en una herramienta donde los usuarios respondan preguntas y reciban recomendaciones para verificar la información."
+    }
+   ],
+   "objetivos": [
+    "Identificar señales que justifican una verificación adicional.",
+    "Investigar métodos básicos de comprobación de información.",
+    "Organizar el proceso de verificación de forma clara y comprensible.",
+    "Explicar ejemplos utilizando lenguaje sencillo.",
+    "Crear un recurso educativo que pueda ser utilizado por otras personas."
+   ],
+   "habilidades": [
+    "Búsqueda de información.",
+    "Pensamiento crítico.",
+    "Verificación de fuentes.",
+    "Comunicación visual.",
+    "Alfabetización digital.",
+    "Organización de contenidos."
+   ],
+   "herramientas": [
+    "Navegador web.",
+    "Fuentes de verificación públicas.",
+    "Herramientas de diseño o presentaciones.",
+    "Aplicaciones para elaborar infografías.",
+    "Herramientas de búsqueda de imágenes (opcional)."
+   ],
+   "lineamientos": [
+    "No clasifiques automáticamente una publicación como falsa únicamente porque provenga de una fuente desconocida. Diferencia claramente entre información falsa, engañosa, incompleta, desactualizada o simplemente no verificada.",
+    "Utiliza ejemplos públicos o simulados y cita las fuentes que emplees para elaborar la guía. El objetivo es enseñar un proceso de análisis, no emitir juicios sobre personas o grupos específicos."
+   ],
+   "otroSector": "La misma metodología puede aplicarse para evaluar ofertas de empleo, anuncios comerciales, información sobre productos, recomendaciones de salud, publicaciones financieras, estudios científicos o contenidos generados por inteligencia artificial."
+  },
+  {
+   "id": "como-se-propaga-un-rumor-en-el-grupo-de-tu-carrera",
+   "area": "sociedad",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "¿Cómo se propaga un rumor en el grupo de tu carrera?",
+   "resumen": "Descubre cómo un mensaje, verdadero o falso, puede pasar de persona en persona hasta llegar a cientos, y por qué las correcciones suelen alcanzar a mucha menos gente que el rumor original.",
+   "tipo": "Simulación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Simulación",
+    "Redes",
+    "Comunicación"
+   ],
+   "intencion": [
+    "crear",
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o simulados: puedes construir una red inventada de personas y grupos, sin utilizar conversaciones reales ni información de nadie.",
+   "carreras": [
+    "Matemática",
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Comunicaciones",
+    "Sociología",
+    "Psicología",
+    "Ciencia de Datos",
+    "Física"
+   ],
+   "problema": [
+    "En grupos de mensajería, redes sociales y comunidades estudiantiles, un mensaje reenviado puede extenderse en minutos. Cada persona lo comparte porque le parece importante, urgente o interesante, y casi nadie se detiene a verificar su origen.",
+    "Cuando se descubre que la información era errónea, la corrección llega tarde y a menos personas. El resultado es que mucha gente se queda con la primera versión, aunque después se desmienta.",
+    "Entender cómo ocurre esa propagación ayuda a diseñar mejores formas de comunicar y a reconocer en qué momentos un mensaje puede frenarse."
+   ],
+   "desarrollar": [
+    "Una simulación sencilla en la que se represente una red de personas conectadas y se defina con qué probabilidad cada una reenvía un mensaje que recibe.",
+    "El proyecto compara qué ocurre con un rumor y con una corrección que parte después, y muestra con gráficos cuántas personas alcanza cada uno a lo largo del tiempo.",
+    "El resultado puede ser una hoja de cálculo con fórmulas, un programa sencillo o una pequeña página web interactiva donde se puedan cambiar los parámetros y observar el efecto."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara cómo se propaga un rumor con un contagio o un video viral y qué tienen en común."
+    },
+    {
+     "titulo": "Cortar el rumor",
+     "aporta": "evalúa qué corrección alcanza a más gente, si la más rápida, la más clara o la que viene de alguien conocido."
+    },
+    {
+     "titulo": "Pensar antes de reenviar",
+     "aporta": "crea una guía corta para quien recibe un mensaje dudoso y quiere decidir con calma."
+    }
+   ],
+   "objetivos": [
+    "Representar una comunidad como una red de personas conectadas.",
+    "Definir reglas simples de cómo se comparte un mensaje.",
+    "Simular la propagación de un rumor y de su corrección.",
+    "Analizar qué factores aceleran o frenan la difusión.",
+    "Reflexionar sobre qué estrategias podrían hacer que las correcciones lleguen mejor."
+   ],
+   "habilidades": [
+    "Modelado y simulación.",
+    "Redes y grafos.",
+    "Probabilidad básica.",
+    "Visualización de datos.",
+    "Pensamiento crítico sobre la información."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Lenguajes de programación como Python.",
+    "Herramientas de simulación o de visualización de redes.",
+    "Herramientas web básicas si deseas crear una versión interactiva."
+   ],
+   "lineamientos": [
+    "Trabaja únicamente con redes simuladas: no analices conversaciones reales, no uses nombres de personas reales ni recopiles mensajes de grupos. Evita tomar como ejemplo rumores reales que puedan perjudicar a alguien.",
+    "Recuerda que una simulación es una simplificación: sirve para entender tendencias, no para predecir con exactitud cómo se comportará una comunidad real."
+   ],
+   "otroSector": "La misma idea puede utilizarse para estudiar la difusión de campañas de salud, el alcance de un anuncio, la comunicación durante una crisis o el contagio de enfermedades en una población."
+  },
+  {
+   "id": "una-colecta-solidaria-sin-caos-de-la-donacion-a-la-entrega",
+   "area": "sociedad",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "Una colecta solidaria sin caos: de la donación a la entrega",
+   "resumen": "Explora cómo coordinar una colecta de abrigo, útiles escolares o alimentos para que las donaciones lleguen a quien las necesita sin perderse, duplicarse ni quedar acumuladas en un rincón mientras faltan otras cosas.",
+   "tipo": "Prototipo",
+   "tiempo": "1 a 2 meses",
+   "horas": 39,
+   "etiquetas": [
+    "Logística",
+    "Voluntariado",
+    "Impacto social"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o con permiso: puedes simular una campaña con donantes, voluntarios y puntos de entrega inventados, o apoyar una iniciativa real solo si sus organizadores lo autorizan y no se exponen datos personales.",
+   "carreras": [
+    "Trabajo Social",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas",
+    "Administración",
+    "Comunicaciones",
+    "Educación",
+    "Ingeniería Civil",
+    "Psicología"
+   ],
+   "problema": [
+    "Las campañas solidarias suelen nacer con mucha energía y poca organización: llegan más abrigos de los necesarios y faltan útiles, nadie sabe cuántas cosas se recibieron, los voluntarios se enteran de los horarios por mensajes sueltos y quienes donan no saben si su aporte fue útil.",
+    "Al final, el esfuerzo de muchas personas puede perderse por falta de registro, de coordinación o de comunicación. Y cuando falla la confianza, cuesta que la gente vuelva a participar."
+   ],
+   "desarrollar": [
+    "Un sistema sencillo para organizar una campaña que registre qué se necesita y en qué cantidad, qué se va recibiendo, quién se encarga de cada tarea y cuándo y dónde se entregará.",
+    "Debe permitir ver de un vistazo el avance de la campaña, qué falta todavía y un resumen final que muestre con claridad el resultado.",
+    "El resultado puede ser una hoja de cálculo con formularios, un tablero de seguimiento o una pequeña aplicación web."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Equilibrar necesidades",
+     "aporta": "explora cómo sugerir qué conviene donar según lo que aún falta."
+    },
+    {
+     "titulo": "Rutas de recojo",
+     "aporta": "analiza cómo organizar recogidas en distintos puntos con la menor cantidad de recorridos posible."
+    },
+    {
+     "titulo": "Rendición de cuentas",
+     "aporta": "diseña un reporte público y claro que muestre qué se recibió y qué se entregó, sin exponer datos de nadie."
+    }
+   ],
+   "objetivos": [
+    "Identificar las necesidades reales antes de pedir donaciones.",
+    "Diseñar un registro claro de lo que se recibe y se entrega.",
+    "Coordinar voluntarios, tareas y horarios.",
+    "Comunicar el avance de la campaña de manera transparente.",
+    "Evaluar qué se logró y qué se puede mejorar en la siguiente campaña."
+   ],
+   "habilidades": [
+    "Logística y planificación.",
+    "Organización de voluntariado.",
+    "Registro y control de inventarios.",
+    "Comunicación y transparencia.",
+    "Sensibilidad social y trabajo con comunidades."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Formularios digitales.",
+    "Tableros de tareas.",
+    "Herramientas de mapas para planificar puntos de recojo.",
+    "Herramientas web básicas si deseas crear un panel de seguimiento."
+   ],
+   "lineamientos": [
+    "No recolectes dinero ni administres fondos sin acuerdos claros y una persona o entidad responsable que respalde la campaña. Coordina con organizaciones o personas que conozcan de cerca las necesidades reales, y no asumas lo que necesita una comunidad sin preguntarle.",
+    "Protege la privacidad de quienes reciben la ayuda: no publiques nombres, direcciones ni fotografías sin su consentimiento. Lleva un registro honesto de lo recibido y lo entregado."
+   ],
+   "otroSector": "La misma idea puede aplicarse a bancos de alimentos, campañas de salud, colectas universitarias, reparto de ayuda tras una emergencia, ferias de intercambio o cualquier iniciativa que dependa de personas voluntarias y recursos limitados."
+  },
+  {
+   "id": "servicios-gratuitos",
+   "area": "sociedad",
+   "areas2": [],
+   "titulo": "Un mapa de servicios gratuitos de tu distrito",
+   "resumen": "Descubre cómo reunir en un solo lugar dónde conseguir ayuda, orientación y servicios sin costo cerca de ti.",
+   "tipo": "Guía",
+   "tiempo": "~10 h",
+   "horas": 10,
+   "etiquetas": [
+    "Comunidad",
+    "Información útil"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: salen de fuentes abiertas",
+   "carreras": [
+    "Trabajo Social",
+    "Sociología",
+    "Derecho",
+    "Comunicaciones",
+    "Ingeniería de Sistemas",
+    "Educación"
+   ],
+   "problema": [
+    "Existen servicios gratuitos de salud, orientación legal, apoyo escolar o cultura, pero la información está dispersa y mucha gente no sabe que existen."
+   ],
+   "desarrollar": [
+    "Un directorio ordenado por tema y ubicación, con horarios, requisitos y cómo llegar, presentado como un mapa o una guía fácil de compartir."
+   ],
+   "objetivos": [
+    "Recopilar información pública y verificada.",
+    "Organizarla para que se encuentre en pocos pasos.",
+    "Revisarla con alguien que no conozca el tema."
+   ],
+   "habilidades": [
+    "Búsqueda y verificación de fuentes",
+    "Organización de la información",
+    "Diseño de guías"
+   ],
+   "herramientas": [
+    "Hoja de cálculo",
+    "Un mapa en línea",
+    "Un documento o una página sencilla"
+   ],
+   "lineamientos": [
+    "Usa solo información pública y cita la fuente.",
+    "Indica la fecha de la última revisión.",
+    "No publiques datos de contacto de personas, solo de instituciones."
+   ],
+   "otroSector": "Se adapta a guías para estudiantes nuevos, para migrantes, para adultos mayores o para emprendedores."
+  }
+ ]
+}

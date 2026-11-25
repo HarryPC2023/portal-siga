@@ -1,0 +1,459 @@
+{
+ "area": "educacion",
+ "ideas": [
+  {
+   "id": "donde-se-acumula-la-carga-academica-de-tu-semana",
+   "area": "educacion",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "¿Dónde se acumula la carga académica de tu semana?",
+   "resumen": "Descubre cómo visualizar la distribución de clases, tareas, prácticas, exámenes y actividades para descubrir en qué momentos se concentra la mayor carga académica y cómo podría organizarse mejor.",
+   "tipo": "Análisis",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Datos",
+    "Educación"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o propios: puedes utilizar tu propio horario, datos inventados o cronogramas simulados de varios estudiantes.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ciencia de Datos",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Educación",
+    "Administración"
+   ],
+   "problema": [
+    "Muchos estudiantes organizan sus actividades semana a semana sin una visión completa de toda la carga académica. Como consecuencia, es común que varias entregas, exposiciones, laboratorios o exámenes coincidan en los mismos días, generando periodos de alta presión seguidos de otros con poca actividad.",
+    "En muchos casos el problema no es la cantidad total de trabajo, sino la forma en que este se distribuye. Sin datos claros resulta difícil identificar patrones, anticipar semanas complicadas o tomar decisiones para equilibrar mejor el tiempo disponible."
+   ],
+   "desarrollar": [
+    "Un análisis sencillo que registre cursos, actividades y fechas importantes para construir gráficos o visualizaciones que muestren la carga académica por día o por semana.",
+    "El resultado puede ser un panel visual, una hoja de cálculo o una aplicación sencilla que ayude a detectar momentos de sobrecarga y periodos con menor demanda."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar estrategias",
+     "aporta": "analiza cómo cambia la distribución de la carga entre estudiantes con horarios distintos."
+    },
+    {
+     "titulo": "Simular escenarios",
+     "aporta": "descubre qué ocurriría si ciertas actividades se adelantaran, retrasaran o repartieran de otra forma."
+    },
+    {
+     "titulo": "Generar alertas",
+     "aporta": "explora cómo avisar cuando una semana comienza a concentrar demasiadas tareas o evaluaciones."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué tipo de actividades generan mayor carga académica.",
+    "Diseñar una forma clara de registrar y clasificar las actividades.",
+    "Visualizar la distribución del trabajo a lo largo del tiempo.",
+    "Detectar patrones de acumulación o desequilibrio.",
+    "Proponer recomendaciones para mejorar la planificación."
+   ],
+   "habilidades": [
+    "Organización y análisis de datos.",
+    "Visualización de información.",
+    "Planificación del tiempo.",
+    "Interpretación de gráficos.",
+    "Identificación de patrones."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas de gráficos y visualización.",
+    "Calendarios digitales.",
+    "Bases de datos sencillas si deseas ampliar el proyecto."
+   ],
+   "lineamientos": [
+    "Si utilizas información de otras personas, solicita permiso antes de recopilarla. Evita registrar datos personales innecesarios y céntrate únicamente en las actividades académicas. Recuerda que los resultados muestran tendencias y no representan necesariamente el rendimiento o la capacidad de cada estudiante."
+   ],
+   "otroSector": "La misma metodología puede utilizarse para analizar cargas de trabajo en equipos de una empresa, distribución de proyectos de investigación, planificación de eventos o gestión de tareas en organizaciones."
+  },
+  {
+   "id": "como-ensenar-una-aplicacion-a-un-familiar-mayor",
+   "area": "educacion",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cómo enseñar una aplicación a un familiar mayor?",
+   "resumen": "Imagina cómo ayudar a una persona mayor a realizar una tarea digital cotidiana, como pedir una cita médica, hacer una consulta o pedir un taxi, y cómo convertir esa experiencia en una guía clara que otras personas también puedan usar.",
+   "tipo": "Guía",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Experiencia de usuario",
+    "Educación",
+    "Inclusión"
+   ],
+   "intencion": [
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes trabajar con un familiar o vecino que quiera participar y dé su consentimiento, o con un caso inventado.",
+   "carreras": [
+    "Educación",
+    "Psicología",
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Comunicaciones",
+    "Trabajo Social",
+    "Salud"
+   ],
+   "problema": [
+    "Cada vez más trámites y servicios dependen de aplicaciones: citas médicas, banca móvil, transporte, compras o comunicación con la familia. Para muchas personas mayores, estas herramientas resultan confusas: los íconos no se entienden, los textos usan palabras desconocidas y existe el temor a equivocarse o a ser víctima de una estafa.",
+    "Con frecuencia, la ayuda de la familia se limita a explicar rápido o a hacer la tarea por ellos, lo que genera frustración en ambos lados y no ayuda a ganar autonomía."
+   ],
+   "desarrollar": [
+    "Elige una tarea concreta y obsérvala mientras una persona la intenta realizar. Registra en qué momentos se traba, qué palabras o botones no entiende y qué errores comete.",
+    "A partir de eso, crea una guía paso a paso con lenguaje claro, imágenes grandes, instrucciones cortas y consejos básicos para evitar fraudes.",
+    "El resultado puede ser una cartilla impresa, un documento digital o un video breve que se pueda ver las veces que haga falta."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra persona, otra necesidad",
+     "aporta": "repite la experiencia con alguien con baja visión o que nunca usó un celular, y compara qué cambia."
+    },
+    {
+     "titulo": "Un taller breve",
+     "aporta": "organiza una sesión pequeña para varias personas y registra las dudas más comunes."
+    },
+    {
+     "titulo": "Una guía que se reutiliza",
+     "aporta": "convierte la cartilla en una plantilla que otros puedan adaptar a otra aplicación."
+    }
+   ],
+   "objetivos": [
+    "Identificar las barreras que encuentran las personas mayores al usar una aplicación.",
+    "Observar el uso real sin interrumpir ni corregir de inmediato.",
+    "Diseñar instrucciones claras, breves y fáciles de seguir.",
+    "Incluir recomendaciones de seguridad adaptadas a un lenguaje sencillo.",
+    "Comprobar si la persona logra repetir la tarea de forma autónoma con tu guía."
+   ],
+   "habilidades": [
+    "Observación de usuarios.",
+    "Redacción de instrucciones claras.",
+    "Empatía y comunicación.",
+    "Diseño de materiales educativos.",
+    "Accesibilidad y experiencia de usuario."
+   ],
+   "herramientas": [
+    "Editor de documentos o de presentaciones.",
+    "Capturas y grabación de pantalla.",
+    "Herramientas de edición de imágenes o video sencillas.",
+    "Aplicaciones en modo de prueba o demostración, cuando existan."
+   ],
+   "lineamientos": [
+    "Pide siempre el consentimiento de la persona y respeta su ritmo: evita hablar con ella como si fuera un niño. No pidas ni uses sus claves, y no practiques con cuentas que manejen dinero real.",
+    "Si compartes capturas de pantalla, verifica que no muestren datos personales, números de cuenta ni mensajes privados. Presenta las recomendaciones de seguridad como buenas prácticas generales."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a capacitaciones para personal no técnico en una empresa, talleres de inclusión digital en municipalidades o centros de adultos mayores, y al diseño de servicios de salud o bancarios más fáciles de usar."
+  },
+  {
+   "id": "donde-se-pierde-el-tiempo-en-un-trabajo-en-equipo",
+   "area": "educacion",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "¿Dónde se pierde el tiempo en un trabajo en equipo?",
+   "resumen": "Explora qué sucede en un trabajo grupal desde que se asigna hasta que se entrega, en qué momentos se pierde tiempo y cómo diseñar reglas simples para que el equipo se coordine mejor sin depender de la buena voluntad de una sola persona.",
+   "tipo": "Análisis",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Trabajo en equipo",
+    "Procesos",
+    "Organización"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o propios: puedes reconstruir un trabajo grupal pasado usando roles en lugar de nombres, o inventar un caso con un equipo imaginario.",
+   "carreras": [
+    "Psicología",
+    "Administración",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Educación",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Casi todo estudiante ha vivido un trabajo grupal donde nadie sabía exactamente quién hacía qué, había varias versiones del mismo archivo, las reuniones terminaban sin acuerdos y todo se concentraba en las últimas horas antes de la entrega.",
+    "Lo habitual es culpar a las personas, pero muchas veces el problema está en el proceso: falta claridad en los roles, no hay un lugar único para los archivos, no se define cuándo una tarea está terminada o las decisiones se toman por chat y se pierden entre mensajes."
+   ],
+   "desarrollar": [
+    "Una línea de tiempo de un trabajo grupal real o ficticio que marque cuándo se asignó cada tarea, cuándo se avanzó y cuándo ocurrieron las esperas, repeticiones de trabajo y cambios de último minuto.",
+    "A partir de ahí, identifica los tres o cuatro puntos donde más tiempo se perdió y propone un protocolo sencillo de coordinación con roles, un lugar único para los archivos, reglas de versiones y una lista de verificación de entrega.",
+    "El resultado puede ser un diagrama del proceso con sus puntos críticos y una plantilla lista para que otros equipos la usen."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otro tipo de equipo",
+     "aporta": "aplica el protocolo a un grupo distinto, como un voluntariado o un emprendimiento, y compara."
+    },
+    {
+     "titulo": "Medir si funcionó",
+     "aporta": "usa la plantilla en un trabajo real y compara cuánto se tardó y cuántas versiones del archivo hubo."
+    },
+    {
+     "titulo": "Un tablero para el equipo",
+     "aporta": "transforma el protocolo en una herramienta pequeña que muestre quién hace qué y qué falta."
+    }
+   ],
+   "objetivos": [
+    "Reconstruir cómo se desarrolló un trabajo grupal de principio a fin.",
+    "Identificar esperas, repeticiones y falta de decisiones.",
+    "Distinguir los problemas de proceso de los problemas de personas.",
+    "Diseñar un protocolo de coordinación breve y práctico.",
+    "Comprobar si el protocolo reduce confusiones en un nuevo trabajo grupal."
+   ],
+   "habilidades": [
+    "Análisis de procesos.",
+    "Comunicación y coordinación de equipos.",
+    "Diseño de plantillas y procedimientos.",
+    "Observación y reflexión crítica.",
+    "Organización de información."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o herramientas de líneas de tiempo.",
+    "Herramientas de diagramas de flujo.",
+    "Documentos y carpetas compartidas.",
+    "Tableros de tareas."
+   ],
+   "lineamientos": [
+    "No señales ni califiques a personas concretas: trabaja con roles como \"coordinador\" o \"redactor\" y evita convertir el análisis en una lista de culpables. Si usas información real de tu grupo, pide su consentimiento antes de compartirla.",
+    "Presenta el protocolo como una propuesta que puede adaptarse, y recuerda que ninguna plantilla reemplaza el acuerdo y el compromiso real entre las personas."
+   ],
+   "otroSector": "La misma idea puede aplicarse a equipos de proyectos en empresas, grupos de investigación, clubes, voluntariados, equipos de desarrollo de software y cualquier trabajo donde varias personas dependan unas de otras para entregar algo."
+  },
+  {
+   "id": "tus-apuntes-archivos-y-enlaces-en-un-solo-lugar",
+   "area": "educacion",
+   "areas2": [
+    "tecnologia",
+    "sociedad"
+   ],
+   "titulo": "Tus apuntes, archivos y enlaces en un solo lugar",
+   "resumen": "Imagina cómo reunir apuntes, presentaciones, PDFs, videos y enlaces en un solo lugar para encontrarlos rápidamente cuando los necesites, y cómo podrían sumarse los aportes de otras personas.",
+   "tipo": "Prototipo",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Organización",
+    "Búsqueda de información",
+    "Colaboración"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes utilizar tus propios apuntes, materiales públicos o ejemplos inventados.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Bibliotecología",
+    "Educación",
+    "Comunicaciones",
+    "Ciencia de Datos",
+    "Estadística",
+    "Gestión de la Información"
+   ],
+   "problema": [
+    "A medida que avanzan los ciclos académicos, los materiales terminan repartidos entre carpetas, correos electrónicos, grupos de mensajería y plataformas distintas. Muchas veces un estudiante recuerda haber guardado un recurso útil, pero no recuerda dónde. El resultado es tiempo perdido, duplicación de archivos y materiales valiosos que terminan olvidados.",
+    "Cuando varias personas comparten materiales, el problema se multiplica: los mismos recursos se piden una y otra vez, se generan duplicados y nadie sabe cuál sigue siendo útil o vigente."
+   ],
+   "desarrollar": [
+    "Un sistema sencillo que permita registrar recursos, clasificarlos por curso, tema o tipo de contenido y encontrarlos mediante filtros básicos. Puede implementarse como una hoja de cálculo organizada, una base de datos simple o una pequeña aplicación web.",
+    "Cada recurso puede incluir información como título, descripción, fecha, etiquetas y nivel de utilidad."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Mejor búsqueda",
+     "aporta": "explora cómo encontrar materiales incluso cuando no recuerdas el nombre exacto del archivo."
+    },
+    {
+     "titulo": "Biblioteca compartida",
+     "aporta": "imagina un espacio donde varias personas aporten materiales, indiquen cuáles les resultaron más útiles y señalen cuáles ya están desactualizados."
+    },
+    {
+     "titulo": "Recomendaciones",
+     "aporta": "descubre cómo sugerir recursos relacionados según el tema consultado."
+    }
+   ],
+   "objetivos": [
+    "Identificar cómo se almacenan actualmente los materiales de estudio.",
+    "Diseñar una estructura de categorías que facilite la búsqueda.",
+    "Construir un sistema de registro sencillo.",
+    "Comprobar si realmente reduce el tiempo necesario para encontrar información.",
+    "Analizar cómo evitar duplicados y mantener la información organizada."
+   ],
+   "habilidades": [
+    "Organización de información.",
+    "Diseño de estructuras de datos.",
+    "Experiencia de usuario.",
+    "Levantamiento de requerimientos.",
+    "Clasificación y etiquetado de contenidos."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Formularios digitales.",
+    "Base de datos sencilla.",
+    "Herramientas web si decides crear una aplicación."
+   ],
+   "lineamientos": [
+    "Empieza con una cantidad reducida de materiales antes de intentar organizar cientos de archivos. Prioriza la facilidad de búsqueda sobre la cantidad de funciones.",
+    "Si compartes recursos de terceros, respeta siempre sus permisos de distribución y los derechos de autor. Evita almacenar archivos innecesarios cuando basten enlaces o referencias."
+   ],
+   "otroSector": "La misma idea puede utilizarse para organizar artículos científicos, documentación técnica, expedientes digitales, repositorios de proyectos o recursos educativos institucionales."
+  },
+  {
+   "id": "el-primer-dia-de-un-ingresante-como-se-orienta-en-su-centro-de-e",
+   "area": "educacion",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "El primer día de un ingresante: ¿cómo se orienta en su centro de estudios?",
+   "resumen": "Imagina cómo ayudar a una persona que llega por primera vez a un lugar grande y desconocido a encontrar su salón, la biblioteca, los baños, la cafetería o la oficina de trámites sin sentirse perdida ni depender de preguntar a cada persona que encuentre.",
+   "tipo": "Prototipo",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Orientación",
+    "Experiencia de usuario",
+    "Accesibilidad"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes usar tu propio centro de estudios, un espacio imaginario o el plano de un lugar público como un centro comercial o un hospital.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Educación",
+    "Comunicaciones",
+    "Ingeniería de Sistemas",
+    "Psicología",
+    "Diseño",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "El primer día en un centro de estudios nuevo suele ser abrumador: pabellones con nombres parecidos, pisos que no siguen una lógica evidente, carteles que solo entiende quien ya conoce el lugar y planos que muestran todo menos lo que la persona necesita en ese momento.",
+    "Esto se nota más en quienes llegan con prisa, tienen movilidad reducida, no conocen la ciudad o visitan el lugar solo una vez. Muchas personas llegan tarde, se frustran o terminan dependiendo de la suerte de encontrar a alguien amable que las guíe."
+   ],
+   "desarrollar": [
+    "Elige un recorrido típico, como llegar desde la puerta principal hasta un salón específico, y recórrelo como si fuera la primera vez, anotando dónde dudas, qué carteles ayudan y cuáles confunden.",
+    "A partir de eso, crea una guía de orientación que incluya un mapa simplificado con los puntos clave, instrucciones cortas basadas en referencias visibles y una versión pensada para personas con movilidad reducida.",
+    "El resultado puede ser un plano ilustrado, una guía impresa, una página web móvil o una presentación fácil de consultar desde el celular."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Probar con personas reales",
+     "aporta": "pide a alguien que nunca ha estado allí que siga tu guía y registra en qué puntos se detiene o se equivoca."
+    },
+    {
+     "titulo": "Rutas alternativas",
+     "aporta": "diseña recorridos distintos según la necesidad, como el camino más corto, el más accesible o el que pasa por zonas con sombra."
+    },
+    {
+     "titulo": "Versión interactiva",
+     "aporta": "explora cómo crear un mapa digital donde la persona seleccione su destino y reciba indicaciones paso a paso."
+    }
+   ],
+   "objetivos": [
+    "Identificar los puntos de un centro de estudios donde una persona nueva suele desorientarse.",
+    "Evaluar qué elementos de señalización ayudan y cuáles generan confusión.",
+    "Diseñar un mapa simplificado centrado en lo que la persona necesita.",
+    "Redactar indicaciones claras basadas en referencias visibles.",
+    "Comprobar si la guía funciona con alguien que no conoce el lugar."
+   ],
+   "habilidades": [
+    "Observación de usuarios.",
+    "Diseño de información y señalización.",
+    "Accesibilidad y diseño inclusivo.",
+    "Representación espacial y elaboración de mapas.",
+    "Redacción clara de instrucciones."
+   ],
+   "herramientas": [
+    "Herramientas de dibujo o diseño gráfico.",
+    "Mapas digitales para tomar referencias del espacio.",
+    "Editor de documentos o presentaciones.",
+    "Herramientas web básicas si deseas crear una versión interactiva."
+   ],
+   "lineamientos": [
+    "Respeta las normas del lugar y no ingreses a zonas restringidas mientras haces el recorrido. Si pruebas la guía con otras personas, pide su consentimiento y evita fotografiarlas o recopilar datos personales.",
+    "Si usas el nombre o el plano oficial de una institución, aclara que tu proyecto es independiente y no una guía oficial. Verifica que las rutas accesibles realmente lo sean antes de recomendarlas."
+   ],
+   "otroSector": "La misma idea puede aplicarse a hospitales, terminales de transporte, museos, centros comerciales, ferias, congresos o cualquier espacio donde las personas lleguen por primera vez y necesiten ubicarse con rapidez."
+  },
+  {
+   "id": "costo-taller-escolar",
+   "area": "educacion",
+   "areas2": [],
+   "titulo": "¿Cuánto cuesta realmente un taller escolar?",
+   "resumen": "Descubre cómo costear materiales, tiempo y local de una actividad para proponer un precio justo con una hoja de costos.",
+   "tipo": "Análisis",
+   "tiempo": "~8 h",
+   "horas": 8,
+   "etiquetas": [
+    "Costos",
+    "Educación"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: salen de fuentes abiertas",
+   "carreras": [
+    "Educación",
+    "Administración",
+    "Contabilidad",
+    "Psicología",
+    "Economía"
+   ],
+   "problema": [
+    "Quienes organizan talleres o actividades educativas suelen calcular el costo «a ojo», y terminan cobrando de menos o dejando fuera partes importantes."
+   ],
+   "desarrollar": [
+    "Una hoja de costos para un taller concreto: materiales, tiempo de preparación, uso del local y un margen razonable, con un precio sugerido por participante."
+   ],
+   "objetivos": [
+    "Listar todo lo que necesita un taller para realizarse.",
+    "Calcular el costo por participante.",
+    "Explicar cómo cambia el precio según la cantidad de asistentes."
+   ],
+   "habilidades": [
+    "Costeo",
+    "Planificación de actividades",
+    "Comunicación clara"
+   ],
+   "herramientas": [
+    "Hoja de cálculo"
+   ],
+   "lineamientos": [
+    "Elige un taller que conozcas bien.",
+    "Separa lo que es costo real de lo que es opcional.",
+    "Muestra siempre el cálculo, no solo el resultado."
+   ],
+   "otroSector": "El mismo cálculo sirve para una feria, un campamento, un curso de verano o un evento cultural."
+  }
+ ]
+}

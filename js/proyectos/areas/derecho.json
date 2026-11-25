@@ -1,0 +1,158 @@
+{
+ "area": "derecho",
+ "ideas": [
+  {
+   "id": "que-tan-facil-es-entender-un-tramite-publico",
+   "area": "derecho",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "¿Qué tan fácil es entender un trámite público?",
+   "resumen": "Descubre cómo una persona experimenta un trámite desde el momento en que decide realizarlo hasta que logra completarlo, identificando los pasos que generan dudas, frustración o abandono, y proponiendo formas más claras de comunicar la información.",
+   "tipo": "Investigación",
+   "tiempo": "1 a 4 meses",
+   "horas": 65,
+   "etiquetas": [
+    "Experiencia de usuario",
+    "Servicios ciudadanos",
+    "Diseño de información"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: puedes utilizar información disponible en portales institucionales, guías oficiales, formularios, reglamentos y documentación accesible al público.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Diseño UX",
+    "Derecho",
+    "Administración Pública",
+    "Comunicaciones",
+    "Ciencias Políticas",
+    "Sociología",
+    "Economía",
+    "Gestión Pública"
+   ],
+   "problema": [
+    "Cada año, miles de personas realizan trámites relacionados con educación, salud, identificación, emprendimiento, vivienda, transporte y otros servicios. Aunque gran parte de la información necesaria suele estar disponible, muchas veces se encuentra distribuida entre distintas páginas, documentos, formularios y normativas difíciles de comprender para alguien que realiza el proceso por primera vez.",
+    "Como consecuencia, es frecuente que las personas pierdan tiempo buscando información, repitan pasos innecesarios, presenten documentos incorrectos o abandonen el trámite por no comprender qué deben hacer a continuación.",
+    "En muchos casos el problema no es el trámite en sí, sino la forma en que se comunica. Un proceso puede ser relativamente sencillo desde el punto de vista administrativo y, aun así, resultar confuso para los ciudadanos.",
+    "Comprender dónde aparecen estas dificultades permite identificar oportunidades para mejorar la experiencia de quienes utilizan los servicios públicos."
+   ],
+   "desarrollar": [
+    "Selecciona un trámite específico y documenta la experiencia completa de una persona ficticia que intenta realizarlo.",
+    "Por ejemplo:",
+    {
+     "lista": [
+      "Solicitar un documento de identidad.",
+      "Postular a una beca.",
+      "Registrar un pequeño negocio.",
+      "Solicitar un permiso municipal.",
+      "Acceder a un programa de apoyo.",
+      "Realizar un trámite educativo."
+     ]
+    },
+    "Registra cada paso del proceso, los documentos solicitados, las decisiones que debe tomar el usuario y los posibles puntos de confusión.",
+    "Finalmente, desarrolla una representación visual o una guía simplificada que permita comprender el trámite de manera más clara."
+   ],
+   "objetivos": [
+    "Identificar todas las etapas de un trámite.",
+    "Analizar qué información necesita una persona en cada paso.",
+    "Detectar barreras de comprensión y puntos de confusión.",
+    "Diseñar una representación más clara del proceso.",
+    "Elaborar recomendaciones para mejorar la experiencia del usuario."
+   ],
+   "habilidades": [
+    "Investigación de usuarios.",
+    "Diseño de servicios.",
+    "Experiencia de usuario (UX).",
+    "Organización de información.",
+    "Comunicación clara.",
+    "Análisis de procesos.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Diagramas de flujo.",
+    "Hojas de cálculo.",
+    "Herramientas de diseño.",
+    "Aplicaciones de mapas de experiencia.",
+    "Formularios y entrevistas (opcionales).",
+    "Documentación pública oficial."
+   ],
+   "lineamientos": [
+    "Utiliza únicamente información pública y vigente. Cita siempre las fuentes utilizadas y diferencia claramente entre información oficial y tus propuestas de mejora.",
+    "Evita interpretar normativa o brindar asesoría legal. El objetivo es analizar cómo se comunica el proceso y cómo puede comprenderse mejor, no reemplazar la información oficial.",
+    "Documenta los supuestos realizados y explica las limitaciones del análisis cuando existan cambios frecuentes en los requisitos o procedimientos."
+   ],
+   "otroSector": "La misma metodología puede aplicarse al análisis de procesos empresariales, solicitudes de empleo, admisiones universitarias, inscripciones a eventos, procesos de atención médica, plataformas digitales o cualquier servicio que requiera seguir una serie de pasos."
+  },
+  {
+   "id": "derechos-consumidor",
+   "area": "derecho",
+   "areas2": [],
+   "titulo": "Guía visual de derechos del consumidor",
+   "resumen": "Descubre cómo convertir situaciones cotidianas, como compras en línea y garantías, en una guía visual lista para compartir.",
+   "tipo": "Guía",
+   "tiempo": "~10 h",
+   "horas": 10,
+   "etiquetas": [
+    "Divulgación",
+    "Derechos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: salen de fuentes abiertas",
+   "carreras": [
+    "Derecho",
+    "Comunicaciones",
+    "Diseño Gráfico",
+    "Economía",
+    "Administración"
+   ],
+   "problema": [
+    "Mucha gente no reclama porque no sabe qué derechos tiene al comprar, devolver o pedir una garantía, o cree que el trámite es demasiado complicado."
+   ],
+   "desarrollar": [
+    "Una guía breve y visual que explique, con ejemplos de la vida diaria, qué se puede hacer y ante quién, usando lenguaje claro y sin tecnicismos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otro formato",
+     "aporta": "Descubre cómo convertir la guía en tarjetas para redes o en un video corto."
+    },
+    {
+     "titulo": "Otro público",
+     "aporta": "Explora cómo explicarla a quien compra en línea por primera vez o a personas mayores."
+    },
+    {
+     "titulo": "Casos simulados",
+     "aporta": "Imagina un reclamo paso a paso, con un ejemplo ficticio, para ver cómo se vive de principio a fin."
+    }
+   ],
+   "objetivos": [
+    "Elegir cuatro situaciones frecuentes.",
+    "Explicar cada una en pocas líneas con base en fuentes oficiales.",
+    "Comprobar que alguien ajeno al tema la entiende."
+   ],
+   "habilidades": [
+    "Lectura de normas",
+    "Redacción sencilla",
+    "Diseño de piezas gráficas"
+   ],
+   "herramientas": [
+    "Un editor de presentaciones o de diseño",
+    "Fuentes oficiales de protección al consumidor"
+   ],
+   "lineamientos": [
+    "Cita la norma o la institución de la que tomas cada dato.",
+    "Aclara que es información general y no asesoría legal.",
+    "Revisa que la información siga vigente."
+   ],
+   "otroSector": "El mismo formato sirve para derechos laborales, de los estudiantes, de los pacientes o de los inquilinos."
+  }
+ ]
+}

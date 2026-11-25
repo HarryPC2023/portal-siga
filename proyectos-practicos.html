@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/tema-siga.css?v=1">
-  <link rel="stylesheet" href="css/proyectos-practicos.css?v=8">
+  <link rel="stylesheet" href="css/proyectos-practicos.css?v=9">
   <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
   <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
@@ -101,6 +101,12 @@
       </div>
     </div>
     <section class="pp-ideas" id="ppIdeas" aria-live="polite"></section>
+    <div class="pp-mas-wrap"><button type="button" class="pp-chip-btn" id="ppMas" hidden>Ver más</button></div>
+    <div class="pp-cruce-wrap" id="ppCruceWrap" hidden>
+      <h3 class="pp-cruce-t" id="ppCruceT"></h3>
+      <section class="pp-ideas" id="ppCruce" aria-live="polite"></section>
+      <div class="pp-mas-wrap"><button type="button" class="pp-chip-btn" id="ppMasCruce" hidden>Ver más</button></div>
+    </div>
     <p class="pp-vacio" id="ppVacio" hidden>No encontramos ideas con esos filtros. Prueba con un tema, una carrera o una palabra más general, o quita algún filtro. ¿Falta una idea? <a href="#proponer">Propónla</a>.</p>
 
     <!-- mis ideas guardadas -->
@@ -164,7 +170,7 @@
 
   <script src="js/landing.js"></script>
   <script type="module" src="js/gate.js"></script>
-  <script type="module" src="js/proyectos-practicos.js?v=7"></script>
+  <script type="module" src="js/proyectos-practicos.js?v=8"></script>
   <script src="js/tema-siga.js?v=1"></script>
   <script type="module" src="js/carnet-aviso.js"></script>
 

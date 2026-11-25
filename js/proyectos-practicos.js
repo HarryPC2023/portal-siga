@@ -1,14 +1,41 @@
 // js/proyectos-practicos.js — Portada de «Proyectos Prácticos»: áreas, buscador, ideas, ficha, guardar y Sorpréndeme.
 //
 // Por ahora la sección es SOLO para el dueño (mismo candado que Desarrollo profesional: js/desarrollo-acceso.js).
-// Los textos y las ideas viven en js/proyectos-datos.js. Las ideas guardadas viven en la cuenta (SigaEstado, módulo «desarrollo»,
-// claves «ideaguardada:<id>») para verse igual en PC y celular; si no hay sesión, quedan en este navegador (localStorage).
+// Los textos de las áreas viven en js/proyectos-datos.js. Las ideas viven en js/proyectos/: un índice liviano (indice.json, se descarga al abrir la
+// página y alimenta tarjetas, filtros y búsqueda) y un archivo con las fichas completas por área (areas/<id>.json, se descarga solo cuando alguien abre
+// una ficha de esa área). Para agregar ideas: ver las instrucciones al inicio de js/proyectos-datos.js.
+// Las ideas guardadas viven en la cuenta (SigaEstado, módulo «desarrollo», claves «ideaguardada:<id>») para verse igual en PC y celular;
+// si no hay sesión, quedan en este navegador (localStorage).
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { SigaEstado } from './sync-estado.js?v=1';
-import { AREAS, INTENCIONES, IDEAS, FUENTES, DESTACADAS } from './proyectos-datos.js?v=4';
+import { AREAS, INTENCIONES, FUENTES, DESTACADAS } from './proyectos-datos.js?v=5';
 
 const $ = (s) => document.querySelector(s);
 const CLAVE_GUARDADAS = 'siga_pp_guardadas_v1';
+const RUTA_IDEAS = 'js/proyectos/';
+const PAGINA = 12;                       // tarjetas que se muestran de a una tanda («Ver más» trae otras 12)
+const PROGRAMACION = { sin: 'no hace falta', opcional: 'opcional', incluida: 'incluida' };
+
+/* ───── las ideas: índice liviano al abrir, ficha completa al abrir una idea ───── */
+let IDEAS = [];                          // el índice: lo que necesitan las tarjetas, los filtros y la búsqueda
+let versionIdeas = '0';
+const fichasPorArea = new Map();         // área → promesa con { id → ficha completa }; se descarga una sola vez por área
+async function cargarIndice() {
+    const r = await fetch(`${RUTA_IDEAS}indice.json`, { cache: 'no-cache' });      // se revalida siempre: si no cambió, el navegador reusa la copia
+    if (!r.ok) throw new Error('indice ' + r.status);
+    const d = await r.json();
+    IDEAS = d.ideas || []; versionIdeas = d.version || '0';
+}
+function fichasDeArea(area) {
+    if (!fichasPorArea.has(area)) {
+        fichasPorArea.set(area, fetch(`${RUTA_IDEAS}areas/${area}.json?v=${versionIdeas}`)
+            .then((r) => { if (!r.ok) throw new Error('area ' + r.status); return r.json(); })
+            .then((d) => new Map((d.ideas || []).map((x) => [x.id, x])))
+            .catch((e) => { fichasPorArea.delete(area); throw e; }));          // si falló, se puede reintentar al volver a abrirla
+    }
+    return fichasPorArea.get(area);
+}
+async function fichaCompleta(i) { return (await fichasDeArea(i.area)).get(i.id) || null; }
 
 function el(tag, props = {}, ...hijos) {
     const n = document.createElement(tag);
@@ -65,7 +92,8 @@ async function conectarNube() {
     estado.guardadas = leerGuardadas();
 }
 
-const estado = { area: null, intencion: null, q: '', verTodas: false, guardadas: new Set(), ultimaSorpresa: null, destacadas: [] };
+const estado = { area: null, intencion: null, q: '', verTodas: false, guardadas: new Set(), ultimaSorpresa: null, destacadas: [], limite: PAGINA, limiteCruce: PAGINA };
+const reiniciarPagina = () => { estado.limite = PAGINA; estado.limiteCruce = PAGINA; };
 
 function alternarGuardada(id) {
     guardarUna(id, !estado.guardadas.has(id));
@@ -79,19 +107,27 @@ function alternarGuardada(id) {
 const hayFiltros = () => !!(estado.area || estado.intencion || estado.q.trim());
 function coincideTexto(i, q) {
     const a = areaDe(i.area);
-    // Se busca en el tema, la carrera («Puede interesar a»), lo que se practica y lo que se podría desarrollar.
-    const texto = norm([i.titulo, i.resumen, i.tipo, (i.etiquetas || []).join(' '), a ? a.nombre : '', (i.carreras || []).join(' '),
-        (i.habilidades || []).join(' '), (i.herramientas || []).join(' '), i.problema, i.desarrollar, i.otroSector].join(' '));
+    // Se busca en el tema, el área y sus cruces, la carrera («Puede interesar a»), lo que se practica y lo que se podría usar.
+    // (i.busca ya trae carreras, habilidades y herramientas, normalizadas por tools/generar_indice.py.)
+    const texto = norm([i.titulo, i.resumen, i.tipo, (i.etiquetas || []).join(' '), a ? a.nombre : '',
+        (i.areas2 || []).map((x) => (areaDe(x) || {}).nombre || '').join(' '), i.busca].join(' '));
     const coincide = (p) => texto.includes(p) || (p.length > 4 && texto.includes(p.replace(/(es|s)$/, '')));   // «guías» ≈ «guía»
     return q.split(/\s+/).every(coincide);
 }
+function pasaFiltros(i, q) {
+    if (estado.intencion && !(i.intencion || []).includes(estado.intencion)) return false;
+    return !q || coincideTexto(i, q);
+}
+// Ideas cuyo problema vive en el área elegida (o todas, si no hay área). Cada idea se cuenta una sola vez: en su área principal.
 function ideasFiltradas() {
     const q = norm(estado.q.trim());
-    return IDEAS.filter((i) => {
-        if (estado.area && i.area !== estado.area) return false;
-        if (estado.intencion && !(i.intencion || []).includes(estado.intencion)) return false;
-        return !q || coincideTexto(i, q);
-    });
+    return IDEAS.filter((i) => (!estado.area || i.area === estado.area) && pasaFiltros(i, q));
+}
+// Ideas de OTRAS áreas que usan conocimientos del área elegida («Se cruza con»). Es un bloque aparte: no se mezclan con las del área.
+function ideasCruzadas() {
+    if (!estado.area) return [];
+    const q = norm(estado.q.trim());
+    return IDEAS.filter((i) => i.area !== estado.area && (i.areas2 || []).includes(estado.area) && pasaFiltros(i, q));
 }
 
 // «Destacadas»: 4 ideas elegidas a mano (DESTACADAS) que van rotando solas: cada semana empieza en un punto distinto de la lista.
@@ -119,7 +155,7 @@ function pintarAreas() {
                 el('span', { class: 'pp-area-n', text: n === 1 ? '1 idea' : `${n} ideas` })));
         b.addEventListener('click', () => {
             estado.area = estado.area === a.id ? null : a.id;
-            pintarAreas(); pintarIdeas();
+            reiniciarPagina(); pintarAreas(); pintarIdeas();
             if (estado.area) $('#ideas').scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
         return b;
@@ -129,14 +165,21 @@ function pintarAreas() {
 function pintarIntenciones() {
     $('#ppIntenciones').replaceChildren(...INTENCIONES.map((it) => {
         const b = el('button', { type: 'button', class: 'pp-pastilla', style: `--c:${it.c}; --n:${it.n || it.c}`, 'aria-pressed': String(estado.intencion === it.id), text: it.nombre });
-        b.addEventListener('click', () => { estado.intencion = estado.intencion === it.id ? null : it.id; pintarIntenciones(); pintarIdeas(); });
+        b.addEventListener('click', () => { estado.intencion = estado.intencion === it.id ? null : it.id; reiniciarPagina(); pintarIntenciones(); pintarIdeas(); });
         return b;
     }));
 }
 
 function metaDatos(i) {
     const f = FUENTES[i.datos];
-    return f ? el('p', { class: 'pp-meta' }, el('b', { text: 'Datos: ' }), f.corto) : null;
+    if (!f) return null;
+    return el('p', { class: 'pp-meta' }, el('b', { text: 'Datos: ' }), f.corto,
+        i.prog ? [' · ', el('b', { text: 'Programación: ' }), PROGRAMACION[i.prog] || i.prog] : null);
+}
+// «Se cruza con: Sociedad · Educación»: las áreas cuyos conocimientos usa la idea además de la suya.
+function lineaCruce(i) {
+    const nombres = (i.areas2 || []).map((x) => (areaDe(x) || {}).corto).filter(Boolean);
+    return nombres.length ? el('p', { class: 'pp-cruza' }, el('b', { text: 'Se cruza con: ' }), nombres.join(' · ')) : null;
 }
 
 function tarjeta(i, extra = {}) {
@@ -151,6 +194,7 @@ function tarjeta(i, extra = {}) {
             el('h3', { class: 'pp-idea-t', text: i.titulo }),
             el('p', { class: 'pp-idea-d', text: i.resumen }),
             el('div', { class: 'pp-tags' }, i.tipo ? el('span', { class: 'pp-tag', text: i.tipo }) : null, i.tiempo ? el('span', { class: 'pp-tag', text: i.tiempo }) : null),
+            lineaCruce(i),
             metaDatos(i),
             btnVer));
     card.addEventListener('click', () => abrirFicha(i.id));
@@ -159,13 +203,29 @@ function tarjeta(i, extra = {}) {
 
 function pintarIdeas() {
     const filtrando = hayFiltros() || estado.verTodas;
-    const lista = filtrando ? ideasFiltradas() : estado.destacadas;
     const ar = estado.area ? areaDe(estado.area) : null;
+    const lista = filtrando ? ideasFiltradas() : estado.destacadas;
+    const cruce = filtrando ? ideasCruzadas() : [];
     $('#ppSubIdeas').textContent = !filtrando ? 'Destacadas — Ideas seleccionadas para inspirarte.'
-        : ar ? `Ideas en ${ar.nombre}` : hayFiltros() ? 'Ideas que coinciden con tu búsqueda' : `Todas las ideas del catálogo (${IDEAS.length})`;
-    $('#ppIdeas').replaceChildren(...lista.map((i) => tarjeta(i)));
+        : ar ? `Ideas en ${ar.nombre} (${lista.length})` : hayFiltros() ? `Ideas que coinciden con tu búsqueda (${lista.length})` : `Todas las ideas del catálogo (${IDEAS.length})`;
+    // Se muestran por tandas: «Ver más» trae otras PAGINA. Las destacadas (4) se muestran siempre completas.
+    const visibles = filtrando ? lista.slice(0, estado.limite) : lista;
+    $('#ppIdeas').replaceChildren(...visibles.map((i) => tarjeta(i)));
     $('#ppIdeas').classList.toggle('pp-ideas-4', !filtrando && lista.length === 4);
-    $('#ppVacio').hidden = lista.length > 0;
+    const mas = $('#ppMas');
+    mas.hidden = !(filtrando && lista.length > estado.limite);
+    mas.textContent = `Ver más (${Math.max(0, lista.length - estado.limite)} restantes)`;
+    // Bloque aparte: ideas de otras áreas que se cruzan con el área elegida.
+    const wrap = $('#ppCruceWrap');
+    wrap.hidden = !(ar && cruce.length);
+    if (ar && cruce.length) {
+        $('#ppCruceT').textContent = `Ideas de otras áreas que se cruzan con ${ar.corto || ar.nombre}`;
+        $('#ppCruce').replaceChildren(...cruce.slice(0, estado.limiteCruce).map((i) => tarjeta(i)));
+        const mc = $('#ppMasCruce');
+        mc.hidden = cruce.length <= estado.limiteCruce;
+        mc.textContent = `Ver más (${Math.max(0, cruce.length - estado.limiteCruce)} restantes)`;
+    }
+    $('#ppVacio').hidden = lista.length > 0 || (ar && cruce.length > 0);
     $('#ppLimpiar').hidden = !hayFiltros();
     const vt = $('#ppVerTodas');
     vt.textContent = estado.verTodas ? '← Ver destacadas' : 'Ver todas →';
@@ -184,9 +244,19 @@ function repintarTodo() { pintarIdeas(); pintarGuardadas(); if (resultadosQuiz) 
 /* ───── ficha de una idea ───── */
 let ideaAbierta = null;
 
-function bloque(titulo, contenido, extra = '') {
-    return el('section', { class: `pp-bloque ${extra}`.trim() }, el('h4', { text: titulo }),
-        Array.isArray(contenido) ? el('ul', {}, contenido.map((t) => el('li', { text: t }))) : el('p', { text: contenido }));
+// Un bloque de la ficha. `lista` = true: cada elemento es un punto de una lista. Si no, cada elemento es un párrafo
+// (o { lista: [...] } para una lista dentro del texto); así «El problema» y «Alcance inicial» pueden tener varios párrafos.
+function bloque(titulo, contenido, extra = '', lista = false) {
+    const items = [].concat(contenido);
+    const hijos = lista
+        ? [el('ul', {}, items.map((t) => el('li', { text: t })))]
+        : items.map((c) => (typeof c === 'string' ? el('p', { text: c }) : el('ul', {}, c.lista.map((t) => el('li', { text: t })))));
+    return el('section', { class: `pp-bloque ${extra}`.trim() }, el('h4', { text: titulo }), hijos);
+}
+// «Sin programación: se puede hacer…» → la parte antes de los dos puntos va en negrita.
+function lineaConTitulo(texto) {
+    const k = texto.indexOf(': ');
+    return el('p', { class: 'pp-meta' }, k > 0 ? [el('b', { text: texto.slice(0, k + 1) }), ' ' + texto.slice(k + 2)] : texto);
 }
 
 function bloqueAmpliaciones(lista) {
@@ -202,15 +272,28 @@ function actualizarBotonFicha() {
 }
 
 function abrirFicha(id) {
-    const i = IDEAS.find((x) => x.id === id);
-    if (!i) return;
-    ideaAbierta = i;
-    const a = areaDe(i.area) || { nombre: '', c: '#2F63D6', f: '#E4EEFF' };
+    const base = IDEAS.find((x) => x.id === id);
+    if (!base) return;
+    ideaAbierta = base;
+    const a = areaDe(base.area) || { nombre: '', c: '#2F63D6', f: '#E4EEFF' };
     const dlg = $('#ppFicha');
     dlg.style.setProperty('--c', a.c); dlg.style.setProperty('--f', a.f); dlg.style.setProperty('--n', a.n || a.c);
     $('#ppFichaArea').textContent = a.nombre;
+    pintarFicha(base, null);                                   // se abre ya con lo que tiene el índice; el detalle llega en un instante
+    if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
+    $('#ppFichaCuerpo').scrollTop = 0;
+    fichaCompleta(base).then((completa) => {
+        if (ideaAbierta !== base) return;                      // la persona ya cerró o abrió otra
+        pintarFicha(base, completa || false);
+    }).catch(() => { if (ideaAbierta === base) pintarFicha(base, false); });
+}
+
+// completa: null = cargando · false = no se pudo cargar · objeto = la ficha completa
+function pintarFicha(i, completa) {
+    const f = completa || i;
     const btnG = el('button', { type: 'button', class: 'pp-btn pp-btn-blanco', id: 'ppFichaGuardar' });
     btnG.addEventListener('click', () => alternarGuardada(i.id));
+    const cruces = (i.areas2 || []).map((x) => (areaDe(x) || {}).nombre).filter(Boolean);
     $('#ppFichaCuerpo').replaceChildren(
         el('h3', { id: 'ppFichaTitulo', text: i.titulo }),
         el('p', { class: 'pp-ficha-res', text: i.resumen }),
@@ -218,23 +301,28 @@ function abrirFicha(id) {
             i.tipo ? el('span', { class: 'pp-tag', text: i.tipo }) : null,
             i.tiempo ? el('span', { class: 'pp-tag', text: `Tiempo orientativo: ${i.tiempo}` }) : null,
             (i.etiquetas || []).map((t) => el('span', { class: 'pp-tag-s', text: t }))),
-        FUENTES[i.datos] ? el('p', { class: 'pp-meta' }, el('b', { text: 'Datos: ' }), FUENTES[i.datos].largo) : null,
-        i.problema ? bloque('El problema', i.problema) : null,
-        i.desarrollar ? bloque('Alcance inicial', i.desarrollar) : null,
-        i.ampliaciones && i.ampliaciones.length ? bloqueAmpliaciones(i.ampliaciones) : null,
-        i.objetivos && i.objetivos.length ? bloque('Objetivos', i.objetivos) : null,
-        i.habilidades && i.habilidades.length ? bloque('Conocimientos y habilidades que se practican', i.habilidades) : null,
-        i.herramientas && i.herramientas.length ? bloque('Herramientas que podrían servir', i.herramientas) : null,
-        i.lineamientos && i.lineamientos.length ? bloque('Lineamientos y cuidados', i.lineamientos) : null,
-        i.otroSector ? bloque('Para otra área', i.otroSector, 'pp-bloque-sector') : null,
-        i.carreras && i.carreras.length ? el('section', { class: 'pp-bloque' }, el('h4', { text: 'Puede interesar a' }),
-            el('div', { class: 'pp-tags' }, i.carreras.map((t) => el('span', { class: 'pp-tag-s', text: t }))),
-            el('p', { class: 'pp-aviso', text: 'Son ejemplos, no una lista cerrada: la idea puede hacerla cualquier persona, de cualquier carrera.' })) : null,
+        cruces.length ? el('p', { class: 'pp-meta' }, el('b', { text: 'Se cruza con: ' }), cruces.join(' · ')) : null,
+        completa === null ? el('p', { class: 'pp-aviso', text: 'Cargando el detalle de la idea…' }) : null,
+        completa === false ? el('p', { class: 'pp-aviso', text: 'No pudimos cargar el detalle de esta idea. Revisa tu conexión y vuelve a abrirla.' }) : null,
+        completa ? [
+            f.datosTexto ? el('p', { class: 'pp-meta' }, el('b', { text: 'Datos: ' }), f.datosTexto) : (FUENTES[f.datos] ? el('p', { class: 'pp-meta' }, el('b', { text: 'Datos: ' }), FUENTES[f.datos].largo) : null),
+            f.progTexto ? lineaConTitulo(f.progTexto) : null,
+            f.abordar ? el('p', { class: 'pp-meta' }, el('b', { text: 'Cómo abordarlo: ' }), f.abordar) : null,
+            f.problema && f.problema.length ? bloque('El problema', f.problema) : null,
+            f.desarrollar && f.desarrollar.length ? bloque('Alcance inicial', f.desarrollar) : null,
+            f.ampliaciones && f.ampliaciones.length ? bloqueAmpliaciones(f.ampliaciones) : null,
+            f.objetivos && f.objetivos.length ? bloque('Objetivos', f.objetivos, '', true) : null,
+            f.habilidades && f.habilidades.length ? bloque('Conocimientos y habilidades que se practican', f.habilidades, '', true) : null,
+            f.herramientas && f.herramientas.length ? bloque('Herramientas que podrían servir', f.herramientas, '', true) : null,
+            f.lineamientos && f.lineamientos.length ? bloque('Lineamientos y cuidados', f.lineamientos, '', true) : null,
+            f.otroSector ? bloque('Para otra área', f.otroSector, 'pp-bloque-sector') : null,
+            f.carreras && f.carreras.length ? el('section', { class: 'pp-bloque' }, el('h4', { text: 'Puede interesar a' }),
+                el('div', { class: 'pp-tags' }, f.carreras.map((t) => el('span', { class: 'pp-tag-s', text: t }))),
+                el('p', { class: 'pp-aviso', text: 'Son ejemplos, no una lista cerrada: la idea puede hacerla cualquier persona, de cualquier carrera.' })) : null,
+        ] : null,
         el('div', { class: 'pp-ficha-pie' }, btnG),
         el('p', { class: 'pp-aviso', text: 'Es una idea para inspirarte: puedes adaptarla, hacerla más pequeña o más grande, o usarla en otra área.' }));
     actualizarBotonFicha();
-    if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
-    $('#ppFichaCuerpo').scrollTop = 0;
 }
 
 function cerrarFicha() {
@@ -253,7 +341,7 @@ const ACCIONES = [
 const TIEMPOS = [
     { id: 'fin', nombre: 'Un fin de semana', horas: 8 }, { id: 'semanas', nombre: 'Entre 1 y 4 semanas', horas: 20 }, { id: 'mes', nombre: 'Más de un mes', horas: 40 },
 ];
-const horasDe = (i) => { const m = /(\d+)/.exec(i.tiempo || ''); return m ? Number(m[1]) : 15; };
+const horasDe = (i) => (typeof i.horas === 'number' ? i.horas : 15);   // campo oculto «horas» del índice (el texto «tiempo» es solo para mostrar)
 
 // Elige hasta 3 ideas: puntúa por cercanía y reparte por «tipo» para que no sean tres iguales. Nunca devuelve «sin resultados».
 export function elegirIdeas(resp, excluir = new Set(), azar = Math.random) {
@@ -330,19 +418,25 @@ function conectarQuiz() {
 
 /* ───── arranque ───── */
 function conectar() {
-    $('#ppBuscar').addEventListener('input', (e) => { estado.q = e.target.value; pintarIdeas(); });
+    $('#ppBuscar').addEventListener('input', (e) => { estado.q = e.target.value; reiniciarPagina(); pintarIdeas(); });
     document.querySelectorAll('.pp-ej').forEach((b) => b.addEventListener('click', () => {
-        estado.q = b.dataset.q; $('#ppBuscar').value = estado.q; pintarIdeas();
+        estado.q = b.dataset.q; $('#ppBuscar').value = estado.q; reiniciarPagina(); pintarIdeas();
         $('#ideas').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
-    $('#ppVerTodas').addEventListener('click', () => { estado.verTodas = !estado.verTodas; pintarIdeas(); });
+    $('#ppVerTodas').addEventListener('click', () => { estado.verTodas = !estado.verTodas; reiniciarPagina(); pintarIdeas(); });
+    $('#ppMas').addEventListener('click', () => { estado.limite += PAGINA; pintarIdeas(); });
+    $('#ppMasCruce').addEventListener('click', () => { estado.limiteCruce += PAGINA; pintarIdeas(); });
     $('#ppLimpiar').addEventListener('click', () => {
         estado.area = null; estado.intencion = null; estado.q = ''; $('#ppBuscar').value = '';
-        pintarAreas(); pintarIntenciones(); pintarIdeas();
+        reiniciarPagina(); pintarAreas(); pintarIntenciones(); pintarIdeas();
     });
-    // Sorpréndeme: cualquier idea de cualquier área (no repite la anterior).
+    // Sorpréndeme: se elige primero un área al azar y luego una idea de esa área, para que las áreas con muchas ideas no se lleven todo
+    // (no repite la anterior).
     $('#ppSorprende').addEventListener('click', () => {
-        const otras = IDEAS.filter((i) => i.id !== estado.ultimaSorpresa);
+        const conIdeas = AREAS.filter((a) => IDEAS.some((i) => i.area === a.id && i.id !== estado.ultimaSorpresa));
+        if (!conIdeas.length) return;
+        const area = conIdeas[Math.floor(Math.random() * conIdeas.length)];
+        const otras = IDEAS.filter((i) => i.area === area.id && i.id !== estado.ultimaSorpresa);
         const elegida = otras[Math.floor(Math.random() * otras.length)];
         if (!elegida) return;
         estado.ultimaSorpresa = elegida.id;
@@ -356,9 +450,12 @@ function conectar() {
 
 async function iniciar() {
     if (!(await accesoPermitido())) return;
+    let cargado = true;
+    try { await cargarIndice(); } catch (e) { cargado = false; }
     estado.guardadas = leerGuardadas();
     estado.destacadas = destacadasDeLaSemana(new Date(), 4, estado.guardadas);
     pintarAreas(); pintarIntenciones(); repintarTodo(); conectar();
+    if (!cargado) { $('#ppVacio').textContent = 'No pudimos cargar el catálogo de ideas. Revisa tu conexión y vuelve a intentarlo.'; $('#ppVacio').hidden = false; }
     await conectarNube();            // la cuenta puede tardar: la página ya se ve y luego se actualizan las guardadas
     estado.destacadas = destacadasDeLaSemana(new Date(), 4, estado.guardadas);
     repintarTodo();

@@ -195,3 +195,11 @@
 @media (prefers-reduced-motion: reduce) {
     .pp-btn, .pp-area, .pp-idea { transition: none; }
 }
+
+/* Catálogo por tandas y bloque «se cruza con» */
+.pp-mas-wrap { display: flex; justify-content: center; margin: 16px 0 4px; }
+.pp-mas-wrap .pp-chip-btn[hidden], .pp-cruce-wrap[hidden] { display: none; }
+.pp-cruce-wrap { margin-top: 28px; }
+.pp-cruce-t { margin: 0 0 12px; font: 700 20px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
+.pp-cruza { margin: 0; font-size: 13.5px; line-height: 1.55; }
+.pp-cruza b { font-weight: 600; }

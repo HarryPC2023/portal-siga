@@ -1,0 +1,59 @@
+{
+ "area": "arte",
+ "ideas": [
+  {
+   "id": "senaletica-espacio",
+   "area": "arte",
+   "areas2": [],
+   "titulo": "Rediseñar la señalética de un espacio de tu universidad",
+   "resumen": "Imagina cómo orientar mejor a quienes se pierden en un espacio, y prueba tus señales con un prototipo.",
+   "tipo": "Diseño",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Diseño gráfico",
+    "Experiencia de usuario"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes",
+   "carreras": [
+    "Arquitectura",
+    "Diseño Gráfico",
+    "Comunicaciones",
+    "Psicología",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Hay lugares donde los visitantes y los alumnos nuevos no encuentran lo que buscan, y las señales existentes son confusas, pequeñas o inexistentes."
+   ],
+   "desarrollar": [
+    "Un recorrido de prueba con una o dos personas que no conocen el lugar (o un recorrido propio si no consigues participantes), un conjunto de señales rediseñadas y un prototipo impreso o digital para comprobar si ayudan."
+   ],
+   "objetivos": [
+    "Observar dónde y por qué se pierde la gente.",
+    "Diseñar un sistema de señales coherente.",
+    "Probarlo con una o dos personas que no conozcan el espacio o, si no las consigues, haciendo tú mismo el recorrido."
+   ],
+   "habilidades": [
+    "Observación",
+    "Diseño gráfico básico",
+    "Pruebas con usuarios"
+   ],
+   "herramientas": [
+    "Un editor de diseño",
+    "Planos o croquis del lugar",
+    "Impresiones de prueba"
+   ],
+   "lineamientos": [
+    "Pide autorización antes de colocar cualquier prototipo.",
+    "Cuida el contraste y el tamaño de las letras.",
+    "Retira el material al terminar la prueba."
+   ],
+   "otroSector": "Sirve para centros de salud, mercados, terminales, bibliotecas o tiendas."
+  }
+ ]
+}

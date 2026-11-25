@@ -1,0 +1,74 @@
+{
+ "area": "salud",
+ "ideas": [
+  {
+   "id": "citas-consultorio",
+   "area": "salud",
+   "areas2": [],
+   "titulo": "Menos citas perdidas en un consultorio",
+   "resumen": "Explora cómo diseñar recordatorios y reprogramaciones para un consultorio pequeño, probándolos con un caso simulado.",
+   "tipo": "Prototipo",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Procesos",
+    "Atención al paciente"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: puedes hacerlo sin pedir permiso a nadie",
+   "carreras": [
+    "Medicina",
+    "Enfermería",
+    "Psicología",
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Administración"
+   ],
+   "problema": [
+    "Cuando un paciente falta a su cita sin avisar, se pierde un espacio que otra persona pudo usar y el consultorio pierde tiempo y dinero."
+   ],
+   "desarrollar": [
+    "Un flujo de recordatorios antes de la cita, una forma fácil de confirmar o reprogramar, y un registro simple de cuántas citas se recuperan. Se puede probar con datos inventados."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otro público",
+     "aporta": "Explora cómo adaptar los mensajes para personas mayores o que casi no usan el celular."
+    },
+    {
+     "titulo": "Otra mirada",
+     "aporta": "Descubre cuánto tiempo y dinero se pierde por cada cita que nadie ocupa, y qué ahorro traería recuperarla."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "Imagina una forma de reprogramar la cita desde un enlace, sin llamar a nadie."
+    }
+   ],
+   "objetivos": [
+    "Describir cómo se agenda y se confirma una cita hoy.",
+    "Diseñar los mensajes y el momento en que se envían.",
+    "Medir con un caso simulado cuántas citas se podrían recuperar."
+   ],
+   "habilidades": [
+    "Mapeo de procesos",
+    "Redacción clara para pacientes",
+    "Análisis básico de datos"
+   ],
+   "herramientas": [
+    "Hoja de cálculo",
+    "Diagramas de flujo",
+    "Mensajería o correo para la simulación"
+   ],
+   "lineamientos": [
+    "Usa datos ficticios: nunca información real de pacientes.",
+    "Los mensajes deben ser breves y respetuosos.",
+    "Aclara que es una simulación y no un servicio médico."
+   ],
+   "otroSector": "Sirve igual para peluquerías, academias, talleres mecánicos o cualquier negocio que trabaje con citas."
+  }
+ ]
+}

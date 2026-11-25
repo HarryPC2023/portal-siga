@@ -1,12 +1,18 @@
-// js/proyectos-datos.js — Contenido de «Proyectos Prácticos»: las 12 áreas y las ideas del catálogo.
+// js/proyectos-datos.js — Contenido de «Proyectos Prácticos»: las 12 áreas, las intenciones, las fuentes de datos y las destacadas.
 //
-// Para AGREGAR una idea: copia un bloque de IDEAS, cambia el `id` (único, sin espacios) y el `area`
-// (debe ser un `id` de AREAS), y escribe los textos. No hay que tocar proyectos-practicos.js ni el HTML.
-// Las ideas de aquí son un punto de partida para descubrir posibilidades, no un manual de ejecución:
-// ningún campo es obligatorio salvo id, area, titulo y resumen.
-// `ampliaciones` (opcional, máximo 3) = «Para ir más lejos»: { titulo, aporta }. Cada una abre una perspectiva distinta (otro público, otro formato, otra mirada),
-// no «más funciones». El alcance inicial (`desarrollar`) debe bastarse solo y poder hacerse sin permiso de terceros; las ampliaciones nunca lo corrigen.
-// `carreras` («Puede interesar a») son ejemplos para que quien busca por su carrera encuentre la idea; NO restringen quién puede hacerla.
+// LAS IDEAS YA NO VIVEN AQUÍ. Cada área tiene su archivo con las fichas completas: js/proyectos/areas/<id del área>.json.
+// Para AGREGAR o CAMBIAR una idea:
+//   1) Edita (o agrega un bloque en) el archivo de su área, por ejemplo js/proyectos/areas/tecnologia.json.
+//   2) Desde la carpeta del proyecto ejecuta:  python tools/generar_indice.py
+//      (genera js/proyectos/indice.json, la versión liviana que usan las tarjetas, los filtros y la búsqueda; avisa si algo está mal).
+//   3) Sube los cambios con git. No hay que tocar proyectos-practicos.js ni el HTML.
+// Campos de una idea: id (único, minúsculas y guiones; NO lo cambies si la idea ya pudo guardarse), area (id de AREAS = donde vive el problema),
+// areas2 (hasta 2 áreas con las que se cruza), titulo, resumen, tipo, tiempo (texto que ve la persona), horas (número, oculto: ordena y alimenta el cuestionario),
+// etiquetas, intencion, datos (ficticios | publicos | propios) y datosTexto (el texto largo), prog (sin | opcional | incluida) con progTexto y abordar,
+// carreras («Puede interesar a»: ejemplos que ayudan a encontrar la idea; NO restringen quién puede hacerla),
+// problema y desarrollar (listas de párrafos; un párrafo puede ser { lista: [...] }), ampliaciones (máx. 3: { titulo, aporta }),
+// objetivos, habilidades, herramientas, lineamientos y otroSector.
+// El alcance inicial (`desarrollar`) debe bastarse solo y poder hacerse sin permiso de terceros; las ampliaciones nunca lo corrigen.
 
 export const AREAS = [
     { id: 'tecnologia', corto: 'Sistemas digitales', nombre: 'Sistemas digitales y automatización', frase: 'Crear sistemas digitales, desarrollar software, automatizar procesos y trabajar con datos.', c: '#2455C4', f: '#E4EEFF', n: '#2F6BFF' },
@@ -30,198 +36,6 @@ export const INTENCIONES = [
     { id: 'investigar', nombre: 'Investigar un tema', c: '#0B7A5A', n: '#00A86B' },
     { id: 'otro-sector', nombre: 'Aplicar lo que sé en otra área', c: '#9A5B00', n: '#D97800' },
 ];
-
-export const IDEAS = [
-    {
-        id: 'reservas-laboratorios', area: 'tecnologia',
-        carreras: ['Ingeniería de Sistemas', 'Ingeniería de Software', 'Ingeniería Industrial', 'Ciberseguridad', 'Administración', 'Estadística'],
-        titulo: 'Reservar laboratorios y salas sin mandar mensajes',
-        resumen: 'Explora cómo diseñar un sistema sencillo para ver qué espacios están libres, reservarlos y evitar cruces de horario.',
-        datos: 'ficticios', tipo: 'Prototipo', tiempo: '~30 h', etiquetas: ['Software', 'Organización'], intencion: ['crear', 'resolver'],
-        problema: 'Reservar un laboratorio o una sala suele depender de mensajes sueltos, hojas compartidas o ir a preguntar en persona, y los cruces de horario son frecuentes.',
-        desarrollar: 'Un prototipo con calendario por espacio, reservas por bloques de hora y un aviso cuando alguien intenta reservar algo ya ocupado. Puede ser una hoja de cálculo bien armada o una web sencilla.',
-        objetivos: ['Entender cómo se organiza hoy la reserva de un espacio real.', 'Diseñar las reglas: quién reserva, por cuánto tiempo y cómo se cancela.', 'Probar el prototipo tú o con alguien cercano y ajustar lo que no funcione.'],
-        habilidades: ['Levantar requerimientos', 'Diseño de interfaces sencillas', 'Manejo de datos de horarios'],
-        herramientas: ['Hoja de cálculo', 'Un formulario en línea', 'Un lenguaje web si quieres ir más lejos'],
-        lineamientos: ['Empieza con un solo espacio y pocas reglas.', 'No guardes datos personales que no necesites.', 'Pide permiso a quien administre el espacio antes de probarlo con otros.'],
-        otroSector: 'El mismo concepto sirve para reservar consultorios, canchas, talleres de un colegio o salas de reuniones de una pequeña empresa.',
-    },
-    {
-        id: 'citas-consultorio', area: 'salud',
-        carreras: ['Medicina', 'Enfermería', 'Psicología', 'Ingeniería de Sistemas', 'Ingeniería Industrial', 'Administración'],
-        titulo: 'Menos citas perdidas en un consultorio',
-        resumen: 'Explora cómo diseñar recordatorios y reprogramaciones para un consultorio pequeño, probándolos con un caso simulado.',
-        datos: 'ficticios', tipo: 'Prototipo', tiempo: '~15 h', etiquetas: ['Procesos', 'Atención al paciente'], intencion: ['resolver', 'crear'],
-        problema: 'Cuando un paciente falta a su cita sin avisar, se pierde un espacio que otra persona pudo usar y el consultorio pierde tiempo y dinero.',
-        desarrollar: 'Un flujo de recordatorios antes de la cita, una forma fácil de confirmar o reprogramar, y un registro simple de cuántas citas se recuperan. Se puede probar con datos inventados.',
-        objetivos: ['Describir cómo se agenda y se confirma una cita hoy.', 'Diseñar los mensajes y el momento en que se envían.', 'Medir con un caso simulado cuántas citas se podrían recuperar.'],
-        habilidades: ['Mapeo de procesos', 'Redacción clara para pacientes', 'Análisis básico de datos'],
-        herramientas: ['Hoja de cálculo', 'Diagramas de flujo', 'Mensajería o correo para la simulación'],
-        lineamientos: ['Usa datos ficticios: nunca información real de pacientes.', 'Los mensajes deben ser breves y respetuosos.', 'Aclara que es una simulación y no un servicio médico.'],
-        ampliaciones: [
-            { titulo: 'Otro público', aporta: 'Explora cómo adaptar los mensajes para personas mayores o que casi no usan el celular.' },
-            { titulo: 'Otra mirada', aporta: 'Descubre cuánto tiempo y dinero se pierde por cada cita que nadie ocupa, y qué ahorro traería recuperarla.' },
-            { titulo: 'Otro formato', aporta: 'Imagina una forma de reprogramar la cita desde un enlace, sin llamar a nadie.' },
-        ],
-        otroSector: 'Sirve igual para peluquerías, academias, talleres mecánicos o cualquier negocio que trabaje con citas.',
-    },
-    {
-        id: 'papel-facultad', area: 'ambiente',
-        carreras: ['Ingeniería Ambiental', 'Ingeniería Industrial', 'Química', 'Biología', 'Administración', 'Educación'],
-        titulo: '¿Cuánto papel se desperdicia en tu facultad?',
-        resumen: 'Descubre cuánto papel se consume en un espacio real y qué formas concretas habría de reducirlo.',
-        datos: 'propios', tipo: 'Análisis', tiempo: '~10 h', etiquetas: ['Medición', 'Reducción de residuos'], intencion: ['investigar', 'resolver'],
-        problema: 'Se imprime mucho papel que termina sin usarse, pero casi nadie sabe cuánto ni dónde ocurre, así que es difícil cambiar los hábitos.',
-        desarrollar: 'Una medición sencilla durante unos días y una propuesta de dos o tres cambios para reducir el desperdicio.',
-        objetivos: ['Definir qué se va a medir y en qué lugar.', 'Recoger datos durante una semana.', 'Proponer cambios y estimar cuánto papel se ahorraría.'],
-        habilidades: ['Diseño de una medición', 'Gráficos simples', 'Comunicación de resultados'],
-        herramientas: ['Hoja de cálculo', 'Fichas de registro en papel o en línea'],
-        lineamientos: ['Avisa y pide permiso en el lugar donde midas.', 'Registra cantidades, no personas.', 'Presenta resultados sin culpar a nadie.'],
-        ampliaciones: [
-            { titulo: 'Comparar espacios', aporta: 'Contrasta cuánto papel se usa en aulas, oficinas y laboratorios, y por qué cambia.' },
-            { titulo: 'Traducirlo a impacto', aporta: 'Convierte las hojas en algo que se entienda a simple vista: dinero, árboles o tiempo de impresión.' },
-            { titulo: 'Cambiar hábitos', aporta: 'Diseña una campaña breve para reducir el papel y descubre cómo la recibirían tus compañeros.' },
-        ],
-        otroSector: 'La misma medición funciona con energía, agua o comida en un colegio, un restaurante o una oficina.',
-    },
-    {
-        id: 'costos-negocio', area: 'negocios',
-        carreras: ['Economía', 'Administración', 'Contabilidad', 'Ingeniería Industrial', 'Ingeniería Económica', 'Estadística'],
-        titulo: '¿Cuánto cuesta realmente un negocio pequeño?',
-        resumen: 'Explora cómo calcular los costos reales de una bodega, un puesto o un servicio y descubre cuál sería su precio justo.',
-        datos: 'propios', tipo: 'Análisis', tiempo: '~12 h', etiquetas: ['Costos', 'Emprendimiento'], intencion: ['investigar', 'otro-sector'],
-        problema: 'Muchos negocios pequeños fijan precios por intuición y no incluyen su tiempo, los desperdicios ni los gastos fijos, así que ganan menos de lo que creen.',
-        desarrollar: 'Una hoja de costos que separe lo fijo de lo variable, incluya el tiempo de trabajo y calcule un punto de equilibrio y un rango de precio.',
-        objetivos: ['Identificar todos los costos de un negocio concreto.', 'Calcular cuánto hay que vender para no perder.', 'Explicar el resultado en una página que entienda su dueño.'],
-        habilidades: ['Costeo básico', 'Hoja de cálculo', 'Explicar números con palabras sencillas'],
-        herramientas: ['Hoja de cálculo', 'Entrevista breve con el dueño (opcional)'],
-        lineamientos: ['Puedes usar un negocio ficticio con datos realistas.', 'Si hablas con un dueño real, respeta lo que no quiera compartir.', 'Deja a la vista los supuestos que hiciste.'],
-        otroSector: 'Sirve para un taller de reparaciones, un servicio de asesorías, un emprendimiento digital o una actividad de recaudación.',
-    },
-    {
-        id: 'cruces-peatonales', area: 'ciudades',
-        carreras: ['Ingeniería Civil', 'Arquitectura', 'Urbanismo', 'Ingeniería de Transporte', 'Sociología', 'Psicología'],
-        titulo: 'Los cruces más difíciles para peatones cerca de tu campus',
-        resumen: 'Observa cómo se cruza una pista cercana e imagina mejoras sencillas para que sea más segura.',
-        datos: 'propios', tipo: 'Investigación', tiempo: '~15 h', etiquetas: ['Seguridad vial', 'Observación'], intencion: ['investigar', 'resolver'],
-        problema: 'Hay cruces donde las personas esperan poco, corren o cruzan por donde no deben, y rara vez se registra por qué ocurre.',
-        desarrollar: 'Un registro de observación por franjas horarias (cuántos cruzan, cuánto esperan, qué dificulta el paso) y un croquis con dos o tres mejoras posibles.',
-        objetivos: ['Elegir un cruce y definir qué observar.', 'Registrar datos en distintas horas.', 'Proponer mejoras viables con un croquis claro.'],
-        habilidades: ['Observación sistemática', 'Croquis y planos simples', 'Argumentar una propuesta'],
-        herramientas: ['Hoja de registro', 'Mapa o croquis', 'Fotografías del lugar (sin mostrar rostros)'],
-        lineamientos: ['Observa desde un lugar seguro, sin invadir la vía.', 'No grabes ni fotografíes a personas identificables.', 'Presenta tus ideas como propuestas, no como críticas.'],
-        ampliaciones: [
-            { titulo: 'Observar más', aporta: 'Explora si cambia el panorama en otros días, horarios o con lluvia.' },
-            { titulo: 'Comparar con otro lugar', aporta: 'Descubre qué hace distinto a otro cruce, de otro distrito, que sí funciona bien.' },
-            { titulo: 'Mostrar la mejora', aporta: 'Imagina cómo se vería el cruce antes y después, con un dibujo o una maqueta sencilla.' },
-        ],
-        otroSector: 'El mismo método sirve para analizar colas en una ventanilla, el flujo en un mercado o el tránsito dentro de una planta.',
-    },
-    {
-        id: 'costo-taller-escolar', area: 'educacion',
-        carreras: ['Educación', 'Administración', 'Contabilidad', 'Psicología', 'Economía'],
-        titulo: '¿Cuánto cuesta realmente un taller escolar?',
-        resumen: 'Descubre cómo costear materiales, tiempo y local de una actividad para proponer un precio justo con una hoja de costos.',
-        datos: 'publicos', tipo: 'Análisis', tiempo: '~8 h', etiquetas: ['Costos', 'Educación'], intencion: ['investigar', 'resolver'],
-        problema: 'Quienes organizan talleres o actividades educativas suelen calcular el costo «a ojo», y terminan cobrando de menos o dejando fuera partes importantes.',
-        desarrollar: 'Una hoja de costos para un taller concreto: materiales, tiempo de preparación, uso del local y un margen razonable, con un precio sugerido por participante.',
-        objetivos: ['Listar todo lo que necesita un taller para realizarse.', 'Calcular el costo por participante.', 'Explicar cómo cambia el precio según la cantidad de asistentes.'],
-        habilidades: ['Costeo', 'Planificación de actividades', 'Comunicación clara'],
-        herramientas: ['Hoja de cálculo'],
-        lineamientos: ['Elige un taller que conozcas bien.', 'Separa lo que es costo real de lo que es opcional.', 'Muestra siempre el cálculo, no solo el resultado.'],
-        otroSector: 'El mismo cálculo sirve para una feria, un campamento, un curso de verano o un evento cultural.',
-    },
-    {
-        id: 'servicios-gratuitos', area: 'sociedad',
-        carreras: ['Trabajo Social', 'Sociología', 'Derecho', 'Comunicaciones', 'Ingeniería de Sistemas', 'Educación'],
-        titulo: 'Un mapa de servicios gratuitos de tu distrito',
-        resumen: 'Descubre cómo reunir en un solo lugar dónde conseguir ayuda, orientación y servicios sin costo cerca de ti.',
-        datos: 'publicos', tipo: 'Guía', tiempo: '~10 h', etiquetas: ['Comunidad', 'Información útil'], intencion: ['crear', 'resolver'],
-        problema: 'Existen servicios gratuitos de salud, orientación legal, apoyo escolar o cultura, pero la información está dispersa y mucha gente no sabe que existen.',
-        desarrollar: 'Un directorio ordenado por tema y ubicación, con horarios, requisitos y cómo llegar, presentado como un mapa o una guía fácil de compartir.',
-        objetivos: ['Recopilar información pública y verificada.', 'Organizarla para que se encuentre en pocos pasos.', 'Revisarla con alguien que no conozca el tema.'],
-        habilidades: ['Búsqueda y verificación de fuentes', 'Organización de la información', 'Diseño de guías'],
-        herramientas: ['Hoja de cálculo', 'Un mapa en línea', 'Un documento o una página sencilla'],
-        lineamientos: ['Usa solo información pública y cita la fuente.', 'Indica la fecha de la última revisión.', 'No publiques datos de contacto de personas, solo de instituciones.'],
-        otroSector: 'Se adapta a guías para estudiantes nuevos, para migrantes, para adultos mayores o para emprendedores.',
-    },
-    {
-        id: 'derechos-consumidor', area: 'derecho',
-        carreras: ['Derecho', 'Comunicaciones', 'Diseño Gráfico', 'Economía', 'Administración'],
-        titulo: 'Guía visual de derechos del consumidor',
-        resumen: 'Descubre cómo convertir situaciones cotidianas, como compras en línea y garantías, en una guía visual lista para compartir.',
-        datos: 'publicos', tipo: 'Guía', tiempo: '~10 h', etiquetas: ['Divulgación', 'Derechos'], intencion: ['crear', 'resolver'],
-        problema: 'Mucha gente no reclama porque no sabe qué derechos tiene al comprar, devolver o pedir una garantía, o cree que el trámite es demasiado complicado.',
-        desarrollar: 'Una guía breve y visual que explique, con ejemplos de la vida diaria, qué se puede hacer y ante quién, usando lenguaje claro y sin tecnicismos.',
-        objetivos: ['Elegir cuatro situaciones frecuentes.', 'Explicar cada una en pocas líneas con base en fuentes oficiales.', 'Comprobar que alguien ajeno al tema la entiende.'],
-        habilidades: ['Lectura de normas', 'Redacción sencilla', 'Diseño de piezas gráficas'],
-        herramientas: ['Un editor de presentaciones o de diseño', 'Fuentes oficiales de protección al consumidor'],
-        lineamientos: ['Cita la norma o la institución de la que tomas cada dato.', 'Aclara que es información general y no asesoría legal.', 'Revisa que la información siga vigente.'],
-        ampliaciones: [
-            { titulo: 'Otro formato', aporta: 'Descubre cómo convertir la guía en tarjetas para redes o en un video corto.' },
-            { titulo: 'Otro público', aporta: 'Explora cómo explicarla a quien compra en línea por primera vez o a personas mayores.' },
-            { titulo: 'Casos simulados', aporta: 'Imagina un reclamo paso a paso, con un ejemplo ficticio, para ver cómo se vive de principio a fin.' },
-        ],
-        otroSector: 'El mismo formato sirve para derechos laborales, de los estudiantes, de los pacientes o de los inquilinos.',
-    },
-    {
-        id: 'dureza-agua', area: 'ciencias',
-        carreras: ['Química', 'Física', 'Biología', 'Ingeniería Química', 'Ingeniería Ambiental', 'Matemática'],
-        titulo: 'Comparar la dureza del agua en distintos lugares',
-        resumen: 'Explora cómo medir y comparar el agua de varios lugares con un experimento sencillo, y qué la hace diferente.',
-        datos: 'propios', tipo: 'Investigación', tiempo: '~12 h', etiquetas: ['Experimento', 'Datos'], intencion: ['investigar'],
-        problema: 'Usamos agua a diario, pero casi nadie sabe qué tan diferente es entre un lugar y otro ni cómo afecta a los electrodomésticos o al sabor.',
-        desarrollar: 'Un procedimiento sencillo con tiras de prueba o una titulación básica para comparar muestras, con un registro ordenado y un gráfico de resultados.',
-        objetivos: ['Plantear una pregunta concreta y una forma de medirla.', 'Tomar y registrar las muestras con el mismo método.', 'Interpretar las diferencias y sus posibles causas.'],
-        habilidades: ['Método científico', 'Registro de datos', 'Interpretación de gráficos'],
-        herramientas: ['Tiras reactivas o kit de laboratorio básico', 'Hoja de cálculo'],
-        lineamientos: ['Usa solo materiales seguros y sigue las indicaciones de cada kit.', 'Anota cómo y cuándo tomaste cada muestra.', 'No concluyas más de lo que tus datos permiten.'],
-        otroSector: 'El mismo enfoque sirve para comparar suelos, alimentos, materiales de construcción o productos de limpieza.',
-    },
-    {
-        id: 'senaletica-espacio', area: 'arte',
-        carreras: ['Arquitectura', 'Diseño Gráfico', 'Comunicaciones', 'Psicología', 'Ingeniería de Sistemas'],
-        titulo: 'Rediseñar la señalética de un espacio de tu universidad',
-        resumen: 'Imagina cómo orientar mejor a quienes se pierden en un espacio, y prueba tus señales con un prototipo.',
-        datos: 'propios', tipo: 'Diseño', tiempo: '~15 h', etiquetas: ['Diseño gráfico', 'Experiencia de usuario'], intencion: ['crear', 'resolver'],
-        problema: 'Hay lugares donde los visitantes y los alumnos nuevos no encuentran lo que buscan, y las señales existentes son confusas, pequeñas o inexistentes.',
-        desarrollar: 'Un recorrido de prueba con una o dos personas que no conocen el lugar (o un recorrido propio si no consigues participantes), un conjunto de señales rediseñadas y un prototipo impreso o digital para comprobar si ayudan.',
-        objetivos: ['Observar dónde y por qué se pierde la gente.', 'Diseñar un sistema de señales coherente.', 'Probarlo con una o dos personas que no conozcan el espacio o, si no las consigues, haciendo tú mismo el recorrido.'],
-        habilidades: ['Observación', 'Diseño gráfico básico', 'Pruebas con usuarios'],
-        herramientas: ['Un editor de diseño', 'Planos o croquis del lugar', 'Impresiones de prueba'],
-        lineamientos: ['Pide autorización antes de colocar cualquier prototipo.', 'Cuida el contraste y el tamaño de las letras.', 'Retira el material al terminar la prueba.'],
-        otroSector: 'Sirve para centros de salud, mercados, terminales, bibliotecas o tiendas.',
-    },
-    {
-        id: 'calendario-huerto', area: 'agricultura',
-        carreras: ['Agronomía', 'Biología', 'Ingeniería Ambiental', 'Estadística', 'Ingeniería de Sistemas', 'Educación'],
-        titulo: 'Un calendario de siembra para un huerto pequeño',
-        resumen: 'Explora cómo cruzar datos del clima con los cultivos que mejor se adaptan para decidir qué sembrar y cuándo.',
-        datos: 'publicos', tipo: 'Guía', tiempo: '~10 h', etiquetas: ['Datos del clima', 'Huertos'], intencion: ['crear', 'otro-sector'],
-        problema: 'Quien empieza un huerto suele sembrar fuera de época y pierde plantas, sin saber que el clima de su zona favorece otros cultivos en otros meses.',
-        desarrollar: 'Un calendario que, según el clima de una zona, indique qué cultivos conviene sembrar cada mes, cuánto tardan en crecer y qué cuidados necesitan.',
-        objetivos: ['Reunir datos de temperatura y lluvia de una zona.', 'Elegir cultivos y sus requerimientos.', 'Armar un calendario claro y fácil de consultar.'],
-        habilidades: ['Uso de datos abiertos', 'Hoja de cálculo', 'Diseño de calendarios y guías'],
-        herramientas: ['Datos de una entidad meteorológica', 'Hoja de cálculo', 'Un editor de diseño'],
-        lineamientos: ['Indica de dónde salen los datos del clima.', 'Aclara que es una guía general y que cada terreno es distinto.', 'Prefiere cultivos fáciles para empezar.'],
-        otroSector: 'El mismo cruce de clima y calendario sirve para eventos al aire libre, turismo, construcción o transporte.',
-    },
-    {
-        id: 'tiempos-proceso', area: 'industria',
-        carreras: ['Ingeniería Industrial', 'Administración', 'Ingeniería Mecánica', 'Ingeniería Química', 'Medicina', 'Ingeniería de Sistemas'],
-        titulo: 'Dónde se pierde el tiempo en un proceso de producción',
-        resumen: 'Descubre cómo dibujar las etapas de un proceso para detectar esperas, repeticiones y desperdicios que se podrían reducir.',
-        datos: 'ficticios', tipo: 'Análisis', tiempo: '~15 h', etiquetas: ['Procesos', 'Mejora'], intencion: ['investigar', 'resolver', 'otro-sector'],
-        problema: 'En muchos procesos, desde una panadería hasta un taller, una parte importante del tiempo se va en esperas, traslados y tareas repetidas que nadie ha medido.',
-        desarrollar: 'Un diagrama del proceso con tiempos aproximados por etapa, el señalamiento de dónde se pierde más tiempo y dos o tres mejoras posibles con su efecto estimado.',
-        objetivos: ['Describir el proceso paso a paso.', 'Medir o estimar el tiempo de cada etapa.', 'Proponer mejoras y estimar cuánto tiempo ahorrarían.'],
-        habilidades: ['Diagramas de flujo', 'Medición de tiempos', 'Pensamiento crítico'],
-        herramientas: ['Cronómetro', 'Hoja de cálculo', 'Un editor de diagramas'],
-        lineamientos: ['Puede ser un proceso real al que tengas acceso o uno simulado.', 'Cuida la seguridad si observas un lugar de trabajo.', 'Pide permiso antes de medir a personas trabajando.'],
-        otroSector: 'El mismo análisis sirve para un hospital, una cocina, una oficina, un banco o un servicio de atención al cliente.',
-    },
-];
-
 
 // De dónde salen los datos de una idea. Sirve para que nadie dependa de un permiso ajeno para empezar.
 export const FUENTES = {

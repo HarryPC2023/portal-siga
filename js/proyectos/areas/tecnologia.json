@@ -1,0 +1,4240 @@
+{
+ "area": "tecnologia",
+ "ideas": [
+  {
+   "id": "como-reconocer-un-correo-falso-antes-de-abrirlo",
+   "area": "tecnologia",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cómo reconocer un correo falso antes de abrirlo?",
+   "resumen": "Aprende a distinguir un correo legítimo de uno falso observando pistas concretas, y convierte lo que descubras en una guía que cualquier persona pueda usar.",
+   "tipo": "Guía",
+   "tiempo": "~8 h",
+   "horas": 8,
+   "etiquetas": [
+    "Seguridad digital",
+    "Prevención",
+    "Análisis de casos"
+   ],
+   "intencion": [
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con correos inventados o con ejemplos que instituciones y empresas publican para enseñar a reconocer fraudes; no hace falta recibir ni enviar correos reales.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Derecho",
+    "Comunicaciones",
+    "Educación",
+    "Administración",
+    "Contabilidad"
+   ],
+   "problema": [
+    "Los correos falsos que imitan a un banco, a una empresa de entregas o a la propia institución educativa llegan cada día, y los más convincentes ya no tienen errores de ortografía ni logos mal hechos. Una persona apurada puede entregar sus claves en segundos.",
+    "La mayoría de las guías dicen «desconfía» sin explicar en qué fijarse. Sin criterios concretos, las personas terminan desconfiando de todo o de nada."
+   ],
+   "desarrollar": [
+    "Reúne entre 10 y 15 ejemplos de correos, mitad legítimos y mitad falsos, todos inventados o tomados de material educativo público. Para cada uno identifica las pistas que delatan el engaño: la dirección del remitente, el destino real de los enlaces, el tono de urgencia, los adjuntos y lo que se pide.",
+    "Con eso arma un recorrido de preguntas que cualquiera pueda hacerse antes de hacer clic, y pruébalo con alguien cercano para ver dónde se confunde. El resultado puede ser una guía de una página, una infografía o un cuestionario de práctica."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un nivel más difícil",
+     "aporta": "agrega casos dirigidos a una persona concreta, que mencionan su nombre o su institución y parecen mucho más creíbles."
+    },
+    {
+     "titulo": "Qué hacer después",
+     "aporta": "suma a la guía los pasos para reaccionar si ya hiciste clic: cambiar claves, avisar y revisar movimientos."
+    },
+    {
+     "titulo": "Un revisor de pistas",
+     "aporta": "automatiza la revisión de las señales más fáciles de medir, como la diferencia entre el texto de un enlace y su destino."
+    }
+   ],
+   "objetivos": [
+    "Identificar las pistas que delatan un correo fraudulento.",
+    "Clasificar los casos según su nivel de dificultad.",
+    "Elaborar criterios claros y fáciles de recordar.",
+    "Probar la guía con otras personas y ajustarla según lo que no entiendan.",
+    "Presentar el resultado en un formato que se pueda compartir."
+   ],
+   "habilidades": [
+    "Seguridad de la información.",
+    "Análisis de casos.",
+    "Comunicación clara para público no técnico.",
+    "Pensamiento crítico.",
+    "Diseño de materiales educativos."
+   ],
+   "herramientas": [
+    "Documento o presentación.",
+    "Hoja de cálculo para clasificar los ejemplos.",
+    "Herramientas para diseñar infografías."
+   ],
+   "lineamientos": [
+    "Cuidados: trabaja solo con correos ficticios o de material educativo público. No envíes correos falsos a otras personas, ni siquiera como prueba, y no publiques mensajes reales que contengan datos de alguien.",
+    "Presenta las pistas como ayuda y no como garantía: ningún criterio detecta todos los engaños."
+   ],
+   "otroSector": "El mismo enfoque sirve para entrenar al personal de una oficina, de un negocio pequeño o de una institución pública a reconocer mensajes fraudulentos por mensajería o por llamada."
+  },
+  {
+   "id": "cuanto-tardaria-en-adivinarse-tu-contrasena",
+   "area": "tecnologia",
+   "areas2": [
+    "ciencias"
+   ],
+   "titulo": "¿Cuánto tardaría en adivinarse tu contraseña?",
+   "resumen": "Estima con matemática sencilla cuánto tardaría un atacante en adivinar distintos tipos de contraseña, y descubre por qué unas aguantan años y otras segundos.",
+   "tipo": "Análisis",
+   "tiempo": "~8 h",
+   "horas": 8,
+   "etiquetas": [
+    "Seguridad digital",
+    "Matemática",
+    "Hábitos digitales"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: usa solo contraseñas inventadas con la misma forma que las tuyas; nunca escribas ni compartas una real.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Matemática",
+    "Estadística",
+    "Educación",
+    "Contabilidad",
+    "Administración"
+   ],
+   "problema": [
+    "Casi todos hemos escuchado que una contraseña debe ser «larga y con símbolos», pero pocos saben cuánto cambia la seguridad con cada carácter que se añade o con cada hábito, como repetirla en varios sitios.",
+    "Sin esa noción, las personas eligen entre reglas que no entienden: cambian la clave cada mes por obligación pero la hacen más fácil de recordar y, por lo tanto, de adivinar."
+   ],
+   "desarrollar": [
+    "Define 8 contraseñas ficticias de distinto tipo: corta, solo letras, con una palabra común, una frase larga, con números previsibles, etc. Calcula cuántas combinaciones posibles tiene cada una y cuánto tardaría en recorrerlas un equipo que prueba, por ejemplo, mil millones de intentos por segundo.",
+    "Compara los resultados en una tabla y un gráfico, y explica con tus palabras qué hábitos aportan más seguridad. El resultado puede ser una guía de una página con la tabla como protagonista."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Ataques más listos",
+     "aporta": "explica por qué una contraseña formada por una palabra del diccionario cae mucho más rápido de lo que dice la cuenta de combinaciones."
+    },
+    {
+     "titulo": "Un medidor sencillo",
+     "aporta": "construye una hoja o una pequeña página que, sin guardar nada, muestre el tiempo estimado para una clave inventada."
+    },
+    {
+     "titulo": "Más allá de la clave",
+     "aporta": "analiza cuánto suma la verificación en dos pasos y qué cambia si una clave se filtra."
+    }
+   ],
+   "objetivos": [
+    "Calcular el número de combinaciones de distintos tipos de contraseña.",
+    "Estimar tiempos de ataque bajo supuestos claros.",
+    "Distinguir entre longitud, variedad y previsibilidad.",
+    "Traducir resultados numéricos a recomendaciones concretas.",
+    "Comunicar el resultado sin tecnicismos."
+   ],
+   "habilidades": [
+    "Combinatoria y potencias.",
+    "Seguridad de la información.",
+    "Uso de hoja de cálculo.",
+    "Visualización de datos.",
+    "Redacción de recomendaciones claras."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Calculadora científica o lenguaje de programación sencillo, si quieres automatizar.",
+    "Herramienta para hacer gráficos."
+   ],
+   "lineamientos": [
+    "Cuidados: nunca ingreses tus contraseñas reales en una página, hoja o programa, ni siquiera para «probarlas». Todo el ejercicio se hace con claves inventadas.",
+    "Aclara que las estimaciones dependen de supuestos y que los números reales cambian con la tecnología del atacante."
+   ],
+   "otroSector": "La misma lógica de «cuánto tardaría en adivinarse» se aplica a códigos de acceso, PIN de tarjetas, números de pedido o cualquier identificador que alguien podría intentar adivinar."
+  },
+  {
+   "id": "tus-archivos-olvidados-cuanto-espacio-ocupa-lo-que-ya-no-usas",
+   "area": "tecnologia",
+   "areas2": [
+    "ambiente"
+   ],
+   "titulo": "Tus archivos olvidados: ¿cuánto espacio ocupa lo que ya no usas?",
+   "resumen": "Mide cuánto espacio digital ocupa lo que ya no usas y propón un método para ordenar y liberar sin perder lo importante.",
+   "tipo": "Análisis",
+   "tiempo": "~8 h",
+   "horas": 8,
+   "etiquetas": [
+    "Organización",
+    "Datos",
+    "Consumo responsable"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: revisa tus propios archivos y almacenamiento; no hace falta mirar datos de otras personas.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Ambiental",
+    "Computación e Informática",
+    "Administración",
+    "Gestión de la Información",
+    "Educación",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Los celulares, las computadoras y las cuentas en la nube se llenan de fotos repetidas, descargas olvidadas y versiones antiguas de documentos. Cuando el espacio se acaba, la reacción habitual es pagar por más almacenamiento en lugar de ordenar.",
+    "Guardar de más también tiene un costo: los centros de datos consumen energía para conservar archivos que nadie vuelve a abrir."
+   ],
+   "desarrollar": [
+    "Elige un dispositivo o una cuenta tuya y haz un inventario por tipo de archivo: fotos, videos, documentos, descargas y aplicaciones. Mide cuánto ocupa cada grupo, cuánto no has abierto en más de un año y cuántos archivos son repetidos.",
+    "Con esos números diseña un método de orden de tres pasos, que decida qué conservar, qué archivar y qué eliminar, y pruébalo en una parte pequeña. El resultado puede ser una hoja con el antes y el después y una guía de una página."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un hábito mensual",
+     "aporta": "convierte el método en una rutina de diez minutos y comprueba si logras mantenerla durante un mes."
+    },
+    {
+     "titulo": "Los repetidos",
+     "aporta": "compara herramientas que detectan archivos duplicados y qué tan fiables son."
+    },
+    {
+     "titulo": "El costo oculto",
+     "aporta": "estima el costo en energía y dinero de conservar lo que nunca vuelves a abrir."
+    }
+   ],
+   "objetivos": [
+    "Medir el uso de espacio por tipo de archivo.",
+    "Identificar archivos repetidos y sin uso.",
+    "Definir criterios claros para conservar, archivar y eliminar.",
+    "Probar el método y ajustarlo con los resultados.",
+    "Comunicar los hábitos de orden de forma sencilla."
+   ],
+   "habilidades": [
+    "Organización de la información.",
+    "Uso de hoja de cálculo.",
+    "Hábitos digitales responsables.",
+    "Análisis de datos propios.",
+    "Redacción de guías claras."
+   ],
+   "herramientas": [
+    "Explorador de archivos y herramientas de almacenamiento del sistema.",
+    "Hoja de cálculo.",
+    "Documento de texto."
+   ],
+   "lineamientos": [
+    "Cuidados: trabaja solo con tus propios archivos y haz una copia de respaldo antes de eliminar nada.",
+    "No publiques capturas que muestren documentos o fotos personales."
+   ],
+   "otroSector": "El mismo método sirve para ordenar los archivos compartidos de un equipo, de una oficina o de una institución educativa."
+  },
+  {
+   "id": "que-pasa-con-tu-vida-digital-si-pierdes-el-celular",
+   "area": "tecnologia",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Qué pasa con tu vida digital si pierdes el celular?",
+   "resumen": "Investiga qué ocurriría con tus cuentas, fotos, contactos y pagos si tu celular o tu laptop se perdieran o fueran robados mañana mismo, y qué podrías hacer hoy para que el golpe sea mucho menor.",
+   "tipo": "Guía",
+   "tiempo": "~10 h",
+   "horas": 10,
+   "etiquetas": [
+    "Seguridad digital",
+    "Prevención"
+   ],
+   "intencion": [
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes hacer el ejercicio con tu propio teléfono sin compartir información sensible, o inventar un perfil de usuario con sus cuentas y aplicaciones.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Derecho",
+    "Psicología",
+    "Administración",
+    "Educación",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "El celular concentra correos, redes sociales, aplicaciones bancarias, billeteras digitales, códigos de verificación y conversaciones importantes. Perderlo no es solo perder un aparato: es perder el acceso a medio mundo digital, y a veces dejar ese acceso en manos de otra persona.",
+    "Muchas personas descubren recién en ese momento que no sabían qué cuentas estaban abiertas, que sus códigos de verificación llegaban solo a ese teléfono o que no tenían una copia de sus archivos más importantes."
+   ],
+   "desarrollar": [
+    "Un inventario sencillo de las cuentas y servicios que dependen del dispositivo, clasificados por nivel de riesgo, junto con un plan de acción en dos partes: qué hacer antes de que ocurra una pérdida y qué hacer en la primera hora después.",
+    "El resultado puede ser una lista de verificación, una guía visual o una hoja de cálculo que cualquier persona pueda adaptar a su caso."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Para quien más lo necesita",
+     "aporta": "adapta la guía a una persona mayor o a un negocio pequeño cuyo celular concentra pagos y pedidos."
+    },
+    {
+     "titulo": "Un simulacro",
+     "aporta": "practica con una persona voluntaria qué haría en la primera hora y mide qué paso le cuesta más."
+    },
+    {
+     "titulo": "Un formato para compartir",
+     "aporta": "transforma el plan en una tarjeta o un cartel que pueda guardarse en casa y enviarse al grupo familiar."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué cuentas, datos y servicios dependen de un dispositivo.",
+    "Clasificar la información según el daño que causaría su pérdida o exposición.",
+    "Diseñar medidas preventivas sencillas, como respaldos y verificación en dos pasos.",
+    "Elaborar un plan de respuesta ordenado para la primera hora tras una pérdida.",
+    "Presentar la guía en un formato que otras personas puedan aplicar sin ayuda."
+   ],
+   "habilidades": [
+    "Seguridad de la información.",
+    "Gestión de riesgos personales.",
+    "Organización y clasificación de datos.",
+    "Redacción de instrucciones claras.",
+    "Pensamiento preventivo."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o editor de documentos.",
+    "Herramientas de diagramas de flujo.",
+    "Gestores de contraseñas y respaldos en la nube, solo como parte del análisis."
+   ],
+   "lineamientos": [
+    "No incluyas contraseñas, códigos, números de cuenta ni datos personales reales en el material que compartas: trabaja con categorías y ejemplos genéricos. Si pruebas el plan con otras personas, hazlo únicamente con su consentimiento y sin acceder a sus cuentas.",
+    "Presenta las recomendaciones como buenas prácticas generales y no como garantía de seguridad total."
+   ],
+   "otroSector": "La misma idea puede utilizarse para planes de continuidad ante la pérdida de equipos en pequeñas empresas, consultorios, estudios profesionales o equipos de trabajo remoto."
+  },
+  {
+   "id": "como-viaja-un-mensaje-por-internet-paso-a-paso",
+   "area": "tecnologia",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "¿Cómo viaja un mensaje por Internet, paso a paso?",
+   "resumen": "Sigue el recorrido de un mensaje desde tu pantalla hasta otra persona y explícalo en un mapa visual que cualquiera pueda entender.",
+   "tipo": "Guía",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Redes",
+    "Comunicación",
+    "Explicación visual"
+   ],
+   "intencion": [
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes seguir el recorrido de tu propia conexión con herramientas sencillas del sistema, sin revisar datos de otras personas.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Telecomunicaciones",
+    "Educación",
+    "Comunicaciones",
+    "Diseño Gráfico"
+   ],
+   "problema": [
+    "Enviamos mensajes, abrimos páginas y hacemos videollamadas sin saber qué pasa entre nuestro dispositivo y el de la otra persona. Cuando algo falla, no hay forma de saber en qué parte del camino ocurrió.",
+    "Los textos técnicos describen esos pasos con términos que asustan a quien recién empieza, y muchos esquemas de redes son difíciles de seguir sin una explicación guiada."
+   ],
+   "desarrollar": [
+    "Elige un caso simple, como abrir una página web o enviar un mensaje, y reconstruye sus etapas: tu dispositivo, la red local, el proveedor de Internet, los servidores intermedios y el destino. Usa herramientas básicas de diagnóstico que ya trae tu sistema para ver parte del recorrido real.",
+    "Dibuja el camino como un mapa con cuatro o cinco paradas y explica en una o dos frases qué ocurre en cada una. El resultado puede ser una infografía o una presentación breve pensada para alguien sin formación técnica."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Cuando algo se rompe",
+     "aporta": "añade al mapa los puntos donde suele fallar el servicio y cómo se nota cada falla."
+    },
+    {
+     "titulo": "Dos recorridos distintos",
+     "aporta": "compara cómo viaja un mensaje de texto con una videollamada y por qué una se corta más fácilmente."
+    },
+    {
+     "titulo": "Una explicación para niños",
+     "aporta": "adapta el mapa para estudiantes de colegio con una comparación cotidiana, como el correo postal."
+    }
+   ],
+   "objetivos": [
+    "Describir las etapas principales del recorrido de un mensaje.",
+    "Reconocer los equipos y servicios que intervienen.",
+    "Relacionar fallas comunes con la etapa donde ocurren.",
+    "Explicar el proceso con un lenguaje claro.",
+    "Diseñar un material visual que pueda usarse sin ayuda."
+   ],
+   "habilidades": [
+    "Conceptos básicos de redes.",
+    "Diagnóstico de conexiones.",
+    "Explicación de procesos técnicos.",
+    "Diseño de esquemas.",
+    "Comunicación para públicos no técnicos."
+   ],
+   "herramientas": [
+    "Herramientas de diagnóstico de red del sistema.",
+    "Editor de diagramas o presentaciones.",
+    "Documento de texto."
+   ],
+   "lineamientos": [
+    "Trabaja con tu propia conexión y evita publicar direcciones o datos de tu casa o de tu institución en el material final.",
+    "Si simplificas un concepto, aclara que es una simplificación para que nadie la tome como descripción completa."
+   ],
+   "otroSector": "El mismo recorrido puede explicarse para el correo electrónico, los pagos por internet, la entrega de una compra en línea o el envío de una factura electrónica."
+  },
+  {
+   "id": "como-trabajar-en-equipo-sin-pisarse-los-archivos",
+   "area": "tecnologia",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "¿Cómo trabajar en equipo sin pisarse los archivos?",
+   "resumen": "Diseña una forma sencilla de compartir, versionar y respaldar los archivos de un equipo para que nadie sobrescriba el trabajo de otro ni lo pierda.",
+   "tipo": "Guía",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Trabajo en equipo",
+    "Versiones",
+    "Copias de respaldo"
+   ],
+   "intencion": [
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: usa un trabajo de equipo simulado con archivos inventados.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Administración",
+    "Educación",
+    "Comunicaciones",
+    "Contabilidad",
+    "Arquitectura"
+   ],
+   "problema": [
+    "En un trabajo grupal es común que dos personas editen el mismo archivo a la vez, que una versión «final» se confunda con otra o que alguien borre algo importante sin darse cuenta. El resultado son horas perdidas rehaciendo lo que ya estaba hecho.",
+    "Muchos equipos descubren que no tienen una copia de respaldo justo el día que la necesitan."
+   ],
+   "desarrollar": [
+    "Simula un trabajo de equipo de cuatro personas y registra los errores típicos: archivos con nombres confusos, ediciones simultáneas y versiones perdidas. Diseña un conjunto de reglas simples sobre cómo nombrar los archivos, quién edita qué, cuándo se guarda una versión y dónde está la copia de respaldo.",
+    "Pon a prueba las reglas con una simulación de una semana y anota qué problemas desaparecen y cuáles quedan. El resultado puede ser una guía de una página y una plantilla de carpetas lista para usar."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un caso real",
+     "aporta": "aplícalo a un trabajo de equipo verdadero con permiso de tus compañeros y mide cuántos conflictos evita."
+    },
+    {
+     "titulo": "Recuperarse de un error",
+     "aporta": "ensaya qué hacer cuando alguien sobrescribe un archivo y mide cuánto cuesta recuperarlo."
+    },
+    {
+     "titulo": "Una herramienta de versiones",
+     "aporta": "compara una forma manual de versionar con una herramienta que lo haga automáticamente."
+    }
+   ],
+   "objetivos": [
+    "Identificar las causas de los conflictos de archivos en un equipo.",
+    "Definir reglas claras de nombres, versiones y responsables.",
+    "Diseñar una política de copias de respaldo.",
+    "Probar las reglas en una simulación.",
+    "Escribir una guía que cualquier equipo pueda aplicar."
+   ],
+   "habilidades": [
+    "Gestión de la información.",
+    "Control de versiones.",
+    "Trabajo colaborativo.",
+    "Redacción de procedimientos.",
+    "Prevención de riesgos."
+   ],
+   "herramientas": [
+    "Servicios de almacenamiento compartido.",
+    "Hoja de cálculo o documento para registrar los casos.",
+    "Opcionalmente, una herramienta de control de versiones."
+   ],
+   "lineamientos": [
+    "Mantén las reglas lo bastante simples para que el equipo las siga cuando esté apurado.",
+    "Si lo pruebas con un equipo real, avísales y pide su permiso antes de revisar sus archivos."
+   ],
+   "otroSector": "Las mismas reglas sirven en oficinas contables, estudios de diseño, consultorios, redacciones y cualquier lugar donde varias personas toquen los mismos documentos."
+  },
+  {
+   "id": "como-sabes-que-un-archivo-no-fue-alterado",
+   "area": "tecnologia",
+   "areas2": [
+    "derecho"
+   ],
+   "titulo": "¿Cómo sabes que un archivo no fue alterado?",
+   "resumen": "Descubre cómo una huella digital permite comprobar que un archivo es exactamente el mismo, y qué pasa cuando alguien lo modifica.",
+   "tipo": "Investigación",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Seguridad digital",
+    "Integridad",
+    "Verificación"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: crea archivos de prueba y modifícalos tú mismo para ver qué cambia.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ciberseguridad",
+    "Derecho",
+    "Contabilidad",
+    "Auditoría",
+    "Computación e Informática",
+    "Archivística"
+   ],
+   "problema": [
+    "Cuando recibimos un documento, un instalador o una prueba, casi nunca podemos saber si alguien lo cambió en el camino. Un contrato modificado en una coma o un programa con algo añadido pueden pasar sin que nadie lo note.",
+    "Existe una técnica sencilla que genera una huella digital única de cada archivo, pero casi nadie sabe cómo se usa ni qué tan fiable es."
+   ],
+   "desarrollar": [
+    "Crea cinco archivos de prueba y obtén la huella digital de cada uno con una herramienta del sistema. Cambia una coma, una letra o un píxel, vuelve a calcularla y observa cuánto cambia.",
+    "Luego plantea una situación en la que dos personas se envían un archivo y acuerdan cómo verificar que llegó intacto. El resultado puede ser una guía de dos páginas con ejemplos, una explicación sobre sus límites y una demostración."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Qué no protege",
+     "aporta": "explica por qué la huella no dice quién escribió el archivo ni si es verdadero."
+    },
+    {
+     "titulo": "Dos archivos, una huella",
+     "aporta": "investiga qué se sabe sobre huellas repetidas y por qué algunas técnicas dejaron de ser seguras."
+    },
+    {
+     "titulo": "Una herramienta propia",
+     "aporta": "crea una pequeña herramienta que compare dos carpetas y señale qué archivos cambiaron."
+    }
+   ],
+   "objetivos": [
+    "Generar huellas digitales de archivos.",
+    "Observar su sensibilidad a pequeños cambios.",
+    "Plantear un procedimiento de verificación entre dos personas.",
+    "Explicar sus límites.",
+    "Comunicar el concepto a un público general."
+   ],
+   "habilidades": [
+    "Seguridad de la información.",
+    "Integridad de datos.",
+    "Uso de herramientas del sistema.",
+    "Pensamiento crítico.",
+    "Redacción de guías claras."
+   ],
+   "herramientas": [
+    "Herramientas del sistema para calcular huellas.",
+    "Hoja de cálculo o documento.",
+    "Opcionalmente un lenguaje de programación."
+   ],
+   "lineamientos": [
+    "Trabaja con archivos de prueba que puedas compartir.",
+    "No afirmes que la huella digital garantiza autoría o legalidad: solo comprueba que el contenido no cambió."
+   ],
+   "otroSector": "La misma técnica se usa para verificar copias de respaldo, evidencias digitales, actualizaciones de programas, documentos escaneados y entregas de trabajos."
+  },
+  {
+   "id": "que-aprender-cuando-se-cae-un-servicio-digital-que-todos-usan",
+   "area": "tecnologia",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Qué aprender cuando se cae un servicio digital que todos usan?",
+   "resumen": "Investiga qué ocurre cuando una aplicación, plataforma o servicio de uso masivo deja de funcionar durante horas, cómo se detecta y se resuelve el problema, y qué decisiones de comunicación y de diseño pueden reducir el daño la próxima vez.",
+   "tipo": "Investigación",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Sistemas",
+    "Gestión de crisis",
+    "Análisis de casos"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: puedes trabajar con informes, comunicados y explicaciones que las propias empresas o instituciones publican después de una caída de sus servicios, o con un caso inventado.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ingeniería Industrial",
+    "Administración",
+    "Comunicaciones",
+    "Ingeniería de Telecomunicaciones",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Cuando se cae un servicio que millones de personas usan, el efecto va mucho más allá de lo técnico: se interrumpen pagos, clases, trabajo, comunicaciones y negocios enteros. En esos momentos, lo que más se nota es la falta de información clara sobre qué pasó, cuánto va a durar y qué hacer mientras tanto.",
+    "Muchas organizaciones publican luego un informe de lo ocurrido, pero rara vez se lee con ojo crítico. Estos documentos contienen información valiosa sobre cómo una falla pequeña puede crecer, qué señales se ignoraron y qué cambios se hicieron después."
+   ],
+   "desarrollar": [
+    "Elige un incidente público o inventa uno, y reconstruye su historia en una línea de tiempo: qué falló, cuándo se detectó, qué se hizo, cuánto tardó la recuperación y cómo se comunicó a las personas afectadas.",
+    "Luego identifica las causas principales, qué medidas de prevención se anunciaron y qué lecciones podría aplicar cualquier equipo que mantenga un sistema, incluso uno pequeño.",
+    "El resultado puede ser un informe breve, una presentación o un análisis visual que explique el caso de forma clara a alguien sin formación técnica."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otro caso",
+     "aporta": "compara dos incidentes de servicios distintos y qué aprendió cada organización."
+    },
+    {
+     "titulo": "Un simulacro a escala pequeña",
+     "aporta": "imagina que se cae el sistema de una tienda o de un club y escribe el comunicado que enviarías."
+    },
+    {
+     "titulo": "Una guía para equipos pequeños",
+     "aporta": "resume las lecciones en una lista de verificación que cualquier equipo pueda usar."
+    }
+   ],
+   "objetivos": [
+    "Reconstruir cronológicamente un incidente a partir de fuentes públicas.",
+    "Distinguir entre causas técnicas, de proceso y de comunicación.",
+    "Evaluar qué tan clara y oportuna fue la información dada a las personas afectadas.",
+    "Extraer lecciones aplicables a otros sistemas y organizaciones.",
+    "Presentar el caso de manera comprensible para un público general."
+   ],
+   "habilidades": [
+    "Análisis de casos y de causas.",
+    "Pensamiento sistémico.",
+    "Lectura crítica de fuentes técnicas.",
+    "Gestión de crisis y comunicación.",
+    "Redacción de informes claros."
+   ],
+   "herramientas": [
+    "Buscadores y fuentes públicas.",
+    "Herramientas de líneas de tiempo y diagramas.",
+    "Hoja de cálculo para ordenar los hechos.",
+    "Editor de documentos o presentaciones."
+   ],
+   "lineamientos": [
+    "Utiliza solo información pública y cita siempre las fuentes de las que obtuviste cada dato. No intentes probar la fragilidad de ningún servicio real ni generar interrupciones para comprobar cómo reaccionan.",
+    "Evita atribuir culpas a personas concretas o especular sobre causas que los informes no confirman: separa claramente lo que está documentado de lo que es tu interpretación."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a accidentes industriales, fallas en servicios públicos, errores en procesos hospitalarios, crisis de suministro o cualquier situación donde un fallo pequeño haya provocado consecuencias grandes."
+  },
+  {
+   "id": "de-una-tabla-desordenada-a-informacion-que-sirve",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "De una tabla desordenada a información que sirve",
+   "resumen": "Toma una tabla llena de errores y desorden, límpiala paso a paso y descubre qué información útil había escondida.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Datos",
+    "Limpieza de datos",
+    "Hoja de cálculo"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos o ficticios: usa una tabla abierta de un portal de datos o crea una tabla con errores a propósito.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Administración",
+    "Contabilidad",
+    "Economía",
+    "Computación e Informática",
+    "Gestión de la Información"
+   ],
+   "problema": [
+    "Muchas organizaciones guardan sus datos en tablas con celdas vacías, nombres escritos de varias formas, fechas en formatos distintos y filas repetidas. Antes de poder analizar nada hay que arreglarlas, y ese trabajo casi nunca se enseña.",
+    "Cuando se saltan este paso, los resultados parecen buenos pero están equivocados: un total mal sumado o un cliente contado dos veces cambian la decisión."
+   ],
+   "desarrollar": [
+    "Consigue una tabla real de datos abiertos o arma una con 200 a 500 filas con errores inventados. Haz un listado de los problemas que encuentras y corrígelos uno por uno, anotando qué cambió y por qué.",
+    "Después responde tres preguntas de interés con la tabla ya limpia y compara con lo que habrías respondido sin limpiarla. El resultado puede ser un informe breve con un antes y un después."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Reglas reutilizables",
+     "aporta": "convierte tus pasos de limpieza en una lista de reglas que sirva para la próxima tabla desordenada."
+    },
+    {
+     "titulo": "Un informe de calidad",
+     "aporta": "agrega un resumen que cuente cuántos errores de cada tipo se encontraron."
+    },
+    {
+     "titulo": "Automatizar la limpieza",
+     "aporta": "repite los pasos con una fórmula, una macro o un pequeño programa."
+    }
+   ],
+   "objetivos": [
+    "Detectar y clasificar los problemas de una tabla.",
+    "Aplicar correcciones documentando cada decisión.",
+    "Comparar resultados antes y después de la limpieza.",
+    "Redactar reglas de limpieza reutilizables.",
+    "Presentar hallazgos sin tecnicismos."
+   ],
+   "habilidades": [
+    "Limpieza y preparación de datos.",
+    "Fórmulas de hoja de cálculo.",
+    "Análisis descriptivo.",
+    "Documentación de decisiones.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas de limpieza de datos, como las de importación y filtrado.",
+    "Documento para el informe."
+   ],
+   "lineamientos": [
+    "No modifiques el archivo original: trabaja siempre sobre una copia y deja registro de cada cambio.",
+    "Si usas una tabla pública, cita la fuente y respeta su licencia de uso."
+   ],
+   "otroSector": "El mismo procedimiento sirve para ordenar un padrón de clientes, una lista de inventario, un registro de asistencia o una base de datos de encuestas."
+  },
+  {
+   "id": "si-una-pieza-falla-que-mas-se-cae",
+   "area": "tecnologia",
+   "areas2": [
+    "industria",
+    "ciudades"
+   ],
+   "titulo": "Si una pieza falla, ¿qué más se cae?",
+   "resumen": "Dibuja las dependencias entre las piezas de un sistema y descubre qué otras piezas dejan de funcionar cuando una falla.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Sistemas complejos",
+    "Dependencias",
+    "Gestión de riesgos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o públicos: dibuja las dependencias de un sistema inventado o de uno cuya arquitectura se haya publicado.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ingeniería Industrial",
+    "Ingeniería Civil",
+    "Administración",
+    "Computación e Informática",
+    "Logística"
+   ],
+   "problema": [
+    "En un sistema complejo, una pieza pequeña puede sostener a muchas otras: un servicio de autenticación, una base de datos o un proveedor de energía. Cuando falla, el efecto se propaga de formas que nadie había previsto.",
+    "Sin un mapa de dependencias, las organizaciones descubren qué dependía de qué en pleno incidente, cuando ya no hay tiempo de reaccionar."
+   ],
+   "desarrollar": [
+    "Elige un sistema conocido, como el de una tienda en línea o el de una institución educativa, y lista sus piezas principales. Dibuja un mapa donde cada flecha indica «necesita a» y marca qué piezas tienen muchas flechas llegando.",
+    "Simula la caída de cada pieza una por una y anota cuántas otras quedan afectadas. El resultado puede ser un mapa con las piezas críticas resaltadas y una tabla que muestre el alcance de cada falla."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Planes de respaldo",
+     "aporta": "agrega una alternativa a cada pieza crítica y estudia cuánto se reduce el daño."
+    },
+    {
+     "titulo": "Un caso real",
+     "aporta": "compara tu mapa con el informe público de una caída famosa y mira qué dependencias no habías visto."
+    },
+    {
+     "titulo": "Un cálculo de riesgo",
+     "aporta": "combina la probabilidad de que cada pieza falle con el alcance de su caída para ordenarlas por riesgo."
+    }
+   ],
+   "objetivos": [
+    "Identificar las piezas de un sistema y sus relaciones.",
+    "Representar las dependencias en un mapa claro.",
+    "Reconocer las piezas críticas.",
+    "Simular la caída de piezas y medir su alcance.",
+    "Proponer medidas para reducir el riesgo."
+   ],
+   "habilidades": [
+    "Pensamiento sistémico.",
+    "Diagramación de procesos.",
+    "Gestión de riesgos.",
+    "Análisis de causas.",
+    "Comunicación visual."
+   ],
+   "herramientas": [
+    "Herramienta de diagramas.",
+    "Hoja de cálculo.",
+    "Documento para el informe."
+   ],
+   "lineamientos": [
+    "Usa sistemas inventados o públicos: no publiques detalles internos de una organización sin permiso.",
+    "Aclara que tu mapa es una simplificación y que los sistemas reales tienen más piezas."
+   ],
+   "otroSector": "El mismo mapa sirve para estudiar qué se detiene si falla un proveedor, una máquina, una ruta de transporte o una persona clave en una cadena de producción."
+  },
+  {
+   "id": "documentos-repetidos-como-encontrarlos-y-con-cual-quedarte",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "Documentos repetidos: cómo encontrarlos y con cuál quedarte",
+   "resumen": "Diseña un procedimiento para encontrar documentos repetidos o casi iguales y decidir cuál conservar.",
+   "tipo": "Prototipo",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Organización",
+    "Datos",
+    "Duplicados"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o propios: crea una carpeta con archivos repetidos inventados, o usa una carpeta tuya sin información sensible.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Administración",
+    "Contabilidad",
+    "Gestión de la Información",
+    "Bibliotecología",
+    "Secretariado"
+   ],
+   "problema": [
+    "Con el tiempo, cualquier carpeta compartida acumula documentos repetidos con nombres distintos: «informe_final», «informe_final_2», «informe_final_definitivo». Nadie sabe cuál es el vigente y se pierde tiempo comparando.",
+    "Eliminar sin cuidado puede borrar la versión buena, y no eliminar llena de confusión la carpeta."
+   ],
+   "desarrollar": [
+    "Prepara una carpeta de prueba con 50 a 100 archivos que incluya copias exactas, copias con pequeños cambios y archivos distintos con el mismo nombre. Diseña reglas para detectarlos: el tamaño, la fecha, el contenido y la huella digital del archivo.",
+    "Aplica las reglas y revisa cuántos duplicados encuentras y cuántos casos son dudosos. Propón una política para decidir con cuál quedarse. El resultado puede ser un procedimiento paso a paso con ejemplos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Casi iguales",
+     "aporta": "detecta documentos que son muy parecidos aunque no idénticos y explica cómo medir su parecido."
+    },
+    {
+     "titulo": "Una carpeta real",
+     "aporta": "aplica el método a una carpeta de trabajo compartida, con permiso, y mide cuánto espacio se libera."
+    },
+    {
+     "titulo": "Que se haga solo",
+     "aporta": "automatiza la detección con una hoja o un pequeño programa."
+    }
+   ],
+   "objetivos": [
+    "Reconocer los tipos de duplicados en una carpeta.",
+    "Definir reglas para detectarlos.",
+    "Probar las reglas y medir su acierto.",
+    "Diseñar una política para decidir qué conservar.",
+    "Documentar el procedimiento con ejemplos."
+   ],
+   "habilidades": [
+    "Organización de la información.",
+    "Comparación de archivos.",
+    "Uso de hoja de cálculo.",
+    "Criterios de decisión.",
+    "Documentación de procesos."
+   ],
+   "herramientas": [
+    "Explorador de archivos.",
+    "Hoja de cálculo.",
+    "Opcionalmente un lenguaje de programación para comparar archivos."
+   ],
+   "lineamientos": [
+    "Cuidados: haz siempre una copia de respaldo antes de eliminar y trabaja primero en una carpeta de prueba.",
+    "No uses carpetas con información de otras personas sin su permiso."
+   ],
+   "otroSector": "El mismo método sirve para depurar listas de clientes, padrones, catálogos de productos o bibliotecas de fotos y videos."
+  },
+  {
+   "id": "quien-puede-ver-que-roles-y-permisos-en-una-organizacion",
+   "area": "tecnologia",
+   "areas2": [
+    "derecho"
+   ],
+   "titulo": "¿Quién puede ver qué? Roles y permisos en una organización",
+   "resumen": "Diseña quién debe poder ver, editar o aprobar cada tipo de información en una organización, y comprueba que las reglas no dejen huecos.",
+   "tipo": "Plan",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Seguridad digital",
+    "Control de acceso",
+    "Organización"
+   ],
+   "intencion": [
+    "resolver",
+    "crear",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: diseña los permisos de una organización inventada con sus áreas y cargos.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ciberseguridad",
+    "Derecho",
+    "Administración",
+    "Contabilidad",
+    "Auditoría",
+    "Computación e Informática"
+   ],
+   "problema": [
+    "En muchas organizaciones los permisos se dan «por si acaso»: todos ven todo, o alguien con acceso total se va y nadie le quita lo que tenía. Más tarde aparecen fugas de información, errores por ediciones indebidas y personas que no pueden hacer su trabajo.",
+    "El principio de dar a cada persona solo lo que necesita suena fácil, pero aplicarlo exige pensar quién hace qué y qué pasa cuando alguien cambia de cargo."
+   ],
+   "desarrollar": [
+    "Elige una organización inventada de unas 15 personas con tres o cuatro áreas y define los tipos de información que maneja: de clientes, financiera, de personal y pública. Arma una matriz que cruce cargos y tipos de información e indique si cada cargo puede ver, editar o aprobar.",
+    "Prueba tu matriz con escenarios: alguien nuevo, alguien que cambia de área, alguien que se va. Busca huecos y excesos. El resultado puede ser una matriz y una lista de reglas para mantenerla."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Casos especiales",
+     "aporta": "agrega excepciones temporales, como un auditor que revisa por una semana."
+    },
+    {
+     "titulo": "Revisión periódica",
+     "aporta": "diseña una rutina trimestral para detectar permisos que ya no corresponden."
+    },
+    {
+     "titulo": "Una versión ejecutable",
+     "aporta": "convierte la matriz en un pequeño sistema que responda si alguien tiene permiso."
+    }
+   ],
+   "objetivos": [
+    "Clasificar la información según su sensibilidad.",
+    "Definir cargos y sus necesidades de acceso.",
+    "Construir una matriz de permisos coherente.",
+    "Probarla con escenarios de cambio.",
+    "Redactar reglas de mantenimiento."
+   ],
+   "habilidades": [
+    "Seguridad de la información.",
+    "Gestión de accesos.",
+    "Análisis de procesos.",
+    "Pensamiento preventivo.",
+    "Redacción de políticas."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramienta de diagramas.",
+    "Documento para la política."
+   ],
+   "lineamientos": [
+    "Cuidados: diseña con una organización inventada. No pidas ni uses la lista real de permisos de ninguna institución.",
+    "Explica las reglas de forma clara: una política que nadie entiende no se cumple."
+   ],
+   "otroSector": "La misma matriz sirve para una asociación de vecinos, una iglesia, un club o cualquier grupo que comparta archivos, llaves o cuentas."
+  },
+  {
+   "id": "que-tan-facil-es-enganar-a-un-sistema-con-datos-falsos",
+   "area": "tecnologia",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Qué tan fácil es engañar a un sistema con datos falsos?",
+   "resumen": "Prueba qué pasa cuando un formulario o un sistema recibe datos falsos, absurdos o malintencionados, y diseña reglas para detectarlos.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Validación de datos",
+    "Seguridad digital",
+    "Calidad"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: usa un formulario de práctica que tú mismo crees o un modelo de ejemplo, nunca un sistema real de otra persona.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ciberseguridad",
+    "Computación e Informática",
+    "Auditoría",
+    "Estadística",
+    "Administración"
+   ],
+   "problema": [
+    "Casi todos los sistemas confían en lo que reciben: una edad, un monto, un correo. Pero hay quien escribe datos absurdos por error, por broma o a propósito: una fecha de nacimiento en el año 3000, un precio negativo, un texto larguísimo.",
+    "Cuando el sistema no valida, esos datos llegan a la base de datos, descuadran reportes y a veces abren una puerta a ataques."
+   ],
+   "desarrollar": [
+    "Diseña un formulario de práctica con seis o siete campos y haz una lista de los datos extraños que podrían ingresarse en cada uno. Pruébalos uno por uno y anota qué hace el sistema: los acepta, los rechaza o falla.",
+    "Define reglas de validación para cada campo y vuelve a probar. El resultado puede ser una tabla de casos con lo que pasaba antes y después de las reglas, y una guía de validaciones que cualquiera pueda aplicar."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Validar en dos lugares",
+     "aporta": "explica por qué no basta validar en la pantalla y qué más se debe revisar."
+    },
+    {
+     "titulo": "Datos que parecen buenos",
+     "aporta": "estudia casos donde el dato es válido pero falso, y qué se puede hacer."
+    },
+    {
+     "titulo": "Un catálogo de casos raros",
+     "aporta": "arma una lista reutilizable de entradas extrañas para probar cualquier formulario."
+    }
+   ],
+   "objetivos": [
+    "Identificar entradas extrañas posibles en cada campo.",
+    "Probar el comportamiento del sistema.",
+    "Definir reglas de validación claras.",
+    "Verificar que las reglas funcionen.",
+    "Documentar una guía reutilizable."
+   ],
+   "habilidades": [
+    "Validación de datos.",
+    "Pruebas de software.",
+    "Seguridad básica.",
+    "Diseño de formularios.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Un formulario de práctica o una hoja con validación.",
+    "Hoja de cálculo para registrar los casos.",
+    "Opcionalmente un lenguaje web."
+   ],
+   "lineamientos": [
+    "Cuidados: prueba solo sistemas que tú construyas o que sean de práctica. Introducir datos manipulados en un sistema ajeno puede causar daños y tener consecuencias legales.",
+    "Enfócate en proteger y no en atacar: el objetivo es que el sistema rechace lo que no corresponde."
+   ],
+   "otroSector": "El mismo análisis sirve para revisar formularios de matrícula, de pedidos, de encuestas, de registro de asistencia o de solicitudes de un trámite."
+  },
+  {
+   "id": "cuanto-tardara-de-verdad-un-proyecto-de-software",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "¿Cuánto tardará de verdad un proyecto de software?",
+   "resumen": "Aprende a estimar cuánto tardará un proyecto y a revisar tus estimaciones comparándolas con lo que realmente ocurrió.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Estimación",
+    "Gestión de proyectos",
+    "Software"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o propios: usa el historial de tus propios trabajos o los de un proyecto inventado.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ingeniería Industrial",
+    "Administración",
+    "Computación e Informática",
+    "Arquitectura",
+    "Gestión de Proyectos"
+   ],
+   "problema": [
+    "Casi todos los proyectos tardan más de lo que se dijo al inicio. El error no suele ser mala fe, sino olvidar las tareas ocultas, las esperas, los cambios de último momento y el tiempo de probar y corregir.",
+    "Una estimación poco realista termina en entregas apuradas, equipos agotados y clientes molestos, y pocas personas se entrenan en hacerla mejor."
+   ],
+   "desarrollar": [
+    "Reúne el historial de cinco trabajos tuyos, escolares o personales, con el tiempo que estimaste y el que realmente tomó. Calcula en cuánto te equivocaste en cada uno y busca un patrón: ¿siempre subestimas?, ¿qué tipo de tarea se te pasa?",
+    "Con eso diseña un método personal de estimación, con un margen de seguridad y una lista de tareas olvidadas, y úsalo en un proyecto nuevo. El resultado puede ser una plantilla de estimación y un informe de lo aprendido."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Estimar en equipo",
+     "aporta": "compara tu estimación con la de dos compañeros y analiza por qué difieren."
+    },
+    {
+     "titulo": "Rangos, no un número",
+     "aporta": "expresa cada estimación como un rango y mide cuántas veces el resultado cae dentro."
+    },
+    {
+     "titulo": "Con datos de otros",
+     "aporta": "busca información pública sobre retrasos de proyectos y compara con tu experiencia."
+    }
+   ],
+   "objetivos": [
+    "Registrar estimaciones y tiempos reales.",
+    "Calcular el error de estimación.",
+    "Identificar patrones de subestimación.",
+    "Diseñar un método personal de estimación.",
+    "Aplicarlo a un proyecto nuevo y evaluarlo."
+   ],
+   "habilidades": [
+    "Gestión de proyectos.",
+    "Estimación de tiempos.",
+    "Análisis de datos propios.",
+    "Autoevaluación.",
+    "Planificación."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramienta de gestión de tareas.",
+    "Documento para la plantilla."
+   ],
+   "lineamientos": [
+    "Usa tus propios datos o datos inventados y evita publicar información de proyectos de otras personas.",
+    "Una estimación es un rango razonado, no una promesa: acláralo cuando la presentes."
+   ],
+   "otroSector": "La misma práctica sirve para estimar una obra de construcción, un evento, una mudanza, la preparación de una tesis o el lanzamiento de un producto."
+  },
+  {
+   "id": "como-se-ve-una-actividad-inusual-en-un-registro",
+   "area": "tecnologia",
+   "areas2": [
+    "ciencias"
+   ],
+   "titulo": "¿Cómo se ve una actividad inusual en un registro?",
+   "resumen": "Aprende a leer un registro de actividad y a reconocer comportamientos que se salen de lo normal.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Seguridad digital",
+    "Anomalías",
+    "Análisis de registros"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: genera un registro de actividad inventado con algunas anomalías colocadas a propósito, o usa uno público de práctica.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ciberseguridad",
+    "Estadística",
+    "Contabilidad",
+    "Ingeniería Industrial",
+    "Computación e Informática",
+    "Auditoría"
+   ],
+   "problema": [
+    "Los sistemas dejan un registro de todo lo que ocurre: inicios de sesión, descargas, errores y cambios. Casi nadie lo revisa porque son miles de líneas, y las señales de un problema quedan enterradas entre actividad normal.",
+    "Detectar lo raro exige saber primero qué es lo normal, y ese punto de partida casi nunca se establece."
+   ],
+   "desarrollar": [
+    "Prepara un registro ficticio de una semana de actividad con 1000 a 5000 líneas, que incluya patrones normales y cinco o seis anomalías: muchos intentos fallidos seguidos, un acceso en horario extraño, una descarga inusualmente grande. Resume cómo es un día normal con promedios y gráficos.",
+    "Luego busca las anomalías sin saber dónde están y anota qué señales te hicieron sospechar. El resultado puede ser un informe breve con las pistas que funcionaron y las que dieron falsas alarmas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un umbral inteligente",
+     "aporta": "compara una regla fija, como «más de cinco fallos», con una que se adapte a cada usuario."
+    },
+    {
+     "titulo": "Falsas alarmas",
+     "aporta": "cuenta cuántas veces una regla alarma sin motivo y qué costo tendría en una organización real."
+    },
+    {
+     "titulo": "Un detector automático",
+     "aporta": "convierte tus reglas en un programa que revise el registro y marque lo sospechoso."
+    }
+   ],
+   "objetivos": [
+    "Describir el comportamiento normal a partir de un registro.",
+    "Identificar anomalías y clasificarlas por tipo.",
+    "Definir señales y umbrales de aviso.",
+    "Medir falsas alarmas y casos no detectados.",
+    "Comunicar los hallazgos con claridad."
+   ],
+   "habilidades": [
+    "Análisis exploratorio de datos.",
+    "Estadística descriptiva.",
+    "Seguridad de la información.",
+    "Lectura de registros técnicos.",
+    "Comunicación de hallazgos."
+   ],
+   "herramientas": [
+    "Hoja de cálculo con filtros y tablas dinámicas.",
+    "Lenguaje de programación para análisis de datos, opcional.",
+    "Herramienta de gráficos."
+   ],
+   "lineamientos": [
+    "Cuidados: trabaja solo con registros ficticios o públicos. Los registros reales contienen datos de personas y requieren permiso.",
+    "Recuerda que una actividad inusual no siempre es un ataque: puede ser una persona viajando o un cambio de rutina."
+   ],
+   "otroSector": "El mismo método sirve para detectar movimientos raros en un registro de ventas, de gastos, de producción o de asistencia."
+  },
+  {
+   "id": "cuanto-tarda-realmente-una-aplicacion-en-responder",
+   "area": "tecnologia",
+   "areas2": [],
+   "titulo": "¿Cuánto tarda realmente una aplicación en responder?",
+   "resumen": "Mide cuánto demora una aplicación en responder, descubre de qué depende y cuándo la espera se vuelve molesta.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Rendimiento",
+    "Mediciones",
+    "Experiencia de usuario"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: mide páginas o aplicaciones de uso libre desde tu propia conexión, con pocas pruebas y sin sobrecargarlas.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Telecomunicaciones",
+    "Estadística",
+    "Computación e Informática",
+    "Diseño Web",
+    "Administración"
+   ],
+   "problema": [
+    "Todos sabemos cuando una aplicación «va lenta», pero casi nunca sabemos cuánto tarda en números ni de qué depende: de nuestra conexión, de la hora, del tamaño de lo que pedimos o del servidor.",
+    "Sin medir, las quejas se quedan en «va lento» y los equipos no saben dónde mejorar. Además, la percepción de la espera cambia mucho según lo que la persona esté haciendo."
+   ],
+   "desarrollar": [
+    "Elige tres aplicaciones o páginas de uso libre y una tarea concreta en cada una, como abrir una página o buscar un dato. Mide el tiempo de respuesta al menos veinte veces, en distintos momentos del día, y registra los resultados.",
+    "Calcula el promedio, el mínimo, el máximo y cuántas veces se superó un umbral de cinco segundos. El resultado puede ser un informe con gráficos que muestre en qué casos y por qué la espera se vuelve insoportable."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Qué hace lento a un servicio",
+     "aporta": "usa las herramientas del navegador para ver qué parte de la carga tarda más."
+    },
+    {
+     "titulo": "Con distintas conexiones",
+     "aporta": "repite las mediciones con datos móviles y con una red de casa, y compara."
+    },
+    {
+     "titulo": "El umbral de paciencia",
+     "aporta": "pregunta a diez personas cuánto esperarían antes de abandonar una tarea y compáralo con tus tiempos medidos."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un procedimiento de medición repetible.",
+    "Registrar tiempos en distintos momentos y condiciones.",
+    "Calcular indicadores básicos de tiempo de respuesta.",
+    "Relacionar los resultados con factores posibles.",
+    "Presentar las conclusiones con gráficos claros."
+   ],
+   "habilidades": [
+    "Medición y registro de datos.",
+    "Estadística descriptiva.",
+    "Herramientas de desarrollo del navegador.",
+    "Análisis de resultados.",
+    "Redacción técnica."
+   ],
+   "herramientas": [
+    "Herramientas de desarrollo del navegador.",
+    "Hoja de cálculo.",
+    "Opcionalmente un lenguaje de programación para automatizar las mediciones."
+   ],
+   "lineamientos": [
+    "Cuidados: mide con pocas solicitudes y espaciadas. No sobrecargues servicios ajenos ni hagas pruebas masivas sin autorización.",
+    "Indica siempre cuándo y desde dónde mediste: los resultados cambian con la hora y la conexión."
+   ],
+   "otroSector": "La misma pregunta sirve para medir la espera en una ventanilla, la entrega de un pedido, el tiempo de respuesta de una línea de atención o el despacho de una farmacia."
+  },
+  {
+   "id": "que-tan-buenos-son-los-datos-de-una-organizacion",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "¿Qué tan buenos son los datos de una organización?",
+   "resumen": "Aprende a medir la calidad de una base de datos y a decidir qué corregir primero.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Calidad de datos",
+    "Datos",
+    "Gestión de la información"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o públicos: trabaja con una base inventada de clientes o productos, o con una tabla abierta de una institución pública.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Estadística",
+    "Administración",
+    "Contabilidad",
+    "Ingeniería Industrial",
+    "Gestión de la Información",
+    "Computación e Informática",
+    "Auditoría"
+   ],
+   "problema": [
+    "Las organizaciones toman decisiones con sus datos, pero rara vez saben qué tan confiables son: cuántos están incompletos, cuántos están repetidos, cuántos se contradicen o cuántos están desactualizados.",
+    "Mientras no se mide, la calidad se discute con opiniones. Con medidas simples se puede decidir dónde conviene invertir tiempo."
+   ],
+   "desarrollar": [
+    "Elige una tabla de 500 a 2000 filas y define cuatro criterios de calidad: completitud, unicidad, consistencia y actualidad. Calcula para cada criterio un porcentaje y busca ejemplos concretos de errores.",
+    "Ordena los problemas por el daño que causarían en una decisión real y propone qué corregir primero. El resultado puede ser un informe de calidad con una semaforización por columna."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un puntaje",
+     "aporta": "combina los cuatro criterios en un solo indicador y analiza si es justo para comparar tablas distintas."
+    },
+    {
+     "titulo": "Errores nuevos",
+     "aporta": "revisa cómo se podrían evitar desde el origen, por ejemplo, validando los campos al ingresar."
+    },
+    {
+     "titulo": "Con inteligencia artificial",
+     "aporta": "mira cómo afectan estos problemas a un modelo y conecta con la idea de qué le pasa a una IA cuando los datos no son perfectos."
+    }
+   ],
+   "objetivos": [
+    "Definir criterios de calidad de datos.",
+    "Calcular indicadores por criterio y por columna.",
+    "Encontrar y ejemplificar errores concretos.",
+    "Priorizar las correcciones por su impacto.",
+    "Presentar un informe claro a una persona no técnica."
+   ],
+   "habilidades": [
+    "Calidad de datos.",
+    "Uso de hoja de cálculo.",
+    "Estadística descriptiva.",
+    "Gestión de la información.",
+    "Redacción de informes."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas de filtros y tablas dinámicas.",
+    "Documento para el informe."
+   ],
+   "lineamientos": [
+    "No uses datos reales de personas: trabaja con una base inventada o con una tabla pública.",
+    "Indica los criterios y los porcentajes de forma transparente para que otra persona pueda repetir el cálculo."
+   ],
+   "otroSector": "El mismo método sirve para revisar una lista de alumnos, un inventario, un padrón de socios, una agenda de contactos o los registros de una clínica pequeña."
+  },
+  {
+   "id": "el-recorrido-de-un-dato-de-donde-viene-y-quien-lo-toco",
+   "area": "tecnologia",
+   "areas2": [
+    "derecho"
+   ],
+   "titulo": "El recorrido de un dato: ¿de dónde viene y quién lo tocó?",
+   "resumen": "Sigue un dato desde que se crea hasta que aparece en un informe, y comprueba si se puede reconstruir qué cambios sufrió y quién los hizo.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Trazabilidad",
+    "Datos",
+    "Auditoría"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: crea un conjunto de datos inventado que pase por varias manos, como una venta que se registra, se corrige y se reporta.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Contabilidad",
+    "Auditoría",
+    "Derecho",
+    "Administración",
+    "Gestión de la Información",
+    "Computación e Informática",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Una cifra que aparece en un informe puede venir de varias personas y de varias correcciones. Cuando alguien pregunta «¿de dónde salió este número?», a menudo nadie sabe responder con certeza.",
+    "Sin ese rastro no se pueden corregir errores a tiempo ni demostrar que una información es confiable."
+   ],
+   "desarrollar": [
+    "Elige un dato importante en un proceso inventado, como el total de ventas del mes, y reconstruye su recorrido: dónde se ingresó, quién lo modificó, qué transformaciones sufrió y cómo llegó al informe. Registra cada paso con fecha y responsable.",
+    "Después simula un error en el origen y observa qué pasos del recorrido permiten encontrarlo y qué huecos lo dificultan. El resultado puede ser un diagrama del recorrido y una lista de lo que debería registrarse siempre."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un rastro automático",
+     "aporta": "diseña un registro de cambios que anote quién modificó qué y cuándo."
+    },
+    {
+     "titulo": "Quitar el misterio",
+     "aporta": "explica el recorrido a una persona sin formación técnica y comprueba si lo entiende."
+    },
+    {
+     "titulo": "Comparar procesos",
+     "aporta": "aplica la idea a dos procesos distintos y analiza cuál deja más rastro."
+    }
+   ],
+   "objetivos": [
+    "Mapear el recorrido de un dato.",
+    "Registrar cada transformación y su responsable.",
+    "Identificar huecos en el rastro.",
+    "Simular un error y buscar su origen.",
+    "Definir qué información debe registrarse siempre."
+   ],
+   "habilidades": [
+    "Gestión de datos.",
+    "Diagramación de procesos.",
+    "Auditoría de la información.",
+    "Análisis de causas.",
+    "Documentación."
+   ],
+   "herramientas": [
+    "Herramienta de diagramas.",
+    "Hoja de cálculo.",
+    "Documento para el informe."
+   ],
+   "lineamientos": [
+    "Trabaja con datos ficticios y con procesos inventados.",
+    "Si el caso incluye personas, usa nombres inventados."
+   ],
+   "otroSector": "La misma idea sirve para seguir un expediente, una donación, una receta médica, un lote de producción o el origen de una noticia."
+  },
+  {
+   "id": "como-se-guarda-la-informacion-de-algo-cotidiano",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "¿Cómo se guarda la información de algo cotidiano?",
+   "resumen": "Elige algo cotidiano, como una biblioteca o una bodega, y diseña cómo guardar su información de forma ordenada, sin repeticiones ni contradicciones.",
+   "tipo": "Prototipo",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Bases de datos",
+    "Modelado",
+    "Diseño"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: inventa los datos de una biblioteca, una bodega o un club.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Administración",
+    "Contabilidad",
+    "Bibliotecología",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Casi todo negocio empieza con una hoja de cálculo donde todo está junto: clientes, productos, ventas. Con el tiempo aparecen datos repetidos, nombres escritos de varias formas y cambios que obligan a modificar muchas filas.",
+    "Pensar antes cómo se organiza la información evita esos problemas y hace que cualquier sistema posterior sea más sencillo, pero casi nadie lo aprende hasta que el desorden ya es grande."
+   ],
+   "desarrollar": [
+    "Elige un caso y haz una lista de lo que hay que recordar: personas, objetos, acciones y sus relaciones. Dibuja un diagrama sencillo que muestre las cosas importantes y cómo se conectan, y luego convierte el diagrama en tablas con sus columnas.",
+    "Carga 20 a 30 datos ficticios y prueba si puedes responder preguntas típicas sin repetir información. El resultado puede ser un diagrama, el diseño de las tablas y un ejemplo con datos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Preguntas de verdad",
+     "aporta": "escribe diez preguntas que el negocio quisiera responder y comprueba si tu diseño las permite."
+    },
+    {
+     "titulo": "Cambios en el tiempo",
+     "aporta": "agrega historial: qué pasa si un cliente cambia de dirección o un producto cambia de precio."
+    },
+    {
+     "titulo": "Una versión navegable",
+     "aporta": "construye una pantalla sencilla para consultar y registrar datos."
+    }
+   ],
+   "objetivos": [
+    "Identificar las entidades y relaciones de un caso.",
+    "Dibujar un diagrama claro del modelo.",
+    "Convertirlo en tablas sin repeticiones.",
+    "Probarlo con datos y preguntas típicas.",
+    "Explicar las decisiones de diseño."
+   ],
+   "habilidades": [
+    "Modelado de datos.",
+    "Diseño de bases de datos.",
+    "Análisis de requisitos.",
+    "Consultas básicas.",
+    "Documentación técnica."
+   ],
+   "herramientas": [
+    "Herramienta de diagramas.",
+    "Hoja de cálculo o gestor de bases de datos gratuito.",
+    "Documento para explicar el diseño."
+   ],
+   "lineamientos": [
+    "Empieza con pocas tablas y amplía solo cuando las primeras funcionen.",
+    "Usa datos ficticios: no cargues información real de clientes o socios."
+   ],
+   "otroSector": "El mismo proceso sirve para un consultorio, un colegio, un gimnasio, un taller, una feria o una asociación."
+  },
+  {
+   "id": "como-se-prueba-un-programa-antes-de-entregarlo",
+   "area": "tecnologia",
+   "areas2": [],
+   "titulo": "¿Cómo se prueba un programa antes de entregarlo?",
+   "resumen": "Aprende a diseñar pruebas para un programa o una hoja de cálculo, de modo que los errores se encuentren antes de que los encuentre el cliente.",
+   "tipo": "Guía",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Pruebas",
+    "Calidad de software",
+    "Buenas prácticas"
+   ],
+   "intencion": [
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes probar un programa pequeño tuyo, una hoja de cálculo con fórmulas o una aplicación de uso libre.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Software",
+    "Ingeniería de Sistemas",
+    "Computación e Informática",
+    "Análisis de Sistemas",
+    "Ingeniería Industrial",
+    "Contabilidad",
+    "Administración"
+   ],
+   "problema": [
+    "Muchos programas y hojas de cálculo se entregan después de probarlos con un solo ejemplo que funcionó. Los errores aparecen con valores raros, con datos vacíos o cuando se usa de una manera que el autor no imaginó.",
+    "Probar bien es una habilidad que casi no se enseña, pero es una de las que más piden en el trabajo: encontrar errores antes de que cuesten dinero."
+   ],
+   "desarrollar": [
+    "Elige un programa pequeño o una hoja con fórmulas y escribe una lista de casos de prueba que incluya lo normal, los límites, los valores extraños y los errores del usuario. Ejecuta cada caso, anota el resultado esperado y el obtenido y registra los fallos.",
+    "Clasifica los errores por gravedad y propón las correcciones. El resultado puede ser un plan de pruebas con una tabla de casos y un informe de los problemas encontrados."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Pruebas que se repiten",
+     "aporta": "automatiza tus casos para que se ejecuten con un solo clic cada vez que cambies algo."
+    },
+    {
+     "titulo": "Probar como usuario",
+     "aporta": "pide a tres personas que usen el programa sin instrucciones y registra qué errores provocan."
+    },
+    {
+     "titulo": "Cuánto se probó",
+     "aporta": "mide qué partes del programa tocó tu plan de pruebas y cuáles quedaron sin revisar."
+    }
+   ],
+   "objetivos": [
+    "Identificar los casos de prueba relevantes.",
+    "Documentar resultado esperado y obtenido.",
+    "Clasificar los errores por gravedad.",
+    "Proponer correcciones.",
+    "Comunicar los hallazgos con claridad."
+   ],
+   "habilidades": [
+    "Pruebas de software.",
+    "Pensamiento crítico.",
+    "Diseño de casos.",
+    "Documentación de errores.",
+    "Comunicación técnica."
+   ],
+   "herramientas": [
+    "Hoja de cálculo para el plan de pruebas.",
+    "El programa o la hoja que se va a probar.",
+    "Opcionalmente, una herramienta de pruebas automáticas."
+   ],
+   "lineamientos": [
+    "Prueba solo programas tuyos o de uso libre. No intentes romper sistemas ajenos.",
+    "Reporta los errores de forma respetuosa y con pasos para repetirlos."
+   ],
+   "otroSector": "Las mismas ideas sirven para probar formularios, procesos de una oficina, recetas, instructivos y cualquier procedimiento que otras personas vayan a seguir."
+  },
+  {
+   "id": "como-se-documenta-un-sistema-para-que-otro-pueda-mantenerlo",
+   "area": "tecnologia",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "¿Cómo se documenta un sistema para que otro pueda mantenerlo?",
+   "resumen": "Aprende a documentar un sistema de modo que otra persona lo entienda, lo use y lo arregle sin tener que llamar a quien lo hizo.",
+   "tipo": "Guía",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Documentación",
+    "Trabajo en equipo",
+    "Mantenimiento"
+   ],
+   "intencion": [
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: documenta un trabajo tuyo, como una hoja de cálculo compleja o un programa pequeño, o un sistema inventado.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Administración",
+    "Contabilidad",
+    "Ingeniería Industrial",
+    "Educación",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Cuando alguien se va de una organización, deja sistemas, hojas y procesos que solo él entendía. Quien llega no sabe qué hace cada parte ni por qué se hizo así, y tiene miedo de tocar algo y romperlo todo.",
+    "La documentación suele dejarse para el final y por eso casi no se escribe. Escribirla bien, breve y útil, es una habilidad distinta de la de construir."
+   ],
+   "desarrollar": [
+    "Elige un sistema que hayas hecho y escribe cuatro cosas: para qué sirve, cómo se usa, cómo está organizado y qué hacer cuando algo falla. Incluye un diagrama sencillo de sus partes y una lista de las decisiones importantes y su razón.",
+    "Pídele a una persona que no lo conozca que lo use y lo arregle siguiendo solo tu documentación, y registra dónde se atasca. El resultado puede ser un documento breve, un diagrama y una versión corregida después de la prueba."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Una versión de una página",
+     "aporta": "condensa la documentación en una hoja que alguien pueda leer en cinco minutos."
+    },
+    {
+     "titulo": "Preguntas frecuentes",
+     "aporta": "agrega una sección con las dudas que más surgieron en la prueba."
+    },
+    {
+     "titulo": "Mantenerla viva",
+     "aporta": "define una regla para actualizar la documentación cada vez que cambie el sistema."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué necesita saber quien recibe un sistema.",
+    "Redactar instrucciones claras de uso y de mantenimiento.",
+    "Dibujar un diagrama de las partes.",
+    "Probar la documentación con otra persona.",
+    "Corregir los puntos donde se confundió."
+   ],
+   "habilidades": [
+    "Redacción técnica.",
+    "Diagramación.",
+    "Empatía con el usuario.",
+    "Organización de la información.",
+    "Trabajo en equipo."
+   ],
+   "herramientas": [
+    "Editor de documentos.",
+    "Herramienta de diagramas.",
+    "Hoja de cálculo o el sistema que se va a documentar."
+   ],
+   "lineamientos": [
+    "Cuidados: no incluyas contraseñas ni datos personales en la documentación: indica dónde se guardan, pero no los escribas.",
+    "Escribe pensando en alguien con poca experiencia: si él entiende, cualquiera entiende."
+   ],
+   "otroSector": "La misma práctica sirve para dejar instrucciones de una caja de ventas, un proceso contable, el manejo de una máquina o la rutina de un club."
+  },
+  {
+   "id": "como-saber-si-un-cambio-realmente-funciono",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios",
+    "ciencias"
+   ],
+   "titulo": "¿Cómo saber si un cambio realmente funcionó?",
+   "resumen": "Aprende a comparar dos versiones de algo, como una página, un mensaje o un proceso, y a decidir con números cuál es mejor.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Experimentación",
+    "Estadística",
+    "Decisiones"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: simula los resultados de un experimento con números inventados que tú controlas.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Administración",
+    "Marketing",
+    "Economía",
+    "Psicología",
+    "Ingeniería Industrial",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Una tienda cambia el color de un botón y las ventas suben. ¿Fue por el botón o por el día? Muchos cambios se celebran o se descartan por intuición, sin saber si la diferencia observada fue real o puro azar.",
+    "Sin una forma clara de comparar, las organizaciones repiten decisiones equivocadas y dejan pasar las buenas."
+   ],
+   "desarrollar": [
+    "Plantea un caso, por ejemplo, dos versiones de un mensaje de recordatorio, y simula los resultados de mostrar cada versión a 200 personas: cuántas respondieron. Calcula la diferencia entre ambas y estima si es grande para ser casualidad.",
+    "Repite la simulación varias veces con distintos tamaños de grupo y observa cuándo la conclusión es confiable y cuándo no. El resultado puede ser un informe con las reglas para decidir y los errores más comunes."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Muestras pequeñas",
+     "aporta": "estudia cuántas personas hacen falta para confiar en una diferencia."
+    },
+    {
+     "titulo": "Mirar demasiado",
+     "aporta": "muestra cómo detener la prueba apenas se ve una diferencia puede engañar."
+    },
+    {
+     "titulo": "Una prueba real",
+     "aporta": "diseña y ejecuta una comparación con un grupo pequeño, con permiso, y analiza los resultados."
+    }
+   ],
+   "objetivos": [
+    "Plantear una comparación entre dos versiones.",
+    "Simular y registrar resultados.",
+    "Calcular la diferencia y su variabilidad.",
+    "Distinguir una diferencia real de una casualidad.",
+    "Redactar reglas de decisión simples."
+   ],
+   "habilidades": [
+    "Estadística básica.",
+    "Diseño de experimentos.",
+    "Hoja de cálculo.",
+    "Pensamiento crítico.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramienta de gráficos.",
+    "Calculadora estadística."
+   ],
+   "lineamientos": [
+    "Si pruebas con personas reales, avísales y no recojas datos que las identifiquen.",
+    "Evita concluir demasiado: una prueba con pocos casos no demuestra nada firme."
+   ],
+   "otroSector": "El mismo método sirve para comparar dos recetas, dos horarios de atención, dos métodos de estudio o dos anuncios de una campaña."
+  },
+  {
+   "id": "cien-personas-en-la-misma-red-que-pasa-con-la-velocidad",
+   "area": "tecnologia",
+   "areas2": [
+    "ciencias"
+   ],
+   "titulo": "Cien personas en la misma red: ¿qué pasa con la velocidad?",
+   "resumen": "Simula qué ocurre con la velocidad de una conexión cuando cada vez más personas la comparten, y encuentra el punto donde la experiencia deja de ser aceptable.",
+   "tipo": "Simulación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Redes",
+    "Simulación",
+    "Sistemas complejos"
+   ],
+   "intencion": [
+    "crear",
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: define tú los números de usuarios, de ancho de banda y de consumo para cada escenario.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ingeniería Industrial",
+    "Telecomunicaciones",
+    "Matemática",
+    "Estadística",
+    "Computación e Informática"
+   ],
+   "problema": [
+    "En un salón, una biblioteca o una oficina, la conexión funciona bien con pocas personas y se vuelve lenta de golpe cuando llegan muchas. Casi nadie sabe por qué ocurre ni cuántos usuarios soporta realmente una red.",
+    "Sin una forma de estimarlo, las decisiones se toman por intuición: se contrata más ancho de banda sin comprobar si el problema era ese."
+   ],
+   "desarrollar": [
+    "Modela una red sencilla con una conexión total y un grupo de usuarios que hacen actividades distintas: navegar, ver videos, descargar archivos. Define cuánto consume cada actividad y simula qué ocurre cuando el grupo crece de 10 a 100 personas.",
+    "Mide en cada escenario cuánto le toca a cada usuario y cuándo una actividad deja de funcionar bien. El resultado puede ser un modelo en hoja de cálculo o un programa de simulación, con un gráfico que muestre el punto de quiebre."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Horas pico",
+     "aporta": "haz que los usuarios no conecten al mismo tiempo sino siguiendo un horario realista y compara con el caso constante."
+    },
+    {
+     "titulo": "Una regla de reparto",
+     "aporta": "prueba qué cambia si se limita el consumo de las descargas para proteger las videollamadas."
+    },
+    {
+     "titulo": "Dos redes en una",
+     "aporta": "simula una oficina con dos conexiones y estudia cuándo conviene dividir a los usuarios."
+    }
+   ],
+   "objetivos": [
+    "Representar una red compartida con un modelo sencillo.",
+    "Definir supuestos de consumo por tipo de actividad.",
+    "Ejecutar escenarios con distinta cantidad de usuarios.",
+    "Identificar el punto en que la calidad deja de ser aceptable.",
+    "Comunicar el resultado y sus límites."
+   ],
+   "habilidades": [
+    "Modelamiento y simulación.",
+    "Conceptos de ancho de banda.",
+    "Análisis de resultados.",
+    "Pensamiento sistémico.",
+    "Comunicación de supuestos."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Software de simulación o un lenguaje de programación sencillo.",
+    "Herramienta para hacer gráficos."
+   ],
+   "lineamientos": [
+    "Declara siempre tus supuestos: los resultados valen solo para esos números y no para cualquier red real.",
+    "Si quieres contrastar con una red real, hazlo solo con la tuya o con permiso de quien la administre."
+   ],
+   "otroSector": "La misma estructura sirve para estudiar atención en ventanillas, uso de un ascensor, capacidad de un servidor o demanda sobre un recurso compartido cualquiera."
+  },
+  {
+   "id": "por-que-cuesta-usar-algunas-aplicaciones-un-rediseno-paso-a-paso",
+   "area": "tecnologia",
+   "areas2": [
+    "sociedad",
+    "arte"
+   ],
+   "titulo": "¿Por qué cuesta usar algunas aplicaciones? Un rediseño paso a paso",
+   "resumen": "Observa dónde se confunde una persona al usar una aplicación, página o formulario, y propón un rediseño que lo haga más claro.",
+   "tipo": "Prototipo",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Experiencia de usuario",
+    "Diseño",
+    "Usabilidad"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes elegir una aplicación o página cotidiana y observar a personas usándola, con su permiso, o trabajar con un caso inventado.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Diseño Gráfico",
+    "Psicología",
+    "Comunicaciones",
+    "Educación",
+    "Arquitectura",
+    "Computación e Informática",
+    "Diseño Web"
+   ],
+   "problema": [
+    "Hay aplicaciones y páginas que funcionan bien para quien las diseñó pero resultan confusas para casi todos los demás: botones que no se entienden, páginas sin instrucciones o formularios que fallan después de haberlos llenado.",
+    "Cuando una persona se equivoca, suele culparse a sí misma, aunque el problema sea del diseño. Esto afecta más a personas mayores y a quienes usan poco la tecnología."
+   ],
+   "desarrollar": [
+    "Elige una aplicación, una página o un formulario que haya causado problemas y pídele a tres personas que lo usen para una tarea concreta mientras tú observas sin ayudarlas. Anota dónde dudan, qué errores cometen y qué comentan.",
+    "Con lo observado, redibuja las pantallas más problemáticas en papel o con una herramienta de diseño y prueba el nuevo diseño con las mismas personas. El resultado puede ser un antes y un después con las mejoras que más ayudaron."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Una página sin instrucciones",
+     "aporta": "rediseña una pantalla que hoy exige adivinar qué hacer y agrégale el texto de ayuda que falta."
+    },
+    {
+     "titulo": "Un formulario que avisa a tiempo",
+     "aporta": "diseña un formulario que detecte los errores antes de enviarlo y los explique con claridad."
+    },
+    {
+     "titulo": "Una lista de reglas",
+     "aporta": "resume tus hallazgos en cinco recomendaciones que puedan servir a cualquier diseñador."
+    }
+   ],
+   "objetivos": [
+    "Observar a personas usando una interfaz sin intervenir.",
+    "Identificar los puntos donde se confunden y por qué.",
+    "Proponer cambios concretos y justificarlos.",
+    "Probar el rediseño con las mismas personas.",
+    "Presentar las mejoras con ejemplos visuales."
+   ],
+   "habilidades": [
+    "Experiencia de usuario.",
+    "Observación y entrevistas breves.",
+    "Diseño de interfaces.",
+    "Redacción de mensajes claros.",
+    "Evaluación de resultados."
+   ],
+   "herramientas": [
+    "Papel y lápiz o una herramienta de diseño.",
+    "Documento para registrar las observaciones.",
+    "Herramienta de prototipos."
+   ],
+   "lineamientos": [
+    "Cuidados: pide permiso a cada persona que observes y explícale que se evalúa la aplicación y no su habilidad. No grabes ni publiques datos que la identifiquen.",
+    "No copies el diseño de una aplicación protegida: propone mejoras con tus propias ideas."
+   ],
+   "otroSector": "El mismo método sirve para mejorar carteles, trámites, instrucciones de un electrodoméstico, menús de un restaurante o señalización de un lugar público."
+  },
+  {
+   "id": "y-si-los-datos-llegan-tarde-decidir-con-informacion-atrasada",
+   "area": "tecnologia",
+   "areas2": [
+    "industria",
+    "negocios"
+   ],
+   "titulo": "¿Y si los datos llegan tarde? Decidir con información atrasada",
+   "resumen": "Simula cómo se deterioran las decisiones automáticas cuando la información que reciben llega con retraso.",
+   "tipo": "Simulación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Datos",
+    "Simulación",
+    "Decisiones"
+   ],
+   "intencion": [
+    "crear",
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: simula un proceso con números inventados, como el stock de una tienda o la temperatura de un cuarto.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Ingeniería de Software",
+    "Administración",
+    "Matemática",
+    "Computación e Informática",
+    "Logística"
+   ],
+   "problema": [
+    "Muchos sistemas actúan según los datos que reciben: reponer inventario, encender un ventilador o avisar que se acaba un producto. Si esos datos llegan con minutos, horas o días de retraso, el sistema decide sobre una realidad que ya cambió.",
+    "El resultado son pedidos de más o de menos, alarmas tardías y oscilaciones: se corrige un problema que ya pasó y se crea otro nuevo."
+   ],
+   "desarrollar": [
+    "Modela un proceso simple, como una tienda que repone productos según su stock, y simula una semana de operación con datos al instante. Luego añade retrasos de una hora, medio día y un día entero, y mide cuánto empeora cada indicador: faltantes, excesos y costos.",
+    "Compara los escenarios con una tabla y un gráfico, y propón una regla que reduzca el daño del retraso. El resultado puede ser un modelo en hoja de cálculo con una conclusión clara."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Qué retraso se tolera",
+     "aporta": "encuentra el límite a partir del cual el sistema deja de ser útil."
+    },
+    {
+     "titulo": "Una regla más prudente",
+     "aporta": "compara decidir con el último dato con decidir con un promedio de varios."
+    },
+    {
+     "titulo": "Un sistema real",
+     "aporta": "aplica la idea a una cadena de suministro o a un sistema de riego, con sus datos propios."
+    }
+   ],
+   "objetivos": [
+    "Modelar un proceso que reacciona a datos.",
+    "Simular distintos retrasos de información.",
+    "Medir el efecto en indicadores clave.",
+    "Proponer reglas que reduzcan el daño.",
+    "Comunicar el resultado con gráficos."
+   ],
+   "habilidades": [
+    "Modelamiento y simulación.",
+    "Pensamiento sistémico.",
+    "Control y retroalimentación.",
+    "Análisis de resultados.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Software de simulación o programación sencilla.",
+    "Herramienta de gráficos."
+   ],
+   "lineamientos": [
+    "Declara los supuestos del modelo y evita generalizar sus resultados a casos reales sin comprobarlos.",
+    "Si lo aplicas a un negocio verdadero, pide permiso y no publiques sus cifras."
+   ],
+   "otroSector": "Esta idea sirve para estudiar semáforos, calefacción, riego automático, pedidos de un restaurante o cualquier proceso donde la información tarda en llegar."
+  },
+  {
+   "id": "como-se-encuentra-rapido-lo-que-esta-guardado-en-una-organizacio",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "¿Cómo se encuentra rápido lo que está guardado en una organización?",
+   "resumen": "Estudia cómo se organiza la información en una organización y diseña una forma de encontrarla en menos tiempo.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Gestión de la información",
+    "Búsqueda",
+    "Organización"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o propios: trabaja con una organización inventada o con las carpetas de un grupo que te dé permiso.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Gestión de la Información",
+    "Bibliotecología",
+    "Administración",
+    "Contabilidad",
+    "Secretariado",
+    "Ingeniería Industrial",
+    "Computación e Informática"
+   ],
+   "problema": [
+    "En una organización, la información vive en correos, carpetas, chats, hojas y la cabeza de algunas personas. Encontrar un documento puede tomar minutos que, multiplicados por muchas personas y muchos días, son un costo enorme.",
+    "Cuando alguien se va, se pierde lo que solo él sabía dónde estaba. Y no existen reglas comunes sobre cómo nombrar, clasificar y guardar."
+   ],
+   "desarrollar": [
+    "Elige una organización pequeña real o inventada y haz una lista de los tipos de información que maneja y dónde está cada uno. Mide con tres personas cuánto tardan en encontrar cinco documentos típicos y qué obstáculos aparecen.",
+    "Diseña un esquema de organización con nombres de carpetas, etiquetas y reglas simples, y vuelve a medir. El resultado puede ser un manual de una página y una comparación de tiempos antes y después."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un mapa de la información",
+     "aporta": "dibuja qué información entra, quién la guarda y dónde queda."
+    },
+    {
+     "titulo": "La cultura del orden",
+     "aporta": "diseña una capacitación breve para que el equipo aplique las reglas."
+    },
+    {
+     "titulo": "Un buscador propio",
+     "aporta": "prueba una herramienta de búsqueda y compara cuánto ayuda frente a solo ordenar."
+    }
+   ],
+   "objetivos": [
+    "Inventariar la información de una organización.",
+    "Medir cuánto tardan en encontrarla.",
+    "Diseñar un esquema de organización con reglas claras.",
+    "Comparar los tiempos antes y después.",
+    "Redactar un manual sencillo para el equipo."
+   ],
+   "habilidades": [
+    "Gestión de la información.",
+    "Organización de documentos.",
+    "Análisis de procesos.",
+    "Medición de tiempos.",
+    "Redacción de manuales."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas de almacenamiento y búsqueda compartida.",
+    "Herramienta de diagramas."
+   ],
+   "lineamientos": [
+    "Si observas a personas reales, avísales y pide permiso, y no copies documentos confidenciales en tu informe.",
+    "Propón reglas que el equipo pueda seguir sin esfuerzo: un esquema complejo se abandona rápido."
+   ],
+   "otroSector": "Funciona igual en un consultorio, una notaría, una parroquia, un taller, un colegio o la oficina de un negocio familiar."
+  },
+  {
+   "id": "que-pasa-cuando-dos-personas-editan-lo-mismo-a-la-vez",
+   "area": "tecnologia",
+   "areas2": [],
+   "titulo": "¿Qué pasa cuando dos personas editan lo mismo a la vez?",
+   "resumen": "Provoca conflictos entre dos usuarios o dos dispositivos que modifican el mismo dato y compara distintas formas de resolverlos.",
+   "tipo": "Investigación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Sincronización",
+    "Bases de datos",
+    "Concurrencia"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: crea un archivo o una tabla de prueba con datos inventados.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Ciencia de Datos",
+    "Administración",
+    "Análisis de Sistemas"
+   ],
+   "problema": [
+    "Cuando dos personas, o la misma persona desde su celular y su computadora, modifican el mismo dato a la vez, uno de los cambios se pierde o los dos se mezclan mal. Pasa en hojas compartidas, en aplicaciones de notas y en sistemas de reservas.",
+    "Evitarlo no es solo cuestión de técnica: hay que decidir qué cambio gana, si se avisa y cómo se conserva el otro."
+   ],
+   "desarrollar": [
+    "Prepara una tabla de prueba y simula tres situaciones: dos personas editan celdas distintas, la misma celda a la vez, y una persona edita sin conexión mientras otra sigue en línea. Registra qué pasa con cada cambio en cada caso.",
+    "Compara tres estrategias: la última escritura gana, bloquear mientras alguien edita y fusionar los cambios. El resultado puede ser una tabla comparativa con ventajas y riesgos de cada estrategia."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Con una herramienta real",
+     "aporta": "prueba cómo reacciona una hoja compartida o una aplicación de notas y describe su estrategia."
+    },
+    {
+     "titulo": "Un caso crítico",
+     "aporta": "analiza qué pasaría si el dato fuera un saldo o un cupo limitado."
+    },
+    {
+     "titulo": "Un prototipo",
+     "aporta": "programa una pequeña simulación que aplique las tres estrategias."
+    }
+   ],
+   "objetivos": [
+    "Reproducir conflictos de edición simultánea.",
+    "Observar sus efectos sobre los datos.",
+    "Comparar estrategias de resolución.",
+    "Evaluar riesgos según el tipo de dato.",
+    "Presentar recomendaciones claras."
+   ],
+   "habilidades": [
+    "Concurrencia y sincronización.",
+    "Bases de datos.",
+    "Diseño de reglas.",
+    "Análisis de casos.",
+    "Comunicación técnica."
+   ],
+   "herramientas": [
+    "Una hoja compartida o una aplicación de notas.",
+    "Hoja de cálculo.",
+    "Opcionalmente un gestor de bases de datos."
+   ],
+   "lineamientos": [
+    "Trabaja con datos de prueba, nunca con información real de otras personas.",
+    "Explica con ejemplos cotidianos para que alguien sin formación técnica entienda el problema."
+   ],
+   "otroSector": "El mismo problema aparece al vender el último boleto de un evento, reservar una cita o repartir un stock limitado entre varias tiendas."
+  },
+  {
+   "id": "un-tablero-con-los-datos-publicos-de-tu-distrito",
+   "area": "tecnologia",
+   "areas2": [
+    "sociedad",
+    "ciudades"
+   ],
+   "titulo": "Un tablero con los datos públicos de tu distrito",
+   "resumen": "Reúne datos públicos dispersos de tu distrito y preséntalos en un tablero claro que cualquier vecino pueda entender y usar.",
+   "tipo": "Prototipo",
+   "tiempo": "~30 h",
+   "horas": 30,
+   "etiquetas": [
+    "Datos abiertos",
+    "Visualización",
+    "Comunidad"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: usa datos abiertos de instituciones públicas sobre tu distrito, como población, servicios, seguridad vial o educación.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Estadística",
+    "Sociología",
+    "Trabajo Social",
+    "Administración Pública",
+    "Economía",
+    "Comunicaciones",
+    "Computación e Informática"
+   ],
+   "problema": [
+    "Muchas instituciones publican datos abiertos, pero están repartidos en portales distintos, en formatos difíciles y sin una explicación que ayude a interpretarlos. El ciudadano común no los usa porque no sabe por dónde empezar.",
+    "Por eso, decisiones locales sobre salud, tránsito o servicios suelen tomarse sin mirar lo que los propios datos públicos ya dicen."
+   ],
+   "desarrollar": [
+    "Elige tres o cuatro temas de interés para tu distrito y busca los datos públicos que los respaldan. Limpia y combina esas fuentes en una sola tabla y diseña un tablero con tres a cinco gráficos que respondan preguntas concretas, como «¿qué zona tiene menos servicios?».",
+    "Cada gráfico debe tener un título que diga lo que se ve y una frase que explique cómo leerlo. El resultado puede ser una hoja con gráficos, un tablero de una herramienta gratuita o una página sencilla."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Una comparación",
+     "aporta": "pon tu distrito junto a otro parecido y muestra en qué se diferencian."
+    },
+    {
+     "titulo": "Preguntas de los vecinos",
+     "aporta": "recoge las dudas de cinco personas y comprueba si tu tablero las responde."
+    },
+    {
+     "titulo": "Datos que se actualizan",
+     "aporta": "prepara el tablero para que se alimente solo cuando la fuente publique datos nuevos."
+    }
+   ],
+   "objetivos": [
+    "Localizar fuentes públicas confiables sobre un territorio.",
+    "Limpiar y combinar datos de varias fuentes.",
+    "Elegir gráficos adecuados para cada pregunta.",
+    "Redactar explicaciones claras para el público general.",
+    "Verificar que el tablero responda a preguntas reales."
+   ],
+   "habilidades": [
+    "Datos abiertos y su licencia.",
+    "Visualización de datos.",
+    "Limpieza y combinación de tablas.",
+    "Comunicación para el ciudadano.",
+    "Pensamiento crítico sobre las fuentes."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas gratuitas de tableros y gráficos.",
+    "Portales de datos abiertos."
+   ],
+   "lineamientos": [
+    "Cita siempre la fuente y la fecha de cada dato, y no publiques información que permita identificar a personas o viviendas concretas.",
+    "Aclara las limitaciones: los datos públicos pueden estar desactualizados o ser incompletos."
+   ],
+   "otroSector": "El mismo tablero puede construirse para un colegio, un hospital, un mercado o una empresa, siempre con datos que su propia institución haya hecho públicos."
+  },
+  {
+   "id": "reservas-laboratorios",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "Reservar laboratorios y salas sin mandar mensajes",
+   "resumen": "Explora cómo diseñar un sistema sencillo para ver qué espacios están libres, reservarlos y evitar cruces de horario.",
+   "tipo": "Prototipo",
+   "tiempo": "~30 h",
+   "horas": 30,
+   "etiquetas": [
+    "Software",
+    "Organización"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: usa espacios y horarios inventados; no guardes datos personales reales.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ingeniería Industrial",
+    "Ciberseguridad",
+    "Administración",
+    "Estadística",
+    "Computación e Informática",
+    "Gestión Administrativa"
+   ],
+   "problema": [
+    "Reservar un laboratorio o una sala suele depender de mensajes sueltos, hojas compartidas o ir a preguntar en persona, y los cruces de horario son frecuentes.",
+    "Cuando varias personas piden el mismo espacio, nadie sabe quién llegó primero ni qué reglas se aplican, y el espacio termina vacío o con dos grupos esperando a la vez."
+   ],
+   "desarrollar": [
+    "Un prototipo con calendario por espacio, reservas por bloques de hora y un aviso cuando alguien intenta reservar algo ya ocupado. Puede ser una hoja de cálculo bien armada o una web sencilla.",
+    "Empieza con un solo espacio y pocas reglas, y amplía solo cuando esas reglas funcionen. El resultado puede ser una hoja, un formulario o un prototipo navegable."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Reglas más finas",
+     "aporta": "agrega límites de tiempo por persona, prioridades y cancelaciones con aviso."
+    },
+    {
+     "titulo": "Varios espacios",
+     "aporta": "extiende el prototipo a diez espacios con equipamiento distinto, como laboratorio, sala de reuniones o taller."
+    },
+    {
+     "titulo": "Un reporte de uso",
+     "aporta": "muestra qué espacios se usan más y cuáles quedan vacíos, para que quien los administre decida."
+    }
+   ],
+   "objetivos": [
+    "Entender cómo se organiza hoy la reserva de un espacio real.",
+    "Diseñar las reglas: quién reserva, por cuánto tiempo y cómo se cancela.",
+    "Probar el prototipo tú o con alguien cercano y ajustar lo que no funcione.",
+    "Detectar y evitar los cruces de horario.",
+    "Documentar el uso de forma sencilla."
+   ],
+   "habilidades": [
+    "Levantamiento de requerimientos.",
+    "Diseño de interfaces sencillas.",
+    "Manejo de datos de horarios.",
+    "Diseño de reglas y excepciones.",
+    "Pruebas con usuarios."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un formulario en línea.",
+    "Un lenguaje web si quieres ir más lejos."
+   ],
+   "lineamientos": [
+    "Empieza con un solo espacio y pocas reglas. No guardes datos personales que no necesites.",
+    "Pide permiso a quien administre el espacio antes de probarlo con otras personas."
+   ],
+   "otroSector": "El mismo concepto sirve para reservar consultorios, canchas, talleres de un colegio o salas de reuniones de una pequeña empresa."
+  },
+  {
+   "id": "cuando-algo-sale-mal-seguir-un-incidente-y-medir-la-calidad-de-u",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "Cuando algo sale mal: seguir un incidente y medir la calidad de un servicio",
+   "resumen": "Diseña un sistema sencillo para registrar problemas de un servicio, seguirlos hasta resolverlos y medir si la atención mejora.",
+   "tipo": "Prototipo",
+   "tiempo": "~30 h",
+   "horas": 30,
+   "etiquetas": [
+    "Incidentes",
+    "Calidad de servicio",
+    "Procesos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: crea incidentes inventados, con su fecha, su gravedad y quién los atendió.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ingeniería Industrial",
+    "Administración",
+    "Atención al Cliente",
+    "Computación e Informática",
+    "Soporte Técnico"
+   ],
+   "problema": [
+    "Cuando un servicio falla, el problema se reporta por mensajes sueltos, llamadas y correos. Nadie sabe cuántos hay abiertos, cuánto llevan esperando ni quién los atiende, y los mismos problemas reaparecen sin que se note.",
+    "Sin registro no se puede medir la calidad: no se sabe si se atiende más rápido que el mes pasado ni qué tipo de problema es el más frecuente."
+   ],
+   "desarrollar": [
+    "Define los datos mínimos de un incidente: qué pasó, cuándo, qué tan grave es, quién lo atiende y cómo terminó. Diseña un flujo de estados, desde «recibido» hasta «cerrado», y un registro en una hoja o formulario. Carga 50 incidentes inventados.",
+    "Calcula tres indicadores: cuánto tardó la primera respuesta, cuánto tardó la solución y cuántos casos se repiten. El resultado puede ser un tablero sencillo con esas cifras."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Prioridades",
+     "aporta": "agrega reglas para atender primero lo más grave y mide el efecto."
+    },
+    {
+     "titulo": "Causas repetidas",
+     "aporta": "agrupa los incidentes por causa y propone un cambio que evite los más comunes."
+    },
+    {
+     "titulo": "Satisfacción",
+     "aporta": "suma una pregunta breve a quien reportó y relaciona la respuesta con el tiempo de atención."
+    }
+   ],
+   "objetivos": [
+    "Definir los datos mínimos de un incidente.",
+    "Diseñar el flujo de estados.",
+    "Registrar incidentes y calcular indicadores.",
+    "Identificar causas repetidas.",
+    "Presentar los resultados en un tablero claro."
+   ],
+   "habilidades": [
+    "Gestión de incidentes.",
+    "Diseño de procesos.",
+    "Hoja de cálculo avanzada.",
+    "Análisis de indicadores.",
+    "Visualización de datos."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o formulario en línea.",
+    "Herramienta de tableros.",
+    "Opcionalmente, una base de datos sencilla."
+   ],
+   "lineamientos": [
+    "Usa incidentes inventados. Si trabajas con un servicio real, pide permiso y quita datos personales.",
+    "Mide pocos indicadores y explica cómo se calculan."
+   ],
+   "otroSector": "El mismo sistema sirve para el mantenimiento de un edificio, las quejas de un restaurante, las averías de una flota o los reportes de un colegio."
+  },
+  {
+   "id": "como-funciona-un-buscador-por-dentro",
+   "area": "tecnologia",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "¿Cómo funciona un buscador por dentro?",
+   "resumen": "Construye un buscador mínimo sobre una colección pequeña de textos y descubre cómo decide qué resultado mostrar primero.",
+   "tipo": "Prototipo",
+   "tiempo": "~30 h",
+   "horas": 30,
+   "etiquetas": [
+    "Búsqueda",
+    "Algoritmos",
+    "Estructuras de datos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos o propios: usa una colección pequeña de textos, como tus apuntes o artículos de libre acceso.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Bibliotecología",
+    "Ciencia de Datos",
+    "Educación",
+    "Análisis de Sistemas"
+   ],
+   "problema": [
+    "Escribimos unas palabras y obtenemos resultados casi al instante, pero rara vez pensamos en cómo se decide qué documento va primero. Parece magia y en realidad se apoya en ideas sencillas: contar palabras y compararlas.",
+    "Comprenderlas ayuda a buscar mejor, a entender por qué una búsqueda falla y a construir herramientas de búsqueda para colecciones propias."
+   ],
+   "desarrollar": [
+    "Reúne 30 a 50 textos cortos y construye un índice: una tabla que diga en qué documentos aparece cada palabra. Con eso programa una búsqueda que devuelva los documentos que contienen las palabras buscadas.",
+    "Después mejora el orden con una regla simple, como dar más peso a las palabras raras, y compara los resultados antes y después. El resultado puede ser un buscador funcional con una explicación de cada paso."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Equivocarse al escribir",
+     "aporta": "haz que el buscador tolere errores de ortografía."
+    },
+    {
+     "titulo": "Entender la intención",
+     "aporta": "prueba cómo cambian los resultados si se buscan sinónimos."
+    },
+    {
+     "titulo": "Medir la calidad",
+     "aporta": "evalúa con diez preguntas si el documento correcto aparece entre los primeros resultados."
+    }
+   ],
+   "objetivos": [
+    "Construir un índice de palabras.",
+    "Programar una búsqueda básica.",
+    "Ordenar resultados con una regla razonable.",
+    "Evaluar la calidad de los resultados.",
+    "Explicar el funcionamiento sin tecnicismos."
+   ],
+   "habilidades": [
+    "Estructuras de datos.",
+    "Procesamiento de texto.",
+    "Programación básica.",
+    "Evaluación de resultados.",
+    "Comunicación técnica."
+   ],
+   "herramientas": [
+    "Lenguaje de programación sencillo.",
+    "Archivos de texto de práctica.",
+    "Hoja de cálculo para evaluar resultados."
+   ],
+   "lineamientos": [
+    "Usa textos que puedas compartir y cita sus fuentes.",
+    "Mantén el sistema pequeño: la meta es entender el principio y no competir con un buscador real."
+   ],
+   "otroSector": "La misma idea sirve para buscar dentro de las leyes, de los apuntes de un curso, del catálogo de una tienda o de las historias de un archivo."
+  },
+  {
+   "id": "como-hablan-dos-aplicaciones-entre-si",
+   "area": "tecnologia",
+   "areas2": [],
+   "titulo": "¿Cómo hablan dos aplicaciones entre sí?",
+   "resumen": "Aprende cómo una aplicación le pide datos a otra a través de una interfaz pública, y úsala para armar algo útil.",
+   "tipo": "Prototipo",
+   "tiempo": "~30 h",
+   "horas": 30,
+   "etiquetas": [
+    "Integración",
+    "API",
+    "Automatización"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: usa una interfaz pública y gratuita de datos, como la del clima, la de monedas o la de un portal de datos abiertos.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Análisis de Sistemas",
+    "Estadística",
+    "Administración",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Casi todas las aplicaciones que usamos conversan con otras: el clima en el celular, el pago en una tienda, el mapa en una app de entregas. Esa conversación ocurre por interfaces que casi nadie ve.",
+    "Quien entiende cómo funcionan puede conectar herramientas, automatizar tareas y construir cosas que antes exigían copiar y pegar a mano."
+   ],
+   "desarrollar": [
+    "Elige una interfaz pública y gratuita, lee su documentación y haz tu primera consulta a mano. Luego escribe un pequeño programa que pida los datos, los ordene y los muestre en una tabla o en una pantalla sencilla.",
+    "Documenta lo que aprendiste, con un ejemplo de pedido y de respuesta, y los errores más comunes. El resultado puede ser un pequeño programa funcional y una guía para repetirlo con otra interfaz."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Datos que se actualizan",
+     "aporta": "haz que tu programa se ejecute solo cada cierto tiempo."
+    },
+    {
+     "titulo": "Cuando algo falla",
+     "aporta": "maneja los casos en que la interfaz no responde o devuelve un error."
+    },
+    {
+     "titulo": "Dos interfaces juntas",
+     "aporta": "combina datos de dos fuentes distintas en una sola vista."
+    }
+   ],
+   "objetivos": [
+    "Leer la documentación de una interfaz pública.",
+    "Hacer consultas y comprender las respuestas.",
+    "Programar un uso sencillo de los datos.",
+    "Manejar errores comunes.",
+    "Documentar el proceso paso a paso."
+   ],
+   "habilidades": [
+    "Conceptos de interfaces y servicios web.",
+    "Programación básica.",
+    "Lectura de documentación técnica.",
+    "Manejo de datos estructurados.",
+    "Documentación."
+   ],
+   "herramientas": [
+    "Lenguaje de programación sencillo.",
+    "Herramientas para hacer consultas de prueba.",
+    "Hoja de cálculo o página web para mostrar datos."
+   ],
+   "lineamientos": [
+    "Respeta los límites de uso de la interfaz y no hagas consultas masivas.",
+    "Cuidados: no publiques tus claves de acceso: guárdalas fuera del código que compartas."
+   ],
+   "otroSector": "La misma habilidad sirve para conectar una hoja con un correo, un formulario con un calendario, una tienda con una hoja de pedidos o un sensor con un tablero."
+  },
+  {
+   "id": "que-tarea-hace-que-tu-computadora-gaste-mas-energia",
+   "area": "tecnologia",
+   "areas2": [
+    "ambiente"
+   ],
+   "titulo": "¿Qué tarea hace que tu computadora gaste más energía?",
+   "resumen": "Investiga cómo cambia el consumo energético de una computadora según las tareas que realiza, las configuraciones utilizadas y el tiempo de uso. Descubre qué factores tienen un mayor impacto en el consumo eléctrico y cómo pequeñas decisiones pueden influir en el gasto acumulado a lo largo del tiempo.",
+   "tipo": "Investigación",
+   "tiempo": "2 semanas a 2 meses",
+   "horas": 32,
+   "etiquetas": [
+    "Tecnología",
+    "Eficiencia energética",
+    "Análisis de datos"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes. Si no dispones de un medidor de consumo, puedes trabajar con estimaciones basadas en especificaciones técnicas y fuentes públicas.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Eléctrica",
+    "Ingeniería Electrónica",
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Física",
+    "Ciencia de Datos",
+    "Economía"
+   ],
+   "problema": [
+    "Las computadoras forman parte de la vida diaria de millones de personas. Se utilizan para estudiar, trabajar, comunicarse, entretenerse y desarrollar proyectos. Sin embargo, pocas veces se analiza cuánto cambia el consumo energético dependiendo de la actividad que se esté realizando.",
+    "Una computadora en reposo no consume lo mismo que una utilizada para editar video, ejecutar videojuegos o procesar grandes cantidades de datos. Del mismo modo, configuraciones como el brillo de la pantalla, los tiempos de suspensión o los periféricos conectados también pueden influir en el consumo total.",
+    "Aunque estas diferencias pueden parecer pequeñas a simple vista, al acumularse durante semanas o meses pueden representar un impacto significativo tanto en el gasto económico como en el uso eficiente de la energía."
+   ],
+   "desarrollar": [
+    "Investiga el consumo de una computadora en distintos escenarios de uso y registra los resultados de forma organizada.",
+    "Por ejemplo:",
+    {
+     "lista": [
+      "Reposo o inactividad.",
+      "Navegación web.",
+      "Reproducción de video.",
+      "Trabajo de oficina.",
+      "Desarrollo de software.",
+      "Uso intensivo del procesador o la tarjeta gráfica."
+     ]
+    },
+    "Presenta la información mediante tablas, gráficos o comparaciones visuales que permitan identificar las diferencias entre cada situación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar equipos",
+     "aporta": "analiza cómo cambia el consumo entre una computadora portátil, una computadora de escritorio u otros dispositivos similares."
+    },
+    {
+     "titulo": "Proyectar escenarios",
+     "aporta": "estima cuánto consumiría un equipo durante un mes o un año según distintos hábitos de uso."
+    },
+    {
+     "titulo": "Evaluar configuraciones",
+     "aporta": "compara el efecto de modificar parámetros como el brillo de la pantalla, los planes de energía o los tiempos de suspensión."
+    }
+   ],
+   "objetivos": [
+    "Definir escenarios de uso comparables.",
+    "Obtener o estimar valores de consumo energético.",
+    "Organizar y visualizar la información recopilada.",
+    "Comparar distintos patrones de uso.",
+    "Explicar las diferencias observadas y sus posibles causas."
+   ],
+   "habilidades": [
+    "Recolección de datos.",
+    "Análisis de información técnica.",
+    "Interpretación de gráficos.",
+    "Cálculos de energía y costos.",
+    "Pensamiento crítico.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Computadora.",
+    "Hoja de cálculo.",
+    "Medidor de consumo eléctrico (opcional).",
+    "Herramientas de monitoreo del sistema.",
+    "Calculadoras de costos energéticos."
+   ],
+   "lineamientos": [
+    "No abras ni manipules componentes eléctricos para realizar mediciones. Si no dispones de instrumentos de medición directa, indica claramente cuándo los valores utilizados corresponden a estimaciones.",
+    "Diferencia correctamente conceptos como potencia eléctrica, energía consumida y costo económico, ya que representan magnitudes distintas.",
+    "Documenta las condiciones de cada prueba para que los resultados puedan interpretarse correctamente."
+   ],
+   "otroSector": "La misma metodología puede aplicarse al análisis de electrodomésticos, equipos de oficina, sistemas de iluminación, servidores, herramientas industriales o cualquier dispositivo que utilice energía eléctrica."
+  },
+  {
+   "id": "que-sabe-una-aplicacion-sobre-sus-usuarios",
+   "area": "tecnologia",
+   "areas2": [
+    "derecho"
+   ],
+   "titulo": "¿Qué sabe una aplicación sobre sus usuarios?",
+   "resumen": "Imagina qué información afirma recopilar una aplicación, cómo explica el uso de esos datos y qué tan fácil resulta para una persona comprender las implicaciones de aceptar determinados permisos. Descubre cómo traducir documentos extensos y complejos en información clara y comprensible para usuarios comunes.",
+   "tipo": "Análisis",
+   "tiempo": "2 semanas a 2 meses",
+   "horas": 32,
+   "etiquetas": [
+    "Privacidad",
+    "Seguridad digital",
+    "Análisis de información"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: puedes revisar políticas de privacidad, condiciones de uso, permisos declarados y documentación oficial disponible públicamente.",
+   "prog": "sin",
+   "progTexto": "Sin programación: se puede hacer completo con documentos y hoja de cálculo.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ciberseguridad",
+    "Ingeniería de Software",
+    "Derecho",
+    "Comunicaciones",
+    "Administración",
+    "Ciencia de Datos",
+    "Economía",
+    "Diseño UX"
+   ],
+   "problema": [
+    "Cada día millones de personas instalan aplicaciones en sus teléfonos, computadoras y otros dispositivos. Durante ese proceso suelen aceptar permisos, condiciones de uso y políticas de privacidad sin leerlas completamente o sin comprender qué significan muchos de sus términos.",
+    "Aunque las empresas suelen publicar información sobre los datos que recopilan y cómo los utilizan, estos documentos pueden resultar largos, técnicos o difíciles de interpretar para alguien sin conocimientos especializados. Como consecuencia, muchas personas desconocen qué información comparten, durante cuánto tiempo podría conservarse o con qué finalidades se utiliza.",
+    "Comprender cómo una aplicación describe sus prácticas de privacidad permite desarrollar una visión más crítica sobre el uso de los datos personales y ayuda a tomar decisiones mejor informadas antes de utilizar un servicio digital."
+   ],
+   "desarrollar": [
+    "Selecciona una aplicación conocida y revisa la información pública disponible relacionada con privacidad y uso de datos.",
+    "Por ejemplo:",
+    {
+     "lista": [
+      "Política de privacidad.",
+      "Condiciones de uso.",
+      "Permisos solicitados.",
+      "Información mostrada en tiendas de aplicaciones.",
+      "Documentación oficial disponible."
+     ]
+    },
+    "Organiza los hallazgos en una ficha o informe visual que explique qué categorías de datos se mencionan, cuáles son las finalidades declaradas y qué aspectos podrían resultar difíciles de comprender para un usuario promedio."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar aplicaciones similares",
+     "aporta": "analiza cómo dos servicios que ofrecen funciones parecidas explican el uso de los datos de sus usuarios."
+    },
+    {
+     "titulo": "Traducir información compleja",
+     "aporta": "transforma documentos extensos en resúmenes visuales fáciles de comprender."
+    },
+    {
+     "titulo": "Analizar permisos",
+     "aporta": "compara los permisos solicitados por una aplicación con las funciones que ofrece para entender por qué podrían ser necesarios."
+    }
+   ],
+   "objetivos": [
+    "Localizar y revisar documentación pública relacionada con privacidad.",
+    "Identificar categorías de datos mencionadas por la aplicación.",
+    "Analizar cómo se comunican las finalidades del uso de esos datos.",
+    "Organizar la información de forma clara y accesible.",
+    "Elaborar conclusiones basadas en información verificable."
+   ],
+   "habilidades": [
+    "Lectura crítica.",
+    "Privacidad digital.",
+    "Organización de información.",
+    "Análisis documental.",
+    "Comunicación visual.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Navegador web.",
+    "Documentación oficial.",
+    "Hoja de cálculo.",
+    "Herramientas de diseño o presentaciones.",
+    "Aplicaciones para elaborar infografías."
+   ],
+   "lineamientos": [
+    "Basa todas las conclusiones en información verificable procedente de fuentes oficiales o documentación pública. No afirmes que una aplicación recopila información que no esté documentada o respaldada por las fuentes consultadas.",
+    "No intentes interceptar comunicaciones, analizar tráfico privado ni acceder a información que no sea pública. El objetivo del proyecto es comprender y comunicar mejor la información que los propios proveedores del servicio ponen a disposición de los usuarios.",
+    "Diferencia claramente entre hechos documentados, interpretaciones personales y aspectos que no puedan determinarse a partir de la información disponible."
+   ],
+   "otroSector": "La misma metodología puede aplicarse al análisis de plataformas educativas, servicios financieros, dispositivos inteligentes, redes sociales, sitios de comercio electrónico, aplicaciones de salud o herramientas de productividad."
+  },
+  {
+   "id": "como-explica-sus-decisiones-una-inteligencia-artificial-sencilla",
+   "area": "tecnologia",
+   "areas2": [
+    "ciencias"
+   ],
+   "titulo": "¿Cómo explica sus decisiones una inteligencia artificial sencilla?",
+   "resumen": "Entrena un modelo sencillo que se pueda explicar y comprueba si las razones que da son coherentes con lo que ocurre en los datos.",
+   "tipo": "Investigación",
+   "tiempo": "1 a 2 meses",
+   "horas": 39,
+   "etiquetas": [
+    "Inteligencia artificial",
+    "Explicabilidad",
+    "Ciencia de datos"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: usa un conjunto de datos abierto y conocido para un problema de clasificación, como el de una encuesta o el de características de plantas.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "con una IA como apoyo para escribir el código del modelo, o en equipo con alguien de Sistemas o Ciencia de Datos. Lo importante es que entiendas por qué el modelo decide lo que decide y lo puedas explicar.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Inteligencia Artificial",
+    "Ciencia de Datos",
+    "Estadística",
+    "Matemática",
+    "Derecho",
+    "Computación e Informática"
+   ],
+   "problema": [
+    "Cuando un sistema automático decide algo, como aprobar una solicitud o clasificar un reclamo, a menudo nadie sabe explicar por qué. Cuanto más complejo es el modelo, más difícil se hace dar una razón que una persona pueda revisar.",
+    "Sin una explicación, no se pueden detectar errores ni reclamos injustos, y las personas afectadas no tienen cómo cuestionar la decisión."
+   ],
+   "desarrollar": [
+    "Elige un conjunto de datos abierto y entrena un modelo sencillo, como un árbol de decisión, que se pueda leer como una serie de preguntas. Muestra qué variables pesan más y cómo se llega a una respuesta en tres o cuatro casos concretos.",
+    "Compara esa explicación con tu conocimiento del problema: ¿tiene sentido? ¿Hay alguna razón sospechosa? El resultado puede ser un informe con los casos explicados paso a paso y un resumen de lo que se aprendió sobre los límites de la explicación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Dos modelos",
+     "aporta": "compara un modelo fácil de explicar con otro más preciso y pregúntate cuánto vale la precisión si no se puede explicar."
+    },
+    {
+     "titulo": "Caso de error",
+     "aporta": "busca un caso en que el modelo se equivoca y explica por qué."
+    },
+    {
+     "titulo": "Una explicación para el usuario",
+     "aporta": "redacta cómo le contarías la decisión a la persona afectada con palabras sencillas."
+    }
+   ],
+   "objetivos": [
+    "Entrenar un modelo sencillo y comprender su funcionamiento.",
+    "Identificar las variables que más influyen en sus decisiones.",
+    "Explicar casos individuales con un lenguaje claro.",
+    "Contrastar la explicación con el conocimiento del problema.",
+    "Reconocer los límites de explicar modelos más complejos."
+   ],
+   "habilidades": [
+    "Aprendizaje automático básico.",
+    "Programación en un lenguaje de datos.",
+    "Análisis e interpretación de resultados.",
+    "Pensamiento crítico sobre la IA.",
+    "Comunicación técnica."
+   ],
+   "herramientas": [
+    "Lenguaje de programación para datos y sus bibliotecas de análisis.",
+    "Cuaderno interactivo.",
+    "Conjuntos de datos públicos."
+   ],
+   "lineamientos": [
+    "No afirmes que una IA «razona»: describe qué variables usa y qué reglas se pueden leer en el modelo.",
+    "Cuidados: usa datos públicos que no identifiquen a personas, y evita casos sensibles como salud o antecedentes personales."
+   ],
+   "otroSector": "La misma pregunta, «¿por qué decidió esto?», se aplica a decisiones sobre créditos, becas, selección de personal, diagnóstico de fallas y recomendaciones de contenido."
+  },
+  {
+   "id": "que-pasa-cuando-los-datos-crecen-diez-veces",
+   "area": "tecnologia",
+   "areas2": [
+    "ciencias"
+   ],
+   "titulo": "¿Qué pasa cuando los datos crecen diez veces?",
+   "resumen": "Mide cómo cambia el tiempo de una búsqueda, un ordenamiento o una consulta cuando la cantidad de datos se multiplica.",
+   "tipo": "Investigación",
+   "tiempo": "1 a 2 meses",
+   "horas": 39,
+   "etiquetas": [
+    "Escalabilidad",
+    "Bases de datos",
+    "Algoritmos"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: genera tablas con datos inventados, cada vez más grandes, para probar.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Ciencia de Datos",
+    "Matemática",
+    "Estadística",
+    "Análisis de Sistemas"
+   ],
+   "problema": [
+    "Un programa o una base de datos puede funcionar perfecto con cien registros y volverse inusable con un millón. Casi siempre se descubre cuando el sistema ya está en uso y los clientes se quejan.",
+    "Lo difícil es que el tiempo no siempre crece en proporción: a veces se multiplica por diez y a veces por cien, según cómo esté hecho."
+   ],
+   "desarrollar": [
+    "Genera tablas de datos ficticios de 1000, 10 000, 100 000 y un millón de filas. Mide cuánto tardan tres operaciones comunes, como buscar un dato, ordenar y contar repeticiones, con y sin una estructura que ayude, como un índice.",
+    "Grafica cómo crece el tiempo con el tamaño y compara las operaciones. El resultado puede ser un informe con gráficos y una recomendación sobre cuándo vale la pena agregar un índice o cambiar de estrategia."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un algoritmo mejor",
+     "aporta": "reemplaza una búsqueda lenta por otra más inteligente y mide cuánto mejora a medida que crecen los datos."
+    },
+    {
+     "titulo": "Lo que cuesta el índice",
+     "aporta": "mide cuánto espacio y cuánto tiempo de escritura agrega cada mejora."
+    },
+    {
+     "titulo": "El punto de quiebre",
+     "aporta": "estima cuántos datos aguantaría tu solución antes de dejar de ser aceptable."
+    }
+   ],
+   "objetivos": [
+    "Generar conjuntos de datos de tamaño creciente.",
+    "Medir tiempos de operaciones comunes.",
+    "Comparar el crecimiento del tiempo con y sin mejoras.",
+    "Interpretar los resultados con gráficos.",
+    "Recomendar cuándo conviene optimizar."
+   ],
+   "habilidades": [
+    "Bases de datos e índices.",
+    "Complejidad de algoritmos.",
+    "Programación en un lenguaje de datos.",
+    "Medición y análisis de resultados.",
+    "Comunicación técnica."
+   ],
+   "herramientas": [
+    "Un gestor de bases de datos gratuito.",
+    "Lenguaje de programación con herramientas de medición.",
+    "Hoja de cálculo para graficar."
+   ],
+   "lineamientos": [
+    "Repite cada medición varias veces y usa el promedio: un solo resultado puede engañar.",
+    "Documenta tu computadora y tus supuestos: los tiempos cambian con el equipo."
+   ],
+   "otroSector": "La misma pregunta se aplica a un almacén que crece, a una lista de clientes que se multiplica o a un archivo de documentos que pasa de cien a diez mil."
+  },
+  {
+   "id": "de-la-foto-de-una-factura-al-dato-en-una-tabla",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "De la foto de una factura al dato en una tabla",
+   "resumen": "Diseña un proceso que lea la foto de una factura, extraiga los datos importantes y los pase a una tabla, midiendo cuántos errores comete.",
+   "tipo": "Prototipo",
+   "tiempo": "1 a 2 meses",
+   "horas": 39,
+   "etiquetas": [
+    "Automatización",
+    "Reconocimiento de texto",
+    "Documentos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: inventa o diseña 30 a 50 facturas o recibos de práctica; no uses documentos reales de nadie.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Contabilidad",
+    "Administración",
+    "Computación e Informática",
+    "Archivística",
+    "Secretariado",
+    "Auditoría"
+   ],
+   "problema": [
+    "En muchos negocios las facturas, boletas y recibos se pasan a mano a una hoja de cálculo. Es lento y se cometen errores: un monto con un dígito cambiado o una fecha mal escrita pueden descuadrar un mes completo.",
+    "Existen herramientas que leen texto desde una imagen, pero sus resultados varían según la calidad de la foto, la letra y el formato del documento, y casi nunca se mide cuánto fallan."
+   ],
+   "desarrollar": [
+    "Prepara 30 a 50 facturas ficticias con distintos formatos y calidades de foto, y registra a mano los datos correctos: fecha, proveedor, monto y detalle. Usa una herramienta de lectura de texto para extraerlos y compara con lo correcto.",
+    "Mide qué porcentaje se leyó bien en cada campo y qué tipo de errores aparecen. El resultado puede ser un proceso que lleve los datos a una tabla, con una revisión humana de los casos dudosos y un informe de precisión."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Detectar lo dudoso",
+     "aporta": "agrega reglas que marquen para revisión los montos raros o los campos vacíos."
+    },
+    {
+     "titulo": "Mejorar la foto",
+     "aporta": "prueba qué cambia con una foto mejor iluminada o recortada antes de leerla."
+    },
+    {
+     "titulo": "Distintos formatos",
+     "aporta": "prueba con facturas de varios proveedores y estudia cómo adaptar el proceso."
+    }
+   ],
+   "objetivos": [
+    "Preparar un conjunto de facturas ficticias con respuesta conocida.",
+    "Aplicar una herramienta de lectura de texto.",
+    "Medir precisión por campo.",
+    "Diseñar una revisión humana de los casos dudosos.",
+    "Cargar los datos a una tabla ordenada."
+   ],
+   "habilidades": [
+    "Reconocimiento óptico de texto.",
+    "Programación básica o automatización.",
+    "Evaluación de precisión.",
+    "Diseño de procesos.",
+    "Conocimientos contables básicos."
+   ],
+   "herramientas": [
+    "Herramientas de lectura de texto en imágenes.",
+    "Hoja de cálculo.",
+    "Lenguaje de programación o herramientas de automatización."
+   ],
+   "lineamientos": [
+    "Cuidados: usa solo facturas ficticias o propias. Las facturas reales de un negocio o de otras personas contienen datos que no debes subir a servicios externos.",
+    "Mantén siempre una revisión humana antes de usar los datos para algo importante."
+   ],
+   "otroSector": "El mismo proceso sirve para leer recetas médicas de práctica, formularios de una encuesta en papel, documentos de un archivo histórico o recibos de un negocio familiar."
+  },
+  {
+   "id": "del-excel-que-todos-usan-al-sistema-que-nadie-rompe",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "Del Excel que todos usan al sistema que nadie rompe",
+   "resumen": "Toma una hoja de cálculo que ya se volvió inmanejable y conviértela en un sistema más ordenado y seguro, paso a paso.",
+   "tipo": "Prototipo",
+   "tiempo": "1 a 2 meses",
+   "horas": 39,
+   "etiquetas": [
+    "Hojas de cálculo",
+    "Bases de datos",
+    "Procesos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: crea una hoja con datos inventados de un negocio pequeño.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Contabilidad",
+    "Administración",
+    "Ingeniería Industrial",
+    "Computación e Informática",
+    "Secretariado"
+   ],
+   "problema": [
+    "En casi todos los negocios hay una hoja de cálculo que «todos usan». Con los meses crece, se llena de fórmulas frágiles, de datos repetidos y de versiones, y basta que alguien borre una columna para que todo deje de funcionar.",
+    "Pasar a un sistema real da miedo por el costo y la complejidad, y se posterga hasta que ocurre un error caro."
+   ],
+   "desarrollar": [
+    "Elige o crea una hoja de un negocio ficticio con 500 a 1000 filas y varios problemas: datos repetidos, fórmulas copiadas y campos libres. Haz una lista de sus riesgos y una de lo que el negocio necesita realmente hacer con ella.",
+    "Reorganiza los datos en tablas separadas, protege las fórmulas y crea un formulario de ingreso. Compara las dos versiones según los errores que se evitan. El resultado puede ser la hoja mejorada y una guía de migración."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Una base de datos",
+     "aporta": "pasa los datos a una base real y compara qué se gana y qué se complica."
+    },
+    {
+     "titulo": "Roles y permisos",
+     "aporta": "define quién puede editar y quién solo mirar, y cómo se registra cada cambio."
+    },
+    {
+     "titulo": "Copias de respaldo",
+     "aporta": "agrega una rutina automática de copia y pruébala recuperando un archivo."
+    }
+   ],
+   "objetivos": [
+    "Diagnosticar los riesgos de una hoja de cálculo.",
+    "Reorganizar los datos para evitar repeticiones.",
+    "Proteger fórmulas y limitar la edición.",
+    "Comparar la versión antigua y la nueva.",
+    "Redactar una guía de migración."
+   ],
+   "habilidades": [
+    "Hojas de cálculo avanzadas.",
+    "Modelado de datos básico.",
+    "Gestión de cambios.",
+    "Análisis de riesgos.",
+    "Redacción de guías."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Formularios en línea.",
+    "Opcionalmente un gestor de bases de datos."
+   ],
+   "lineamientos": [
+    "Trabaja con datos ficticios y haz una copia antes de cada cambio grande.",
+    "Si lo pruebas con un negocio real, pide permiso y explica los riesgos de cualquier cambio."
+   ],
+   "otroSector": "La misma migración sirve para listas de socios, inventarios de un taller, controles de asistencia, pedidos de un restaurante y hojas de pagos de una asociación."
+  },
+  {
+   "id": "un-simulador-de-filas-de-espera",
+   "area": "tecnologia",
+   "areas2": [
+    "industria"
+   ],
+   "titulo": "Un simulador de filas de espera",
+   "resumen": "Explora cómo pequeños cambios en la organización de un servicio pueden afectar significativamente el tiempo que las personas esperan para ser atendidas. Descubre cómo modelar llegadas, atenciones y recursos disponibles para analizar distintos escenarios sin necesidad de intervenir en un entorno real.",
+   "tipo": "Simulación",
+   "tiempo": "2 semanas a 3 meses",
+   "horas": 45,
+   "etiquetas": [
+    "Modelamiento",
+    "Procesos",
+    "Simulación"
+   ],
+   "intencion": [
+    "crear",
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: puedes hacerlo sin pedir permiso a nadie.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Ingeniería de Software",
+    "Matemática",
+    "Estadística",
+    "Economía",
+    "Investigación Operativa",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Las filas de espera forman parte de muchas actividades cotidianas. Aparecen en cafeterías, bancos, supermercados, hospitales, centros de atención, aeropuertos y numerosos servicios donde varias personas necesitan acceder a recursos limitados.",
+    "Cuando una fila se vuelve demasiado larga, suele asumirse que el problema es la falta de personal o la alta demanda. Sin embargo, la situación puede ser mucho más compleja. Factores como la organización de las filas, la duración promedio de cada atención, la variabilidad en la llegada de personas o la distribución de recursos pueden influir notablemente en los tiempos de espera.",
+    "Tomar decisiones sin comprender estos factores puede generar inversiones innecesarias o soluciones que no resuelven el problema real. La simulación permite experimentar con distintos escenarios antes de aplicar cambios en la práctica."
+   ],
+   "desarrollar": [
+    "Construye un simulador sencillo donde las personas lleguen a una fila, esperen su turno y sean atendidas por una o varias ventanillas.",
+    "El modelo puede permitir modificar variables como:",
+    {
+     "lista": [
+      "Número de personas que llegan.",
+      "Tiempo promedio de atención.",
+      "Cantidad de ventanillas disponibles.",
+      "Horario de funcionamiento.",
+      "Organización de las filas."
+     ]
+    },
+    "A partir de estos parámetros, analiza indicadores como tiempo promedio de espera, tamaño de las filas o utilización de los recursos disponibles."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar organizaciones",
+     "aporta": "analiza las diferencias entre una fila única compartida y varias filas independientes."
+    },
+    {
+     "titulo": "Simular horas punta",
+     "aporta": "incorpora periodos donde la llegada de personas aumenta considerablemente."
+    },
+    {
+     "titulo": "Visualizar el comportamiento",
+     "aporta": "crea gráficos o animaciones que muestren cómo crece y disminuye la fila a lo largo del tiempo."
+    }
+   ],
+   "objetivos": [
+    "Comprender los elementos básicos de un sistema de espera.",
+    "Definir reglas para las llegadas y atenciones.",
+    "Construir un modelo de simulación funcional.",
+    "Comparar distintos escenarios y configuraciones.",
+    "Interpretar los resultados obtenidos y justificar conclusiones."
+   ],
+   "habilidades": [
+    "Modelamiento de sistemas.",
+    "Pensamiento lógico.",
+    "Simulación de procesos.",
+    "Estadística básica.",
+    "Análisis de datos.",
+    "Programación o modelamiento con hojas de cálculo."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Lenguaje de programación (opcional).",
+    "Herramientas de visualización.",
+    "Diagramas de flujo.",
+    "Software de simulación (opcional)."
+   ],
+   "lineamientos": [
+    "Utiliza parámetros ficticios o claramente identificados como estimaciones. Documenta las reglas de funcionamiento del modelo y explica las simplificaciones realizadas.",
+    "Recuerda que una simulación representa un escenario controlado y no necesariamente reproduce todas las condiciones de un sistema real. Las conclusiones deben interpretarse dentro de los supuestos definidos para el modelo."
+   ],
+   "otroSector": "La misma metodología puede aplicarse para estudiar la atención en hospitales, cajas de supermercados, restaurantes, bancos, procesos industriales, sistemas de transporte, centros logísticos o plataformas digitales que gestionan solicitudes de usuarios."
+  },
+  {
+   "id": "tareas-de-oficina-que-se-hacen-solas",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "Tareas de oficina que se hacen solas",
+   "resumen": "Descubre cómo identificar actividades repetitivas que consumen tiempo y diseñar una solución que ayude a realizarlas de forma más rápida, organizada y consistente.",
+   "tipo": "Prototipo",
+   "tiempo": "1 a 3 meses",
+   "horas": 52,
+   "etiquetas": [
+    "Automatización",
+    "Productividad",
+    "Procesos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o propios: puedes trabajar con procesos simulados o inspirarte en tareas reales de una oficina, negocio familiar, asociación o emprendimiento.",
+   "prog": "opcional",
+   "progTexto": "Programación opcional: puedes empezar sin programar y sumarla si quieres ir más lejos.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Administración",
+    "Ciencia de Datos",
+    "Contabilidad",
+    "Economía",
+    "Logística",
+    "Emprendimiento"
+   ],
+   "problema": [
+    "En muchas oficinas y pequeños negocios existen tareas que se repiten todos los días: registrar información, copiar datos entre documentos, enviar mensajes similares, actualizar listas, generar reportes o verificar estados de pedidos.",
+    "Aunque cada acción individual puede tomar apenas unos minutos, la suma de estas actividades representa una cantidad considerable de tiempo a lo largo de semanas y meses.",
+    "Además, los procesos manuales suelen generar errores cuando una persona olvida un paso, transcribe mal un dato o utiliza una versión desactualizada de un documento. A medida que aumenta el trabajo, estos pequeños errores pueden multiplicarse y afectar la calidad del servicio o la eficiencia del equipo.",
+    "La automatización no busca reemplazar a las personas, sino permitir que dediquen más tiempo a actividades que requieren criterio, comunicación o creatividad."
+   ],
+   "desarrollar": [
+    "Selecciona un proceso sencillo compuesto por varias tareas repetitivas.",
+    "Por ejemplo:",
+    {
+     "lista": [
+      "Registrar pedidos recibidos por mensaje.",
+      "Generar reportes semanales.",
+      "Actualizar inventarios.",
+      "Organizar solicitudes de clientes.",
+      "Gestionar inscripciones a una actividad."
+     ]
+    },
+    "A partir de ello, diseña una solución que reduzca pasos manuales mediante formularios, hojas de cálculo inteligentes, plantillas automatizadas o una aplicación sencilla."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un registro de lo que ahorraste",
+     "aporta": "mide cuántos minutos por semana libera cada tarea automatizada y cuáles valen la pena."
+    },
+    {
+     "titulo": "Cuando la tarea cambia",
+     "aporta": "prueba qué pasa si cambia el formato de los archivos o de los correos y haz que la automatización avise en lugar de fallar en silencio."
+    },
+    {
+     "titulo": "Una biblioteca de tareas",
+     "aporta": "reúne cinco automatizaciones con instrucciones para que otra persona de la oficina las use."
+    }
+   ],
+   "objetivos": [
+    "Identificar actividades que consumen tiempo de forma repetitiva.",
+    "Diagramar el proceso actual paso a paso.",
+    "Detectar puntos donde se producen errores o retrasos.",
+    "Diseñar una solución de automatización adecuada.",
+    "Evaluar cuánto tiempo podría ahorrarse con la mejora propuesta."
+   ],
+   "habilidades": [
+    "Análisis de procesos.",
+    "Automatización básica.",
+    "Diseño de flujos de trabajo.",
+    "Organización de información.",
+    "Resolución de problemas.",
+    "Pensamiento sistémico."
+   ],
+   "herramientas": [
+    "Hojas de cálculo.",
+    "Formularios digitales.",
+    "Herramientas de automatización.",
+    "Bases de datos sencillas.",
+    "Aplicaciones web o móviles si deseas ampliar el proyecto.",
+    "Diagramas de flujo."
+   ],
+   "lineamientos": [
+    "Comienza con un proceso pequeño y bien definido. Una automatización simple que funcione correctamente suele aportar más valor que una solución compleja difícil de mantener.",
+    "Documenta cómo se realizaba el proceso antes y cómo cambia después de la mejora. Si utilizas información real, evita almacenar datos sensibles innecesarios.",
+    "Recuerda que la meta principal es simplificar el trabajo y reducir errores, no añadir complejidad al proceso."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a clínicas, colegios, organizaciones sociales, bibliotecas, talleres, comercios, proyectos de investigación o cualquier entorno donde existan actividades repetitivas."
+  },
+  {
+   "id": "como-se-entera-un-equipo-de-que-algo-fallo-antes-que-sus-usuario",
+   "area": "tecnologia",
+   "areas2": [
+    "industria"
+   ],
+   "titulo": "¿Cómo se entera un equipo de que algo falló antes que sus usuarios?",
+   "resumen": "Diseña un sistema sencillo que vigile un servicio, detecte cuando deja de responder y avise a tiempo a quien debe actuar.",
+   "tipo": "Prototipo",
+   "tiempo": "1 a 3 meses",
+   "horas": 52,
+   "etiquetas": [
+    "Monitoreo",
+    "Alertas",
+    "Sistemas"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes vigilar una página o servicio tuyo, o simular registros de un servicio con datos inventados.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ciberseguridad",
+    "Telecomunicaciones",
+    "Ingeniería Industrial",
+    "Computación e Informática",
+    "Redes y Comunicaciones"
+   ],
+   "problema": [
+    "Muchos servicios se caen y quienes los mantienen se enteran porque los usuarios reclaman. Para entonces el daño ya está hecho y no hay forma de saber cuánto duró la falla.",
+    "Vigilar un servicio exige decidir qué medir, cada cuánto y cuándo avisar. Si se avisa por todo, las alertas se ignoran; si se avisa de menos, la falla pasa desapercibida."
+   ],
+   "desarrollar": [
+    "Elige una página o servicio propio, o inventa uno, y define tres indicadores: si responde, cuánto tarda y cuántos errores devuelve. Registra esas medidas a intervalos regulares y define las reglas de aviso: cuándo es una alerta y cuándo solo un dato.",
+    "Prueba el sistema provocando una falla controlada y revisa si el aviso llegó a tiempo y con información útil. El resultado puede ser un tablero sencillo con el estado del servicio y un historial de alertas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Varias piezas",
+     "aporta": "vigila un conjunto de servicios y muestra cuál es la primera pieza en fallar."
+    },
+    {
+     "titulo": "Sensores y dispositivos",
+     "aporta": "extiende el sistema a equipos conectados, como una red de sensores, y estudia qué cambia cuando los datos llegan de muy lejos."
+    },
+    {
+     "titulo": "Cansancio de alertas",
+     "aporta": "mide cuántos avisos son útiles y ajusta las reglas para que sean pocos y valiosos."
+    }
+   ],
+   "objetivos": [
+    "Definir indicadores que describan la salud de un servicio.",
+    "Registrar medidas a intervalos regulares.",
+    "Diseñar reglas de alerta que eviten falsas alarmas.",
+    "Probar el sistema con una falla controlada.",
+    "Mostrar el estado de forma clara en un tablero."
+   ],
+   "habilidades": [
+    "Monitoreo de sistemas.",
+    "Programación básica de scripts.",
+    "Análisis de series de tiempo.",
+    "Diseño de alertas útiles.",
+    "Visualización de datos."
+   ],
+   "herramientas": [
+    "Lenguaje de programación con bibliotecas de red.",
+    "Hoja de cálculo o base de datos sencilla.",
+    "Herramienta de tableros."
+   ],
+   "lineamientos": [
+    "Cuidados: vigila solo servicios tuyos o con permiso explícito de quien los administre. Enviar muchas solicitudes a un servicio ajeno puede dañarlo y está mal visto.",
+    "Empieza con pocos indicadores y pocas alertas, y amplía solo cuando lo básico funcione."
+   ],
+   "otroSector": "La misma lógica sirve para vigilar una línea de producción, una cadena de frío, la asistencia a un taller o cualquier proceso que deba avisar cuando se aleje de lo normal."
+  },
+  {
+   "id": "clasificar-reclamos-lo-hace-mejor-una-persona-unas-reglas-o-una",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios",
+    "derecho"
+   ],
+   "titulo": "Clasificar reclamos: ¿lo hace mejor una persona, unas reglas o una IA?",
+   "resumen": "Compara tres formas de clasificar reclamos o solicitudes: una persona, reglas escritas a mano y un modelo de IA, y descubre cuándo conviene cada una.",
+   "tipo": "Prototipo",
+   "tiempo": "1 a 3 meses",
+   "horas": 52,
+   "etiquetas": [
+    "Inteligencia artificial",
+    "Clasificación",
+    "Atención al cliente"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: crea 100 a 200 reclamos o solicitudes inventados, con la categoría correcta anotada.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Inteligencia Artificial",
+    "Ciencia de Datos",
+    "Administración",
+    "Derecho",
+    "Computación e Informática",
+    "Atención al Cliente"
+   ],
+   "problema": [
+    "Las organizaciones reciben reclamos y solicitudes de todo tipo y alguien debe decidir a qué área corresponde cada uno. Cuando llegan cientos, esa tarea es lenta, y los errores hacen que un reclamo dé vueltas días antes de llegar a quien puede resolverlo.",
+    "Entre las soluciones está usar reglas, como «si dice factura va a Contabilidad», o un modelo de IA. Casi nadie las compara con datos."
+   ],
+   "desarrollar": [
+    "Redacta entre 100 y 200 reclamos ficticios de cuatro o cinco categorías, con la clasificación correcta. Pide a dos personas que los clasifiquen, escribe unas reglas basadas en palabras clave y prueba un modelo sencillo de IA.",
+    "Mide el acierto de cada método, el tiempo que toma y qué tipo de errores comete. El resultado puede ser un informe con una recomendación sobre cuándo conviene cada enfoque."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Casos difíciles",
+     "aporta": "agrega reclamos ambiguos y observa cuál método se equivoca más."
+    },
+    {
+     "titulo": "Una combinación",
+     "aporta": "usa reglas para lo evidente, un modelo para lo demás y una persona para lo dudoso."
+    },
+    {
+     "titulo": "Un costo del error",
+     "aporta": "mide cuánto cuesta equivocarse en cada categoría y ajusta el sistema."
+    }
+   ],
+   "objetivos": [
+    "Preparar un conjunto de ejemplos con respuesta conocida.",
+    "Implementar tres formas de clasificar.",
+    "Medir acierto, tiempo y tipos de error.",
+    "Comparar los métodos con criterios claros.",
+    "Recomendar cuándo usar cada uno."
+   ],
+   "habilidades": [
+    "Clasificación de textos.",
+    "Aprendizaje automático básico.",
+    "Diseño de reglas.",
+    "Evaluación de resultados.",
+    "Comunicación de recomendaciones."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Lenguaje de programación con bibliotecas de texto, o una herramienta de IA para clasificación.",
+    "Documento para el informe."
+   ],
+   "lineamientos": [
+    "Cuidados: trabaja solo con reclamos ficticios. Los reclamos reales contienen datos personales y requieren permiso de la organización.",
+    "Una persona debe poder revisar y corregir cualquier decisión automática, sobre todo cuando afecta derechos de alguien."
+   ],
+   "otroSector": "El mismo estudio sirve para clasificar solicitudes de soporte técnico, correos de atención al cliente, quejas ciudadanas o comentarios de un servicio."
+  },
+  {
+   "id": "dos-formas-de-construir-lo-mismo-cual-conviene-y-por-que",
+   "area": "tecnologia",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "Dos formas de construir lo mismo: ¿cuál conviene y por qué?",
+   "resumen": "Compara dos formas de construir el mismo sistema y descubre cuándo conviene una u otra según el tamaño, el costo y el equipo.",
+   "tipo": "Investigación",
+   "tiempo": "1 a 3 meses",
+   "horas": 52,
+   "etiquetas": [
+    "Arquitectura de software",
+    "Comparación",
+    "Diseño de sistemas"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: define un problema inventado, como una tienda de comida en línea, con requisitos y números supuestos.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Computación e Informática",
+    "Análisis de Sistemas",
+    "Administración",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Un mismo sistema se puede construir de maneras muy distintas: todo junto o dividido en piezas, con un servidor propio o con servicios ya hechos. Cada opción tiene ventajas, y la elección suele hacerse por moda.",
+    "Pocas veces se comparan con criterios concretos como costo, complejidad, rapidez de cambio y riesgo, y por eso hay proyectos pequeños construidos con una complejidad que no necesitaban."
+   ],
+   "desarrollar": [
+    "Plantea un problema inventado con requisitos claros y describe dos arquitecturas posibles. Define diez criterios de comparación y puntúa cada opción con justificación.",
+    "Construye un prototipo mínimo de cada una, o al menos el diseño detallado de sus partes clave, y compara lo que cuesta construirlas y cambiarlas. El resultado puede ser un informe con una recomendación y sus condiciones."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Cuando el sistema crece",
+     "aporta": "estima qué pasa con cada opción si los usuarios se multiplican por diez."
+    },
+    {
+     "titulo": "El factor humano",
+     "aporta": "incluye el tamaño y la experiencia del equipo como criterio y mira cómo cambia la decisión."
+    },
+    {
+     "titulo": "Un caso real publicado",
+     "aporta": "compara tu análisis con la explicación que una empresa dio sobre su cambio de arquitectura."
+    }
+   ],
+   "objetivos": [
+    "Describir dos arquitecturas para un mismo problema.",
+    "Definir criterios de comparación justificados.",
+    "Evaluar cada opción de forma sistemática.",
+    "Construir o diseñar prototipos mínimos.",
+    "Recomendar con condiciones claras."
+   ],
+   "habilidades": [
+    "Arquitectura de software.",
+    "Análisis de requisitos.",
+    "Programación básica.",
+    "Evaluación comparativa.",
+    "Comunicación técnica."
+   ],
+   "herramientas": [
+    "Lenguaje de programación y un marco web sencillo.",
+    "Herramienta de diagramas.",
+    "Documento para el informe."
+   ],
+   "lineamientos": [
+    "Admite que no hay una opción «mejor» en general: la conclusión depende de los supuestos que definiste.",
+    "Si usas ejemplos de empresas, cita fuentes públicas y no atribuyas decisiones que no estén publicadas."
+   ],
+   "otroSector": "La misma comparación sirve para decidir entre contratar o fabricar, alquilar o comprar, o un proceso manual frente a uno automatizado."
+  },
+  {
+   "id": "un-sistema-de-recomendacion-como-saber-si-recomienda-bien",
+   "area": "tecnologia",
+   "areas2": [
+    "sociedad",
+    "arte"
+   ],
+   "titulo": "Un sistema de recomendación: ¿cómo saber si recomienda bien?",
+   "resumen": "Construye un recomendador sencillo y, sobre todo, aprende a evaluar si sus recomendaciones son buenas, variadas y justas.",
+   "tipo": "Prototipo",
+   "tiempo": "1 a 3 meses",
+   "horas": 52,
+   "etiquetas": [
+    "Inteligencia artificial",
+    "Recomendación",
+    "Evaluación"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos o ficticios: usa un conjunto abierto de valoraciones de películas, libros o música, o inventa uno pequeño.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Inteligencia Artificial",
+    "Ciencia de Datos",
+    "Estadística",
+    "Marketing",
+    "Comunicaciones",
+    "Computación e Informática"
+   ],
+   "problema": [
+    "Casi todas las plataformas recomiendan algo: películas, productos, canciones, cursos. Pero pocas personas se preguntan si la recomendación es buena para ellas o solo les muestra más de lo mismo.",
+    "Construir un recomendador es relativamente fácil. Lo difícil es medir si funciona, si cae en repetir siempre lo popular y si trata bien a los gustos poco comunes."
+   ],
+   "desarrollar": [
+    "Elige un conjunto abierto de valoraciones y construye un recomendador simple, por ejemplo uno que sugiera lo que les gustó a personas parecidas. Separa una parte de los datos para comprobar si acierta en lo que no vio.",
+    "Evalúa tres cosas: cuánto acierta, qué tan variadas son las sugerencias y qué pasa con los gustos poco comunes. El resultado puede ser un informe con los números y algunos ejemplos concretos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Siempre lo mismo",
+     "aporta": "mide cuánto se repiten las mismas obras populares en las recomendaciones."
+    },
+    {
+     "titulo": "Un arranque difícil",
+     "aporta": "estudia qué recomendar a un usuario nuevo sin historial."
+    },
+    {
+     "titulo": "Explicar la sugerencia",
+     "aporta": "agrega una frase que diga por qué se recomienda cada obra y pregunta a otras personas si les resulta útil."
+    }
+   ],
+   "objetivos": [
+    "Construir un recomendador sencillo.",
+    "Separar datos de entrenamiento y de prueba.",
+    "Medir acierto y variedad.",
+    "Analizar el trato a gustos poco comunes.",
+    "Reportar las limitaciones con claridad."
+   ],
+   "habilidades": [
+    "Aprendizaje automático básico.",
+    "Programación en un lenguaje de datos.",
+    "Evaluación de modelos.",
+    "Análisis crítico de resultados.",
+    "Comunicación técnica."
+   ],
+   "herramientas": [
+    "Lenguaje de programación para datos.",
+    "Cuaderno interactivo.",
+    "Conjuntos de datos públicos."
+   ],
+   "lineamientos": [
+    "Usa datos públicos o inventados y no mezcles información de personas reales identificables.",
+    "No presentes el recomendador como una verdad: explica a qué personas y gustos sirve y a cuáles no."
+   ],
+   "otroSector": "La misma estructura se usa para recomendar cursos, libros de una biblioteca, productos de una tienda, rutas de transporte o actividades de un club."
+  },
+  {
+   "id": "un-asistente-que-responde-preguntas-sobre-tus-propios-documentos",
+   "area": "tecnologia",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "Un asistente que responde preguntas sobre tus propios documentos",
+   "resumen": "Construye un asistente que responda preguntas usando solo un conjunto de documentos que tú le des, y compruébalo con preguntas que sabes responder.",
+   "tipo": "Prototipo",
+   "tiempo": "1 a 3 meses",
+   "horas": 52,
+   "etiquetas": [
+    "Inteligencia artificial",
+    "Documentos",
+    "Búsqueda de información"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o públicos: usa un conjunto pequeño de documentos tuyos o de acceso libre, como manuales, reglamentos o apuntes.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Inteligencia Artificial",
+    "Ciencia de Datos",
+    "Educación",
+    "Derecho",
+    "Bibliotecología",
+    "Computación e Informática"
+   ],
+   "problema": [
+    "Las organizaciones y los estudiantes acumulan reglamentos, manuales y apuntes que casi nadie lee completos. Cuando alguien tiene una duda, busca a mano o pregunta a otra persona, y las respuestas varían.",
+    "Un asistente basado en esos documentos promete ahorrar tiempo, pero puede inventar respuestas que suenan convincentes y no están en ninguna parte."
+   ],
+   "desarrollar": [
+    "Reúne 10 a 20 documentos y prepara 30 preguntas cuyas respuestas conozcas, algunas fáciles, otras difíciles y algunas que no están en los documentos. Construye un asistente que busque los fragmentos relevantes y redacte la respuesta indicando de dónde la sacó.",
+    "Evalúa cuántas veces acierta, cuántas veces inventa algo y qué hace cuando la respuesta no existe. El resultado puede ser un prototipo funcional y un informe honesto con sus límites."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Siempre con fuente",
+     "aporta": "haz que cada respuesta indique el documento y la página de donde sale."
+    },
+    {
+     "titulo": "Admitir que no sabe",
+     "aporta": "entrena al asistente para decir «no lo encuentro» cuando no hay una respuesta."
+    },
+    {
+     "titulo": "Probarlo con otras personas",
+     "aporta": "pide a cinco personas que lo usen y comprueba si les resulta útil."
+    }
+   ],
+   "objetivos": [
+    "Preparar una colección de documentos y preguntas de prueba.",
+    "Construir un asistente que cite sus fuentes.",
+    "Medir aciertos y respuestas inventadas.",
+    "Manejar los casos sin respuesta.",
+    "Documentar los límites del sistema."
+   ],
+   "habilidades": [
+    "Búsqueda de información.",
+    "Modelos de lenguaje.",
+    "Programación en un lenguaje de datos.",
+    "Evaluación de sistemas de IA.",
+    "Comunicación honesta de resultados."
+   ],
+   "herramientas": [
+    "Lenguaje de programación y bibliotecas de procesamiento de texto.",
+    "Servicios de modelos de lenguaje o modelos abiertos.",
+    "Hoja de cálculo para evaluar las respuestas."
+   ],
+   "lineamientos": [
+    "Cuidados: usa solo documentos que puedas compartir o que sean tuyos. No subas reglamentos confidenciales ni datos personales a un servicio externo.",
+    "Advierte a quien lo use que el asistente puede equivocarse y que las respuestas importantes deben verificarse en el documento original."
+   ],
+   "otroSector": "Un asistente como este sirve para reglamentos de un colegio, manuales de un negocio, historias clínicas anónimas de práctica, leyes y normas o material de estudio de un curso."
+  },
+  {
+   "id": "que-le-pasa-a-una-ia-cuando-los-datos-no-son-perfectos",
+   "area": "tecnologia",
+   "areas2": [
+    "ciencias"
+   ],
+   "titulo": "¿Qué le pasa a una IA cuando los datos no son perfectos?",
+   "resumen": "Explora cómo la calidad de los datos influye en el comportamiento de un modelo de inteligencia artificial. Descubre qué ocurre cuando la información contiene errores, valores faltantes o categorías insuficientemente representadas, y analiza cómo estas situaciones pueden afectar la capacidad de un sistema para aprender y tomar decisiones.",
+   "tipo": "Investigación",
+   "tiempo": "2 a 5 meses",
+   "horas": 91,
+   "etiquetas": [
+    "Inteligencia artificial",
+    "Calidad de datos",
+    "Ciencia de datos"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "conjuntos de datos públicos y simulados: puedes utilizar bases de datos abiertas y generar versiones modificadas para estudiar distintos escenarios.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ciencia de Datos",
+    "Estadística",
+    "Matemática",
+    "Economía",
+    "Ingeniería Industrial",
+    "Inteligencia Artificial",
+    "Física"
+   ],
+   "problema": [
+    "Cuando se habla de inteligencia artificial, suele prestarse mucha atención a los algoritmos y modelos utilizados. Sin embargo, una gran parte del desempeño de cualquier sistema depende de la calidad de los datos con los que fue entrenado.",
+    "En situaciones reales es habitual trabajar con información incompleta, registros con errores, datos duplicados, categorías poco frecuentes o muestras que no representan adecuadamente la realidad que se desea estudiar. Estos problemas pueden introducir sesgos, reducir la precisión de los modelos o provocar decisiones incorrectas.",
+    "Muchas veces un modelo aparentemente inteligente deja de funcionar correctamente no por limitaciones del algoritmo, sino porque los datos utilizados para entrenarlo presentan deficiencias difíciles de detectar a simple vista.",
+    "Comprender esta relación permite desarrollar una visión más crítica sobre los resultados obtenidos por los sistemas de inteligencia artificial y ayuda a valorar la importancia de construir conjuntos de datos confiables."
+   ],
+   "desarrollar": [
+    "Selecciona un conjunto de datos adecuado para un problema de clasificación y entrena un modelo base que sirva como referencia.",
+    "Posteriormente, genera distintas versiones modificadas del mismo conjunto de datos incorporando problemas controlados como:",
+    {
+     "lista": [
+      "Valores faltantes.",
+      "Etiquetas incorrectas.",
+      "Datos duplicados.",
+      "Categorías desequilibradas.",
+      "Registros incompletos.",
+      "Ruido aleatorio."
+     ]
+    },
+    "Compara cómo cambian las métricas del modelo en cada escenario y documenta las diferencias observadas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar algoritmos",
+     "aporta": "analiza si algunos modelos toleran mejor ciertos problemas de calidad de datos que otros."
+    },
+    {
+     "titulo": "Evaluar estrategias de limpieza",
+     "aporta": "estudia cómo cambian los resultados después de corregir errores o completar valores faltantes."
+    },
+    {
+     "titulo": "Diseñar indicadores de calidad",
+     "aporta": "desarrolla métricas que permitan evaluar la calidad de un conjunto de datos antes del entrenamiento."
+    }
+   ],
+   "objetivos": [
+    "Seleccionar un conjunto de datos adecuado para experimentación.",
+    "Establecer una línea base de desempeño utilizando datos sin modificaciones.",
+    "Introducir problemas controlados de calidad.",
+    "Evaluar cómo afectan estos problemas al modelo.",
+    "Comparar resultados entre distintos escenarios.",
+    "Comunicar conclusiones fundamentadas en evidencia experimental."
+   ],
+   "habilidades": [
+    "Estadística.",
+    "Ciencia de datos.",
+    "Aprendizaje automático.",
+    "Diseño experimental.",
+    "Limpieza de datos.",
+    "Interpretación de métricas.",
+    "Visualización de información."
+   ],
+   "herramientas": [
+    "Python.",
+    "Pandas.",
+    "Scikit-learn.",
+    "Jupyter Notebook.",
+    "Bibliotecas de visualización de datos.",
+    "Conjuntos de datos públicos."
+   ],
+   "lineamientos": [
+    "Documenta cuidadosamente todas las modificaciones realizadas sobre los datos para que los experimentos puedan reproducirse posteriormente.",
+    "Mantén condiciones comparables entre pruebas y cambia únicamente los factores que deseas estudiar. Evita generalizar resultados obtenidos a partir de un único conjunto de datos o un único algoritmo.",
+    "Recuerda que el objetivo del proyecto no es encontrar el modelo con mejor rendimiento, sino comprender cómo la calidad de los datos influye en los resultados obtenidos y qué consecuencias puede tener en aplicaciones reales."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a predicciones económicas, investigaciones médicas con datos anonimizados, estudios ambientales, sistemas de mantenimiento predictivo, análisis de comportamiento de usuarios o procesos industriales basados en datos."
+  },
+  {
+   "id": "y-si-tu-recibo-de-luz-te-avisara-cuando-algo-consume-de-mas",
+   "area": "tecnologia",
+   "areas2": [
+    "ambiente"
+   ],
+   "titulo": "¿Y si tu recibo de luz te avisara cuando algo consume de más?",
+   "resumen": "Investiga cómo analizar patrones de consumo eléctrico para identificar comportamientos inusuales que podrían indicar fallas, desperdicios de energía, configuraciones ineficientes o situaciones que requieren una revisión más detallada. Descubre cómo los sistemas de análisis de datos y aprendizaje automático pueden ayudar a detectar cambios que serían difíciles de observar manualmente.",
+   "tipo": "Prototipo",
+   "tiempo": "2 a 6 meses",
+   "horas": 104,
+   "etiquetas": [
+    "Inteligencia artificial",
+    "Energía",
+    "Análisis predictivo"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos o simulados: puedes utilizar conjuntos de datos abiertos, registros históricos simulados o series temporales generadas para experimentar con distintos escenarios.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería Eléctrica",
+    "Ingeniería Electrónica",
+    "Ingeniería de Sistemas",
+    "Ciencia de Datos",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Física",
+    "Ingeniería Industrial",
+    "Inteligencia Artificial"
+   ],
+   "problema": [
+    "En viviendas, oficinas, industrias y edificios públicos, el consumo eléctrico varía constantemente en función de horarios, actividades, estaciones del año y características de los equipos utilizados. Estas variaciones suelen formar parte del funcionamiento normal de una instalación.",
+    "Sin embargo, también pueden aparecer cambios inesperados: un equipo que empieza a consumir más energía de lo habitual, un sistema que permanece encendido cuando no debería o un comportamiento anómalo que pasa desapercibido durante días o semanas.",
+    "Cuando únicamente se observan los consumos totales, resulta difícil distinguir entre una variación normal y una situación que merece atención. Como consecuencia, pueden producirse pérdidas económicas, desperdicio de energía o retrasos en la detección de problemas.",
+    "El desafío consiste en desarrollar métodos capaces de aprender cómo suele comportarse un sistema y señalar situaciones que se alejan significativamente de ese patrón habitual."
+   ],
+   "desarrollar": [
+    "Construye una herramienta capaz de procesar registros históricos de consumo eléctrico e identificar comportamientos inusuales mediante reglas estadísticas o modelos de aprendizaje automático.",
+    "El sistema puede incluir:",
+    {
+     "lista": [
+      "Visualización temporal de consumos.",
+      "Identificación automática de anomalías.",
+      "Comparación con patrones históricos.",
+      "Alertas basadas en umbrales o modelos predictivos.",
+      "Explicaciones simples sobre los criterios utilizados."
+     ]
+    },
+    "El resultado puede presentarse como un informe analítico, un panel interactivo o una aplicación experimental."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar métodos",
+     "aporta": "analiza las diferencias entre enfoques estadísticos tradicionales y modelos de aprendizaje automático."
+    },
+    {
+     "titulo": "Detección en tiempo real",
+     "aporta": "diseña una solución capaz de evaluar nuevos registros a medida que llegan."
+    },
+    {
+     "titulo": "Predicción de consumos",
+     "aporta": "explora cómo estimar el comportamiento esperado y detectar desviaciones futuras antes de que ocurran."
+    }
+   ],
+   "objetivos": [
+    "Conseguir o generar un conjunto de datos adecuado.",
+    "Analizar patrones habituales de consumo.",
+    "Diseñar criterios para detectar anomalías.",
+    "Implementar y comparar distintos métodos de detección.",
+    "Evaluar la calidad de los resultados obtenidos.",
+    "Comunicar claramente las limitaciones del sistema desarrollado."
+   ],
+   "habilidades": [
+    "Estadística.",
+    "Series temporales.",
+    "Ciencia de datos.",
+    "Aprendizaje automático.",
+    "Limpieza y preparación de datos.",
+    "Visualización de información.",
+    "Interpretación de modelos analíticos."
+   ],
+   "herramientas": [
+    "Python.",
+    "Pandas.",
+    "Scikit-learn.",
+    "Jupyter Notebook.",
+    "Bibliotecas de visualización.",
+    "Conjuntos de datos abiertos o simulados."
+   ],
+   "lineamientos": [
+    "No confundas una anomalía estadística con una falla eléctrica confirmada. Una desviación detectada por el sistema únicamente indica que el comportamiento observado difiere de los patrones habituales y requiere una revisión más detallada.",
+    "Documenta claramente las decisiones tomadas durante el análisis, los supuestos utilizados y las limitaciones de cada modelo. Utiliza únicamente datos que respeten la privacidad de las personas y evita trabajar con información sensible innecesaria.",
+    "Recuerda que el objetivo del proyecto no es construir un sistema perfecto, sino comprender cómo pueden utilizarse los datos para identificar situaciones que merecen atención."
+   ],
+   "otroSector": "El mismo enfoque puede utilizarse para detectar consumos anómalos de agua, pérdidas de combustible, variaciones inusuales en procesos industriales, cambios sospechosos en redes informáticas, patrones financieros atípicos o comportamientos anómalos en sistemas de monitoreo ambiental."
+  },
+  {
+   "id": "una-red-de-sensores-para-vigilar-el-ambiente",
+   "area": "tecnologia",
+   "areas2": [
+    "ambiente"
+   ],
+   "titulo": "Una red de sensores para vigilar el ambiente",
+   "resumen": "Explora cómo recopilar información del entorno de forma automática para comprender cómo cambian las condiciones de un espacio a lo largo del tiempo. Diseña un sistema capaz de medir variables ambientales, almacenar registros históricos y visualizar tendencias que normalmente pasan desapercibidas cuando solo se realizan observaciones ocasionales.",
+   "tipo": "Prototipo",
+   "tiempo": "2 a 6 meses",
+   "horas": 104,
+   "etiquetas": [
+    "Internet de las cosas",
+    "Electrónica",
+    "Monitoreo"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes mediante sensores y dispositivos instalados por ti.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación y electrónica básica: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería Electrónica",
+    "Ingeniería Mecatrónica",
+    "Ingeniería de Sistemas",
+    "Ingeniería Ambiental",
+    "Física",
+    "Ingeniería Industrial",
+    "Ciencia de Datos",
+    "Internet de las Cosas (IoT)"
+   ],
+   "problema": [
+    "La temperatura, la humedad y otras condiciones ambientales cambian constantemente durante el día. Un aula puede calentarse progresivamente conforme aumenta la ocupación. Un almacén puede presentar niveles de humedad que afecten los materiales guardados. Un huerto puede experimentar variaciones que influyan en el desarrollo de las plantas.",
+    "A pesar de que estos cambios ocurren continuamente, muchas veces no existen registros que permitan observarlos de forma sistemática. Sin datos históricos resulta difícil identificar patrones, detectar problemas o tomar decisiones informadas sobre ventilación, almacenamiento, eficiencia energética o condiciones de trabajo.",
+    "Los sistemas de monitoreo permiten transformar observaciones aisladas en información continua que puede analizarse y utilizarse para comprender mejor un entorno."
+   ],
+   "desarrollar": [
+    "Construye una estación de monitoreo capaz de recopilar información ambiental utilizando sensores conectados a un microcontrolador.",
+    "El sistema puede incluir:",
+    {
+     "lista": [
+      "Medición de temperatura.",
+      "Medición de humedad.",
+      "Registro de fecha y hora.",
+      "Almacenamiento de datos.",
+      "Visualización básica de resultados."
+     ]
+    },
+    "Posteriormente, diseña un panel donde los registros puedan consultarse mediante gráficos, indicadores o series temporales que faciliten su interpretación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un lugar con historia",
+     "aporta": "mide un espacio donde el ambiente importe de verdad, como un huerto, un aula que se calienta o un depósito de materiales, y compara los datos con lo que sienten quienes lo usan."
+    },
+    {
+     "titulo": "Ciencia ciudadana",
+     "aporta": "diseña una guía sencilla para que un grupo de vecinos o estudiantes arme su propia estación y comparta sus lecturas."
+    },
+    {
+     "titulo": "Datos que se ven",
+     "aporta": "presenta las lecturas como un panel en vivo o una pequeña muestra para que la comunidad vea cómo respira un espacio."
+    }
+   ],
+   "objetivos": [
+    "Seleccionar sensores adecuados para las variables que se desean medir.",
+    "Diseñar y construir el circuito de monitoreo.",
+    "Programar la recopilación automática de datos.",
+    "Implementar mecanismos de almacenamiento.",
+    "Desarrollar visualizaciones que faciliten el análisis de la información.",
+    "Evaluar la estabilidad y calidad de las mediciones obtenidas."
+   ],
+   "habilidades": [
+    "Electrónica básica.",
+    "Programación de microcontroladores.",
+    "Internet de las cosas (IoT).",
+    "Comunicación entre dispositivos.",
+    "Bases de datos.",
+    "Visualización de información.",
+    "Análisis de datos ambientales."
+   ],
+   "herramientas": [
+    "ESP32, Arduino u otro microcontrolador similar.",
+    "Sensores ambientales.",
+    "Python o JavaScript.",
+    "Base de datos.",
+    "Panel web o herramienta de visualización.",
+    "Protoboard y componentes electrónicos básicos."
+   ],
+   "lineamientos": [
+    "Trabaja siempre con voltajes seguros y evita realizar conexiones improvisadas o instalaciones eléctricas que puedan representar riesgos.",
+    "Documenta el modelo de los sensores utilizados, su precisión y las limitaciones conocidas. No presentes las mediciones obtenidas como si provinieran de instrumentos certificados para uso profesional o industrial.",
+    "Registra las condiciones en las que se realizaron las pruebas para facilitar la interpretación de los resultados y la comparación entre distintos periodos de observación."
+   ],
+   "otroSector": "La misma metodología puede adaptarse al monitoreo de huertos, invernaderos, almacenes de alimentos, laboratorios, aulas, oficinas, espacios de trabajo, estaciones meteorológicas o proyectos de investigación ambiental."
+  },
+  {
+   "id": "mismos-datos-distintos-algoritmos-cual-decide-mejor",
+   "area": "tecnologia",
+   "areas2": [
+    "ciencias"
+   ],
+   "titulo": "Mismos datos, distintos algoritmos: ¿cuál decide mejor?",
+   "resumen": "Imagina cómo distintos algoritmos de inteligencia artificial responden al mismo problema cuando trabajan bajo las mismas condiciones. Diseña un entorno experimental que permita comparar resultados de manera justa, comprender las fortalezas y limitaciones de cada modelo y analizar cómo influyen los datos en el desempeño obtenido.",
+   "tipo": "Prototipo",
+   "tiempo": "2 a 6 meses",
+   "horas": 104,
+   "etiquetas": [
+    "Inteligencia artificial",
+    "Experimentación",
+    "Ciencia de datos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "conjuntos de datos públicos: puedes utilizar bases de datos abiertas disponibles para investigación o aprendizaje.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ciencia de Datos",
+    "Matemática",
+    "Estadística",
+    "Física",
+    "Economía",
+    "Ingeniería Industrial",
+    "Inteligencia Artificial"
+   ],
+   "problema": [
+    "Cuando se estudia inteligencia artificial es común encontrar afirmaciones sobre modelos que parecen superiores a otros. Sin embargo, un algoritmo que funciona muy bien en un conjunto de datos puede ofrecer resultados mucho más modestos en otro contexto.",
+    "Muchas comparaciones se realizan utilizando configuraciones diferentes, conjuntos de datos distintos o criterios de evaluación poco consistentes. Esto dificulta comprender qué ventajas ofrece realmente cada enfoque y puede llevar a conclusiones engañosas.",
+    "Además, las métricas utilizadas en inteligencia artificial no siempre son fáciles de interpretar. Un modelo puede presentar una alta precisión general y aun así cometer errores importantes en determinadas situaciones.",
+    "Por ello, resulta fundamental disponer de entornos donde los experimentos sean reproducibles, comparables y transparentes."
+   ],
+   "desarrollar": [
+    "Desarrolla una plataforma que permita cargar conjuntos de datos y ejecutar distintos algoritmos de clasificación bajo condiciones equivalentes.",
+    "El sistema puede incluir:",
+    {
+     "lista": [
+      "Selección de conjuntos de datos.",
+      "Ejecución de múltiples algoritmos.",
+      "Comparación de resultados.",
+      "Visualización de métricas.",
+      "Registro de experimentos realizados.",
+      "Panel de análisis de desempeño."
+     ]
+    },
+    "El objetivo no es únicamente obtener el mejor resultado, sino comprender por qué distintos modelos se comportan de formas diferentes."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar familias de modelos",
+     "aporta": "analiza diferencias entre algoritmos tradicionales, ensambles y técnicas más avanzadas."
+    },
+    {
+     "titulo": "Visualizar decisiones",
+     "aporta": "explora formas de representar cómo llegan los modelos a determinadas predicciones."
+    },
+    {
+     "titulo": "Automatizar experimentos",
+     "aporta": "diseña un sistema que ejecute múltiples configuraciones y genere comparaciones automáticas."
+    }
+   ],
+   "objetivos": [
+    "Seleccionar uno o más problemas de clasificación adecuados.",
+    "Preparar conjuntos de datos para los experimentos.",
+    "Implementar distintos algoritmos bajo condiciones comparables.",
+    "Comparar métricas de desempeño.",
+    "Interpretar fortalezas y limitaciones de cada modelo.",
+    "Presentar resultados mediante herramientas visuales y comprensibles."
+   ],
+   "habilidades": [
+    "Estadística.",
+    "Aprendizaje automático.",
+    "Programación.",
+    "Ciencia de datos.",
+    "Diseño experimental.",
+    "Visualización de información.",
+    "Evaluación de modelos predictivos."
+   ],
+   "herramientas": [
+    "Python.",
+    "Scikit-learn.",
+    "Pandas.",
+    "Jupyter Notebook.",
+    "Streamlit o tecnologías web similares.",
+    "Bibliotecas de visualización de datos."
+   ],
+   "lineamientos": [
+    "Separa claramente los datos utilizados para entrenamiento y evaluación. Utiliza procedimientos consistentes para garantizar comparaciones justas entre algoritmos.",
+    "Evita interpretar una única métrica como evidencia suficiente de superioridad. Diferentes problemas pueden requerir distintos criterios de evaluación.",
+    "Documenta todas las decisiones experimentales realizadas, incluyendo parámetros, conjuntos de datos utilizados y métodos de validación aplicados.",
+    "Recuerda que el objetivo principal es comprender el comportamiento de los modelos y no simplemente encontrar el algoritmo con el valor numérico más alto."
+   ],
+   "otroSector": "La misma plataforma puede utilizarse para estudiar predicciones económicas, clasificación de imágenes, análisis ambiental, detección de enfermedades en datos médicos, mantenimiento predictivo, análisis de textos o investigaciones científicas basadas en datos."
+  },
+  {
+   "id": "un-pequeno-robot-que-se-mueve-solo",
+   "area": "tecnologia",
+   "areas2": [
+    "industria"
+   ],
+   "titulo": "Un pequeño robot que se mueve solo",
+   "resumen": "Imagina cómo combinar electrónica, programación y mecánica para construir un robot capaz de percibir su entorno y tomar decisiones sencillas de manera autónoma. Descubre cómo distintos componentes trabajan juntos para que una máquina interprete información del mundo físico y actúe sin recibir instrucciones constantes.",
+   "tipo": "Prototipo",
+   "tiempo": "2 a 8 meses",
+   "horas": 130,
+   "etiquetas": [
+    "Robótica",
+    "Electrónica",
+    "Automatización"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias y escenarios controlados: puedes realizar pruebas en entornos diseñados por ti mismo y registrar el comportamiento del robot durante cada experimento.",
+   "prog": "incluida",
+   "progTexto": "Incluye programación y electrónica básica: puedes hacerlo con apoyo de una IA o en equipo.",
+   "abordar": "solo, con una IA como apoyo, o en equipo con alguien que aporte lo que te falta (por ejemplo, una persona de Sistemas junto con otra que conozca bien el problema). Quien presente el proyecto debe poder explicar qué hace y comprobar que funciona.",
+   "carreras": [
+    "Ingeniería Mecatrónica",
+    "Ingeniería Electrónica",
+    "Ingeniería Mecánica",
+    "Ingeniería de Sistemas",
+    "Física",
+    "Ingeniería Industrial",
+    "Automatización",
+    "Internet de las Cosas"
+   ],
+   "problema": [
+    "En industrias, almacenes, centros logísticos, laboratorios e incluso hogares, existen tareas que requieren desplazarse, detectar obstáculos, reconocer condiciones del entorno y reaccionar frente a ellas. Muchas de estas actividades son repetitivas, demandan supervisión constante o deben realizarse en lugares donde la presencia humana no siempre es práctica.",
+    "La robótica surge como una forma de abordar estos desafíos integrando sensores, actuadores y software capaces de interactuar con el entorno. Sin embargo, lograr que un robot tome decisiones aparentemente simples puede resultar mucho más complejo de lo que parece.",
+    "Detectar un obstáculo es solo una parte del problema. El robot también debe decidir cómo reaccionar, cuándo cambiar de dirección, qué ruta seguir y cómo adaptarse cuando las condiciones del entorno cambian."
+   ],
+   "desarrollar": [
+    "Diseña y construye un robot móvil capaz de desplazarse dentro de un espacio delimitado.",
+    "El sistema debe ser capaz de:",
+    {
+     "lista": [
+      "Avanzar de forma autónoma.",
+      "Detectar obstáculos.",
+      "Cambiar de dirección cuando sea necesario.",
+      "Continuar desplazándose después de evitar un obstáculo.",
+      "Registrar observaciones sobre su comportamiento durante las pruebas."
+     ]
+    },
+    "El proyecto puede comenzar con reglas simples de navegación y evolucionar hacia comportamientos más complejos conforme se obtengan resultados."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Una misión concreta",
+     "aporta": "dale al robot un trabajo real y acotado, como recorrer un pasillo o llevar un objeto de un punto a otro, y mide qué tan bien lo cumple."
+    },
+    {
+     "titulo": "Un robot para enseñar",
+     "aporta": "adapta el diseño y escribe una guía de armado para que escolares aprendan robótica con él."
+    },
+    {
+     "titulo": "Un explorador que cuenta lo que vio",
+     "aporta": "haz que registre su recorrido y muestre un mapa de lo que encontró."
+    }
+   ],
+   "objetivos": [
+    "Diseñar la estructura física del robot.",
+    "Seleccionar sensores y actuadores adecuados.",
+    "Construir el circuito electrónico.",
+    "Programar el sistema de control.",
+    "Implementar mecanismos de detección de obstáculos.",
+    "Evaluar el comportamiento del robot en distintos escenarios.",
+    "Documentar problemas encontrados y soluciones aplicadas."
+   ],
+   "habilidades": [
+    "Electrónica básica.",
+    "Mecánica aplicada.",
+    "Programación de microcontroladores.",
+    "Sensores y actuadores.",
+    "Robótica móvil.",
+    "Resolución de problemas.",
+    "Integración de sistemas."
+   ],
+   "herramientas": [
+    "Arduino, ESP32 o plataformas similares.",
+    "Motores y controladores de motores.",
+    "Sensores ultrasónicos, infrarrojos u otros equivalentes.",
+    "Baterías adecuadas para alimentación segura.",
+    "Materiales para la estructura física del robot.",
+    "Herramientas de programación y depuración."
+   ],
+   "lineamientos": [
+    "Utiliza componentes de baja tensión y verifica todas las conexiones antes de realizar pruebas. Trabaja siempre en espacios controlados donde un fallo del robot no represente riesgos para personas, animales o equipos.",
+    "Documenta los errores observados durante las pruebas y registra las condiciones en las que ocurrieron. En robótica, los fallos también forman parte importante del proceso de aprendizaje y mejora.",
+    "Evita presentar el sistema como completamente autónomo o apto para entornos reales sin realizar pruebas adicionales y validar adecuadamente su desempeño."
+   ],
+   "otroSector": "Los principios desarrollados en este proyecto pueden aplicarse a robots agrícolas, sistemas de inspección industrial, logística automatizada, monitoreo ambiental, educación tecnológica, asistencia doméstica o exploración de espacios de difícil acceso."
+  }
+ ]
+}

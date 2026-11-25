@@ -1,0 +1,637 @@
+{
+ "area": "negocios",
+ "ideas": [
+  {
+   "id": "lo-que-no-dice-la-oferta-de-practicas-cuanto-cuesta-realmente-ha",
+   "area": "negocios",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "Lo que no dice la oferta de prácticas: ¿cuánto cuesta realmente hacerlas?",
+   "resumen": "Explora cómo calcular el costo total de realizar prácticas preprofesionales más allá del sueldo o la subvención: transporte, alimentación, tiempo de traslado, ropa, materiales y otros gastos que muchas veces nadie considera al aceptar una oferta.",
+   "tipo": "Análisis",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Datos",
+    "Economía personal",
+    "Movilidad"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "estimados: puedes usar estimaciones propias, promedios aproximados o un caso inventado, sin necesidad de compartir tus finanzas reales.",
+   "carreras": [
+    "Economía",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas",
+    "Administración",
+    "Contabilidad",
+    "Ciencia de Datos",
+    "Ingeniería Civil"
+   ],
+   "problema": [
+    "Al recibir una oferta de prácticas, la comparación suele limitarse a una cifra: lo que pagan. Sin embargo, dos ofertas con el mismo monto pueden ser muy distintas cuando se suman los pasajes, el almuerzo diario, las horas perdidas en traslados y el impacto en el tiempo para estudiar.",
+    "Esto afecta especialmente a quienes empiezan, porque aún no tienen referencia de cuánto cuesta trabajar fuera de casa todos los días. Algunas personas descubren tarde que una oferta aparentemente buena les deja casi nada, o que el tiempo de viaje les quita horas que necesitaban para sus cursos."
+   ],
+   "desarrollar": [
+    "Una calculadora o modelo sencillo que permita ingresar los datos de una oferta y obtener el costo mensual real, el pago neto aproximado y las horas semanales dedicadas a traslados.",
+    "El resultado puede ser una hoja de cálculo con fórmulas claras, un panel comparativo o una pequeña aplicación web que permita comparar dos o más ofertas lado a lado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar rutas y horarios",
+     "aporta": "analiza cómo cambia el costo y el tiempo de traslado según el medio de transporte o la hora de salida."
+    },
+    {
+     "titulo": "Incluir el costo de oportunidad",
+     "aporta": "estima qué ocurre con tus horas de estudio o descanso según cada oferta."
+    },
+    {
+     "titulo": "Escenarios",
+     "aporta": "simula qué pasaría si cambia el costo del transporte, el modelo de trabajo presencial o remoto, o la duración de las prácticas."
+    }
+   ],
+   "objetivos": [
+    "Identificar todos los costos directos e indirectos asociados a unas prácticas.",
+    "Diseñar un modelo claro para calcular el costo mensual real.",
+    "Comparar varias ofertas con los mismos criterios.",
+    "Representar los resultados de forma visual y fácil de interpretar.",
+    "Reflexionar sobre qué factores, además del dinero, conviene considerar al elegir."
+   ],
+   "habilidades": [
+    "Análisis de costos.",
+    "Modelado en hoja de cálculo.",
+    "Visualización de datos.",
+    "Pensamiento crítico para la toma de decisiones.",
+    "Planificación financiera básica."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas de gráficos y visualización.",
+    "Mapas y planificadores de rutas, para estimar tiempos de traslado.",
+    "Herramientas web básicas si deseas crear una calculadora en línea."
+   ],
+   "lineamientos": [
+    "Utiliza cifras estimadas o ejemplos inventados en el material que compartas, y evita publicar tus ingresos o los de otras personas. Aclara que los resultados son aproximados y que cada situación personal puede ser distinta.",
+    "El proyecto sirve para apoyar una decisión, no para decirle a nadie qué oferta aceptar: el aprendizaje, el entorno laboral y las oportunidades también cuentan aunque no se puedan medir en soles."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a comparar ofertas de empleo, decidir dónde vivir para estudiar o trabajar, evaluar el costo real de un emprendimiento pequeño o planificar el presupuesto de un proyecto de voluntariado."
+  },
+  {
+   "id": "como-dividir-gastos-compartidos-sin-pelearse",
+   "area": "negocios",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "¿Cómo dividir gastos compartidos sin pelearse?",
+   "resumen": "Descubre cómo repartir gastos entre varias personas de forma justa y transparente, incluso cuando no todos consumen lo mismo ni pagan al mismo tiempo, y cómo reducir al mínimo la cantidad de transferencias necesarias para quedar a mano.",
+   "tipo": "Prototipo",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Algoritmos",
+    "Matemática",
+    "Convivencia"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o propios: puedes inventar grupos de amigos, un viaje o un departamento compartido, sin usar gastos reales de nadie.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Matemática",
+    "Ciencias de la Computación",
+    "Economía",
+    "Estadística",
+    "Administración",
+    "Contabilidad",
+    "Psicología"
+   ],
+   "problema": [
+    "En viajes, salidas, departamentos compartidos o proyectos grupales, una persona paga la cuenta, otra compra los insumos y una tercera adelanta el pasaje. Con el tiempo nadie recuerda exactamente quién debe a quién ni cuánto, y los pequeños desajustes terminan generando incomodidad o conflictos.",
+    "El problema no es solo hacer las cuentas, sino hacerlo de una forma que todas las personas consideren razonable: no es lo mismo dividir en partes iguales que dividir según lo que cada uno consumió o según una regla acordada."
+   ],
+   "desarrollar": [
+    "Una herramienta sencilla en la que se puedan registrar personas, gastos, quién pagó y entre quiénes se reparte, y que calcule automáticamente cuánto debe cada persona y a quién.",
+    "El resultado puede ser una hoja de cálculo con fórmulas, un pequeño programa o una aplicación web básica que muestre un resumen claro de las deudas pendientes."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Más allá de partes iguales",
+     "aporta": "explora repartos justos cuando unos consumen más que otros o aportan distinto."
+    },
+    {
+     "titulo": "Otras monedas",
+     "aporta": "adapta la herramienta para repartir tareas o tiempo, no solo dinero, en una casa compartida."
+    },
+    {
+     "titulo": "Desde el celular",
+     "aporta": "convierte la hoja en una página simple que cualquier grupo pueda abrir y compartir."
+    }
+   ],
+   "objetivos": [
+    "Identificar los distintos tipos de reparto que aparecen en situaciones reales.",
+    "Diseñar una forma clara de registrar gastos y participantes.",
+    "Calcular los saldos individuales de cada persona.",
+    "Reducir la cantidad de transferencias necesarias para saldar las cuentas.",
+    "Comprobar que los resultados sean fáciles de entender y verificar por todos."
+   ],
+   "habilidades": [
+    "Lógica y razonamiento matemático.",
+    "Diseño de algoritmos sencillos.",
+    "Modelado de datos.",
+    "Experiencia de usuario.",
+    "Comunicación clara de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Lenguajes de programación básicos.",
+    "Herramientas web sencillas.",
+    "Bases de datos simples si deseas guardar el historial."
+   ],
+   "lineamientos": [
+    "Prueba la herramienta con datos inventados antes de usarla con dinero real. Si la utilizas con amistades o compañeros de vivienda, asegúrate de que todos estén de acuerdo con las reglas de reparto y puedan revisar los cálculos.",
+    "Evita guardar datos bancarios o información financiera personal: el proyecto solo necesita nombres, montos y reglas de reparto."
+   ],
+   "otroSector": "La misma idea puede aplicarse a la contabilidad de asociaciones estudiantiles, la gestión de cuotas de un grupo, el reparto de costos en proyectos colaborativos o la liquidación de gastos en equipos de trabajo."
+  },
+  {
+   "id": "un-sistema-para-organizar-las-entregas-de-un-negocio-pequeno",
+   "area": "negocios",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "Un sistema para organizar las entregas de un negocio pequeño",
+   "resumen": "Descubre cómo organizar pedidos, clientes, rutas y horarios de reparto para ayudar a un pequeño negocio a gestionar sus entregas de manera más eficiente.",
+   "tipo": "Prototipo",
+   "tiempo": "~35 h",
+   "horas": 35,
+   "etiquetas": [
+    "Logística",
+    "Organización"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: puedes construirlo utilizando pedidos simulados sin necesidad de trabajar con un negocio real.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Administración",
+    "Ingeniería de Transporte",
+    "Logística",
+    "Ciencia de Datos",
+    "Emprendimiento"
+   ],
+   "problema": [
+    "Muchos pequeños negocios comienzan gestionando sus pedidos mediante llamadas, mensajes o listas escritas a mano. Mientras el volumen de ventas es reducido, este sistema suele funcionar. Sin embargo, a medida que aumentan los pedidos, aparecen nuevos desafíos: entregas olvidadas, direcciones equivocadas, retrasos, duplicación de información y dificultades para conocer el estado de cada pedido.",
+    "En muchos casos, el problema no es la falta de esfuerzo, sino la ausencia de herramientas que permitan visualizar y organizar toda la información de forma clara.",
+    "La logística no solo afecta al negocio. También influye en la experiencia del cliente, que espera recibir información precisa sobre cuándo llegará su pedido y cuál es su estado actual."
+   ],
+   "desarrollar": [
+    "Diseña un sistema que permita registrar pedidos, clientes y estados de entrega.",
+    "Como mínimo, el prototipo puede incluir:",
+    {
+     "lista": [
+      "Registro de pedidos.",
+      "Datos básicos del cliente.",
+      "Estado de la entrega.",
+      "Fecha prevista.",
+      "Historial de pedidos."
+     ]
+    },
+    "Puede construirse mediante una hoja de cálculo avanzada, una base de datos sencilla o una aplicación web básica."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Planificación de rutas",
+     "aporta": "explora cómo agrupar entregas cercanas para reducir tiempos de desplazamiento."
+    },
+    {
+     "titulo": "Seguimiento de pedidos",
+     "aporta": "imagina una forma de mostrar al cliente el avance de su entrega."
+    },
+    {
+     "titulo": "Análisis del negocio",
+     "aporta": "descubre qué zonas reciben más pedidos y en qué horarios existe mayor demanda."
+    }
+   ],
+   "objetivos": [
+    "Comprender el flujo completo de una entrega.",
+    "Diseñar una estructura de información para registrar pedidos.",
+    "Organizar estados y etapas del proceso.",
+    "Construir un prototipo funcional.",
+    "Identificar oportunidades para reducir errores y tiempos de gestión."
+   ],
+   "habilidades": [
+    "Diseño de sistemas.",
+    "Gestión de información.",
+    "Modelado de procesos.",
+    "Diseño de interfaces.",
+    "Organización logística.",
+    "Resolución de problemas."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Formularios digitales.",
+    "Bases de datos.",
+    "Herramientas de diagramación.",
+    "Tecnologías web si deseas desarrollar una aplicación."
+   ],
+   "lineamientos": [
+    "Puedes utilizar un negocio ficticio o inspirarte en un emprendimiento real. Si utilizas información de un negocio existente, evita recopilar datos sensibles o privados.",
+    "Comienza registrando pocos pedidos y aumenta la complejidad progresivamente. Prioriza que el sistema sea fácil de utilizar antes de añadir funciones avanzadas."
+   ],
+   "otroSector": "La misma lógica puede utilizarse para gestionar préstamos de equipos, distribución de materiales educativos, entregas de medicamentos, préstamos bibliotecarios o cualquier actividad que implique seguimiento de recursos."
+  },
+  {
+   "id": "por-que-un-negocio-pequeno-pierde-clientes",
+   "area": "negocios",
+   "areas2": [],
+   "titulo": "¿Por qué un negocio pequeño pierde clientes?",
+   "resumen": "Descubre cómo descubrir por qué un negocio pequeño, como una bodega, una cafetería o un taller, vende menos que antes, y cómo convertir esa sospecha en un análisis ordenado con datos.",
+   "tipo": "Análisis",
+   "tiempo": "4 a 8 semanas",
+   "horas": 36,
+   "etiquetas": [
+    "Datos",
+    "Negocios",
+    "Clientes"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o con permiso: puedes simular ventas, encuestas y comentarios de un negocio imaginario, o trabajar con uno real solo si su dueño lo autoriza y se protege la identidad de sus clientes.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Marketing",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas",
+    "Ciencia de Datos",
+    "Contabilidad"
+   ],
+   "problema": [
+    "Muchos negocios pequeños notan que las ventas bajan, pero no saben por qué. Las explicaciones suelen ser intuiciones: \"hay más competencia\", \"la gente ya no compra como antes\" o \"es por el precio\". Sin registros ordenados, es difícil saber si realmente lo es.",
+    "Las causas pueden ser muy distintas: un cambio de horarios, una mala experiencia de atención, un producto que dejó de estar disponible, una competencia nueva o simplemente que los clientes frecuentes se fueron alejando poco a poco sin que nadie lo notara."
+   ],
+   "desarrollar": [
+    "Construye un registro sencillo de ventas por día, por tipo de producto y por tipo de cliente, y formula tres o cuatro hipótesis sobre posibles causas de la caída.",
+    "Analiza los datos para ver cuáles hipótesis se sostienen y cuáles no, y propone dos o tres acciones concretas y medibles, como cambiar un horario, ajustar una oferta o mejorar la atención.",
+    "El resultado puede ser un panel comparativo, un informe con gráficos o una hoja de cálculo con el análisis y las recomendaciones."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Segmentar clientes",
+     "aporta": "separa a los clientes frecuentes, ocasionales y los que dejaron de venir, y analiza en qué se diferencian."
+    },
+    {
+     "titulo": "Medir retención",
+     "aporta": "calcula qué proporción de clientes vuelve en las semanas siguientes a su primera compra."
+    },
+    {
+     "titulo": "Simular una promoción",
+     "aporta": "estima qué efecto podría tener una oferta y cómo comprobar si funcionó o fue solo casualidad."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un registro simple de ventas y clientes.",
+    "Formular hipótesis razonables sobre la caída de ventas.",
+    "Analizar los datos para evaluar cada hipótesis.",
+    "Distinguir entre una coincidencia y una causa probable.",
+    "Proponer acciones concretas y una forma de medir su resultado."
+   ],
+   "habilidades": [
+    "Análisis y visualización de datos.",
+    "Formulación y prueba de hipótesis.",
+    "Conceptos básicos de negocios y de atención al cliente.",
+    "Estadística descriptiva.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas de gráficos y visualización.",
+    "Formularios digitales para encuestas breves.",
+    "Herramientas de programación o de análisis de datos si deseas ampliar el proyecto."
+   ],
+   "lineamientos": [
+    "Si trabajas con un negocio real, pide permiso a su dueño, anonimiza la información y evita recopilar datos personales de clientes sin su consentimiento. No compartas cifras de ventas reales sin autorización.",
+    "Recuerda que encontrar una relación entre dos datos no demuestra que uno cause el otro, y evita prometer resultados: presenta las recomendaciones como propuestas que deben probarse."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a academias, gimnasios, servicios por suscripción, asociaciones, clubes o cualquier organización que necesite entender por qué las personas dejan de participar."
+  },
+  {
+   "id": "un-asistente-que-compara-precios-por-ti",
+   "area": "negocios",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "Un asistente que compara precios por ti",
+   "resumen": "Investiga cómo reunir y comparar información de distintos productos para ayudar a las personas a tomar decisiones de compra mejor informadas.",
+   "tipo": "Prototipo",
+   "tiempo": "1 a 2 meses",
+   "horas": 39,
+   "etiquetas": [
+    "Consumo",
+    "Comparación de datos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: pueden obtenerse de catálogos en línea, folletos comerciales, publicaciones de tiendas o ejemplos simulados.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Administración",
+    "Economía",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Marketing",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Cuando una persona quiere comprar un producto, normalmente debe revisar varias páginas web, aplicaciones, publicaciones o establecimientos para encontrar la mejor opción. Este proceso puede consumir bastante tiempo, especialmente cuando existen múltiples modelos, marcas y características que comparar.",
+    "Muchas veces las decisiones terminan tomándose únicamente por precio o por publicidad, sin contar con una visión completa de otros factores importantes como características, disponibilidad, costos adicionales o relación calidad-precio.",
+    "Además, cuando la información está dispersa, resulta difícil identificar patrones o entender cuál alternativa ofrece realmente más valor."
+   ],
+   "desarrollar": [
+    "Diseña un sistema que permita registrar productos y comparar sus características principales en un solo lugar.",
+    "El prototipo puede incluir:",
+    {
+     "lista": [
+      "Nombre del producto.",
+      "Precio.",
+      "Marca.",
+      "Características principales.",
+      "Fecha de consulta.",
+      "Observaciones adicionales."
+     ]
+    },
+    "La información puede visualizarse mediante tablas, filtros o paneles comparativos que faciliten la toma de decisiones."
+   ],
+   "objetivos": [
+    "Identificar qué información resulta útil para comparar productos.",
+    "Diseñar una estructura clara para organizar datos de distintas fuentes.",
+    "Construir una herramienta que facilite la comparación.",
+    "Visualizar diferencias entre alternativas.",
+    "Evaluar qué criterios influyen más en una decisión de compra."
+   ],
+   "habilidades": [
+    "Organización de información.",
+    "Diseño de bases de datos.",
+    "Visualización de datos.",
+    "Experiencia de usuario.",
+    "Pensamiento analítico.",
+    "Evaluación de criterios."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Formularios digitales.",
+    "Bases de datos sencillas.",
+    "Herramientas web.",
+    "Software de visualización."
+   ],
+   "lineamientos": [
+    "Utiliza información verificable y documenta siempre de dónde provienen los datos. Si los precios cambian con frecuencia, indica la fecha de consulta de cada registro.",
+    "El objetivo del proyecto no es recomendar una compra específica, sino facilitar el análisis y comparación de alternativas."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a la comparación de proveedores, servicios de internet, planes educativos, equipos tecnológicos, materiales de construcción o alternativas energéticas."
+  },
+  {
+   "id": "como-organizar-un-evento-grande-sin-que-se-caiga-nada",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cómo organizar un evento grande sin que se caiga nada?",
+   "resumen": "Imagina cómo planificar un evento con mucha gente, como una feria, una semana académica o una competencia, para anticipar qué puede salir mal, repartir responsabilidades y tener un plan B antes de que ocurra un imprevisto.",
+   "tipo": "Plan",
+   "tiempo": "1 a 2 meses",
+   "horas": 39,
+   "etiquetas": [
+    "Planificación",
+    "Gestión de proyectos",
+    "Trabajo en equipo"
+   ],
+   "intencion": [
+    "resolver",
+    "crear",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios o propios: puedes planificar un evento imaginario, o uno real y pequeño que ya estés organizando, siempre con información que puedas compartir.",
+   "carreras": [
+    "Administración",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas",
+    "Comunicaciones",
+    "Psicología",
+    "Ingeniería Civil",
+    "Marketing",
+    "Educación"
+   ],
+   "problema": [
+    "Cuando se organiza un evento grande, muchas tareas dependen unas de otras: el local, los permisos, la difusión, los invitados, el sonido, la logística y los voluntarios. Si una falla, el efecto puede extenderse al resto, y a menudo se descubre demasiado tarde que nadie sabía quién era responsable de qué.",
+    "En muchos eventos estudiantiles el plan vive solo en la cabeza de una o dos personas, en chats extensos o en listas sueltas. Cuando alguien se enferma, cambia el horario o falla un proveedor, el equipo improvisa en lugar de reaccionar con un plan."
+   ],
+   "desarrollar": [
+    "Un plan de organización para un evento concreto que incluya un cronograma con tareas y responsables, una lista de riesgos con su plan de respuesta y una forma sencilla de seguir el avance.",
+    "El resultado puede ser un tablero de tareas, una hoja de cálculo con fechas y estados, o una pequeña aplicación de seguimiento."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Dependencias entre tareas",
+     "aporta": "identifica qué tareas retrasan a otras y cuál es la ruta que define la duración total del plan."
+    },
+    {
+     "titulo": "Control de aforo y flujo de personas",
+     "aporta": "estima cuántas personas caben, cómo se moverán y dónde se formarían filas."
+    },
+    {
+     "titulo": "Presupuesto y escenarios",
+     "aporta": "analiza qué pasa con los costos si la asistencia es mayor o menor de lo esperado."
+    }
+   ],
+   "objetivos": [
+    "Identificar las tareas, responsables y fechas clave de un evento.",
+    "Reconocer los riesgos más probables y su impacto.",
+    "Diseñar planes de respuesta para los imprevistos más importantes.",
+    "Establecer una forma clara de comunicar avances y cambios al equipo.",
+    "Evaluar el plan con otras personas y mejorarlo con sus observaciones."
+   ],
+   "habilidades": [
+    "Planificación y gestión de proyectos.",
+    "Gestión de riesgos.",
+    "Comunicación y coordinación de equipos.",
+    "Organización del tiempo y de los recursos.",
+    "Liderazgo y toma de decisiones."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Tableros de tareas.",
+    "Calendarios compartidos.",
+    "Herramientas de diagramas y cronogramas.",
+    "Herramientas web sencillas si deseas crear un panel de seguimiento."
+   ],
+   "lineamientos": [
+    "Si el evento es real, verifica los permisos, las normas de seguridad y el aforo permitido con las personas o entidades responsables, y no asumas que tu plan reemplaza esas validaciones. Evita incluir datos personales de asistentes o voluntarios en el material que compartas.",
+    "Pide opiniones a quienes ya organizaron eventos similares: su experiencia suele revelar riesgos que el papel no muestra."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a lanzamientos de productos, ferias comerciales, congresos académicos, campañas de voluntariado, celebraciones familiares grandes o la planificación de una obra o proyecto de ingeniería."
+  },
+  {
+   "id": "un-catalogo-digital-para-emprendedores-de-tu-zona",
+   "area": "negocios",
+   "areas2": [
+    "tecnologia",
+    "sociedad"
+   ],
+   "titulo": "Un catálogo digital para emprendedores de tu zona",
+   "resumen": "Explora cómo reunir en un solo lugar información sobre productos, servicios y emprendimientos de una comunidad para facilitar que más personas puedan descubrirlos, compararlos y contactarlos.",
+   "tipo": "Prototipo",
+   "tiempo": "2 a 4 meses",
+   "horas": 78,
+   "etiquetas": [
+    "Emprendimiento",
+    "Comunidad",
+    "Comercio digital"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos, propios o proporcionados por los emprendedores participantes.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Administración",
+    "Marketing",
+    "Comunicaciones",
+    "Diseño UX",
+    "Economía",
+    "Ciencia de Datos",
+    "Emprendimiento"
+   ],
+   "problema": [
+    "Muchos pequeños emprendedores ofrecen productos o servicios de calidad, pero tienen dificultades para llegar a nuevos clientes. En muchos casos, la información se encuentra dispersa entre redes sociales, grupos de mensajería, publicaciones temporales o recomendaciones boca a boca.",
+    "Como resultado, potenciales clientes no saben que esos negocios existen o tienen dificultades para encontrarlos cuando los necesitan. Al mismo tiempo, los emprendedores deben invertir una gran cantidad de tiempo repitiendo información sobre sus productos, horarios, métodos de contacto o ubicaciones.",
+    "La falta de visibilidad puede limitar el crecimiento de iniciativas que sí generan valor para la comunidad."
+   ],
+   "desarrollar": [
+    "Diseña un catálogo digital que permita reunir información básica sobre distintos emprendimientos.",
+    "El sistema puede incluir:",
+    {
+     "lista": [
+      "Nombre del emprendimiento.",
+      "Descripción de productos o servicios.",
+      "Categoría.",
+      "Datos de contacto.",
+      "Ubicación.",
+      "Horarios de atención.",
+      "Imágenes de referencia."
+     ]
+    },
+    "La información puede mostrarse mediante fichas, categorías, filtros o un buscador sencillo."
+   ],
+   "objetivos": [
+    "Identificar qué información necesitan los usuarios para descubrir un emprendimiento.",
+    "Diseñar una estructura clara para organizar negocios y servicios.",
+    "Crear una plataforma fácil de consultar.",
+    "Facilitar la búsqueda mediante categorías y filtros.",
+    "Evaluar cómo una mejor organización de la información puede aumentar la visibilidad de los negocios."
+   ],
+   "habilidades": [
+    "Diseño de sistemas de información.",
+    "Organización de contenidos.",
+    "Diseño de interfaces.",
+    "Experiencia de usuario.",
+    "Gestión de bases de datos.",
+    "Comunicación digital."
+   ],
+   "herramientas": [
+    "Hojas de cálculo.",
+    "Bases de datos sencillas.",
+    "Formularios digitales.",
+    "Herramientas web.",
+    "Sistemas de diseño para prototipos."
+   ],
+   "lineamientos": [
+    "Solicita autorización antes de publicar información de negocios reales. Mantén actualizados los datos importantes y documenta cuándo se realizó la última verificación.",
+    "Evita recopilar información innecesaria y prioriza datos que realmente ayuden a los usuarios a encontrar y comprender lo que ofrece cada emprendimiento.",
+    "Si el catálogo crece, define criterios claros para clasificar los negocios y mantener la calidad de la información."
+   ],
+   "otroSector": "La misma idea puede utilizarse para directorios de profesionales independientes, asociaciones culturales, organizaciones sociales, servicios comunitarios, proyectos estudiantiles o iniciativas de investigación."
+  },
+  {
+   "id": "costos-negocio",
+   "area": "negocios",
+   "areas2": [],
+   "titulo": "¿Cuánto cuesta realmente un negocio pequeño?",
+   "resumen": "Explora cómo calcular los costos reales de una bodega, un puesto o un servicio y descubre cuál sería su precio justo.",
+   "tipo": "Análisis",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Costos",
+    "Emprendimiento"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Ingeniería Industrial",
+    "Ingeniería Económica",
+    "Estadística"
+   ],
+   "problema": [
+    "Muchos negocios pequeños fijan precios por intuición y no incluyen su tiempo, los desperdicios ni los gastos fijos, así que ganan menos de lo que creen."
+   ],
+   "desarrollar": [
+    "Una hoja de costos que separe lo fijo de lo variable, incluya el tiempo de trabajo y calcule un punto de equilibrio y un rango de precio."
+   ],
+   "objetivos": [
+    "Identificar todos los costos de un negocio concreto.",
+    "Calcular cuánto hay que vender para no perder.",
+    "Explicar el resultado en una página que entienda su dueño."
+   ],
+   "habilidades": [
+    "Costeo básico",
+    "Hoja de cálculo",
+    "Explicar números con palabras sencillas"
+   ],
+   "herramientas": [
+    "Hoja de cálculo",
+    "Entrevista breve con el dueño (opcional)"
+   ],
+   "lineamientos": [
+    "Puedes usar un negocio ficticio con datos realistas.",
+    "Si hablas con un dueño real, respeta lo que no quiera compartir.",
+    "Deja a la vista los supuestos que hiciste."
+   ],
+   "otroSector": "Sirve para un taller de reparaciones, un servicio de asesorías, un emprendimiento digital o una actividad de recaudación."
+  }
+ ]
+}

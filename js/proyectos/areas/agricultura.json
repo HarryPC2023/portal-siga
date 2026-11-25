@@ -1,0 +1,238 @@
+{
+ "area": "agricultura",
+ "ideas": [
+  {
+   "id": "un-aviso-antes-de-que-se-eche-a-perder-la-comida",
+   "area": "agricultura",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "Un aviso antes de que se eche a perder la comida",
+   "resumen": "Imagina cómo utilizar información sencilla para organizar mejor los alimentos almacenados, anticipar fechas importantes y reducir situaciones en las que productos todavía útiles terminan desperdiciándose por falta de seguimiento.",
+   "tipo": "Prototipo",
+   "tiempo": "2 a 6 semanas",
+   "horas": 24,
+   "etiquetas": [
+    "Tecnología",
+    "Organización",
+    "Consumo responsable"
+   ],
+   "intencion": [
+    "crear",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: puedes hacerlo sin pedir permiso a nadie.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ingeniería Industrial",
+    "Ingeniería Alimentaria",
+    "Administración",
+    "Ciencia de Datos",
+    "Nutrición",
+    "Logística"
+   ],
+   "problema": [
+    "En muchos hogares, pequeños negocios y espacios compartidos se almacenan alimentos que posteriormente se olvidan. Con el paso de los días, algunos productos quedan ocultos detrás de otros, se desconoce cuánto tiempo llevan guardados o simplemente se pierde de vista cuándo deberían consumirse.",
+    "Esta situación no solo genera desperdicio de alimentos. También implica pérdidas económicas, compras innecesarias y una gestión poco eficiente de los recursos disponibles. En algunos casos incluso se vuelven a comprar productos que ya se tenían almacenados porque nadie recuerda que siguen disponibles.",
+    "Aunque existen distintos métodos para organizar inventarios, muchas personas no cuentan con herramientas sencillas que les permitan visualizar qué productos requieren atención primero."
+   ],
+   "desarrollar": [
+    "Diseña un inventario digital básico que permita registrar productos, cantidades y fechas relevantes. El sistema debe facilitar la identificación rápida de alimentos que necesitan consumirse pronto mediante indicadores, alertas visuales o niveles de prioridad.",
+    "El prototipo puede desarrollarse mediante una hoja de cálculo, un panel interactivo o una aplicación sencilla."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Priorizar productos",
+     "aporta": "organiza las alertas según el nivel de urgencia y el tipo de alimento."
+    },
+    {
+     "titulo": "Analizar desperdicios",
+     "aporta": "estima cuánto alimento y cuánto dinero podría ahorrarse mediante una mejor organización."
+    },
+    {
+     "titulo": "Diseñar una experiencia móvil",
+     "aporta": "explora cómo consultar la información desde un teléfono para registrar productos en cualquier momento."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué información es necesaria para realizar el seguimiento de un alimento.",
+    "Diseñar reglas sencillas para generar alertas útiles.",
+    "Organizar los productos según distintos niveles de prioridad.",
+    "Construir un prototipo funcional utilizando datos simulados.",
+    "Evaluar si el sistema ayuda a visualizar mejor los productos que requieren atención."
+   ],
+   "habilidades": [
+    "Organización de datos.",
+    "Diseño de inventarios.",
+    "Lógica condicional.",
+    "Diseño de interfaces.",
+    "Visualización de información.",
+    "Análisis básico de procesos."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas de prototipado.",
+    "Formularios digitales.",
+    "Bases de datos simples.",
+    "Lenguajes de programación (opcional)."
+   ],
+   "lineamientos": [
+    "No presentes las alertas como una garantía de seguridad alimentaria. Diferencia claramente las fechas de consumo preferente, vencimiento o caducidad cuando corresponda. Utiliza ejemplos ficticios o escenarios simulados para evitar riesgos asociados al uso de información incorrecta.",
+    "Prioriza que las alertas sean fáciles de entender y no dependan de conocimientos técnicos para ser interpretadas."
+   ],
+   "otroSector": "El mismo concepto puede adaptarse al seguimiento de medicamentos sin información de pacientes, materiales de laboratorio, suministros de oficina, herramientas compartidas, repuestos o inventarios básicos de pequeños negocios."
+  },
+  {
+   "id": "cuanta-comida-se-tira-en-tu-casa-en-un-mes",
+   "area": "agricultura",
+   "areas2": [
+    "ambiente"
+   ],
+   "titulo": "¿Cuánta comida se tira en tu casa en un mes?",
+   "resumen": "Imagina cómo registrar los alimentos que terminan desechándose para descubrir patrones de consumo, identificar pérdidas evitables y proponer formas de aprovechar mejor los recursos disponibles.",
+   "tipo": "Análisis",
+   "tiempo": "~30 h",
+   "horas": 30,
+   "etiquetas": [
+    "Datos",
+    "Hogar",
+    "Consumo responsable"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo registres en tu hogar o mediante una simulación documentada.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Economía",
+    "Nutrición",
+    "Administración",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Cada semana se desechan alimentos que podrían haberse consumido. Algunas veces se vencen antes de ser utilizados, otras se compran en exceso o se almacenan de manera inadecuada. Aunque este fenómeno ocurre en muchos hogares, pocas personas llevan un registro que permita comprender cuánto se desperdicia realmente y cuáles son las causas principales.",
+    "La falta de información hace difícil diferenciar entre una impresión y un problema real. Un hogar puede creer que apenas desperdicia comida cuando, acumulando pequeñas pérdidas diarias, termina descartando una cantidad significativa de alimentos a lo largo de un mes.",
+    "Además del impacto económico, el desperdicio alimentario implica un uso innecesario de agua, energía, transporte y otros recursos utilizados durante la producción y distribución de esos alimentos."
+   ],
+   "desarrollar": [
+    "Diseña un sistema simple para registrar los alimentos que se descartan durante varias semanas.",
+    "Puedes clasificar los registros según:",
+    {
+     "lista": [
+      "Tipo de alimento.",
+      "Cantidad aproximada.",
+      "Motivo del descarte.",
+      "Fecha de compra.",
+      "Tiempo de almacenamiento."
+     ]
+    },
+    "A partir de esta información, construye gráficos e indicadores que ayuden a identificar patrones y posibles oportunidades de mejora."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Del registro a la acción",
+     "aporta": "convierte los patrones en un plan semanal de compras y menús, y comprueba si el desperdicio baja."
+    },
+    {
+     "titulo": "Una mirada más amplia",
+     "aporta": "compara tus resultados con los de otros hogares, con su consentimiento, y descubre qué hábitos cambian más el resultado."
+    },
+    {
+     "titulo": "Del desperdicio al aprovechamiento",
+     "aporta": "investiga formas de conservación y recetas para los alimentos que más se pierden."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una metodología sencilla para registrar desperdicios alimentarios.",
+    "Identificar los productos que se descartan con mayor frecuencia.",
+    "Analizar las causas más comunes del desperdicio.",
+    "Visualizar tendencias mediante gráficos y estadísticas básicas.",
+    "Proponer acciones que permitan reducir pérdidas futuras."
+   ],
+   "habilidades": [
+    "Recolección de datos.",
+    "Análisis estadístico básico.",
+    "Diseño de indicadores.",
+    "Visualización de información.",
+    "Interpretación de resultados.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Formularios digitales.",
+    "Aplicaciones de registro.",
+    "Herramientas de visualización de datos."
+   ],
+   "lineamientos": [
+    "Mantén criterios consistentes durante todo el periodo de registro. Si realizas estimaciones de cantidades, explica cómo fueron calculadas.",
+    "No es necesario pesar cada alimento con precisión. Lo importante es que los registros sean suficientemente consistentes para identificar tendencias.",
+    "Evita sacar conclusiones apresuradas a partir de pocos días de observación. Cuanto más largo sea el periodo de registro, más útiles serán los resultados."
+   ],
+   "otroSector": "La misma metodología puede aplicarse al análisis de desperdicio de agua, energía eléctrica, materiales de oficina, insumos de producción o recursos utilizados en pequeños negocios."
+  },
+  {
+   "id": "calendario-huerto",
+   "area": "agricultura",
+   "areas2": [],
+   "titulo": "Un calendario de siembra para un huerto pequeño",
+   "resumen": "Explora cómo cruzar datos del clima con los cultivos que mejor se adaptan para decidir qué sembrar y cuándo.",
+   "tipo": "Guía",
+   "tiempo": "~10 h",
+   "horas": 10,
+   "etiquetas": [
+    "Datos del clima",
+    "Huertos"
+   ],
+   "intencion": [
+    "crear",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: salen de fuentes abiertas",
+   "carreras": [
+    "Agronomía",
+    "Biología",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Educación"
+   ],
+   "problema": [
+    "Quien empieza un huerto suele sembrar fuera de época y pierde plantas, sin saber que el clima de su zona favorece otros cultivos en otros meses."
+   ],
+   "desarrollar": [
+    "Un calendario que, según el clima de una zona, indique qué cultivos conviene sembrar cada mes, cuánto tardan en crecer y qué cuidados necesitan."
+   ],
+   "objetivos": [
+    "Reunir datos de temperatura y lluvia de una zona.",
+    "Elegir cultivos y sus requerimientos.",
+    "Armar un calendario claro y fácil de consultar."
+   ],
+   "habilidades": [
+    "Uso de datos abiertos",
+    "Hoja de cálculo",
+    "Diseño de calendarios y guías"
+   ],
+   "herramientas": [
+    "Datos de una entidad meteorológica",
+    "Hoja de cálculo",
+    "Un editor de diseño"
+   ],
+   "lineamientos": [
+    "Indica de dónde salen los datos del clima.",
+    "Aclara que es una guía general y que cada terreno es distinto.",
+    "Prefiere cultivos fáciles para empezar."
+   ],
+   "otroSector": "El mismo cruce de clima y calendario sirve para eventos al aire libre, turismo, construcción o transporte."
+  }
+ ]
+}

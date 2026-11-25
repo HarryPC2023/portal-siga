@@ -1,0 +1,58 @@
+{
+ "area": "ciencias",
+ "ideas": [
+  {
+   "id": "dureza-agua",
+   "area": "ciencias",
+   "areas2": [],
+   "titulo": "Comparar la dureza del agua en distintos lugares",
+   "resumen": "Explora cómo medir y comparar el agua de varios lugares con un experimento sencillo, y qué la hace diferente.",
+   "tipo": "Investigación",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Experimento",
+    "Datos"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes",
+   "carreras": [
+    "Química",
+    "Física",
+    "Biología",
+    "Ingeniería Química",
+    "Ingeniería Ambiental",
+    "Matemática"
+   ],
+   "problema": [
+    "Usamos agua a diario, pero casi nadie sabe qué tan diferente es entre un lugar y otro ni cómo afecta a los electrodomésticos o al sabor."
+   ],
+   "desarrollar": [
+    "Un procedimiento sencillo con tiras de prueba o una titulación básica para comparar muestras, con un registro ordenado y un gráfico de resultados."
+   ],
+   "objetivos": [
+    "Plantear una pregunta concreta y una forma de medirla.",
+    "Tomar y registrar las muestras con el mismo método.",
+    "Interpretar las diferencias y sus posibles causas."
+   ],
+   "habilidades": [
+    "Método científico",
+    "Registro de datos",
+    "Interpretación de gráficos"
+   ],
+   "herramientas": [
+    "Tiras reactivas o kit de laboratorio básico",
+    "Hoja de cálculo"
+   ],
+   "lineamientos": [
+    "Usa solo materiales seguros y sigue las indicaciones de cada kit.",
+    "Anota cómo y cuándo tomaste cada muestra.",
+    "No concluyas más de lo que tus datos permiten."
+   ],
+   "otroSector": "El mismo enfoque sirve para comparar suelos, alimentos, materiales de construcción o productos de limpieza."
+  }
+ ]
+}

@@ -1,0 +1,394 @@
+{
+ "area": "ambiente",
+ "ideas": [
+  {
+   "id": "que-aparato-de-tu-casa-se-lleva-la-mayor-parte-de-tu-recibo-de-l",
+   "area": "ambiente",
+   "areas2": [
+    "ciencias"
+   ],
+   "titulo": "¿Qué aparato de tu casa se lleva la mayor parte de tu recibo de luz?",
+   "resumen": "Explora cómo estimar el consumo eléctrico de los dispositivos que utilizas a diario para descubrir cuáles tienen un mayor impacto en el gasto energético y qué cambios podrían ayudarte a utilizar la energía de forma más eficiente.",
+   "tipo": "Análisis",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Energía",
+    "Datos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias o públicos: puedes utilizar especificaciones técnicas de los equipos que tienes en casa o recopilar información de fabricantes y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Eléctrica",
+    "Ingeniería Electrónica",
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Economía",
+    "Administración"
+   ],
+   "problema": [
+    "La mayoría de las personas sabe cuánto paga por electricidad cada mes, pero pocas conocen cuánto consume realmente cada aparato que utilizan. Un televisor, una computadora, un ventilador o un cargador pueden formar parte de la rutina diaria sin que exista una idea clara de cuánto representan dentro del consumo total.",
+    "Esta falta de información dificulta tomar decisiones informadas. Muchas veces se intenta ahorrar energía cambiando hábitos que tienen poco impacto, mientras que otros dispositivos con consumos mucho mayores pasan desapercibidos.",
+    "Comprender cómo se distribuye el consumo permite identificar oportunidades de ahorro, comparar alternativas y utilizar los recursos de manera más eficiente."
+   ],
+   "desarrollar": [
+    "Selecciona varios equipos de uso habitual y estima su consumo utilizando información técnica, horas de uso aproximadas y registros sencillos.",
+    "Con esos datos, elabora tablas o gráficos que permitan comparar dispositivos, identificar cuáles consumen más energía y estimar cuánto representan dentro de un periodo determinado.",
+    "El resultado puede presentarse como un informe visual, una hoja de cálculo interactiva o un pequeño panel informativo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar escenarios",
+     "aporta": "descubre cómo cambiaría el consumo si algunos equipos se utilizaran menos tiempo o fueran reemplazados por alternativas más eficientes."
+    },
+    {
+     "titulo": "Analizar costos",
+     "aporta": "estima cuánto dinero representa el consumo de los distintos dispositivos a lo largo de un mes o un año."
+    },
+    {
+     "titulo": "Diseñar recomendaciones",
+     "aporta": "crea una guía sencilla con hábitos que ayuden a reducir el gasto energético sin afectar significativamente la comodidad de las personas."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué información se necesita para estimar el consumo de un dispositivo.",
+    "Registrar y organizar datos de uso de manera sistemática.",
+    "Comparar distintos equipos mediante métricas comunes.",
+    "Visualizar resultados de forma clara y comprensible.",
+    "Proponer recomendaciones basadas en evidencia."
+   ],
+   "habilidades": [
+    "Recolección y análisis de datos.",
+    "Interpretación de información técnica.",
+    "Visualización de datos.",
+    "Pensamiento crítico.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Calculadoras de consumo energético.",
+    "Especificaciones técnicas de equipos.",
+    "Herramientas de gráficos y visualización."
+   ],
+   "lineamientos": [
+    "Utiliza información verificable y documenta siempre de dónde provienen los datos. Cuando no sea posible conocer el consumo exacto, indica claramente las estimaciones y los supuestos utilizados.",
+    "Recuerda que el objetivo del proyecto es comprender patrones de consumo y no obtener una medición de laboratorio. La transparencia en los cálculos es más importante que la precisión absoluta."
+   ],
+   "otroSector": "La misma metodología puede aplicarse al análisis del consumo de agua, combustible, materiales de oficina o cualquier otro recurso cuyo uso pueda registrarse y compararse mediante datos."
+  },
+  {
+   "id": "donde-hace-mas-calor-en-tu-centro-de-estudios-y-por-que",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades"
+   ],
+   "titulo": "¿Dónde hace más calor en tu centro de estudios y por qué?",
+   "resumen": "Explora cómo cambia la sensación de calor entre diferentes zonas de un mismo espacio, por qué algunas áreas se calientan más que otras y qué podría hacerse para que sean más cómodas.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Datos",
+    "Ambiente",
+    "Mediciones"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias o ficticias: puedes medir la temperatura con un termómetro sencillo en distintos puntos de tu centro de estudios, o trabajar con datos simulados si no puedes salir a medir.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Física",
+    "Estadística",
+    "Ciencia de Datos",
+    "Ingeniería de Sistemas",
+    "Biología"
+   ],
+   "problema": [
+    "En un mismo campus, parque o patio, la temperatura puede variar bastante de un punto a otro: una zona con cemento y sin sombra puede resultar mucho más calurosa que otra con árboles, césped o edificios que dan sombra. Sin embargo, rara vez se mide esa diferencia, y las decisiones sobre dónde poner bancas, áreas de descanso o actividades se toman por intuición.",
+    "Esto afecta el confort, el uso de los espacios y, en días de calor intenso, el bienestar de las personas que pasan allí buena parte del día."
+   ],
+   "desarrollar": [
+    "Un análisis que elija entre 8 y 10 puntos de un mismo espacio, registre la temperatura a distintas horas durante varios días y anote las condiciones de cada punto, como sombra, tipo de superficie, vegetación y circulación de aire.",
+    "El resultado puede ser un mapa sencillo con colores, un conjunto de gráficos comparativos o un informe que explique qué factores parecen influir más en el calor de cada zona."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Medición automática",
+     "aporta": "explora cómo usar sensores económicos para registrar la temperatura de forma continua sin tener que estar presente."
+    },
+    {
+     "titulo": "Comparar superficies",
+     "aporta": "analiza cuánto cambia la temperatura entre cemento, pasto, tierra y zonas bajo sombra."
+    },
+    {
+     "titulo": "Proponer mejoras",
+     "aporta": "estima qué efecto podría tener añadir sombra, plantas o cambios de materiales y presenta una propuesta razonada."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un plan de medición con puntos, horarios y condiciones comparables.",
+    "Registrar y organizar los datos de forma ordenada.",
+    "Visualizar las diferencias entre zonas.",
+    "Relacionar las diferencias con las características de cada lugar.",
+    "Proponer recomendaciones basadas en la evidencia obtenida."
+   ],
+   "habilidades": [
+    "Diseño de mediciones y toma de datos.",
+    "Análisis y visualización de datos.",
+    "Pensamiento científico.",
+    "Interpretación de gráficos y mapas.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Termómetro u otro instrumento de medición sencillo.",
+    "Hoja de cálculo.",
+    "Herramientas de gráficos y mapas.",
+    "Cámara o cuaderno de campo para registrar las condiciones de cada punto.",
+    "Herramientas de programación si deseas automatizar el análisis."
+   ],
+   "lineamientos": [
+    "Usa siempre el mismo instrumento y mide a las mismas horas para que los datos sean comparables. Protégete del sol durante las mediciones y no ingreses a zonas restringidas o sin autorización.",
+    "Presenta los resultados como observaciones indicativas, no como mediciones científicas de alta precisión. Si deseas proponer cambios en un espacio, consulta antes con quienes lo administran."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a parques, colegios, mercados, patios industriales, estacionamientos, azoteas o espacios de espera al aire libre, y a la planificación de espacios públicos más cómodos."
+  },
+  {
+   "id": "que-hacer-con-los-aparatos-electronicos-viejos-o-malogrados",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Qué hacer con los aparatos electrónicos viejos o malogrados?",
+   "resumen": "Investiga qué ocurre con los celulares, cargadores, audífonos, laptops y otros aparatos que dejan de funcionar o de usarse, y cómo decidir entre repararlos, reutilizarlos, donarlos o desecharlos de forma responsable.",
+   "tipo": "Investigación",
+   "tiempo": "3 a 6 semanas",
+   "horas": 27,
+   "etiquetas": [
+    "Sostenibilidad",
+    "Electrónica",
+    "Economía circular"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios o ficticios: puedes inventariar los aparatos que hay en tu casa, usar un hogar imaginario y revisar las opciones de reparación, donación o reciclaje que existan en tu zona.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Electrónica",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas",
+    "Economía",
+    "Administración",
+    "Ingeniería Química"
+   ],
+   "problema": [
+    "En casi todos los hogares hay un cajón o una caja con aparatos que ya no se usan: celulares antiguos, cables sueltos, baterías, controles, audífonos o computadoras que \"algún día\" se repararán. Con el tiempo se acumulan porque nadie sabe con certeza qué hacer con ellos.",
+    "Desecharlos con la basura común puede ser peligroso, sobre todo cuando contienen baterías, y desaprovecha materiales y aparatos que aún podrían servir a otras personas. Al mismo tiempo, no siempre resulta claro si conviene reparar, cuánto costaría hacerlo o dónde llevarlos."
+   ],
+   "desarrollar": [
+    "Un inventario sencillo de aparatos en desuso que registre tipo, antigüedad, estado y posible destino, junto con un diagrama de decisión que ayude a elegir entre reparar, reutilizar, donar o llevar a un punto de acopio.",
+    "El resultado puede ser una guía visual, una hoja de cálculo con criterios de decisión o una pequeña página web con preguntas que orienten a la persona hacia la mejor opción."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Reparar o reemplazar",
+     "aporta": "construye una calculadora que compare el costo de reparar un aparato con el de comprar uno nuevo, considerando también su vida útil restante."
+    },
+    {
+     "titulo": "Duración de los aparatos",
+     "aporta": "analiza cuánto tiempo se usan distintos tipos de dispositivos antes de dejarse de usar y por qué razones."
+    },
+    {
+     "titulo": "Mapa de opciones locales",
+     "aporta": "reúne en un solo lugar los talleres, campañas de donación y puntos de acopio autorizados de tu zona."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué aparatos en desuso se acumulan en los hogares y por qué.",
+    "Reconocer los riesgos y oportunidades de cada tipo de aparato.",
+    "Diseñar un criterio claro para decidir qué hacer con cada uno.",
+    "Representar ese criterio en un diagrama o herramienta fácil de usar.",
+    "Comprobar si otras personas logran tomar una decisión sin ayuda al usar la guía."
+   ],
+   "habilidades": [
+    "Análisis de ciclo de vida de productos.",
+    "Sostenibilidad y gestión de residuos.",
+    "Electrónica básica.",
+    "Diseño de árboles de decisión.",
+    "Análisis de costos y beneficios.",
+    "Comunicación clara de información."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Herramientas de diagramas de flujo.",
+    "Mapas digitales para ubicar puntos de acopio.",
+    "Herramientas web básicas si deseas crear una guía interactiva."
+   ],
+   "lineamientos": [
+    "No desarmes aparatos con baterías hinchadas, dañadas o conectados a la corriente, y no manipules baterías de litio deterioradas. Usa únicamente puntos de acopio y talleres autorizados, y recomienda siempre borrar la información personal de un dispositivo antes de donarlo o entregarlo.",
+    "Evita inventar cifras ambientales o de ahorro: si presentas estimaciones, indica de dónde provienen y que son aproximadas."
+   ],
+   "otroSector": "La misma metodología puede aplicarse a la gestión de equipos en oficinas, colegios, laboratorios, talleres o pequeñas empresas, y a otros tipos de residuos domésticos o comerciales."
+  },
+  {
+   "id": "como-usas-el-agua-en-casa-sin-darte-cuenta",
+   "area": "ambiente",
+   "areas2": [],
+   "titulo": "¿Cómo usas el agua en casa sin darte cuenta?",
+   "resumen": "Investiga cómo registrar y analizar hábitos relacionados con el uso del agua para comprender mejor cómo se distribuye el consumo dentro de un hogar e identificar oportunidades de ahorro basadas en datos.",
+   "tipo": "Análisis",
+   "tiempo": "1 a 2 meses",
+   "horas": 39,
+   "etiquetas": [
+    "Datos",
+    "Sostenibilidad",
+    "Hogar"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes utilizar registros realizados por ti mismo o información disponible en recibos de consumo doméstico.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas",
+    "Estadística",
+    "Economía",
+    "Administración",
+    "Arquitectura",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "El agua forma parte de casi todas las actividades diarias: cocinar, limpiar, ducharse, lavar ropa o regar plantas. Sin embargo, la mayoría de las personas solo observa el consumo cuando recibe una factura o cuando aparece una situación de escasez.",
+    "Aunque muchas veces existe la intención de ahorrar agua, resulta difícil saber qué actividades generan el mayor consumo o qué cambios tendrían un impacto significativo. Sin información concreta, las decisiones suelen basarse en percepciones que no siempre reflejan la realidad.",
+    "Comprender cómo se utiliza el agua permite identificar patrones, detectar desperdicios y evaluar hábitos que podrían optimizarse sin afectar la calidad de vida."
+   ],
+   "desarrollar": [
+    "Diseña una metodología sencilla para registrar actividades relacionadas con el consumo de agua durante varias semanas.",
+    "Por ejemplo, podrías analizar:",
+    {
+     "lista": [
+      "Frecuencia de uso de determinados servicios.",
+      "Horarios de mayor consumo.",
+      "Actividades que demandan más agua.",
+      "Variaciones entre días de semana y fines de semana.",
+      "Cambios producidos por nuevas prácticas de ahorro."
+     ]
+    },
+    "A partir de la información recopilada, construye gráficos y visualizaciones que permitan comprender mejor los patrones observados."
+   ],
+   "objetivos": [
+    "Diseñar un sistema simple para registrar información relevante.",
+    "Identificar actividades que concentran gran parte del consumo.",
+    "Analizar tendencias a lo largo del tiempo.",
+    "Visualizar resultados mediante tablas e indicadores comprensibles.",
+    "Elaborar recomendaciones fundamentadas en la información obtenida."
+   ],
+   "habilidades": [
+    "Recolección de datos.",
+    "Diseño de métricas.",
+    "Análisis estadístico básico.",
+    "Visualización de información.",
+    "Interpretación de tendencias.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Formularios digitales.",
+    "Aplicaciones de seguimiento y registro.",
+    "Herramientas de visualización de datos."
+   ],
+   "lineamientos": [
+    "Documenta claramente cómo se registran los datos para mantener la consistencia durante todo el proyecto. Cuando no sea posible medir valores exactos, utiliza estimaciones razonables e indica los criterios utilizados.",
+    "El objetivo principal es identificar patrones y oportunidades de mejora, no obtener mediciones técnicas de alta precisión.",
+    "Si utilizas recibos de consumo, céntrate en los datos relevantes para el análisis y evita compartir información privada innecesaria."
+   ],
+   "otroSector": "La misma metodología puede aplicarse al análisis del consumo eléctrico, combustible, materiales de oficina, recursos de producción o hábitos de utilización de servicios digitales."
+  },
+  {
+   "id": "papel-facultad",
+   "area": "ambiente",
+   "areas2": [],
+   "titulo": "¿Cuánto papel se desperdicia en tu centro de estudios?",
+   "resumen": "Descubre cuánto papel se consume en un espacio real y qué formas concretas habría de reducirlo.",
+   "tipo": "Análisis",
+   "tiempo": "~10 h",
+   "horas": 10,
+   "etiquetas": [
+    "Medición",
+    "Reducción de residuos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Química",
+    "Biología",
+    "Administración",
+    "Educación"
+   ],
+   "problema": [
+    "Se imprime mucho papel que termina sin usarse, pero casi nadie sabe cuánto ni dónde ocurre, así que es difícil cambiar los hábitos."
+   ],
+   "desarrollar": [
+    "Una medición sencilla durante unos días y una propuesta de dos o tres cambios para reducir el desperdicio."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar espacios",
+     "aporta": "Contrasta cuánto papel se usa en aulas, oficinas y laboratorios, y por qué cambia."
+    },
+    {
+     "titulo": "Traducirlo a impacto",
+     "aporta": "Convierte las hojas en algo que se entienda a simple vista: dinero, árboles o tiempo de impresión."
+    },
+    {
+     "titulo": "Cambiar hábitos",
+     "aporta": "Diseña una campaña breve para reducir el papel y descubre cómo la recibirían tus compañeros."
+    }
+   ],
+   "objetivos": [
+    "Definir qué se va a medir y en qué lugar.",
+    "Recoger datos durante una semana.",
+    "Proponer cambios y estimar cuánto papel se ahorraría."
+   ],
+   "habilidades": [
+    "Diseño de una medición",
+    "Gráficos simples",
+    "Comunicación de resultados"
+   ],
+   "herramientas": [
+    "Hoja de cálculo",
+    "Fichas de registro en papel o en línea"
+   ],
+   "lineamientos": [
+    "Avisa y pide permiso en el lugar donde midas.",
+    "Registra cantidades, no personas.",
+    "Presenta resultados sin culpar a nadie."
+   ],
+   "otroSector": "La misma medición funciona con energía, agua o comida en un colegio, un restaurante o una oficina."
+  }
+ ]
+}
