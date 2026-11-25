@@ -5,7 +5,7 @@
 // claves «ideaguardada:<id>») para verse igual en PC y celular; si no hay sesión, quedan en este navegador (localStorage).
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
 import { SigaEstado } from './sync-estado.js?v=1';
-import { AREAS, INTENCIONES, IDEAS, FUENTES, DESTACADAS } from './proyectos-datos.js?v=3';
+import { AREAS, INTENCIONES, IDEAS, FUENTES, DESTACADAS } from './proyectos-datos.js?v=4';
 
 const $ = (s) => document.querySelector(s);
 const CLAVE_GUARDADAS = 'siga_pp_guardadas_v1';
