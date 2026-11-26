@@ -2,24 +2,30 @@
 //
 // Qué hace:
 //   1) En el formulario de "Nueva notificación" añade "¿A quién?": todos los
-//      alumnos (como siempre) o UNA persona, elegida con un buscador por
-//      nombre o código UNI (tabla perfiles_usuario, que el admin ya puede leer).
-//   2) Para una persona: se guarda en `notificaciones` con `destinatario`,
-//      tipo 'respuestas' (el canal personal que cada alumno ya controla en
-//      Perfil → Avisos), canal 'solo_web' y un enlace interno opcional.
+//      alumnos (como siempre) o UNA O VARIAS personas, elegidas desde la lista
+//      completa de alumnos (tabla perfiles_usuario, que el admin ya puede leer),
+//      con buscador por nombre, código UNI o carrera.
+//   2) Para las personas elegidas: se guarda una fila por persona en
+//      `notificaciones` con `destinatario`, tipo 'respuestas' (el canal personal
+//      que cada alumno ya controla en Perfil → Avisos), canal 'solo_web' y un
+//      enlace interno opcional.
 //   3) Lista abajo los avisos personales enviados a mano (los automáticos —
 //      respuestas a ideas, asesoría publicada, preguntas — llevan origen_id y
 //      no aparecen aquí) con opción de borrarlos.
 //
-// El correo NO se usa en avisos personales: el correo masivo lo dispara un
-// proceso aparte que envía a todos los alumnos activos. El envío de admin.js
-// para "Todos" queda tal cual; este módulo solo intercepta el envío cuando
-// está elegida "Una persona".
+// El correo NO se usa en avisos personales todavía: el correo masivo lo dispara
+// el trigger `notificar_por_correo` → Edge Function `enviar-notificacion-email`,
+// que envía a todos los alumnos activos. El envío de admin.js para "Todos"
+// queda tal cual; este módulo solo intercepta el envío cuando está elegida
+// la opción de personas.
 import { supabase } from './auth-siga.js?v=9';
 
 const TIPO_PERSONAL = 'respuestas';
+const MAX_FILAS = 250; // filas dibujadas a la vez en la lista (el buscador afina el resto)
 // Solo rutas internas de SIGA (ej. perfil.html#sugerencias): sin "http:", sin "//" ni "javascript:".
 const ENLACE_VALIDO = /^(?![a-z][a-z0-9+.-]*:)(?!\/\/)[\w\-./?=&#%]+$/i;
+
+const normalizar = (t) => String(t ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFecha }) {
     const panel = document.getElementById('panelNotificaciones');
@@ -30,8 +36,11 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
     const bloque = document.getElementById('notifPersonaBloque');
     const tipoBloque = document.getElementById('notifTipoBloque');
     const inputBuscar = document.getElementById('notifPersonaBuscar');
-    const cajaResultados = document.getElementById('notifPersonaResultados');
-    const cajaElegida = document.getElementById('notifPersonaElegida');
+    const cajaLista = document.getElementById('notifPersonaLista');
+    const contador = document.getElementById('notifPersonaContador');
+    const cajaChips = document.getElementById('notifPersonaChips');
+    const btnVisibles = document.getElementById('notifPersonaVisibles');
+    const btnQuitar = document.getElementById('notifPersonaQuitar');
     const inputEnlace = document.getElementById('notifEnlace');
     const inputTitulo = document.getElementById('notifTitulo');
     const inputMensaje = document.getElementById('notifMensaje');
@@ -41,97 +50,133 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
     const msg = document.getElementById('notifMsg');
     const lista = document.getElementById('listaNotifPersonales');
 
-    let elegido = null;       // { user_id, nombre, codigo_estudiante, carrera }
-    let encontrados = new Map();
-    let temporizador = null;
-    let ultimaBusqueda = 0;
+    let alumnos = [];                 // todos los perfiles, ordenados por nombre
+    let cargados = false;
+    let cargando = false;
+    const elegidos = new Map();       // user_id → perfil (se conserva aunque cambie el filtro)
 
-    const modoPersona = () => form.querySelector('input[name="notifDest"]:checked')?.value === 'persona';
+    const modoPersonas = () => form.querySelector('input[name="notifDest"]:checked')?.value === 'persona';
     const etiqueta = (p) => (p.nombre && p.nombre.trim()) || `Alumno ${String(p.user_id).slice(0, 8)}`;
+    const detalleDe = (p) => [p.codigo_estudiante, p.carrera].filter(Boolean).join(' · ');
+    const textoBoton = () => {
+        const n = elegidos.size;
+        return n > 1 ? `Enviar aviso a ${n} personas` : 'Enviar aviso personal';
+    };
 
     /* ───────── Modo del formulario ───────── */
     function aplicarModo() {
-        const persona = modoPersona();
-        bloque.hidden = !persona;
-        tipoBloque.hidden = persona;
-        inputCorreo.disabled = persona;
-        if (persona) inputCorreo.checked = false;
-        if (toggleCorreo) toggleCorreo.classList.toggle('anp-desactivado', persona);
-        btnPublicar.textContent = persona ? 'Enviar aviso personal' : 'Publicar notificación';
+        const personas = modoPersonas();
+        bloque.hidden = !personas;
+        tipoBloque.hidden = personas;
+        inputCorreo.disabled = personas;
+        if (personas) inputCorreo.checked = false;
+        if (toggleCorreo) toggleCorreo.classList.toggle('anp-desactivado', personas);
+        btnPublicar.textContent = personas ? textoBoton() : 'Publicar notificación';
+        if (personas && !cargados && !cargando) cargarAlumnos();
     }
     radios.forEach((r) => r.addEventListener('change', aplicarModo));
 
-    /* ───────── Buscador de alumno ───────── */
-    function pintarElegida() {
-        if (!elegido) {
-            cajaElegida.hidden = true;
-            cajaElegida.innerHTML = '';
-            inputBuscar.hidden = false;
-            return;
+    /* ───────── Lista de alumnos ───────── */
+    async function cargarAlumnos() {
+        cargando = true;
+        cajaLista.innerHTML = '<p class="anp-vacio">Cargando alumnos…</p>';
+        const PAGINA = 1000;
+        const todos = [];
+        for (let desde = 0; ; desde += PAGINA) {
+            const { data, error } = await supabase
+                .from('perfiles_usuario')
+                .select('user_id, nombre, codigo_estudiante, carrera')
+                .order('user_id')
+                .range(desde, desde + PAGINA - 1);
+            if (error) {
+                cargando = false;
+                cajaLista.innerHTML = `<p class="anp-vacio">No se pudo cargar la lista: ${escapeHtml(error.message)}</p>`;
+                return;
+            }
+            todos.push(...(data || []));
+            if (!data || data.length < PAGINA) break;
         }
-        const detalle = [elegido.codigo_estudiante, elegido.carrera].filter(Boolean).join(' · ');
-        cajaElegida.innerHTML = `
-            <div class="anp-chip">
-                <div><strong>${escapeHtml(etiqueta(elegido))}</strong>${detalle ? `<small>${escapeHtml(detalle)}</small>` : ''}</div>
-                <button type="button" class="anp-quitar" aria-label="Quitar destinatario" title="Quitar">✕</button>
-            </div>`;
-        cajaElegida.hidden = false;
-        inputBuscar.hidden = true;
-        cajaResultados.hidden = true;
-        cajaElegida.querySelector('.anp-quitar').addEventListener('click', () => {
-            elegido = null;
-            inputBuscar.value = '';
-            pintarElegida();
-            inputBuscar.focus();
+        alumnos = todos.sort((a, b) => etiqueta(a).localeCompare(etiqueta(b), 'es', { sensitivity: 'base' }));
+        cargados = true;
+        cargando = false;
+        pintarLista();
+    }
+
+    function filtrados() {
+        const q = normalizar(inputBuscar.value).trim();
+        if (!q) return alumnos;
+        const trozos = q.split(/\s+/);
+        return alumnos.filter((p) => {
+            const pajar = normalizar(`${etiqueta(p)} ${p.codigo_estudiante || ''} ${p.carrera || ''}`);
+            return trozos.every((t) => pajar.includes(t));
         });
     }
 
-    async function buscar(texto) {
-        const q = texto.replace(/[,()%*\\]/g, ' ').replace(/\s+/g, ' ').trim();
-        if (q.length < 2) { cajaResultados.hidden = true; return; }
-        const turno = ++ultimaBusqueda;
-        const columnas = 'user_id, nombre, codigo_estudiante, carrera';
-        let { data, error } = await supabase.from('perfiles_usuario').select(columnas)
-            .or(`nombre.ilike.%${q}%,codigo_estudiante.ilike.%${q}%`).limit(8);
-        if (error) {
-            // Plan B: solo por nombre (por si el código no admite búsqueda de texto).
-            ({ data, error } = await supabase.from('perfiles_usuario').select(columnas).ilike('nombre', `%${q}%`).limit(8));
+    function pintarLista() {
+        if (!cargados) return;
+        const visibles = filtrados();
+        const mostradas = visibles.slice(0, MAX_FILAS);
+
+        if (!visibles.length) {
+            cajaLista.innerHTML = '<p class="anp-vacio">Nadie coincide con esa búsqueda.</p>';
+        } else {
+            cajaLista.innerHTML = mostradas.map((p) => `
+                <label class="anp-fila${elegidos.has(p.user_id) ? ' elegida' : ''}">
+                    <input type="checkbox" data-id="${escapeHtml(p.user_id)}"${elegidos.has(p.user_id) ? ' checked' : ''}>
+                    <div><strong>${escapeHtml(etiqueta(p))}</strong>${detalleDe(p) ? `<small>${escapeHtml(detalleDe(p))}</small>` : ''}</div>
+                </label>`).join('')
+                + (visibles.length > mostradas.length
+                    ? `<p class="anp-vacio">Se muestran ${mostradas.length} de ${visibles.length}. Escribe en el buscador para afinar.</p>`
+                    : '');
         }
-        if (turno !== ultimaBusqueda) return; // llegó una búsqueda más nueva
-        cajaResultados.hidden = false;
-        if (error) {
-            cajaResultados.innerHTML = `<p class="anp-vacio">No se pudo buscar: ${escapeHtml(error.message)}</p>`;
-            return;
-        }
-        if (!data || !data.length) {
-            cajaResultados.innerHTML = '<p class="anp-vacio">Nadie coincide con esa búsqueda.</p>';
-            return;
-        }
-        encontrados = new Map(data.map((p) => [p.user_id, p]));
-        cajaResultados.innerHTML = data.map((p) => {
-            const detalle = [p.codigo_estudiante, p.carrera].filter(Boolean).join(' · ');
-            return `<button type="button" class="anp-opcion" data-id="${escapeHtml(p.user_id)}">
-                <strong>${escapeHtml(etiqueta(p))}</strong>${detalle ? `<small>${escapeHtml(detalle)}</small>` : ''}
-            </button>`;
-        }).join('');
-        cajaResultados.querySelectorAll('.anp-opcion').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                elegido = encontrados.get(btn.dataset.id) || null;
-                pintarElegida();
-            });
-        });
+        pintarResumen(visibles.length);
     }
 
-    inputBuscar.addEventListener('input', () => {
-        clearTimeout(temporizador);
-        temporizador = setTimeout(() => buscar(inputBuscar.value), 250);
+    function pintarResumen(totalVisibles) {
+        const total = alumnos.length;
+        const n = elegidos.size;
+        const visibles = totalVisibles ?? filtrados().length;
+        contador.textContent = `${visibles} de ${total} alumnos · ${n} ${n === 1 ? 'elegido' : 'elegidos'}`;
+        btnPublicar.textContent = modoPersonas() ? textoBoton() : btnPublicar.textContent;
+
+        if (!n) { cajaChips.innerHTML = ''; return; }
+        const lista12 = [...elegidos.values()].slice(0, 12);
+        cajaChips.innerHTML = lista12.map((p) => `
+            <span class="anp-chip">${escapeHtml(etiqueta(p))}
+                <button type="button" class="anp-quitar" data-id="${escapeHtml(p.user_id)}" aria-label="Quitar a ${escapeHtml(etiqueta(p))}" title="Quitar">✕</button>
+            </span>`).join('')
+            + (n > 12 ? `<span class="anp-mas">+${n - 12} más</span>` : '');
+    }
+
+    cajaLista.addEventListener('change', (e) => {
+        const casilla = e.target.closest('input[type="checkbox"][data-id]');
+        if (!casilla) return;
+        const perfil = alumnos.find((p) => p.user_id === casilla.dataset.id);
+        if (!perfil) return;
+        if (casilla.checked) elegidos.set(perfil.user_id, perfil); else elegidos.delete(perfil.user_id);
+        casilla.closest('.anp-fila').classList.toggle('elegida', casilla.checked);
+        pintarResumen();
     });
 
-    /* ───────── Envío (solo cuando está elegida "Una persona") ─────────
+    cajaChips.addEventListener('click', (e) => {
+        const quitar = e.target.closest('.anp-quitar');
+        if (!quitar) return;
+        elegidos.delete(quitar.dataset.id);
+        pintarLista();
+    });
+
+    btnVisibles.addEventListener('click', () => {
+        filtrados().forEach((p) => elegidos.set(p.user_id, p));
+        pintarLista();
+    });
+    btnQuitar.addEventListener('click', () => { elegidos.clear(); pintarLista(); });
+    inputBuscar.addEventListener('input', pintarLista);
+
+    /* ───────── Envío (solo cuando está elegida la opción de personas) ─────────
        Escucha en fase de captura sobre el panel para adelantarse al envío
        de "Todos" de admin.js y cortarlo solo en este modo. */
     panel.addEventListener('submit', async (e) => {
-        if (e.target !== form || !modoPersona()) return;
+        if (e.target !== form || !modoPersonas()) return;
         e.preventDefault();
         e.stopPropagation();
 
@@ -140,10 +185,19 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
         const enlace = inputEnlace.value.trim();
         const falla = (texto) => { msg.textContent = texto; msg.className = 'admin-msg error'; };
 
-        if (!elegido) return falla('Elige primero a quién se lo envías.');
+        if (!elegidos.size) return falla('Elige al menos una persona de la lista.');
         if (!titulo || !mensaje) return falla('Escribe el título y el mensaje.');
         if (enlace && !ENLACE_VALIDO.test(enlace)) {
             return falla('El enlace debe ser una página de SIGA, por ejemplo: perfil.html#sugerencias (sin http ni //).');
+        }
+
+        const destinatarios = [...elegidos.values()];
+        if (destinatarios.length > 1) {
+            const ok = await confirmarAccion(
+                `Se enviará «${titulo}» a ${destinatarios.length} personas. Les aparecerá en su campanita; si te equivocas, podrás borrarlo desde la lista «Enviadas a personas».`,
+                { titulo: '¿Enviar este aviso?', textoBoton: 'Sí, enviar' },
+            );
+            if (!ok) return;
         }
 
         btnPublicar.disabled = true;
@@ -151,27 +205,31 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
         msg.textContent = '';
         msg.className = 'admin-msg';
 
-        const { error } = await supabase.from('notificaciones').insert({
-            destinatario: elegido.user_id,
+        const filas = destinatarios.map((p) => ({
+            destinatario: p.user_id,
             tipo: TIPO_PERSONAL,
             titulo,
             mensaje,
             enlace: enlace || null,
             canal: 'solo_web',
-        });
+        }));
+        const { error } = await supabase.from('notificaciones').insert(filas);
 
         btnPublicar.disabled = false;
-        btnPublicar.textContent = 'Enviar aviso personal';
+        if (error) {
+            btnPublicar.textContent = textoBoton();
+            return falla('No se pudo enviar: ' + error.message);
+        }
 
-        if (error) return falla('No se pudo enviar: ' + error.message);
-
-        msg.textContent = `✅ Enviado a ${etiqueta(elegido)} — le aparece en su campanita.`;
+        msg.textContent = destinatarios.length === 1
+            ? `✅ Enviado a ${etiqueta(destinatarios[0])} — le aparece en su campanita.`
+            : `✅ Enviado a ${destinatarios.length} personas — les aparece en su campanita.`;
         msg.className = 'admin-msg exito';
 
         form.reset();
-        elegido = null;
+        elegidos.clear();
         inputBuscar.value = '';
-        pintarElegida();
+        pintarLista();
         aplicarModo();
         cargarLista();
     }, true);
@@ -184,7 +242,7 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
             .not('destinatario', 'is', null)
             .is('origen_id', null)            // los automáticos llevan origen_id
             .order('creado_en', { ascending: false })
-            .limit(20);
+            .limit(50);
 
         if (error) {
             lista.innerHTML = `<p class="admin-vacio">No se pudo cargar: ${escapeHtml(error.message)}</p>`;

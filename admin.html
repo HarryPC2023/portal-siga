@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="css/landing.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/tema-siga.css?v=1">
-    <link rel="stylesheet" href="css/admin.css?v=4">
+    <link rel="stylesheet" href="css/admin.css?v=5">
     <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
     <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
@@ -86,25 +86,34 @@
                             <div class="da-tipos" role="radiogroup" aria-label="Destinatario del aviso">
                                 <label><input type="radio" name="notifDest" value="todos" checked><span>Todos los
                                         alumnos</span></label>
-                                <label><input type="radio" name="notifDest" value="persona"><span>Una
-                                        persona</span></label>
+                                <label><input type="radio" name="notifDest" value="persona"><span>Una o varias
+                                        personas</span></label>
                             </div>
                         </div>
 
                         <div class="admin-form-campo" id="notifPersonaBloque" hidden>
-                            <span>Alumno</span>
+                            <span>Alumnos</span>
                             <input type="search" id="notifPersonaBuscar" maxlength="60" autocomplete="off"
-                                placeholder="Busca por nombre o código UNI…">
-                            <div id="notifPersonaResultados" class="anp-resultados" hidden></div>
-                            <div id="notifPersonaElegida" hidden></div>
+                                placeholder="Filtra por nombre, código UNI o carrera…">
+                            <div class="anp-barra">
+                                <small id="notifPersonaContador" class="da-tipos-ayuda"></small>
+                                <div class="anp-acciones">
+                                    <button type="button" class="anp-mini" id="notifPersonaVisibles">Elegir los
+                                        visibles</button>
+                                    <button type="button" class="anp-mini" id="notifPersonaQuitar">Quitar
+                                        todos</button>
+                                </div>
+                            </div>
+                            <div id="notifPersonaLista" class="anp-lista"></div>
+                            <div id="notifPersonaChips" class="anp-chips"></div>
                             <label class="admin-form-campo anp-enlace">
                                 <span>Enlace (opcional)</span>
                                 <input type="text" id="notifEnlace" maxlength="120" autocomplete="off"
                                     placeholder="Ej. perfil.html#sugerencias">
                             </label>
-                            <small class="da-tipos-ayuda">Le llega solo a esa persona, en su campanita, como aviso
-                                personal (el que cada alumno controla en Perfil → Avisos → Respuestas). El enlace
-                                abre una página de SIGA al tocar el aviso. Sin correo.</small>
+                            <small class="da-tipos-ayuda">Le llega solo a las personas elegidas, en su campanita,
+                                como aviso personal (el que cada alumno controla en Perfil → Avisos → Respuestas).
+                                El enlace abre una página de SIGA al tocar el aviso. Sin correo.</small>
                         </div>
 
                         <div class="admin-form-campo" id="notifTipoBloque">
@@ -120,15 +129,15 @@
                             <small class="da-tipos-ayuda">Cada alumno puede apagar cada tipo en Perfil → Avisos.</small>
                         </div>
 
-                        <label class="perfil-toggle admin-form-toggle">
-                            <span>
+                        <label class="admin-toggle admin-form-toggle">
+                            <span class="admin-toggle-texto">
                                 <strong>Enviar también por correo</strong>
                                 <small>Además de aparecer en SIGA, le llega un correo a todos los alumnos con
                                     notificaciones activas. Úsalo solo para avisos importantes — la cuota gratuita de
                                     Brevo es de 300 correos/día.</small>
                             </span>
                             <input type="checkbox" id="notifPorCorreo">
-                            <span class="perfil-toggle-visual"></span>
+                            <span class="admin-toggle-visual"></span>
                         </label>
 
                         <button type="submit" class="admin-form-submit" id="btnPublicarNotif">Publicar
@@ -234,7 +243,7 @@
     <script src="js/landing.js"></script>
     <script src="js/tema-siga.js?v=1"></script>
     <script src="js/selector-personalizado.js?v=1"></script>
-    <script type="module" src="js/admin.js?v=5"></script>
+    <script type="module" src="js/admin.js?v=6"></script>
 </body>
 
 </html>

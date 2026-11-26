@@ -9,7 +9,7 @@ import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.
 import { iniciarFaqAsesorias } from './admin-faq.js?v=1';
 import { iniciarBandejaPreguntas } from './admin-bandeja.js?v=1';
 import { iniciarProyectosAdmin } from './admin-proyectos.js?v=2';
-import { iniciarAvisoPersonal } from './admin-aviso-personal.js?v=1';
+import { iniciarAvisoPersonal } from './admin-aviso-personal.js?v=2';
 import { nombreCursoLegible } from './nombres-curso.js?v=1';
 import { FACULTADES } from '../intranotas/facultades-datos.js';
 
