@@ -14,7 +14,7 @@ import { AREAS, INTENCIONES, FUENTES, DESTACADAS } from './proyectos-datos.js?v=
 const $ = (s) => document.querySelector(s);
 const CLAVE_GUARDADAS = 'siga_pp_guardadas_v1';
 const RUTA_IDEAS = 'js/proyectos/';
-const PAGINA = 12;                       // tarjetas que se muestran de a una tanda («Ver más» trae otras 12)
+const PAGINA = 12;                       // tarjetas por página (los botones «Anterior / Siguiente» cambian de página)
 const PROGRAMACION = { sin: 'no hace falta', opcional: 'opcional', incluida: 'incluida' };
 
 /* ───── las ideas: índice liviano al abrir, ficha completa al abrir una idea ───── */
@@ -125,8 +125,8 @@ async function conectarNube() {
     estado.guardadas = leerGuardadas();
 }
 
-const estado = { area: null, intencion: null, q: '', verTodas: false, guardadas: new Set(), ultimaSorpresa: null, destacadas: [], limite: PAGINA, limiteCruce: PAGINA };
-const reiniciarPagina = () => { estado.limite = PAGINA; estado.limiteCruce = PAGINA; };
+const estado = { area: null, intencion: null, q: '', verTodas: false, guardadas: new Set(), ultimaSorpresa: null, destacadas: [], pagina: 1, paginaCruce: 1 };
+const reiniciarPagina = () => { estado.pagina = 1; estado.paginaCruce = 1; };
 
 function alternarGuardada(id) {
     guardarUna(id, !estado.guardadas.has(id));
@@ -234,6 +234,45 @@ function tarjeta(i, extra = {}) {
     return card;
 }
 
+// Paginador: «Mostrando 13–24 de 50 · Página 2 de 5» y botones [‹ Anterior] 1 … 4 [5] 6 … 9 [Siguiente ›].
+// Cada página reemplaza a la anterior; la persona puede volver con «Anterior» o con el número.
+function pintarPaginador(nav, total, pagina, visible, alCambiar) {
+    const paginas = Math.ceil(total / PAGINA);
+    nav.hidden = !(visible && paginas > 1);
+    if (nav.hidden) { nav.replaceChildren(); return; }
+    const desde = (pagina - 1) * PAGINA + 1;
+    const hasta = Math.min(total, pagina * PAGINA);
+    const boton = (texto, p, { actual = false, apagado = false, etiqueta = `Página ${p}` } = {}) => {
+        const b = el('button', { type: 'button', class: `pp-pag-b${actual ? ' pp-pag-actual' : ''}`, 'aria-label': etiqueta, text: texto });
+        if (actual) b.setAttribute('aria-current', 'page');
+        if (apagado) b.disabled = true;
+        else b.addEventListener('click', () => alCambiar(p));
+        return b;
+    };
+    // Números: siempre la primera y la última, y la actual con una vecina a cada lado; lo demás se resume con «…».
+    const numeros = [];
+    let previo = 0;
+    for (let p = 1; p <= paginas; p += 1) {
+        if (p !== 1 && p !== paginas && Math.abs(p - pagina) > 1) continue;
+        if (p - previo > 1) numeros.push(el('span', { class: 'pp-pag-puntos', 'aria-hidden': 'true', text: '…' }));
+        numeros.push(boton(String(p), p, { actual: p === pagina }));
+        previo = p;
+    }
+    nav.replaceChildren(
+        el('p', { class: 'pp-pag-info', text: `Mostrando ${desde === hasta ? desde : `${desde}–${hasta}`} de ${total} · Página ${pagina} de ${paginas}` }),
+        el('div', { class: 'pp-pag-botones' },
+            boton('‹ Anterior', pagina - 1, { apagado: pagina === 1, etiqueta: 'Página anterior' }),
+            ...numeros,
+            boton('Siguiente ›', pagina + 1, { apagado: pagina === paginas, etiqueta: 'Página siguiente' })));
+}
+
+// Al cambiar de página, la vista vuelve al inicio del bloque (si no, la persona se quedaría mirando el final de la página nueva).
+function irAlBloque(selector) {
+    const reducir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const nodo = $(selector);
+    if (nodo) nodo.scrollIntoView({ behavior: reducir ? 'auto' : 'smooth', block: 'start' });
+}
+
 function pintarIdeas() {
     const filtrando = hayFiltros() || estado.verTodas;
     const ar = estado.area ? areaDe(estado.area) : null;
@@ -241,22 +280,20 @@ function pintarIdeas() {
     const cruce = filtrando ? ideasCruzadas() : [];
     $('#ppSubIdeas').textContent = !filtrando ? 'Destacadas — Ideas seleccionadas para inspirarte.'
         : ar ? `Ideas en ${ar.nombre} (${lista.length})` : hayFiltros() ? `Ideas que coinciden con tu búsqueda (${lista.length})` : `Todas las ideas del catálogo (${IDEAS.length})`;
-    // Se muestran por tandas: «Ver más» trae otras PAGINA. Las destacadas (4) se muestran siempre completas.
-    const visibles = filtrando ? lista.slice(0, estado.limite) : lista;
+    // Se muestran por páginas de PAGINA: cada página REEMPLAZA a la anterior (no se alarga la pantalla). Las destacadas (4) siempre completas.
+    estado.pagina = Math.min(estado.pagina, Math.max(1, Math.ceil(lista.length / PAGINA)));
+    const visibles = filtrando ? lista.slice((estado.pagina - 1) * PAGINA, estado.pagina * PAGINA) : lista;
     $('#ppIdeas').replaceChildren(...visibles.map((i) => tarjeta(i)));
     $('#ppIdeas').classList.toggle('pp-ideas-4', !filtrando && lista.length === 4);
-    const mas = $('#ppMas');
-    mas.hidden = !(filtrando && lista.length > estado.limite);
-    mas.textContent = `Ver más (${Math.max(0, lista.length - estado.limite)} restantes)`;
+    pintarPaginador($('#ppPag'), lista.length, estado.pagina, filtrando, (p) => { estado.pagina = p; pintarIdeas(); irAlBloque('#ideas'); });
     // Bloque aparte: ideas de otras áreas que se cruzan con el área elegida.
     const wrap = $('#ppCruceWrap');
     wrap.hidden = !(ar && cruce.length);
     if (ar && cruce.length) {
         $('#ppCruceT').textContent = `Ideas de otras áreas que se cruzan con ${ar.corto || ar.nombre}`;
-        $('#ppCruce').replaceChildren(...cruce.slice(0, estado.limiteCruce).map((i) => tarjeta(i)));
-        const mc = $('#ppMasCruce');
-        mc.hidden = cruce.length <= estado.limiteCruce;
-        mc.textContent = `Ver más (${Math.max(0, cruce.length - estado.limiteCruce)} restantes)`;
+        estado.paginaCruce = Math.min(estado.paginaCruce, Math.max(1, Math.ceil(cruce.length / PAGINA)));
+        $('#ppCruce').replaceChildren(...cruce.slice((estado.paginaCruce - 1) * PAGINA, estado.paginaCruce * PAGINA).map((i) => tarjeta(i)));
+        pintarPaginador($('#ppPagCruce'), cruce.length, estado.paginaCruce, true, (p) => { estado.paginaCruce = p; pintarIdeas(); irAlBloque('#ppCruceWrap'); });
     }
     $('#ppVacio').hidden = lista.length > 0 || (ar && cruce.length > 0);
     $('#ppLimpiar').hidden = !hayFiltros();
@@ -457,8 +494,6 @@ function conectar() {
         $('#ideas').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
     $('#ppVerTodas').addEventListener('click', () => { estado.verTodas = !estado.verTodas; reiniciarPagina(); pintarIdeas(); });
-    $('#ppMas').addEventListener('click', () => { estado.limite += PAGINA; pintarIdeas(); });
-    $('#ppMasCruce').addEventListener('click', () => { estado.limiteCruce += PAGINA; pintarIdeas(); });
     $('#ppLimpiar').addEventListener('click', () => {
         estado.area = null; estado.intencion = null; estado.q = ''; $('#ppBuscar').value = '';
         reiniciarPagina(); pintarAreas(); pintarIntenciones(); pintarIdeas();

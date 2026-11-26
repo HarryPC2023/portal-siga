@@ -7,7 +7,7 @@
 //   a la misma página).
 // - Si faltan piezas: el mini carnet sale punteado con su avance y el
 //   avatar lleva un puntito que late. Sin recompensas, solo invitación.
-// - Cinco accesos: Mi carnet, Avisos, Ayuda, Ideas, Mis preguntas.
+// - Cinco accesos: Mi carnet, Avisos, Ayuda, Ideas, Mis preguntas (y Mis propuestas, solo con acceso a Proyectos Prácticos).
 // - Tema como bolitas (sale del botón suelto del nav cuando hay sesión).
 // - Seguridad (contraseña / eliminar cuenta) discreto abajo, con el correo
 //   y "Cerrar sesión".
@@ -16,6 +16,7 @@
 import { supabase, cerrarSesion, resolverUrlFoto } from './auth-siga.js?v=9';
 import { SigaEstado } from './sync-estado.js?v=1';
 import { PIEZAS, piezasFaltantes, pintarCarnet, asegurarEstilosCarnet } from './carnet-siga.js';
+import { tieneAcceso } from './desarrollo-acceso.js?v=2';
 
 /* Mismos íconos (SVG, no emojis: 🪪 no existe en Windows 10) que las
    pestañas en píldoras de perfil.html. */
@@ -26,6 +27,7 @@ const ICONOS = {
     sugerencias: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>',
     cuenta: '<path d="M12 3l7 3v5c0 5-3.4 8.4-7 10-3.6-1.6-7-5-7-10V6z"/><path d="M9.5 12l1.8 1.8L15 10"/>',
     preguntas: '<path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/>',
+    propuestas: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14l2 2 4-4"/>',
 };
 
 const ACCESOS = [
@@ -35,6 +37,9 @@ const ACCESOS = [
     { tab: 'sugerencias', titulo: 'Ideas', texto: 'Mejora SIGA con nosotros', color: '#FDEAF3', acento: '#C13F94' },
     { tab: 'preguntas', titulo: 'Mis preguntas', texto: 'Tus dudas y sus respuestas', color: '#FFEFE6', acento: '#E8590C' },
 ];
+
+// Solo para quien ya tiene acceso a «Proyectos Prácticos» (hoy el dueño; mismo candado que la sección).
+const ACCESO_PROPUESTAS = { tab: 'propuestas', titulo: 'Mis propuestas', texto: 'Tus ideas y su estado', color: '#E8F6EC', acento: '#2F9E44' };
 
 const ICONO_USUARIO = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 4-6 8-6s8 2 8 6" /></svg>';
 
@@ -70,7 +75,8 @@ export async function montarMenuUsuario(cont, sesion, raiz) {
     lugarMini.href = perfilUrl('info');
 
     const accesos = el('div', 'menu-usuario-accesos');
-    ACCESOS.forEach((a) => {
+    const accesosVisibles = tieneAcceso(sesion.user.email) ? [...ACCESOS, ACCESO_PROPUESTAS] : ACCESOS;
+    accesosVisibles.forEach((a) => {
         const enlace = el('a', 'menu-usuario-acceso');
         enlace.href = perfilUrl(a.tab);
         enlace.style.setProperty('--acceso-fondo', a.color);

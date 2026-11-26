@@ -8,7 +8,7 @@ import { montarIdeas } from './ideas.js';
 import { montarAvisos } from './avisos.js';
 import { montarSeguridad } from './seguridad.js';
 import { montarMisPreguntas } from './mis-preguntas.js';
-import { montarMisPropuestas } from './mis-propuestas.js';
+import { montarMisPropuestas } from './mis-propuestas.js?v=2';
 
 const TABS_VALIDAS = ['info', 'cuenta', 'preferencias', 'faq', 'sugerencias', 'preguntas', 'propuestas'];
 
@@ -69,6 +69,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     montarMisPreguntas(sesion);
 
     // ================= MIS PROPUESTAS (Proyectos Prácticos) =================
-    // Estado de las ideas que propuso, retirar y eliminar. La pestaña nace oculta y solo aparece si tiene propuestas: js/mis-propuestas.js.
+    // Estado de las ideas que propuso, retirar y eliminar. La pestaña se ve siempre con acceso a Proyectos Prácticos (si no, solo con propuestas): js/mis-propuestas.js.
     montarMisPropuestas(sesion);
 });

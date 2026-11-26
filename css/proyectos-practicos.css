@@ -197,9 +197,19 @@
 }
 
 /* Catálogo por tandas y bloque «se cruza con» */
-.pp-mas-wrap { display: flex; justify-content: center; margin: 16px 0 4px; }
-.pp-mas-wrap .pp-chip-btn[hidden], .pp-cruce-wrap[hidden] { display: none; }
-.pp-cruce-wrap { margin-top: 28px; }
+.pp-cruce-wrap[hidden] { display: none; }
+/* paginador: cada página reemplaza a la anterior */
+.pp-pag { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 18px 0 4px; }
+.pp-pag[hidden] { display: none; }
+.pp-pag-info { margin: 0; font: 600 14px 'Poppins', sans-serif; color: var(--tinta); opacity: .85; text-align: center; }
+.pp-pag-botones { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.pp-pag-b { min-width: 42px; height: 42px; padding: 0 14px; font: 700 14px 'Montserrat Alternates', sans-serif; border: 2px solid var(--n-violeta); background: #fff; color: var(--tinta); border-radius: 999px; cursor: pointer; }
+.pp-pag-b:hover:not(:disabled) { background: var(--morado); color: #fff; }
+.pp-pag-b:disabled { opacity: .4; cursor: default; }
+.pp-pag-b.pp-pag-actual { background: var(--morado); color: #fff; }
+.pp-pag-b:focus-visible { outline: 3px solid #FFB000; outline-offset: 3px; }
+.pp-pag-puntos { align-self: center; padding: 0 2px; font: 700 14px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
+.pp-cruce-wrap { margin-top: 28px; scroll-margin-top: 90px; }
 .pp-cruce-t { margin: 0 0 12px; font: 700 20px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
 .pp-cruza { margin: 0; font-size: 13.5px; line-height: 1.55; }
 .pp-cruza b { font-weight: 600; }

@@ -10,12 +10,14 @@
 //
 // Tabla: proyectos_ideas (cada persona solo lee las suyas). Retirar y eliminar pasan por funciones de la base de
 // datos (supabase/migrations/20261125240000_proyectos_ideas_mis_propuestas.sql).
-// La pestaña NACE OCULTA y solo aparece si la persona tiene propuestas. Lo monta js/perfil-hub.js:
+// La pestaña nace oculta: se muestra desde el inicio a quien tiene acceso a Proyectos Prácticos (hoy solo el dueño, mismo candado que la
+// sección: js/desarrollo-acceso.js) y, a cualquier otra persona, solo si ya tiene propuestas. Lo monta js/perfil-hub.js:
 //     montarMisPropuestas(sesion)
 //
 // ⚠️ Archivo NUEVO.
 import { supabase } from './auth-siga.js?v=9';
 import { AREAS } from './proyectos-datos.js?v=5';
+import { tieneAcceso } from './desarrollo-acceso.js?v=2';
 
 const MAX_PENDIENTES = 3;
 
@@ -170,7 +172,7 @@ export async function montarMisPropuestas(sesion) {
 
     function mostrarPestana() {
         if (!boton) return;
-        // Solo se muestra (nace oculta). Si borras la última, se queda hasta recargar: así no desaparece bajo tus pies.
+        // Para quien no tiene acceso a la sección: aparece cuando ya tiene propuestas, y si borra la última se queda hasta recargar.
         if (!filas.length || !boton.hidden) return;
         boton.hidden = false;
         // Si entró directo con #propuestas y la pestaña recién apareció, que se active.
@@ -239,6 +241,9 @@ export async function montarMisPropuestas(sesion) {
     document.addEventListener('click', (e) => {
         if (e.target.closest('.perfil-hub-tab[data-tab="propuestas"]')) cargar();
     });
+
+    // Con acceso a Proyectos Prácticos la pestaña está desde el primer momento (aunque todavía no haya propuestas).
+    if (boton && tieneAcceso(sesion.user.email)) boton.hidden = false;
 
     pintar();
     await cargar();
