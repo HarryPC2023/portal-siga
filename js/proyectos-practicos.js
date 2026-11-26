@@ -522,7 +522,7 @@ function abrirProponer() {
         $('#ppPropCruces').replaceChildren(...AREAS.map((a) => el('label', {}, el('input', { type: 'checkbox', value: a.id }), a.corto || a.nombre)));
     }
     if (estado.area) area.value = estado.area;
-    mostrarErrorProp('');
+    mostrarErrorProp(''); $('#ppPropPerfilAviso').hidden = true;
     if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
     $('#ppPropTitulo').focus();
 }
@@ -530,10 +530,10 @@ async function enviarPropuesta(ev) {
     ev.preventDefault();
     const v = (id) => $(id).value.trim();
     const titulo = v('#ppPropTitulo'), problema = v('#ppPropProblema'), primero = v('#ppPropPrimero'), area = $('#ppPropArea').value;
-    if (titulo.length < 8) return mostrarErrorProp('Escribe un título de al menos 8 caracteres.', $('#ppPropTitulo'));
+    // Sin mínimos de redacción: cada persona cuenta su idea como pueda. Solo se exige que no estén vacíos (el título debe tener ≥ 5, igual que la tabla).
+    if (titulo.length < 5) return mostrarErrorProp('Escribe el título de tu idea.', $('#ppPropTitulo'));
     if (!area) return mostrarErrorProp('Elige el área principal de la idea.', $('#ppPropArea'));
-    if (problema.length < 30) return mostrarErrorProp('Cuéntanos un poco más del problema (mínimo 30 caracteres).', $('#ppPropProblema'));
-    if (primero.length < 20) return mostrarErrorProp('Cuéntanos qué harías primero (mínimo 20 caracteres).', $('#ppPropPrimero'));
+    if (!problema) return mostrarErrorProp('Cuéntanos con tus palabras qué problema quieres entender o resolver.', $('#ppPropProblema'));
     if (!$('#ppPropAcepta').checked) return mostrarErrorProp('Para enviar la idea hay que aceptar que puede publicarse en el catálogo.', $('#ppPropAcepta'));
     const cruces = [...document.querySelectorAll('#ppPropCruces input:checked')].map((c) => c.value).filter((c) => c !== area);
     if (cruces.length > 2) return mostrarErrorProp('Elige como máximo 2 áreas en «Se cruza con».');
@@ -552,13 +552,15 @@ async function enviarPropuesta(ev) {
             id: idPropuesta(), area, areas2: cruces, titulo, resumen: problema,
             tipo: $('#ppPropTipo').value || 'Por definir', tiempo: $('#ppPropTiempo').value ? tiempo : 'Por definir', horas,
             datos: $('#ppPropDatos').value || 'ficticios', prog: $('#ppPropProg').value || null,
-            ficha: { problema: [problema], desarrollar: [primero] },
+            ficha: { problema: [problema], desarrollar: primero ? [primero] : [] },
             estado: 'pendiente', origen: 'usuario', autor_id: uid, acepta_publicar: true, mostrar_autor: $('#ppPropMostrar').checked,
         };
         const { error } = await supabase.from('proyectos_ideas').insert(fila);
         if (error) throw error;
         $('#ppPropForm').reset(); pintarSimilares();
         $('#ppPropForm').hidden = true; $('#ppPropListo').hidden = false;
+        $('#ppPropPerfilAviso').hidden = true;
+        nombreEnPerfil().then((tiene) => { $('#ppPropListoPerfil').hidden = tiene; });
     } catch (e) {
         console.warn('Proyectos: no se pudo enviar la propuesta', e);
         const m = String((e && e.message) || '');
@@ -567,7 +569,26 @@ async function enviarPropuesta(ev) {
             : 'No pudimos enviar tu idea. Revisa tu conexión e inténtalo otra vez.');
     } finally { boton.disabled = false; boton.textContent = 'Enviar para revisión'; }
 }
+// ¿La persona ya puso su nombre en su perfil? Se consulta solo si quiere aparecer como autora.
+let tieneNombrePerfil = null;
+async function nombreEnPerfil() {
+    if (tieneNombrePerfil !== null) return tieneNombrePerfil;
+    try {
+        const { data: ses } = await supabase.auth.getSession();
+        const uid = ses && ses.session && ses.session.user && ses.session.user.id;
+        if (!uid) return false;
+        const { data, error } = await supabase.from('perfiles_usuario').select('nombre').eq('user_id', uid).maybeSingle();
+        if (error) throw error;
+        tieneNombrePerfil = !!(data && data.nombre && data.nombre.trim());
+    } catch (e) { console.warn('Proyectos: no se pudo leer el perfil', e); return true; }      // si no se puede comprobar, no se molesta con el aviso
+    return tieneNombrePerfil;
+}
+async function avisarPerfil() {
+    const caja = $('#ppPropPerfilAviso');
+    caja.hidden = !($('#ppPropMostrar').checked && !(await nombreEnPerfil()));
+}
 function conectarProponer() {
+    $('#ppPropMostrar').addEventListener('change', avisarPerfil);
     document.querySelectorAll('[data-proponer]').forEach((b) => b.addEventListener('click', abrirProponer));
     $('#ppPropTitulo').addEventListener('input', pintarSimilares);
     $('#ppPropProblema').addEventListener('input', (e) => { $('#ppPropContador').textContent = `${e.target.value.length} / 600`; });

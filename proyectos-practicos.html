@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/tema-siga.css?v=1">
-  <link rel="stylesheet" href="css/proyectos-practicos.css?v=10">
+  <link rel="stylesheet" href="css/proyectos-practicos.css?v=11">
   <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
   <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
@@ -183,12 +183,12 @@
         </label>
 
         <label class="pp-campo">¿Qué problema quieres entender o resolver? *
-          <textarea id="ppPropProblema" rows="4" maxlength="600" required placeholder="En 2 a 4 líneas: qué pasa, a quién afecta y por qué importa."></textarea>
+          <textarea id="ppPropProblema" rows="4" maxlength="600" required placeholder="Cuéntalo con tus palabras, como lo expliques mejor. Puede ser una sola frase."></textarea>
           <span class="pp-ayuda" id="ppPropContador">0 / 600</span>
         </label>
 
-        <label class="pp-campo">¿Qué harías primero? *
-          <textarea id="ppPropPrimero" rows="4" maxlength="800" required placeholder="El primer paso que se podría hacer con datos propios, ficticios o públicos, sin pedir permiso a nadie."></textarea>
+        <label class="pp-campo">¿Qué harías primero? (opcional)
+          <textarea id="ppPropPrimero" rows="4" maxlength="800" placeholder="Si no estás seguro, déjalo en blanco: lo completamos al revisar tu idea. Escribe lo que se te ocurra, sin mínimo."></textarea>
         </label>
 
         <details class="pp-opc">
@@ -211,6 +211,7 @@
         </details>
 
         <label class="pp-check"><input type="checkbox" id="ppPropMostrar"> Mostrar mi nombre como autor de la idea si se publica (si no, aparecerá como anónima).</label>
+        <div class="pp-perfil-aviso" id="ppPropPerfilAviso" hidden>Todavía no tienes tu nombre en tu perfil, así que no podríamos mostrarlo. <a href="perfil.html" target="_blank" rel="noopener">Completa tu perfil</a> (se abre en otra pestaña, no pierdes lo que escribiste) y vuelve aquí.</div>
         <label class="pp-check"><input type="checkbox" id="ppPropAcepta" required> Entiendo que mi idea puede publicarse en el catálogo y ser adaptada por otras personas. *</label>
 
         <p class="pp-error" id="ppPropError" role="alert" hidden></p>
@@ -222,6 +223,7 @@
       <div id="ppPropListo" hidden>
         <h3>¡Gracias por tu idea!</h3>
         <p class="pp-ficha-res">Quedó <b>pendiente de revisión</b>. Si es aprobada, se completará la ficha y aparecerá en el catálogo.</p>
+        <p class="pp-perfil-aviso" id="ppPropListoPerfil" hidden>Aprovecha para <a href="perfil.html">completar tu perfil</a>: así podremos mostrar tu nombre como autor si tu idea se publica.</p>
         <div class="pp-ficha-pie"><button type="button" class="pp-btn pp-btn-blanco" id="ppPropOtra">Proponer otra</button><button type="button" class="pp-btn pp-btn-azulneon" id="ppPropFin">Cerrar</button></div>
       </div>
     </div>
@@ -236,7 +238,7 @@
 
   <script src="js/landing.js"></script>
   <script type="module" src="js/gate.js"></script>
-  <script type="module" src="js/proyectos-practicos.js?v=10"></script>
+  <script type="module" src="js/proyectos-practicos.js?v=11"></script>
   <script src="js/tema-siga.js?v=1"></script>
   <script type="module" src="js/carnet-aviso.js"></script>
 

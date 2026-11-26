@@ -224,3 +224,6 @@
 .pp-checks label, .pp-check { display: flex; align-items: flex-start; gap: 8px; font-size: 14.5px; font-weight: 500; line-height: 1.45; color: var(--tinta); }
 .pp-check input, .pp-checks input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
 .pp-error { margin: 0; font-weight: 600; font-size: 14.5px; color: #B3122A; background: #FFE8EB; border: 2px solid #E5192E; border-radius: 10px; padding: 10px 14px; }
+.pp-perfil-aviso { margin: 0; background: #E4EEFF; border: 2px solid var(--n-azul, #2F6BFF); border-radius: 10px; padding: 10px 14px; font-size: 14px; line-height: 1.5; color: var(--tinta); }
+.pp-perfil-aviso[hidden] { display: none; }
+.pp-perfil-aviso a { color: var(--azul); font-weight: 700; }
