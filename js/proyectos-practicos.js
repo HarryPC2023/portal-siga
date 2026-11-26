@@ -518,8 +518,9 @@ function abrirProponer() {
     $('#ppPropForm').hidden = false; $('#ppPropListo').hidden = true;
     const area = $('#ppPropArea');
     if (!area.options.length) {
-        area.append(el('option', { value: '', text: 'Elige un área…' }), ...AREAS.map((a) => el('option', { value: a.id, text: a.nombre })));
-        $('#ppPropCruces').replaceChildren(...AREAS.map((a) => el('label', {}, el('input', { type: 'checkbox', value: a.id }), a.corto || a.nombre)));
+        const alfabeticas = [...AREAS].sort((x, y) => x.nombre.localeCompare(y.nombre, 'es'));      // en el formulario, las áreas van en orden alfabético
+        area.append(el('option', { value: '', text: 'Elige un área…' }), ...alfabeticas.map((a) => el('option', { value: a.id, text: a.nombre })));
+        $('#ppPropCruces').replaceChildren(...alfabeticas.map((a) => el('label', {}, el('input', { type: 'checkbox', value: a.id }), a.corto || a.nombre)));
     }
     if (estado.area) area.value = estado.area;
     mostrarErrorProp(''); $('#ppPropPerfilAviso').hidden = true;
@@ -564,9 +565,10 @@ async function enviarPropuesta(ev) {
     } catch (e) {
         console.warn('Proyectos: no se pudo enviar la propuesta', e);
         const m = String((e && e.message) || '');
+        const detalle = e && e.code ? ` (detalle técnico: ${e.code} · ${m.slice(0, 160)})` : '';
         mostrarErrorProp(m === 'limite' ? `Ya tienes ${MAX_PENDIENTES} propuestas en revisión. Cuando se revise alguna, podrás enviar otra.`
             : m === 'sin-sesion' ? 'Tu sesión expiró. Vuelve a iniciar sesión e inténtalo de nuevo.'
-            : 'No pudimos enviar tu idea. Revisa tu conexión e inténtalo otra vez.');
+            : 'No pudimos enviar tu idea. Inténtalo otra vez en un momento.' + detalle);
     } finally { boton.disabled = false; boton.textContent = 'Enviar para revisión'; }
 }
 // ¿La persona ya puso su nombre en su perfil? Se consulta solo si quiere aparecer como autora.
