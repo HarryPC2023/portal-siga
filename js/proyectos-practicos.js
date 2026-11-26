@@ -341,10 +341,23 @@ function actualizarBotonFicha() {
     b.textContent = estado.guardadas.has(ideaAbierta.id) ? '✓ Guardada · quitar' : 'Guardar esta idea';
 }
 
+// Nombre de quien propuso la idea (solo si aceptó mostrarlo y tiene nombre en su perfil). Se pide al abrir la ficha y se recuerda.
+const AUTORES = new Map();
+function pedirAutor(id) {
+    if (!/^usr-/.test(id) || AUTORES.has(id)) return;
+    AUTORES.set(id, null);
+    supabase.rpc('proyectos_autor_idea', { p_id: id }).then(({ data, error }) => {
+        if (error || !data) return;
+        AUTORES.set(id, String(data));
+        if (ideaAbierta && ideaAbierta.id === id) pintarFicha(ideaAbierta, ficha_actual);
+    }).catch(() => {});
+}
+let ficha_actual = null;                                       // lo último que pintó la ficha (para repintarla cuando llega el autor)
 function abrirFicha(id) {
     const base = IDEAS.find((x) => x.id === id);
     if (!base) return;
-    ideaAbierta = base;
+    ideaAbierta = base; ficha_actual = null;
+    pedirAutor(base.id);
     const a = areaDe(base.area) || { nombre: '', c: '#2F63D6', f: '#E4EEFF' };
     const dlg = $('#ppFicha');
     dlg.style.setProperty('--c', a.c); dlg.style.setProperty('--f', a.f); dlg.style.setProperty('--n', a.n || a.c);
@@ -360,12 +373,14 @@ function abrirFicha(id) {
 
 // completa: null = cargando · false = no se pudo cargar · objeto = la ficha completa
 function pintarFicha(i, completa) {
+    ficha_actual = completa;
     const f = completa || i;
     const btnG = el('button', { type: 'button', class: 'pp-btn pp-btn-blanco', id: 'ppFichaGuardar' });
     btnG.addEventListener('click', () => alternarGuardada(i.id));
     const cruces = (i.areas2 || []).map((x) => (areaDe(x) || {}).nombre).filter(Boolean);
     $('#ppFichaCuerpo').replaceChildren(
         el('h3', { id: 'ppFichaTitulo', text: i.titulo }),
+        AUTORES.get(i.id) ? el('p', { class: 'pp-meta pp-autor' }, 'Idea de ', el('b', { text: AUTORES.get(i.id) })) : null,
         el('p', { class: 'pp-ficha-res', text: i.resumen }),
         el('div', { class: 'pp-tags' },
             i.tipo ? el('span', { class: 'pp-tag', text: i.tipo }) : null,
@@ -548,6 +563,44 @@ function mostrarErrorProp(msg, campo) {
     document.querySelectorAll('.pp-prop .pp-invalido').forEach((x) => x.classList.remove('pp-invalido'));
     if (campo) { const c = campo.closest('.pp-campo'); if (c) c.classList.add('pp-invalido'); campo.focus(); }
 }
+// ---- Borrador: lo que escribes se guarda en ESTE dispositivo (por cuenta) y se recupera si cierras o recargas. La casilla de aceptar NO se guarda.
+const CAMPOS_BORRADOR = ['Titulo', 'Area', 'Problema', 'Primero', 'Tipo', 'Tiempo', 'Datos', 'Prog'];
+let claveBorrador = null, esperaBorrador = null;
+function guardarBorradorYa() {
+    if (!claveBorrador) return;
+    const d = {}; CAMPOS_BORRADOR.forEach((c) => { d[c] = $('#ppProp' + c).value; });
+    d.cruces = [...document.querySelectorAll('#ppPropCruces input:checked')].map((c) => c.value);
+    d.mostrar = $('#ppPropMostrar').checked;
+    const vacio = !d.Titulo.trim() && !d.Problema.trim() && !d.Primero.trim();
+    try { if (vacio) localStorage.removeItem(claveBorrador); else localStorage.setItem(claveBorrador, JSON.stringify(d)); } catch (e) { /* sin almacenamiento: no pasa nada */ }
+}
+function guardarBorrador() { clearTimeout(esperaBorrador); esperaBorrador = setTimeout(guardarBorradorYa, 400); }
+function borrarBorrador() { clearTimeout(esperaBorrador); try { if (claveBorrador) localStorage.removeItem(claveBorrador); } catch (e) { /* idem */ } }
+async function restaurarBorrador() {
+    let nota = $('#ppPropBorrador');
+    if (!nota) {
+        nota = el('p', { class: 'pp-aviso pp-borrador', id: 'ppPropBorrador', hidden: '' });
+        $('#ppPropTitulo').closest('.pp-campo').before(nota);
+    }
+    nota.hidden = true;
+    try {
+        const { data: ses } = await supabase.auth.getSession();
+        const uid = ses && ses.session && ses.session.user && ses.session.user.id;
+        if (!uid) return;
+        claveBorrador = 'siga_pp_borrador_' + uid;
+        const d = JSON.parse(localStorage.getItem(claveBorrador) || 'null');
+        if (!d || $('#ppPropTitulo').value.trim() || $('#ppPropProblema').value.trim()) return;
+        CAMPOS_BORRADOR.forEach((c) => { if (typeof d[c] === 'string') $('#ppProp' + c).value = d[c]; });
+        document.querySelectorAll('#ppPropCruces input').forEach((c) => { c.checked = Array.isArray(d.cruces) && d.cruces.includes(c.value); });
+        $('#ppPropMostrar').checked = !!d.mostrar;
+        $('#ppPropContador').textContent = `${$('#ppPropProblema').value.length} / 600`;
+        pintarSimilares();
+        const descartar = el('button', { type: 'button', class: 'pp-enlace', text: 'Empezar de cero' });
+        descartar.addEventListener('click', () => { borrarBorrador(); $('#ppPropForm').reset(); $('#ppPropContador').textContent = '0 / 600'; pintarSimilares(); nota.hidden = true; });
+        nota.replaceChildren('Recuperamos el borrador que dejaste en este dispositivo. ', descartar);
+        nota.hidden = false;
+    } catch (e) { /* si algo falla, el formulario queda vacío y listo */ }
+}
 function abrirProponer() {
     const dlg = $('#ppProp');
     $('#ppPropForm').hidden = false; $('#ppPropListo').hidden = true;
@@ -561,6 +614,7 @@ function abrirProponer() {
     mostrarErrorProp(''); $('#ppPropPerfilAviso').hidden = true;
     if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
     $('#ppPropTitulo').focus();
+    restaurarBorrador();
 }
 async function enviarPropuesta(ev) {
     ev.preventDefault();
@@ -593,6 +647,7 @@ async function enviarPropuesta(ev) {
         };
         const { error } = await supabase.from('proyectos_ideas').insert(fila);
         if (error) throw error;
+        borrarBorrador();
         $('#ppPropForm').reset(); pintarSimilares(); $('#ppPropContador').textContent = '0 / 600';
         $('#ppPropForm').hidden = true; $('#ppPropListo').hidden = false;
         $('#ppPropPerfilAviso').hidden = true;
@@ -630,6 +685,7 @@ function conectarProponer() {
     $('#ppPropTitulo').addEventListener('input', pintarSimilares);
     $('#ppPropProblema').addEventListener('input', (e) => { $('#ppPropContador').textContent = `${e.target.value.length} / 600`; });
     $('#ppPropForm').addEventListener('submit', enviarPropuesta);
+    ['input', 'change'].forEach((t) => $('#ppPropForm').addEventListener(t, guardarBorrador));
     const cerrar = () => { const d = $('#ppProp'); if (d.open) d.close(); };
     ['#ppPropCerrar', '#ppPropCancelar', '#ppPropFin'].forEach((id) => $(id).addEventListener('click', cerrar));
     $('#ppPropOtra').addEventListener('click', abrirProponer);

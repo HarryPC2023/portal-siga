@@ -8,7 +8,7 @@ import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
 import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.js?v=4';
 import { iniciarFaqAsesorias } from './admin-faq.js?v=1';
 import { iniciarBandejaPreguntas } from './admin-bandeja.js?v=1';
-import { iniciarProyectosAdmin } from './admin-proyectos.js?v=1';
+import { iniciarProyectosAdmin } from './admin-proyectos.js?v=2';
 import { nombreCursoLegible } from './nombres-curso.js?v=1';
 import { FACULTADES } from '../intranotas/facultades-datos.js';
 

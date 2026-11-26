@@ -162,7 +162,8 @@
 .pp-btn-rojo { --n: #E5192E; background: #fff; border-color: #E5192E; color: var(--tinta); font-size: 16px; padding: 12px 22px; }
 .pp-sub-ideas { margin: 4px 0 0; font-size: 15px; line-height: 1.6; }
 .pp-guardadas { margin-top: 44px; scroll-margin-top: 90px; }
-.pp-guardadas .pp-ideas { margin-top: 14px; }
+.pp-guardadas .pp-h2-solo { margin-bottom: 8px; }
+.pp-guardadas .pp-ideas { margin-top: 24px; }
 .pp-guardadas .pp-ideas:empty { display: none; }
 .pp-meta { margin: 0; font-size: 13.5px; line-height: 1.55; }
 .pp-meta b { font-weight: 600; }
@@ -210,7 +211,7 @@
 .pp-pag-b:focus-visible { outline: 3px solid #FFB000; outline-offset: 3px; }
 .pp-pag-puntos { align-self: center; padding: 0 2px; font: 700 14px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
 .pp-cruce-wrap { margin-top: 28px; scroll-margin-top: 90px; }
-.pp-cruce-t { margin: 0 0 12px; font: 700 20px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
+.pp-cruce-t { margin: 0 0 22px; font: 700 20px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
 .pp-cruza { margin: 0; font-size: 13.5px; line-height: 1.55; }
 .pp-cruza b { font-weight: 600; }
 

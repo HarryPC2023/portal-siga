@@ -587,6 +587,13 @@ function construirPestana() {
             <p class="admin-msg" id="ppaMsg"></p>
         </div>
 
+        <div class="admin-form-caja">
+            <h2 class="admin-form-titulo">Respaldo del catálogo</h2>
+            <p class="ppa-ayuda">Descarga todas las ideas (curadas y de usuarios, con su estado) en un archivo JSON. Guárdalo en tu computadora: es tu copia por si algo se daña en Supabase.</p>
+            <div class="ppa-acciones"><button type="button" class="da-btn" id="ppaRespaldo">Descargar respaldo (JSON)</button></div>
+            <p class="admin-msg" id="ppaMsgRespaldo"></p>
+        </div>
+
         <div class="da-filtros ppa-filtros">
             <button type="button" class="da-btn ppa-filtro activo" data-estado="pendiente">Pendientes <span class="ppa-n">0</span></button>
             <button type="button" class="da-btn ppa-filtro" data-estado="publicada">Publicadas <span class="ppa-n">0</span></button>
@@ -608,7 +615,28 @@ function construirPestana() {
     return true;
 }
 
+async function descargarRespaldo() {
+    const boton = $('ppaRespaldo');
+    boton.disabled = true; msg('ppaMsgRespaldo', 'Preparando el respaldo…');
+    try {
+        const { data, error } = await supabase.from('proyectos_ideas').select('*').order('orden', { ascending: true }).limit(5000);
+        if (error) throw error;
+        const hoy = new Date().toISOString().slice(0, 10);
+        const archivo = new Blob([JSON.stringify({ tabla: 'proyectos_ideas', fecha: hoy, total: data.length, filas: data }, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(archivo);
+        const a = document.createElement('a');
+        a.href = url; a.download = `proyectos_ideas_respaldo_${hoy}.json`;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        msg('ppaMsgRespaldo', `Listo: ${data.length} ideas guardadas en ${a.download}.`);
+    } catch (e) {
+        console.warn('Proyectos: no se pudo hacer el respaldo', e);
+        msg('ppaMsgRespaldo', 'No se pudo descargar el respaldo. Inténtalo otra vez.');
+    } finally { boton.disabled = false; }
+}
+
 function conectar() {
+    $('ppaRespaldo').addEventListener('click', descargarRespaldo);
     $('ppaRevisar').addEventListener('click', revisar);
     $('ppaPublicar').addEventListener('click', publicar);
     // Si cambias el texto pegado, la revisión anterior ya no vale.
