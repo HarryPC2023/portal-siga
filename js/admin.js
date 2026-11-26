@@ -8,6 +8,7 @@ import { supabase, requerirSesion, montarNavUsuario } from './auth-siga.js?v=9';
 import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.js?v=4';
 import { iniciarFaqAsesorias } from './admin-faq.js?v=1';
 import { iniciarBandejaPreguntas } from './admin-bandeja.js?v=1';
+import { iniciarProyectosAdmin } from './admin-proyectos.js?v=1';
 import { nombreCursoLegible } from './nombres-curso.js?v=1';
 import { FACULTADES } from '../intranotas/facultades-datos.js';
 
@@ -71,6 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     iniciarDemandaAsesorias({ confirmarAccion, escapeHtml, formatearFecha });
     iniciarFaqAsesorias({ confirmarAccion });
     iniciarBandejaPreguntas({ confirmarAccion, escapeHtml, formatearFecha });
+    iniciarProyectosAdmin({ confirmarAccion });   // va la última: su pestaña se oculta sola al elegir cualquier otra
 
     document.querySelectorAll('.admin-tab').forEach((btn) => {
         btn.addEventListener('click', () => {
