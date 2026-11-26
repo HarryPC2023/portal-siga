@@ -1,0 +1,261 @@
+/* css/mis-propuestas.css — Pestaña "Mis propuestas" de Mi cuenta (Perfil).
+   Mismo aspecto que "Mis preguntas" (css/mis-preguntas.css). Prefijo mpr- para no chocar con nada. ⚠️ Archivo NUEVO. */
+
+#misPropuestas {
+    font-family: 'Poppins', sans-serif;
+    color: #1d1d2b;
+}
+
+#misPropuestas [hidden] {
+    display: none !important;
+}
+
+.mpr-titulo {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    margin: 0 0 6px;
+}
+
+.mpr-intro {
+    margin: 0 0 14px;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #555;
+}
+
+.mpr-cupo {
+    margin: 0 0 16px;
+    font-size: 0.84rem;
+    color: #555;
+}
+
+.mpr-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mpr-item {
+    background: #fff;
+    border: 2px solid rgba(102, 0, 204, 0.18);
+    border-radius: 20px;
+    padding: 16px 18px;
+    box-shadow: 0 8px 22px rgba(102, 0, 204, 0.08);
+}
+
+.mpr-cab {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.mpr-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.mpr-chip {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.mpr-chip-cruce {
+    background: #F1F1F5;
+    color: #444;
+}
+
+.mpr-lado {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mpr-nuevo {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #fff;
+    background: #E8174B;
+    border-radius: 999px;
+    padding: 3px 9px;
+}
+
+/* Globito rojo en la pestaña: propuestas con novedades que todavía no viste */
+.mpr-globito {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    margin-left: 6px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #E8174B;
+    color: #fff;
+    font: 700 0.68rem 'Poppins', sans-serif;
+    line-height: 1;
+}
+
+.mpr-estado {
+    font-size: 0.72rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 4px 12px;
+    background: #F1F1F5;
+    color: #555;
+}
+
+.mpr-estado-revision {
+    background: #FFEBC8;
+    color: #7A4A00;
+}
+
+.mpr-estado-publicada {
+    background: #DDF5E8;
+    color: #137A52;
+}
+
+.mpr-estado-rechazada {
+    background: #ECECF1;
+    color: #666;
+}
+
+.mpr-titulo-idea {
+    margin: 0 0 4px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.mpr-meta {
+    margin: 0 0 10px;
+    font-size: 0.74rem;
+    color: #888;
+}
+
+.mpr-nota {
+    margin: 0 0 10px;
+    font-size: 0.84rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+.mpr-motivo {
+    margin: 0 0 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #F5EEFB;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.mpr-acc {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.mpr-btn {
+    font: 600 0.8rem 'Poppins', sans-serif;
+    border: 1.5px solid #6600CC;
+    background: transparent;
+    color: #6600CC;
+    border-radius: 999px;
+    padding: 7px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.mpr-btn:hover {
+    background: #6600CC;
+    color: #fff;
+}
+
+.mpr-btn:disabled {
+    opacity: 0.55;
+    cursor: wait;
+}
+
+.mpr-btn-suave {
+    border-color: rgba(0, 0, 0, 0.18);
+    color: #666;
+    font-weight: 500;
+    font-size: 0.76rem;
+    padding: 5px 14px;
+}
+
+.mpr-btn-suave:hover {
+    background: #C93A3A;
+    border-color: #C93A3A;
+    color: #fff;
+}
+
+.mpr-btn-peligro {
+    border-color: #C93A3A;
+    color: #C93A3A;
+}
+
+.mpr-btn-peligro:hover {
+    background: #C93A3A;
+    color: #fff;
+}
+
+.mpr-btn-primario {
+    background: linear-gradient(135deg, #3C7CF8, #6600CC);
+    border-color: transparent;
+    color: #fff;
+}
+
+.mpr-btn-primario:hover {
+    filter: brightness(1.1);
+}
+
+.mpr-conf {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 0.84rem;
+}
+
+.mpr-err {
+    margin: 10px 0 0;
+    font-size: 0.8rem;
+    color: #B42318;
+}
+
+.mpr-vacio {
+    margin: 0;
+    padding: 28px 20px;
+    text-align: center;
+    background: #fff;
+    border: 2px dashed rgba(102, 0, 204, 0.25);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.mpr-vacio p {
+    margin: 0 0 10px;
+}
+
+@media (max-width: 600px) {
+    .mpr-item {
+        padding: 14px;
+    }
+}

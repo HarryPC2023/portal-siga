@@ -90,6 +90,15 @@
                 </svg>
                 <span>Mis preguntas</span>
             </button>
+            <button type="button" class="perfil-hub-tab" data-tab="propuestas" hidden
+                style="--tab-acento:#2F9E44;--tab-fondo:#E8F6EC">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+                    <path d="M14 3v5h5M9 14l2 2 4-4" />
+                </svg>
+                <span>Mis propuestas</span>
+            </button>
             <button type="button" class="perfil-hub-tab" data-tab="cuenta"
                 style="--tab-acento:#6600CC;--tab-fondo:#F3EAFB">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -140,6 +149,10 @@
             <div class="perfil-panel" data-panel="preguntas" hidden>
                 <div class="mis-preguntas" id="misPreguntas"></div>
             </div>
+            <!-- ===== MIS PROPUESTAS (Proyectos Prácticos) — contenido en js/mis-propuestas.js ===== -->
+            <div class="perfil-panel" data-panel="propuestas" hidden>
+                <div class="mis-propuestas" id="misPropuestas"></div>
+            </div>
             <!-- ===== IDEAS (antes Sugerencias) — contenido en js/ideas.js ===== -->
             <div class="perfil-panel" data-panel="sugerencias" hidden>
                 <div class="ideas" id="ideas"></div>
@@ -151,7 +164,7 @@
 
     <script src="js/landing.js"></script>
     <script src="js/tema-siga.js?v=1"></script>
-    <script type="module" src="js/perfil-hub.js?v=2"></script>
+    <script type="module" src="js/perfil-hub.js?v=3"></script>
 </body>
 
 </html>

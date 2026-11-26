@@ -608,6 +608,9 @@ async function iniciar() {
     estado.guardadas = leerGuardadas();
     estado.destacadas = destacadasDeLaSemana(new Date(), 4, estado.guardadas);
     pintarAreas(); pintarIntenciones(); repintarTodo(); conectar();
+    // Enlace directo a una idea (por ejemplo desde Mi cuenta → Mis propuestas): proyectos-practicos.html?idea=<id>
+    const idPedida = new URLSearchParams(window.location.search).get('idea');
+    if (idPedida) abrirFicha(idPedida);
     if (!cargado) { $('#ppVacio').textContent = 'No pudimos cargar el catálogo de ideas. Revisa tu conexión y vuelve a intentarlo.'; $('#ppVacio').hidden = false; }
     await conectarNube();            // la cuenta puede tardar: la página ya se ve y luego se actualizan las guardadas
     estado.destacadas = destacadasDeLaSemana(new Date(), 4, estado.guardadas);

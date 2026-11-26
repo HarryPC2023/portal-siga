@@ -46,3 +46,8 @@
         padding: 26px 22px;
     }
 }
+
+/* Pestañas que nacen ocultas (ej. «Mis propuestas»: solo aparece si la persona tiene propuestas) */
+.perfil-hub-tab[hidden] {
+    display: none !important;
+}
