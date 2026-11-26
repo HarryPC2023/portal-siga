@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="css/landing.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/tema-siga.css?v=1">
-    <link rel="stylesheet" href="css/admin.css?v=3">
+    <link rel="stylesheet" href="css/admin.css?v=4">
     <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
     <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
@@ -82,6 +82,32 @@
                         </label>
 
                         <div class="admin-form-campo">
+                            <span>¿A quién?</span>
+                            <div class="da-tipos" role="radiogroup" aria-label="Destinatario del aviso">
+                                <label><input type="radio" name="notifDest" value="todos" checked><span>Todos los
+                                        alumnos</span></label>
+                                <label><input type="radio" name="notifDest" value="persona"><span>Una
+                                        persona</span></label>
+                            </div>
+                        </div>
+
+                        <div class="admin-form-campo" id="notifPersonaBloque" hidden>
+                            <span>Alumno</span>
+                            <input type="search" id="notifPersonaBuscar" maxlength="60" autocomplete="off"
+                                placeholder="Busca por nombre o código UNI…">
+                            <div id="notifPersonaResultados" class="anp-resultados" hidden></div>
+                            <div id="notifPersonaElegida" hidden></div>
+                            <label class="admin-form-campo anp-enlace">
+                                <span>Enlace (opcional)</span>
+                                <input type="text" id="notifEnlace" maxlength="120" autocomplete="off"
+                                    placeholder="Ej. perfil.html#sugerencias">
+                            </label>
+                            <small class="da-tipos-ayuda">Le llega solo a esa persona, en su campanita, como aviso
+                                personal (el que cada alumno controla en Perfil → Avisos → Respuestas). El enlace
+                                abre una página de SIGA al tocar el aviso. Sin correo.</small>
+                        </div>
+
+                        <div class="admin-form-campo" id="notifTipoBloque">
                             <span>Tipo de aviso</span>
                             <div class="da-tipos" role="radiogroup" aria-label="Tipo de aviso">
                                 <label><input type="radio" name="notifTipo" value="novedades" checked><span>Novedades de
@@ -113,6 +139,13 @@
 
                 <div id="listaNotificaciones">
                     <p class="admin-vacio">Cargando…</p>
+                </div>
+
+                <div class="anp-seccion">
+                    <h2 class="admin-form-titulo">Enviadas a personas</h2>
+                    <div id="listaNotifPersonales">
+                        <p class="admin-vacio">Cargando…</p>
+                    </div>
                 </div>
             </div>
 
@@ -201,7 +234,7 @@
     <script src="js/landing.js"></script>
     <script src="js/tema-siga.js?v=1"></script>
     <script src="js/selector-personalizado.js?v=1"></script>
-    <script type="module" src="js/admin.js?v=4"></script>
+    <script type="module" src="js/admin.js?v=5"></script>
 </body>
 
 </html>

@@ -36,7 +36,7 @@ const TIPOS = [
     {
         columna: 'avisos_respuestas',
         titulo: 'Respuestas a lo que envías',
-        texto: 'Cuando respondemos una idea tuya o publicamos una asesoría que compartiste.',
+        texto: 'Cuando respondemos una idea tuya, publicamos una asesoría que compartiste o te escribimos un mensaje personal.',
         ejemplo: 'Respondieron tu idea: «Deberían agregar…»',
         color: '#C13F94',
         fondo: '#FBEAF4',
