@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="css/landing.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/tema-siga.css?v=1">
-  <link rel="stylesheet" href="css/proyectos-practicos.css?v=9">
+  <link rel="stylesheet" href="css/proyectos-practicos.css?v=10">
   <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
   <link rel="apple-touch-icon" href="/portal-siga/icons/siga_apple.png">
@@ -49,8 +49,8 @@
         <div class="pp-botones">
           <a class="pp-btn pp-btn-azul" href="#ideas">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Explorar ideas</a>
-          <a class="pp-btn pp-btn-blanco" href="#proponer">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Proponer una idea</a>
+          <button type="button" class="pp-btn pp-btn-blanco" data-proponer>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Proponer una idea</button>
         </div>
       </div>
       <div class="pp-hero-img">
@@ -107,7 +107,7 @@
       <section class="pp-ideas" id="ppCruce" aria-live="polite"></section>
       <div class="pp-mas-wrap"><button type="button" class="pp-chip-btn" id="ppMasCruce" hidden>Ver más</button></div>
     </div>
-    <p class="pp-vacio" id="ppVacio" hidden>No encontramos ideas con esos filtros. Prueba con un tema, una carrera o una palabra más general, o quita algún filtro. ¿Falta una idea? <a href="#proponer">Propónla</a>.</p>
+    <p class="pp-vacio" id="ppVacio" hidden>No encontramos ideas con esos filtros. Prueba con un tema, una carrera o una palabra más general, o quita algún filtro. ¿Falta una idea? <button type="button" class="pp-enlace" data-proponer>Propónla</button>.</p>
 
     <!-- mis ideas guardadas -->
     <section class="pp-guardadas" id="guardadas" aria-labelledby="ppTituloGuardadas">
@@ -143,10 +143,10 @@
         <p class="pp-comunidad-t">¿Tienes una idea que te gustaría compartir?</p>
         <p class="pp-comunidad-f">Diferentes conocimientos. Un mismo propósito: un futuro mejor.</p>
         <p>Cuéntanos el nombre, de qué trata y qué problema u oportunidad aborda. Si es buena, pasará a formar parte del catálogo de todos.</p>
-        <p class="pp-nota">Por ahora las propuestas llegan por el formulario de ideas de SIGA.</p>
+        <p class="pp-nota">Tu idea se revisa antes de publicarse. Puedes tener hasta 3 propuestas en revisión a la vez.</p>
       </div>
-      <a class="pp-btn pp-btn-neon" href="perfil.html#sugerencias">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Proponer una idea</a>
+      <button type="button" class="pp-btn pp-btn-neon" data-proponer>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Proponer una idea</button>
     </section>
     <p class="pp-cierre">Ideas de hoy, soluciones para mañana.</p>
 
@@ -161,6 +161,72 @@
     <div class="pp-ficha-cuerpo" id="ppFichaCuerpo"></div>
   </dialog>
 
+  <!-- proponer una idea -->
+  <dialog class="pp-ficha pp-prop" id="ppProp" aria-labelledby="ppPropT" style="--c:#C21F5B;--f:#FFE3EC;--n:#FF2E7E">
+    <div class="pp-ficha-cab">
+      <span class="pp-etq">Proponer una idea</span>
+      <button type="button" class="pp-cerrar" id="ppPropCerrar" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="pp-ficha-cuerpo">
+      <form id="ppPropForm" novalidate>
+        <h3 id="ppPropT">Cuéntanos tu idea</h3>
+        <p class="pp-aviso">Lo que escribas se revisa antes de publicarse. Si es buena, pasa a formar parte del catálogo de todos.</p>
+
+        <label class="pp-campo">Título de la idea *
+          <input type="text" id="ppPropTitulo" maxlength="120" required placeholder="Ej.: ¿Cuánta energía gasta el aire acondicionado de mi salón?">
+        </label>
+        <div class="pp-similares" id="ppPropSimilares" hidden aria-live="polite"></div>
+
+        <label class="pp-campo">Área principal *
+          <select id="ppPropArea" required></select>
+          <span class="pp-ayuda">Elige el campo donde vive el problema, aunque uses conocimientos de otras áreas.</span>
+        </label>
+
+        <label class="pp-campo">¿Qué problema quieres entender o resolver? *
+          <textarea id="ppPropProblema" rows="4" maxlength="600" required placeholder="En 2 a 4 líneas: qué pasa, a quién afecta y por qué importa."></textarea>
+          <span class="pp-ayuda" id="ppPropContador">0 / 600</span>
+        </label>
+
+        <label class="pp-campo">¿Qué harías primero? *
+          <textarea id="ppPropPrimero" rows="4" maxlength="800" required placeholder="El primer paso que se podría hacer con datos propios, ficticios o públicos, sin pedir permiso a nadie."></textarea>
+        </label>
+
+        <details class="pp-opc">
+          <summary>Más detalles (opcional, ayudan a ordenar la idea)</summary>
+          <div class="pp-opc-cuerpo">
+            <fieldset class="pp-campo"><legend>Se cruza con (hasta 2 áreas)</legend><div class="pp-checks" id="ppPropCruces"></div></fieldset>
+            <label class="pp-campo">Tipo de proyecto
+              <select id="ppPropTipo"><option value="">Aún no lo sé</option><option>Guía</option><option>Análisis</option><option>Investigación</option><option>Prototipo</option><option>Simulación</option><option>Plan</option><option>Diseño</option></select>
+            </label>
+            <label class="pp-campo">Tiempo aproximado
+              <select id="ppPropTiempo"><option value="">Aún no lo sé</option><option value="8">Hasta 8 horas</option><option value="15">9 a 20 horas</option><option value="30">21 a 40 horas</option><option value="60">Más de 40 horas</option></select>
+            </label>
+            <label class="pp-campo">Datos que se usarían
+              <select id="ppPropDatos"><option value="">Aún no lo sé</option><option value="ficticios">Ficticios (se pueden inventar)</option><option value="publicos">Públicos (fuentes abiertas)</option><option value="propios">Mediciones propias</option></select>
+            </label>
+            <label class="pp-campo">¿Requiere programación?
+              <select id="ppPropProg"><option value="">Aún no lo sé</option><option value="sin">No hace falta</option><option value="opcional">Opcional</option><option value="incluida">Sí, incluida</option></select>
+            </label>
+          </div>
+        </details>
+
+        <label class="pp-check"><input type="checkbox" id="ppPropMostrar"> Mostrar mi nombre como autor de la idea si se publica (si no, aparecerá como anónima).</label>
+        <label class="pp-check"><input type="checkbox" id="ppPropAcepta" required> Entiendo que mi idea puede publicarse en el catálogo y ser adaptada por otras personas. *</label>
+
+        <p class="pp-error" id="ppPropError" role="alert" hidden></p>
+        <div class="pp-ficha-pie">
+          <button type="submit" class="pp-btn pp-btn-neon" id="ppPropEnviar">Enviar para revisión</button>
+          <button type="button" class="pp-btn pp-btn-blanco" id="ppPropCancelar">Cancelar</button>
+        </div>
+      </form>
+      <div id="ppPropListo" hidden>
+        <h3>¡Gracias por tu idea!</h3>
+        <p class="pp-ficha-res">Quedó <b>pendiente de revisión</b>. Si es aprobada, se completará la ficha y aparecerá en el catálogo.</p>
+        <div class="pp-ficha-pie"><button type="button" class="pp-btn pp-btn-blanco" id="ppPropOtra">Proponer otra</button><button type="button" class="pp-btn pp-btn-azulneon" id="ppPropFin">Cerrar</button></div>
+      </div>
+    </div>
+  </dialog>
+
   <a href="#" class="volver-arriba" id="volverArriba" aria-label="Volver arriba">↑</a>
 
   <div class="harry-stamp">
@@ -170,7 +236,7 @@
 
   <script src="js/landing.js"></script>
   <script type="module" src="js/gate.js"></script>
-  <script type="module" src="js/proyectos-practicos.js?v=8"></script>
+  <script type="module" src="js/proyectos-practicos.js?v=10"></script>
   <script src="js/tema-siga.js?v=1"></script>
   <script type="module" src="js/carnet-aviso.js"></script>
 

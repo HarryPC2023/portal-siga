@@ -1,12 +1,13 @@
 // js/proyectos-practicos.js — Portada de «Proyectos Prácticos»: áreas, buscador, ideas, ficha, guardar y Sorpréndeme.
 //
 // Por ahora la sección es SOLO para el dueño (mismo candado que Desarrollo profesional: js/desarrollo-acceso.js).
-// Los textos de las áreas viven en js/proyectos-datos.js. Las ideas viven en js/proyectos/: un índice liviano (indice.json, se descarga al abrir la
-// página y alimenta tarjetas, filtros y búsqueda) y un archivo con las fichas completas por área (areas/<id>.json, se descarga solo cuando alguien abre
-// una ficha de esa área). Para agregar ideas: ver las instrucciones al inicio de js/proyectos-datos.js.
+// Los textos de las áreas viven en js/proyectos-datos.js. Las ideas viven en Supabase (tabla proyectos_ideas): al abrir la página se descarga solo el índice
+// liviano (alimenta tarjetas, filtros y búsqueda) y la ficha completa de un área se descarga cuando alguien abre una idea de esa área.
+// Respaldo: si Supabase no responde, se usan los archivos de js/proyectos/ (indice.json y areas/<id>.json), que son una copia de las mismas ideas.
 // Las ideas guardadas viven en la cuenta (SigaEstado, módulo «desarrollo», claves «ideaguardada:<id>») para verse igual en PC y celular;
 // si no hay sesión, quedan en este navegador (localStorage).
 import { accesoPermitido } from './desarrollo-acceso.js?v=1';
+import { supabase } from './auth-siga.js?v=9';
 import { SigaEstado } from './sync-estado.js?v=1';
 import { AREAS, INTENCIONES, FUENTES, DESTACADAS } from './proyectos-datos.js?v=5';
 
@@ -19,19 +20,51 @@ const PROGRAMACION = { sin: 'no hace falta', opcional: 'opcional', incluida: 'in
 /* ───── las ideas: índice liviano al abrir, ficha completa al abrir una idea ───── */
 let IDEAS = [];                          // el índice: lo que necesitan las tarjetas, los filtros y la búsqueda
 let versionIdeas = '0';
+let fuenteSupabase = false;              // true si el índice vino de Supabase
 const fichasPorArea = new Map();         // área → promesa con { id → ficha completa }; se descarga una sola vez por área
-async function cargarIndice() {
-    const r = await fetch(`${RUTA_IDEAS}indice.json`, { cache: 'no-cache' });      // se revalida siempre: si no cambió, el navegador reusa la copia
+const COLUMNAS_INDICE = 'id,area,areas2,titulo,resumen,tipo,tiempo,horas,etiquetas,intencion,datos,prog,busca,orden';
+const LOTE = 1000;                       // Supabase entrega como máximo 1000 filas por consulta: se pide por lotes
+async function indiceDesdeSupabase() {
+    const filas = [];
+    for (let desde = 0; ; desde += LOTE) {
+        const { data, error } = await supabase.from('proyectos_ideas').select(COLUMNAS_INDICE)
+            .eq('estado', 'publicada').order('area').order('orden').order('id').range(desde, desde + LOTE - 1);
+        if (error) throw error;
+        filas.push(...data);
+        if (data.length < LOTE) break;
+    }
+    if (!filas.length) throw new Error('indice vacío');
+    const pos = (a) => { const n = AREAS.findIndex((x) => x.id === a); return n < 0 ? 99 : n; };
+    filas.sort((x, y) => pos(x.area) - pos(y.area) || x.orden - y.orden);          // el orden de las áreas es el de AREAS, no el alfabético
+    return filas.map(({ orden, ...i }) => (i.prog === null ? (delete i.prog, i) : i));
+}
+async function indiceDesdeArchivo() {
+    const r = await fetch(`${RUTA_IDEAS}indice.json`, { cache: 'no-cache' });
     if (!r.ok) throw new Error('indice ' + r.status);
     const d = await r.json();
-    IDEAS = d.ideas || []; versionIdeas = d.version || '0';
+    versionIdeas = d.version || '0';
+    return d.ideas || [];
+}
+async function cargarIndice() {
+    try { IDEAS = await indiceDesdeSupabase(); fuenteSupabase = true; }
+    catch (e) { console.warn('Proyectos: se usa la copia en archivos (Supabase no respondió)', e); fuenteSupabase = false; IDEAS = await indiceDesdeArchivo(); }
+}
+async function fichasDesdeSupabase(area) {
+    const { data, error } = await supabase.from('proyectos_ideas').select('id,ficha').eq('area', area).eq('estado', 'publicada');
+    if (error) throw error;
+    return new Map(data.map((x) => [x.id, x.ficha]));
+}
+async function fichasDesdeArchivo(area) {
+    const r = await fetch(`${RUTA_IDEAS}areas/${area}.json?v=${versionIdeas}`);
+    if (!r.ok) throw new Error('area ' + r.status);
+    const d = await r.json();
+    return new Map((d.ideas || []).map((x) => [x.id, x]));
 }
 function fichasDeArea(area) {
     if (!fichasPorArea.has(area)) {
-        fichasPorArea.set(area, fetch(`${RUTA_IDEAS}areas/${area}.json?v=${versionIdeas}`)
-            .then((r) => { if (!r.ok) throw new Error('area ' + r.status); return r.json(); })
-            .then((d) => new Map((d.ideas || []).map((x) => [x.id, x])))
-            .catch((e) => { fichasPorArea.delete(area); throw e; }));          // si falló, se puede reintentar al volver a abrirla
+        const carga = (fuenteSupabase ? fichasDesdeSupabase(area).catch(() => fichasDesdeArchivo(area)) : fichasDesdeArchivo(area))
+            .catch((e) => { fichasPorArea.delete(area); throw e; });                // si falló, se puede reintentar al volver a abrirla
+        fichasPorArea.set(area, carga);
     }
     return fichasPorArea.get(area);
 }
@@ -442,10 +475,107 @@ function conectar() {
         estado.ultimaSorpresa = elegida.id;
         abrirFicha(elegida.id);
     });
+    conectarProponer();
     conectarQuiz();
     $('#ppFichaCerrar').addEventListener('click', cerrarFicha);
     $('#ppFicha').addEventListener('click', (e) => { if (e.target === e.currentTarget) cerrarFicha(); });   // clic en el fondo oscuro
     $('#ppFicha').addEventListener('close', () => { ideaAbierta = null; });
+}
+
+/* ───── proponer una idea: formulario en esta misma pantalla; la propuesta queda «pendiente» en Supabase hasta que se revise (tabla proyectos_ideas) ───── */
+const MAX_PENDIENTES = 3;                 // debe coincidir con la política de Supabase (archivo 20261125210000)
+const PALABRAS_VACIAS = new Set(['como', 'para', 'cual', 'cuales', 'cuanto', 'cuanta', 'que', 'una', 'uno', 'unos', 'unas', 'con', 'sin', 'por', 'del', 'los', 'las', 'mas', 'sus', 'tus', 'mis', 'esta', 'este', 'esto', 'hay', 'hace', 'puede', 'pueden', 'tiene', 'sobre', 'entre', 'desde', 'donde', 'cuando', 'quien']);
+const palabrasDe = (t) => new Set(norm(t).split(/[^a-z0-9]+/).filter((w) => w.length > 3 && !PALABRAS_VACIAS.has(w)).map((w) => w.replace(/(es|s)$/, '')));
+// Ideas ya publicadas cuyo título se parece al que se escribe (solo orienta: no bloquea el envío).
+function ideasParecidas(titulo) {
+    const mias = palabrasDe(titulo);
+    if (mias.size < 2) return [];
+    return IDEAS.map((i) => {
+        const suyas = palabrasDe(i.titulo);
+        let comunes = 0; mias.forEach((w) => { if (suyas.has(w)) comunes += 1; });
+        return { i, comunes, puntaje: comunes / Math.min(mias.size, suyas.size || 1) };
+    }).filter((x) => x.comunes >= 2 && x.puntaje >= 0.5).sort((a, b) => b.puntaje - a.puntaje).slice(0, 3).map((x) => x.i);
+}
+function pintarSimilares() {
+    const caja = $('#ppPropSimilares');
+    const lista = ideasParecidas($('#ppPropTitulo').value);
+    caja.hidden = !lista.length;
+    if (!lista.length) { caja.replaceChildren(); return; }
+    caja.replaceChildren(el('b', { text: 'Ya hay ideas parecidas en el catálogo:' }), el('ul', {}, lista.map((i) => el('li', { text: i.titulo }))),
+        el('span', { text: '¿La tuya aporta algo distinto? Puedes enviarla igual.' }));
+}
+function idPropuesta() {
+    const a = new Uint8Array(14); crypto.getRandomValues(a);
+    return 'usr-' + Array.from(a, (n) => (n % 36).toString(36)).join('');
+}
+function mostrarErrorProp(msg, campo) {
+    const e = $('#ppPropError'); e.textContent = msg; e.hidden = !msg;
+    document.querySelectorAll('.pp-prop .pp-invalido').forEach((x) => x.classList.remove('pp-invalido'));
+    if (campo) { const c = campo.closest('.pp-campo'); if (c) c.classList.add('pp-invalido'); campo.focus(); }
+}
+function abrirProponer() {
+    const dlg = $('#ppProp');
+    $('#ppPropForm').hidden = false; $('#ppPropListo').hidden = true;
+    const area = $('#ppPropArea');
+    if (!area.options.length) {
+        area.append(el('option', { value: '', text: 'Elige un área…' }), ...AREAS.map((a) => el('option', { value: a.id, text: a.nombre })));
+        $('#ppPropCruces').replaceChildren(...AREAS.map((a) => el('label', {}, el('input', { type: 'checkbox', value: a.id }), a.corto || a.nombre)));
+    }
+    if (estado.area) area.value = estado.area;
+    mostrarErrorProp('');
+    if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
+    $('#ppPropTitulo').focus();
+}
+async function enviarPropuesta(ev) {
+    ev.preventDefault();
+    const v = (id) => $(id).value.trim();
+    const titulo = v('#ppPropTitulo'), problema = v('#ppPropProblema'), primero = v('#ppPropPrimero'), area = $('#ppPropArea').value;
+    if (titulo.length < 8) return mostrarErrorProp('Escribe un título de al menos 8 caracteres.', $('#ppPropTitulo'));
+    if (!area) return mostrarErrorProp('Elige el área principal de la idea.', $('#ppPropArea'));
+    if (problema.length < 30) return mostrarErrorProp('Cuéntanos un poco más del problema (mínimo 30 caracteres).', $('#ppPropProblema'));
+    if (primero.length < 20) return mostrarErrorProp('Cuéntanos qué harías primero (mínimo 20 caracteres).', $('#ppPropPrimero'));
+    if (!$('#ppPropAcepta').checked) return mostrarErrorProp('Para enviar la idea hay que aceptar que puede publicarse en el catálogo.', $('#ppPropAcepta'));
+    const cruces = [...document.querySelectorAll('#ppPropCruces input:checked')].map((c) => c.value).filter((c) => c !== area);
+    if (cruces.length > 2) return mostrarErrorProp('Elige como máximo 2 áreas en «Se cruza con».');
+    const boton = $('#ppPropEnviar'); boton.disabled = true; boton.textContent = 'Enviando…';
+    mostrarErrorProp('');
+    try {
+        const { data: ses } = await supabase.auth.getSession();
+        const uid = ses && ses.session && ses.session.user && ses.session.user.id;
+        if (!uid) throw new Error('sin-sesion');
+        const { count, error: eCuenta } = await supabase.from('proyectos_ideas').select('id', { count: 'exact', head: true }).eq('autor_id', uid).eq('estado', 'pendiente');
+        if (eCuenta) throw eCuenta;
+        if ((count || 0) >= MAX_PENDIENTES) throw new Error('limite');
+        const horas = Number($('#ppPropTiempo').value) || 15;
+        const tiempo = { 8: 'Hasta 8 h', 15: '9 a 20 h', 30: '21 a 40 h', 60: 'Más de 40 h' }[horas] || 'Por definir';
+        const fila = {
+            id: idPropuesta(), area, areas2: cruces, titulo, resumen: problema,
+            tipo: $('#ppPropTipo').value || 'Por definir', tiempo: $('#ppPropTiempo').value ? tiempo : 'Por definir', horas,
+            datos: $('#ppPropDatos').value || 'ficticios', prog: $('#ppPropProg').value || null,
+            ficha: { problema: [problema], desarrollar: [primero] },
+            estado: 'pendiente', origen: 'usuario', autor_id: uid, acepta_publicar: true, mostrar_autor: $('#ppPropMostrar').checked,
+        };
+        const { error } = await supabase.from('proyectos_ideas').insert(fila);
+        if (error) throw error;
+        $('#ppPropForm').reset(); pintarSimilares();
+        $('#ppPropForm').hidden = true; $('#ppPropListo').hidden = false;
+    } catch (e) {
+        console.warn('Proyectos: no se pudo enviar la propuesta', e);
+        const m = String((e && e.message) || '');
+        mostrarErrorProp(m === 'limite' ? `Ya tienes ${MAX_PENDIENTES} propuestas en revisión. Cuando se revise alguna, podrás enviar otra.`
+            : m === 'sin-sesion' ? 'Tu sesión expiró. Vuelve a iniciar sesión e inténtalo de nuevo.'
+            : 'No pudimos enviar tu idea. Revisa tu conexión e inténtalo otra vez.');
+    } finally { boton.disabled = false; boton.textContent = 'Enviar para revisión'; }
+}
+function conectarProponer() {
+    document.querySelectorAll('[data-proponer]').forEach((b) => b.addEventListener('click', abrirProponer));
+    $('#ppPropTitulo').addEventListener('input', pintarSimilares);
+    $('#ppPropProblema').addEventListener('input', (e) => { $('#ppPropContador').textContent = `${e.target.value.length} / 600`; });
+    $('#ppPropForm').addEventListener('submit', enviarPropuesta);
+    const cerrar = () => { const d = $('#ppProp'); if (d.open) d.close(); };
+    ['#ppPropCerrar', '#ppPropCancelar', '#ppPropFin'].forEach((id) => $(id).addEventListener('click', cerrar));
+    $('#ppPropOtra').addEventListener('click', abrirProponer);
+    $('#ppProp').addEventListener('click', (e) => { if (e.target === e.currentTarget) cerrar(); });
 }
 
 async function iniciar() {

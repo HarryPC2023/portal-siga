@@ -203,3 +203,24 @@
 .pp-cruce-t { margin: 0 0 12px; font: 700 20px 'Montserrat Alternates', sans-serif; color: var(--tinta); }
 .pp-cruza { margin: 0; font-size: 13.5px; line-height: 1.55; }
 .pp-cruza b { font-weight: 600; }
+
+/* Proponer una idea */
+.pp-enlace { background: none; border: 0; padding: 0; font: inherit; font-weight: 700; color: var(--azul); text-decoration: underline; cursor: pointer; }
+.pp-prop form { display: flex; flex-direction: column; gap: 14px; }
+.pp-campo { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 15px; color: var(--tinta); border: 0; padding: 0; margin: 0; }
+.pp-campo legend { font-weight: 600; font-size: 15px; padding: 0; margin-bottom: 6px; }
+.pp-campo input[type=text], .pp-campo select, .pp-campo textarea { font: 500 15px/1.5 'Montserrat', sans-serif; color: var(--tinta); background: #fff; border: 2px solid #8A97B5; border-radius: 10px; padding: 10px 12px; width: 100%; }
+.pp-campo textarea { resize: vertical; }
+.pp-campo input:focus-visible, .pp-campo select:focus-visible, .pp-campo textarea:focus-visible, .pp-opc summary:focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+.pp-campo.pp-invalido input, .pp-campo.pp-invalido select, .pp-campo.pp-invalido textarea { border-color: #E5192E; }
+.pp-ayuda { font-weight: 500; font-size: 13px; color: var(--cuerpo); }
+.pp-similares { background: #FFF1CC; border: 2px solid var(--n-ambar, #D97800); border-radius: 10px; padding: 10px 14px; font-size: 14px; line-height: 1.5; }
+.pp-similares[hidden], .pp-error[hidden] { display: none; }
+.pp-similares ul { margin: 6px 0 0; padding-left: 20px; }
+.pp-opc { border: 2px dashed #8A97B5; border-radius: 10px; padding: 10px 14px; }
+.pp-opc summary { cursor: pointer; font-weight: 700; font-size: 15px; color: var(--tinta); }
+.pp-opc-cuerpo { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+.pp-checks { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.pp-checks label, .pp-check { display: flex; align-items: flex-start; gap: 8px; font-size: 14.5px; font-weight: 500; line-height: 1.45; color: var(--tinta); }
+.pp-check input, .pp-checks input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
+.pp-error { margin: 0; font-weight: 600; font-size: 14.5px; color: #B3122A; background: #FFE8EB; border: 2px solid #E5192E; border-radius: 10px; padding: 10px 14px; }
