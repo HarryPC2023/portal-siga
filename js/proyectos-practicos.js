@@ -14,7 +14,7 @@ import { AREAS, INTENCIONES, FUENTES, DESTACADAS } from './proyectos-datos.js?v=
 const $ = (s) => document.querySelector(s);
 const CLAVE_GUARDADAS = 'siga_pp_guardadas_v1';
 const RUTA_IDEAS = 'js/proyectos/';
-const PAGINA = 12;                       // tarjetas por página (los botones «Anterior / Siguiente» cambian de página)
+const PAGINA = 6;                        // tarjetas por página (los botones «Anterior / Siguiente» cambian de página)
 const PROGRAMACION = { sin: 'no hace falta', opcional: 'opcional', incluida: 'incluida' };
 
 /* ───── las ideas: índice liviano al abrir, ficha completa al abrir una idea ───── */

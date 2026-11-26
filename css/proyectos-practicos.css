@@ -199,11 +199,11 @@
 /* Catálogo por tandas y bloque «se cruza con» */
 .pp-cruce-wrap[hidden] { display: none; }
 /* paginador: cada página reemplaza a la anterior */
-.pp-pag { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 18px 0 4px; }
+.pp-pag { display: flex; flex-direction: column; align-items: center; gap: 6px; width: fit-content; max-width: 100%; margin: 14px auto 4px; padding: 8px 14px; background: transparent; box-shadow: none; position: static; }
 .pp-pag[hidden] { display: none; }
-.pp-pag-info { margin: 0; font: 600 14px 'Poppins', sans-serif; color: var(--tinta); opacity: .85; text-align: center; }
-.pp-pag-botones { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-.pp-pag-b { min-width: 42px; height: 42px; padding: 0 14px; font: 700 14px 'Montserrat Alternates', sans-serif; border: 2px solid var(--n-violeta); background: #fff; color: var(--tinta); border-radius: 999px; cursor: pointer; }
+.pp-pag-info { margin: 0; font: 600 13px 'Poppins', sans-serif; color: var(--tinta); opacity: .85; text-align: center; }
+.pp-pag-botones { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.pp-pag-b { min-width: 34px; height: 34px; padding: 0 10px; font: 700 13px 'Montserrat Alternates', sans-serif; border: 2px solid var(--n-violeta); background: #fff; color: var(--tinta); border-radius: 999px; cursor: pointer; }
 .pp-pag-b:hover:not(:disabled) { background: var(--morado); color: #fff; }
 .pp-pag-b:disabled { opacity: .4; cursor: default; }
 .pp-pag-b.pp-pag-actual { background: var(--morado); color: #fff; }
