@@ -227,3 +227,7 @@
 .pp-perfil-aviso { margin: 0; background: #E4EEFF; border: 2px solid var(--n-azul, #2F6BFF); border-radius: 10px; padding: 10px 14px; font-size: 14px; line-height: 1.5; color: var(--tinta); }
 .pp-perfil-aviso[hidden] { display: none; }
 .pp-perfil-aviso a { color: var(--azul); font-weight: 700; }
+/* El atributo hidden debe ganarle a display:flex (si no, el formulario se queda visible junto al mensaje de gracias) */
+.pp-prop form[hidden], #ppPropListo[hidden] { display: none; }
+#ppPropListo { display: flex; flex-direction: column; gap: 18px; }
+#ppPropListo h3 { margin: 0; }

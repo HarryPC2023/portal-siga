@@ -558,7 +558,7 @@ async function enviarPropuesta(ev) {
         };
         const { error } = await supabase.from('proyectos_ideas').insert(fila);
         if (error) throw error;
-        $('#ppPropForm').reset(); pintarSimilares();
+        $('#ppPropForm').reset(); pintarSimilares(); $('#ppPropContador').textContent = '0 / 600';
         $('#ppPropForm').hidden = true; $('#ppPropListo').hidden = false;
         $('#ppPropPerfilAviso').hidden = true;
         nombreEnPerfil().then((tiene) => { $('#ppPropListoPerfil').hidden = tiene; });
