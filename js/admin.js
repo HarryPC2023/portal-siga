@@ -9,7 +9,7 @@ import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.
 import { iniciarFaqAsesorias } from './admin-faq.js?v=1';
 import { iniciarBandejaPreguntas } from './admin-bandeja.js?v=1';
 import { iniciarProyectosAdmin } from './admin-proyectos.js?v=2';
-import { iniciarAvisoPersonal } from './admin-aviso-personal.js?v=2';
+import { iniciarAvisoPersonal, decorarCorreos } from './admin-aviso-personal.js?v=3';
 import { nombreCursoLegible } from './nombres-curso.js?v=1';
 import { FACULTADES } from '../intranotas/facultades-datos.js';
 
@@ -615,6 +615,8 @@ async function cargarNotificaciones() {
     cont.querySelectorAll('.admin-btn-ocultar-notif').forEach((btn) => {
         btn.addEventListener('click', () => ocultarNotificacionParaMi(btn.dataset.id, btn));
     });
+
+    decorarCorreos(cont, { confirmarAccion }); // avance de correos + botón "Enviar a los que faltan"
 }
 
 async function eliminarNotificacion(id, btn) {

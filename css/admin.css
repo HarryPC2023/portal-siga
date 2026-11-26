@@ -1332,3 +1332,30 @@
 .anp-seccion {
     margin-top: 28px;
 }
+
+/* Avance de correos de una notificación masiva + botón "Enviar a los que faltan" */
+.anp-correos {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 4px 0 10px;
+    padding-right: 110px; /* deja libres los botones 🙈 y 🗑 de la esquina */
+}
+
+.anp-correos-texto {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+
+.anp-correos-msg {
+    flex-basis: 100%;
+    font-size: 12px;
+    color: var(--ink-soft);
+}
+
+.anp-mini:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

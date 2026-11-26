@@ -13,14 +13,21 @@
 //      respuestas a ideas, asesoría publicada, preguntas — llevan origen_id y
 //      no aparecen aquí) con opción de borrarlos.
 //
-// El correo NO se usa en avisos personales todavía: el correo masivo lo dispara
-// el trigger `notificar_por_correo` → Edge Function `enviar-notificacion-email`,
-// que envía a todos los alumnos activos. El envío de admin.js para "Todos"
-// queda tal cual; este módulo solo intercepta el envío cuando está elegida
-// la opción de personas.
+// Correo: si se activa "Enviar también por correo" en modo personas, cada fila
+// nace con canal 'web_y_correo' y el trigger `notificar_por_correo` llama a la
+// Edge Function `enviar-notificacion-email`, que manda UN correo a esa persona
+// (respetando a quien apagó sus notificaciones) y lo registra en
+// `notificaciones_correos`. El envío de admin.js para "Todos" queda tal cual;
+// este módulo solo intercepta el envío cuando está elegida la opción de personas.
+//
+// También exporta decorarCorreos(): añade a cada notificación masiva con correo
+// su avance ("250 enviados") y el botón "Enviar a los que faltan".
 import { supabase } from './auth-siga.js?v=9';
 
 const TIPO_PERSONAL = 'respuestas';
+const TEXTO_CORREO_PERSONAS = 'Además de aparecer en su campanita, le llega un correo a cada persona elegida (no se envía a quien apagó sus notificaciones). Cada correo cuenta para el límite de 300 al día de Brevo.';
+// Notificaciones creadas desde esta fecha ya quedan registradas en notificaciones_correos.
+const CORREOS_CONTROLADOS_DESDE = new Date('2026-11-27T00:00:00-05:00');
 const MAX_FILAS = 250; // filas dibujadas a la vez en la lista (el buscador afina el resto)
 // Solo rutas internas de SIGA (ej. perfil.html#sugerencias): sin "http:", sin "//" ni "javascript:".
 const ENLACE_VALIDO = /^(?![a-z][a-z0-9+.-]*:)(?!\/\/)[\w\-./?=&#%]+$/i;
@@ -45,7 +52,8 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
     const inputTitulo = document.getElementById('notifTitulo');
     const inputMensaje = document.getElementById('notifMensaje');
     const inputCorreo = document.getElementById('notifPorCorreo');
-    const toggleCorreo = form.querySelector('.admin-form-toggle');
+    const ayudaCorreo = document.getElementById('notifCorreoAyuda');
+    const textoCorreoTodos = ayudaCorreo ? ayudaCorreo.textContent : '';
     const btnPublicar = document.getElementById('btnPublicarNotif');
     const msg = document.getElementById('notifMsg');
     const lista = document.getElementById('listaNotifPersonales');
@@ -68,9 +76,7 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
         const personas = modoPersonas();
         bloque.hidden = !personas;
         tipoBloque.hidden = personas;
-        inputCorreo.disabled = personas;
-        if (personas) inputCorreo.checked = false;
-        if (toggleCorreo) toggleCorreo.classList.toggle('anp-desactivado', personas);
+        if (ayudaCorreo) ayudaCorreo.textContent = personas ? TEXTO_CORREO_PERSONAS : textoCorreoTodos;
         btnPublicar.textContent = personas ? textoBoton() : 'Publicar notificación';
         if (personas && !cargados && !cargando) cargarAlumnos();
     }
@@ -192,9 +198,14 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
         }
 
         const destinatarios = [...elegidos.values()];
-        if (destinatarios.length > 1) {
+        const conCorreo = inputCorreo.checked;
+        const canal = conCorreo ? 'web_y_correo' : 'solo_web';
+        if (destinatarios.length > 1 || conCorreo) {
+            const quienes = destinatarios.length === 1 ? etiqueta(destinatarios[0]) : `${destinatarios.length} personas`;
             const ok = await confirmarAccion(
-                `Se enviará «${titulo}» a ${destinatarios.length} personas. Les aparecerá en su campanita; si te equivocas, podrás borrarlo desde la lista «Enviadas a personas».`,
+                conCorreo
+                    ? `Se enviará «${titulo}» a ${quienes}: les aparece en su campanita y además les llega un correo (${destinatarios.length} ${destinatarios.length === 1 ? 'correo' : 'correos'} del límite de 300 al día). El correo no se puede deshacer.`
+                    : `Se enviará «${titulo}» a ${quienes}. Les aparecerá en su campanita; si te equivocas, podrás borrarlo desde la lista «Enviadas a personas».`,
                 { titulo: '¿Enviar este aviso?', textoBoton: 'Sí, enviar' },
             );
             if (!ok) return;
@@ -211,7 +222,7 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
             titulo,
             mensaje,
             enlace: enlace || null,
-            canal: 'solo_web',
+            canal,
         }));
         const { error } = await supabase.from('notificaciones').insert(filas);
 
@@ -221,9 +232,10 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
             return falla('No se pudo enviar: ' + error.message);
         }
 
+        const extra = conCorreo ? ' El correo sale en unos segundos.' : '';
         msg.textContent = destinatarios.length === 1
-            ? `✅ Enviado a ${etiqueta(destinatarios[0])} — le aparece en su campanita.`
-            : `✅ Enviado a ${destinatarios.length} personas — les aparece en su campanita.`;
+            ? `✅ Enviado a ${etiqueta(destinatarios[0])} — le aparece en su campanita.${extra}`
+            : `✅ Enviado a ${destinatarios.length} personas — les aparece en su campanita.${extra}`;
         msg.className = 'admin-msg exito';
 
         form.reset();
@@ -238,7 +250,7 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
     async function cargarLista() {
         const { data, error } = await supabase
             .from('notificaciones')
-            .select('id, titulo, mensaje, enlace, creado_en, destinatario')
+            .select('id, titulo, mensaje, enlace, creado_en, destinatario, canal')
             .not('destinatario', 'is', null)
             .is('origen_id', null)            // los automáticos llevan origen_id
             .order('creado_en', { ascending: false })
@@ -256,6 +268,17 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
         const ids = [...new Set(data.map((n) => n.destinatario))];
         const { data: perfiles } = await supabase.from('perfiles_usuario').select('user_id, nombre').in('user_id', ids);
         const nombres = new Map((perfiles || []).map((p) => [p.user_id, etiqueta(p)]));
+        const idsCorreo = data.filter((n) => n.canal === 'web_y_correo').map((n) => String(n.id));
+        const estadoCorreo = new Map();
+        if (idsCorreo.length) {
+            const { data: regs } = await supabase.from('notificaciones_correos').select('notificacion_id, estado').in('notificacion_id', idsCorreo);
+            (regs || []).forEach((r) => estadoCorreo.set(r.notificacion_id, r.estado));
+        }
+        const textoCorreo = (n) => {
+            if (n.canal !== 'web_y_correo') return '';
+            const e = estadoCorreo.get(String(n.id));
+            return ` · ${e === 'enviado' ? '✉️ correo enviado' : e === 'error' ? '✉️ correo con error' : '✉️ correo pendiente o no enviado'}`;
+        };
         const nombreDe = (id) => nombres.get(id) || `Alumno ${String(id).slice(0, 8)}`;
 
         lista.innerHTML = data.map((n) => `
@@ -264,7 +287,7 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
                     <span class="admin-item-titulo">${escapeHtml(n.titulo)}</span>
                     <span class="admin-badge admin-badge-personal">👤 ${escapeHtml(nombreDe(n.destinatario))}</span>
                 </div>
-                <p class="admin-item-meta">${formatearFecha(n.creado_en)}${n.enlace ? ` · enlace: ${escapeHtml(n.enlace)}` : ''}</p>
+                <p class="admin-item-meta">${formatearFecha(n.creado_en)}${textoCorreo(n)}${n.enlace ? ` · enlace: ${escapeHtml(n.enlace)}` : ''}</p>
                 <p class="admin-item-texto">${escapeHtml(n.mensaje)}</p>
                 <button type="button" class="admin-btn-eliminar" data-id="${n.id}" aria-label="Eliminar aviso personal" title="Eliminar de su campanita">🗑</button>
             </div>`).join('');
@@ -293,4 +316,68 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
 
     aplicarModo();
     cargarLista();
+}
+
+/* ============================================================
+   Notificaciones MASIVAS con correo (lista "Todos"): muestra cuántos correos
+   salieron y permite completar a los que faltan sin duplicar a nadie.
+   Se llama al final de cargarNotificaciones() en admin.js.
+   ============================================================ */
+export async function decorarCorreos(cont, { confirmarAccion }) {
+    const items = [...cont.querySelectorAll('.admin-item')].filter((i) => i.querySelector('.admin-badge-web_y_correo'));
+    if (!items.length) return;
+
+    const { data: filas } = await supabase.from('notificaciones').select('id, creado_en').in('id', items.map((i) => i.dataset.id));
+    const creado = new Map((filas || []).map((f) => [String(f.id), new Date(f.creado_en)]));
+
+    items.forEach((item) => decorarItem(item, creado.get(String(item.dataset.id))));
+
+    async function decorarItem(item, fecha) {
+        const id = String(item.dataset.id);
+        const contar = (estado) => supabase.from('notificaciones_correos')
+            .select('*', { count: 'exact', head: true }).eq('notificacion_id', id).eq('estado', estado);
+        const [{ count: enviados }, { count: errores }] = await Promise.all([contar('enviado'), contar('error')]);
+
+        item.querySelector('.anp-correos')?.remove();
+        const fila = document.createElement('div');
+        fila.className = 'anp-correos';
+
+        const controlada = (enviados || 0) + (errores || 0) > 0 || (fecha && fecha >= CORREOS_CONTROLADOS_DESDE);
+        if (!controlada) {
+            fila.innerHTML = '<span class="anp-correos-texto">✉️ Enviada antes del control de correos: no hay registro de quién la recibió.</span>';
+        } else {
+            fila.innerHTML = `
+                <span class="anp-correos-texto">✉️ ${enviados || 0} ${enviados === 1 ? 'correo enviado' : 'correos enviados'}${errores ? ` · ${errores} con error` : ''}</span>
+                <button type="button" class="anp-mini anp-reenviar">Enviar a los que faltan</button>
+                <span class="anp-correos-msg" aria-live="polite"></span>`;
+            const boton = fila.querySelector('.anp-reenviar');
+            const aviso = fila.querySelector('.anp-correos-msg');
+            boton.addEventListener('click', async () => {
+                const ok = await confirmarAccion(
+                    'Se enviará el correo solo a quienes aún no lo recibieron (y no hayan apagado sus notificaciones), sin pasarse del límite diario de Brevo. Los correos enviados no se pueden deshacer.',
+                    { titulo: '¿Enviar a los que faltan?', textoBoton: 'Sí, enviar' },
+                );
+                if (!ok) return;
+                boton.disabled = true;
+                aviso.textContent = 'Enviando…';
+                const { data, error } = await supabase.functions.invoke('enviar-notificacion-email', { body: { accion: 'reenviar', id } });
+                if (error || !data || data.error) {
+                    boton.disabled = false;
+                    aviso.textContent = 'No se pudo enviar: ' + ((data && data.error) || (error && error.message) || 'error desconocido');
+                    return;
+                }
+                const partes = [`Enviados ahora: ${data.enviados || 0}`];
+                if (data.pendientes) partes.push(`faltan ${data.pendientes}`);
+                if (data.errores) partes.push(`${data.errores} con error`);
+                if (data.cupoRestante !== undefined) partes.push(`cupo de hoy: ${data.cupoRestante} de ${data.limiteDiario}`);
+                if (data.motivo) partes.push(data.motivo);
+                const resumen = partes.join(' · ');
+                await decorarItem(item, fecha);
+                const nuevo = item.querySelector('.anp-correos-msg');
+                if (nuevo) nuevo.textContent = resumen;
+            });
+        }
+        const meta = item.querySelector('.admin-item-meta');
+        (meta || item.firstElementChild).insertAdjacentElement('afterend', fila);
+    }
 }

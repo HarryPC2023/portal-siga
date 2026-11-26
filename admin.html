@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="css/landing.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/tema-siga.css?v=1">
-    <link rel="stylesheet" href="css/admin.css?v=5">
+    <link rel="stylesheet" href="css/admin.css?v=6">
     <link rel="stylesheet" href="css/selector-personalizado.css?v=1">
     <link rel="icon" href="/portal-siga/icons/siga_web.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="96x96" href="/portal-siga/icons/siga_escritorio.png">
@@ -113,7 +113,7 @@
                             </label>
                             <small class="da-tipos-ayuda">Le llega solo a las personas elegidas, en su campanita,
                                 como aviso personal (el que cada alumno controla en Perfil → Avisos → Respuestas).
-                                El enlace abre una página de SIGA al tocar el aviso. Sin correo.</small>
+                                El enlace abre una página de SIGA al tocar el aviso. Si activas el correo, también le llega un email.</small>
                         </div>
 
                         <div class="admin-form-campo" id="notifTipoBloque">
@@ -132,7 +132,7 @@
                         <label class="admin-toggle admin-form-toggle">
                             <span class="admin-toggle-texto">
                                 <strong>Enviar también por correo</strong>
-                                <small>Además de aparecer en SIGA, le llega un correo a todos los alumnos con
+                                <small id="notifCorreoAyuda">Además de aparecer en SIGA, le llega un correo a todos los alumnos con
                                     notificaciones activas. Úsalo solo para avisos importantes — la cuota gratuita de
                                     Brevo es de 300 correos/día.</small>
                             </span>
@@ -243,7 +243,7 @@
     <script src="js/landing.js"></script>
     <script src="js/tema-siga.js?v=1"></script>
     <script src="js/selector-personalizado.js?v=1"></script>
-    <script type="module" src="js/admin.js?v=6"></script>
+    <script type="module" src="js/admin.js?v=7"></script>
 </body>
 
 </html>
