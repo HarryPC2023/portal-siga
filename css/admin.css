@@ -1229,7 +1229,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    background: #fff;
+    background: #fff; /* filas impares: blanco; pares: lila (abajo) */
     border: 1.5px solid rgba(0, 0, 0, 0.08);
     border-radius: 10px;
     padding: 8px 14px;
@@ -1241,9 +1241,17 @@
     border-color: rgba(102, 0, 204, 0.4);
 }
 
+.anp-fila:nth-of-type(even) {
+    background: #F1E8FC;
+}
+
 .anp-fila.elegida {
     border-color: #6600CC;
-    background: #F4ECFF;
+    background: #DCC5F8;
+}
+
+.anp-fila.elegida strong {
+    color: #3D0080;
 }
 
 .anp-fila input {
@@ -1358,4 +1366,10 @@
 .anp-mini:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* Nota pequeña bajo el número de «Cuentas registradas» */
+.vi-metrica .vi-metrica-nota {
+    font-size: 12px;
+    color: var(--ink-soft);
 }

@@ -3,8 +3,8 @@
 // Qué hace:
 //   1) En el formulario de "Nueva notificación" añade "¿A quién?": todos los
 //      alumnos (como siempre) o UNA O VARIAS personas, elegidas desde la lista
-//      completa de alumnos (tabla perfiles_usuario, que el admin ya puede leer),
-//      con buscador por nombre, código UNI o carrera.
+//      completa de cuentas (RPC admin_cuentas + perfiles_usuario, aunque la cuenta
+//      aún no tenga perfil), con buscador por nombre, correo, código UNI o carrera.
 //   2) Para las personas elegidas: se guarda una fila por persona en
 //      `notificaciones` con `destinatario`, tipo 'respuestas' (el canal personal
 //      que cada alumno ya controla en Perfil → Avisos), canal 'solo_web' y un
@@ -61,11 +61,12 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
     let alumnos = [];                 // todos los perfiles, ordenados por nombre
     let cargados = false;
     let cargando = false;
+    let sinCuentas = false;           // true si falló admin_cuentas (solo se ven los perfiles)
     const elegidos = new Map();       // user_id → perfil (se conserva aunque cambie el filtro)
 
     const modoPersonas = () => form.querySelector('input[name="notifDest"]:checked')?.value === 'persona';
-    const etiqueta = (p) => (p.nombre && p.nombre.trim()) || `Alumno ${String(p.user_id).slice(0, 8)}`;
-    const detalleDe = (p) => [p.codigo_estudiante, p.carrera].filter(Boolean).join(' · ');
+    const etiqueta = (p) => (p.nombre && p.nombre.trim()) || (p.email ? p.email.split('@')[0] : `Alumno ${String(p.user_id).slice(0, 8)}`);
+    const detalleDe = (p) => [p.email, p.codigo_estudiante, p.carrera, p.sinPerfil ? 'sin perfil' : ''].filter(Boolean).join(' · ');
     const textoBoton = () => {
         const n = elegidos.size;
         return n > 1 ? `Enviar aviso a ${n} personas` : 'Enviar aviso personal';
@@ -83,26 +84,45 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
     radios.forEach((r) => r.addEventListener('change', aplicarModo));
 
     /* ───────── Lista de alumnos ───────── */
+    async function pedirTodo(crearConsulta) {
+        const PAGINA = 1000;
+        const todas = [];
+        for (let desde = 0; ; desde += PAGINA) {
+            const { data, error } = await crearConsulta().range(desde, desde + PAGINA - 1);
+            if (error) throw error;
+            todas.push(...(data || []));
+            if (!data || data.length < PAGINA) break;
+        }
+        return todas;
+    }
+
     async function cargarAlumnos() {
         cargando = true;
         cajaLista.innerHTML = '<p class="anp-vacio">Cargando alumnos…</p>';
-        const PAGINA = 1000;
-        const todos = [];
-        for (let desde = 0; ; desde += PAGINA) {
-            const { data, error } = await supabase
-                .from('perfiles_usuario')
-                .select('user_id, nombre, codigo_estudiante, carrera')
-                .order('user_id')
-                .range(desde, desde + PAGINA - 1);
-            if (error) {
-                cargando = false;
-                cajaLista.innerHTML = `<p class="anp-vacio">No se pudo cargar la lista: ${escapeHtml(error.message)}</p>`;
-                return;
-            }
-            todos.push(...(data || []));
-            if (!data || data.length < PAGINA) break;
+        let perfiles;
+        let cuentas = null;
+        try {
+            perfiles = await pedirTodo(() => supabase.from('perfiles_usuario')
+                .select('user_id, nombre, codigo_estudiante, carrera').order('user_id'));
+        } catch (error) {
+            cargando = false;
+            cajaLista.innerHTML = `<p class="anp-vacio">No se pudo cargar la lista: ${escapeHtml(error.message)}</p>`;
+            return;
         }
-        alumnos = todos.sort((a, b) => etiqueta(a).localeCompare(etiqueta(b), 'es', { sensitivity: 'base' }));
+        try {
+            cuentas = await pedirTodo(() => supabase.rpc('admin_cuentas'));
+        } catch (error) {
+            console.warn('No se pudo traer todas las cuentas (¿falta correr el SQL admin_cuentas?):', error);
+        }
+        sinCuentas = !cuentas;
+
+        const porId = new Map(perfiles.map((p) => [p.user_id, { ...p, email: null, sinPerfil: false }]));
+        (cuentas || []).forEach((cta) => {
+            const base = porId.get(cta.user_id);
+            if (base) base.email = cta.email;
+            else porId.set(cta.user_id, { user_id: cta.user_id, nombre: cta.nombre_cuenta, codigo_estudiante: null, carrera: null, email: cta.email, sinPerfil: true });
+        });
+        alumnos = [...porId.values()].sort((a, b) => etiqueta(a).localeCompare(etiqueta(b), 'es', { sensitivity: 'base' }));
         cargados = true;
         cargando = false;
         pintarLista();
@@ -113,7 +133,7 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
         if (!q) return alumnos;
         const trozos = q.split(/\s+/);
         return alumnos.filter((p) => {
-            const pajar = normalizar(`${etiqueta(p)} ${p.codigo_estudiante || ''} ${p.carrera || ''}`);
+            const pajar = normalizar(`${etiqueta(p)} ${p.email || ''} ${p.codigo_estudiante || ''} ${p.carrera || ''} ${p.sinPerfil ? 'sin perfil' : ''}`);
             return trozos.every((t) => pajar.includes(t));
         });
     }
@@ -142,7 +162,7 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
         const total = alumnos.length;
         const n = elegidos.size;
         const visibles = totalVisibles ?? filtrados().length;
-        contador.textContent = `${visibles} de ${total} alumnos · ${n} ${n === 1 ? 'elegido' : 'elegidos'}`;
+        contador.textContent = `${visibles} de ${total} cuentas · ${n} ${n === 1 ? 'elegida' : 'elegidas'}${sinCuentas ? ' · (solo perfiles: falta correr el SQL admin_cuentas)' : ''}`;
         btnPublicar.textContent = modoPersonas() ? textoBoton() : btnPublicar.textContent;
 
         if (!n) { cajaChips.innerHTML = ''; return; }
@@ -279,7 +299,7 @@ export function iniciarAvisoPersonal({ confirmarAccion, escapeHtml, formatearFec
             const e = estadoCorreo.get(String(n.id));
             return ` · ${e === 'enviado' ? '✉️ correo enviado' : e === 'error' ? '✉️ correo con error' : '✉️ correo pendiente o no enviado'}`;
         };
-        const nombreDe = (id) => nombres.get(id) || `Alumno ${String(id).slice(0, 8)}`;
+        const nombreDe = (id) => nombres.get(id) || (alumnos.find((a) => a.user_id === id) ? etiqueta(alumnos.find((a) => a.user_id === id)) : `Alumno ${String(id).slice(0, 8)}`);
 
         lista.innerHTML = data.map((n) => `
             <div class="admin-item" data-id="${n.id}" data-nombre="${escapeHtml(nombreDe(n.destinatario))}">

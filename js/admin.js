@@ -9,7 +9,7 @@ import { iniciarDemandaAsesorias, avisarRespuestaIdea } from './admin-asesorias.
 import { iniciarFaqAsesorias } from './admin-faq.js?v=1';
 import { iniciarBandejaPreguntas } from './admin-bandeja.js?v=1';
 import { iniciarProyectosAdmin } from './admin-proyectos.js?v=2';
-import { iniciarAvisoPersonal, decorarCorreos } from './admin-aviso-personal.js?v=3';
+import { iniciarAvisoPersonal, decorarCorreos } from './admin-aviso-personal.js?v=4';
 import { nombreCursoLegible } from './nombres-curso.js?v=1';
 import { FACULTADES } from '../intranotas/facultades-datos.js';
 
@@ -832,6 +832,24 @@ async function cargarListaVistaIntranotas() {
         return;
     }
 
+    // Hay cuentas que ya entraron a SIGA pero aún no tienen fila en perfiles_usuario: se suman como
+    // «perfiles» vacíos para que el total sea el real. Si falta correr el SQL admin_cuentas, se sigue como antes.
+    try {
+        const cuentas = await traerTodo(() => supabase.rpc('admin_cuentas'));
+        const conPerfil = new Set(perfiles.map((p) => p.user_id));
+        cuentas.filter((cta) => !conPerfil.has(cta.user_id)).forEach((cta) => {
+            perfiles.push({
+                user_id: cta.user_id,
+                nombre: cta.nombre_cuenta || (cta.email ? cta.email.split('@')[0] : null),
+                codigo_estudiante: null, facultad: null, carrera: null,
+                periodo_ingreso: null, periodo_actual: null, foto_url: null,
+                creado_en: cta.creado_en, sinPerfil: true,
+            });
+        });
+    } catch (errorCuentas) {
+        console.warn('No se pudo traer el total de cuentas (¿falta correr el SQL admin_cuentas?):', errorCuentas);
+    }
+
     viPerfiles = {};
     perfiles.forEach((p) => { viPerfiles[p.user_id] = p; });
     viNotasResumen = notas;
@@ -858,7 +876,7 @@ function pintarMetricasVi(perfiles, notas) {
     const tarjetaSync = `<div class="vi-metrica ${estadoSync}" title="Verde: hasta 2 días · Ámbar: hasta 7 días · Rojo: más de 7 días"><span>Última sincronización</span><strong>${estadoSync ? '<i class="vi-punto"></i>' : ''}${haceCuanto(ultima)}</strong></div>`;
 
     document.getElementById('viMetricas').innerHTML =
-        tarjeta('Perfiles completos', perfiles.length) +
+        `<div class="vi-metrica" title="Cuentas creadas en SIGA, hayan completado su perfil o no"><span>Cuentas registradas</span><strong>${perfiles.length}</strong><small class="vi-metrica-nota">${perfiles.filter((p) => !p.sinPerfil).length} con perfil creado</small></div>` +
         tarjeta('Alumnos con notas', alumnosConNotas) +
         tarjeta('Periodos sincronizados', periodos) +
         tarjetaSync;
