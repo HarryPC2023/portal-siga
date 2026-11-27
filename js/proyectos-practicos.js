@@ -378,7 +378,7 @@ function pintarFicha(i, completa) {
     const btnG = el('button', { type: 'button', class: 'pp-btn pp-btn-blanco', id: 'ppFichaGuardar' });
     btnG.addEventListener('click', () => alternarGuardada(i.id));
     const cruces = (i.areas2 || []).map((x) => (areaDe(x) || {}).nombre).filter(Boolean);
-    $('#ppFichaCuerpo').replaceChildren(
+    $('#ppFichaCuerpo').replaceChildren(...[
         el('h3', { id: 'ppFichaTitulo', text: i.titulo }),
         AUTORES.get(i.id) ? el('p', { class: 'pp-meta pp-autor' }, 'Idea de ', el('b', { text: AUTORES.get(i.id) })) : null,
         el('p', { class: 'pp-ficha-res', text: i.resumen }),
@@ -406,7 +406,8 @@ function pintarFicha(i, completa) {
                 el('p', { class: 'pp-aviso', text: 'Son ejemplos, no una lista cerrada: la idea puede hacerla cualquier persona, de cualquier carrera.' })) : null,
         ] : null,
         el('div', { class: 'pp-ficha-pie' }, btnG),
-        el('p', { class: 'pp-aviso', text: 'Es una idea para inspirarte: puedes adaptarla, hacerla más pequeña o más grande, o usarla en otra área.' }));
+        el('p', { class: 'pp-aviso', text: 'Es una idea para inspirarte: puedes adaptarla, hacerla más pequeña o más grande, o usarla en otra área.' }),
+    ].flat().filter((h) => h != null && h !== false));   // replaceChildren nativo no aplana listas ni ignora null: se limpian antes
     actualizarBotonFicha();
 }
 
