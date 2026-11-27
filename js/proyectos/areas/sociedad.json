@@ -702,6 +702,83 @@
     "Si alguien comparte que está pasando por un mal momento, sugiérele hablar con una persona de confianza o con un servicio de apoyo; no intentes aconsejarle ni evaluarlo."
    ],
    "otroSector": "Sirve para diseñar actividades que integren a un grupo: migrantes nuevos, equipos remotos o personas mayores en un centro comunitario."
+  },
+  {
+   "id": "proyecto-de-intercambio-y-reutilizacion-de-objetos",
+   "area": "sociedad",
+   "areas2": [
+    "ambiente",
+    "negocios"
+   ],
+   "titulo": "Proyecto de intercambio y reutilización de objetos",
+   "resumen": "Diseña una forma sencilla de que una comunidad intercambie, preste o regale objetos que ya no usa, y piensa cómo hacerla confiable, ordenada y fácil de mantener.",
+   "tipo": "Plan",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Intercambio",
+    "Comunidad"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Trabajo Social",
+    "Sociología",
+    "Administración",
+    "Comunicaciones",
+    "Educación",
+    "Ingeniería Industrial",
+    "Economía",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Muchas casas guardan objetos que otras personas necesitan: libros, ropa, herramientas, juguetes, útiles. Pero no existe una forma cómoda de encontrarse, y regalar o intercambiar con desconocidos genera dudas de confianza y logística.",
+    "Cuando intercambiar es incómodo, los objetos terminan en la basura o guardados para siempre, mientras alguien más los compra nuevos."
+   ],
+   "desarrollar": [
+    "Elige una comunidad, como una facultad, un edificio o un barrio, y define qué objetos se podrían intercambiar, cómo se publicarían, cómo se acordaría la entrega y qué reglas básicas de confianza y de cuidado se necesitarían.",
+    "Prepara el plan con un esquema del proceso, las reglas, un ejemplo de publicación y los materiales que harían falta, y revisa con alguien externo si queda claro y atractivo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Primer evento",
+     "aporta": "diseña una jornada de intercambio de un día, con horarios y responsables."
+    },
+    {
+     "titulo": "Versión digital",
+     "aporta": "propón cómo sería un grupo o página para publicar y coordinar los intercambios."
+    },
+    {
+     "titulo": "Efecto estimado",
+     "aporta": "estima cuántos objetos se reutilizarían y cuánto ahorro supondría."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué objetos tienen más demanda.",
+    "Diseñar un proceso de intercambio claro.",
+    "Definir reglas de confianza y seguridad.",
+    "Evaluar la viabilidad del plan."
+   ],
+   "habilidades": [
+    "Diseño de servicios.",
+    "Organización comunitaria.",
+    "Redacción de reglas claras.",
+    "Planificación."
+   ],
+   "herramientas": [
+    "Un editor de diagramas o de documentos.",
+    "Hoja de cálculo.",
+    "Un formulario de prueba."
+   ],
+   "lineamientos": [
+    "Incluye reglas de seguridad para los encuentros, como realizarlos en lugares públicos, y evita objetos peligrosos, vencidos o de uso personal.",
+    "Si luego lo llevas a la práctica, hazlo con permiso de la institución o del lugar y sin recoger datos personales de más."
+   ],
+   "otroSector": "El mismo diseño sirve para bancos de tiempo, préstamo de herramientas, bibliotecas comunitarias o redes de ayuda entre vecinos."
   }
  ]
 }

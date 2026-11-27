@@ -620,6 +620,4305 @@
     "Aclara que la guía es informativa y que ante síntomas graves se debe acudir a un servicio de salud."
    ],
    "otroSector": "La misma guía sirve para otros eventos, como incendios, lluvias fuertes, humo o cortes prolongados de energía."
+  },
+  {
+   "id": "cuanta-basura-genera-tu-hogar-en-una-semana-y-de-que-esta-hecha",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cuánta basura genera tu hogar en una semana y de qué está hecha?",
+   "resumen": "Pesa y clasifica durante una semana lo que se tira en tu casa para descubrir cuánta basura se genera y qué parte de ella podría evitarse o aprovecharse.",
+   "tipo": "Análisis",
+   "tiempo": "~10 h",
+   "horas": 10,
+   "etiquetas": [
+    "Residuos",
+    "Datos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Química",
+    "Biología",
+    "Economía",
+    "Administración",
+    "Educación"
+   ],
+   "problema": [
+    "Casi nadie sabe cuánta basura produce su hogar. Las bolsas salen de casa y se pierden de vista, así que lo que se tira se percibe como un volumen vago y no como una cantidad concreta con un origen.",
+    "Sin ese dato es difícil decidir qué cambiar: no es lo mismo que la mayor parte sea comida, envases o papel. Medir permite pasar de la intuición a una conclusión que se pueda comprobar."
+   ],
+   "desarrollar": [
+    "Durante siete días separa lo que se tira en categorías simples, como orgánico, plástico, papel y cartón, vidrio y metal, y otros, y pésalo con una balanza de cocina o estima su volumen con un recipiente conocido.",
+    "Ordena los datos por día y por categoría, haz un gráfico que muestre de qué está hecha tu basura y señala qué dos o tres tipos de residuo se podrían reducir con cambios sencillos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar semanas",
+     "aporta": "repite la medición otra semana y descubre cuánto varía y por qué."
+    },
+    {
+     "titulo": "Estimar el año",
+     "aporta": "proyecta tus datos a un año y a todos los hogares de una cuadra para dimensionar el total."
+    },
+    {
+     "titulo": "Convertirlo en reto",
+     "aporta": "elige una categoría, intenta reducirla y mide cuánto lograste."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un método de registro sencillo y repetible.",
+    "Medir y clasificar residuos por categoría.",
+    "Visualizar los resultados con gráficos claros.",
+    "Proponer cambios concretos basados en los datos."
+   ],
+   "habilidades": [
+    "Medición y registro de datos.",
+    "Clasificación y análisis.",
+    "Gráficos.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Balanza de cocina o recipientes de volumen conocido.",
+    "Hoja de cálculo.",
+    "Bolsas o cajas para clasificar."
+   ],
+   "lineamientos": [
+    "Usa guantes al clasificar, no manipules residuos punzocortantes ni de higiene personal, y lávate las manos al terminar.",
+    "Registra cantidades y tipos de residuo, no a las personas que los generaron; presenta los resultados sin juzgar a nadie."
+   ],
+   "otroSector": "La misma medición sirve en un colegio, un restaurante, una oficina o un mercado, y también para estimar cuánta agua, energía o papel se usa en un espacio."
+  },
+  {
+   "id": "que-reciclables-terminan-en-la-basura-por-falta-de-informacion",
+   "area": "ambiente",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "¿Qué reciclables terminan en la basura por falta de información?",
+   "resumen": "Descubre qué materiales que sí podrían reciclarse acaban en la basura común por dudas o desconocimiento, y qué información los haría separarse mejor.",
+   "tipo": "Investigación",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Reciclaje",
+    "Información"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Educación",
+    "Comunicaciones",
+    "Psicología",
+    "Sociología",
+    "Química",
+    "Ingeniería Industrial",
+    "Estadística"
+   ],
+   "problema": [
+    "Muchas personas quieren reciclar, pero no saben con certeza qué va en cada lugar: si un envase sucio sirve, si una caja de jugo se recicla o si el papel con grasa puede separarse. Ante la duda, se tira todo junto.",
+    "Esa falta de información hace que materiales aprovechables se pierdan, y a veces que lo mal separado contamine lo que sí estaba bien. El problema no siempre es de voluntad, sino de claridad."
+   ],
+   "desarrollar": [
+    "Revisa durante una semana los residuos de tu casa o de un espacio al que tengas acceso, anota cuáles eran potencialmente reciclables según la información pública de tu localidad o de un programa de reciclaje, y cuáles terminaron en el tacho equivocado.",
+    "Agrupa las causas, como duda sobre el material, suciedad o falta de un lugar para separar, y prepara una ayuda visual breve para los tres materiales que más se confunden."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Probar la ayuda",
+     "aporta": "muestra tu material a algunas personas y comprueba si ahora clasifican mejor."
+    },
+    {
+     "titulo": "Comparar fuentes",
+     "aporta": "contrasta las instrucciones de distintas fuentes y detecta dónde se contradicen."
+    },
+    {
+     "titulo": "Un cartel claro",
+     "aporta": "diseña un cartel para un tacho de reciclaje que se entienda en cinco segundos."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué reciclables se desechan mal.",
+    "Reconocer las causas de la confusión.",
+    "Consultar fuentes oficiales para saber cómo clasificar.",
+    "Diseñar una ayuda visual clara."
+   ],
+   "habilidades": [
+    "Observación y registro.",
+    "Lectura de fuentes oficiales.",
+    "Diseño de información.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Cuaderno o formulario de registro.",
+    "Guías públicas de reciclaje.",
+    "Un editor de carteles o de presentaciones."
+   ],
+   "lineamientos": [
+    "Basa tus indicaciones en fuentes oficiales de tu localidad y cítalas: las reglas de reciclaje cambian según el lugar.",
+    "Registra tipos de residuo y no a personas, y manipula los residuos con guantes y sin tocar punzocortantes."
+   ],
+   "otroSector": "El mismo método sirve para estudiar por qué las personas se equivocan al seguir instrucciones en trámites, etiquetas, formularios o aplicaciones."
+  },
+  {
+   "id": "disena-un-sistema-para-separar-y-aprovechar-los-residuos-de-un-h",
+   "area": "ambiente",
+   "areas2": [
+    "industria"
+   ],
+   "titulo": "Diseña un sistema para separar y aprovechar los residuos de un hogar",
+   "resumen": "Diseña un sistema práctico para separar los residuos de una vivienda y decidir qué hacer con cada tipo, adaptado a un espacio pequeño y a una rutina real.",
+   "tipo": "Prototipo",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Residuos",
+    "Diseño"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Ingeniería Industrial",
+    "Ingeniería Ambiental",
+    "Arquitectura",
+    "Diseño Gráfico",
+    "Ingeniería Mecánica",
+    "Ingeniería Civil",
+    "Administración",
+    "Educación"
+   ],
+   "problema": [
+    "Separar residuos suena simple, pero en casas y departamentos pequeños faltan lugares donde guardar los distintos materiales, y cuando separar es incómodo, se deja de hacer. Muchos sistemas están pensados para espacios amplios.",
+    "Un buen sistema no solo clasifica: también define dónde se guarda cada cosa, cada cuánto se saca y a dónde va después. Si una de esas piezas falla, todo el esquema se cae."
+   ],
+   "desarrollar": [
+    "Elige un tipo de vivienda, real o ficticio, y define qué materiales se separarán, dónde estarán los recipientes, quién se encargará y qué pasa con cada material: reutilizar, compostar, reciclar o desechar.",
+    "Presenta el sistema como un plano o esquema con recipientes y flujo de residuos, una guía de una página para las personas de la casa y una lista de qué materiales y costos necesitaría."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otro tipo de hogar",
+     "aporta": "adapta el sistema a una casa grande, un cuarto alquilado o un departamento compartido."
+    },
+    {
+     "titulo": "Ahorro y valor",
+     "aporta": "estima qué parte de los residuos se aprovecharía y cuánto se evitaría tirar."
+    },
+    {
+     "titulo": "Prueba de uso",
+     "aporta": "arma una maqueta sencilla y observa si alguien la usa sin explicación."
+    }
+   ],
+   "objetivos": [
+    "Definir qué materiales se separan y por qué.",
+    "Diseñar el espacio y el recorrido de los residuos.",
+    "Redactar instrucciones claras.",
+    "Evaluar si el sistema es práctico para un hogar real."
+   ],
+   "habilidades": [
+    "Diseño de procesos.",
+    "Diseño de espacios.",
+    "Pensamiento sistémico.",
+    "Comunicación visual."
+   ],
+   "herramientas": [
+    "Papel o una herramienta de planos y diagramas.",
+    "Hoja de cálculo para costos.",
+    "Un editor de diagramas de flujo."
+   ],
+   "lineamientos": [
+    "No mezcles ni almacenes sustancias peligrosas como pilas, solventes o medicamentos; indica que deben entregarse en puntos autorizados.",
+    "Si probarás el sistema en una casa, hazlo con quienes vivan allí y con su acuerdo, y ajusta si no resulta cómodo."
+   ],
+   "otroSector": "La misma lógica sirve para diseñar el manejo de residuos de un negocio pequeño, un aula, un evento o un taller."
+  },
+  {
+   "id": "que-residuos-de-una-institucion-podrian-aprovecharse-en-lugar-de",
+   "area": "ambiente",
+   "areas2": [
+    "industria",
+    "negocios"
+   ],
+   "titulo": "¿Qué residuos de una institución podrían aprovecharse en lugar de desecharse?",
+   "resumen": "Observa qué se tira en una institución y descubre qué materiales podrían reutilizarse, donarse o transformarse en vez de convertirse en basura.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Residuos",
+    "Economía circular"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Administración",
+    "Economía",
+    "Química",
+    "Arquitectura",
+    "Educación",
+    "Contabilidad"
+   ],
+   "problema": [
+    "Colegios, universidades, oficinas o talleres desechan a diario papel, restos de comida, muebles, cartuchos, envases o materiales de laboratorio que todavía podrían servir a alguien. Como la basura se retira rápido, rara vez se mira lo que contiene.",
+    "Sin esa mirada, se pierden materiales que tienen valor y se paga por desecharlos. Algunos residuos de un lugar son justamente lo que otro necesita."
+   ],
+   "desarrollar": [
+    "Elige un espacio al que tengas acceso, avisa y pide permiso, y observa durante una semana qué se desecha en tres puntos, como aulas, oficinas o comedor. Registra tipos y cantidades aproximadas, no personas.",
+    "Para cada tipo de residuo, propón un posible uso alternativo, como reutilizar, donar o transformar, y arma una tabla que muestre qué residuos tienen más potencial y qué haría falta para aprovecharlos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Valor del residuo",
+     "aporta": "estima cuánto dinero representan los materiales que hoy se desechan."
+    },
+    {
+     "titulo": "Buscar destinatarios",
+     "aporta": "identifica quién podría necesitar cada material, como una escuela, un taller o una organización."
+    },
+    {
+     "titulo": "Plan piloto",
+     "aporta": "diseña una prueba pequeña para aprovechar un solo tipo de residuo durante un mes."
+    }
+   ],
+   "objetivos": [
+    "Observar y registrar qué se desecha.",
+    "Clasificar los residuos por potencial de aprovechamiento.",
+    "Proponer usos alternativos viables.",
+    "Presentar los hallazgos con orden."
+   ],
+   "habilidades": [
+    "Observación sistemática.",
+    "Análisis de residuos.",
+    "Pensamiento de economía circular.",
+    "Presentación de resultados."
+   ],
+   "herramientas": [
+    "Fichas de registro.",
+    "Hoja de cálculo.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Pide autorización antes de observar o fotografiar un espacio y no registres a las personas ni lo que cada una desecha.",
+    "Presenta los resultados como oportunidades de mejora, sin señalar responsables."
+   ],
+   "otroSector": "El mismo análisis sirve para una oficina, un hospital, un restaurante, un mercado o un evento, y para otros recursos como energía o agua."
+  },
+  {
+   "id": "el-viaje-de-tus-residuos-a-donde-van-al-salir-de-casa",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "sociedad"
+   ],
+   "titulo": "El viaje de tus residuos: ¿a dónde van al salir de casa?",
+   "resumen": "Sigue el recorrido de la basura de tu zona, desde el tacho hasta su destino final, con información pública, y descubre qué ocurre en cada etapa.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Residuos",
+    "Gestión"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Civil",
+    "Geografía",
+    "Sociología",
+    "Derecho",
+    "Administración",
+    "Ingeniería Industrial",
+    "Estadística"
+   ],
+   "problema": [
+    "Cuando la bolsa sale de casa, la mayoría deja de saber qué pasa con ella. Hay quienes la recogen, vehículos que la trasladan y lugares donde termina, y cada etapa tiene costos, riesgos y personas involucradas.",
+    "Conocer ese recorrido cambia la manera de mirar los residuos: permite entender por qué separar importa, qué se pierde en el camino y quién se encarga de cada paso."
+   ],
+   "desarrollar": [
+    "Con información pública de tu municipalidad y de las instituciones responsables, reconstruye el recorrido de los residuos de tu distrito: recojo, traslado, tratamiento o disposición final, con frecuencias, responsables y lugares.",
+    "Preséntalo como un diagrama o un mapa sencillo, anota qué datos no encontraste y qué preguntas quedan abiertas para quien administra el servicio."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar zonas",
+     "aporta": "contrasta el recorrido de dos distritos distintos y busca qué los diferencia."
+    },
+    {
+     "titulo": "Volver a casa",
+     "aporta": "calcula cuánto recorre en promedio un residuo y qué costo tiene su traslado."
+    },
+    {
+     "titulo": "Contarlo a otros",
+     "aporta": "convierte el recorrido en un video corto o en una infografía para tu comunidad."
+    }
+   ],
+   "objetivos": [
+    "Buscar y verificar información pública.",
+    "Reconstruir las etapas del recorrido.",
+    "Representarlas en un diagrama o mapa.",
+    "Identificar vacíos de información."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Representación de procesos.",
+    "Pensamiento crítico.",
+    "Redacción clara."
+   ],
+   "herramientas": [
+    "Portales y reportes públicos de gestión de residuos.",
+    "Un mapa digital.",
+    "Un editor de diagramas."
+   ],
+   "lineamientos": [
+    "Cita cada fuente y distingue lo que está documentado de lo que supones; si falta un dato, dilo en lugar de estimarlo sin avisar.",
+    "No visites ni fotografíes botaderos u otras instalaciones sin autorización: trabaja con información pública."
+   ],
+   "otroSector": "El mismo seguimiento sirve para estudiar el recorrido del agua, de un producto, de un trámite o de una cadena de suministro."
+  },
+  {
+   "id": "mapa-de-puntos-de-reciclaje-de-tu-comunidad",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "tecnologia"
+   ],
+   "titulo": "Mapa de puntos de reciclaje de tu comunidad",
+   "resumen": "Reúne en un mapa claro dónde llevar cada tipo de residuo en tu zona, con horarios y condiciones verificadas, para que reciclar sea fácil de encontrar.",
+   "tipo": "Prototipo",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Reciclaje",
+    "Mapas"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Geografía",
+    "Ingeniería Ambiental",
+    "Ingeniería Civil",
+    "Comunicaciones",
+    "Diseño Gráfico",
+    "Administración",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Aunque existan centros de acopio, campañas y recicladores formales, su información está dispersa en páginas, redes y carteles, y a veces desactualizada. Quien quiere reciclar no sabe a dónde ir ni qué aceptan.",
+    "Cuando encontrar el lugar cuesta tanto esfuerzo, reciclar pasa a ser algo ocasional. Un mapa útil necesita datos verificados, no solo puntos."
+   ],
+   "desarrollar": [
+    "Reúne información pública de diez a quince puntos de tu zona, como centros de acopio, campañas o programas, y registra qué materiales reciben, horarios, condiciones y fecha de verificación.",
+    "Ubícalos en un mapa digital con filtros por tipo de material y compruébalo pidiendo a dos personas que busquen dónde llevar algo concreto, como pilas o papel."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Detectar vacíos",
+     "aporta": "identifica qué materiales no tienen ningún punto cercano."
+    },
+    {
+     "titulo": "Versión imprimible",
+     "aporta": "crea una versión de una hoja para repartir en un edificio o colegio."
+    },
+    {
+     "titulo": "Mantenerlo vivo",
+     "aporta": "diseña cómo se revisaría y actualizaría la información cada cierto tiempo."
+    }
+   ],
+   "objetivos": [
+    "Reunir información verificable de puntos de reciclaje.",
+    "Organizarla con criterios claros.",
+    "Representarla en un mapa útil.",
+    "Probarlo con personas."
+   ],
+   "habilidades": [
+    "Búsqueda y verificación de información.",
+    "Representación en mapas.",
+    "Organización de datos.",
+    "Pruebas con usuarios."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de mapas digitales.",
+    "Un formulario de prueba."
+   ],
+   "lineamientos": [
+    "Verifica cada punto en su fuente oficial y anota la fecha: horarios y materiales cambian con frecuencia.",
+    "Incluye solo servicios formales y autorizados, y no recomiendes manipular residuos peligrosos por tu cuenta."
+   ],
+   "otroSector": "El mismo mapa sirve para ubicar servicios de salud, bibliotecas, espacios deportivos, bancos de alimentos o puntos de ayuda."
+  },
+  {
+   "id": "reto-una-semana-generando-menos-residuos",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Reto: una semana generando menos residuos",
+   "resumen": "Mide cuánto generas normalmente, cambia algunos hábitos durante una semana y comprueba cuánto lograste reducir, con datos y sin exigirte la perfección.",
+   "tipo": "Plan",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Reto",
+    "Hábitos"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Psicología",
+    "Educación",
+    "Comunicaciones",
+    "Administración",
+    "Estadística",
+    "Nutrición",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Hablar de reducir residuos suele quedarse en buenas intenciones porque no se sabe por dónde empezar ni se comprueba si algo cambió. Los consejos genéricos no se adaptan a la rutina de cada persona.",
+    "Un reto con medición permite saber qué sí cuesta poco y funciona, y qué es poco realista para tu vida, en lugar de culparte por no lograrlo."
+   ],
+   "desarrollar": [
+    "Mide una semana de referencia, elige tres hábitos concretos que puedas cambiar, como llevar tu propio recipiente, planificar compras o rechazar envoltorios, y repite la medición durante otra semana.",
+    "Compara ambas semanas, anota qué cambio resultó fácil y cuál difícil y por qué, y cierra con una conclusión honesta sobre qué mantendrías."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Reto en grupo",
+     "aporta": "invita a un grupo pequeño y compara qué hábitos funcionaron mejor."
+    },
+    {
+     "titulo": "Registro visual",
+     "aporta": "arma un tablero diario para ver el progreso de un vistazo."
+    },
+    {
+     "titulo": "Guía de lo aprendido",
+     "aporta": "resume los hábitos que funcionaron en una guía para otra persona."
+    }
+   ],
+   "objetivos": [
+    "Establecer una línea base medible.",
+    "Elegir cambios realistas.",
+    "Comparar resultados entre semanas.",
+    "Reflexionar sobre qué sostener."
+   ],
+   "habilidades": [
+    "Medición y registro.",
+    "Diseño de hábitos.",
+    "Análisis comparativo.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o cuaderno.",
+    "Balanza de cocina.",
+    "Una aplicación de seguimiento de hábitos."
+   ],
+   "lineamientos": [
+    "No cambies hábitos que afecten tu salud o seguridad, como la higiene de los alimentos, solo por reducir residuos.",
+    "Presenta tus resultados como una experiencia personal, no como un modelo para todos."
+   ],
+   "otroSector": "El mismo esquema sirve para retos de ahorro de agua, energía, dinero, tiempo de pantalla o consumo de papel."
+  },
+  {
+   "id": "cuanto-plastico-de-un-solo-uso-pasa-por-tus-manos",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto plástico de un solo uso pasa por tus manos?",
+   "resumen": "Cuenta durante una semana los objetos de plástico de un solo uso que usas, descubre cuáles son más fáciles de reemplazar y cuánto cambiaría si lo hicieras.",
+   "tipo": "Análisis",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Plástico",
+    "Hábitos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Química",
+    "Ingeniería Química",
+    "Biología",
+    "Educación",
+    "Comunicaciones",
+    "Estadística",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Bolsas, sorbetes, botellas, cubiertos y envoltorios se usan unos minutos y duran muchos años. Como cada uno parece insignificante, casi nadie sabe cuántos usa en total.",
+    "Sin ese conteo, los cambios suelen ser simbólicos: se reemplaza lo más visible y se pasa por alto lo que más se acumula."
+   ],
+   "desarrollar": [
+    "Durante una semana registra cada objeto de plástico de un solo uso que uses, con su tipo y la situación en que apareció, como comprar comida, viajar o estudiar.",
+    "Ordena los resultados, identifica los cinco más frecuentes, busca una alternativa realista para cada uno, incluyendo su costo, y estima cuántos se evitarían en un año."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar entornos",
+     "aporta": "compara el uso en casa, en la universidad y en la calle."
+    },
+    {
+     "titulo": "Alternativas reales",
+     "aporta": "compara la durabilidad y el costo de una alternativa reutilizable frente al desechable."
+    },
+    {
+     "titulo": "Mapa del plástico",
+     "aporta": "dibuja de dónde proviene cada objeto y a dónde va cuando lo desechas."
+    }
+   ],
+   "objetivos": [
+    "Registrar el consumo de plástico de manera sistemática.",
+    "Identificar qué objetos dominan.",
+    "Evaluar alternativas con criterios claros.",
+    "Estimar el efecto de los cambios."
+   ],
+   "habilidades": [
+    "Registro y conteo.",
+    "Análisis comparativo.",
+    "Evaluación de alternativas.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Cuaderno de registro.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Evita afirmar que una alternativa es siempre mejor sin considerar cuántas veces se usa: una bolsa o botella reutilizable ayuda solo si se utiliza muchas veces.",
+    "No generalices a partir de tus datos: son un caso personal, no un promedio."
+   ],
+   "otroSector": "El mismo conteo sirve para papel, agua embotellada, ropa nueva, dispositivos o cualquier consumo repetido."
+  },
+  {
+   "id": "propuesta-para-reducir-los-desechables-en-una-institucion",
+   "area": "ambiente",
+   "areas2": [
+    "negocios",
+    "sociedad"
+   ],
+   "titulo": "Propuesta para reducir los desechables en una institución",
+   "resumen": "Diseña una propuesta realista para que un comedor, kiosco, oficina o evento reduzca el uso de vasos, platos, cubiertos y bolsas descartables sin perder comodidad.",
+   "tipo": "Plan",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Desechables",
+    "Propuesta"
+   ],
+   "intencion": [
+    "resolver",
+    "crear",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Administración",
+    "Ingeniería Industrial",
+    "Ingeniería Ambiental",
+    "Economía",
+    "Comunicaciones",
+    "Contabilidad",
+    "Psicología",
+    "Educación"
+   ],
+   "problema": [
+    "Los desechables resuelven rápido el servicio y reducen la limpieza, y por eso se usan en cafeterías, eventos y oficinas. Pero generan residuos constantes y costos que no siempre se ven.",
+    "Cambiarlos no es solo decidir: hay que pensar en lavado, espacio, costo y hábitos de las personas. Las propuestas que ignoran esos detalles terminan abandonadas."
+   ],
+   "desarrollar": [
+    "Elige un caso concreto, real o inventado, como un kiosco, un comedor o un evento de la facultad, describe cómo funciona hoy y cuántos desechables se usarían en un mes.",
+    "Propón un plan por etapas con alternativas, el costo y ahorro estimados, los cambios de rutina necesarios y cómo se informaría a las personas, y comprueba que cada paso sea viable."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo real",
+     "aporta": "calcula el costo mensual de los desechables frente a las alternativas reutilizables."
+    },
+    {
+     "titulo": "Mensaje y señalización",
+     "aporta": "diseña carteles o mensajes que animen a usar lo reutilizable."
+    },
+    {
+     "titulo": "Medir resultados",
+     "aporta": "define indicadores para saber si el plan funciona y cómo se registrarían."
+    }
+   ],
+   "objetivos": [
+    "Describir la situación actual con cifras razonables.",
+    "Evaluar alternativas realistas.",
+    "Elaborar un plan por etapas.",
+    "Plantear cómo medir si funciona."
+   ],
+   "habilidades": [
+    "Diseño de propuestas.",
+    "Análisis de costos.",
+    "Gestión del cambio.",
+    "Comunicación persuasiva."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de presentaciones.",
+    "Un editor de diagramas."
+   ],
+   "lineamientos": [
+    "Si trabajas con un caso real, pide permiso para observarlo y no publiques datos de personas ni de empresas sin su acuerdo.",
+    "Considera siempre la higiene y la seguridad de los alimentos: reducir desechables no debe poner en riesgo la salud."
+   ],
+   "otroSector": "La misma propuesta sirve para reducir papel, energía, agua o transporte en una empresa, un colegio o un evento."
+  },
+  {
+   "id": "el-ciclo-de-vida-de-un-producto-cotidiano-envase-incluido",
+   "area": "ambiente",
+   "areas2": [
+    "industria",
+    "ciencias"
+   ],
+   "titulo": "El ciclo de vida de un producto cotidiano, envase incluido",
+   "resumen": "Elige un producto que usas a diario y reconstruye su recorrido: de qué está hecho, cómo se produce, cómo llega a ti, para qué lo usas y qué pasa con él y su envase al final.",
+   "tipo": "Investigación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Ciclo de vida",
+    "Productos"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Ingeniería Química",
+    "Química",
+    "Economía",
+    "Administración",
+    "Ingeniería Mecánica",
+    "Estadística"
+   ],
+   "problema": [
+    "Un producto cotidiano, como una botella, una polera o un cuaderno, parece simple, pero detrás hay materias primas, fabricación, transporte, uso y desecho. Cada etapa tiene un costo ambiental distinto.",
+    "Mirar solo el momento de desechar da una imagen incompleta: a veces lo que más impacta ocurre antes de que el producto llegue a las manos."
+   ],
+   "desarrollar": [
+    "Elige un producto y su envase, y con información pública documenta cada etapa: materiales, producción, transporte, uso y fin de vida, indicando qué datos son estimaciones.",
+    "Presenta el ciclo en un esquema por etapas y marca en cuáles parece concentrarse el mayor impacto, con las dudas que quedan abiertas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar dos productos",
+     "aporta": "compara dos alternativas que sirven para lo mismo, como una botella descartable y una reutilizable."
+    },
+    {
+     "titulo": "Ver el envase",
+     "aporta": "analiza solo el envase y qué alternativas existen."
+    },
+    {
+     "titulo": "Contarlo en un video",
+     "aporta": "convierte el ciclo en un recorrido ilustrado de dos minutos."
+    }
+   ],
+   "objetivos": [
+    "Investigar el origen y el fin de un producto.",
+    "Estructurar su ciclo de vida.",
+    "Identificar las etapas de mayor impacto.",
+    "Reconocer los límites de los datos."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Pensamiento sistémico.",
+    "Análisis comparativo.",
+    "Esquemas y visualización."
+   ],
+   "herramientas": [
+    "Informes y bases de datos públicas de ciclo de vida.",
+    "Un editor de diagramas.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Cita cada dato y evita presentar cifras inventadas: si algo es una estimación, dilo y explica cómo la hiciste.",
+    "No concluyas que un producto es bueno o malo en general; limita tus conclusiones a lo que puedes sustentar."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar un servicio, un edificio, un alimento, un software o un proceso de una empresa."
+  },
+  {
+   "id": "que-tan-verdes-son-tus-compras",
+   "area": "ambiente",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "¿Qué tan verdes son tus compras?",
+   "resumen": "Revisa lo que compras durante unas semanas y descubre qué parte de tus compras es necesaria, cuánto envase generan y dónde podrías elegir mejor sin gastar más.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Consumo",
+    "Compras"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Contabilidad",
+    "Estadística",
+    "Psicología",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Lo que se compra cada día termina definiendo mucho del impacto ambiental de una persona, pero rara vez se revisa. Se compra por costumbre, por promoción o por comodidad, sin pensar en el envase, el origen o cuánto durará.",
+    "No se trata de comprar menos a cualquier costo, sino de saber qué decisiones pesan más y cuáles se pueden mejorar con poco esfuerzo."
+   ],
+   "desarrollar": [
+    "Registra durante dos o tres semanas lo que compras, con qué envase vino y si lo usaste o lo desechaste pronto. Clasifícalo en necesario, ocasional y prescindible.",
+    "Elige las cinco compras más frecuentes, busca una alternativa más duradera, con menos envase o más local para cada una, y compara su costo y comodidad."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Compras de un mes",
+     "aporta": "convierte tus registros en un resumen mensual con gráficos."
+    },
+    {
+     "titulo": "Reto de 30 días",
+     "aporta": "intenta cambiar tres compras habituales durante un mes y mide el resultado."
+    },
+    {
+     "titulo": "Comparar tiendas",
+     "aporta": "compara cómo cambia el envase y el precio de lo mismo en distintos lugares."
+    }
+   ],
+   "objetivos": [
+    "Registrar compras de forma ordenada.",
+    "Clasificar lo necesario y lo prescindible.",
+    "Evaluar alternativas con criterios claros.",
+    "Elegir cambios realistas y comprobar su efecto."
+   ],
+   "habilidades": [
+    "Registro de datos.",
+    "Análisis de decisiones de consumo.",
+    "Comparación de alternativas.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Boletas o registros de compra.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "No registres información bancaria ni datos personales; basta con producto, categoría y monto aproximado.",
+    "No promociones ni desacredites marcas; compara tipos de producto y características verificables."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar gastos de un negocio, de una organización estudiantil o de un evento."
+  },
+  {
+   "id": "crea-una-guia-de-consumo-responsable",
+   "area": "ambiente",
+   "areas2": [
+    "arte",
+    "educacion"
+   ],
+   "titulo": "Crea una guía de consumo responsable",
+   "resumen": "Elabora una guía breve y atractiva que ayude a una persona a consumir con más criterio: qué preguntarse antes de comprar y cómo cuidar lo que ya tiene.",
+   "tipo": "Guía",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Consumo",
+    "Guía"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Diseño Gráfico",
+    "Comunicaciones",
+    "Publicidad",
+    "Educación",
+    "Ingeniería Ambiental",
+    "Economía",
+    "Psicología",
+    "Administración"
+   ],
+   "problema": [
+    "Las guías de consumo responsable suelen ser listas largas de lo que no hay que hacer, y casi nadie las sigue. Son difíciles de recordar y rara vez se adaptan a la vida de quien las lee.",
+    "Una buena guía ayuda a decidir en el momento justo, con pocas preguntas claras y alternativas que se pueden lograr."
+   ],
+   "desarrollar": [
+    "Elige un público concreto, como estudiantes o familias, y define de tres a cinco preguntas que ayuden a decidir antes de comprar, como si lo necesito, cuánto durará y qué pasa con el envase.",
+    "Diséñala en una hoja o tarjeta clara, con ejemplos de la vida cotidiana, y pide a dos o tres personas que la lean y digan qué no entendieron para mejorarla."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Para otro público",
+     "aporta": "adapta la guía para niños, adultos mayores o personas con presupuesto muy ajustado."
+    },
+    {
+     "titulo": "Versión en imágenes",
+     "aporta": "crea una versión casi sin texto, con ilustraciones."
+    },
+    {
+     "titulo": "Probar la guía",
+     "aporta": "comprueba con una pequeña encuesta si ayudó a decidir distinto."
+    }
+   ],
+   "objetivos": [
+    "Elegir un público y un propósito.",
+    "Redactar preguntas claras y breves.",
+    "Diseñar una pieza atractiva.",
+    "Probarla y mejorarla."
+   ],
+   "habilidades": [
+    "Redacción clara.",
+    "Diseño de información.",
+    "Pruebas con usuarios.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Un editor de diseño o de presentaciones.",
+    "Un formulario para probar con lectores.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Evita tonos de culpa o de regaño: la guía debe sentirse como una ayuda y no como un reproche.",
+    "No des por hecho que todos pueden pagar alternativas más caras; incluye opciones de bajo costo."
+   ],
+   "otroSector": "La misma estructura sirve para guías de ahorro de energía, de uso responsable de tecnología, de finanzas personales o de salud preventiva."
+  },
+  {
+   "id": "reparar-o-reemplazar-el-impacto-de-cada-decision",
+   "area": "ambiente",
+   "areas2": [
+    "negocios",
+    "industria"
+   ],
+   "titulo": "¿Reparar o reemplazar? El impacto de cada decisión",
+   "resumen": "Compara el costo y el impacto ambiental de reparar un objeto frente a comprar uno nuevo, para saber en qué casos conviene cada decisión.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Reparación",
+    "Consumo"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Ingeniería Mecánica",
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Estadística",
+    "Ingeniería Electrónica"
+   ],
+   "problema": [
+    "Cuando algo se malogra, reemplazarlo suele parecer más rápido o incluso más barato. Pero fabricar un objeto nuevo requiere materiales, energía y transporte, y el objeto viejo se vuelve residuo.",
+    "A veces reparar conviene y a veces no: depende de cuánto cuesta, cuánto le queda de vida útil y cuánto pesa su impacto de fabricación. Esa cuenta rara vez se hace."
+   ],
+   "desarrollar": [
+    "Elige tres objetos comunes, como zapatos, un electrodoméstico pequeño o una mochila, y busca cuánto cuesta repararlos, cuánto cuesta uno nuevo y cuánto suele durar cada opción, con precios y fuentes que puedas citar.",
+    "Construye una tabla o regla simple de decisión, por ejemplo en qué punto de costo o de antigüedad conviene reparar, y explica qué impacto ambiental adicional se evita al hacerlo según fuentes públicas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Calculadora de decisión",
+     "aporta": "crea una hoja de cálculo donde se ingresen precios y duración y sugiera qué conviene."
+    },
+    {
+     "titulo": "Ver el taller",
+     "aporta": "recopila qué talleres de reparación existen en tu zona y qué reparan."
+    },
+    {
+     "titulo": "Otra perspectiva",
+     "aporta": "analiza qué cambia si el objeto es de segunda mano."
+    }
+   ],
+   "objetivos": [
+    "Reunir datos de costos y duración.",
+    "Comparar escenarios con criterios claros.",
+    "Construir una regla de decisión.",
+    "Explicar los límites de las estimaciones."
+   ],
+   "habilidades": [
+    "Análisis de costos y beneficios.",
+    "Búsqueda de datos.",
+    "Modelado simple.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Precios publicados y reseñas de duración.",
+    "Estudios públicos sobre impacto de fabricación."
+   ],
+   "lineamientos": [
+    "Indica de dónde proviene cada cifra y marca las que son estimaciones; evita inventar valores de impacto ambiental.",
+    "No manipules aparatos eléctricos o con baterías por tu cuenta; para la parte de reparación, limítate a consultar costos y opciones."
+   ],
+   "otroSector": "La misma lógica sirve para decidir entre mantener o renovar maquinaria, equipos de oficina, vehículos o software."
+  },
+  {
+   "id": "guia-para-alargar-la-vida-util-de-los-objetos-cotidianos",
+   "area": "ambiente",
+   "areas2": [
+    "industria",
+    "educacion"
+   ],
+   "titulo": "Guía para alargar la vida útil de los objetos cotidianos",
+   "resumen": "Descubre cuánto suelen durar los objetos que usas y qué cuidados sencillos los harían durar más, y reúnelos en una guía clara y práctica.",
+   "tipo": "Guía",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Durabilidad",
+    "Guía"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Industrial",
+    "Ingeniería Mecánica",
+    "Diseño Gráfico",
+    "Ingeniería Ambiental",
+    "Educación",
+    "Química",
+    "Arquitectura",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Muchos objetos se desechan antes de lo necesario: zapatos mal cuidados, cargadores doblados, ropa mal lavada. Casi nunca se sabe cuánto debería durar un objeto ni qué lo desgasta más rápido.",
+    "Un poco de cuidado puede duplicar la vida de ciertos objetos, pero ese conocimiento se pierde porque nadie lo reúne en un solo lugar."
+   ],
+   "desarrollar": [
+    "Elige entre cinco y ocho objetos de uso cotidiano de distintos tipos, como ropa, calzado, cargadores, utensilios o mochilas, y busca en fuentes confiables cuánto suelen durar y qué causa su deterioro.",
+    "Para cada objeto, resume dos o tres cuidados sencillos y presenta todo en una guía visual de una o dos páginas, probándola con alguien que no sea de tu carrera."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Calendario de cuidado",
+     "aporta": "convierte los consejos en recordatorios sencillos, como limpiar o revisar cada cierto tiempo."
+    },
+    {
+     "titulo": "Contar lo que dura",
+     "aporta": "registra cuánto duran tus propios objetos durante unos meses."
+    },
+    {
+     "titulo": "Guía por categoría",
+     "aporta": "profundiza en una sola categoría, como ropa o electrónica."
+    }
+   ],
+   "objetivos": [
+    "Identificar qué desgasta cada objeto.",
+    "Reunir cuidados verificables.",
+    "Diseñar una guía clara.",
+    "Probarla con otras personas."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Síntesis de información.",
+    "Diseño de información.",
+    "Redacción clara."
+   ],
+   "herramientas": [
+    "Manuales y guías de cuidado de fabricantes.",
+    "Un editor de diseño.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Basa los consejos en fuentes verificables y cita las que uses; no repitas trucos caseros sin comprobar que sean seguros.",
+    "No recomiendes abrir ni modificar aparatos eléctricos o con baterías."
+   ],
+   "otroSector": "La misma guía sirve para mantener herramientas, equipos de laboratorio, vehículos o instalaciones de un negocio."
+  },
+  {
+   "id": "un-objeto-nuevo-sin-comprar-nada-segunda-vida",
+   "area": "ambiente",
+   "areas2": [
+    "arte",
+    "industria"
+   ],
+   "titulo": "Un objeto \"nuevo\" sin comprar nada: segunda vida",
+   "resumen": "Elige algo que ibas a desechar y transfórmalo en un objeto útil, sin comprar materiales, y documenta cómo lo hiciste para que otras personas puedan repetirlo.",
+   "tipo": "Prototipo",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Reutilización",
+    "Creatividad"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Diseño Gráfico",
+    "Arquitectura",
+    "Ingeniería Industrial",
+    "Ingeniería Mecánica",
+    "Educación",
+    "Ingeniería Ambiental",
+    "Administración",
+    "Química"
+   ],
+   "problema": [
+    "Muchos objetos llegan a la basura porque parecen no servir para nada, aunque sus materiales todavía sean útiles. Mirarlos con otros ojos es difícil, y por eso la reutilización suele quedarse en ideas de internet que nadie prueba.",
+    "Transformar un objeto es también aprender a evaluar materiales, herramientas y seguridad, y a dejar algo mejor explicado de lo que se encontró."
+   ],
+   "desarrollar": [
+    "Elige un objeto o material que ibas a desechar y define para qué podría servir, con un boceto y una lista de lo que necesitarás, usando solo materiales que ya tengas.",
+    "Constrúyelo, registra con fotos los pasos y las dificultades, y prepara una ficha breve que explique cómo repetirlo y qué cuidados tener."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Medir el ahorro",
+     "aporta": "estima cuánto costaría comprar algo equivalente y cuánto material evitaste desechar."
+    },
+    {
+     "titulo": "Serie de objetos",
+     "aporta": "crea tres variantes del mismo objeto con residuos distintos."
+    },
+    {
+     "titulo": "Compartir la técnica",
+     "aporta": "organiza una pequeña muestra o taller para enseñar a otros."
+    }
+   ],
+   "objetivos": [
+    "Evaluar el potencial de un material descartado.",
+    "Diseñar y construir un objeto útil.",
+    "Documentar el proceso.",
+    "Reflexionar sobre qué funcionó y qué no."
+   ],
+   "habilidades": [
+    "Diseño y prototipado.",
+    "Resolución de problemas.",
+    "Documentación.",
+    "Creatividad aplicada."
+   ],
+   "herramientas": [
+    "Materiales que ya tengas.",
+    "Herramientas manuales básicas.",
+    "Cámara o celular para registrar los pasos."
+   ],
+   "lineamientos": [
+    "Evita materiales o recipientes que hayan contenido sustancias peligrosas, y usa protección adecuada con herramientas filosas o calientes.",
+    "Si el objeto será usado por niños o para alimentos, verifica que sea seguro o descártalo."
+   ],
+   "otroSector": "La misma lógica sirve para reaprovechar materiales en un taller, una escuela, una tienda o un proyecto de diseño."
+  },
+  {
+   "id": "el-impacto-ambiental-de-tu-ropa",
+   "area": "ambiente",
+   "areas2": [
+    "industria",
+    "negocios"
+   ],
+   "titulo": "El impacto ambiental de tu ropa",
+   "resumen": "Revisa de qué está hecha tu ropa, cuánto se usa y qué pasa con ella al final, para descubrir qué decisiones reducen su impacto sin renunciar a vestirte.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Ropa",
+    "Moda"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Textil",
+    "Diseño Gráfico",
+    "Química",
+    "Economía",
+    "Administración",
+    "Comunicaciones",
+    "Sociología"
+   ],
+   "problema": [
+    "La ropa se renueva rápido y muchas prendas se usan pocas veces antes de guardarse o desecharse. Pero producirlas requiere agua, energía y materias primas, y sus fibras sintéticas tienen su propia historia al lavarse y desecharse.",
+    "Casi nadie sabe qué dice la etiqueta de su ropa ni cuánto la usa realmente, así que es difícil decidir qué conviene cuidar, reparar, intercambiar o comprar distinto."
+   ],
+   "desarrollar": [
+    "Haz un inventario de diez a quince prendas, anotando el material de la etiqueta, la antigüedad y cuántas veces las usas al mes, y agrúpalas en las que usas mucho, poco o casi nunca.",
+    "Con información pública, resume qué impacto suele asociarse a cada tipo de fibra y qué acciones reducen el impacto, y propón tres cambios de hábito para tu propio armario."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo por uso",
+     "aporta": "calcula cuánto cuesta cada uso de una prenda según su precio y cuántas veces la usas."
+    },
+    {
+     "titulo": "Cuidar para que dure",
+     "aporta": "reúne cuidados de lavado que alargan la vida de la ropa."
+    },
+    {
+     "titulo": "Alternativas",
+     "aporta": "compara segunda mano, intercambio, reparación y compra nueva."
+    }
+   ],
+   "objetivos": [
+    "Registrar un inventario con criterios claros.",
+    "Entender qué dicen las etiquetas de composición.",
+    "Resumir información pública sobre fibras.",
+    "Proponer cambios realistas."
+   ],
+   "habilidades": [
+    "Lectura de etiquetas.",
+    "Investigación de fuentes.",
+    "Análisis de datos.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Informes públicos sobre impacto textil.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Cita las fuentes de cualquier dato de impacto y no inventes cifras; distingue claramente entre lo que investigas y lo que supones.",
+    "No juzgues a las personas por cómo visten ni compares guardarropas ajenos."
+   ],
+   "otroSector": "El mismo método sirve para analizar el impacto de alimentos, tecnología, muebles o cualquier categoría de consumo."
+  },
+  {
+   "id": "un-aparato-electronico-viejo-un-uso-nuevo",
+   "area": "ambiente",
+   "areas2": [
+    "tecnologia",
+    "industria"
+   ],
+   "titulo": "Un aparato electrónico viejo, un uso nuevo",
+   "resumen": "Elige un celular, una laptop o un aparato que ya no usas y descubre cómo darle una función nueva sin desarmarlo: como reloj, cámara fija, servidor o consola de recuerdos.",
+   "tipo": "Prototipo",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Electrónica",
+    "Reutilización"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Electrónica",
+    "Ingeniería de Sistemas",
+    "Ingeniería Eléctrica",
+    "Ingeniería Mecánica",
+    "Ingeniería de Software",
+    "Educación",
+    "Diseño Gráfico",
+    "Ingeniería Ambiental"
+   ],
+   "problema": [
+    "Los aparatos electrónicos viejos se guardan o se desechan aunque muchos siguen funcionando: una pantalla, una cámara o una conexión útil. Se acumulan porque su uso original dejó de tener sentido.",
+    "Reutilizarlos exige imaginar nuevas funciones y evaluar qué se puede hacer sin riesgo, y evita la compra de otro dispositivo."
+   ],
+   "desarrollar": [
+    "Elige un aparato que siga encendiendo sin riesgo, define una nueva función que no requiera abrirlo, como una pantalla de información, una cámara fija, un reproductor o un monitor secundario, y búscale un soporte con materiales que ya tengas.",
+    "Configúralo para esa función, pruébalo durante unos días y documenta qué funcionó, qué limitaciones tuvo y cuánto ahorro de una compra nueva supuso."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otro aparato, otra función",
+     "aporta": "repite con un dispositivo distinto y compara qué usos fueron más viables."
+    },
+    {
+     "titulo": "Guía paso a paso",
+     "aporta": "convierte el proceso en una guía para que otras personas lo reproduzcan."
+    },
+    {
+     "titulo": "Estimar el impacto",
+     "aporta": "calcula cuánto tiempo extra de uso lograste y qué compra evitaste."
+    }
+   ],
+   "objetivos": [
+    "Evaluar si un aparato es seguro de reutilizar.",
+    "Definir una función nueva viable.",
+    "Configurar y probar su uso.",
+    "Documentar el proceso."
+   ],
+   "habilidades": [
+    "Resolución de problemas.",
+    "Configuración de dispositivos.",
+    "Documentación técnica.",
+    "Creatividad aplicada."
+   ],
+   "herramientas": [
+    "Un aparato en desuso.",
+    "Aplicaciones de uso libre.",
+    "Materiales de soporte reutilizados."
+   ],
+   "lineamientos": [
+    "No uses aparatos con batería hinchada, dañada o que se calienten de forma anormal, y no los abras ni los perfores: si hay dudas, llévalos a un punto de acopio autorizado.",
+    "Borra antes tus datos personales y cuentas del dispositivo, y no lo dejes cargando sin supervisión."
+   ],
+   "otroSector": "La misma idea sirve para dar nuevos usos a equipos de un laboratorio, una oficina o un colegio."
+  },
+  {
+   "id": "cuanta-agua-se-pierde-por-fugas-pequenas",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "ciencias"
+   ],
+   "titulo": "¿Cuánta agua se pierde por fugas pequeñas?",
+   "resumen": "Aprende a detectar fugas pequeñas con métodos sencillos y estima cuánta agua se pierde en un mes por una gota, un goteo o un inodoro que no sella bien.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Agua",
+    "Fugas"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Civil",
+    "Ingeniería Sanitaria",
+    "Física",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Arquitectura",
+    "Química"
+   ],
+   "problema": [
+    "Una fuga pequeña casi nunca se nota: un caño que gotea, un inodoro que corre o una conexión que suda. Como cada gota es poca cosa, se deja pasar, pero a lo largo de un mes la suma puede ser enorme.",
+    "Detectar y medir esas pérdidas ayuda a decidir si vale la pena arreglarlas y a comprender por qué los recibos a veces suben sin que cambie el uso."
+   ],
+   "desarrollar": [
+    "Elige un lugar, como tu casa o un baño de tu centro de estudios con permiso, y busca posibles fugas con métodos sencillos, como revisar el medidor sin consumo, escuchar o usar colorante en la cisterna del inodoro.",
+    "Para cada fuga encontrada, mide cuánta agua cae en un tiempo corto con un recipiente, proyéctalo a un día y a un mes, y presenta una tabla con las pérdidas y su costo aproximado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo anual",
+     "aporta": "estima cuánto dinero y cuánta agua se perderían en un año si nadie la arregla."
+    },
+    {
+     "titulo": "Revisar varios espacios",
+     "aporta": "compara baños, cocinas y jardines y descubre dónde son más frecuentes."
+    },
+    {
+     "titulo": "Lista de revisión",
+     "aporta": "crea una lista breve para que cualquier persona detecte fugas en su casa."
+    }
+   ],
+   "objetivos": [
+    "Aprender métodos simples de detección.",
+    "Medir y proyectar una pérdida.",
+    "Presentar los resultados con claridad.",
+    "Proponer qué reparar primero."
+   ],
+   "habilidades": [
+    "Medición y estimación.",
+    "Observación sistemática.",
+    "Cálculo de proyecciones.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Recipiente graduado y cronómetro.",
+    "Colorante o tinte para detectar fugas en inodoros.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "No abras ni modifiques instalaciones sanitarias, válvulas ni medidores: observa y mide desde afuera.",
+    "Si trabajas en un espacio que no es tuyo, pide permiso y informa a quien lo administra lo que encuentres."
+   ],
+   "otroSector": "El mismo método sirve para detectar pérdidas de aire comprimido, de gas, de calor o de electricidad en una instalación."
+  },
+  {
+   "id": "sistema-para-detectar-y-registrar-desperdicios-de-agua-en-una-in",
+   "area": "ambiente",
+   "areas2": [
+    "tecnologia",
+    "ciudades"
+   ],
+   "titulo": "Sistema para detectar y registrar desperdicios de agua en una institución",
+   "resumen": "Diseña cómo una institución podría registrar y detectar pérdidas de agua con lecturas periódicas, alertas sencillas y un reporte comprensible.",
+   "tipo": "Prototipo",
+   "tiempo": "3 a 5 semanas",
+   "horas": 30,
+   "etiquetas": [
+    "Agua",
+    "Monitoreo"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Ingeniería Electrónica",
+    "Ingeniería Industrial",
+    "Administración",
+    "Ciencia de Datos",
+    "Ingeniería de Software"
+   ],
+   "problema": [
+    "En colegios, universidades u oficinas, el agua se consume a diario y rara vez se mira cuánto. Una fuga o un grifo abierto puede pasar semanas sin detectarse, y el problema solo aparece en el recibo.",
+    "Un sistema de registro no tiene que ser sofisticado: lo importante es definir qué se mide, con qué frecuencia y qué señal indica que algo anda mal."
+   ],
+   "desarrollar": [
+    "Define un caso, real o inventado, con sus puntos de consumo, y diseña un sistema de registro de lecturas con una frecuencia, un formato y reglas de alerta, como un consumo nocturno superior a lo esperado.",
+    "Prueba el sistema con datos simulados que incluyan alguna fuga, comprueba si tus reglas la detectan y presenta un reporte con gráficos y recomendaciones para quien administra."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Automatizar el registro",
+     "aporta": "explora cómo usar sensores económicos o formularios para registrar sin intervención manual."
+    },
+    {
+     "titulo": "Alertas por mensaje",
+     "aporta": "diseña cómo se avisaría a la persona responsable cuando algo se salga de lo normal."
+    },
+    {
+     "titulo": "Evaluar costos",
+     "aporta": "calcula cuánto costaría implementarlo y en cuánto tiempo se compensaría."
+    }
+   ],
+   "objetivos": [
+    "Definir qué se mide y cada cuánto.",
+    "Establecer reglas claras de alerta.",
+    "Probar el sistema con datos simulados.",
+    "Comunicar los resultados a quien decide."
+   ],
+   "habilidades": [
+    "Diseño de sistemas de registro.",
+    "Análisis de datos.",
+    "Definición de umbrales.",
+    "Visualización de información."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o un formulario.",
+    "Datos simulados.",
+    "Herramientas de gráficos.",
+    "Herramientas de programación si deseas automatizarlo."
+   ],
+   "lineamientos": [
+    "Si luego aplicas el sistema en una institución real, pide autorización y limita los datos a consumo, sin registrar a personas.",
+    "No instales sensores en redes de agua ni manipules medidores: el prototipo debe trabajarse con datos simulados o con lecturas visibles."
+   ],
+   "otroSector": "El mismo diseño sirve para monitorear electricidad, aire, temperatura o cualquier recurso cuyo consumo pueda registrarse con regularidad."
+  },
+  {
+   "id": "que-tan-eficiente-es-el-uso-del-agua-en-tu-institucion-y-sus-esp",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "industria"
+   ],
+   "titulo": "¿Qué tan eficiente es el uso del agua en tu institución y sus espacios compartidos?",
+   "resumen": "Observa cómo se usa el agua en baños, jardines y áreas comunes de un espacio compartido, detecta dónde se desperdicia y propone ajustes de bajo costo.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Agua",
+    "Instituciones"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Civil",
+    "Ingeniería Industrial",
+    "Administración",
+    "Arquitectura",
+    "Estadística",
+    "Educación",
+    "Economía"
+   ],
+   "problema": [
+    "En espacios compartidos, nadie se siente dueño del agua: un caño abierto, un riego a mediodía o un lavado excesivo se repiten sin que nadie lo note. Al no pagar directamente, el ahorro rara vez es prioridad.",
+    "Observar con orden cómo se usa permite saber qué espacios consumen más, qué hábitos pesan y qué medidas simples podrían funcionar."
+   ],
+   "desarrollar": [
+    "Elige un espacio compartido al que tengas acceso, pide permiso y realiza observaciones de uso en tres lugares distintos durante varios días, registrando tipo de uso, duración aproximada y posibles desperdicios.",
+    "Resume qué usos desperdician más, propón tres ajustes concretos, como cartel, regulador o cambio de horario de riego, y estima el ahorro posible."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar espacios",
+     "aporta": "contrasta baños, jardines y cocinas y descubre dónde hay más margen de mejora."
+    },
+    {
+     "titulo": "Campaña breve",
+     "aporta": "diseña un mensaje para el lugar y mide si algo cambia."
+    },
+    {
+     "titulo": "Leer el consumo",
+     "aporta": "si tienes acceso a datos de consumo, compáralos con tus observaciones."
+    }
+   ],
+   "objetivos": [
+    "Planificar observaciones comparables.",
+    "Registrar usos y desperdicios con orden.",
+    "Identificar oportunidades de ahorro.",
+    "Presentar propuestas respaldadas con datos."
+   ],
+   "habilidades": [
+    "Observación sistemática.",
+    "Análisis de datos.",
+    "Diseño de propuestas.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Fichas de observación.",
+    "Hoja de cálculo.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Pide autorización, avisa que estás observando y registra usos y lugares, no personas.",
+    "Presenta los resultados como oportunidades y no como culpas; si encuentras una fuga, repórtala a quien administra el lugar."
+   ],
+   "otroSector": "La misma observación sirve para estudiar el uso de energía, impresoras, aulas, ascensores o cualquier recurso compartido."
+  },
+  {
+   "id": "agua-de-lluvia-cuanta-se-desaprovecha-y-como-usarla",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "ciencias"
+   ],
+   "titulo": "Agua de lluvia: ¿cuánta se desaprovecha y cómo usarla?",
+   "resumen": "Estima con datos públicos de lluvia cuánta agua cae sobre un techo o un patio y qué parte podría captarse, y evalúa si tendría sentido en tu zona.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Agua",
+    "Lluvia"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Arquitectura",
+    "Geografía",
+    "Física",
+    "Estadística",
+    "Ingeniería Agrícola",
+    "Ingeniería Sanitaria"
+   ],
+   "problema": [
+    "La lluvia cae sobre techos y calles y se pierde en los desagües, mientras en otros momentos el agua escasea. Captarla parece sencillo, pero depende de cuánto llueve, del área de captación y de para qué se usaría.",
+    "En zonas donde llueve poco, la idea puede tener poco sentido, y en otras es muy útil. Saberlo requiere cálculos y no solo entusiasmo."
+   ],
+   "desarrollar": [
+    "Elige un techo o una superficie, real o ficticia, mide o estima su área y busca en datos públicos de un servicio meteorológico la lluvia mensual de una zona, tanto de tu ciudad como de otra con más lluvia.",
+    "Calcula cuánta agua se podría captar cada mes, qué usos tendría, como riego o limpieza, y en qué meses sería útil, y concluye si valdría la pena en cada zona."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar regiones",
+     "aporta": "calcula lo mismo para una zona de costa, sierra y selva y compara los resultados."
+    },
+    {
+     "titulo": "Tamaño del tanque",
+     "aporta": "estima qué capacidad de almacenamiento haría falta para cubrir un uso concreto."
+    },
+    {
+     "titulo": "Costo y beneficio",
+     "aporta": "evalúa si el ahorro compensaría la inversión."
+    }
+   ],
+   "objetivos": [
+    "Obtener datos públicos de lluvia.",
+    "Calcular el potencial de captación.",
+    "Evaluar usos posibles.",
+    "Concluir con criterio sobre la viabilidad."
+   ],
+   "habilidades": [
+    "Búsqueda de datos públicos.",
+    "Cálculo y modelado simple.",
+    "Evaluación de viabilidad.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Datos de un servicio meteorológico.",
+    "Hoja de cálculo.",
+    "Un mapa o fotos aéreas para estimar áreas."
+   ],
+   "lineamientos": [
+    "Indica de dónde proviene cada dato de lluvia y no uses agua de lluvia para consumo humano sin tratamiento adecuado.",
+    "Si tu zona llueve muy poco, plantea el proyecto con datos de otra zona o como caso ficticio y dilo claramente."
+   ],
+   "otroSector": "El mismo cálculo sirve para estimar el potencial de captación de otros recursos, como la radiación solar o el viento."
+  },
+  {
+   "id": "se-puede-reutilizar-el-agua-de-casa-de-forma-segura",
+   "area": "ambiente",
+   "areas2": [
+    "salud",
+    "ciudades"
+   ],
+   "titulo": "¿Se puede reutilizar el agua de casa de forma segura?",
+   "resumen": "Investiga qué aguas del hogar podrían reutilizarse para usos como riego o limpieza, y qué precauciones y límites recomiendan las fuentes oficiales.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Agua",
+    "Reutilización"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Sanitaria",
+    "Química",
+    "Biología",
+    "Ingeniería Civil",
+    "Medicina",
+    "Arquitectura",
+    "Ingeniería Química"
+   ],
+   "problema": [
+    "En casa se usa agua que luego se descarta, como la de lavar verduras o la de enjuagar, aunque en algunos casos podría reutilizarse. Pero hacerlo mal puede generar riesgos de salud, olores o problemas en plantas.",
+    "Por eso es importante distinguir qué agua sirve para qué y cuándo no conviene reutilizarla, en lugar de repetir consejos sin sustento."
+   ],
+   "desarrollar": [
+    "Con guías y documentos públicos de organismos de salud y de agua, reúne qué tipos de agua del hogar se consideran reutilizables, para qué usos y con qué cuidados, y clasifícalos según el nivel de riesgo.",
+    "Prepara una guía de una página con ejemplos claros, qué agua no se debe reutilizar nunca y cómo reconocer cuándo parar, citando cada recomendación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Estimar cuánto se ahorra",
+     "aporta": "calcula cuánta agua podría reutilizarse en un hogar en un mes."
+    },
+    {
+     "titulo": "Revisar mitos",
+     "aporta": "analiza consejos populares y comprueba cuáles tienen respaldo."
+    },
+    {
+     "titulo": "Versión para el hogar",
+     "aporta": "crea una infografía para pegar en la cocina o el lavadero."
+    }
+   ],
+   "objetivos": [
+    "Reunir información de fuentes oficiales.",
+    "Clasificar usos según el riesgo.",
+    "Redactar una guía clara y prudente.",
+    "Reconocer los límites de lo que se puede recomendar."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Evaluación de riesgos.",
+    "Redacción técnica clara.",
+    "Diseño de información."
+   ],
+   "herramientas": [
+    "Guías de organismos de salud y de agua.",
+    "Un editor de documentos o de infografías.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "No recomiendes reutilizar agua para beber, cocinar ni lavar a personas o alimentos que se comen crudos, y cita siempre la fuente de cada recomendación.",
+    "Aclara que la guía es informativa y que, ante dudas de salud, se debe consultar a un servicio oficial."
+   ],
+   "otroSector": "La misma investigación sirve para evaluar otros procesos de reutilización, como aceites usados, calor residual o materiales de construcción."
+  },
+  {
+   "id": "cuanta-agua-hay-detras-de-lo-que-consumes",
+   "area": "ambiente",
+   "areas2": [
+    "agricultura",
+    "industria"
+   ],
+   "titulo": "¿Cuánta agua hay detrás de lo que consumes?",
+   "resumen": "Descubre cuánta agua se usa para producir los alimentos y objetos que consumes cada día, desde un café hasta una polera, y qué cambia si eliges de otra manera.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Agua",
+    "Huella hídrica"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Agroindustrial",
+    "Ingeniería Industrial",
+    "Economía",
+    "Química",
+    "Estadística",
+    "Administración",
+    "Biología"
+   ],
+   "problema": [
+    "El agua que usamos en casa es solo una parte del total: producir un alimento, una prenda o un aparato también requiere agua, muchas veces mucho más. A esa agua invisible se le llama huella hídrica.",
+    "Como no se ve, casi nunca entra en las decisiones de consumo, y el problema de cuidar el agua parece limitarse al grifo."
+   ],
+   "desarrollar": [
+    "Elige diez a quince cosas que consumes en un día, como alimentos, bebidas y algunas prendas, y busca en fuentes públicas de huella hídrica cuánta agua suele requerir producir cada una, anotando las unidades y la fuente.",
+    "Ordena tus datos para mostrar qué consumos concentran más agua, compara con el agua del grifo que usas en un día y propón dos o tres cambios de elección que reduzcan el total."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar menús",
+     "aporta": "compara la huella hídrica de dos menús distintos en un día."
+    },
+    {
+     "titulo": "Otras unidades",
+     "aporta": "convierte las cifras en medidas imaginables, como baldes o botellas."
+    },
+    {
+     "titulo": "Producto local",
+     "aporta": "investiga cómo cambia la huella según de dónde viene un alimento."
+    }
+   ],
+   "objetivos": [
+    "Buscar datos de huella hídrica confiables.",
+    "Calcular el total de un día de consumo.",
+    "Comparar con el uso doméstico directo.",
+    "Explicar las limitaciones de los datos."
+   ],
+   "habilidades": [
+    "Búsqueda de datos.",
+    "Conversión de unidades.",
+    "Análisis comparativo.",
+    "Visualización de información."
+   ],
+   "herramientas": [
+    "Bases de datos públicas de huella hídrica.",
+    "Hoja de cálculo.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Indica siempre la fuente de cada cifra, porque los valores varían según el método y el lugar, y no los presentes como medidas exactas.",
+    "No hagas juicios sobre lo que come o consume una persona: es un análisis de datos, no de hábitos ajenos."
+   ],
+   "otroSector": "El mismo método sirve para analizar la energía, el carbono o los materiales que hay detrás de un producto o de una actividad."
+  },
+  {
+   "id": "una-propuesta-para-ahorrar-agua-en-tu-comunidad",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad",
+    "ciudades"
+   ],
+   "titulo": "Una propuesta para ahorrar agua en tu comunidad",
+   "resumen": "Diseña un plan realista para que un barrio, un edificio o una organización reduzca su consumo de agua, con acciones, mensajes y una forma de medir si funcionó.",
+   "tipo": "Plan",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Agua",
+    "Comunidad"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Trabajo Social",
+    "Ingeniería Civil",
+    "Comunicaciones",
+    "Administración",
+    "Sociología",
+    "Educación",
+    "Economía"
+   ],
+   "problema": [
+    "Ahorrar agua no depende solo de cada persona: también de cómo se organiza una comunidad, de qué información recibe y de qué incentivos existen. Las campañas que solo piden ahorrar rara vez cambian algo.",
+    "Un plan serio parte de conocer cómo se usa el agua en esa comunidad, qué acciones son posibles y quién se encargará de cada una."
+   ],
+   "desarrollar": [
+    "Elige una comunidad, real o inventada, y describe cómo usa el agua, quiénes participan y qué problemas hay, con datos estimados de consumo y justificaciones.",
+    "Propón un plan por etapas con tres o cuatro acciones, como revisar fugas, cambiar hábitos o instalar dispositivos sencillos, con responsables, costos aproximados y un indicador para saber si funcionó."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Mensajes y materiales",
+     "aporta": "diseña carteles o mensajes cortos para la comunidad."
+    },
+    {
+     "titulo": "Costo y ahorro",
+     "aporta": "calcula cuánto costaría el plan y cuánto se ahorraría en un año."
+    },
+    {
+     "titulo": "Participación",
+     "aporta": "piensa cómo se organizaría a los vecinos para sostener el plan."
+    }
+   ],
+   "objetivos": [
+    "Describir la situación de partida.",
+    "Elegir acciones viables.",
+    "Asignar responsables y tiempos.",
+    "Definir cómo medir resultados."
+   ],
+   "habilidades": [
+    "Diseño de planes.",
+    "Análisis de costos.",
+    "Organización comunitaria.",
+    "Comunicación persuasiva."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de presentaciones.",
+    "Un editor de diagramas."
+   ],
+   "lineamientos": [
+    "Si lo vas a presentar a una comunidad real, hazlo con su participación y sin recoger datos personales ni de consumo de cada hogar.",
+    "Evita prometer ahorros exactos: presenta estimaciones y explica qué las sustenta."
+   ],
+   "otroSector": "El mismo plan sirve para organizar ahorro de energía, reducción de residuos o cuidado de espacios compartidos."
+  },
+  {
+   "id": "auditoria-energetica-de-tu-hogar",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "industria"
+   ],
+   "titulo": "Auditoría energética de tu hogar",
+   "resumen": "Haz un diagnóstico de cómo usa la energía tu vivienda a lo largo de un día: iluminación, aparatos, calor y frío, para descubrir dónde se va y qué se podría mejorar.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Energía",
+    "Hogar"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Eléctrica",
+    "Ingeniería Mecánica",
+    "Arquitectura",
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Física",
+    "Economía",
+    "Estadística"
+   ],
+   "problema": [
+    "Se sabe cuánto se paga de luz, pero casi nunca se entiende qué la consume: la vivienda como conjunto, con sus horarios, su iluminación, su orientación y sus aparatos. Un recibo no dice dónde está el desperdicio.",
+    "Una auditoría doméstica no necesita instrumentos caros: con observación ordenada y datos de etiquetas se puede construir un buen perfil del uso de energía."
+   ],
+   "desarrollar": [
+    "Recorre tu vivienda y registra por cada espacio los aparatos, la iluminación, las horas de uso aproximadas y condiciones como ventanas, sombra o ventilación. Calcula el consumo diario estimado usando la potencia de cada equipo.",
+    "Compara tu estimación con el recibo de luz, explica las diferencias y elabora una lista priorizada de cinco mejoras de bajo costo con su efecto estimado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Perfil por horas",
+     "aporta": "arma una gráfica de consumo a lo largo del día y descubre los picos."
+    },
+    {
+     "titulo": "Estimar el costo",
+     "aporta": "convierte cada mejora en ahorro mensual y años de recuperación."
+    },
+    {
+     "titulo": "Comparar viviendas",
+     "aporta": "compara tu casa con la de otra persona y busca qué la diferencia."
+    }
+   ],
+   "objetivos": [
+    "Registrar aparatos y horas de uso de manera ordenada.",
+    "Calcular el consumo estimado de una vivienda.",
+    "Contrastar con datos reales del recibo.",
+    "Priorizar mejoras con criterios claros."
+   ],
+   "habilidades": [
+    "Observación y registro.",
+    "Cálculo energético básico.",
+    "Análisis comparativo.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Etiquetas de potencia de los equipos.",
+    "Recibo de luz sin datos personales."
+   ],
+   "lineamientos": [
+    "No abras aparatos ni tableros eléctricos, y no manipules instalaciones: trabaja con etiquetas, observación y cálculos.",
+    "Si usas el recibo, oculta tus datos personales y usa solo los consumos."
+   ],
+   "otroSector": "La misma auditoría sirve para analizar una oficina, un colegio, un taller o un pequeño negocio."
+  },
+  {
+   "id": "que-aparatos-consumen-energia-aunque-parezcan-apagados",
+   "area": "ambiente",
+   "areas2": [
+    "tecnologia",
+    "ciencias"
+   ],
+   "titulo": "¿Qué aparatos consumen energía aunque parezcan apagados?",
+   "resumen": "Descubre qué aparatos de tu casa siguen consumiendo energía en modo de espera y cuánto suman en un mes, con datos de etiquetas y mediciones simples.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Energía",
+    "Consumo fantasma"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Electrónica",
+    "Ingeniería Eléctrica",
+    "Física",
+    "Ingeniería de Sistemas",
+    "Ingeniería Ambiental",
+    "Economía",
+    "Estadística",
+    "Educación"
+   ],
+   "problema": [
+    "Muchos aparatos nunca se apagan del todo: televisores, cargadores, consolas o decodificadores mantienen luces, relojes o conexiones activas. Cada uno consume poco, pero juntos pueden sumar mucho al mes.",
+    "Como no hay ninguna señal de que algo se está gastando, el problema es casi invisible, y por eso rara vez se corrige."
+   ],
+   "desarrollar": [
+    "Haz una lista de los aparatos que permanecen conectados en tu casa, identifica cuáles tienen luz, reloj o modo de espera, y busca en sus manuales o fuentes públicas cuánta potencia suelen consumir en ese estado.",
+    "Calcula cuánta energía y dinero suman al mes, ordena los aparatos de mayor a menor y propón qué conviene desconectar y qué es mejor dejar encendido."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Medir en casa",
+     "aporta": "si tienes un medidor enchufable de consumo, compara tu medición con los datos de fabricantes."
+    },
+    {
+     "titulo": "Solución práctica",
+     "aporta": "prueba una regleta con interruptor y calcula el ahorro."
+    },
+    {
+     "titulo": "Cuidar la comodidad",
+     "aporta": "identifica qué aparatos sí conviene dejar conectados y por qué."
+    }
+   ],
+   "objetivos": [
+    "Identificar aparatos con consumo en espera.",
+    "Estimar su potencia con fuentes confiables.",
+    "Calcular el total mensual.",
+    "Proponer qué hacer con cada uno."
+   ],
+   "habilidades": [
+    "Observación.",
+    "Cálculo de energía.",
+    "Búsqueda de especificaciones.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Manuales y etiquetas de equipos.",
+    "Hoja de cálculo.",
+    "Medidor enchufable de consumo, si lo tienes."
+   ],
+   "lineamientos": [
+    "No desarmes aparatos ni modifiques su conexión: usa únicamente datos de etiqueta o un medidor enchufable.",
+    "No desconectes equipos que necesiten estar encendidos por seguridad o salud, como refrigeradoras o equipos médicos."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar el consumo oculto en una oficina, un laboratorio o un centro de cómputo."
+  },
+  {
+   "id": "como-cambia-el-consumo-con-tus-habitos-y-que-ajustar-sin-perder",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cómo cambia el consumo con tus hábitos y qué ajustar sin perder comodidad?",
+   "resumen": "Registra cómo varía tu consumo de energía según tus horarios y hábitos, y comprueba qué cambios sencillos reducen el gasto sin sacrificar tu comodidad.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Energía",
+    "Hábitos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Eléctrica",
+    "Psicología",
+    "Economía",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Arquitectura",
+    "Administración"
+   ],
+   "problema": [
+    "El consumo de energía cambia según la época, el día de la semana y las costumbres de cada persona. Pero los consejos de ahorro suelen ser generales y no consideran cómo vive cada hogar.",
+    "Por eso muchas recomendaciones no se aplican: piden renunciar a algo que importa. Conocer los patrones propios ayuda a elegir cambios que valen la pena."
+   ],
+   "desarrollar": [
+    "Durante dos o tres semanas anota con qué frecuencia usas los principales aparatos, y si puedes, registra la lectura del medidor al empezar y terminar cada día, para ver cómo varía.",
+    "Identifica los tres hábitos que más energía usan, prueba un cambio en cada uno durante una semana, como horario, duración o ajuste, y compara el consumo antes y después con una conclusión honesta."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Entre semana y fin de semana",
+     "aporta": "compara cómo cambian los patrones entre ambos."
+    },
+    {
+     "titulo": "Costo de la comodidad",
+     "aporta": "estima cuánto cuesta cada hábito que valoras."
+    },
+    {
+     "titulo": "Guía personal",
+     "aporta": "arma un resumen de ajustes que funcionaron para ti."
+    }
+   ],
+   "objetivos": [
+    "Registrar hábitos y consumo de forma regular.",
+    "Reconocer patrones en los datos.",
+    "Probar cambios y comparar.",
+    "Concluir qué ajustes valen la pena."
+   ],
+   "habilidades": [
+    "Registro sistemático.",
+    "Análisis de datos.",
+    "Diseño de pruebas simples.",
+    "Interpretación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Lectura del medidor, si es accesible.",
+    "Cuaderno de registro."
+   ],
+   "lineamientos": [
+    "No bajes tu comodidad o seguridad, por ejemplo con la calefacción, el agua caliente o la refrigeración de alimentos, solo para ahorrar.",
+    "Presenta los resultados como un caso personal: lo que funciona en tu hogar puede no funcionar en otro."
+   ],
+   "otroSector": "El mismo enfoque sirve para estudiar cómo cambian el gasto de dinero, el uso del tiempo o el consumo de agua con los hábitos."
+  },
+  {
+   "id": "cuanta-energia-consumen-tus-habitos-digitales",
+   "area": "ambiente",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "¿Cuánta energía consumen tus hábitos digitales?",
+   "resumen": "Estima cuánta energía y carbono hay detrás de ver videos, usar redes, guardar archivos en la nube o tener dispositivos conectados, y qué se puede hacer sin dejar de usarlos.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Energía",
+    "Tecnología"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ingeniería Electrónica",
+    "Ingeniería Eléctrica",
+    "Ciencia de Datos",
+    "Física",
+    "Comunicaciones",
+    "Ingeniería Ambiental"
+   ],
+   "problema": [
+    "Lo digital parece inmaterial, pero cada video, mensaje o archivo guardado requiere servidores, redes y dispositivos que consumen energía. Como no se ve, rara vez se piensa en eso.",
+    "Las cifras que circulan varían mucho según la fuente, y por eso es fácil exagerar o minimizar. Conviene entender cómo se estiman y qué margen de error tienen."
+   ],
+   "desarrollar": [
+    "Haz un registro de una semana de tus hábitos digitales, como horas de video, mensajería, juegos y uso de la nube, y busca en fuentes públicas estimaciones de la energía asociada a cada actividad, indicando de dónde salen.",
+    "Calcula un orden de magnitud de tu consumo digital, compara con otros usos de energía de tu vida diaria y propón tres cambios razonables."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar estimaciones",
+     "aporta": "contrasta lo que dicen distintas fuentes y busca por qué difieren."
+    },
+    {
+     "titulo": "Dispositivos y redes",
+     "aporta": "separa lo que consume tu dispositivo de lo que consume la red y los servidores."
+    },
+    {
+     "titulo": "Centros de datos",
+     "aporta": "investiga cómo se reduce el consumo energético de un centro de datos."
+    }
+   ],
+   "objetivos": [
+    "Registrar hábitos digitales.",
+    "Buscar estimaciones confiables.",
+    "Calcular un orden de magnitud con sus límites.",
+    "Comunicar con honestidad la incertidumbre."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Estimación y orden de magnitud.",
+    "Pensamiento crítico.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Informes públicos sobre energía digital.",
+    "Hoja de cálculo.",
+    "Estadísticas de uso de tu dispositivo."
+   ],
+   "lineamientos": [
+    "Cita cada estimación y deja claro que son aproximaciones, porque las cifras varían mucho según el método y el año.",
+    "No uses este análisis para culpar a nadie por sus hábitos: sirve para entender dónde está el consumo."
+   ],
+   "otroSector": "El mismo método sirve para analizar el consumo de energía y agua de cualquier servicio, desde un sistema de transporte hasta una cadena de supermercados."
+  },
+  {
+   "id": "calcula-tu-huella-de-carbono-que-tan-sostenible-es-tu-estilo-de",
+   "area": "ambiente",
+   "areas2": [
+    "ciencias",
+    "sociedad"
+   ],
+   "titulo": "Calcula tu huella de carbono: ¿qué tan sostenible es tu estilo de vida?",
+   "resumen": "Calcula con una metodología clara la huella de carbono aproximada de tus actividades cotidianas, transporte, alimentación, energía y consumo, y descubre dónde pesa más.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Huella de carbono",
+    "Datos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Química",
+    "Física",
+    "Estadística",
+    "Economía",
+    "Ingeniería Industrial",
+    "Administración",
+    "Educación"
+   ],
+   "problema": [
+    "Se habla mucho de huella de carbono, pero casi nadie sabe cómo se calcula ni qué parte de su vida pesa más. Las calculadoras en línea dan números distintos y no explican por qué.",
+    "Entender el cálculo permite saber qué actividades concentran la mayor parte y cuáles cambios importan realmente."
+   ],
+   "desarrollar": [
+    "Elige un método público y documentado para estimar tu huella, registra durante una o dos semanas tus desplazamientos, tu uso de energía, tu alimentación y tus compras, y calcula tu huella con factores de emisión citados.",
+    "Muestra en un gráfico qué categorías pesan más, explica qué supuestos usaste y qué datos fueron estimaciones, y propón dos cambios con su efecto estimado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar calculadoras",
+     "aporta": "contrasta el resultado de dos calculadoras y explica las diferencias."
+    },
+    {
+     "titulo": "Datos por categoría",
+     "aporta": "profundiza en la categoría que más pesa en tu caso."
+    },
+    {
+     "titulo": "Escenarios",
+     "aporta": "simula cómo cambiaría tu huella si hicieras tres cambios distintos."
+    }
+   ],
+   "objetivos": [
+    "Elegir una metodología confiable.",
+    "Registrar datos de actividades.",
+    "Aplicar factores de emisión citados.",
+    "Interpretar y comunicar los resultados."
+   ],
+   "habilidades": [
+    "Cálculo con factores de emisión.",
+    "Registro de datos.",
+    "Visualización de resultados.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Factores de emisión publicados.",
+    "Hoja de cálculo.",
+    "Registro de actividades de una o dos semanas."
+   ],
+   "lineamientos": [
+    "Cita la fuente de cada factor de emisión y aclara que tu resultado es una estimación personal, no una medida exacta.",
+    "Evita compararte con otras personas o culparte: el objetivo es entender, no medir virtud."
+   ],
+   "otroSector": "El mismo cálculo sirve para estimar la huella de un evento, una empresa, una facultad o un producto."
+  },
+  {
+   "id": "tu-plan-de-30-dias-para-reducir-tu-huella",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Tu plan de 30 días para reducir tu huella",
+   "resumen": "Diseña y prueba un plan realista de un mes con pequeños cambios en tu vida diaria, mide qué lograste y ajusta lo que no funcionó, sin perfeccionismo.",
+   "tipo": "Plan",
+   "tiempo": "1 mes",
+   "horas": 30,
+   "etiquetas": [
+    "Plan personal",
+    "Hábitos"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Psicología",
+    "Ingeniería Ambiental",
+    "Educación",
+    "Administración",
+    "Comunicaciones",
+    "Economía",
+    "Estadística",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Los propósitos ambientales suelen empezar con entusiasmo y terminar en una semana porque piden demasiado de golpe. Sin medir ni ajustar, es difícil saber si el cambio valió la pena.",
+    "Un plan con pocos cambios, medidos y con margen para fallar tiene más posibilidades de convertirse en costumbre."
+   ],
+   "desarrollar": [
+    "Elige tres cambios concretos en áreas distintas, como transporte, residuos y consumo, define cómo medirás cada uno y registra tu línea base durante una semana.",
+    "Aplica los cambios durante cuatro semanas, anota cada semana qué pasó, compara con tu línea base y termina con un balance: qué mantendrías, qué descartarías y por qué."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Hacerlo en pareja",
+     "aporta": "propón el plan a otra persona y compara cómo les fue."
+    },
+    {
+     "titulo": "Tablero de seguimiento",
+     "aporta": "crea un tablero visual con tus indicadores semanales."
+    },
+    {
+     "titulo": "Costo y ahorro",
+     "aporta": "calcula si el plan te cuesta o te ahorra dinero."
+    }
+   ],
+   "objetivos": [
+    "Elegir cambios realistas.",
+    "Medir antes y durante.",
+    "Reflexionar sobre los resultados.",
+    "Decidir qué hábitos mantener."
+   ],
+   "habilidades": [
+    "Planificación.",
+    "Seguimiento de indicadores.",
+    "Autoevaluación honesta.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o cuaderno.",
+    "Una aplicación de seguimiento de hábitos.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "No adoptes cambios que afecten tu salud, tu seguridad o tu economía; el plan debe ser sostenible.",
+    "Presenta el resultado como aprendizaje personal, aunque no hayas logrado todo."
+   ],
+   "otroSector": "El mismo esquema sirve para planes de estudio, de ahorro, de ejercicio o de organización del tiempo."
+  },
+  {
+   "id": "biodiversidad-cerca-de-ti-que-especies-viven-en-un-parque-o-area",
+   "area": "ambiente",
+   "areas2": [
+    "ciencias",
+    "ciudades"
+   ],
+   "titulo": "Biodiversidad cerca de ti: ¿qué especies viven en un parque o área verde?",
+   "resumen": "Observa y registra las plantas, aves e insectos de un parque o área verde cercana para armar un inventario con fotos y descubrir cuánta vida hay donde casi nadie mira.",
+   "tipo": "Investigación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Biodiversidad",
+    "Observación"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Biología",
+    "Ingeniería Ambiental",
+    "Geografía",
+    "Educación",
+    "Ingeniería Forestal",
+    "Estadística",
+    "Diseño Gráfico",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Los parques y áreas verdes de la ciudad albergan más especies de las que se notan: aves, insectos, árboles, arbustos y hierbas que casi nadie registra. Se pasa por ellos sin mirarlos, y por eso su valor ambiental se subestima.",
+    "Sin un inventario es imposible saber qué hay, qué ha cambiado o qué conviene proteger. Y un registro hecho con orden puede servir a otras personas."
+   ],
+   "desarrollar": [
+    "Elige un parque o área verde, define un recorrido y visítalo en varios días y horarios, registrando con fotos y notas las especies que veas, el lugar y la fecha. Identifícalas con guías de campo o aplicaciones de reconocimiento y anota cuáles no pudiste identificar.",
+    "Organiza el inventario en una tabla o catálogo, muestra qué grupos son más abundantes y comenta qué especies parecen nativas y cuáles introducidas, con las dudas que queden."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar dos lugares",
+     "aporta": "compara la diversidad entre dos áreas con características distintas."
+    },
+    {
+     "titulo": "Diferencias por hora",
+     "aporta": "descubre cómo cambia lo que ves según la hora del día."
+    },
+    {
+     "titulo": "Catálogo visual",
+     "aporta": "convierte el inventario en un catálogo ilustrado para la comunidad."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un recorrido de observación.",
+    "Registrar especies con método.",
+    "Identificar usando fuentes confiables.",
+    "Organizar y presentar los resultados."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Identificación de especies.",
+    "Organización de datos.",
+    "Comunicación visual."
+   ],
+   "herramientas": [
+    "Guías de campo o una aplicación de identificación.",
+    "Cámara o celular.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Observa sin molestar ni recolectar: no toques nidos, no atrapes animales ni arranques plantas, y respeta las normas del lugar.",
+    "Si no logras identificar una especie, anótala como no identificada en lugar de asignarle un nombre."
+   ],
+   "otroSector": "El mismo método de inventario sirve para registrar edificios, comercios, árboles de una calle, especies de un mercado o patrimonio de un barrio."
+  },
+  {
+   "id": "guia-para-reconocer-y-proteger-las-especies-nativas-de-tu-zona",
+   "area": "ambiente",
+   "areas2": [
+    "educacion",
+    "arte"
+   ],
+   "titulo": "Guía para reconocer y proteger las especies nativas de tu zona",
+   "resumen": "Elabora una guía ilustrada de plantas y animales nativos de tu localidad, con cómo reconocerlos, por qué importan y cómo cuidarlos.",
+   "tipo": "Guía",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Especies nativas",
+    "Guía"
+   ],
+   "intencion": [
+    "crear",
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Biología",
+    "Ingeniería Ambiental",
+    "Educación",
+    "Diseño Gráfico",
+    "Geografía",
+    "Comunicaciones",
+    "Ingeniería Forestal",
+    "Antropología"
+   ],
+   "problema": [
+    "En muchas ciudades se conocen mejor las plantas de jardín o las mascotas que las especies que vivían allí antes. Las especies nativas se pierden en silencio, porque pocos saben identificarlas.",
+    "Una guía local hace que la gente las reconozca y entienda por qué merecen cuidado, algo que los libros generales no ofrecen."
+   ],
+   "desarrollar": [
+    "Con fuentes públicas de instituciones científicas y de áreas naturales, elige entre ocho y doce especies nativas de tu zona de distintos grupos, y reúne de cada una cómo reconocerla, dónde vive, qué cuidados necesita su hábitat y qué la amenaza.",
+    "Diseña la guía con una ficha por especie, ilustraciones o fotos con permiso, y pruébala con alguien que no sea de tu carrera para saber si logra identificar lo que dice."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Guía para niños",
+     "aporta": "crea una versión más simple y juguetona para escolares."
+    },
+    {
+     "titulo": "Mapa de dónde verlas",
+     "aporta": "marca los lugares públicos donde pueden observarse."
+    },
+    {
+     "titulo": "Versión digital",
+     "aporta": "convierte la guía en una página con búsqueda por tipo de especie."
+    }
+   ],
+   "objetivos": [
+    "Seleccionar especies nativas con criterios claros.",
+    "Reunir información de fuentes confiables.",
+    "Diseñar fichas claras.",
+    "Probar la guía con lectores."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Síntesis de información.",
+    "Diseño de información.",
+    "Divulgación científica."
+   ],
+   "herramientas": [
+    "Bases de datos y guías de especies de tu región.",
+    "Un editor de diseño.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Usa solo imágenes con permiso o de uso libre y cita cada fuente de información; distingue especies nativas de introducidas.",
+    "No indiques lugares exactos donde viven especies amenazadas, para evitar que sean perturbadas."
+   ],
+   "otroSector": "El mismo formato sirve para guías de oficios, de gastronomía local, de patrimonio de un barrio o de plantas medicinales con respaldo científico."
+  },
+  {
+   "id": "como-cambian-las-aves-y-los-insectos-segun-la-vegetacion",
+   "area": "ambiente",
+   "areas2": [
+    "ciencias",
+    "ciudades"
+   ],
+   "titulo": "¿Cómo cambian las aves y los insectos según la vegetación?",
+   "resumen": "Compara cuántas aves, abejas, mariposas y otros insectos aparecen en lugares con distinta vegetación, como césped, arbustos, árboles o flores, para entender por qué.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Biodiversidad",
+    "Vegetación"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Biología",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Geografía",
+    "Ingeniería Forestal",
+    "Educación",
+    "Ciencia de Datos",
+    "Arquitectura"
+   ],
+   "problema": [
+    "No todos los espacios verdes sirven igual a la vida silvestre: un césped corto y uniforme alberga menos aves e insectos que un lugar con arbustos, flores y árboles de distintas alturas. Pero se suele diseñar pensando solo en cómo se ve.",
+    "Medir esa diferencia con observaciones ordenadas ayuda a decidir qué tipo de vegetación conviene sembrar para que un espacio sea más rico en vida."
+   ],
+   "desarrollar": [
+    "Elige tres o cuatro lugares cercanos con vegetación distinta y observa cada uno el mismo tiempo, a la misma hora y varios días, contando cuántas aves, polinizadores y otros insectos ves, sin atraparlos.",
+    "Compara los resultados con gráficos, relaciona las diferencias con las características de cada lugar y concluye qué tipo de vegetación parece favorecer más la presencia de vida."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Polinizadores en detalle",
+     "aporta": "enfócate en abejas, mariposas y moscas florícolas y en qué flores visitan."
+    },
+    {
+     "titulo": "Temporada",
+     "aporta": "repite la observación en otra época y compara."
+    },
+    {
+     "titulo": "Recomendar plantas",
+     "aporta": "propón qué plantas añadirías a un espacio pobre en vida."
+    }
+   ],
+   "objetivos": [
+    "Diseñar observaciones comparables.",
+    "Contar y registrar con constancia.",
+    "Relacionar presencia de especies con vegetación.",
+    "Presentar conclusiones con cautela."
+   ],
+   "habilidades": [
+    "Diseño de observaciones.",
+    "Análisis estadístico básico.",
+    "Interpretación de datos ecológicos.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Cuaderno de campo o un formulario.",
+    "Cronómetro.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Observa sin perturbar: no atrapes insectos, no te acerques a nidos y evita mover plantas; respeta las normas del lugar.",
+    "Presenta tus resultados como observaciones limitadas a unos días y lugares, no como conclusiones científicas generales."
+   ],
+   "otroSector": "El mismo diseño de comparación sirve para estudiar la afluencia de clientes en zonas de un mercado o el uso de espacios públicos según su diseño."
+  },
+  {
+   "id": "como-afectan-las-especies-invasoras-a-los-ecosistemas-locales",
+   "area": "ambiente",
+   "areas2": [
+    "ciencias",
+    "agricultura"
+   ],
+   "titulo": "¿Cómo afectan las especies invasoras a los ecosistemas locales?",
+   "resumen": "Investiga qué especies introducidas han causado problemas en ecosistemas de tu país, cómo llegaron y qué se hace para controlarlas.",
+   "tipo": "Investigación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Especies invasoras",
+    "Ecosistemas"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Biología",
+    "Ingeniería Ambiental",
+    "Ingeniería Agroindustrial",
+    "Geografía",
+    "Estadística",
+    "Educación",
+    "Derecho",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Algunas plantas y animales introducidos por accidente o con buena intención se multiplican sin control y desplazan a las especies nativas. Los daños no siempre se notan de inmediato, pero pueden afectar cultivos, ríos y bosques.",
+    "Como la mayoría de la gente solo ve una planta o un animal más, rara vez se entiende que alguna de ellas pueda ser un problema."
+   ],
+   "desarrollar": [
+    "Con fuentes públicas de instituciones científicas y de áreas protegidas, elige tres especies invasoras presentes en tu país y reúne de cada una cómo llegó, qué daños causa, dónde está y qué medidas se han tomado.",
+    "Prepara un resumen comparativo y una infografía que explique al público cómo reconocer el problema, sin proponer acciones peligrosas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Cómo llegan",
+     "aporta": "analiza por qué rutas llegan las especies, como comercio, mascotas o jardinería."
+    },
+    {
+     "titulo": "Marco legal",
+     "aporta": "revisa qué normas regulan su introducción y control."
+    },
+    {
+     "titulo": "Divulgación",
+     "aporta": "crea un mensaje breve para quienes tienen jardines o mascotas."
+    }
+   ],
+   "objetivos": [
+    "Reunir información de fuentes confiables.",
+    "Comparar casos con criterios claros.",
+    "Entender causas y efectos.",
+    "Comunicar con precisión."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Análisis comparativo.",
+    "Síntesis de información.",
+    "Divulgación científica."
+   ],
+   "herramientas": [
+    "Informes de instituciones científicas y ambientales.",
+    "Hoja de cálculo.",
+    "Un editor de infografías."
+   ],
+   "lineamientos": [
+    "Cita las fuentes y no propongas eliminar ni manipular animales o plantas por tu cuenta: el control debe estar a cargo de autoridades y especialistas.",
+    "No difundas ubicaciones exactas de poblaciones sensibles ni fomentes la liberación de especies."
+   ],
+   "otroSector": "El mismo enfoque sirve para estudiar cómo una tecnología, un competidor o una plaga desplaza a lo que ya existía en un mercado o un sistema."
+  },
+  {
+   "id": "recuperar-un-espacio-degradado-que-plantas-nativas-elegir",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "agricultura"
+   ],
+   "titulo": "Recuperar un espacio degradado: ¿qué plantas nativas elegir?",
+   "resumen": "Diseña un plan para recuperar un lote, un talud o un espacio abandonado con plantas nativas, considerando suelo, agua, sol y quién se encargaría del cuidado.",
+   "tipo": "Plan",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Restauración",
+    "Plantas nativas"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Arquitectura",
+    "Biología",
+    "Ingeniería Forestal",
+    "Geografía",
+    "Ingeniería Civil",
+    "Diseño Gráfico",
+    "Administración"
+   ],
+   "problema": [
+    "Hay terrenos baldíos, bordes de carretera o rincones de un campus cubiertos de basura o de suelo desnudo. Recuperarlos con vegetación mejora el aire, la sombra y la vida silvestre, pero sembrar al azar suele fracasar.",
+    "Las plantas deben elegirse según el lugar y su disponibilidad de agua y sol, y alguien debe cuidarlas después. Sin ese plan, se pierde el esfuerzo."
+   ],
+   "desarrollar": [
+    "Elige un espacio degradado, real o inventado, describe su suelo, su sol, su agua disponible y su uso, y con fuentes públicas selecciona entre cinco y ocho especies nativas adecuadas.",
+    "Presenta un plan con un croquis de la siembra, el calendario de cuidados, los materiales, el costo aproximado y quién se encargaría de mantenerlo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Presupuesto",
+     "aporta": "calcula cuánto costaría recuperar el espacio y cómo conseguir los recursos."
+    },
+    {
+     "titulo": "Seguimiento",
+     "aporta": "define qué se mediría cada mes para saber si funciona."
+    },
+    {
+     "titulo": "Con la comunidad",
+     "aporta": "diseña una jornada de siembra con vecinos o estudiantes."
+    }
+   ],
+   "objetivos": [
+    "Describir las condiciones del espacio.",
+    "Elegir plantas adecuadas con criterios claros.",
+    "Diseñar la siembra y el cuidado.",
+    "Estimar costos y responsables."
+   ],
+   "habilidades": [
+    "Diagnóstico de espacios.",
+    "Diseño de planes de restauración.",
+    "Presupuestos básicos.",
+    "Comunicación visual."
+   ],
+   "herramientas": [
+    "Guías de plantas nativas de tu región.",
+    "Un croquis o un editor de planos.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Si trabajas en un espacio real, pide permiso a quien lo administra antes de intervenirlo y no siembres especies que no sean nativas.",
+    "No uses terrenos peligrosos, con residuos tóxicos o de pendientes inseguras para actividades de siembra."
+   ],
+   "otroSector": "El mismo plan sirve para recuperar un local abandonado, rehabilitar una línea de producción o revitalizar un espacio público."
+  },
+  {
+   "id": "disena-un-jardin-para-polinizadores",
+   "area": "ambiente",
+   "areas2": [
+    "agricultura",
+    "arte"
+   ],
+   "titulo": "Diseña un jardín para polinizadores",
+   "resumen": "Diseña un pequeño jardín, de macetas o de un rincón, pensado para atraer abejas, mariposas y colibríes con plantas de flor adecuadas a tu clima.",
+   "tipo": "Prototipo",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Polinizadores",
+    "Diseño"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Biología",
+    "Arquitectura",
+    "Ingeniería Ambiental",
+    "Diseño Gráfico",
+    "Ingeniería Agroindustrial",
+    "Educación",
+    "Ingeniería Forestal",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Las abejas, las mariposas y otros polinizadores participan en la producción de muchos alimentos, pero su presencia disminuye cuando falta alimento y refugio. Muchos jardines urbanos tienen flores que casi no les sirven.",
+    "Un jardín bien pensado ofrece flores en distintas épocas, refugio y agua, y se puede lograr incluso con pocas macetas."
+   ],
+   "desarrollar": [
+    "Define un espacio disponible, real o inventado, y con fuentes públicas elige plantas de flor nativas o adaptadas a tu clima que florezcan en distintas épocas, para que haya alimento durante todo el año.",
+    "Presenta el diseño en un plano sencillo con la distribución, un calendario de floración, una lista de materiales y un cronograma de cuidados."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Versión en macetas",
+     "aporta": "adapta el diseño a un balcón o a una azotea."
+    },
+    {
+     "titulo": "Registro de visitas",
+     "aporta": "propón cómo contar qué polinizadores llegan y cuándo."
+    },
+    {
+     "titulo": "Cartel educativo",
+     "aporta": "crea un cartel que explique al público por qué importan los polinizadores."
+    }
+   ],
+   "objetivos": [
+    "Elegir plantas adecuadas a un clima y un espacio.",
+    "Planificar la floración durante el año.",
+    "Diseñar la distribución.",
+    "Plantear cómo evaluar el resultado."
+   ],
+   "habilidades": [
+    "Diseño de espacios.",
+    "Selección de plantas.",
+    "Planificación.",
+    "Comunicación visual."
+   ],
+   "herramientas": [
+    "Guías de plantas melíferas y de jardinería.",
+    "Un editor de planos o de diagramas.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Usa plantas y semillas de fuentes confiables y evita especies invasoras; no uses pesticidas en un jardín para polinizadores.",
+    "Si lo construyes de verdad, ten cuidado con personas alérgicas a las picaduras y ubica el jardín lejos de zonas de mucho tránsito."
+   ],
+   "otroSector": "La misma idea de diseñar para un usuario no humano sirve para espacios para mascotas, aves urbanas o fauna silvestre."
+  },
+  {
+   "id": "que-transporte-deja-menos-huella-en-tu-recorrido-habitual",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades"
+   ],
+   "titulo": "¿Qué transporte deja menos huella en tu recorrido habitual?",
+   "resumen": "Compara la huella de carbono, el tiempo y el costo de las formas de hacer un mismo recorrido, como caminar, bus, tren, bicicleta o auto compartido, y descubre cuál conviene.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Transporte",
+    "Huella de carbono"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Civil",
+    "Ingeniería Industrial",
+    "Geografía",
+    "Estadística",
+    "Economía",
+    "Administración",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Elegir cómo moverse suele depender del tiempo, el costo o la costumbre, y casi nunca de la huella ambiental. Pero las diferencias entre un auto individual, un bus lleno o una caminata son grandes y casi nadie las conoce.",
+    "Además, no todas las personas pueden elegir cualquier medio: depende de lo que existe en su zona. Un análisis útil considera esa realidad."
+   ],
+   "desarrollar": [
+    "Elige un recorrido real que hagas con frecuencia o uno típico de tu ciudad, define las opciones disponibles y registra distancia, tiempo y costo de cada una. Busca factores de emisión públicos para cada medio y calcula la huella por viaje.",
+    "Presenta una tabla comparativa con huella, tiempo y costo, indica cuál conviene según el criterio y explica qué limita a las personas para cambiar de opción."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otros recorridos",
+     "aporta": "repite con un trayecto más largo, como una ida a otra ciudad."
+    },
+    {
+     "titulo": "Ocupación",
+     "aporta": "estima cómo cambia la huella según qué tan lleno vaya el vehículo."
+    },
+    {
+     "titulo": "Costo total",
+     "aporta": "incluye costos ocultos como estacionamiento, mantenimiento o seguro."
+    }
+   ],
+   "objetivos": [
+    "Definir un recorrido comparable.",
+    "Reunir datos de tiempo, costo y emisiones.",
+    "Comparar con criterios claros.",
+    "Reconocer las limitaciones de cada opción."
+   ],
+   "habilidades": [
+    "Recolección de datos.",
+    "Cálculo con factores de emisión.",
+    "Análisis comparativo.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Factores de emisión publicados.",
+    "Mapas con tiempos de viaje."
+   ],
+   "lineamientos": [
+    "Cita los factores de emisión y aclara que son promedios: la huella real varía según el vehículo y la ocupación.",
+    "No plantees que todos puedan cambiar de medio: considera seguridad, accesibilidad y disponibilidad real del servicio."
+   ],
+   "otroSector": "La misma comparación sirve para evaluar opciones de logística, de envío de productos o de viajes de trabajo."
+  },
+  {
+   "id": "una-semana-de-movilidad-sostenible",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "salud"
+   ],
+   "titulo": "Una semana de movilidad sostenible",
+   "resumen": "Cambia durante una semana algunos de tus traslados por alternativas más sostenibles y anota cuánto cambió tu huella, tu tiempo y tu comodidad.",
+   "tipo": "Plan",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Movilidad",
+    "Reto"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Civil",
+    "Psicología",
+    "Geografía",
+    "Estadística",
+    "Educación",
+    "Comunicaciones",
+    "Administración"
+   ],
+   "problema": [
+    "Se dice que conviene usar más el transporte público, caminar o ir en bicicleta, pero pocas personas lo prueban de forma ordenada. Entre lo que se supone y lo que se vive hay una distancia, hecha de tiempos, costos y seguridad.",
+    "Probar con un plan concreto permite saber qué cambios son realistas para ti y qué obstáculos aparecen."
+   ],
+   "desarrollar": [
+    "Registra una semana normal de traslados, elige los que podrías cambiar, como acortar un viaje en auto, combinar rutas o caminar un tramo, y planifica una semana de prueba con alternativas viables y seguras.",
+    "Durante la semana anota tiempo, costo, comodidad y percepción de seguridad en cada traslado, calcula el cambio en huella y presenta un balance con lo que mantendrías."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "En grupo",
+     "aporta": "invita a un grupo pequeño y compara experiencias."
+    },
+    {
+     "titulo": "Mapa de obstáculos",
+     "aporta": "marca los puntos del recorrido donde fue más difícil o inseguro."
+    },
+    {
+     "titulo": "Propuesta a la ciudad",
+     "aporta": "propón dos cambios que facilitarían moverse así a más personas."
+    }
+   ],
+   "objetivos": [
+    "Registrar la línea base de traslados.",
+    "Elegir cambios seguros y realistas.",
+    "Comparar antes y después.",
+    "Reflexionar sobre los obstáculos."
+   ],
+   "habilidades": [
+    "Planificación.",
+    "Registro de datos.",
+    "Análisis comparativo.",
+    "Reflexión crítica."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o cuaderno.",
+    "Una aplicación de mapas.",
+    "Factores de emisión publicados."
+   ],
+   "lineamientos": [
+    "Prioriza tu seguridad: evita rutas peligrosas, de noche o poco transitadas, y no uses medios que no sean seguros para ti.",
+    "Presenta los resultados como una experiencia personal, sin juzgar a quienes no pueden cambiar de medio."
+   ],
+   "otroSector": "La misma estructura de prueba sirve para ensayar cambios de horario de trabajo, de rutinas de estudio o de formas de comunicarse."
+  },
+  {
+   "id": "fuentes-de-contaminacion-de-tu-entorno-cercano-aire-humo-y-resid",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "salud"
+   ],
+   "titulo": "Fuentes de contaminación de tu entorno cercano: aire, humo y residuos",
+   "resumen": "Recorre tu barrio e identifica qué puede estar contaminando, como humo, quemas, basura acumulada o tránsito intenso, para armar un mapa de fuentes y proponer mejoras.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Contaminación",
+    "Mapas"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Geografía",
+    "Ingeniería Civil",
+    "Química",
+    "Estadística",
+    "Sociología",
+    "Ingeniería Industrial",
+    "Arquitectura"
+   ],
+   "problema": [
+    "La contaminación no siempre viene de grandes fábricas: también aparece en quemas de residuos, basura acumulada en esquinas, tránsito congestionado o talleres sin control. Muchas de esas fuentes están a la vista, pero no se registran.",
+    "Sin un registro, es difícil explicar un problema a las autoridades o a los vecinos, y casi imposible saber por dónde empezar."
+   ],
+   "desarrollar": [
+    "Recorre una zona definida, identifica y registra con fotos de espacios sin personas posibles fuentes de contaminación, como humo, olores, residuos o tránsito, y anota su ubicación, horario y cómo te afectan al pasar por ahí.",
+    "Ubícalas en un mapa, clasifícalas por tipo y por qué tan frecuentes parecen, y propón qué instancia podría atenderlas y qué cambios simples ayudarían."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Repetir en otro horario",
+     "aporta": "compara lo que cambia entre mañana, tarde y noche."
+    },
+    {
+     "titulo": "Datos públicos",
+     "aporta": "compara tus observaciones con los datos de una estación de monitoreo cercana."
+    },
+    {
+     "titulo": "Reporte para la autoridad",
+     "aporta": "prepara un reporte claro para presentarlo a una municipalidad."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un recorrido y criterios de registro.",
+    "Documentar fuentes con orden.",
+    "Representarlas en un mapa.",
+    "Plantear acciones y a quién corresponden."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Mapeo.",
+    "Clasificación.",
+    "Redacción de reportes."
+   ],
+   "herramientas": [
+    "Un mapa digital.",
+    "Cámara o celular.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Recorre solo espacios públicos y acompañado, evita zonas peligrosas y no te acerques a quemas o a lugares con humo intenso.",
+    "No fotografíes a personas, placas ni viviendas, ni acuses a nadie de causar la contaminación: describe lo observado."
+   ],
+   "otroSector": "El mismo mapeo sirve para registrar ruido, luminarias dañadas, veredas rotas, espacios sin accesibilidad u otros problemas de un barrio."
+  },
+  {
+   "id": "disena-una-campana-de-accion-ambiental",
+   "area": "ambiente",
+   "areas2": [
+    "arte",
+    "sociedad"
+   ],
+   "titulo": "Diseña una campaña de acción ambiental",
+   "resumen": "Diseña una campaña con un objetivo claro, un público concreto, mensajes probados y una forma de medir si logró algo, sobre un tema ambiental que te importe.",
+   "tipo": "Plan",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Campaña",
+    "Comunicación"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Comunicaciones",
+    "Publicidad",
+    "Diseño Gráfico",
+    "Ingeniería Ambiental",
+    "Psicología",
+    "Educación",
+    "Sociología",
+    "Administración"
+   ],
+   "problema": [
+    "Muchas campañas ambientales se parecen entre sí: afiches con la tierra, frases generales y poco que hacer. Pasan sin dejar huella porque no hablan a nadie en particular ni piden una acción concreta.",
+    "Una campaña efectiva parte de un público, entiende qué le importa y propone una acción pequeña y posible."
+   ],
+   "desarrollar": [
+    "Elige un tema ambiental y un público concreto, como estudiantes de primer ciclo o comerciantes de un mercado, y define qué acción pequeña quieres que realicen.",
+    "Escribe tres mensajes distintos, diseña una pieza para cada uno, pide a unas personas que ordenen cuál entienden y recuerdan más, y arma el plan final con canales, calendario y cómo medirías el resultado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un video corto",
+     "aporta": "convierte el mensaje que mejor funcionó en un video de un minuto."
+    },
+    {
+     "titulo": "Presupuesto",
+     "aporta": "estima cuánto costaría llevar la campaña a un grupo real."
+    },
+    {
+     "titulo": "Medir el cambio",
+     "aporta": "diseña una pregunta antes y después para saber si algo cambió."
+    }
+   ],
+   "objetivos": [
+    "Elegir un público y una acción concretos.",
+    "Escribir y comparar mensajes.",
+    "Probarlos con personas.",
+    "Planificar la campaña completa."
+   ],
+   "habilidades": [
+    "Comunicación persuasiva.",
+    "Diseño gráfico básico.",
+    "Pruebas con usuarios.",
+    "Planificación de campañas."
+   ],
+   "herramientas": [
+    "Un editor de diseño o de presentaciones.",
+    "Un formulario anónimo.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Evita mensajes que culpen, asusten con datos dudosos o exageren: usa cifras verificables y cita su fuente.",
+    "Si pruebas la campaña con personas, hazlo con su consentimiento y sin recoger datos personales."
+   ],
+   "otroSector": "La misma estructura sirve para campañas de salud, de seguridad, de ahorro o de participación ciudadana."
+  },
+  {
+   "id": "cuanta-comida-se-desperdicia-en-tu-casa-o-comedor-y-a-donde-va",
+   "area": "ambiente",
+   "areas2": [
+    "agricultura",
+    "sociedad"
+   ],
+   "titulo": "¿Cuánta comida se desperdicia en tu casa o comedor y a dónde va?",
+   "resumen": "Mide durante una semana qué comida se tira en tu casa o en un comedor, por qué ocurre y qué parte se habría podido aprovechar.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Alimentos",
+    "Residuos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Agroindustrial",
+    "Nutrición",
+    "Estadística",
+    "Economía",
+    "Administración",
+    "Educación",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Una parte importante de los alimentos que se compran no llega a comerse: se echan a perder, se cocina de más o se sirve más de lo que alguien termina. Cuando se tira, también se pierden el dinero, el agua y el esfuerzo que costó producirlos.",
+    "Casi nadie lo mide, así que parece un problema menor. Registrar qué se tira y por qué permite encontrar dónde se pierde más."
+   ],
+   "desarrollar": [
+    "Durante una semana anota cada alimento que se desecha, el motivo, como se echó a perder, sobró o no gustó, y estima su cantidad con una balanza o por porciones, sin identificar a quién lo dejó.",
+    "Clasifica los motivos, calcula el costo aproximado de lo desechado y propón tres cambios concretos, como planificar compras, guardar mejor o aprovechar sobras."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Receta de aprovechamiento",
+     "aporta": "inventa tres recetas con lo que más se tira."
+    },
+    {
+     "titulo": "Costo anual",
+     "aporta": "proyecta cuánto dinero se pierde en un año."
+    },
+    {
+     "titulo": "Comedor o kiosco",
+     "aporta": "adapta el estudio a un espacio compartido, con permiso."
+    }
+   ],
+   "objetivos": [
+    "Medir y registrar el desperdicio.",
+    "Reconocer sus causas.",
+    "Calcular costos aproximados.",
+    "Proponer cambios viables."
+   ],
+   "habilidades": [
+    "Medición y registro.",
+    "Análisis de causas.",
+    "Cálculo de costos.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Balanza de cocina.",
+    "Hoja de cálculo.",
+    "Cuaderno de registro."
+   ],
+   "lineamientos": [
+    "Por higiene, no manipules ni revises comida en mal estado; clasifícala sin tocarla y lávate las manos.",
+    "Registra alimentos y cantidades, no a las personas que los dejaron; los resultados no deben usarse para culpar."
+   ],
+   "otroSector": "El mismo análisis sirve para medir desperdicio en un restaurante, un mercado, un colegio o una cadena de suministro."
+  },
+  {
+   "id": "se-puede-convertir-tu-basura-organica-en-abono",
+   "area": "ambiente",
+   "areas2": [
+    "agricultura",
+    "ciencias"
+   ],
+   "titulo": "¿Se puede convertir tu basura orgánica en abono?",
+   "resumen": "Averigua cuánta basura orgánica produce un hogar y diseña, y si puedes prueba, un sistema simple de compostaje que funcione en un espacio pequeño.",
+   "tipo": "Prototipo",
+   "tiempo": "1 mes",
+   "horas": 30,
+   "etiquetas": [
+    "Compostaje",
+    "Residuos orgánicos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Biología",
+    "Ingeniería Agroindustrial",
+    "Química",
+    "Ingeniería Forestal",
+    "Educación",
+    "Arquitectura",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Gran parte de la basura de una casa es orgánica: cáscaras, restos de comida y hojas. Al mezclarse con lo demás, se pudre sin aprovecharse y genera mal olor y líquidos que complican la recolección.",
+    "El compostaje transforma esos restos en abono, pero se evita por miedo a los olores, las plagas o la falta de espacio. Se puede hacer bien con pocas reglas y un diseño adecuado."
+   ],
+   "desarrollar": [
+    "Mide durante una semana cuánto residuo orgánico produce tu hogar y, con fuentes confiables, diseña un sistema de compostaje adaptado a tu espacio, como una compostera cerrada o un tarro con capas, con lista de materiales y reglas de qué sí y qué no echar.",
+    "Si decides probarlo, registra durante cuatro semanas temperatura, olor, humedad y aspecto, y presenta qué funcionó y qué corregirías."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Medir el resultado",
+     "aporta": "pesa cuánto abono obtienes y cuánto residuo evitaste desechar."
+    },
+    {
+     "titulo": "Usar el abono",
+     "aporta": "prueba el abono en una planta y compáralo con otra sin abono."
+    },
+    {
+     "titulo": "Versión comunitaria",
+     "aporta": "diseña cómo funcionaría un compostaje en un edificio, un colegio o un mercado."
+    }
+   ],
+   "objetivos": [
+    "Medir el residuo orgánico.",
+    "Diseñar un sistema adecuado al espacio.",
+    "Registrar el proceso con orden.",
+    "Evaluar resultados con honestidad."
+   ],
+   "habilidades": [
+    "Diseño de procesos simples.",
+    "Observación y registro.",
+    "Resolución de problemas.",
+    "Documentación."
+   ],
+   "herramientas": [
+    "Recipientes y materiales reutilizados.",
+    "Termómetro y cuaderno de registro.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "No incluyas carne, lácteos, aceites ni excrementos de mascotas, que atraen plagas y pueden ser riesgosos; lávate las manos y usa guantes al manipular.",
+    "Si hay mal olor persistente o plagas, detén la prueba y consulta fuentes confiables; no la hagas donde moleste a otras personas."
+   ],
+   "otroSector": "El mismo enfoque de transformar un residuo en recurso sirve para otros procesos, como aprovechar el calor, el agua o los subproductos de un taller."
+  },
+  {
+   "id": "cuanta-energia-solar-podria-aprovechar-un-techo",
+   "area": "ambiente",
+   "areas2": [
+    "industria",
+    "ciudades"
+   ],
+   "titulo": "¿Cuánta energía solar podría aprovechar un techo?",
+   "resumen": "Estima con datos públicos de radiación cuánta electricidad podría generar un techo con paneles solares, cuánto costaría y en cuánto tiempo se recuperaría la inversión.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Energía solar",
+    "Datos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Eléctrica",
+    "Ingeniería Mecánica",
+    "Física",
+    "Arquitectura",
+    "Ingeniería Ambiental",
+    "Economía",
+    "Estadística",
+    "Ingeniería Electrónica"
+   ],
+   "problema": [
+    "Se habla de paneles solares como si fueran la solución para todos, pero la decisión depende del tamaño del techo, de la sombra, de la radiación de la zona y del consumo de la vivienda. Muy pocas personas hacen esas cuentas antes de decidir.",
+    "Sin cálculo, es fácil esperar demasiado o dudar de algo que sí convendría. Un análisis ordenado permite decidir con datos."
+   ],
+   "desarrollar": [
+    "Elige un techo, real o ficticio, estima su área útil y busca en datos públicos de un servicio meteorológico o de energía la radiación solar de la zona. Calcula la energía anual que podría producir con supuestos razonables y explícalos.",
+    "Compara con el consumo de un hogar típico, estima el costo aproximado de la instalación con precios que puedas citar y calcula en cuánto tiempo se recuperaría la inversión, indicando la incertidumbre."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar zonas",
+     "aporta": "calcula lo mismo para tres ciudades con distinta radiación."
+    },
+    {
+     "titulo": "Sombras",
+     "aporta": "considera cómo cambiarían los resultados con árboles o edificios cercanos."
+    },
+    {
+     "titulo": "Otros usos",
+     "aporta": "compara la generación con un calentador solar de agua."
+    }
+   ],
+   "objetivos": [
+    "Buscar datos de radiación confiables.",
+    "Estimar la generación con supuestos claros.",
+    "Calcular costos y retorno.",
+    "Comunicar los resultados con sus límites."
+   ],
+   "habilidades": [
+    "Cálculo energético.",
+    "Búsqueda de datos públicos.",
+    "Evaluación económica básica.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Datos públicos de radiación solar.",
+    "Hoja de cálculo.",
+    "Una imagen satelital para estimar el techo."
+   ],
+   "lineamientos": [
+    "Cita las fuentes de radiación y de precios, y aclara que los resultados son estimaciones y no un diseño de ingeniería.",
+    "No subas a techos ni manipules instalaciones eléctricas: el análisis se hace con datos y cálculos."
+   ],
+   "otroSector": "El mismo cálculo de potencial sirve para estimar el viento, el agua o la biomasa, o el retorno de cualquier inversión en equipos."
+  },
+  {
+   "id": "cual-es-la-huella-de-carbono-de-tu-facultad",
+   "area": "ambiente",
+   "areas2": [
+    "negocios",
+    "ciudades"
+   ],
+   "titulo": "¿Cuál es la huella de carbono de tu facultad?",
+   "resumen": "Calcula de forma aproximada las emisiones de un espacio educativo, considerando energía, traslados, residuos y papel, y descubre dónde se concentra la mayor parte.",
+   "tipo": "Análisis",
+   "tiempo": "1 a 2 meses",
+   "horas": 35,
+   "etiquetas": [
+    "Huella de carbono",
+    "Instituciones"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Administración",
+    "Contabilidad",
+    "Economía",
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Ingeniería Eléctrica"
+   ],
+   "problema": [
+    "Las instituciones suelen hablar de sostenibilidad sin saber cuánto emiten realmente. La huella de una facultad incluye lo visible, como la luz, y lo que casi no se mira, como cómo llegan las personas o cuánto papel se usa.",
+    "Sin un inventario, no se puede decidir qué mejorar primero. Hacerlo por primera vez ya es un aporte, aunque sea aproximado."
+   ],
+   "desarrollar": [
+    "Define los límites de tu estudio, como una facultad o un edificio, y reúne datos aproximados de energía eléctrica, papel, residuos y traslados de estudiantes, usando datos publicados, observaciones o encuestas anónimas, y anota qué dato es estimado.",
+    "Calcula las emisiones con factores públicos, muestra qué categorías pesan más y propón tres acciones prioritarias con un efecto estimado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Ver la evolución",
+     "aporta": "propón cómo se actualizaría el inventario cada año."
+    },
+    {
+     "titulo": "Compartir los resultados",
+     "aporta": "convierte el inventario en un informe para presentarlo a autoridades."
+    },
+    {
+     "titulo": "Comparar con otra",
+     "aporta": "compara tus resultados con los de otra facultad o institución."
+    }
+   ],
+   "objetivos": [
+    "Definir límites y categorías del inventario.",
+    "Reunir datos y documentar supuestos.",
+    "Calcular emisiones.",
+    "Priorizar acciones."
+   ],
+   "habilidades": [
+    "Inventario de emisiones.",
+    "Recolección de datos.",
+    "Análisis y priorización.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Factores de emisión publicados.",
+    "Hoja de cálculo.",
+    "Un formulario anónimo para encuestas breves."
+   ],
+   "lineamientos": [
+    "Pide autorización antes de recoger datos en una institución real y no registres información personal en las encuestas.",
+    "Presenta los resultados como una primera aproximación y no como una medición oficial."
+   ],
+   "otroSector": "El mismo inventario sirve para estimar la huella de un evento, una empresa, un colegio o un restaurante."
+  },
+  {
+   "id": "como-suena-tu-entorno-mapa-de-ruido",
+   "area": "ambiente",
+   "areas2": [
+    "salud",
+    "ciudades"
+   ],
+   "titulo": "¿Cómo suena tu entorno? Mapa de ruido",
+   "resumen": "Mide con una aplicación el nivel de ruido en distintos puntos de tu entorno y a distintas horas para descubrir dónde y cuándo hay más ruido y qué lo causa.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Ruido",
+    "Mapas"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Física",
+    "Ingeniería Civil",
+    "Arquitectura",
+    "Ingeniería Electrónica",
+    "Estadística",
+    "Psicología",
+    "Geografía"
+   ],
+   "problema": [
+    "El ruido es una forma de contaminación que se normaliza: tráfico, construcciones, bocinas o locales. No deja residuos visibles, pero afecta el descanso, la concentración y el bienestar de quienes viven o estudian cerca.",
+    "Casi nunca se mide, y sin datos es difícil mostrar que un lugar es especialmente ruidoso o decidir dónde conviene intervenir."
+   ],
+   "desarrollar": [
+    "Elige diez puntos de un espacio como tu barrio o tu campus y mide el nivel de sonido en cada uno con una aplicación de sonómetro en tres horarios distintos, siempre con el mismo método y durante el mismo tiempo.",
+    "Presenta un mapa con colores, compara con valores de referencia de organismos oficiales y explica qué fuentes parecen ser las responsables, indicando las limitaciones de tu medición."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar días",
+     "aporta": "compara un día de semana con un fin de semana."
+    },
+    {
+     "titulo": "Zonas de silencio",
+     "aporta": "identifica lugares tranquilos que podrían protegerse."
+    },
+    {
+     "titulo": "Efecto de barreras",
+     "aporta": "compara cuánto baja el ruido con un muro o con árboles."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un plan de medición comparable.",
+    "Registrar y organizar los datos.",
+    "Representarlos en un mapa.",
+    "Interpretar las diferencias con cautela."
+   ],
+   "habilidades": [
+    "Medición y registro.",
+    "Análisis espacial básico.",
+    "Interpretación de datos.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Una aplicación de sonómetro.",
+    "Hoja de cálculo.",
+    "Un mapa digital."
+   ],
+   "lineamientos": [
+    "Aclara que las aplicaciones de celular dan valores aproximados y no sustituyen a un sonómetro profesional; no los uses como prueba legal.",
+    "Cuida tu seguridad al medir cerca de calles y no registres conversaciones ni grabes a personas."
+   ],
+   "otroSector": "El mismo método de mapeo sirve para temperatura, luz, olores, calidad de la señal de internet o aglomeración."
+  },
+  {
+   "id": "como-ha-cambiado-el-clima-de-tu-ciudad-en-los-ultimos-30-anos",
+   "area": "ambiente",
+   "areas2": [
+    "ciencias",
+    "tecnologia"
+   ],
+   "titulo": "¿Cómo ha cambiado el clima de tu ciudad en los últimos 30 años?",
+   "resumen": "Analiza datos meteorológicos públicos de tu ciudad para ver cómo han cambiado temperatura y lluvia en las últimas décadas, y qué tan claro es el cambio.",
+   "tipo": "Análisis",
+   "tiempo": "~28 h",
+   "horas": 28,
+   "etiquetas": [
+    "Clima",
+    "Datos"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Estadística",
+    "Ciencia de Datos",
+    "Física",
+    "Ingeniería Ambiental",
+    "Geografía",
+    "Ingeniería Civil",
+    "Ingeniería de Sistemas",
+    "Matemática"
+   ],
+   "problema": [
+    "Es común escuchar que el clima ya no es igual que antes, pero pocas personas revisan los datos de su propia ciudad. Las conversaciones se basan en recuerdos, que suelen ser poco fiables.",
+    "Mirar series largas de datos permite ver tendencias, pero también obliga a entender que el clima varía de un año a otro y que no siempre es fácil distinguir un cambio real."
+   ],
+   "desarrollar": [
+    "Descarga datos públicos de temperatura y precipitación de una estación cercana y ordénalos por año y mes, revisando si hay vacíos o errores que debas explicar.",
+    "Calcula promedios por década, grafica las tendencias y concluye qué cambios parecen claros y cuáles no, explicando las limitaciones, como la calidad de los datos o el cambio de ubicación de la estación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Eventos extremos",
+     "aporta": "cuenta cuántos días muy calurosos o de lluvia intensa hubo cada año."
+    },
+    {
+     "titulo": "Comparar ciudades",
+     "aporta": "compara tus resultados con los de una ciudad distinta."
+    },
+    {
+     "titulo": "Explicarlo en gráficos",
+     "aporta": "crea tres gráficos claros que cuenten la historia a un público general."
+    }
+   ],
+   "objetivos": [
+    "Obtener y ordenar datos públicos.",
+    "Revisar su calidad.",
+    "Calcular y graficar tendencias.",
+    "Comunicar los resultados con honestidad."
+   ],
+   "habilidades": [
+    "Análisis de series temporales.",
+    "Limpieza de datos.",
+    "Visualización.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Datos de servicios meteorológicos.",
+    "Hoja de cálculo o herramientas de programación.",
+    "Herramientas de gráficos."
+   ],
+   "lineamientos": [
+    "Cita el origen y el periodo de los datos y no afirmes causas del cambio sin fuentes: el análisis muestra qué cambió, no por qué.",
+    "Si faltan datos, indícalo; no los completes sin explicar cómo lo hiciste."
+   ],
+   "otroSector": "El mismo análisis de tendencias sirve para estudiar ventas, tráfico, precios, consumo de energía o cualquier serie de datos."
+  },
+  {
+   "id": "que-tan-verde-es-lo-que-dice-ser-verde-un-vistazo-al-greenwashin",
+   "area": "ambiente",
+   "areas2": [
+    "derecho",
+    "negocios"
+   ],
+   "titulo": "¿Qué tan verde es lo que dice ser verde? Un vistazo al greenwashing",
+   "resumen": "Revisa frases como «ecológico» o «amigable con el planeta» en productos y publicidad, y evalúa cuáles tienen sustento y cuáles son vagas o engañosas.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Publicidad",
+    "Etiquetas"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Derecho",
+    "Comunicaciones",
+    "Publicidad",
+    "Administración",
+    "Ingeniería Ambiental",
+    "Economía",
+    "Psicología",
+    "Química"
+   ],
+   "problema": [
+    "Cada vez más productos se presentan como verdes, naturales o sostenibles, pero esas palabras no siempre significan lo mismo ni tienen respaldo. Algunas son afirmaciones vagas que suenan bien, pero no dicen nada comprobable.",
+    "Para quien compra, es difícil distinguir lo que sí está certificado de lo que solo es publicidad. Ese problema afecta tanto a consumidores como a empresas que sí cumplen."
+   ],
+   "desarrollar": [
+    "Reúne entre diez y quince envases o anuncios con afirmaciones ambientales y clasifícalas: específicas y comprobables, vagas, o respaldadas por una certificación o un dato citado.",
+    "Con criterios públicos de organismos de protección al consumidor o de publicidad responsable, evalúa cada afirmación y arma una guía breve de preguntas para reconocer las que conviene mirar con cuidado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Revisar la norma",
+     "aporta": "investiga qué dicen las normas sobre afirmaciones ambientales en publicidad."
+    },
+    {
+     "titulo": "Comparar sectores",
+     "aporta": "compara cómo aparece el mensaje verde en alimentos, limpieza y ropa."
+    },
+    {
+     "titulo": "Reescribir el mensaje",
+     "aporta": "propón cómo decir lo mismo de forma honesta y comprobable."
+    }
+   ],
+   "objetivos": [
+    "Reunir ejemplos con criterio.",
+    "Clasificar afirmaciones según su sustento.",
+    "Aplicar criterios públicos.",
+    "Comunicar una guía clara."
+   ],
+   "habilidades": [
+    "Lectura crítica de publicidad.",
+    "Análisis de afirmaciones.",
+    "Investigación de normas.",
+    "Redacción clara."
+   ],
+   "herramientas": [
+    "Envases y anuncios reales.",
+    "Criterios de organismos de protección al consumidor.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Evalúa afirmaciones y no acuses de engaño a empresas concretas: trabaja con categorías y ejemplos neutros o anónimos.",
+    "Cita los criterios que uses y distingue entre una afirmación vaga y una falsa, porque no es lo mismo."
+   ],
+   "otroSector": "El mismo método sirve para revisar afirmaciones de salud, de seguridad, de precio o de calidad en cualquier tipo de publicidad."
+  },
+  {
+   "id": "que-residuos-de-un-negocio-de-barrio-podrian-servirle-a-otro",
+   "area": "ambiente",
+   "areas2": [
+    "negocios",
+    "industria"
+   ],
+   "titulo": "¿Qué residuos de un negocio de barrio podrían servirle a otro?",
+   "resumen": "Piensa en los desechos de comercios cercanos, como una panadería, una ferretería o una lavandería, y descubre cuáles podrían ser materia prima útil para otro negocio.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Economía circular",
+    "Negocios locales"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Administración",
+    "Ingeniería Industrial",
+    "Economía",
+    "Ingeniería Ambiental",
+    "Contabilidad",
+    "Ingeniería Agroindustrial",
+    "Trabajo Social",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Lo que un negocio desecha a veces es justo lo que otro necesita: pan viejo, aserrín, cajas, aceite, retazos o envases. Pero rara vez se encuentran porque cada negocio trabaja por separado.",
+    "Conectarlos reduciría residuos y costos para ambos lados. Falta información sobre qué se desecha, en qué cantidad y quién podría aprovecharlo."
+   ],
+   "desarrollar": [
+    "Elige una calle comercial o un mercado, real o inventado, describe seis a ocho tipos de negocio y para cada uno estima qué residuos genera y en qué cantidad aproximada, con casos de ejemplo o información pública.",
+    "Dibuja un mapa de conexiones que indique qué residuo podría convertirse en insumo para otro negocio y evalúa qué haría falta, como transporte, limpieza o acuerdos, para que ocurra."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Valor del residuo",
+     "aporta": "estima cuánto dinero aportaría cada conexión."
+    },
+    {
+     "titulo": "Obstáculos",
+     "aporta": "identifica qué impediría que dos negocios colaboren, como higiene, tiempos o confianza."
+    },
+    {
+     "titulo": "Prueba piloto",
+     "aporta": "diseña una prueba entre dos negocios durante un mes."
+    }
+   ],
+   "objetivos": [
+    "Identificar residuos de distintos negocios.",
+    "Reconocer posibles usos en otros.",
+    "Representar las conexiones.",
+    "Evaluar su viabilidad."
+   ],
+   "habilidades": [
+    "Análisis de cadenas de valor.",
+    "Pensamiento sistémico.",
+    "Evaluación de viabilidad.",
+    "Comunicación visual."
+   ],
+   "herramientas": [
+    "Un editor de diagramas o de mapas conceptuales.",
+    "Hoja de cálculo.",
+    "Información pública del sector."
+   ],
+   "lineamientos": [
+    "Si hablas con negocios reales, pide permiso, explica el propósito y no publiques datos sin su acuerdo; si no, trabaja con casos ficticios.",
+    "No propongas reutilizar residuos de alimentos o peligrosos sin tener en cuenta la normativa sanitaria."
+   ],
+   "otroSector": "El mismo mapa de conexiones sirve para pensar en cómo comparten recursos empresas de una zona industrial o instituciones de una misma ciudad."
+  },
+  {
+   "id": "el-trabajo-invisible-del-reciclaje-quien-recupera-los-residuos-e",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad",
+    "derecho"
+   ],
+   "titulo": "El trabajo invisible del reciclaje: ¿quién recupera los residuos en tu ciudad?",
+   "resumen": "Descubre quiénes, a menudo sin reconocimiento, recuperan y venden los materiales reciclables, cómo funciona esa cadena y qué se hace para formalizarla.",
+   "tipo": "Investigación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Reciclaje",
+    "Trabajo"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Sociología",
+    "Trabajo Social",
+    "Derecho",
+    "Economía",
+    "Ingeniería Ambiental",
+    "Antropología",
+    "Administración",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Buena parte de lo que se recicla en muchas ciudades no lo recupera un sistema formal sino personas que trabajan recolectando, clasificando y vendiendo materiales. Ese trabajo sostiene una parte de la cadena, pero suele ser invisible para quienes separan en casa.",
+    "Sin entenderlo, las propuestas de reciclaje pueden ignorar o incluso afectar a quienes viven de él, y pierden aliados valiosos."
+   ],
+   "desarrollar": [
+    "Con informes públicos, normas y reportes de organizaciones que trabajan con recicladores, reconstruye cómo funciona la cadena: quiénes participan, qué materiales manejan, cuánto se paga y qué avances o dificultades hay para su formalización.",
+    "Resume en un documento o infografía los hallazgos, los datos que no encontraste y propón dos ideas para que las campañas de reciclaje tomen en cuenta a quienes ya hacen el trabajo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Marco legal",
+     "aporta": "revisa las normas que regulan la actividad y su alcance."
+    },
+    {
+     "titulo": "Cadena de precios",
+     "aporta": "reconstruye cuánto se paga por cada material en cada etapa."
+    },
+    {
+     "titulo": "Comparar países",
+     "aporta": "estudia cómo otros países incluyen a los recicladores en sus sistemas."
+    }
+   ],
+   "objetivos": [
+    "Buscar información de fuentes confiables.",
+    "Reconstruir la cadena de valor.",
+    "Reconocer el rol de los distintos actores.",
+    "Proponer acciones con enfoque inclusivo."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Análisis social y económico.",
+    "Pensamiento crítico.",
+    "Redacción clara."
+   ],
+   "herramientas": [
+    "Informes y normas públicas.",
+    "Hoja de cálculo.",
+    "Un editor de infografías."
+   ],
+   "lineamientos": [
+    "Usa fuentes públicas o hechas por las propias organizaciones; no abordes a recicladores ni fotografíes su trabajo sin su consentimiento y un propósito claro.",
+    "Habla con respeto y sin estereotipos, y deja claro que tu estudio es una aproximación que ellos mismos podrían corregir."
+   ],
+   "otroSector": "El mismo enfoque sirve para estudiar otros trabajos poco visibles, como el cuidado, el comercio ambulante o la economía informal."
+  },
+  {
+   "id": "que-zonas-de-tu-distrito-son-mas-vulnerables-a-huaicos-o-inundac",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "sociedad"
+   ],
+   "titulo": "¿Qué zonas de tu distrito son más vulnerables a huaicos o inundaciones?",
+   "resumen": "Cruza mapas públicos de riesgo con información de población y servicios para descubrir qué zonas serían más afectadas por huaicos, lluvias intensas o inundaciones.",
+   "tipo": "Análisis",
+   "tiempo": "~30 h",
+   "horas": 30,
+   "etiquetas": [
+    "Riesgos",
+    "Mapas"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Geológica",
+    "Geografía",
+    "Ingeniería Ambiental",
+    "Sociología",
+    "Estadística",
+    "Ciencia de Datos",
+    "Arquitectura"
+   ],
+   "problema": [
+    "Cada temporada de lluvias se repiten daños en quebradas, ríos y laderas, y los más afectados suelen ser quienes viven en zonas más expuestas. Los mapas de riesgo existen, pero casi nadie los lee ni los cruza con quién vive ahí.",
+    "Entender dónde está el peligro y quién lo enfrenta permite orientar mejor la prevención y la atención, antes de que ocurra un desastre."
+   ],
+   "desarrollar": [
+    "Con mapas y reportes públicos de organismos de gestión de riesgos de tu país, ubica las zonas de peligro por huaicos o inundaciones en un distrito, y reúne datos públicos de población, escuelas, centros de salud y vías en esas zonas.",
+    "Elabora un mapa que combine peligro y exposición, destaca las zonas más críticas y explica qué acciones de prevención recomiendan las fuentes oficiales."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Rutas de evacuación",
+     "aporta": "revisa qué vías y puntos seguros existen en las zonas más críticas."
+    },
+    {
+     "titulo": "Historia de eventos",
+     "aporta": "ubica en el mapa los eventos de años anteriores."
+    },
+    {
+     "titulo": "Mensaje a la comunidad",
+     "aporta": "convierte los hallazgos en un material claro para quienes viven allí."
+    }
+   ],
+   "objetivos": [
+    "Usar mapas de riesgo de fuentes oficiales.",
+    "Cruzar peligro con exposición.",
+    "Representarlo con claridad.",
+    "Comunicar con responsabilidad."
+   ],
+   "habilidades": [
+    "Lectura de mapas de riesgo.",
+    "Análisis espacial.",
+    "Uso de datos públicos.",
+    "Comunicación de riesgos."
+   ],
+   "herramientas": [
+    "Mapas y reportes de organismos de gestión de riesgos.",
+    "Un editor de mapas digitales.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Trabaja solo con fuentes oficiales, citándolas, y no afirmes que una vivienda o familia concreta está en riesgo: habla de zonas.",
+    "No difundas el mapa como si fuera una alerta oficial; para emergencias, remite siempre a las autoridades."
+   ],
+   "otroSector": "El mismo cruce de peligro y exposición sirve para analizar riesgos de sismo, de incendio, de contaminación o de interrupción de servicios."
+  },
+  {
+   "id": "que-cuenta-la-basura-de-un-espacio-publico",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad",
+    "ciudades"
+   ],
+   "titulo": "¿Qué cuenta la basura de un espacio público?",
+   "resumen": "Cuenta y clasifica los residuos que encuentras en un parque, una playa o una calle para descubrir qué se tira, dónde y qué dice eso de los hábitos y de los servicios.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Residuos",
+    "Espacio público"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Sociología",
+    "Antropología",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Geografía",
+    "Educación",
+    "Comunicaciones",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "La basura en un parque o una playa parece un problema evidente, pero casi nunca se mira con orden: ¿qué se tira?, ¿en qué lugares?, ¿faltan tachos? Los datos podrían decir si el problema es de hábito, de servicios o de ambas cosas.",
+    "Sin conteo, cada discusión se queda en opiniones. Con datos, se pueden hacer propuestas concretas."
+   ],
+   "desarrollar": [
+    "Elige un espacio público seguro y delimita una zona, y un día recoge con guantes y clasifica los residuos que veas, anotando tipos, cantidades y ubicación, y si hay tachos cerca.",
+    "Haz gráficos por tipo y por lugar, identifica los objetos más frecuentes y propón dos o tres medidas que atiendan las causas, como más tachos, mensajes o cambios en lo que se vende."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Repetir en otro día",
+     "aporta": "compara un día de semana con un fin de semana o un feriado."
+    },
+    {
+     "titulo": "Rastrear el origen",
+     "aporta": "analiza qué marcas o tipos de producto aparecen más, sin señalar culpables."
+    },
+    {
+     "titulo": "Jornada de limpieza",
+     "aporta": "diseña una jornada que combine limpieza y conteo."
+    }
+   ],
+   "objetivos": [
+    "Delimitar y planificar el conteo.",
+    "Registrar residuos con criterios claros.",
+    "Visualizar resultados.",
+    "Proponer medidas basadas en los datos."
+   ],
+   "habilidades": [
+    "Trabajo de campo.",
+    "Clasificación de datos.",
+    "Análisis básico.",
+    "Propuestas de mejora."
+   ],
+   "herramientas": [
+    "Guantes y bolsas.",
+    "Hoja de registro.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Usa guantes, no recojas objetos punzocortantes, jeringas ni residuos peligrosos y avisa a las autoridades si los encuentras.",
+    "Trabaja en lugares seguros y de día, de preferencia acompañado, y pide permiso si el lugar es administrado por alguien."
+   ],
+   "otroSector": "El mismo conteo sirve para estudiar cómo se usa un espacio público: sillas ocupadas, personas que pasan o servicios que faltan."
+  },
+  {
+   "id": "cuanto-cuesta-ser-sostenible-y-cuanto-se-ahorra",
+   "area": "ambiente",
+   "areas2": [
+    "negocios",
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto cuesta ser sostenible, y cuánto se ahorra?",
+   "resumen": "Compara el costo inicial y el ahorro a lo largo del tiempo de decisiones sostenibles, como un foco LED, una botella reutilizable o reparar en vez de comprar, para ver cuáles convienen.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Costos",
+    "Consumo"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Psicología",
+    "Educación"
+   ],
+   "problema": [
+    "Se dice que ser sostenible es caro, pero a veces es al revés: lo que cuesta más al comprar se ahorra con el uso. Pocas personas hacen esa cuenta, y deciden solo por el precio de hoy.",
+    "Y también hay casos en que sí cuesta más. Distinguir cuáles son ayuda a priorizar y a ser honesto sobre las dificultades de quien tiene un presupuesto ajustado."
+   ],
+   "desarrollar": [
+    "Elige entre seis y ocho opciones sostenibles de uso cotidiano, y para cada una busca el costo inicial, el costo de uso y la duración con datos citados, y compara con la alternativa convencional.",
+    "Calcula el costo a uno, tres y cinco años, destaca en qué casos conviene y en cuáles no, y arma una tabla clara con los resultados."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Presupuesto ajustado",
+     "aporta": "identifica qué opciones son accesibles para quien tiene pocos recursos."
+    },
+    {
+     "titulo": "Cuándo se recupera",
+     "aporta": "calcula en cuántos meses se recupera cada inversión."
+    },
+    {
+     "titulo": "Subsidios o ayudas",
+     "aporta": "investiga qué programas pueden hacer accesibles las opciones más caras."
+    }
+   ],
+   "objetivos": [
+    "Reunir datos de costos con fuentes.",
+    "Calcular costos a lo largo del tiempo.",
+    "Comparar con criterios claros.",
+    "Comunicar los resultados sin sesgo."
+   ],
+   "habilidades": [
+    "Análisis de costos y beneficios.",
+    "Búsqueda de datos.",
+    "Cálculo financiero básico.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Precios publicados de tiendas.",
+    "Datos de duración de fabricantes."
+   ],
+   "lineamientos": [
+    "Usa precios que puedas citar con fecha y evita presentar el resultado como válido para todos los casos.",
+    "No compares marcas ni recomiendes comprar productos concretos: analiza tipos de opción."
+   ],
+   "otroSector": "El mismo análisis de costo a lo largo del tiempo sirve para decidir entre comprar y alquilar, entre mantener y renovar o entre invertir y esperar."
+  },
+  {
+   "id": "una-norma-ambiental-explicada-para-todos",
+   "area": "ambiente",
+   "areas2": [
+    "derecho",
+    "educacion"
+   ],
+   "titulo": "Una norma ambiental explicada para todos",
+   "resumen": "Elige una norma sobre residuos, agua, ruido o áreas verdes y tradúcela a un lenguaje claro: qué dice, a quién le toca qué y cómo se hace valer.",
+   "tipo": "Guía",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Normas",
+    "Divulgación"
+   ],
+   "intencion": [
+    "crear",
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Derecho",
+    "Ciencia Política",
+    "Comunicaciones",
+    "Ingeniería Ambiental",
+    "Educación",
+    "Diseño Gráfico",
+    "Administración",
+    "Sociología"
+   ],
+   "problema": [
+    "Las normas ambientales existen, pero casi nadie las conoce porque están escritas para especialistas. Muchas personas no saben cuáles son sus deberes, qué pueden exigir ni a dónde acudir.",
+    "Una norma que no se entiende no se cumple ni se puede reclamar. Explicarla con claridad es una forma de ejercer ciudadanía."
+   ],
+   "desarrollar": [
+    "Elige una norma vigente que te interese, léela completa y subraya a quién va dirigida, qué obliga o prohíbe, qué sanciones prevé y qué instancia la supervisa.",
+    "Redáctala en una guía de una a dos páginas en lenguaje sencillo, con ejemplos de la vida diaria, y pide a dos personas que no sean de Derecho que la lean y te digan qué no entendieron."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Preguntas frecuentes",
+     "aporta": "arma una lista de preguntas y respuestas basadas en la norma."
+    },
+    {
+     "titulo": "Cómo reclamar",
+     "aporta": "explica el camino para hacer un reclamo o una denuncia paso a paso."
+    },
+    {
+     "titulo": "Comparar con otro país",
+     "aporta": "compara cómo regula el mismo tema otro país."
+    }
+   ],
+   "objetivos": [
+    "Comprender una norma completa.",
+    "Identificar obligaciones y derechos.",
+    "Redactar en lenguaje claro.",
+    "Probar la comprensión con lectores."
+   ],
+   "habilidades": [
+    "Lectura de normas.",
+    "Redacción en lenguaje claro.",
+    "Síntesis.",
+    "Diseño de información."
+   ],
+   "herramientas": [
+    "El texto oficial de la norma.",
+    "Un editor de documentos o de diseño.",
+    "Un formulario de prueba."
+   ],
+   "lineamientos": [
+    "Usa el texto oficial vigente, cita el artículo de cada afirmación y aclara que la guía es informativa y no asesoría legal.",
+    "Revisa que la norma no haya sido modificada y anota la fecha de consulta."
+   ],
+   "otroSector": "La misma traducción a lenguaje claro sirve para contratos, normas de seguridad, reglamentos de una institución o trámites."
+  },
+  {
+   "id": "se-puede-cosechar-agua-de-la-neblina",
+   "area": "ambiente",
+   "areas2": [
+    "ciudades",
+    "ciencias"
+   ],
+   "titulo": "¿Se puede \"cosechar\" agua de la neblina?",
+   "resumen": "Investiga cómo se capta agua de la neblina con mallas y evalúa con datos públicos si tendría sentido en una zona de tu país donde la neblina es frecuente.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Agua",
+    "Neblina"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Física",
+    "Geografía",
+    "Ingeniería Mecánica",
+    "Estadística",
+    "Arquitectura",
+    "Ingeniería Agrícola"
+   ],
+   "problema": [
+    "En algunas zonas costeras y de laderas la neblina es frecuente y la lluvia casi no existe. Captar sus gotas con mallas ha servido en distintos lugares del mundo para obtener agua, pero depende de factores como el viento, la humedad y el relieve.",
+    "No es una solución mágica y no sirve en cualquier lugar. Saber cuándo sí y cuándo no requiere mirar datos con cuidado."
+   ],
+   "desarrollar": [
+    "Con fuentes públicas, resume cómo funcionan los captadores de niebla, qué condiciones necesitan y qué cantidades se han logrado en proyectos documentados.",
+    "Elige una zona de tu país, busca sus datos de humedad, viento y neblina y evalúa de forma cualitativa y con cálculos simples si podría ser viable, qué uso tendría el agua y qué dificultades habría."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Diseñar un prototipo",
+     "aporta": "dibuja el diseño de un captador pequeño con materiales y medidas."
+    },
+    {
+     "titulo": "Comparar zonas",
+     "aporta": "compara dos lugares y explica cuál es más adecuado."
+    },
+    {
+     "titulo": "Costo y mantenimiento",
+     "aporta": "estima qué costaría mantener el sistema funcionando."
+    }
+   ],
+   "objetivos": [
+    "Comprender cómo funciona la captación.",
+    "Reunir datos climáticos de una zona.",
+    "Evaluar la viabilidad con criterio.",
+    "Presentar resultados y límites."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Interpretación de datos climáticos.",
+    "Evaluación de viabilidad.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Informes de proyectos de captación de niebla.",
+    "Datos de servicios meteorológicos.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Cita las fuentes de cada dato y aclara que el análisis es preliminar y no un diseño de ingeniería.",
+    "No instales estructuras en espacios públicos sin permiso y no uses esta agua para consumo sin tratamiento."
+   ],
+   "otroSector": "La misma lógica de evaluar si un recurso tiene sentido en un lugar sirve para el viento, el sol o la geotermia."
+  },
+  {
+   "id": "como-podria-el-cambio-climatico-cambiar-tu-profesion",
+   "area": "ambiente",
+   "areas2": [
+    "sociedad",
+    "educacion"
+   ],
+   "titulo": "¿Cómo podría el cambio climático cambiar tu profesión?",
+   "resumen": "Explora cómo los cambios del clima ya afectan o podrían afectar el trabajo de tu carrera, y qué nuevas oportunidades y habilidades aparecerían.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Clima",
+    "Profesiones"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Todas las carreras",
+    "Contabilidad",
+    "Derecho",
+    "Medicina",
+    "Administración",
+    "Arquitectura",
+    "Economía",
+    "Educación"
+   ],
+   "problema": [
+    "Se habla del cambio climático como un tema de ambientalistas, pero afecta a casi todas las profesiones: a los contadores por los riesgos y reportes, a los abogados por nuevas normas, a los médicos por enfermedades, a los arquitectos por el calor.",
+    "Muchas personas no se imaginan cómo toca su carrera, y por eso no se preparan ni ven las oportunidades que se abren."
+   ],
+   "desarrollar": [
+    "Elige tu carrera y busca en fuentes públicas, como informes de organismos internacionales, colegios profesionales y universidades, cómo se espera que el clima cambie el trabajo de esa profesión.",
+    "Resume tres impactos y tres oportunidades en un documento o una presentación, con ejemplos concretos, y reflexiona qué habilidades convendría desarrollar."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Entrevistar a un profesional",
+     "aporta": "pregunta a alguien de tu campo cómo lo ve, con su consentimiento."
+    },
+    {
+     "titulo": "Comparar carreras",
+     "aporta": "compara cómo afecta a dos profesiones muy distintas."
+    },
+    {
+     "titulo": "Plan de habilidades",
+     "aporta": "arma una lista de cursos o prácticas que te prepararían."
+    }
+   ],
+   "objetivos": [
+    "Buscar información de fuentes confiables.",
+    "Relacionar el clima con tu campo profesional.",
+    "Distinguir riesgos y oportunidades.",
+    "Reflexionar sobre tu desarrollo."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Pensamiento prospectivo.",
+    "Síntesis.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Informes de organismos y colegios profesionales.",
+    "Un editor de documentos o presentaciones.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Cita las fuentes y distingue lo que está documentado de lo que tú proyectas; evita presentar predicciones como hechos.",
+    "No hagas afirmaciones sobre empresas o personas concretas."
+   ],
+   "otroSector": "El mismo ejercicio sirve para analizar cómo la inteligencia artificial, la automatización o un cambio normativo afectarían a una profesión."
+  },
+  {
+   "id": "que-pescado-compras-y-cuando-conviene-no-hacerlo",
+   "area": "ambiente",
+   "areas2": [
+    "agricultura",
+    "negocios"
+   ],
+   "titulo": "¿Qué pescado compras y cuándo conviene no hacerlo?",
+   "resumen": "Arma un calendario de pescados y mariscos con sus temporadas, tallas mínimas y vedas oficiales, para comprar de forma más responsable.",
+   "tipo": "Guía",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Pesca",
+    "Consumo responsable"
+   ],
+   "intencion": [
+    "crear",
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Biología",
+    "Ingeniería Pesquera",
+    "Ingeniería Ambiental",
+    "Nutrición",
+    "Administración",
+    "Economía",
+    "Derecho",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Hay especies marinas que se consumen todo el año sin pensar que, en ciertos meses, se protege su reproducción con vedas. Comprar en esa época o ejemplares muy pequeños puede perjudicar la sostenibilidad de la pesca.",
+    "La información sobre temporadas, tallas mínimas y vedas existe, pero está dispersa en normas y comunicados que casi nadie consulta al hacer la compra."
+   ],
+   "desarrollar": [
+    "Con fuentes oficiales de instituciones pesqueras, elige entre ocho y diez especies de consumo común en tu zona y reúne de cada una su temporada, su talla mínima y sus vedas.",
+    "Presenta la información en un calendario o tarjeta fácil de consultar en un mercado, con enlaces a la fuente oficial, y pruébalo con alguien que compre pescado con frecuencia."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Tabla de alternativas",
+     "aporta": "propón especies alternativas para cuando una está en veda."
+    },
+    {
+     "titulo": "Preguntas al comprar",
+     "aporta": "crea una tarjeta con tres preguntas para hacer al vendedor."
+    },
+    {
+     "titulo": "Versión para restaurantes",
+     "aporta": "adáptalo para que lo usen negocios de comida."
+    }
+   ],
+   "objetivos": [
+    "Reunir información oficial.",
+    "Organizarla en un formato claro.",
+    "Redactar en lenguaje sencillo.",
+    "Probarlo con usuarios."
+   ],
+   "habilidades": [
+    "Investigación de fuentes oficiales.",
+    "Organización de información.",
+    "Diseño de información.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Normas y comunicados de instituciones pesqueras.",
+    "Un editor de diseño.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Usa solo las normas vigentes y cita la fuente y la fecha de cada dato, porque las vedas y tallas se actualizan.",
+    "No señales a vendedores ni a marcas; aclara que es una guía informativa."
+   ],
+   "otroSector": "El mismo calendario sirve para frutas y verduras de temporada, para festivales gastronómicos o para productos agrícolas con épocas de siembra."
   }
  ]
 }

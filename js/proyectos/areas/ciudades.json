@@ -1218,6 +1218,83 @@
     "No registres nombres ni fotografíes a personas; trabaja con respuestas anónimas."
    ],
    "otroSector": "Sirve para analizar cualquier recurso de un barrio: bibliotecas, centros de salud, comercios o transporte."
+  },
+  {
+   "id": "mapa-de-areas-verdes-y-sombra-de-tu-comunidad",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "salud"
+   ],
+   "titulo": "Mapa de áreas verdes y sombra de tu comunidad",
+   "resumen": "Registra las áreas verdes, los árboles y la sombra disponibles en tu barrio, y descubre qué zonas tienen más o menos acceso a ellas.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Áreas verdes",
+    "Mapas"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Geografía",
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Ciencia de Datos",
+    "Sociología",
+    "Estadística",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "En muchas ciudades las áreas verdes no se reparten por igual: hay barrios con parques y árboles y otros casi sin sombra. Esa diferencia afecta el calor, el bienestar y las posibilidades de descanso y de juego.",
+    "Pocas veces se cuenta con un mapa claro de qué hay realmente, y sin él es difícil argumentar dónde falta."
+   ],
+   "desarrollar": [
+    "Elige una zona de tu comunidad, recórrela y registra en un mapa los parques, jardines, árboles de calle y lugares con sombra durante las horas de más sol, anotando el tipo y el estado aproximado.",
+    "Calcula cuánta área verde hay por manzana o por tramo, destaca las zonas con menos cobertura y presenta un mapa con colores y una breve explicación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Distancia a un parque",
+     "aporta": "mide cuánto debe caminar una persona hasta un área verde desde distintos puntos."
+    },
+    {
+     "titulo": "Sombra a distintas horas",
+     "aporta": "compara la sombra de la mañana, el mediodía y la tarde."
+    },
+    {
+     "titulo": "Propuestas de siembra",
+     "aporta": "propón dónde y qué árboles añadirías."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un recorrido y un método de registro.",
+    "Representar la información en un mapa.",
+    "Calcular indicadores simples.",
+    "Identificar zonas con mayor déficit."
+   ],
+   "habilidades": [
+    "Trabajo de campo.",
+    "Lectura y creación de mapas.",
+    "Análisis espacial básico.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Un mapa digital o una imagen satelital.",
+    "Cuaderno de campo.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Recorre solo espacios públicos, durante el día y de preferencia acompañado, y no fotografíes a personas ni propiedades privadas.",
+    "Si propones cambios, aclara que son ideas para conversar con la municipalidad y los vecinos, no decisiones."
+   ],
+   "otroSector": "El mismo mapeo sirve para ubicar bancas, bodegas, paraderos, servicios de salud o lugares accesibles."
   }
  ]
 }
