@@ -389,6 +389,237 @@
     "Presenta resultados sin culpar a nadie."
    ],
    "otroSector": "La misma medición funciona con energía, agua o comida en un colegio, un restaurante o una oficina."
+  },
+  {
+   "id": "como-afecta-la-calidad-del-aire-a-la-vida-diaria-de-una-comunidad",
+   "area": "ambiente",
+   "areas2": [
+    "salud",
+    "ciudades"
+   ],
+   "titulo": "¿Cómo afecta la calidad del aire a la vida diaria de una comunidad?",
+   "resumen": "Analiza datos públicos de calidad del aire de una zona y descubre qué días y lugares se ven más afectados, y cómo podría una comunidad informarse y cuidarse mejor.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Aire",
+    "Salud pública"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Ingeniería Química",
+    "Ingeniería Civil",
+    "Geografía",
+    "Ingeniería de Sistemas",
+    "Medicina",
+    "Enfermería"
+   ],
+   "problema": [
+    "La calidad del aire cambia según la hora, el clima y el tráfico, pero la mayoría de personas no sabe cuándo está peor ni qué hacer cuando lo está. Los datos existen, pero suelen estar en tablas difíciles de leer.",
+    "No todas las personas se ven afectadas igual: niños, mayores, quienes trabajan en la calle o quienes viven cerca de vías muy transitadas pueden notarlo más."
+   ],
+   "desarrollar": [
+    "Busca datos públicos de una estación de monitoreo cercana, ordénalos por días y horas, y haz gráficos que muestren cuándo el aire está peor y qué lo acompaña, como el clima o el tráfico.",
+    "Con lo que encuentres arma una pequeña guía para la comunidad que explique cómo leer el indicador de calidad del aire y qué precauciones generales recomiendan las autoridades de salud en cada nivel."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara dos zonas distintas de una misma ciudad y busca qué las diferencia."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "crea un tablero sencillo que muestre el nivel de calidad del aire de la semana en colores."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "propón cómo avisar a una comunidad cuando el aire está en niveles altos."
+    }
+   ],
+   "objetivos": [
+    "Obtener y ordenar datos públicos de calidad del aire.",
+    "Identificar patrones por días y horas.",
+    "Explicar el indicador en palabras claras.",
+    "Preparar una guía de precauciones basada en fuentes oficiales."
+   ],
+   "habilidades": [
+    "Análisis de datos.",
+    "Gráficos.",
+    "Lectura de informes técnicos.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Datos de estaciones de monitoreo públicas.",
+    "Una herramienta de gráficos."
+   ],
+   "lineamientos": [
+    "Cita las fuentes de los datos y de las recomendaciones; no inventes umbrales ni consejos médicos.",
+    "No relaciones el aire con enfermedades de personas concretas: trabaja con datos de la zona y con información general de salud pública."
+   ],
+   "otroSector": "Sirve para analizar el ruido, la temperatura, el agua o cualquier otro indicador público de una zona."
+  },
+  {
+   "id": "que-pasa-con-la-salud-de-una-comunidad-cuando-llega-un-fenomeno-climatico",
+   "area": "ambiente",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "¿Qué pasa con la salud de una comunidad cuando llega un fenómeno climático extremo?",
+   "resumen": "Estudia un caso real o inventado de lluvias intensas, sequía, ola de calor o inundación y descubre qué cambia en las necesidades de salud de una comunidad y quién queda más expuesto.",
+   "tipo": "Investigación",
+   "tiempo": "~30 h",
+   "horas": 30,
+   "etiquetas": [
+    "Clima",
+    "Salud pública"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Civil",
+    "Geografía",
+    "Estadística",
+    "Trabajo Social",
+    "Enfermería",
+    "Medicina",
+    "Sociología"
+   ],
+   "problema": [
+    "Los fenómenos climáticos extremos se reportan por sus daños en casas y carreteras, y casi siempre se habla poco de lo que pasa con la salud: más enfermedades por el agua o el calor, interrupción de tratamientos, dificultad para llegar a un centro de salud.",
+    "No todas las personas lo viven igual: quienes tienen menos recursos, viven en zonas expuestas o dependen de cuidados suelen ser los más afectados."
+   ],
+   "desarrollar": [
+    "Elige un caso documentado en informes públicos o inventa uno realista y arma una línea de tiempo con lo que pasó antes, durante y después del fenómeno, señalando qué servicios o personas quedaron más expuestos.",
+    "Resume cómo cambiaron las necesidades de salud y propón tres acciones que una comunidad podría hacer para estar mejor preparada, apoyándote en recomendaciones oficiales."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara dos casos distintos, como una inundación y una ola de calor, y busca qué se repite."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "resume el caso en un mapa de la zona con los lugares y grupos más afectados."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña un aviso temprano sencillo para que una comunidad sepa qué hacer antes del evento."
+    }
+   ],
+   "objetivos": [
+    "Reconstruir un caso con fuentes públicas o ficticio.",
+    "Identificar efectos en servicios y grupos de personas.",
+    "Reconocer quién queda más expuesto y por qué.",
+    "Proponer acciones de preparación."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Línea de tiempo.",
+    "Análisis de riesgo.",
+    "Redacción clara."
+   ],
+   "herramientas": [
+    "Informes públicos de organismos de salud y de gestión de riesgos.",
+    "Hoja de cálculo.",
+    "Un mapa o un editor de líneas de tiempo."
+   ],
+   "lineamientos": [
+    "Cita siempre tus fuentes y distingue lo que está documentado de lo que tú supones.",
+    "Si usas un caso real, no incluyas nombres ni datos de personas afectadas ni fotos de víctimas."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar cómo afecta un evento al transporte, a las escuelas, a un negocio o a una cadena de suministro."
+  },
+  {
+   "id": "una-guia-para-cuidarse-del-calor-o-del-frio-intenso",
+   "area": "ambiente",
+   "areas2": [
+    "salud",
+    "arte"
+   ],
+   "titulo": "Una guía para cuidarse del calor o del frío intenso",
+   "resumen": "Prepara una guía clara y fácil de compartir para que una familia o una comunidad sepa cómo prepararse y qué hacer cuando llega una ola de calor o de frío.",
+   "tipo": "Guía",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Calor y frío",
+    "Prevención"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Diseño Gráfico",
+    "Comunicaciones",
+    "Enfermería",
+    "Medicina",
+    "Trabajo Social",
+    "Educación",
+    "Publicidad"
+   ],
+   "problema": [
+    "Las olas de calor y de frío se anuncian en los noticieros, pero casi nunca se explica con claridad qué hacer en casa, en el colegio o en el trabajo. Las recomendaciones están en documentos largos o técnicos.",
+    "Algunas personas tienen más riesgo: bebés, mayores, quienes trabajan al aire libre o viven en viviendas muy expuestas. Una guía mal hecha no les llega."
+   ],
+   "desarrollar": [
+    "Revisa recomendaciones de organismos oficiales de salud y de gestión de riesgos, quédate con las que se repiten y reescríbelas en frases cortas, ordenadas en antes, durante y después del evento.",
+    "Diseña una versión en una hoja o en un afiche, pide a dos personas que no sean de tu carrera que la lean y te digan qué no entendieron, y ajústala."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "adapta la guía para un público específico, como niños, adultos mayores o trabajadores de calle."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "conviértela en una serie de imágenes cortas para compartir por mensajería."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "prepara una versión para una institución, con un plan de acción para el día del evento."
+    }
+   ],
+   "objetivos": [
+    "Reunir recomendaciones de fuentes oficiales.",
+    "Reescribirlas en lenguaje sencillo.",
+    "Diseñar una versión visual clara.",
+    "Probarla con lectores y mejorarla."
+   ],
+   "habilidades": [
+    "Comunicación clara.",
+    "Diseño de información.",
+    "Lectura crítica de fuentes.",
+    "Trabajo con usuarios."
+   ],
+   "herramientas": [
+    "Un editor de afiches o de presentaciones.",
+    "Guías oficiales de organismos de salud.",
+    "Un formulario simple para probar con lectores."
+   ],
+   "lineamientos": [
+    "No des indicaciones de tratamiento ni dosis: limítate a prevención y a cuándo buscar atención, según fuentes oficiales, y cítalas.",
+    "Aclara que la guía es informativa y que ante síntomas graves se debe acudir a un servicio de salud."
+   ],
+   "otroSector": "La misma guía sirve para otros eventos, como incendios, lluvias fuertes, humo o cortes prolongados de energía."
   }
  ]
 }

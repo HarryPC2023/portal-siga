@@ -54,6 +54,314 @@
     "Retira el material al terminar la prueba."
    ],
    "otroSector": "Sirve para centros de salud, mercados, terminales, bibliotecas o tiendas."
+  },
+  {
+   "id": "una-guia-visual-para-explicar-una-enfermedad-o-un-tratamiento-con-palabras",
+   "area": "arte",
+   "areas2": [
+    "salud",
+    "educacion"
+   ],
+   "titulo": "Una guía visual para explicar una enfermedad o un tratamiento con palabras sencillas",
+   "resumen": "Convierte información de salud difícil en una guía visual clara, con palabras sencillas e imágenes, que cualquier persona pueda entender a la primera.",
+   "tipo": "Diseño",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Infografía",
+    "Comunicación"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Diseño Gráfico",
+    "Comunicaciones",
+    "Publicidad",
+    "Educación",
+    "Enfermería",
+    "Medicina",
+    "Nutrición",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "La información sobre enfermedades y tratamientos suele estar escrita con términos técnicos y en bloques de texto. Quien la recibe, a veces en un momento de preocupación, se queda con dudas o con una idea equivocada.",
+    "Una buena explicación visual no sustituye a un profesional, pero ayuda a entender mejor y a hacer mejores preguntas."
+   ],
+   "desarrollar": [
+    "Elige un tema general y de uso común, como cómo se usa un termómetro o qué es la hipertensión, y busca una fuente oficial. Reescribe el contenido en frases cortas, sin tecnicismos, y decide qué imágenes lo explicarían mejor.",
+    "Diseña la guía en una o dos páginas, pide a tres personas que no sean de salud que la lean y cuenten con sus palabras qué entendieron, y ajústala según lo que no quedó claro."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "adapta la guía a otro público, como niños o personas mayores."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "conviértela en una secuencia de imágenes cortas o en un video breve."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "agrega una versión para personas con baja visión o en lectura fácil."
+    }
+   ],
+   "objetivos": [
+    "Seleccionar información confiable y reescribirla.",
+    "Diseñar explicaciones visuales claras.",
+    "Probarlas con lectores.",
+    "Mejorar el diseño a partir de lo que se entiende."
+   ],
+   "habilidades": [
+    "Diseño de información.",
+    "Escritura clara.",
+    "Pruebas con lectores.",
+    "Ilustración o composición visual."
+   ],
+   "herramientas": [
+    "Un editor de diseño o de presentaciones.",
+    "Guías oficiales de salud.",
+    "Una hoja para registrar lo que entendieron los lectores."
+   ],
+   "lineamientos": [
+    "Basa el contenido en fuentes oficiales y cítalas; no incluyas dosis, diagnósticos ni indicaciones personales.",
+    "Si la guía circulará fuera de clase, pide que un profesional de salud la revise antes."
+   ],
+   "otroSector": "La misma técnica sirve para explicar trámites, contratos, instrucciones de un aparato o procesos legales."
+  },
+  {
+   "id": "un-espacio-de-descanso-que-ayude-a-desconectarse",
+   "area": "arte",
+   "areas2": [
+    "salud",
+    "ciudades"
+   ],
+   "titulo": "Un espacio de descanso que ayude a desconectarse",
+   "resumen": "Diseña un rincón de descanso para un espacio real, como un aula, una sala de espera o una oficina, y comprueba con pruebas sencillas qué elementos ayudan a desconectarse y cuáles no.",
+   "tipo": "Diseño",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Diseño de espacios",
+    "Descanso"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Arquitectura",
+    "Diseño Gráfico",
+    "Ingeniería Civil",
+    "Psicología",
+    "Ingeniería Industrial",
+    "Educación",
+    "Medicina",
+    "Ingeniería Ambiental"
+   ],
+   "problema": [
+    "En lugares donde pasamos muchas horas, como centros de estudio, oficinas o servicios de atención, casi nunca hay un sitio pensado para parar unos minutos sin ruido, pantallas ni interrupciones.",
+    "Cuando existen, suelen ser un rincón con sillas sin criterio, que no invita a quedarse."
+   ],
+   "desarrollar": [
+    "Elige un espacio real con permiso y observa cómo se usan las pausas actuales: dónde se sienta la gente, qué hace, qué la interrumpe. Haz un plano y define qué necesitaría un rincón de descanso: luz, ruido, asientos, privacidad, naturaleza.",
+    "Dibuja o modela una propuesta de bajo costo, pide a algunas personas que la comenten, y deja el diseño final con una lista de materiales y un costo estimado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara qué necesita un espacio de descanso para estudiantes y para personal de trabajo."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "haz una maqueta sencilla o un plano en 3D."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña una señalización que invite a usarlo sin imponer reglas."
+    }
+   ],
+   "objetivos": [
+    "Observar cómo se usan las pausas en un espacio.",
+    "Definir necesidades y criterios de diseño.",
+    "Proponer un diseño de bajo costo.",
+    "Recoger opiniones y mejorarlo."
+   ],
+   "habilidades": [
+    "Observación.",
+    "Diseño de espacios.",
+    "Dibujo de planos.",
+    "Presupuesto básico."
+   ],
+   "herramientas": [
+    "Una herramienta para dibujar planos o modelar en 3D.",
+    "Hoja de cálculo para el presupuesto.",
+    "Papel y cartulina para una maqueta."
+   ],
+   "lineamientos": [
+    "Pide permiso antes de observar o fotografiar un espacio, no registres personas ni sus rostros y respeta las normas de seguridad del lugar.",
+    "Presenta el espacio como un lugar de pausa y comodidad, no como un tratamiento ni una solución a problemas de salud."
+   ],
+   "otroSector": "Sirve para diseñar espacios de lectura, de espera, de oración, de juego infantil o de reuniones informales."
+  },
+  {
+   "id": "como-reconocer-informacion-de-salud-confiable-en-internet",
+   "area": "arte",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "¿Cómo reconocer información de salud confiable en internet?",
+   "resumen": "Prepara una guía con pasos sencillos para comprobar si un mensaje o una página de salud es confiable, probada con ejemplos reales y un público concreto.",
+   "tipo": "Guía",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Información",
+    "Verificación"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Comunicaciones",
+    "Diseño Gráfico",
+    "Educación",
+    "Psicología",
+    "Ingeniería de Sistemas",
+    "Derecho",
+    "Medicina",
+    "Enfermería"
+   ],
+   "problema": [
+    "Al buscar información de salud en internet o en mensajes reenviados, es difícil saber qué es confiable: hay páginas serias, publicidad disfrazada, consejos inventados y mensajes que parecen urgentes.",
+    "Muchas personas confían en lo que reciben de alguien cercano, y por eso la información falsa viaja tan rápido."
+   ],
+   "desarrollar": [
+    "Reúne diez ejemplos de mensajes o páginas de salud, unos confiables y otros dudosos, sin usar nombres de personas, y detecta qué señales los distinguen: fuente, fecha, tono, promesas, pedidos de compartir.",
+    "Con esas señales arma una guía de cinco preguntas fáciles de recordar, pruébala con tres personas que decidan si un ejemplo nuevo es confiable y ajústala según lo que no les resultó claro."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara las señales que sirven para detectar noticias falsas con las que sirven para información de salud."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "conviértela en una tarjeta o un sticker para compartir por mensajería."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "agrega una lista de fuentes confiables que sirvan como punto de partida para buscar."
+    }
+   ],
+   "objetivos": [
+    "Reunir ejemplos confiables y dudosos.",
+    "Identificar señales que los distinguen.",
+    "Armar una guía breve y fácil de recordar.",
+    "Probarla y mejorarla."
+   ],
+   "habilidades": [
+    "Pensamiento crítico.",
+    "Verificación de información.",
+    "Diseño de información.",
+    "Pruebas con usuarios."
+   ],
+   "herramientas": [
+    "Buscadores y sitios de verificación.",
+    "Un editor de diseño.",
+    "Una hoja para registrar las pruebas."
+   ],
+   "lineamientos": [
+    "Usa ejemplos sin nombres de personas ni marcas que puedas afectar; describe el tipo de mensaje y lo que lo hace confiable o dudoso.",
+    "La guía ayuda a evaluar información, no a decidir tratamientos: siempre sugiere consultar a un profesional de salud."
+   ],
+   "otroSector": "La misma guía sirve para evaluar información de finanzas, de política, de educación o de ofertas en internet."
+  },
+  {
+   "id": "como-se-comunican-los-riesgos-de-salud-durante-una-emergencia",
+   "area": "arte",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "¿Cómo se comunican los riesgos de salud durante una emergencia?",
+   "resumen": "Compara cómo informaron las autoridades y los medios durante una emergencia sanitaria o un desastre, y descubre qué mensajes se entendieron mejor y cuáles generaron confusión.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Comunicación de riesgos",
+    "Emergencias"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Comunicaciones",
+    "Diseño Gráfico",
+    "Publicidad",
+    "Sociología",
+    "Enfermería",
+    "Medicina",
+    "Estadística",
+    "Ingeniería Civil"
+   ],
+   "problema": [
+    "En una emergencia, la forma de comunicar el riesgo puede cambiar lo que hace la gente: un mensaje claro ayuda a actuar y uno confuso genera pánico, desinterés o rumores.",
+    "Aun así, casi nunca se revisa después qué se dijo, cómo y a quién, ni se aprende de lo que no funcionó."
+   ],
+   "desarrollar": [
+    "Elige una emergencia ocurrida, recopila comunicados, avisos y mensajes públicos de autoridades y medios, y ordénalos por fecha, canal y tipo de mensaje, sin usar contenido de personas particulares.",
+    "Evalúa cada mensaje con criterios simples: claridad, qué pide hacer, a quién se dirige y qué podría confundir; resume qué se entendió bien y propón cómo mejorar tres mensajes."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara cómo se comunicó la misma emergencia en distintos canales, como radio, redes o carteles."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "rediseña uno de los mensajes más confusos con una versión clara."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "prepara una plantilla de mensaje de alerta que cualquier institución pueda usar."
+    }
+   ],
+   "objetivos": [
+    "Reunir mensajes públicos de una emergencia.",
+    "Evaluarlos con criterios de claridad.",
+    "Identificar lo que ayudó y lo que confundió.",
+    "Proponer mejoras concretas."
+   ],
+   "habilidades": [
+    "Análisis de mensajes.",
+    "Comunicación de riesgos.",
+    "Redacción clara.",
+    "Diseño de información."
+   ],
+   "herramientas": [
+    "Archivos de comunicados y noticias.",
+    "Hoja de cálculo.",
+    "Un editor de diseño."
+   ],
+   "lineamientos": [
+    "Usa solo información pública y cita las fuentes; no incluyas fotos de víctimas ni contenido sensible.",
+    "Evalúa los mensajes, no a las personas o instituciones que los emitieron, y reconoce que decidir en una emergencia es difícil."
+   ],
+   "otroSector": "Sirve para analizar la comunicación de una empresa en una crisis, de un cambio de servicio o de una alerta de seguridad."
   }
  ]
 }

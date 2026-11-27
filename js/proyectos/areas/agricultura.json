@@ -233,6 +233,314 @@
     "Prefiere cultivos fáciles para empezar."
    ],
    "otroSector": "El mismo cruce de clima y calendario sirve para eventos al aire libre, turismo, construcción o transporte."
+  },
+  {
+   "id": "que-influye-en-lo-que-come-una-comunidad",
+   "area": "agricultura",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "¿Qué influye en lo que come una comunidad?",
+   "resumen": "Descubre qué factores, como el precio, la distancia, el tiempo o la costumbre, hacen que una comunidad coma como come, y qué podría facilitar una alimentación más variada.",
+   "tipo": "Investigación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Alimentación",
+    "Comunidad"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Nutrición",
+    "Ingeniería Agroindustrial",
+    "Sociología",
+    "Trabajo Social",
+    "Economía",
+    "Estadística",
+    "Medicina",
+    "Ingeniería Ambiental"
+   ],
+   "problema": [
+    "La alimentación de una comunidad no depende solo de lo que cada persona decide: influye qué se vende cerca, cuánto cuesta, cuánto tiempo hay para cocinar y qué se acostumbra. Rara vez se ve el conjunto.",
+    "Dos barrios de la misma ciudad pueden comer muy distinto, y el motivo no siempre es de gusto: a veces simplemente no hay otra opción."
+   ],
+   "desarrollar": [
+    "Elige una comunidad o zona y reúne, con datos públicos y con una mirada de campo, qué alimentos se consiguen, dónde, a qué precio y a qué distancia, y cómo es el tiempo disponible en el día.",
+    "Resume los factores que más influyen en una lista ordenada y propón tres ideas para facilitar el acceso a una alimentación más variada, como mercados cercanos, ferias o cocinas compartidas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara dos zonas y busca qué factor explica más la diferencia."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "haz un mapa de dónde se consiguen alimentos frescos y dónde no."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "estima cuánto costaría una semana de comidas variadas en cada zona."
+    }
+   ],
+   "objetivos": [
+    "Identificar factores que influyen en la alimentación.",
+    "Reunir datos de precios, distancias y disponibilidad.",
+    "Compararlos entre zonas.",
+    "Proponer ideas para mejorar el acceso."
+   ],
+   "habilidades": [
+    "Investigación de campo.",
+    "Análisis básico de datos.",
+    "Mapeo.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un mapa digital.",
+    "Informes públicos de alimentación y precios."
+   ],
+   "lineamientos": [
+    "No evalúes ni juzgues lo que come cada persona: el análisis es de la comunidad y sus condiciones, no de individuos.",
+    "No des consejos dietéticos personales: usa solo guías públicas de organismos de salud o nutrición."
+   ],
+   "otroSector": "El mismo método sirve para analizar el acceso a medicamentos, transporte, internet o cualquier servicio básico."
+  },
+  {
+   "id": "que-tan-saludable-es-lo-que-se-vende-cerca-de-tu-centro-de-estudios",
+   "area": "agricultura",
+   "areas2": [
+    "salud",
+    "negocios"
+   ],
+   "titulo": "¿Qué tan saludable es lo que se vende cerca de tu centro de estudios?",
+   "resumen": "Revisa qué alimentos y bebidas se ofrecen a estudiantes cerca de tu centro de estudios, compáralos con guías públicas y descubre cómo influye la oferta en la forma de comer durante la jornada.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Alimentación",
+    "Entorno"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Nutrición",
+    "Ingeniería Agroindustrial",
+    "Administración",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Medicina",
+    "Trabajo Social",
+    "Economía"
+   ],
+   "problema": [
+    "Quienes estudian muchas horas comen con prisa y con lo que tienen a mano. La oferta cercana pesa más de lo que parece, pero casi nadie la ha revisado ni sabe qué tan variada o saludable es.",
+    "Elegir mejor también depende del precio, del tiempo y de la información, no solo de la voluntad."
+   ],
+   "desarrollar": [
+    "Recorre los alrededores de tu centro de estudios y anota qué se vende, a qué precio y en qué cantidad, usando una lista sencilla de categorías, como frutas, comidas completas, fritos, dulces y bebidas azucaradas.",
+    "Compara lo que encuentres con una guía pública de alimentación, resume cuánto de la oferta cubre opciones variadas y propón dos o tres mejoras posibles para quienes venden y para quienes compran."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "pregunta de forma anónima a algunos estudiantes qué compran y por qué, y compara con la oferta."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "haz un mapa de la zona con colores por tipo de oferta."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña una «ruta de almuerzo variado» con precios y tiempos para quienes tienen poco rato."
+    }
+   ],
+   "objetivos": [
+    "Registrar la oferta de alimentos de una zona.",
+    "Clasificarla con criterios claros.",
+    "Compararla con guías públicas.",
+    "Proponer mejoras realistas."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Clasificación de datos.",
+    "Análisis básico.",
+    "Comunicación."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un mapa digital.",
+    "Guías públicas de alimentación."
+   ],
+   "lineamientos": [
+    "Evita señalar o criticar negocios por su nombre en tu informe; habla de categorías y de la zona en general.",
+    "No des planes de dieta ni juzgues lo que come cada persona: trabaja con la oferta, no con las personas."
+   ],
+   "otroSector": "El mismo análisis sirve para revisar la oferta de cafeterías, kioscos, máquinas expendedoras o comedores de una empresa o un hospital."
+  },
+  {
+   "id": "cuanta-azucar-tomamos-sin-darnos-cuenta",
+   "area": "agricultura",
+   "areas2": [
+    "salud",
+    "ciencias"
+   ],
+   "titulo": "¿Cuánta azúcar tomamos sin darnos cuenta?",
+   "resumen": "Lee las etiquetas de alimentos y bebidas comunes, calcula cuánta azúcar tiene cada porción y compárala con recomendaciones públicas para descubrir dónde se esconde más.",
+   "tipo": "Análisis",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Alimentación",
+    "Etiquetas"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Nutrición",
+    "Ingeniería Química",
+    "Ingeniería Agroindustrial",
+    "Estadística",
+    "Educación",
+    "Comunicaciones",
+    "Medicina",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "El azúcar no está solo en los dulces: aparece en bebidas, salsas, cereales y productos que no parecen dulces, y las etiquetas la presentan con nombres y unidades que casi nadie convierte en algo imaginable.",
+    "Por eso es difícil saber cuánta se toma en un día aunque se intente prestar atención."
+   ],
+   "desarrollar": [
+    "Elige entre quince y veinte productos de uso común, lee la etiqueta, convierte los gramos de azúcar por porción a cucharaditas y ordénalos de más a menos, anotando el tamaño real de la porción.",
+    "Compara con la recomendación pública de organismos de salud, muestra los productos que más sorprenden y prepara una hoja o infografía clara que ayude a otros a leer una etiqueta."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara productos del mismo tipo de distintas marcas y descubre cuánto varían."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "crea una calculadora sencilla en hoja de cálculo donde se escribe lo que se consume en un día de ejemplo."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña una tarjeta de bolsillo con los nombres con que el azúcar aparece en las etiquetas."
+    }
+   ],
+   "objetivos": [
+    "Leer e interpretar etiquetas nutricionales.",
+    "Convertir unidades a medidas cotidianas.",
+    "Comparar productos y con una recomendación oficial.",
+    "Explicar los hallazgos de forma clara."
+   ],
+   "habilidades": [
+    "Lectura de etiquetas.",
+    "Conversión de unidades.",
+    "Gráficos.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Etiquetas de productos reales.",
+    "Hoja de cálculo.",
+    "Un editor de infografías."
+   ],
+   "lineamientos": [
+    "Cita la recomendación oficial que uses y no des consejos personalizados de dieta ni de salud.",
+    "Habla de productos por categoría o con ejemplos neutros; no hagas afirmaciones sobre marcas que no puedas sustentar."
+   ],
+   "otroSector": "La misma técnica sirve para analizar sal, grasas, aditivos o cualquier dato de una etiqueta de otro tipo de producto."
+  },
+  {
+   "id": "una-campana-para-tomar-menos-bebidas-azucaradas",
+   "area": "agricultura",
+   "areas2": [
+    "salud",
+    "arte"
+   ],
+   "titulo": "Una campaña para tomar menos bebidas azucaradas",
+   "resumen": "Diseña una campaña breve que ayude a una comunidad a tomar más agua y menos bebidas azucaradas, y comprueba con una pequeña prueba qué mensaje se entiende mejor.",
+   "tipo": "Plan",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Campañas",
+    "Alimentación"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados; no hace falta pedir permiso a nadie ni usar información de pacientes reales.",
+   "carreras": [
+    "Comunicaciones",
+    "Publicidad",
+    "Diseño Gráfico",
+    "Nutrición",
+    "Psicología",
+    "Educación",
+    "Administración",
+    "Medicina"
+   ],
+   "problema": [
+    "Las bebidas azucaradas son baratas, están por todas partes y se asocian a momentos agradables. Las campañas que solo regañan o asustan suelen ser ignoradas.",
+    "Los mensajes funcionan mejor cuando entienden por qué la gente toma esas bebidas y le ofrecen una alternativa fácil, no cuando la culpan."
+   ],
+   "desarrollar": [
+    "Elige un público concreto, como estudiantes o familias, y escribe tres mensajes distintos: uno informativo, uno cercano al día a día y uno basado en una alternativa fácil, como tener agua a mano.",
+    "Diseña una pieza simple para cada mensaje, pide a algunas personas que ordenen cuál entienden y recuerdan más, y desarrolla el plan de la campaña a partir del mensaje que mejor funcione."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "adapta el mensaje a otro público, como adolescentes o adultos mayores."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "conviértela en una serie corta de videos o imágenes."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "propón cómo medir si la campaña cambió algo, por ejemplo con una pregunta antes y después."
+    }
+   ],
+   "objetivos": [
+    "Elegir un público y un objetivo claros.",
+    "Escribir mensajes distintos y compararlos.",
+    "Probarlos con personas.",
+    "Armar el plan de la campaña."
+   ],
+   "habilidades": [
+    "Comunicación persuasiva.",
+    "Diseño gráfico básico.",
+    "Encuestas breves.",
+    "Planificación."
+   ],
+   "herramientas": [
+    "Un editor de diseño o de presentaciones.",
+    "Un formulario anónimo.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Evita mensajes que culpen, humillen o hablen del cuerpo de las personas: el foco es la bebida y la alternativa, no cómo se ve alguien.",
+    "Basa los datos que uses en fuentes públicas oficiales y cítalas; no exageres cifras."
+   ],
+   "otroSector": "La misma estructura sirve para campañas de reciclaje, de ahorro de energía, de seguridad vial o de cuidado del agua."
   }
  ]
 }

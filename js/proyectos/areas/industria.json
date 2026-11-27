@@ -56,6 +56,83 @@
     "Pide permiso antes de medir a personas trabajando."
    ],
    "otroSector": "El mismo análisis sirve para un hospital, una cocina, una oficina, un banco o un servicio de atención al cliente."
+  },
+  {
+   "id": "como-mejorar-la-ergonomia-de-un-espacio-de-estudio-o-de-trabajo",
+   "area": "industria",
+   "areas2": [
+    "salud",
+    "ciudades"
+   ],
+   "titulo": "¿Cómo mejorar la ergonomía de un espacio de estudio o de trabajo?",
+   "resumen": "Revisa cómo está organizado tu espacio de estudio o de trabajo, detecta qué lo hace incómodo y prepara una guía sencilla de ajustes de bajo costo.",
+   "tipo": "Guía",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Ergonomía",
+    "Espacios"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Ingeniería Industrial",
+    "Ingeniería Mecánica",
+    "Arquitectura",
+    "Diseño Gráfico",
+    "Ingeniería de Sistemas",
+    "Administración",
+    "Medicina",
+    "Psicología"
+   ],
+   "problema": [
+    "Pasamos muchas horas sentados frente a una pantalla o a un escritorio, y la altura de la silla, la posición de la pantalla o la luz casi nunca se ajustan a quien los usa. La incomodidad se vuelve costumbre.",
+    "Muchas recomendaciones de ergonomía están escritas para oficinas y no sirven para una mesa de estudio en casa o un mostrador pequeño."
+   ],
+   "desarrollar": [
+    "Elige un espacio real, el tuyo o el de alguien cercano con permiso, y registra con fotos del espacio sin personas y con medidas simples las alturas, distancias y la iluminación, y cómo se siente quien lo usa al terminar la jornada.",
+    "Compara con recomendaciones públicas de organismos de seguridad y salud en el trabajo y arma una guía de una página con cinco ajustes de bajo costo y cómo comprobar si funcionaron."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara dos tipos de espacio, como una mesa de estudio y un puesto de atención al público."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "convierte la guía en una lista de revisión para imprimir y pegar en el lugar."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña un pequeño soporte o ajuste con materiales económicos y evalúa si ayuda."
+    }
+   ],
+   "objetivos": [
+    "Medir y describir un espacio de estudio o trabajo.",
+    "Identificar fuentes de incomodidad.",
+    "Compararlas con recomendaciones oficiales.",
+    "Proponer ajustes de bajo costo y verificarlos."
+   ],
+   "habilidades": [
+    "Medición.",
+    "Análisis de puestos de trabajo.",
+    "Diseño de mejoras.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Cinta métrica y fotos del espacio.",
+    "Hoja de cálculo.",
+    "Recomendaciones públicas de seguridad y salud."
+   ],
+   "lineamientos": [
+    "No diagnostiques dolores ni lesiones: registra solo molestias que la persona describa y recomienda consultar a un profesional si persisten.",
+    "Si evalúas el espacio de otra persona, pide permiso y no publiques fotos con rostros ni datos personales."
+   ],
+   "otroSector": "Sirve para mejorar puestos de una fábrica, un laboratorio, una cocina, una caja de atención o un taller."
   }
  ]
 }

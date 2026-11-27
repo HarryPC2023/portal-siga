@@ -454,6 +454,83 @@
     "Muestra siempre el cálculo, no solo el resultado."
    ],
    "otroSector": "El mismo cálculo sirve para una feria, un campamento, un curso de verano o un evento cultural."
+  },
+  {
+   "id": "materiales-para-que-ninas-y-ninos-aprendan-habitos-saludables-jugando",
+   "area": "educacion",
+   "areas2": [
+    "salud",
+    "arte"
+   ],
+   "titulo": "Materiales para que niñas y niños aprendan hábitos saludables jugando",
+   "resumen": "Diseña un juego, una historia o una actividad que enseñe un hábito sencillo de cuidado a niñas y niños, y pruébalo con adultos antes de llevarlo a un grupo real.",
+   "tipo": "Prototipo",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Niñez",
+    "Hábitos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados; no hace falta pedir permiso a nadie ni usar información de pacientes reales.",
+   "carreras": [
+    "Educación",
+    "Educación Inicial",
+    "Diseño Gráfico",
+    "Comunicaciones",
+    "Psicología",
+    "Enfermería",
+    "Trabajo Social",
+    "Nutrición"
+   ],
+   "problema": [
+    "Los hábitos de cuidado, como lavarse las manos, dormir lo suficiente o beber agua, se aprenden mejor jugando que escuchando una lista. Muchos materiales para niños son largos, aburridos o con un tono de regaño.",
+    "Lo que funciona con una edad no sirve para otra, así que un mismo material rara vez sirve para todos."
+   ],
+   "desarrollar": [
+    "Elige un hábito y un rango de edad, y diseña una actividad corta, como un juego de cartas, un cuento o una canción, con instrucciones claras para quien la dirija.",
+    "Pruébala primero con adultos que hagan el papel de niños, ajusta lo que no se entienda o no divierta y deja una versión final con una guía breve para docentes o familiares."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "adapta el material a una edad distinta y compara qué cambió."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "conviértelo en un material imprimible o en una actividad para el aula."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña una pequeña evaluación para ver si el material enseñó lo que quería."
+    }
+   ],
+   "objetivos": [
+    "Elegir un hábito y un público por edad.",
+    "Diseñar una actividad clara y atractiva.",
+    "Probarla y mejorarla.",
+    "Preparar una guía para quien la use."
+   ],
+   "habilidades": [
+    "Diseño de actividades.",
+    "Comunicación para niños.",
+    "Diseño gráfico básico.",
+    "Evaluación sencilla."
+   ],
+   "herramientas": [
+    "Papel, cartulina o un editor de diseño.",
+    "Un editor de documentos.",
+    "Una hoja de observación."
+   ],
+   "lineamientos": [
+    "No lleves el material a niñas y niños sin permiso de sus responsables y de la institución, y no tomes fotos ni datos personales de ellos.",
+    "Basa los contenidos de salud en fuentes oficiales y cítalas; el material enseña hábitos, no da indicaciones médicas."
+   ],
+   "otroSector": "La misma idea sirve para enseñar seguridad vial, cuidado del ambiente, finanzas básicas o convivencia."
   }
  ]
 }

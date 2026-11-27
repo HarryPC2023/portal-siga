@@ -602,6 +602,622 @@
     "Presenta tus ideas como propuestas, no como críticas."
    ],
    "otroSector": "El mismo método sirve para analizar colas en una ventanilla, el flujo en un mercado o el tránsito dentro de una planta."
+  },
+  {
+   "id": "como-influye-el-entorno-de-un-barrio-en-el-bienestar-de-quienes-viven-ahi",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "¿Cómo influye el entorno de un barrio en el bienestar de quienes viven ahí?",
+   "resumen": "Observa un barrio o una zona de tu centro de estudios y descubre cómo su diseño, sus espacios y su ambiente se relacionan con la actividad física y con cómo se sienten las personas.",
+   "tipo": "Investigación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Espacio urbano",
+    "Bienestar"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Psicología",
+    "Trabajo Social",
+    "Sociología",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Medicina"
+   ],
+   "problema": [
+    "El lugar donde vivimos y estudiamos influye en cuánto caminamos, cuánto descansamos y cómo nos sentimos, pero casi nunca se mira con esa lente: se habla de la salud de las personas y del diseño de los espacios por separado.",
+    "Dos calles parecidas pueden dar experiencias muy distintas: una con sombra, bancas y gente se camina con gusto; otra con ruido, huecos y sin dónde sentarse se evita. Esa diferencia casi nunca está registrada."
+   ],
+   "desarrollar": [
+    "Elige dos o tres espacios de tu zona (una calle, un parque, el patio de una institución) y anota con una ficha sencilla qué ofrece cada uno: sombra, lugares para sentarse, seguridad aparente, ruido, personas que lo usan.",
+    "Pregunta de forma anónima a unas pocas personas cómo se sienten en cada lugar y cuánto lo usan, compara sus respuestas con tus fichas y concluye qué características del espacio parecen ayudar más al bienestar y al movimiento."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara cómo viven el mismo espacio personas de distintas edades, como estudiantes, niños y adultos mayores."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "resume los resultados en un mapa con colores que muestre qué zonas invitan más a quedarse y cuáles menos."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "propón tres cambios sencillos para uno de los espacios y explica qué efecto esperarías."
+    }
+   ],
+   "objetivos": [
+    "Describir un espacio con una ficha de observación.",
+    "Recoger opiniones de forma anónima y ordenada.",
+    "Relacionar características del espacio con el bienestar y el movimiento.",
+    "Proponer mejoras sencillas."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Encuestas breves.",
+    "Análisis básico de datos.",
+    "Mapeo."
+   ],
+   "herramientas": [
+    "Fichas de observación en papel o en el celular.",
+    "Hoja de cálculo.",
+    "Un mapa digital o un plano dibujado."
+   ],
+   "lineamientos": [
+    "Pide permiso antes de preguntar y no registres nombres ni fotografíes a personas: trabaja con respuestas anónimas.",
+    "No concluyas que un espacio «causa» bienestar o malestar: son relaciones que observas, no pruebas."
+   ],
+   "otroSector": "El mismo método sirve para analizar una oficina, una escuela, un centro comercial o un hospital."
+  },
+  {
+   "id": "un-mapa-de-lugares-para-caminar-y-hacer-ejercicio-cerca-de-ti",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "tecnologia"
+   ],
+   "titulo": "Un mapa de lugares para caminar y hacer ejercicio cerca de ti",
+   "resumen": "Reúne en un mapa los espacios públicos donde se puede caminar, correr, jugar o hacer ejercicio de forma libre y segura, con la información que alguien necesitaría para usarlos.",
+   "tipo": "Guía",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Mapas",
+    "Actividad física"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Geografía",
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Trabajo Social",
+    "Medicina",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Muchas personas quieren moverse más, pero no saben qué espacios tienen cerca ni si están abiertos, iluminados o son adecuados para ellas. La información existe, pero está dispersa o no está.",
+    "Un parque puede estar cerca y no usarse porque no se sabe cómo llegar, a qué hora está abierto o qué se puede hacer ahí."
+   ],
+   "desarrollar": [
+    "Recorre o investiga unos diez espacios de tu zona y anota para cada uno qué se puede hacer, horarios, si hay iluminación, sombra, agua y baños, y a quién le resultaría cómodo.",
+    "Muéstralos en un mapa digital o dibujado con una ficha corta por lugar, y pide a dos personas que lo usen para planear una salida y te digan qué faltó."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "adapta el mapa para personas mayores o con movilidad reducida, marcando pendientes, bancas y rutas planas."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "conviértelo en una página web sencilla que se pueda abrir desde el celular."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "agrega rutas de caminata de distinta duración con tiempos estimados."
+    }
+   ],
+   "objetivos": [
+    "Identificar espacios disponibles para moverse.",
+    "Describir cada espacio con datos útiles y verificables.",
+    "Mostrarlos en un mapa claro.",
+    "Comprobar que otra persona lo puede usar."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Mapeo.",
+    "Comunicación clara.",
+    "Diseño de información."
+   ],
+   "herramientas": [
+    "Un mapa digital (como los que permiten crear mapas personalizados).",
+    "Hoja de cálculo.",
+    "Un editor de páginas o de presentaciones."
+   ],
+   "lineamientos": [
+    "Verifica horarios y condiciones antes de publicarlos y avisa que pueden cambiar. Evita marcar lugares peligrosos como si fueran seguros.",
+    "No indiques rutinas de ejercicio ni recomendaciones médicas: el mapa informa dónde, no cómo entrenar."
+   ],
+   "otroSector": "La misma idea sirve para mapear espacios de lectura, de descanso, de estudio o de juego infantil."
+  },
+  {
+   "id": "cuanto-ruido-hay-donde-estudias-y-descansas",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "ciencias"
+   ],
+   "titulo": "¿Cuánto ruido hay donde estudias y descansas?",
+   "resumen": "Mide de forma aproximada el ruido de tus lugares de estudio y descanso a distintas horas, y descubre qué momentos y qué fuentes más interfieren en la concentración y el descanso.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Ruido",
+    "Concentración"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Ingeniería Física",
+    "Ingeniería Civil",
+    "Arquitectura",
+    "Psicología",
+    "Estadística",
+    "Medicina",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "El ruido se siente como una molestia normal, pero influye en cuánto nos concentramos, cuánto descansamos y cómo terminamos el día. Casi nadie lo mide, así que no se sabe cuándo ni dónde es más fuerte.",
+    "Lo que cuenta no es solo el volumen: un ruido constante, uno repentino y uno que no controlamos se viven distinto."
+   ],
+   "desarrollar": [
+    "Durante una semana, mide el ruido con una aplicación de celular en tres o cuatro lugares y horarios fijos (tu casa, la biblioteca, el aula, la calle) y anota qué lo produce y cómo te sentiste al estudiar o descansar.",
+    "Ordena los datos en una tabla y un gráfico, identifica los momentos y las fuentes más molestas y propón dos o tres ajustes, como cambiar de horario, de lugar o de ubicación en la habitación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara tus mediciones con los niveles que recomiendan organismos de salud y ambiente."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "haz un mapa de ruido del campus o de tu barrio con zonas de colores."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña un «horario del silencio» para estudiar con menos interferencias."
+    }
+   ],
+   "objetivos": [
+    "Medir el ruido de manera ordenada y comparable.",
+    "Registrar cómo afecta la concentración y el descanso.",
+    "Identificar fuentes y momentos más molestos.",
+    "Proponer ajustes sencillos."
+   ],
+   "habilidades": [
+    "Medición.",
+    "Análisis básico de datos.",
+    "Gráficos.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Una aplicación de medición de sonido para el celular.",
+    "Hoja de cálculo.",
+    "Un cuaderno de registro."
+   ],
+   "lineamientos": [
+    "Las aplicaciones de celular dan valores aproximados: úsalos para comparar lugares y horas, no como mediciones oficiales, y explícalo en tu informe.",
+    "No diagnostiques problemas de salud ni de audición: describe lo que mediste y cómo te sentiste."
+   ],
+   "otroSector": "Sirve para analizar una oficina, un hospital, un taller, un restaurante o una escuela."
+  },
+  {
+   "id": "como-afecta-la-luz-de-un-espacio-a-como-te-sientes-en-el",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "arte"
+   ],
+   "titulo": "¿Cómo afecta la luz de un espacio a cómo te sientes en él?",
+   "resumen": "Compara cómo cambia la luz de un espacio a lo largo del día y cómo se relaciona con la comodidad, la concentración y el ánimo de quienes lo usan.",
+   "tipo": "Investigación",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Iluminación",
+    "Bienestar"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Diseño Gráfico",
+    "Psicología",
+    "Ingeniería Física",
+    "Estadística",
+    "Medicina",
+    "Ingeniería Ambiental"
+   ],
+   "problema": [
+    "La luz de un lugar casi siempre se decide por costo o por costumbre, pero afecta cuánto nos cansamos, cuán cómodos estamos y hasta cómo se ve lo que leemos.",
+    "Dos aulas o dos habitaciones del mismo tamaño pueden sentirse muy distintas según de dónde entre la luz y qué tipo de lámparas tengan, y rara vez eso se compara."
+   ],
+   "desarrollar": [
+    "Elige dos o tres espacios (tu cuarto, un aula, una sala de estudio) y registra a distintas horas cuánta luz natural y artificial tienen, con una aplicación de medición de luz o con una escala simple que tú definas.",
+    "Pide a algunas personas que respondan, de forma anónima, qué tan cómodas se sienten en cada lugar y hora, y cruza las respuestas con tus mediciones para ver qué patrones aparecen."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara el efecto de la luz cálida y la luz fría en la comodidad al leer."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "dibuja un plano con las zonas más y menos iluminadas de un espacio."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "propón un rediseño de la iluminación de un espacio con cambios de bajo costo."
+    }
+   ],
+   "objetivos": [
+    "Medir la iluminación de un espacio a distintas horas.",
+    "Recoger la comodidad percibida por las personas.",
+    "Relacionar luz y comodidad con ejemplos concretos.",
+    "Proponer una mejora de bajo costo."
+   ],
+   "habilidades": [
+    "Medición.",
+    "Observación.",
+    "Análisis básico de datos.",
+    "Diseño de espacios."
+   ],
+   "herramientas": [
+    "Una aplicación de medición de luz del celular.",
+    "Hoja de cálculo.",
+    "Una herramienta para dibujar planos."
+   ],
+   "lineamientos": [
+    "Las mediciones con celular son aproximadas: úsalas para comparar, no como valores oficiales.",
+    "No afirmes efectos médicos de la luz: habla de comodidad y percepción, que es lo que puedes observar."
+   ],
+   "otroSector": "Sirve para analizar tiendas, oficinas, talleres, hospitales o aulas de colegio."
+  },
+  {
+   "id": "un-mapa-de-agua-para-beber-y-banos-publicos-en-tu-zona",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "Un mapa de agua para beber y baños públicos en tu zona",
+   "resumen": "Ubica y describe los lugares de una zona donde se puede tomar agua y usar un baño, con la información práctica que alguien necesitaría al moverse por ahí.",
+   "tipo": "Guía",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Mapas",
+    "Servicios básicos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Geografía",
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Arquitectura",
+    "Trabajo Social",
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Medicina"
+   ],
+   "problema": [
+    "Quien pasa el día fuera de casa, ya sea estudiando, trabajando o caminando, necesita beber agua y usar un baño, y muchas veces no sabe dónde hacerlo, a qué hora ni a qué costo.",
+    "Esa falta de información afecta más a personas mayores, niños, personas con discapacidad o quienes pasan muchas horas en la calle, pero casi nunca está reunida en un solo lugar."
+   ],
+   "desarrollar": [
+    "Recorre una zona acotada, como tu centro de estudios y las calles de alrededor, y anota dónde hay bebederos, baños públicos o de acceso permitido, y para cada uno el horario, el costo y si es accesible.",
+    "Ubícalos en un mapa con una ficha corta y pídele a alguien que use el mapa para planear un recorrido y te cuente qué faltó o qué no entendió."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "marca cuáles puntos son accesibles para sillas de ruedas o cochecitos."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "conviértelo en una página web o en un código QR pegado en lugares clave."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "propón dónde faltan puntos y cuántos harían falta para que la zona sea cómoda."
+    }
+   ],
+   "objetivos": [
+    "Identificar puntos de agua y baños en una zona.",
+    "Describir cada punto con datos útiles y verificables.",
+    "Mostrarlos en un mapa claro.",
+    "Detectar vacíos y proponer dónde faltan."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Mapeo.",
+    "Diseño de información.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Un mapa digital.",
+    "Hoja de cálculo.",
+    "Un generador de códigos QR."
+   ],
+   "lineamientos": [
+    "No afirmes que el agua es segura para beber si no hay una fuente oficial que lo diga: indica solo que existe el punto y cómo es.",
+    "Pide permiso si vas a anotar datos de un local privado y respeta su horario y reglas de uso."
+   ],
+   "otroSector": "La misma idea sirve para mapear enchufes, zonas de sombra, lugares para sentarse o servicios gratuitos."
+  },
+  {
+   "id": "que-necesita-una-persona-mayor-para-sentirse-segura-en-un-espacio-publico",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "¿Qué necesita una persona mayor para sentirse segura en un espacio público?",
+   "resumen": "Descubre qué elementos de un espacio público hacen más fácil y seguro su uso para una persona mayor, y propón mejoras sencillas para uno que conozcas.",
+   "tipo": "Plan",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Mayores",
+    "Espacio público"
+   ],
+   "intencion": [
+    "resolver",
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Trabajo Social",
+    "Psicología",
+    "Sociología",
+    "Enfermería",
+    "Administración",
+    "Medicina"
+   ],
+   "problema": [
+    "Los espacios públicos suelen diseñarse pensando en quien camina rápido y sin dificultad. Para una persona mayor, un desnivel, la falta de bancas o un cruce corto pueden convertir una salida simple en un riesgo o en una razón para quedarse en casa.",
+    "Casi nunca se les pregunta qué necesitan, así que las mejoras se deciden sin su mirada."
+   ],
+   "desarrollar": [
+    "Recorre con permiso un espacio (un parque, una plaza, un paradero) junto a una persona mayor de confianza, o conversa con ella después, y anota qué le resulta fácil, difícil o inseguro, con fotos del lugar sin personas.",
+    "Reúne lo que encuentres en una lista de problemas y propón tres mejoras sencillas, como bancas, mejor señalización o más tiempo para cruzar, con un dibujo o plano de cómo quedaría."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara lo que dicen personas mayores con lo que dicen quienes las acompañan o cuidan."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "presenta tus propuestas en un afiche o una presentación para entregar a una junta vecinal o a la administración del lugar."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "revisa si las mejoras sirven también a niños, embarazadas o personas con discapacidad."
+    }
+   ],
+   "objetivos": [
+    "Escuchar las necesidades de una persona mayor en un espacio.",
+    "Identificar obstáculos y riesgos concretos.",
+    "Proponer mejoras sencillas.",
+    "Comunicar las propuestas con claridad."
+   ],
+   "habilidades": [
+    "Entrevista y escucha.",
+    "Observación.",
+    "Diseño de espacios.",
+    "Comunicación."
+   ],
+   "herramientas": [
+    "Cuaderno de notas.",
+    "Una herramienta para dibujar planos.",
+    "Presentación o afiche."
+   ],
+   "lineamientos": [
+    "Explica el propósito, pide permiso y respeta si la persona no quiere ser fotografiada o citada; no registres nombres ni datos médicos.",
+    "No prometas que las mejoras se harán: preséntalas como propuestas basadas en lo que observaste."
+   ],
+   "otroSector": "Sirve para mejorar la experiencia en un banco, un transporte, un hospital, una tienda o una oficina pública."
+  },
+  {
+   "id": "que-tan-preparada-esta-tu-zona-para-una-emergencia-de-salud",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "¿Qué tan preparada está tu zona para una emergencia de salud?",
+   "resumen": "Revisa qué tendrían a mano una familia y un barrio ante una emergencia que afecte la salud (un sismo, una inundación o un corte prolongado de servicios) y prepara una guía de acción sencilla.",
+   "tipo": "Plan",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Emergencias",
+    "Preparación"
+   ],
+   "intencion": [
+    "resolver",
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Arquitectura",
+    "Trabajo Social",
+    "Enfermería",
+    "Medicina",
+    "Geografía"
+   ],
+   "problema": [
+    "Cuando ocurre una emergencia, las necesidades de salud cambian: hay personas que dependen de medicamentos, de equipos eléctricos o de transporte, y los servicios pueden estar lejos o colapsados. Pocas familias y casi ningún barrio lo han pensado antes.",
+    "Los planes de emergencia suelen hablar de evacuar y poco de cuidar la salud de quienes más lo necesitan, como niños, mayores o personas con enfermedades crónicas."
+   ],
+   "desarrollar": [
+    "Elige una emergencia posible en tu zona y arma una lista de lo que necesitaría una familia: botiquín básico, documentos, agua, ruta al centro de salud más cercano y a quién llamar. Revisa informes públicos de las autoridades para no inventar recomendaciones.",
+    "Mapea qué servicios de salud, farmacias y puntos de reunión hay cerca, señala qué grupos necesitarían más apoyo y entrega una guía de una página con acciones antes, durante y después de la emergencia."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara qué cambiaría la preparación entre una vivienda, una institución educativa y una oficina."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "haz un simulacro en papel con situaciones ficticias y revisa qué falló."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña una tarjeta de emergencia familiar con espacio para datos de contacto y necesidades especiales."
+    }
+   ],
+   "objetivos": [
+    "Identificar emergencias posibles y su efecto en la salud.",
+    "Armar una lista de preparación basada en fuentes oficiales.",
+    "Ubicar servicios y puntos clave en un mapa.",
+    "Redactar una guía de acción clara."
+   ],
+   "habilidades": [
+    "Investigación de fuentes oficiales.",
+    "Mapeo.",
+    "Planificación.",
+    "Redacción clara."
+   ],
+   "herramientas": [
+    "Un mapa digital.",
+    "Hoja de cálculo.",
+    "Un editor de documentos."
+   ],
+   "lineamientos": [
+    "Basa los consejos en guías de organismos oficiales de gestión de riesgos y salud, y cítalos; no inventes recomendaciones médicas.",
+    "No pidas datos de salud reales: trabaja con familias ficticias o con listas generales."
+   ],
+   "otroSector": "Sirve para preparar a una empresa, un colegio, un edificio o un evento ante una emergencia."
+  },
+  {
+   "id": "como-influyen-las-areas-verdes-en-como-se-siente-y-se-mueve-la-gente",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "ambiente"
+   ],
+   "titulo": "¿Cómo influyen las áreas verdes en cómo se siente y se mueve la gente?",
+   "resumen": "Compara zonas con más y menos áreas verdes y descubre cómo se relacionan con el uso del espacio, la actividad física y el bienestar de las personas.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Áreas verdes",
+    "Bienestar"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Geografía",
+    "Estadística",
+    "Psicología",
+    "Medicina",
+    "Ingeniería Agroindustrial"
+   ],
+   "problema": [
+    "Se suele decir que los parques y los árboles hacen bien, pero pocas veces se mira con datos de una zona concreta: cuánta gente los usa, para qué y qué cambia cuando faltan.",
+    "No todas las zonas tienen las mismas áreas verdes, y esa desigualdad casi nunca se ve en un mapa."
+   ],
+   "desarrollar": [
+    "Elige dos o tres zonas de una ciudad o de tu centro de estudios y compara cuántas áreas verdes tienen, de qué tamaño y a qué distancia, usando mapas y datos públicos.",
+    "Observa con una ficha cuántas personas usan cada espacio y para qué, y pregunta de forma anónima a unas pocas cómo se sienten allí; cruza todo y concluye qué diferencias aparecen."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "revisa si las zonas con menos áreas verdes también tienen más calor o más ruido."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "resume tus hallazgos en un mapa de la ciudad con colores por cantidad de áreas verdes."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "propón dónde y cómo sumar pequeños espacios verdes en una zona con pocos."
+    }
+   ],
+   "objetivos": [
+    "Medir cuántas áreas verdes tiene una zona.",
+    "Observar cómo se usan.",
+    "Relacionarlas con el uso y el bienestar con cuidado.",
+    "Proponer dónde sumar más."
+   ],
+   "habilidades": [
+    "Análisis de mapas.",
+    "Observación de campo.",
+    "Análisis básico de datos.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Un mapa digital.",
+    "Hoja de cálculo.",
+    "Fichas de observación."
+   ],
+   "lineamientos": [
+    "Habla de relaciones que observas, no de efectos comprobados: pocas zonas y pocas personas no permiten concluir causas.",
+    "No registres nombres ni fotografíes a personas; trabaja con respuestas anónimas."
+   ],
+   "otroSector": "Sirve para analizar cualquier recurso de un barrio: bibliotecas, centros de salud, comercios o transporte."
   }
  ]
 }

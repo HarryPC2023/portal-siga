@@ -317,6 +317,391 @@
     "No publiques datos de contacto de personas, solo de instituciones."
    ],
    "otroSector": "Se adapta a guías para estudiantes nuevos, para migrantes, para adultos mayores o para emprendedores."
+  },
+  {
+   "id": "que-dificultades-tiene-una-persona-mayor-para-cuidar-su-salud",
+   "area": "sociedad",
+   "areas2": [
+    "salud",
+    "educacion"
+   ],
+   "titulo": "¿Qué dificultades tiene una persona mayor para cuidar su salud?",
+   "resumen": "Conversa con personas mayores de confianza para descubrir qué les cuesta más al cuidar su salud, como entender indicaciones, sacar citas, recoger medicinas o trasladarse, y propón apoyos concretos.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Mayores",
+    "Acceso"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Trabajo Social",
+    "Sociología",
+    "Psicología",
+    "Enfermería",
+    "Medicina",
+    "Administración",
+    "Ingeniería de Sistemas",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Cuidar la salud en la vejez implica muchos trámites: pedir citas, entender indicaciones, recordar horarios, recoger medicinas y moverse hasta un servicio. Para quien tiene menos movilidad, menos vista o menos costumbre con la tecnología, cada paso puede ser un obstáculo.",
+    "Esos obstáculos casi nunca se cuentan, y las soluciones se piensan sin preguntarles a quienes los viven."
+   ],
+   "desarrollar": [
+    "Conversa con tres o cuatro personas mayores de tu entorno, con su consentimiento, sobre qué pasos de cuidar su salud les resultan más difíciles, sin pedirles datos médicos, y toma notas anónimas.",
+    "Agrupa lo que escuches en tres o cuatro obstáculos y propón para cada uno un apoyo sencillo, como una guía impresa, un recordatorio o una forma de acompañamiento, y presenta tu propuesta."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara lo que dicen las personas mayores con lo que perciben quienes las acompañan."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "convierte los hallazgos en un mapa del recorrido típico con los puntos donde más se complica."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña una hoja clara y de letra grande que reúna lo que una persona mayor necesita saber para una consulta."
+    }
+   ],
+   "objetivos": [
+    "Escuchar a personas mayores con respeto y sin invadir.",
+    "Identificar obstáculos frecuentes.",
+    "Agruparlos con criterio.",
+    "Proponer apoyos sencillos."
+   ],
+   "habilidades": [
+    "Entrevista y escucha.",
+    "Análisis cualitativo.",
+    "Diseño de servicios.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Cuaderno de notas.",
+    "Hoja de cálculo o tabla.",
+    "Un editor de documentos."
+   ],
+   "lineamientos": [
+    "Explica el propósito, pide consentimiento y no registres nombres ni datos médicos; respeta si alguien no quiere hablar de algún tema.",
+    "Presenta tus propuestas como ideas basadas en lo que escuchaste, sin prometer resultados."
+   ],
+   "otroSector": "Sirve para entender las dificultades de cualquier grupo con un servicio, como migrantes, personas con discapacidad o jóvenes en su primer trámite."
+  },
+  {
+   "id": "como-influyen-las-redes-sociales-en-los-habitos-de-salud",
+   "area": "sociedad",
+   "areas2": [
+    "salud",
+    "educacion"
+   ],
+   "titulo": "¿Cómo influyen las redes sociales en los hábitos de salud?",
+   "resumen": "Estudia qué tipos de contenido de salud, ejercicio o alimentación circulan en redes sociales y cómo lo perciben las personas, para entender qué ayuda y qué confunde.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Redes sociales",
+    "Hábitos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "propios: puedes usar tus propias mediciones y las de personas cercanas que acepten participar, sin datos médicos ni diagnósticos.",
+   "carreras": [
+    "Comunicaciones",
+    "Psicología",
+    "Sociología",
+    "Ingeniería de Sistemas",
+    "Estadística",
+    "Educación",
+    "Medicina",
+    "Nutrición"
+   ],
+   "problema": [
+    "Muchas personas aprenden o se comparan con lo que ven en redes sociales: rutinas de ejercicio, dietas, productos, consejos de «expertos». Parte de ese contenido es útil y parte es engañoso, pero cuesta distinguirlas.",
+    "Además de informar, las redes influyen en lo que se considera normal o deseable, y eso casi nunca se analiza con datos."
+   ],
+   "desarrollar": [
+    "Elige tres tipos de contenido de salud o bienestar, junta unas veinte publicaciones públicas de cada tipo sin registrar a las personas, y clasifícalas por tema, tono y si citan una fuente.",
+    "Haz una encuesta anónima a unas pocas personas sobre qué sigue, qué le sirve y qué le genera dudas, y resume qué contenidos parecen ayudar y cuáles confundir, con ejemplos generales."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara cómo cambia la percepción entre personas de distintas edades."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "resume los hallazgos en una guía de señales de alerta en contenido de salud."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "propón cinco preguntas que alguien debería hacerse antes de seguir un consejo visto en redes."
+    }
+   ],
+   "objetivos": [
+    "Clasificar publicaciones de forma ordenada.",
+    "Reconocer características de contenido útil y engañoso.",
+    "Recoger percepciones de forma anónima.",
+    "Resumir hallazgos con cuidado."
+   ],
+   "habilidades": [
+    "Análisis de contenido.",
+    "Encuestas.",
+    "Análisis básico de datos.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un formulario anónimo.",
+    "Capturas de publicaciones públicas sin datos personales."
+   ],
+   "lineamientos": [
+    "No cites ni señales a cuentas o personas concretas: trabaja con ejemplos generales o descritos sin nombres.",
+    "No evalúes la salud ni el estado emocional de nadie y no promuevas ni critiques dietas o rutinas concretas."
+   ],
+   "otroSector": "El mismo método sirve para analizar el contenido sobre finanzas, educación, política o consumo en cualquier plataforma."
+  },
+  {
+   "id": "una-herramienta-para-ordenar-los-recursos-de-bienestar-de-una-comunidad",
+   "area": "sociedad",
+   "areas2": [
+    "salud",
+    "tecnologia"
+   ],
+   "titulo": "Una herramienta para ordenar los recursos de bienestar de una comunidad",
+   "resumen": "Reúne en un solo lugar los servicios y actividades de bienestar de una comunidad, como centros de salud, grupos de apoyo, talleres o programas gratuitos, y hazlos fáciles de encontrar.",
+   "tipo": "Prototipo",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Recursos comunitarios",
+    "Bienestar"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Trabajo Social",
+    "Sociología",
+    "Administración",
+    "Comunicaciones",
+    "Psicología",
+    "Enfermería"
+   ],
+   "problema": [
+    "Muchas comunidades tienen recursos de bienestar, desde actividades en un centro comunitario hasta programas gratuitos, pero están dispersos en publicaciones, carteles y llamadas. Quien más los necesita suele ser quien menos los encuentra.",
+    "Cuando la información está desactualizada o incompleta, la gente deja de buscarla."
+   ],
+   "desarrollar": [
+    "Reúne información pública de diez a quince recursos de tu zona y registra de cada uno qué ofrece, a quién va dirigido, cómo acceder, horario y si cuesta, con fecha de revisión.",
+    "Organízalos en una página o un directorio sencillo con búsqueda por tema y zona, y pide a dos personas que busquen algo concreto para ver si lo encuentran con facilidad."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "revisa qué grupos de personas quedan sin recursos disponibles."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "conviértelo en un directorio impreso de una página para repartir en un centro comunitario."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña cómo mantenerlo actualizado, con una persona responsable y una fecha de revisión."
+    }
+   ],
+   "objetivos": [
+    "Reunir información verificable de recursos de la comunidad.",
+    "Organizarla con criterios claros.",
+    "Construir un directorio fácil de usar.",
+    "Probarlo con personas."
+   ],
+   "habilidades": [
+    "Búsqueda y verificación de información.",
+    "Diseño de información.",
+    "Organización de datos.",
+    "Pruebas con usuarios."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de páginas web o de documentos.",
+    "Un formulario de prueba."
+   ],
+   "lineamientos": [
+    "Verifica cada recurso en su fuente oficial y anota la fecha: la información de servicios cambia.",
+    "No incluyas servicios de salud como recomendaciones personales ni datos de personas, solo información pública de cada recurso."
+   ],
+   "otroSector": "Sirve para organizar recursos de empleo, de estudio, de cultura, de ayuda legal o de apoyo a migrantes."
+  },
+  {
+   "id": "que-barreras-encuentran-las-personas-con-discapacidad-para-recibir-atencion",
+   "area": "sociedad",
+   "areas2": [
+    "salud",
+    "ciudades"
+   ],
+   "titulo": "¿Qué barreras encuentran las personas con discapacidad para recibir atención?",
+   "resumen": "Revisa informes y testimonios públicos para identificar las barreras físicas, de comunicación y de información que enfrentan las personas con discapacidad al buscar atención, y propón ajustes concretos.",
+   "tipo": "Investigación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Inclusión",
+    "Acceso"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Trabajo Social",
+    "Sociología",
+    "Derecho",
+    "Arquitectura",
+    "Psicología",
+    "Educación",
+    "Ingeniería de Sistemas",
+    "Medicina"
+   ],
+   "problema": [
+    "Una persona con discapacidad puede encontrar barreras desde antes de llegar a un servicio: transporte, entradas con escalones, información que no está en formatos accesibles o personal que no sabe comunicarse con ella.",
+    "Con frecuencia las soluciones se diseñan sin consultarlas, y por eso pasan por alto lo que más importa."
+   ],
+   "desarrollar": [
+    "Reúne informes de organismos públicos y de organizaciones de personas con discapacidad y clasifica las barreras en físicas, de comunicación, de información y de trato, con ejemplos generales.",
+    "Elige un servicio, real o ficticio, y revisa qué barreras tendría en cada categoría, propón tres ajustes concretos y explica a quién beneficiarían, además de a quienes viven con discapacidad."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara las barreras entre distintos tipos de discapacidad, como motriz, visual o auditiva."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "prepara una lista de revisión de accesibilidad para un servicio."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "diseña materiales de información en un formato accesible, como lectura fácil o con descripción de imágenes."
+    }
+   ],
+   "objetivos": [
+    "Reunir información de fuentes confiables.",
+    "Clasificar barreras con criterio.",
+    "Evaluar un servicio con esa lista.",
+    "Proponer ajustes concretos."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Análisis de accesibilidad.",
+    "Redacción clara.",
+    "Empatía y trato respetuoso."
+   ],
+   "herramientas": [
+    "Informes públicos y organizaciones especializadas.",
+    "Hoja de cálculo.",
+    "Un editor de documentos."
+   ],
+   "lineamientos": [
+    "Usa lenguaje respetuoso, como «persona con discapacidad», y consulta fuentes hechas por las propias personas o sus organizaciones; la idea es trabajar con ellas, no hablar por ellas.",
+    "No entrevistes a personas con discapacidad sin su consentimiento y sin un propósito claro, ni uses sus fotos o historias sin permiso."
+   ],
+   "otroSector": "Sirve para evaluar la accesibilidad de un edificio, un sitio web, un transporte o un trámite público."
+  },
+  {
+   "id": "como-influye-el-aislamiento-social-en-el-bienestar",
+   "area": "sociedad",
+   "areas2": [
+    "salud",
+    "educacion"
+   ],
+   "titulo": "¿Cómo influye el aislamiento social en el bienestar?",
+   "resumen": "Estudia con informes públicos qué se sabe sobre cómo la soledad y el aislamiento se relacionan con el bienestar, y diseña una propuesta sencilla para generar encuentros en un grupo.",
+   "tipo": "Investigación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Vínculos",
+    "Bienestar"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes y estadísticas que publican instituciones de salud y con casos inventados; no hace falta hablar con pacientes reales.",
+   "carreras": [
+    "Psicología",
+    "Sociología",
+    "Trabajo Social",
+    "Educación",
+    "Comunicaciones",
+    "Estadística",
+    "Medicina",
+    "Enfermería"
+   ],
+   "problema": [
+    "Sentirse solo o aislado es frecuente en distintas etapas de la vida, como estudiar lejos de casa, mudarse, jubilarse o vivir solo, y se relaciona con cómo nos sentimos. Pero rara vez se habla de ello de forma ordenada.",
+    "Se suele creer que es un problema personal, cuando también depende de los espacios y oportunidades que existen para encontrarse con otros."
+   ],
+   "desarrollar": [
+    "Revisa estudios e informes públicos sobre aislamiento social y resume en una página qué se sabe, para quién es más frecuente y qué ayuda, citando fuentes y sin entrar en casos personales.",
+    "Diseña una actividad o espacio de encuentro para un grupo concreto, como estudiantes que viven solos, con una descripción de a quién va dirigido, qué se haría y cómo se sabría si funciona."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra mirada",
+     "aporta": "compara los factores que aparecen en distintas etapas de la vida, como juventud y vejez."
+    },
+    {
+     "titulo": "Otro formato",
+     "aporta": "convierte los hallazgos en un folleto de recursos para encontrarse con otras personas."
+    },
+    {
+     "titulo": "Un paso más",
+     "aporta": "propón cómo medir, de manera anónima, si los participantes sienten mayor conexión."
+    }
+   ],
+   "objetivos": [
+    "Reunir y resumir información de fuentes confiables.",
+    "Identificar factores y grupos más expuestos.",
+    "Diseñar una actividad de encuentro.",
+    "Plantear cómo evaluarla."
+   ],
+   "habilidades": [
+    "Investigación de fuentes.",
+    "Síntesis de información.",
+    "Diseño de actividades.",
+    "Redacción clara."
+   ],
+   "herramientas": [
+    "Informes y estudios públicos.",
+    "Un editor de documentos.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "No pidas ni registres experiencias personales de soledad o malestar; trabaja con fuentes públicas y con casos generales.",
+    "Si alguien comparte que está pasando por un mal momento, sugiérele hablar con una persona de confianza o con un servicio de apoyo; no intentes aconsejarle ni evaluarlo."
+   ],
+   "otroSector": "Sirve para diseñar actividades que integren a un grupo: migrantes nuevos, equipos remotos o personas mayores en un centro comunitario."
   }
  ]
 }
