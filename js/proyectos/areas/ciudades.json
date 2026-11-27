@@ -1295,6 +1295,4977 @@
     "Si propones cambios, aclara que son ideas para conversar con la municipalidad y los vecinos, no decisiones."
    ],
    "otroSector": "El mismo mapeo sirve para ubicar bancas, bodegas, paraderos, servicios de salud o lugares accesibles."
+  },
+  {
+   "id": "como-se-mueve-la-gente-en-tu-barrio",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cómo se mueve la gente en tu barrio?",
+   "resumen": "Descubre con encuestas breves y observación cómo se traslada la gente de tu barrio, a pie, en bus, en moto o en auto, adónde va y cuánto tarda.",
+   "tipo": "Investigación",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Movilidad",
+    "Barrio"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Geografía",
+    "Ingeniería Civil",
+    "Sociología",
+    "Arquitectura",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Economía",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "Cada barrio tiene sus propias formas de moverse: algunos dependen del transporte público, otros caminan casi todo y otros usan moto o auto. Esa información casi nunca está escrita y, sin ella, es difícil saber qué mejoras se necesitan.",
+    "Entender cómo se mueve la gente permite ver quién tiene más opciones y quién menos, y por qué."
+   ],
+   "desarrollar": [
+    "Diseña una encuesta anónima de cinco preguntas, como medio de transporte, destino, tiempo de viaje y motivo, y aplícala a una muestra pequeña de vecinos o compañeros que vivan en la misma zona.",
+    "Resume los resultados en tablas y gráficos, identifica los destinos más frecuentes y describe qué grupos de personas tienen viajes más largos o menos opciones."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Por horas del día",
+     "aporta": "compara cómo cambian los traslados entre la mañana, la tarde y la noche."
+    },
+    {
+     "titulo": "Por grupos",
+     "aporta": "analiza si cambian según edad, ocupación o género."
+    },
+    {
+     "titulo": "Mapa de destinos",
+     "aporta": "dibuja un mapa con los destinos más repetidos y sus rutas."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una encuesta anónima corta.",
+    "Procesar y graficar respuestas.",
+    "Identificar patrones de movilidad.",
+    "Explicar diferencias entre grupos."
+   ],
+   "habilidades": [
+    "Diseño de encuestas.",
+    "Estadística descriptiva.",
+    "Lectura de datos de movilidad.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Un formulario anónimo.",
+    "Hoja de cálculo.",
+    "Un mapa en línea."
+   ],
+   "lineamientos": [
+    "La encuesta debe ser anónima y voluntaria; no pidas direcciones exactas, usa zonas o referencias generales.",
+    "Presenta los resultados como tendencias de una muestra pequeña, no como verdades de todo el barrio."
+   ],
+   "otroSector": "El mismo método sirve para estudiar cómo se mueven los estudiantes en un campus, los trabajadores de un parque industrial o los visitantes de un mercado."
+  },
+  {
+   "id": "mapa-de-rutas-de-transporte-publico-y-sus-conexiones-en-tu-zona",
+   "area": "ciudades",
+   "areas2": [
+    "tecnologia",
+    "sociedad"
+   ],
+   "titulo": "Mapa de rutas de transporte público y sus conexiones en tu zona",
+   "resumen": "Construye un mapa claro de las rutas de transporte público que pasan por tu zona, dónde se conectan entre sí y qué lugares quedan sin servicio cercano.",
+   "tipo": "Prototipo",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Transporte público",
+    "Mapas"
+   ],
+   "intencion": [
+    "crear",
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Geografía",
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Arquitectura",
+    "Ciencia de Datos",
+    "Estadística",
+    "Economía"
+   ],
+   "problema": [
+    "Las rutas de transporte existen, pero suelen estar dispersas en listas, paneles o en la memoria de quienes las usan. Para quien llega nuevo a una zona es difícil saber qué línea toma y dónde se conecta con otra.",
+    "Un mapa claro de rutas y conexiones permite entender cómo funciona realmente el sistema en un lugar y dónde hay vacíos."
+   ],
+   "desarrollar": [
+    "Reúne con información pública y con observación las rutas que pasan por tu zona, con sus paraderos principales, y dibújalas en un mapa en línea o en un esquema.",
+    "Marca los puntos donde se cruzan varias rutas, identifica zonas sin servicio a menos de diez minutos a pie y escribe una guía corta de cómo ir de tu zona a tres destinos importantes."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Esquema simplificado",
+     "aporta": "crea un diagrama tipo plano de metro que simplifique las rutas."
+    },
+    {
+     "titulo": "Frecuencias",
+     "aporta": "añade cada cuánto pasa cada ruta según tus observaciones."
+    },
+    {
+     "titulo": "Versión web",
+     "aporta": "publica el mapa como una página sencilla con filtros por ruta."
+    }
+   ],
+   "objetivos": [
+    "Reunir información pública de rutas.",
+    "Representar rutas y conexiones.",
+    "Identificar vacíos de cobertura.",
+    "Explicar el mapa a nuevos usuarios."
+   ],
+   "habilidades": [
+    "Cartografía básica.",
+    "Lectura de redes de transporte.",
+    "Observación de campo.",
+    "Diseño de información."
+   ],
+   "herramientas": [
+    "Un mapa en línea editable.",
+    "Hoja de cálculo.",
+    "Información pública de rutas autorizadas."
+   ],
+   "lineamientos": [
+    "Cita la fuente y la fecha de la información y avisa que las rutas pueden cambiar.",
+    "No incluyas datos de conductores ni placas de vehículos."
+   ],
+   "otroSector": "El mismo mapa sirve para rutas escolares, de recojo de residuos, de reparto de un negocio o de una ruta turística."
+  },
+  {
+   "id": "el-recorrido-mas-eficiente-entre-dos-puntos-de-la-ciudad",
+   "area": "ciudades",
+   "areas2": [
+    "negocios"
+   ],
+   "titulo": "El recorrido más eficiente entre dos puntos de la ciudad",
+   "resumen": "Compara varias formas de ir entre dos puntos de la ciudad según tiempo, costo, comodidad y cantidad de transbordos, y decide cuál es la más eficiente y para quién.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Rutas",
+    "Eficiencia"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Industrial",
+    "Ingeniería Civil",
+    "Matemática",
+    "Ingeniería de Sistemas",
+    "Geografía",
+    "Economía",
+    "Estadística",
+    "Arquitectura"
+   ],
+   "problema": [
+    "El camino más corto en el mapa no siempre es el más rápido ni el más barato. Los transbordos, las esperas, el tráfico y la seguridad cambian el resultado.",
+    "Comparar con datos propios ayuda a entender qué significa «eficiente» según las necesidades de cada persona."
+   ],
+   "desarrollar": [
+    "Elige dos puntos reales de tu ciudad y registra al menos tres maneras de ir de uno a otro, anotando tiempo total, costo, número de transbordos, esperas y comodidad, en dos momentos del día.",
+    "Compara con una tabla, define criterios con pesos según el tipo de persona, como alguien con prisa, con poco dinero o con equipaje, y concluye qué ruta recomendarías en cada caso."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Con una aplicación de mapas",
+     "aporta": "contrasta tus mediciones con lo que estima una aplicación."
+    },
+    {
+     "titulo": "Variabilidad",
+     "aporta": "repite en varios días y mide cuánto cambia el tiempo real."
+    },
+    {
+     "titulo": "Ruta para alguien con movilidad reducida",
+     "aporta": "analiza cuál sería la mejor ruta si hay escaleras o veredas rotas."
+    }
+   ],
+   "objetivos": [
+    "Medir tiempos y costos reales.",
+    "Comparar rutas con criterios claros.",
+    "Considerar distintos tipos de usuarios.",
+    "Justificar una recomendación."
+   ],
+   "habilidades": [
+    "Medición de procesos.",
+    "Análisis multicriterio.",
+    "Estadística descriptiva.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Cronómetro o aplicación de notas.",
+    "Una aplicación de mapas."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "Registra solo tus propios viajes y no incluyas datos de otras personas."
+   ],
+   "otroSector": "El mismo análisis sirve para rutas de reparto de un negocio, de recojo de residuos o de traslado de pacientes."
+  },
+  {
+   "id": "paraderos-y-puntos-de-acceso-al-transporte-donde-se-espera-demas",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Paraderos y puntos de acceso al transporte: ¿dónde se espera demasiado?",
+   "resumen": "Mapea los paraderos y puntos de acceso al transporte de tu zona, mide cuánto se espera en cada uno y descubre dónde la espera es más larga o incómoda.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Paraderos",
+    "Tiempos de espera"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Industrial",
+    "Geografía",
+    "Arquitectura",
+    "Estadística",
+    "Sociología",
+    "Ingeniería de Sistemas",
+    "Matemática"
+   ],
+   "problema": [
+    "Un paradero no es solo un poste con un cartel: puede tener techo, sombra, asientos, buena iluminación y espacio para esperar con seguridad, o puede no tener nada. La espera también varía según el lugar y la hora.",
+    "Medirla permite saber dónde se pierde más tiempo y qué mejoras serían más útiles."
+   ],
+   "desarrollar": [
+    "Elige cinco paraderos o puntos de acceso, registra en dos horarios cuánto tiempo pasa entre un vehículo y otro, cuántas personas esperan y qué condiciones tiene el lugar, como techo, asientos, luz y espacio.",
+    "Calcula la espera promedio y la máxima, califica cada punto con un puntaje de condiciones y propón mejoras concretas para los dos puntos con peores resultados."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Espera frente a espera percibida",
+     "aporta": "pregunta a quienes esperan cuánto sienten que esperaron y compara."
+    },
+    {
+     "titulo": "Seguridad",
+     "aporta": "añade cómo se siente la gente de noche en cada punto."
+    },
+    {
+     "titulo": "Costo de una mejora",
+     "aporta": "estima cuánto costaría techar o iluminar un paradero."
+    }
+   ],
+   "objetivos": [
+    "Medir esperas con método.",
+    "Evaluar condiciones de cada punto.",
+    "Comparar puntos entre sí.",
+    "Proponer mejoras concretas."
+   ],
+   "habilidades": [
+    "Medición en campo.",
+    "Estadística descriptiva.",
+    "Evaluación de infraestructura.",
+    "Propuestas de mejora."
+   ],
+   "herramientas": [
+    "Cronómetro.",
+    "Hoja de cálculo.",
+    "Una ficha de observación."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo método sirve para medir esperas en ventanillas, ascensores, comedores o centros de atención."
+  },
+  {
+   "id": "que-tan-accesible-es-tu-universidad-en-transporte-publico",
+   "area": "ciudades",
+   "areas2": [
+    "educacion",
+    "sociedad"
+   ],
+   "titulo": "¿Qué tan accesible es tu universidad en transporte público?",
+   "resumen": "Mide cuánto tiempo, dinero y esfuerzo cuesta llegar a tu universidad en transporte público desde distintos puntos de la ciudad.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Acceso",
+    "Universidad"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Geografía",
+    "Ingeniería Industrial",
+    "Sociología",
+    "Economía",
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Educación"
+   ],
+   "problema": [
+    "La ubicación de una universidad determina quién puede llegar a ella con facilidad. Para algunos estudiantes el viaje toma poco; para otros son horas y varios transbordos, lo que afecta el cansancio, la puntualidad y el gasto.",
+    "Medirlo sirve para ver qué zonas quedan lejos en la práctica, no solo en kilómetros."
+   ],
+   "desarrollar": [
+    "Elige entre cinco y ocho puntos de partida repartidos por la ciudad y averigua para cada uno el tiempo, el costo y el número de transbordos para llegar a tu universidad en hora punta, con aplicaciones de mapas y tarifas públicas.",
+    "Presenta los resultados en un mapa de colores por tiempo de viaje y concluye qué zonas están mejor o peor conectadas y qué cambios mejorarían el acceso."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo mensual",
+     "aporta": "calcula cuánto gasta un estudiante en pasajes al mes desde cada zona."
+    },
+    {
+     "titulo": "Horarios nocturnos",
+     "aporta": "analiza cómo cambia el acceso para quienes salen de noche."
+    },
+    {
+     "titulo": "Propuesta de mejora",
+     "aporta": "propón una ruta o un horario que reduzca el viaje desde la zona peor conectada."
+    }
+   ],
+   "objetivos": [
+    "Medir tiempo y costo de acceso.",
+    "Comparar zonas de origen.",
+    "Representar la información en un mapa.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Análisis de accesibilidad.",
+    "Cartografía básica.",
+    "Cálculo de costos.",
+    "Interpretación de resultados."
+   ],
+   "herramientas": [
+    "Una aplicación de mapas.",
+    "Hoja de cálculo.",
+    "Tarifas públicas de transporte."
+   ],
+   "lineamientos": [
+    "Usa zonas o distritos y no direcciones de personas; las estimaciones de una aplicación no sustituyen la experiencia real del viaje.",
+    "Indica la fecha y la hora de cada medición."
+   ],
+   "otroSector": "El mismo análisis sirve para evaluar el acceso a un hospital, un mercado, un colegio o un centro de trabajo."
+  },
+  {
+   "id": "que-tan-conectados-estan-los-barrios-con-los-principales-servici",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Qué tan conectados están los barrios con los principales servicios de la ciudad?",
+   "resumen": "Compara cuánto tardan los habitantes de distintos barrios en llegar a hospitales, mercados, colegios y oficinas públicas, y descubre qué zonas quedan más aisladas.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Conectividad",
+    "Servicios"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Geografía",
+    "Ingeniería Civil",
+    "Sociología",
+    "Economía",
+    "Estadística",
+    "Ciencia de Datos",
+    "Arquitectura",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "No todos los barrios están igual de cerca de los servicios importantes. Vivir lejos de un hospital, un mercado o una oficina pública significa más tiempo, más gasto y más dificultad.",
+    "Esa distancia casi nunca se mide, y por eso es difícil decidir dónde conviene mejorar el transporte o instalar un servicio."
+   ],
+   "desarrollar": [
+    "Elige cuatro barrios y cinco tipos de servicios, ubica con datos públicos los más cercanos a cada barrio y estima el tiempo de viaje y el costo con aplicaciones de mapas.",
+    "Arma una tabla comparativa, puntúa cada barrio y explica qué zonas están más aisladas y qué servicio sería el más importante de acercar."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Servicio crítico",
+     "aporta": "analiza solo servicios de emergencia, como salud o bomberos."
+    },
+    {
+     "titulo": "Barrio frente a su vecino",
+     "aporta": "explica por qué dos barrios cercanos tienen accesos tan distintos."
+    },
+    {
+     "titulo": "Propuesta de ubicación",
+     "aporta": "sugiere dónde ubicar un nuevo servicio para reducir las distancias."
+    }
+   ],
+   "objetivos": [
+    "Ubicar servicios con datos públicos.",
+    "Calcular tiempos de acceso.",
+    "Comparar barrios.",
+    "Priorizar mejoras con argumentos."
+   ],
+   "habilidades": [
+    "Análisis espacial básico.",
+    "Búsqueda de datos públicos.",
+    "Comparación y puntuación.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Un mapa en línea.",
+    "Hoja de cálculo.",
+    "Portales de datos abiertos."
+   ],
+   "lineamientos": [
+    "Usa información pública y fecha tus datos; evita describir a un barrio con etiquetas negativas, limítate a lo medido.",
+    "Los tiempos son estimaciones y cambian con el tráfico."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar el acceso a servicios en una región rural, una provincia o un campus."
+  },
+  {
+   "id": "que-tan-facil-es-combinar-diferentes-medios-de-transporte-para-l",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Qué tan fácil es combinar diferentes medios de transporte para llegar a un destino?",
+   "resumen": "Evalúa qué tan cómodo es pasar de un medio de transporte a otro, como del bus a un tren o a una bici, midiendo distancias, esperas, señalización y costos de cada cambio.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Intermodalidad",
+    "Transporte"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Industrial",
+    "Geografía",
+    "Arquitectura",
+    "Economía",
+    "Sociología",
+    "Ingeniería de Sistemas",
+    "Estadística"
+   ],
+   "problema": [
+    "Muchos viajes combinan varios medios, y es en los cambios donde se pierde más tiempo y comodidad: caminatas largas entre estaciones, falta de información, cobros duplicados o puntos inseguros.",
+    "Un sistema puede tener buenas rutas y aun así ser incómodo si los transbordos están mal resueltos."
+   ],
+   "desarrollar": [
+    "Elige dos o tres puntos donde se combinan medios de transporte y recorre el transbordo anotando distancia, tiempo, señalización, protección del clima, seguridad y costo de cada cambio.",
+    "Califica cada punto con una ficha de criterios, compara los resultados y propón tres mejoras prácticas para el punto con peor calificación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Para personas con movilidad reducida",
+     "aporta": "evalúa si el transbordo es posible con silla de ruedas o con coche de bebé."
+    },
+    {
+     "titulo": "Información al usuario",
+     "aporta": "analiza si los carteles y mapas permiten encontrar el siguiente medio sin preguntar."
+    },
+    {
+     "titulo": "Costo integrado",
+     "aporta": "calcula cuánto se ahorraría con un pasaje único para el viaje combinado."
+    }
+   ],
+   "objetivos": [
+    "Evaluar puntos de transbordo.",
+    "Medir tiempos y distancias.",
+    "Calificar con criterios claros.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Evaluación en campo.",
+    "Diseño de fichas de criterios.",
+    "Análisis comparativo.",
+    "Propuesta de soluciones."
+   ],
+   "herramientas": [
+    "Una ficha de observación.",
+    "Cronómetro.",
+    "Una aplicación de mapas."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo método sirve para evaluar cambios entre sistemas de salud, entre aplicaciones o entre procesos de una empresa."
+  },
+  {
+   "id": "cuanto-tiempo-pierde-una-persona-al-trasladarse-diariamente-por",
+   "area": "ciudades",
+   "areas2": [
+    "negocios",
+    "salud"
+   ],
+   "titulo": "¿Cuánto tiempo pierde una persona al trasladarse diariamente por su ciudad?",
+   "resumen": "Mide cuánto tiempo pasan las personas en traslados cada día y cuánto de ese tiempo es viaje útil y cuánto es espera, tráfico o caminata, para ver qué parte se podría reducir.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Tiempo",
+    "Movilidad"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Ingeniería Industrial",
+    "Ingeniería Civil",
+    "Estadística",
+    "Sociología",
+    "Psicología",
+    "Geografía",
+    "Administración"
+   ],
+   "problema": [
+    "Para muchas personas, ir y volver de estudiar o trabajar consume varias horas al día. Ese tiempo no se ve en ningún presupuesto, pero afecta el descanso, el estudio y la vida social.",
+    "Separar el tiempo de viaje del tiempo de espera y de caminata permite ver dónde está realmente la pérdida."
+   ],
+   "desarrollar": [
+    "Durante una semana anota tus traslados, o los de un caso ficticio, dividiendo cada uno en caminata, espera, viaje y transbordo, con la hora y el medio de transporte.",
+    "Calcula el tiempo semanal y anual en cada parte, compara con el de dos compañeros que lo hagan de forma anónima y propón qué cambios reducirían más el tiempo perdido."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Convertirlo en horas de vida",
+     "aporta": "calcula cuántas horas al año se dedican a trasladarse."
+    },
+    {
+     "titulo": "Qué se hace en el viaje",
+     "aporta": "analiza qué actividades útiles se podrían hacer durante el viaje."
+    },
+    {
+     "titulo": "Horarios flexibles",
+     "aporta": "evalúa cuánto se reduciría el tiempo si se viaja fuera de hora punta."
+    }
+   ],
+   "objetivos": [
+    "Registrar traslados con método.",
+    "Separar tiempos de caminata, espera y viaje.",
+    "Comparar casos.",
+    "Identificar cambios con mayor efecto."
+   ],
+   "habilidades": [
+    "Registro de tiempos.",
+    "Estadística descriptiva.",
+    "Análisis de procesos.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Cronómetro o aplicación de notas.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Usa tus datos o casos ficticios; si comparas con otros, que sea de forma anónima y voluntaria.",
+    "No lo uses para criticar las decisiones de dónde vive o trabaja cada persona."
+   ],
+   "otroSector": "El mismo análisis sirve para medir tiempos en un hospital, en una cocina, en un trámite o en una línea de producción."
+  },
+  {
+   "id": "propuesta-para-mejorar-los-recorridos-peatonales-hacia-una-estac",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Propuesta para mejorar los recorridos peatonales hacia una estación de transporte",
+   "resumen": "Diagnostica el camino que recorre la gente a pie hasta una estación o paradero importante y diseña mejoras de seguridad, sombra, señalización y continuidad.",
+   "tipo": "Plan",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Peatones",
+    "Diseño urbano"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Geografía",
+    "Diseño",
+    "Sociología",
+    "Ingeniería Industrial",
+    "Ingeniería Ambiental",
+    "Economía"
+   ],
+   "problema": [
+    "Casi todos los viajes en transporte público empiezan y terminan caminando. Si el camino a la estación es inseguro, caluroso, está roto o sin luz, el sistema entero se siente peor.",
+    "Mejorar esos últimos metros suele ser más barato que cambiar la ruta y tiene un efecto directo en quien camina."
+   ],
+   "desarrollar": [
+    "Elige una estación o paradero y recorre los cuatro accesos principales, anotando cuántos metros hay, qué tiene la vereda, cómo son los cruces, la iluminación, la sombra y los obstáculos.",
+    "Califica cada recorrido, identifica los tres problemas más graves y dibuja una propuesta de mejora con medidas concretas y una estimación del costo de cada una."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Voz de quienes caminan",
+     "aporta": "entrevista a cinco usuarios sobre qué cambiarían."
+    },
+    {
+     "titulo": "Antes y después",
+     "aporta": "dibuja cómo se vería el recorrido con las mejoras."
+    },
+    {
+     "titulo": "Prioridades",
+     "aporta": "ordena las mejoras por costo y por efecto para proponer una primera etapa."
+    }
+   ],
+   "objetivos": [
+    "Diagnosticar un recorrido peatonal.",
+    "Evaluar condiciones con criterios.",
+    "Diseñar mejoras concretas.",
+    "Estimar costos y prioridades."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Diseño urbano básico.",
+    "Dibujo de propuestas.",
+    "Estimación de costos."
+   ],
+   "herramientas": [
+    "Una ficha de observación.",
+    "Un programa de dibujo o planos.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen.",
+    "Presenta tu propuesta como una sugerencia y no como una crítica a las autoridades."
+   ],
+   "otroSector": "El mismo método sirve para mejorar el acceso a un colegio, un mercado, un hospital o un parque."
+  },
+  {
+   "id": "conectividad-peatonal-de-una-zona-se-puede-caminar-de-un-lugar-a",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Conectividad peatonal de una zona: ¿se puede caminar de un lugar a otro?",
+   "resumen": "Evalúa si las veredas, cruces y pasajes de una zona forman una red continua para caminar o si hay cortes, rodeos y lugares que quedan aislados.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Caminabilidad",
+    "Redes"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Geografía",
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Matemática",
+    "Ciencia de Datos",
+    "Sociología",
+    "Ingeniería de Sistemas",
+    "Estadística"
+   ],
+   "problema": [
+    "Una zona puede tener veredas y aun así no ser fácil de caminar si hay tramos cortados, cruces peligrosos o avenidas que dividen el barrio. Un camino que parece corto en el mapa puede exigir un rodeo largo.",
+    "Mirar la zona como una red permite ver qué conexiones faltan y cuáles darían más beneficio."
+   ],
+   "desarrollar": [
+    "Elige una zona pequeña con varios puntos de interés, como colegio, mercado, paradero y parque, dibuja las veredas y cruces existentes y mide la distancia a pie real entre los puntos.",
+    "Compara esa distancia con la distancia en línea recta, identifica dónde hay rodeos excesivos o cortes y propón dos conexiones nuevas que reducirían más el camino."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Índice de rodeo",
+     "aporta": "calcula un indicador de cuánto más se camina que en línea recta."
+    },
+    {
+     "titulo": "Puntos aislados",
+     "aporta": "identifica lugares a los que casi no se puede llegar a pie."
+    },
+    {
+     "titulo": "Red como grafo",
+     "aporta": "representa la zona como una red con nodos y conexiones y analízala con un programa."
+    }
+   ],
+   "objetivos": [
+    "Representar una red peatonal.",
+    "Medir distancias reales.",
+    "Detectar cortes y rodeos.",
+    "Proponer nuevas conexiones."
+   ],
+   "habilidades": [
+    "Análisis espacial.",
+    "Medición en campo.",
+    "Representación en redes.",
+    "Propuestas de mejora."
+   ],
+   "herramientas": [
+    "Un mapa en línea.",
+    "Hoja de cálculo.",
+    "Opcionalmente, Python para analizar redes."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "Anota solo características físicas del espacio, no datos de las viviendas ni de las personas."
+   ],
+   "otroSector": "El mismo análisis de redes sirve para estudiar conexiones entre aulas de un campus, caminos rurales o rutas dentro de un hospital."
+  },
+  {
+   "id": "diagnostico-de-seguridad-vial-alrededor-de-una-institucion-educa",
+   "area": "ciudades",
+   "areas2": [
+    "educacion",
+    "salud"
+   ],
+   "titulo": "Diagnóstico de seguridad vial alrededor de una institución educativa",
+   "resumen": "Evalúa qué tan seguro es el entorno vial de un colegio o universidad: cruces, velocidad de los vehículos, señales, veredas y horas de mayor riesgo.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Seguridad vial",
+    "Colegios"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Arquitectura",
+    "Ingeniería Industrial",
+    "Sociología",
+    "Educación",
+    "Psicología",
+    "Estadística",
+    "Ingeniería Ambiental"
+   ],
+   "problema": [
+    "En la entrada y la salida de una institución educativa coinciden muchas personas, vehículos de recojo y transporte público. Esos momentos concentran riesgos para peatones, especialmente niños y jóvenes.",
+    "Un diagnóstico ordenado permite señalar qué problemas son más graves y cuáles son más fáciles de corregir."
+   ],
+   "desarrollar": [
+    "Recorre el entorno de una institución y completa una ficha con aspectos como veredas, cruces, señales, semáforos, estacionamientos informales, iluminación y espacios de espera.",
+    "Observa la entrada y la salida durante varios días anotando situaciones de riesgo, resume los hallazgos en un mapa de puntos críticos y propón cinco medidas priorizadas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Velocidad de los vehículos",
+     "aporta": "estima con una referencia simple qué tan rápido pasan los vehículos."
+    },
+    {
+     "titulo": "Voz de la comunidad",
+     "aporta": "pregunta a estudiantes y padres qué lugares consideran más peligrosos."
+    },
+    {
+     "titulo": "Plan de mejora",
+     "aporta": "diseña un plan escalonado con responsables posibles."
+    }
+   ],
+   "objetivos": [
+    "Aplicar una ficha de diagnóstico.",
+    "Identificar puntos críticos.",
+    "Priorizar medidas.",
+    "Comunicar resultados con claridad."
+   ],
+   "habilidades": [
+    "Observación sistemática.",
+    "Diagnóstico de infraestructura.",
+    "Priorización.",
+    "Redacción técnica."
+   ],
+   "herramientas": [
+    "Una ficha de observación.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen.",
+    "Si el entorno es de un colegio, pide permiso a la dirección antes de observar y no incluyas imágenes de menores."
+   ],
+   "otroSector": "El mismo diagnóstico sirve para entornos de hospitales, mercados, terminales y centros comerciales."
+  },
+  {
+   "id": "son-visibles-y-suficientes-las-senales-de-transito-de-tu-zona",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Son visibles y suficientes las señales de tránsito de tu zona?",
+   "resumen": "Revisa si las señales de tránsito de una zona están donde deben, se ven bien, están en buen estado y se entienden, y qué señales faltan.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Señalización",
+    "Tránsito"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Industrial",
+    "Arquitectura",
+    "Diseño",
+    "Derecho",
+    "Ingeniería de Sistemas",
+    "Estadística",
+    "Psicología"
+   ],
+   "problema": [
+    "Una señal que no se ve, está rota, tapada por un árbol o mal ubicada no cumple su función. Muchos accidentes y confusiones pasan porque las señales no están donde la gente las necesita.",
+    "Un inventario sencillo permite saber qué hay, en qué estado está y dónde hacen falta más."
+   ],
+   "desarrollar": [
+    "Recorre varias cuadras y crea un inventario de las señales que encuentres, con su tipo, ubicación, visibilidad, estado y si su mensaje se entiende a simple vista.",
+    "Marca en un mapa los lugares con señales faltantes o en mal estado, compara de día y de noche y propón mejoras de ubicación o de diseño."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Lo que entiende la gente",
+     "aporta": "pregunta a diez personas qué significan algunas señales y cuántas aciertan."
+    },
+    {
+     "titulo": "Señalización para peatones",
+     "aporta": "revisa si hay señales para quien camina y no solo para quien conduce."
+    },
+    {
+     "titulo": "Normativa",
+     "aporta": "compara lo que encuentras con las normas oficiales de señalización."
+    }
+   ],
+   "objetivos": [
+    "Crear un inventario de señales.",
+    "Evaluar visibilidad y estado.",
+    "Detectar vacíos.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Inventario en campo.",
+    "Evaluación de visibilidad.",
+    "Lectura de normas.",
+    "Propuesta de mejoras."
+   ],
+   "herramientas": [
+    "Una ficha de inventario.",
+    "Un mapa en línea.",
+    "El manual oficial de señales."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "Describe los problemas de forma objetiva, sin atribuir culpas a personas o instituciones concretas."
+   ],
+   "otroSector": "El mismo inventario sirve para señalización de evacuación, de un hospital, de un campus o de un museo."
+  },
+  {
+   "id": "analisis-de-rutas-escolares-seguras",
+   "area": "ciudades",
+   "areas2": [
+    "educacion",
+    "sociedad"
+   ],
+   "titulo": "Análisis de rutas escolares seguras",
+   "resumen": "Analiza los caminos que usan niños y jóvenes para llegar a un colegio, identifica los tramos riesgosos y propone una ruta más segura con puntos de apoyo.",
+   "tipo": "Plan",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Rutas escolares",
+    "Seguridad"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Educación",
+    "Psicología",
+    "Sociología",
+    "Arquitectura",
+    "Trabajo Social",
+    "Geografía",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Muchos estudiantes llegan a pie o en transporte público por caminos que nadie ha evaluado. Cruces sin semáforo, veredas rotas, tramos oscuros o poca presencia de adultos pueden ser un riesgo.",
+    "Identificar una ruta segura y señalar los puntos críticos ayuda a las familias y a la institución a tomar decisiones."
+   ],
+   "desarrollar": [
+    "Con un colegio real, con permiso, o uno ficticio, dibuja las rutas más usadas por los estudiantes, recorre cada una en horario de entrada y salida y califica cada tramo según veredas, cruces, iluminación y presencia de personas.",
+    "Construye un mapa con la ruta recomendada y los puntos críticos, y escribe una guía de recomendaciones para estudiantes, familias y la institución."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Voz de los estudiantes",
+     "aporta": "pregunta de forma anónima qué tramos los hacen sentir inseguros."
+    },
+    {
+     "titulo": "Hora de salida",
+     "aporta": "compara la seguridad de la ruta entre la entrada y la salida."
+    },
+    {
+     "titulo": "Aliados del camino",
+     "aporta": "identifica negocios o puntos de apoyo que podrían ofrecer ayuda."
+    }
+   ],
+   "objetivos": [
+    "Mapear rutas escolares.",
+    "Evaluar tramos con criterios.",
+    "Elaborar una ruta recomendada.",
+    "Comunicar recomendaciones a distintos públicos."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Evaluación de riesgos.",
+    "Cartografía básica.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Un mapa en línea.",
+    "Una ficha de calificación.",
+    "Un editor de infografías."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No incluyas nombres, fotos ni horarios exactos de menores; trabaja con zonas y tramos, no con personas.",
+    "Pide autorización a la institución y a las familias si hay participación de menores."
+   ],
+   "otroSector": "El mismo método sirve para rutas de adultos mayores, de personas que trabajan de noche o de visitantes de un evento."
+  },
+  {
+   "id": "mejorar-la-circulacion-en-una-interseccion-congestionada",
+   "area": "ciudades",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "Mejorar la circulación en una intersección congestionada",
+   "resumen": "Observa una intersección con mucho tráfico, mide cuánto se acumula y cuánto dura cada ciclo, y propón cambios simples que ordenen el paso de vehículos y peatones.",
+   "tipo": "Simulación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Tráfico",
+    "Intersecciones"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Industrial",
+    "Matemática",
+    "Ingeniería de Sistemas",
+    "Estadística",
+    "Arquitectura",
+    "Física",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Una intersección congestionada hace perder tiempo a todos y aumenta los riesgos. A veces el problema no es falta de espacio sino cómo se reparten los tiempos, los giros, los paraderos o los estacionamientos informales.",
+    "Observar con método permite proponer cambios pequeños antes de pensar en obras grandes."
+   ],
+   "desarrollar": [
+    "Elige una intersección y cuenta durante periodos de diez minutos cuántos vehículos y peatones pasan por cada acceso en hora punta y fuera de ella, y anota los puntos donde se forma la cola.",
+    "Dibuja un esquema con los flujos, identifica los conflictos, propón tres cambios, como reordenar paraderos o prohibir un giro, y simula su efecto con una hoja de cálculo o un programa sencillo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Simulación por computadora",
+     "aporta": "programa un modelo sencillo de colas para probar tus cambios."
+    },
+    {
+     "titulo": "Peatones",
+     "aporta": "añade cuánto espera un peatón para cruzar en cada fase."
+    },
+    {
+     "titulo": "Costo del tiempo perdido",
+     "aporta": "calcula cuánto tiempo pierden las personas en la cola cada día."
+    }
+   ],
+   "objetivos": [
+    "Medir flujos de tránsito.",
+    "Identificar conflictos.",
+    "Proponer cambios.",
+    "Estimar su efecto con un modelo simple."
+   ],
+   "habilidades": [
+    "Conteo y medición.",
+    "Modelado básico.",
+    "Análisis de flujos.",
+    "Propuesta de soluciones."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un programa de dibujo.",
+    "Opcionalmente, Python."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "Observa desde la vereda y sin dirigir el tránsito; presenta tus ideas como propuestas y no como instrucciones."
+   ],
+   "otroSector": "El mismo análisis sirve para colas en una ventanilla, un estacionamiento, un comedor o un centro de atención."
+  },
+  {
+   "id": "iluminacion-de-calles-y-visibilidad-se-ve-bien-de-noche",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "Iluminación de calles y visibilidad: ¿se ve bien de noche?",
+   "resumen": "Evalúa qué tan bien iluminadas están las calles que usan peatones y conductores de noche, dónde hay zonas oscuras y cómo afecta eso a la visibilidad y a la sensación de seguridad.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Iluminación",
+    "Seguridad"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Eléctrica",
+    "Arquitectura",
+    "Física",
+    "Sociología",
+    "Psicología",
+    "Ingeniería Ambiental",
+    "Estadística"
+   ],
+   "problema": [
+    "La iluminación determina si un conductor ve a un peatón a tiempo y si una persona se atreve a caminar por una calle. Postes apagados, árboles que tapan la luz o focos demasiado altos dejan zonas oscuras.",
+    "Medir la iluminación con un método simple permite señalar dónde mejorarla primero."
+   ],
+   "desarrollar": [
+    "Elige un tramo de calles y recórrelo de noche, acompañado, calificando cada punto según la cantidad de luz, si los postes funcionan y si hay árboles o carteles que tapan; si puedes, usa la aplicación de luxómetro de un celular.",
+    "Representa los resultados en un mapa de zonas claras y oscuras, relaciónalos con cruces y paraderos y propón mejoras de ubicación o mantenimiento."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Percepción de seguridad",
+     "aporta": "pregunta a vecinos de forma anónima cuán seguros se sienten en cada tramo."
+    },
+    {
+     "titulo": "Eficiencia",
+     "aporta": "estima qué tipo de luminaria da más luz por cada sol gastado."
+    },
+    {
+     "titulo": "Efecto de árboles",
+     "aporta": "analiza cómo el follaje cambia la iluminación entre estaciones."
+    }
+   ],
+   "objetivos": [
+    "Evaluar la iluminación con método.",
+    "Mapear zonas oscuras.",
+    "Relacionar luz con riesgo.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Medición de campo.",
+    "Cartografía básica.",
+    "Análisis de riesgos.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Una aplicación de luxómetro.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Recorre de noche solo con compañía, por rutas conocidas y con permiso de tu familia si corresponde; en zonas inseguras, observa de día y usa información de vecinos.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo análisis sirve para evaluar la iluminación de un campus, de un estacionamiento o de un lugar de trabajo."
+  },
+  {
+   "id": "infraestructura-para-ciclistas-donde-no-hay-proteccion",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "salud"
+   ],
+   "titulo": "Infraestructura para ciclistas: ¿dónde no hay protección?",
+   "resumen": "Identifica en una zona los tramos donde quienes usan bicicleta circulan sin ciclovía o sin protección, y qué mejoras harían más seguro y atractivo moverse en bici.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Ciclovías",
+    "Bicicleta"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Arquitectura",
+    "Geografía",
+    "Ingeniería Ambiental",
+    "Ingeniería Industrial",
+    "Sociología",
+    "Estadística",
+    "Diseño"
+   ],
+   "problema": [
+    "Mucha gente usaría la bicicleta si se sintiera segura, pero las ciclovías suelen ser cortas, estar interrumpidas o desaparecer justo en los cruces. Algunos ciclistas van por pistas con autos a gran velocidad.",
+    "Mapear los tramos sin protección muestra dónde se concentran los riesgos y qué conexiones faltan."
+   ],
+   "desarrollar": [
+    "Recorre o estudia con mapas una zona donde se use bicicleta y marca los tramos con ciclovía, los tramos compartidos con vehículos y los puntos de mayor riesgo, como cruces o salidas de estacionamientos.",
+    "Evalúa cada tramo con criterios, como separación del tráfico, ancho y continuidad, y propón qué tramo conviene conectar o proteger primero y qué solución usarías."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Conteo de ciclistas",
+     "aporta": "cuenta cuántas personas usan bici en distintos tramos y horarios."
+    },
+    {
+     "titulo": "Voz de ciclistas",
+     "aporta": "entrevista a tres ciclistas sobre los puntos más peligrosos."
+    },
+    {
+     "titulo": "Red mínima",
+     "aporta": "diseña una red mínima que conecte los lugares más importantes de la zona."
+    }
+   ],
+   "objetivos": [
+    "Mapear infraestructura para bicicletas.",
+    "Evaluar tramos con criterios.",
+    "Identificar conexiones faltantes.",
+    "Priorizar mejoras."
+   ],
+   "habilidades": [
+    "Cartografía básica.",
+    "Evaluación de infraestructura.",
+    "Observación de campo.",
+    "Priorización."
+   ],
+   "herramientas": [
+    "Un mapa en línea.",
+    "Una ficha de evaluación.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "Si montas bicicleta para observar, usa casco y respeta las normas de tránsito."
+   ],
+   "otroSector": "El mismo método sirve para evaluar la infraestructura para patinetes, para personas en silla de ruedas o para peatones."
+  },
+  {
+   "id": "mapa-de-obstaculos-que-dificultan-caminar-por-las-veredas",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "salud"
+   ],
+   "titulo": "Mapa de obstáculos que dificultan caminar por las veredas",
+   "resumen": "Mapea los obstáculos que encuentra quien camina por las veredas de una zona, como huecos, postes, comercios, autos estacionados, escalones o cables, y dónde se concentran.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Veredas",
+    "Obstáculos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Geografía",
+    "Sociología",
+    "Trabajo Social",
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Diseño"
+   ],
+   "problema": [
+    "Una vereda debería permitir caminar sin bajar a la pista. Pero hay veredas con huecos, ocupadas por puestos o autos, con postes en medio, o con desniveles que obligan a rodear.",
+    "Estos obstáculos afectan más a niños, adultos mayores y personas con movilidad reducida, y casi nunca están registrados."
+   ],
+   "desarrollar": [
+    "Recorre cuatro o cinco cuadras anotando cada obstáculo con su tipo y ubicación, y mide el ancho libre de la vereda en puntos clave.",
+    "Clasifica los obstáculos, mapea dónde se concentran, calcula qué porcentaje de las veredas es transitable para una persona en silla de ruedas y propón soluciones por tipo de obstáculo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Por tipo de usuario",
+     "aporta": "evalúa el recorrido como lo haría una persona con coche de bebé o con bastón."
+    },
+    {
+     "titulo": "Causas",
+     "aporta": "investiga por qué aparece cada obstáculo y quién podría resolverlo."
+    },
+    {
+     "titulo": "Cambios en el tiempo",
+     "aporta": "repite el recorrido semanas después y compara."
+    }
+   ],
+   "objetivos": [
+    "Registrar obstáculos con un método.",
+    "Medir anchos de veredas.",
+    "Clasificar y mapear.",
+    "Proponer soluciones."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Clasificación de datos.",
+    "Cartografía básica.",
+    "Propuestas de mejora."
+   ],
+   "herramientas": [
+    "Una ficha de registro.",
+    "Una cinta métrica.",
+    "Un mapa en línea."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen.",
+    "Evita señalar a personas o comercios concretos: describe el problema, no a los responsables."
+   ],
+   "otroSector": "El mismo mapa de obstáculos sirve para pasillos de un hospital, un mercado, un campus o un estadio."
+  },
+  {
+   "id": "evaluacion-de-la-accesibilidad-de-un-edificio-publico",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "derecho"
+   ],
+   "titulo": "Evaluación de la accesibilidad de un edificio público",
+   "resumen": "Recorre un edificio público como lo haría una persona con movilidad reducida y evalúa entradas, rampas, pasillos, baños, ascensores y atención, para saber si realmente se puede usar.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Accesibilidad",
+    "Edificios"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Trabajo Social",
+    "Derecho",
+    "Sociología",
+    "Psicología",
+    "Diseño",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Un edificio puede tener rampa y aun así no ser accesible: un ascensor fuera de servicio, una puerta muy pesada, un baño sin espacio o un mostrador demasiado alto lo hacen inalcanzable para algunas personas.",
+    "Un recorrido ordenado con una ficha de criterios permite ver qué sí funciona y qué no."
+   ],
+   "desarrollar": [
+    "Elige un edificio público, con permiso si es necesario, y recorre el camino de la calle hasta el servicio principal, anotando cada tramo con una ficha de criterios sobre acceso, circulación, baños, señalización y atención.",
+    "Resume los resultados con un semáforo, indica qué barreras son las más graves y escribe recomendaciones ordenadas por urgencia y costo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Distintas discapacidades",
+     "aporta": "añade criterios para discapacidad visual, auditiva e intelectual."
+    },
+    {
+     "titulo": "Normas",
+     "aporta": "compara lo observado con la norma técnica de accesibilidad vigente."
+    },
+    {
+     "titulo": "Voz de usuarios",
+     "aporta": "pide la opinión de una persona con movilidad reducida, con su permiso."
+    }
+   ],
+   "objetivos": [
+    "Aplicar una ficha de accesibilidad.",
+    "Reconocer barreras.",
+    "Comparar con las normas.",
+    "Recomendar mejoras."
+   ],
+   "habilidades": [
+    "Evaluación de accesibilidad.",
+    "Lectura de normas técnicas.",
+    "Observación sistemática.",
+    "Redacción de informes."
+   ],
+   "herramientas": [
+    "Una ficha de evaluación.",
+    "Una cinta métrica.",
+    "La norma técnica oficial."
+   ],
+   "lineamientos": [
+    "Pide permiso para recorrer el lugar y presenta los resultados con respeto, sin señalar culpables.",
+    "Si trabajas con personas con discapacidad, hazlo con su consentimiento y reconociéndolas como las expertas de su experiencia."
+   ],
+   "otroSector": "La misma evaluación sirve para un colegio, un hospital, un museo o una tienda."
+  },
+  {
+   "id": "rampas-entradas-escaleras-y-ascensores-de-una-institucion",
+   "area": "ciudades",
+   "areas2": [
+    "educacion",
+    "sociedad"
+   ],
+   "titulo": "Rampas, entradas, escaleras y ascensores de una institución",
+   "resumen": "Inventaría y mide las rampas, entradas, escaleras y ascensores de una institución y comprueba si cumplen medidas básicas de pendiente, ancho y seguridad.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Accesos",
+    "Instituciones"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Trabajo Social",
+    "Educación",
+    "Sociología",
+    "Diseño",
+    "Ingeniería Industrial",
+    "Derecho"
+   ],
+   "problema": [
+    "La accesibilidad depende de detalles medibles: una rampa muy empinada es inútil, un ascensor pequeño no entra a una silla de ruedas y una escalera sin pasamanos es un riesgo.",
+    "Medir estos elementos permite pasar de opiniones a datos y priorizar qué arreglar."
+   ],
+   "desarrollar": [
+    "Con permiso, elige una institución y registra cada rampa, entrada, escalera y ascensor, midiendo pendiente, ancho, altura de pasamanos y estado, y fotografiando solo los elementos, no a personas.",
+    "Compara las medidas con la norma técnica, marca cuáles cumplen y cuáles no, y arma un plan priorizado de mejoras con su costo aproximado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Mapa de accesos",
+     "aporta": "dibuja un plano con el recorrido accesible de la institución."
+    },
+    {
+     "titulo": "Fuera de servicio",
+     "aporta": "estudia cuánto tiempo estuvieron sin uso los ascensores y por qué."
+    },
+    {
+     "titulo": "Alternativas",
+     "aporta": "propón soluciones de bajo costo para las barreras más graves."
+    }
+   ],
+   "objetivos": [
+    "Medir elementos de accesibilidad.",
+    "Comparar con la norma.",
+    "Priorizar mejoras.",
+    "Presentar un plan."
+   ],
+   "habilidades": [
+    "Medición en campo.",
+    "Lectura de normas.",
+    "Priorización.",
+    "Redacción técnica."
+   ],
+   "herramientas": [
+    "Cinta métrica y nivel o aplicación de inclinómetro.",
+    "La norma técnica oficial.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Pide permiso a la institución y no fotografíes personas.",
+    "Presenta los resultados como una oportunidad de mejora."
+   ],
+   "otroSector": "El mismo inventario sirve para evaluar centros de salud, estaciones de transporte o locales comerciales."
+  },
+  {
+   "id": "accesibilidad-de-los-espacios-publicos-parques-plazas-y-veredas",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "salud"
+   ],
+   "titulo": "Accesibilidad de los espacios públicos: parques, plazas y veredas",
+   "resumen": "Evalúa si un parque o una plaza pueden ser usados por personas mayores, con coche de bebé, bastón o silla de ruedas, y qué cambios lo harían más inclusivo.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Accesibilidad",
+    "Espacios públicos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Trabajo Social",
+    "Geografía",
+    "Sociología",
+    "Diseño",
+    "Psicología",
+    "Ingeniería Ambiental"
+   ],
+   "problema": [
+    "Un espacio público es de todos solo si todos pueden entrar y moverse en él. Escalones, caminos de tierra, bancas muy bajas o juegos sin acceso excluyen a mucha gente sin que se note.",
+    "Una evaluación simple con criterios claros muestra qué barreras hay y quiénes quedan fuera."
+   ],
+   "desarrollar": [
+    "Elige un parque o plaza y, con una ficha de criterios, evalúa entradas, caminos, pendientes, bancas, baños, iluminación y juegos, desde la mirada de tres perfiles: un niño pequeño, una persona mayor y una persona en silla de ruedas.",
+    "Resume qué puede hacer cada perfil y qué no, mapea las barreras y propón cambios concretos de bajo costo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Mapa de acceso",
+     "aporta": "dibuja un plano con los caminos accesibles y los que no."
+    },
+    {
+     "titulo": "Comparar dos espacios",
+     "aporta": "compara un parque céntrico con uno periférico."
+    },
+    {
+     "titulo": "Participación",
+     "aporta": "invita a un grupo de adultos mayores a recorrer el lugar y recoge sus opiniones."
+    }
+   ],
+   "objetivos": [
+    "Evaluar el espacio con criterios de accesibilidad.",
+    "Considerar distintos perfiles de usuarios.",
+    "Mapear barreras.",
+    "Proponer cambios concretos."
+   ],
+   "habilidades": [
+    "Evaluación de espacios.",
+    "Observación sistemática.",
+    "Diseño inclusivo.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Una ficha de evaluación.",
+    "Un mapa o plano en línea.",
+    "Una cinta métrica."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen.",
+    "Si invitas a personas a participar, que sea voluntario y con su consentimiento."
+   ],
+   "otroSector": "El mismo método sirve para evaluar la accesibilidad de un museo, un centro comercial o un campus."
+  },
+  {
+   "id": "mapa-de-barreras-arquitectonicas-en-edificios-y-entornos-cercano",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "tecnologia"
+   ],
+   "titulo": "Mapa de barreras arquitectónicas en edificios y entornos cercanos",
+   "resumen": "Crea un mapa colaborativo de las barreras que encuentran las personas con movilidad reducida en edificios y calles de tu entorno, como escalones, puertas estrechas o ascensores averiados.",
+   "tipo": "Prototipo",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Barreras",
+    "Mapas"
+   ],
+   "intencion": [
+    "crear",
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Ingeniería de Sistemas",
+    "Trabajo Social",
+    "Geografía",
+    "Diseño",
+    "Sociología",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Las barreras arquitectónicas están por todas partes pero rara vez están registradas. Quien necesita una rampa descubre que no existe cuando ya llegó.",
+    "Un mapa que muestre dónde hay barreras, de qué tipo y qué tan graves son sirve a quienes se desplazan y a quienes quieren mejorar el entorno."
+   ],
+   "desarrollar": [
+    "Define un sistema de categorías de barreras y una ficha corta de registro, y recorre una zona pequeña anotando cada barrera con su ubicación general, tipo y gravedad.",
+    "Construye un mapa interactivo o un plano con los puntos, calcula cuántas barreras hay por cuadra y presenta el resultado con recomendaciones para los tres puntos más graves."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Registro colaborativo",
+     "aporta": "diseña cómo otras personas podrían añadir barreras al mapa."
+    },
+    {
+     "titulo": "Relación con el mapa positivo",
+     "aporta": "combínalo con el mapa de lugares accesibles."
+    },
+    {
+     "titulo": "Seguimiento",
+     "aporta": "registra cuáles barreras se corrigen con el tiempo."
+    }
+   ],
+   "objetivos": [
+    "Definir categorías de barreras.",
+    "Registrar con método.",
+    "Representar en un mapa.",
+    "Priorizar los puntos más graves."
+   ],
+   "habilidades": [
+    "Cartografía básica.",
+    "Registro de campo.",
+    "Diseño de fichas.",
+    "Visualización de datos."
+   ],
+   "herramientas": [
+    "Un mapa en línea editable.",
+    "Una ficha de registro.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "Registra la ubicación aproximada de lugares públicos y no datos de viviendas ni de personas.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo mapa colaborativo sirve para registrar huecos, luminarias malogradas, basura o puntos de acumulación de agua."
+  },
+  {
+   "id": "redisenar-la-distribucion-de-un-espacio-publico-para-distintas-n",
+   "area": "ciudades",
+   "areas2": [
+    "arte",
+    "sociedad"
+   ],
+   "titulo": "Rediseñar la distribución de un espacio público para distintas necesidades",
+   "resumen": "Diseña de nuevo un espacio público existente para que lo puedan usar con comodidad niños, personas mayores, personas con movilidad reducida y todos los demás.",
+   "tipo": "Plan",
+   "tiempo": "3 a 5 semanas",
+   "horas": 28,
+   "etiquetas": [
+    "Diseño inclusivo",
+    "Espacio público"
+   ],
+   "intencion": [
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Diseño",
+    "Ingeniería Civil",
+    "Sociología",
+    "Trabajo Social",
+    "Psicología",
+    "Ingeniería Ambiental",
+    "Geografía"
+   ],
+   "problema": [
+    "Muchos espacios públicos están pensados para un usuario promedio imaginario: adulto, ágil y sin equipaje. Los demás tienen que adaptarse, y a veces no pueden.",
+    "Diseñar pensando en la diversidad de necesidades desde el inicio suele beneficiar a todos."
+   ],
+   "desarrollar": [
+    "Elige una plaza, un patio o una vereda real, haz un plano simple con medidas aproximadas y define cinco perfiles de usuarios con necesidades distintas.",
+    "Detecta qué conflictos hay entre esas necesidades, propón una nueva distribución en un plano o un modelo y explica cómo responde a cada perfil."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Maqueta",
+     "aporta": "construye una maqueta sencilla con cartón."
+    },
+    {
+     "titulo": "Presupuesto",
+     "aporta": "estima el costo de cada cambio del diseño."
+    },
+    {
+     "titulo": "Consulta",
+     "aporta": "muestra el diseño a cinco usuarios y ajusta según sus comentarios."
+    }
+   ],
+   "objetivos": [
+    "Definir perfiles de usuarios.",
+    "Detectar conflictos de uso.",
+    "Diseñar una distribución inclusiva.",
+    "Justificar las decisiones."
+   ],
+   "habilidades": [
+    "Diseño inclusivo.",
+    "Planos y bocetos.",
+    "Pensamiento creativo.",
+    "Presentación de propuestas."
+   ],
+   "herramientas": [
+    "Un programa de dibujo o planos.",
+    "Cartón para maqueta.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Presenta la propuesta como una idea de diseño y no como un proyecto aprobado.",
+    "Si invitas a personas a opinar, que sea voluntario y respetuoso."
+   ],
+   "otroSector": "El mismo ejercicio sirve para rediseñar una cocina, un aula, una oficina de atención o una estación."
+  },
+  {
+   "id": "orientacion-dentro-de-un-edificio-se-encuentra-el-camino-sin-pre",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "arte"
+   ],
+   "titulo": "Orientación dentro de un edificio: ¿se encuentra el camino sin preguntar?",
+   "resumen": "Evalúa si las personas pueden encontrar su camino dentro de un edificio grande, como un hospital o una universidad, y propone mejoras en carteles, colores y mapas.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Señalización",
+    "Orientación"
+   ],
+   "intencion": [
+    "investigar",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Diseño",
+    "Psicología",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas",
+    "Comunicaciones",
+    "Educación",
+    "Ingeniería Civil"
+   ],
+   "problema": [
+    "Perderse dentro de un edificio hace perder tiempo y genera estrés, y afecta más a quienes llegan por primera vez, a personas mayores o a quienes tienen urgencia.",
+    "La orientación depende de carteles, colores, planos y de cómo está organizado el espacio."
+   ],
+   "desarrollar": [
+    "Elige un edificio grande y pide a cinco personas que lo visitan por primera vez que lleguen a tres destinos sin ayuda, mientras anotas cuánto tardan, dónde dudan y qué señales usan.",
+    "Identifica los puntos de confusión, evalúa la señalización existente y diseña una propuesta con mapas, colores o rutas, y comprueba si se entiende con otras personas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Distintos públicos",
+     "aporta": "compara cómo se orientan jóvenes, adultos mayores y personas con discapacidad visual."
+    },
+    {
+     "titulo": "Un mapa propio",
+     "aporta": "diseña un plano de bolsillo del edificio."
+    },
+    {
+     "titulo": "Aplicación",
+     "aporta": "propone cómo sería una guía digital para orientarse."
+    }
+   ],
+   "objetivos": [
+    "Probar la orientación con usuarios.",
+    "Detectar puntos de confusión.",
+    "Evaluar señalización.",
+    "Diseñar mejoras."
+   ],
+   "habilidades": [
+    "Pruebas de usabilidad.",
+    "Observación.",
+    "Diseño de información.",
+    "Comunicación visual."
+   ],
+   "herramientas": [
+    "Un plano del edificio.",
+    "Un programa de diseño.",
+    "Cronómetro."
+   ],
+   "lineamientos": [
+    "Pide permiso para realizar las pruebas y que la participación sea voluntaria.",
+    "No registres nombres de los participantes."
+   ],
+   "otroSector": "El mismo estudio sirve para orientación en estaciones, aeropuertos, ferias o sitios web."
+  },
+  {
+   "id": "que-tan-habitable-es-una-vivienda",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "¿Qué tan habitable es una vivienda?",
+   "resumen": "Crea y aplica una ficha para medir cuán habitable es una vivienda según espacio, luz, ventilación, humedad, ruido, seguridad y acceso a servicios.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Vivienda",
+    "Habitabilidad"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Trabajo Social",
+    "Sociología",
+    "Ingeniería Ambiental",
+    "Salud Pública",
+    "Psicología",
+    "Estadística"
+   ],
+   "problema": [
+    "Una vivienda no es solo un techo: debe ofrecer condiciones para vivir con salud y dignidad, como suficiente espacio, aire, luz, agua, privacidad y seguridad.",
+    "Medir la habitabilidad con criterios claros permite comparar y detectar los problemas más urgentes."
+   ],
+   "desarrollar": [
+    "Diseña una ficha con entre diez y quince criterios de habitabilidad, y aplícala a tu propia vivienda o a un caso ficticio, puntuando cada aspecto.",
+    "Presenta los resultados en un gráfico tipo radar, señala los puntos más débiles y propón mejoras posibles de bajo costo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar viviendas",
+     "aporta": "aplica la ficha a dos casos ficticios y compara."
+    },
+    {
+     "titulo": "Pesos de los criterios",
+     "aporta": "analiza qué criterios son más importantes para distintas personas."
+    },
+    {
+     "titulo": "Versión para un barrio",
+     "aporta": "adapta la ficha para evaluar un conjunto de viviendas."
+    }
+   ],
+   "objetivos": [
+    "Diseñar criterios de habitabilidad.",
+    "Aplicar una ficha con método.",
+    "Visualizar resultados.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Diseño de instrumentos.",
+    "Evaluación de condiciones.",
+    "Visualización de datos.",
+    "Propuestas de mejora."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Una ficha de evaluación."
+   ],
+   "lineamientos": [
+    "Aplícalo solo a tu vivienda o a casos ficticios; no evalúes la vivienda de otras personas sin su consentimiento.",
+    "No expongas condiciones de vida de personas identificables."
+   ],
+   "otroSector": "La misma ficha sirve para evaluar aulas, dormitorios universitarios, albergues o locales de trabajo."
+  },
+  {
+   "id": "iluminacion-y-ventilacion-natural-en-distintos-tipos-de-vivienda",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "salud"
+   ],
+   "titulo": "Iluminación y ventilación natural en distintos tipos de vivienda",
+   "resumen": "Mide y compara cuánta luz natural y cuánta ventilación tienen distintos tipos de vivienda y cómo cambian a lo largo del día.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Confort ambiental",
+    "Vivienda"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Ambiental",
+    "Física",
+    "Ingeniería Civil",
+    "Ingeniería Mecánica",
+    "Diseño",
+    "Estadística",
+    "Ingeniería Eléctrica"
+   ],
+   "problema": [
+    "Una vivienda bien orientada y con ventanas adecuadas necesita menos luz artificial y menos aire acondicionado, y es más saludable. Pero muchas viviendas tienen cuartos oscuros o sin ventilación cruzada.",
+    "Medirlo con instrumentos simples ayuda a entender cómo influye el diseño en el confort."
+   ],
+   "desarrollar": [
+    "Elige dos o tres espacios con diseños distintos, por ejemplo un departamento, una casa con patio y un cuarto interior, y mide en tres horarios la luz con una aplicación de luxómetro y la temperatura con un termómetro.",
+    "Dibuja el esquema de cada espacio con la posición de las ventanas, compara los resultados y propón cambios sencillos para mejorar luz y ventilación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Orientación solar",
+     "aporta": "analiza cómo influye hacia dónde miran las ventanas."
+    },
+    {
+     "titulo": "Uso de color",
+     "aporta": "prueba cómo cambian los resultados con paredes claras u oscuras."
+    },
+    {
+     "titulo": "Ahorro de energía",
+     "aporta": "estima cuánta electricidad se ahorraría con mejor luz natural."
+    }
+   ],
+   "objetivos": [
+    "Medir luz y temperatura.",
+    "Relacionar diseño con confort.",
+    "Comparar tipos de vivienda.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Medición con instrumentos simples.",
+    "Análisis comparativo.",
+    "Esquemas de diseño.",
+    "Interpretación de resultados."
+   ],
+   "herramientas": [
+    "Una aplicación de luxómetro.",
+    "Un termómetro.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Mide solo espacios propios o con permiso y no incluyas direcciones ni datos de los ocupantes.",
+    "No hagas cambios estructurales sin consultar a un profesional."
+   ],
+   "otroSector": "El mismo análisis sirve para aulas, talleres, invernaderos o locales comerciales."
+  },
+  {
+   "id": "analisis-comparativo-de-distintos-tipos-de-vivienda",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "negocios"
+   ],
+   "titulo": "Análisis comparativo de distintos tipos de vivienda",
+   "resumen": "Compara viviendas de distinto tipo, como casa, departamento, cuarto alquilado o vivienda autoconstruida, según costo, espacio, servicios, seguridad y comodidad.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Vivienda",
+    "Comparación"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Economía",
+    "Sociología",
+    "Trabajo Social",
+    "Geografía",
+    "Estadística",
+    "Administración"
+   ],
+   "problema": [
+    "No todas las viviendas ofrecen lo mismo ni cuestan lo mismo. Comparar tipos de vivienda ayuda a entender por qué las personas eligen una u otra y qué sacrifican.",
+    "También muestra qué problemas son propios de cada tipo, como hacinamiento, humedad o falta de áreas comunes."
+   ],
+   "desarrollar": [
+    "Con información pública, como avisos, censos o estudios, describe cuatro tipos de vivienda con rangos de costo, tamaño típico, acceso a servicios y condiciones.",
+    "Compara los tipos en una tabla, relaciónalos con distintos tipos de hogares y escribe qué vivienda convendría a una familia, a un estudiante y a una persona mayor, con los límites de tu análisis."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo por metro cuadrado",
+     "aporta": "calcula y compara cuánto cuesta cada espacio."
+    },
+    {
+     "titulo": "Proceso de construcción",
+     "aporta": "describe cómo se construye cada tipo y cuánto tarda."
+    },
+    {
+     "titulo": "Evolución",
+     "aporta": "analiza cómo ha cambiado el tipo de vivienda más común en tu ciudad."
+    }
+   ],
+   "objetivos": [
+    "Reunir datos públicos de vivienda.",
+    "Comparar tipos con criterios.",
+    "Relacionarlos con necesidades.",
+    "Explicar los límites del análisis."
+   ],
+   "habilidades": [
+    "Búsqueda de información.",
+    "Análisis comparativo.",
+    "Lectura de datos de vivienda.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Datos públicos de censos y encuestas de hogares.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Cita las fuentes y fecha los datos; los precios varían mucho entre zonas.",
+    "Evita juicios de valor sobre las personas que habitan cada tipo de vivienda."
+   ],
+   "otroSector": "La misma comparación sirve para evaluar tipos de oficinas, de escuelas o de espacios de comercio."
+  },
+  {
+   "id": "que-hace-comoda-a-una-vivienda-en-epocas-de-calor",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "salud"
+   ],
+   "titulo": "¿Qué hace cómoda a una vivienda en épocas de calor?",
+   "resumen": "Investiga qué características de una vivienda, como techo, color, ventanas, sombra y ventilación, hacen que sea más fresca o más calurosa, y mídelo con termómetros.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Confort térmico",
+    "Calor"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Ambiental",
+    "Física",
+    "Ingeniería Civil",
+    "Ingeniería Mecánica",
+    "Diseño",
+    "Estadística",
+    "Salud Pública"
+   ],
+   "problema": [
+    "En verano algunas viviendas se vuelven hornos y otras se mantienen soportables sin ventilador. Las diferencias dependen del material del techo, de la sombra, del color de las paredes y de cómo corre el aire.",
+    "Entender estos factores permite proponer mejoras baratas que hagan la vida más cómoda y gasten menos energía."
+   ],
+   "desarrollar": [
+    "Elige dos o tres espacios con características distintas y mide durante varios días la temperatura interior a distintas horas, y anota techo, ventanas, color, sombra y ventilación.",
+    "Relaciona las diferencias de temperatura con las características de cada espacio y propón tres cambios de bajo costo, como pintar el techo de claro, poner cortinas o abrir ventilación cruzada."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Probar un cambio",
+     "aporta": "aplica un cambio sencillo, como cubrir una ventana, y mide el efecto."
+    },
+    {
+     "titulo": "Costo y ahorro",
+     "aporta": "estima cuánto costaría el cambio y cuánta energía ahorraría."
+    },
+    {
+     "titulo": "Barrios más cálidos",
+     "aporta": "relaciona tus resultados con la cantidad de árboles y áreas verdes cercanas."
+    }
+   ],
+   "objetivos": [
+    "Medir temperaturas con método.",
+    "Relacionar diseño y confort.",
+    "Proponer cambios de bajo costo.",
+    "Probar el efecto de una mejora."
+   ],
+   "habilidades": [
+    "Medición con instrumentos simples.",
+    "Análisis de causas.",
+    "Diseño de soluciones.",
+    "Interpretación de datos."
+   ],
+   "herramientas": [
+    "Termómetros o sensores.",
+    "Hoja de cálculo.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Mide solo espacios propios o con permiso y evita pruebas con riesgo, como subir al techo sin seguridad.",
+    "No sustituyas la atención de salud en caso de golpes de calor: en olas de calor intensas busca ayuda médica."
+   ],
+   "otroSector": "El mismo estudio sirve para colegios, talleres, invernaderos o locales de comercio."
+  },
+  {
+   "id": "cuanto-espacio-habitable-necesita-una-familia-segun-el-tamano-de",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "salud"
+   ],
+   "titulo": "¿Cuánto espacio habitable necesita una familia según el tamaño de su hogar?",
+   "resumen": "Calcula cuánto espacio por persona tiene un hogar según su tamaño y compara con referencias de habitabilidad para entender cuándo hay hacinamiento y qué efecto tiene.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Hacinamiento",
+    "Espacio"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Arquitectura",
+    "Sociología",
+    "Trabajo Social",
+    "Estadística",
+    "Salud Pública",
+    "Ingeniería Civil",
+    "Psicología",
+    "Economía"
+   ],
+   "problema": [
+    "Vivir con muy poco espacio por persona afecta el descanso, el estudio, la privacidad y la salud. Pero qué es «suficiente» depende de la cantidad de personas, de cómo se usan los cuartos y de la cultura de cada hogar.",
+    "Medirlo con datos públicos permite ver qué tan extendido es el hacinamiento y a quién afecta más."
+   ],
+   "desarrollar": [
+    "Con encuestas o censos públicos, calcula el promedio de personas por cuarto y de metros cuadrados por persona en distintos tipos de hogar y zonas.",
+    "Compara con los criterios de organismos de vivienda, explica qué hogares estarían en situación de hacinamiento y propón estrategias de organización del espacio para casos ficticios."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Efecto en el estudio",
+     "aporta": "analiza cómo afecta el espacio al rendimiento escolar según estudios públicos."
+    },
+    {
+     "titulo": "Uso múltiple",
+     "aporta": "diseña cómo un mismo cuarto cumple varias funciones."
+    },
+    {
+     "titulo": "Cambios a lo largo del tiempo",
+     "aporta": "compara con censos anteriores para ver la tendencia."
+    }
+   ],
+   "objetivos": [
+    "Calcular indicadores de espacio.",
+    "Comparar con referencias técnicas.",
+    "Identificar grupos más afectados.",
+    "Proponer estrategias de uso del espacio."
+   ],
+   "habilidades": [
+    "Lectura de datos censales.",
+    "Cálculo de indicadores.",
+    "Análisis social.",
+    "Propuestas de diseño."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Datos abiertos de censos y encuestas.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Usa datos agregados y casos ficticios; no preguntes ni expongas datos de hogares concretos.",
+    "Evita culpar a las familias: presenta el hacinamiento como un problema de acceso a vivienda."
+   ],
+   "otroSector": "El mismo cálculo sirve para estudiar el espacio por persona en aulas, dormitorios, buses o albergues."
+  },
+  {
+   "id": "que-problemas-de-infraestructura-aparecen-con-mas-frecuencia-en",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Qué problemas de infraestructura aparecen con más frecuencia en las viviendas de una zona?",
+   "resumen": "Haz un inventario de los problemas visibles de las viviendas de una zona, como humedad, grietas, techos o instalaciones, y descubre cuáles son más frecuentes y por qué.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Vivienda",
+    "Mantenimiento"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Arquitectura",
+    "Trabajo Social",
+    "Sociología",
+    "Estadística",
+    "Ingeniería Ambiental",
+    "Geografía",
+    "Derecho"
+   ],
+   "problema": [
+    "Las viviendas se deterioran con el tiempo y con el clima, pero muchas familias no tienen cómo arreglarlas ni a quién consultar. Los problemas se repiten en una misma zona por materiales, humedad, terreno o forma de construcción.",
+    "Reconocer los problemas más comunes permite pensar en soluciones colectivas, como guías de mantenimiento."
+   ],
+   "desarrollar": [
+    "Con una encuesta anónima o una observación desde la calle, registra los problemas visibles más comunes en viviendas de una zona, sin entrar a propiedades privadas ni anotar direcciones.",
+    "Clasifica los problemas, calcula su frecuencia, investiga sus causas probables y elabora una guía ilustrada de prevención y de qué hacer primero."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costos de reparación",
+     "aporta": "estima cuánto cuesta arreglar cada problema típico."
+    },
+    {
+     "titulo": "Quién puede ayudar",
+     "aporta": "mapea instituciones y programas que apoyan el mejoramiento de vivienda."
+    },
+    {
+     "titulo": "Prevención",
+     "aporta": "diseña un calendario de mantenimiento sencillo para un hogar."
+    }
+   ],
+   "objetivos": [
+    "Registrar problemas con método.",
+    "Calcular frecuencias.",
+    "Investigar causas.",
+    "Crear una guía útil."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Estadística descriptiva.",
+    "Investigación de causas.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Una ficha de registro.",
+    "Hoja de cálculo.",
+    "Un editor de guías."
+   ],
+   "lineamientos": [
+    "Observa solo desde la vía pública y no entres a propiedades; no registres direcciones ni identifiques viviendas.",
+    "No des consejos de reparación de riesgo estructural: aconseja consultar a un profesional."
+   ],
+   "otroSector": "El mismo inventario sirve para evaluar el estado de aulas, de mercados o de espacios comunes de un edificio."
+  },
+  {
+   "id": "propuestas-para-mejorar-la-habitabilidad-y-aprovechar-mejor-los",
+   "area": "ciudades",
+   "areas2": [
+    "arte",
+    "sociedad"
+   ],
+   "titulo": "Propuestas para mejorar la habitabilidad y aprovechar mejor los espacios pequeños",
+   "resumen": "Diseña soluciones para que un cuarto o una vivienda pequeña funcione mejor, con muebles multiuso, buena luz, orden y privacidad, sin gastar mucho.",
+   "tipo": "Plan",
+   "tiempo": "~26 h",
+   "horas": 26,
+   "etiquetas": [
+    "Diseño",
+    "Espacios pequeños"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Diseño",
+    "Ingeniería Civil",
+    "Ingeniería Industrial",
+    "Trabajo Social",
+    "Psicología",
+    "Ingeniería Ambiental",
+    "Sociología"
+   ],
+   "problema": [
+    "Muchas familias y estudiantes viven en espacios pequeños donde hay que dormir, estudiar, cocinar y guardar cosas en el mismo lugar. Con un buen diseño se puede ganar comodidad aunque no cambie el tamaño.",
+    "Las ideas útiles suelen ser simples: moverse menos, almacenar en vertical, separar zonas y aprovechar la luz."
+   ],
+   "desarrollar": [
+    "Inventa un caso de un espacio pequeño con sus ocupantes y sus necesidades, dibuja el plano con medidas y detecta los problemas de uso, de luz y de almacenamiento.",
+    "Propón una nueva distribución con soluciones concretas de bajo costo, representa antes y después, y estima el costo de cada mejora."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Maqueta a escala",
+     "aporta": "construye una maqueta de cartón y prueba la distribución."
+    },
+    {
+     "titulo": "Muebles multiuso",
+     "aporta": "diseña un mueble que cumpla dos o tres funciones."
+    },
+    {
+     "titulo": "Presupuesto mínimo",
+     "aporta": "diseña la versión más barata posible y compárala con una más completa."
+    }
+   ],
+   "objetivos": [
+    "Analizar un espacio pequeño.",
+    "Detectar problemas de uso.",
+    "Proponer una nueva distribución.",
+    "Estimar costos."
+   ],
+   "habilidades": [
+    "Diseño de interiores.",
+    "Planos a escala.",
+    "Pensamiento creativo.",
+    "Estimación de costos."
+   ],
+   "herramientas": [
+    "Un programa de dibujo o planos.",
+    "Cartón para maqueta.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Trabaja con un caso ficticio o tu propio espacio y no uses imágenes de viviendas ajenas.",
+    "No propongas cambios que comprometan la estructura sin consultar a un profesional."
+   ],
+   "otroSector": "El mismo ejercicio sirve para diseñar un puesto de venta, un laboratorio pequeño o un espacio de estudio."
+  },
+  {
+   "id": "mapa-de-acceso-al-agua-y-al-saneamiento-en-una-comunidad",
+   "area": "ciudades",
+   "areas2": [
+    "salud",
+    "sociedad"
+   ],
+   "titulo": "Mapa de acceso al agua y al saneamiento en una comunidad",
+   "resumen": "Descubre qué zonas de una localidad tienen menos acceso a agua potable y saneamiento, con datos públicos y mapas, y cómo se abastecen quienes no tienen red.",
+   "tipo": "Análisis",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Agua potable",
+    "Saneamiento"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Geografía",
+    "Salud Pública",
+    "Trabajo Social",
+    "Estadística",
+    "Sociología",
+    "Ingeniería Sanitaria"
+   ],
+   "problema": [
+    "En algunas zonas el agua llega por red, en otras por camión cisterna, pozo o pilón, y el desagüe puede ser alcantarillado, pozo ciego o no existir. Esas diferencias afectan la salud y el costo de vida.",
+    "Un mapa claro de quién tiene qué servicio ayuda a ver las desigualdades y a priorizar inversiones."
+   ],
+   "desarrollar": [
+    "Con datos públicos de cobertura de agua y saneamiento por distrito o centro poblado, elabora un mapa por zonas con el porcentaje de acceso a cada servicio.",
+    "Relaciona el mapa con la distancia a fuentes de agua, el precio del agua en cada forma de abastecimiento y los efectos en salud descritos en fuentes oficiales, y concluye qué zonas necesitan atención prioritaria."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo del agua",
+     "aporta": "compara cuánto paga una familia con red frente a una que compra cisterna."
+    },
+    {
+     "titulo": "Calidad",
+     "aporta": "añade datos públicos de calidad del agua cuando existan."
+    },
+    {
+     "titulo": "Cambios en el tiempo",
+     "aporta": "compara con datos de años anteriores."
+    }
+   ],
+   "objetivos": [
+    "Usar datos públicos de cobertura.",
+    "Mapear el acceso por zonas.",
+    "Relacionar acceso con costo y salud.",
+    "Priorizar zonas."
+   ],
+   "habilidades": [
+    "Cartografía.",
+    "Análisis de datos públicos.",
+    "Lectura de indicadores.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Un mapa en línea.",
+    "Hoja de cálculo.",
+    "Portales de datos abiertos."
+   ],
+   "lineamientos": [
+    "Usa datos agregados y cita las fuentes y fechas; evita señalar viviendas o personas concretas.",
+    "No hagas afirmaciones sobre la calidad del agua sin datos oficiales."
+   ],
+   "otroSector": "El mismo mapa sirve para estudiar el acceso a electricidad, a internet o a centros de salud."
+  },
+  {
+   "id": "estado-de-la-infraestructura-sanitaria-y-de-las-redes-de-agua-co",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "derecho"
+   ],
+   "titulo": "Estado de la infraestructura sanitaria y de las redes de agua con información pública",
+   "resumen": "Usa información pública para identificar dónde hay más fugas, cortes o deterioro en las redes de agua y alcantarillado y qué zonas son más afectadas.",
+   "tipo": "Análisis",
+   "tiempo": "~24 h",
+   "horas": 24,
+   "etiquetas": [
+    "Redes de agua",
+    "Alcantarillado"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Sanitaria",
+    "Ingeniería Ambiental",
+    "Estadística",
+    "Ciencia de Datos",
+    "Derecho",
+    "Economía",
+    "Geografía"
+   ],
+   "problema": [
+    "Las redes de agua y desagüe son infraestructura invisible: nadie piensa en ellas hasta que fallan. Las fugas, los cortes y los atoros suelen concentrarse en zonas con tuberías antiguas.",
+    "Las empresas de servicios y organismos reguladores publican algunos datos, y analizarlos permite ver dónde están los puntos críticos."
+   ],
+   "desarrollar": [
+    "Reúne datos públicos de una empresa de agua o un regulador sobre cortes, reclamos, fugas o antigüedad de redes, y organízalos por distrito o zona.",
+    "Grafica y mapea los puntos críticos, relaciona con la antigüedad de las redes o con eventos de lluvia, y explica qué hipótesis podrían explicar los patrones."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Pérdida de agua",
+     "aporta": "estima cuánta agua se pierde en la red según los datos públicos."
+    },
+    {
+     "titulo": "Costo de reparar",
+     "aporta": "investiga cuánto costaría renovar un tramo de tubería."
+    },
+    {
+     "titulo": "Comparar empresas",
+     "aporta": "compara indicadores de dos ciudades."
+    }
+   ],
+   "objetivos": [
+    "Buscar y organizar datos públicos.",
+    "Mapear puntos críticos.",
+    "Formular hipótesis sobre las causas.",
+    "Comunicar los resultados."
+   ],
+   "habilidades": [
+    "Búsqueda de datos públicos.",
+    "Análisis estadístico básico.",
+    "Mapeo.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o Python.",
+    "Portales de reguladores y empresas de servicios.",
+    "Un mapa en línea."
+   ],
+   "lineamientos": [
+    "Usa solo información pública y distingue entre datos y suposiciones; no acuses a empresas o autoridades sin sustento.",
+    "Cita las fuentes y las fechas."
+   ],
+   "otroSector": "El mismo análisis sirve para redes de electricidad, de gas, de internet o de transporte."
+  },
+  {
+   "id": "que-tan-accesibles-son-los-servicios-basicos-en-tu-entorno",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Qué tan accesibles son los servicios básicos en tu entorno?",
+   "resumen": "Evalúa qué tan fácil es acceder en tu entorno a agua, electricidad, saneamiento, internet, recojo de residuos y transporte, y qué servicios fallan más.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Servicios básicos",
+    "Acceso"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Trabajo Social",
+    "Sociología",
+    "Ingeniería Civil",
+    "Economía",
+    "Geografía",
+    "Estadística",
+    "Ingeniería Ambiental",
+    "Salud Pública"
+   ],
+   "problema": [
+    "Los servicios básicos no se reparten igual: en algunas zonas hay luz y agua todo el día, en otras hay cortes, y algunos servicios simplemente no llegan. Esas diferencias afectan la vida cotidiana de formas muy distintas.",
+    "Un diagnóstico simple, hecho con observación y encuestas anónimas, permite ver qué falta y qué falla en un entorno concreto."
+   ],
+   "desarrollar": [
+    "Define una ficha con los servicios básicos y criterios como disponibilidad, calidad, continuidad y costo, y aplícala con encuestas anónimas a una muestra pequeña de vecinos de una zona.",
+    "Resume los resultados con un semáforo por servicio, indica cuáles son más críticos y escribe recomendaciones y a quién podría dirigirse cada reclamo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar zonas",
+     "aporta": "compara dos zonas distintas y explica las diferencias."
+    },
+    {
+     "titulo": "Reclamos",
+     "aporta": "elabora una guía de cómo presentar un reclamo para cada servicio."
+    },
+    {
+     "titulo": "Costo mensual",
+     "aporta": "calcula cuánto cuesta cada servicio en un hogar típico."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una ficha de diagnóstico.",
+    "Aplicarla con consentimiento.",
+    "Resumir en un semáforo.",
+    "Redactar recomendaciones."
+   ],
+   "habilidades": [
+    "Diseño de encuestas.",
+    "Análisis de datos.",
+    "Redacción clara.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Un formulario anónimo.",
+    "Hoja de cálculo.",
+    "Un editor de infografías."
+   ],
+   "lineamientos": [
+    "La encuesta debe ser anónima y voluntaria, sin direcciones exactas; presenta los resultados como tendencias de una muestra pequeña.",
+    "No señales a personas ni a empresas concretas sin evidencia."
+   ],
+   "otroSector": "El mismo diagnóstico sirve para un campus, un colegio, un mercado o una comunidad rural."
+  },
+  {
+   "id": "un-mapa-de-los-puntos-donde-se-acumula-agua-despues-de-las-lluvi",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "sociedad"
+   ],
+   "titulo": "Un mapa de los puntos donde se acumula agua después de las lluvias",
+   "resumen": "Identifica dónde se empoza el agua en tu zona cuando llueve, por qué ocurre y qué efectos tiene en el tránsito, las viviendas y la salud.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Drenaje",
+    "Escorrentía"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Geografía",
+    "Ingeniería Sanitaria",
+    "Arquitectura",
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "En muchas ciudades las pistas y veredas se inundan o se llenan de charcos con poca lluvia. Esos puntos suelen repetirse, pero casi nunca se registran y por eso se resuelven tarde.",
+    "En ciudades con lluvias escasas, como Lima, el problema es mayor porque la infraestructura de drenaje se diseña poco, y un evento fuerte genera grandes daños."
+   ],
+   "desarrollar": [
+    "Recopila información de vecinos y de observación, tras una lluvia o con fotos de archivos públicos, sobre dónde se acumula agua, cuánto tiempo y qué impacto tiene, y ubícalos en un mapa.",
+    "Relaciona esos puntos con la pendiente, los desagües pluviales y el tipo de superficie, y propón qué intervención sencilla, como una rejilla o un cambio de nivel, resolvería cada tipo de punto."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Relación con la pendiente",
+     "aporta": "usa un mapa de altitudes para entender por qué se acumula."
+    },
+    {
+     "titulo": "Efecto en el tránsito",
+     "aporta": "estima cuánto tiempo se pierde por los puntos más afectados."
+    },
+    {
+     "titulo": "Alerta temprana",
+     "aporta": "diseña un aviso simple para que los vecinos reporten los puntos críticos."
+    }
+   ],
+   "objetivos": [
+    "Recopilar y ubicar puntos de acumulación.",
+    "Entender sus causas.",
+    "Mapear con método.",
+    "Proponer soluciones."
+   ],
+   "habilidades": [
+    "Cartografía básica.",
+    "Observación de campo.",
+    "Análisis de causas.",
+    "Propuestas de solución."
+   ],
+   "herramientas": [
+    "Un mapa en línea.",
+    "Una ficha de registro.",
+    "Datos públicos de altitud."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No te acerques a zonas inundadas ni a cables; observa desde un lugar seguro y no entres a propiedades.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo mapa sirve para registrar baches, basura, cables caídos o árboles en riesgo."
+  },
+  {
+   "id": "que-tan-preparada-esta-la-infraestructura-de-drenaje-de-una-zona",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "ciencias"
+   ],
+   "titulo": "¿Qué tan preparada está la infraestructura de drenaje de una zona para lluvias intensas?",
+   "resumen": "Estima con cálculos simples cuánta agua generaría una lluvia fuerte en una zona y si los desagües, cunetas y canales disponibles podrían manejarla.",
+   "tipo": "Simulación",
+   "tiempo": "~26 h",
+   "horas": 26,
+   "etiquetas": [
+    "Drenaje",
+    "Lluvias"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Sanitaria",
+    "Ingeniería Ambiental",
+    "Matemática",
+    "Física",
+    "Geografía",
+    "Estadística",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Cuando llueve más de lo habitual, el agua busca el camino más corto y rápido. Si los desagües y pendientes no están preparados, se desborda y causa daños.",
+    "Un cálculo básico, como el método racional, permite estimar cuánta agua llega y compararla con la capacidad de la infraestructura."
+   ],
+   "desarrollar": [
+    "Elige un área pequeña, mide su superficie y los materiales que cubren el suelo, y con datos públicos de lluvias de tu zona estima el caudal que generaría una lluvia intensa con el método racional.",
+    "Compara ese caudal con la capacidad aproximada de los desagües o cunetas visibles, concluye si hay riesgo de desborde y explica las limitaciones de tu cálculo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Distintas lluvias",
+     "aporta": "repite el cálculo para lluvias de distinta intensidad."
+    },
+    {
+     "titulo": "Efecto de áreas verdes",
+     "aporta": "estima cuánto se reduce el caudal si se reemplaza cemento por áreas verdes."
+    },
+    {
+     "titulo": "Hoja de cálculo reutilizable",
+     "aporta": "crea una plantilla para que otros estimen el caudal en su zona."
+    }
+   ],
+   "objetivos": [
+    "Aplicar un método de cálculo simple.",
+    "Usar datos públicos de lluvia.",
+    "Comparar con la capacidad de drenaje.",
+    "Reconocer las limitaciones."
+   ],
+   "habilidades": [
+    "Cálculo hidrológico básico.",
+    "Lectura de datos climáticos.",
+    "Modelado en hoja de cálculo.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Datos públicos de precipitación.",
+    "Un mapa en línea."
+   ],
+   "lineamientos": [
+    "Aclara que es un cálculo simplificado y no sustituye un estudio técnico; no lo uses para decidir sobre seguridad de construcciones.",
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro."
+   ],
+   "otroSector": "El mismo cálculo sirve para planificar techos que recolectan agua de lluvia o jardines que absorben escorrentía."
+  },
+  {
+   "id": "como-usa-la-gente-un-parque-o-una-plaza",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cómo usa la gente un parque o una plaza?",
+   "resumen": "Observa durante varios días cómo usan las personas un parque o plaza, quiénes lo visitan, a qué hora y para qué, y qué zonas se aprovechan más o menos.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Uso del espacio",
+    "Observación"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Sociología",
+    "Arquitectura",
+    "Geografía",
+    "Psicología",
+    "Trabajo Social",
+    "Estadística",
+    "Antropología",
+    "Diseño"
+   ],
+   "problema": [
+    "Un espacio público puede estar lleno o vacío, y no siempre por lo bonito que sea. La gente lo usa según la sombra, la seguridad, los bancos, los juegos, la cercanía y los horarios.",
+    "Observar con método muestra quién usa cada parte y quién queda fuera, y da pistas para mejorarlo."
+   ],
+   "desarrollar": [
+    "Elige un parque o plaza, divídelo en zonas y registra en varios momentos del día cuántas personas hay en cada zona, qué hacen y de qué grupos parecen ser, sin anotar datos personales.",
+    "Genera un mapa de calor con los usos, identifica las zonas más y menos usadas, y relaciona el resultado con la sombra, los bancos, la iluminación y la limpieza."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Fin de semana frente a semana",
+     "aporta": "compara cómo cambia el uso."
+    },
+    {
+     "titulo": "Conversaciones breves",
+     "aporta": "pregunta a cinco usuarios por qué eligen ese lugar."
+    },
+    {
+     "titulo": "Quién no viene",
+     "aporta": "investiga qué grupos casi no usan el espacio y por qué."
+    }
+   ],
+   "objetivos": [
+    "Observar con método.",
+    "Registrar usos y zonas.",
+    "Construir un mapa de uso.",
+    "Relacionar el uso con el diseño."
+   ],
+   "habilidades": [
+    "Observación sistemática.",
+    "Registro de datos.",
+    "Visualización espacial.",
+    "Análisis cualitativo."
+   ],
+   "herramientas": [
+    "Una ficha de conteo.",
+    "Un plano del parque.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen.",
+    "Los grupos que registres son categorías generales, no datos individuales."
+   ],
+   "otroSector": "El mismo método sirve para observar el uso de una biblioteca, un patio escolar o una sala de espera."
+  },
+  {
+   "id": "mobiliario-urbano-hay-suficientes-bancas-basureros-y-sombra",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "ambiente"
+   ],
+   "titulo": "Mobiliario urbano: ¿hay suficientes bancas, basureros y sombra?",
+   "resumen": "Inventaría el mobiliario urbano de una zona, como bancas, basureros, bebederos y sombra, mapea dónde faltan y propone cómo repartirlos mejor.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Mobiliario urbano",
+    "Espacios públicos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Diseño",
+    "Ingeniería Civil",
+    "Ingeniería Ambiental",
+    "Geografía",
+    "Sociología",
+    "Trabajo Social",
+    "Estadística"
+   ],
+   "problema": [
+    "Bancas, basureros, bebederos, paraderos con techo y luminarias hacen que un lugar sea usable y cómodo, pero no siempre están donde se necesitan. Algunas calles tienen de sobra y otras nada.",
+    "Un inventario sencillo muestra dónde hay carencia y a quiénes afecta más."
+   ],
+   "desarrollar": [
+    "Recorre una zona y registra cada elemento de mobiliario urbano con su tipo, estado y ubicación aproximada, y mide cada cuántos metros hay una banca o un basurero.",
+    "Mapea las carencias, compara con referencias de distancias recomendadas, y propón una distribución mejor con un presupuesto aproximado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Por usuarios",
+     "aporta": "analiza el mobiliario según las necesidades de personas mayores y niños."
+    },
+    {
+     "titulo": "Estado y mantenimiento",
+     "aporta": "añade qué elementos están rotos o sucios."
+    },
+    {
+     "titulo": "Diseño propio",
+     "aporta": "diseña una banca o un paradero con materiales económicos."
+    }
+   ],
+   "objetivos": [
+    "Inventariar mobiliario urbano.",
+    "Medir distancias entre elementos.",
+    "Detectar carencias.",
+    "Proponer una distribución."
+   ],
+   "habilidades": [
+    "Inventario en campo.",
+    "Cartografía básica.",
+    "Análisis espacial.",
+    "Diseño de propuestas."
+   ],
+   "herramientas": [
+    "Una ficha de inventario.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo inventario sirve para señalización, para luminarias o para áreas verdes."
+  },
+  {
+   "id": "puntos-de-encuentro-comunitario-donde-se-junta-tu-comunidad",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Puntos de encuentro comunitario: ¿dónde se junta tu comunidad?",
+   "resumen": "Identifica los lugares donde se reúne la gente de tu barrio, como losas deportivas, mercados, parques o locales comunales, y qué los hace funcionar como puntos de encuentro.",
+   "tipo": "Investigación",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Comunidad",
+    "Encuentro"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Sociología",
+    "Trabajo Social",
+    "Arquitectura",
+    "Geografía",
+    "Antropología",
+    "Psicología",
+    "Comunicaciones",
+    "Educación"
+   ],
+   "problema": [
+    "Un barrio es más que viviendas: también son los lugares donde sus habitantes se encuentran, conversan y organizan actividades. Cuando esos lugares faltan o no funcionan, la vida comunitaria se debilita.",
+    "Reconocerlos permite cuidarlos y ver dónde faltan."
+   ],
+   "desarrollar": [
+    "Con una encuesta breve y anónima y con observación, identifica cuáles son los lugares de encuentro de tu barrio, qué actividades ocurren, en qué horarios y quiénes los usan.",
+    "Haz un mapa de esos lugares, descríbelos y evalúa qué condiciones los hacen funcionar, como sombra, seguridad o cercanía, y qué zonas no tienen ninguno."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Lugares perdidos",
+     "aporta": "investiga qué espacios dejaron de usarse y por qué."
+    },
+    {
+     "titulo": "Distintas edades",
+     "aporta": "compara los puntos de encuentro de jóvenes, adultos y mayores."
+    },
+    {
+     "titulo": "Calendario",
+     "aporta": "arma un calendario de actividades de la comunidad."
+    }
+   ],
+   "objetivos": [
+    "Identificar puntos de encuentro.",
+    "Describir su uso.",
+    "Mapearlos.",
+    "Detectar zonas sin espacios de encuentro."
+   ],
+   "habilidades": [
+    "Observación cualitativa.",
+    "Encuestas breves.",
+    "Mapeo comunitario.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Un formulario anónimo.",
+    "Un mapa en línea.",
+    "Una ficha de descripción."
+   ],
+   "lineamientos": [
+    "La participación debe ser voluntaria y anónima; no registres datos personales ni conflictos de personas concretas.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo estudio sirve para entender los espacios de reunión de una universidad, un colegio o una organización."
+  },
+  {
+   "id": "espacios-publicos-subutilizados-diagnostico-y-recuperacion",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "arte"
+   ],
+   "titulo": "Espacios públicos subutilizados: diagnóstico y recuperación",
+   "resumen": "Identifica un espacio público poco usado en tu barrio, entiende por qué está abandonado y diseña una propuesta para devolverle vida, con la participación de quienes viven cerca.",
+   "tipo": "Plan",
+   "tiempo": "3 a 5 semanas",
+   "horas": 25,
+   "etiquetas": [
+    "Espacios vacíos",
+    "Recuperación"
+   ],
+   "intencion": [
+    "investigar",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Sociología",
+    "Diseño",
+    "Geografía",
+    "Ingeniería Civil",
+    "Trabajo Social",
+    "Ingeniería Ambiental",
+    "Economía"
+   ],
+   "problema": [
+    "Hay terrenos, plazas o parques cerrados, sucios o vacíos que podrían ser lugares valiosos. Suelen estar así por falta de mantenimiento, inseguridad, mala ubicación o porque nadie les asignó un uso.",
+    "Entender las razones permite proponer cambios que sí funcionen."
+   ],
+   "desarrollar": [
+    "Elige un espacio poco usado, observa su estado y sus usos durante varios días, y conversa con cinco vecinos sobre por qué creen que no se usa y qué les gustaría ahí.",
+    "Diagnostica las causas, diseña una propuesta con actividades y mejoras sencillas, estima su costo y define cómo se mantendría en el tiempo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Usos temporales",
+     "aporta": "propón una actividad temporal, como una feria o un cine al aire libre, para probar el interés."
+    },
+    {
+     "titulo": "Aliados",
+     "aporta": "identifica instituciones o grupos que podrían ayudar."
+    },
+    {
+     "titulo": "Seguimiento",
+     "aporta": "diseña indicadores para saber si la propuesta funciona."
+    }
+   ],
+   "objetivos": [
+    "Diagnosticar un espacio subutilizado.",
+    "Escuchar a la comunidad.",
+    "Diseñar una propuesta de recuperación.",
+    "Pensar en su sostenibilidad."
+   ],
+   "habilidades": [
+    "Diagnóstico espacial.",
+    "Entrevistas.",
+    "Diseño participativo.",
+    "Planificación de proyectos."
+   ],
+   "herramientas": [
+    "Un plano o croquis.",
+    "Una guía de entrevista.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No inicies cambios físicos ni ocupes terrenos: la propuesta es una idea que debe ser conversada con la autoridad y los vecinos.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo proceso sirve para recuperar un aula, un local comunal o un edificio vacío."
+  },
+  {
+   "id": "propuesta-de-rediseno-para-una-plaza-o-parque",
+   "area": "ciudades",
+   "areas2": [
+    "arte",
+    "ambiente"
+   ],
+   "titulo": "Propuesta de rediseño para una plaza o parque",
+   "resumen": "Elige una plaza o parque real, entiende cómo funciona hoy y diseña una propuesta de rediseño con zonas, vegetación, sombra, mobiliario y actividades.",
+   "tipo": "Plan",
+   "tiempo": "3 a 5 semanas",
+   "horas": 28,
+   "etiquetas": [
+    "Rediseño",
+    "Parques"
+   ],
+   "intencion": [
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Diseño",
+    "Ingeniería Ambiental",
+    "Ingeniería Civil",
+    "Geografía",
+    "Sociología",
+    "Paisajismo",
+    "Ingeniería Agroindustrial"
+   ],
+   "problema": [
+    "Muchas plazas y parques se diseñaron hace décadas para necesidades distintas. Hoy pueden tener poca sombra, caminos mal ubicados o ningún lugar para estar cómodos.",
+    "Rediseñarlos con una mirada de uso real, de clima y de comunidad es un buen ejercicio para aprender a proponer soluciones concretas."
+   ],
+   "desarrollar": [
+    "Haz un levantamiento del espacio: plano a mano con medidas aproximadas, árboles, caminos, bancas y usos, y un diagnóstico de qué funciona y qué no.",
+    "Propón un nuevo plano con zonas bien pensadas, árboles y sombra, mobiliario y actividades, representa un antes y después, y estima los costos principales."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Riego y mantenimiento",
+     "aporta": "estima el agua y el trabajo que requeriría el nuevo diseño."
+    },
+    {
+     "titulo": "Seguridad",
+     "aporta": "revisa que el diseño tenga buena visibilidad y luz."
+    },
+    {
+     "titulo": "Etapas",
+     "aporta": "divide la propuesta en etapas que se puedan financiar por separado."
+    }
+   ],
+   "objetivos": [
+    "Hacer un levantamiento del espacio.",
+    "Diagnosticar su funcionamiento.",
+    "Diseñar una propuesta.",
+    "Estimar costos y etapas."
+   ],
+   "habilidades": [
+    "Levantamiento de planos.",
+    "Diseño paisajista básico.",
+    "Representación gráfica.",
+    "Estimación de costos."
+   ],
+   "herramientas": [
+    "Un programa de dibujo o planos.",
+    "Cinta métrica.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Presenta la propuesta como una idea y no como un proyecto oficial; no modifiques el espacio real sin autorización.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo proceso sirve para rediseñar un patio escolar, un jardín de un hospital o un espacio de un campus."
+  },
+  {
+   "id": "reimaginar-una-calle-para-peatones-y-ciclistas",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "arte"
+   ],
+   "titulo": "Reimaginar una calle para peatones y ciclistas",
+   "resumen": "Elige una calle de tu zona y diseña cómo se vería si diera más espacio a personas que caminan y van en bicicleta, sin dejar de atender a quienes necesitan vehículos.",
+   "tipo": "Plan",
+   "tiempo": "~26 h",
+   "horas": 26,
+   "etiquetas": [
+    "Calles",
+    "Movilidad activa"
+   ],
+   "intencion": [
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Diseño",
+    "Geografía",
+    "Ingeniería Ambiental",
+    "Sociología",
+    "Ingeniería Industrial",
+    "Economía"
+   ],
+   "problema": [
+    "Muchas calles se diseñaron para que pasen autos, y el espacio para peatones y ciclistas es lo que sobra. Pero las calles también son lugares para estar, comprar, jugar y encontrarse.",
+    "Repensarlas con otras prioridades permite ver qué cambiaría y qué problemas habría que resolver."
+   ],
+   "desarrollar": [
+    "Elige una calle y mide su ancho total, el espacio de pista, veredas y estacionamientos, y observa quiénes la usan, cuántos vehículos, peatones y ciclistas pasan en horas distintas.",
+    "Dibuja un diseño con un reparto distinto del espacio, con ciclovía, veredas más anchas, árboles y cruces, y analiza qué efectos tendría en el tránsito, el comercio y la seguridad."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Solo los fines de semana",
+     "aporta": "propón cerrar la calle a vehículos en ciertos horarios."
+    },
+    {
+     "titulo": "Voz del comercio",
+     "aporta": "pregunta a comerciantes qué les preocuparía del cambio."
+    },
+    {
+     "titulo": "Costo",
+     "aporta": "estima cuánto costaría el rediseño por cuadra."
+    }
+   ],
+   "objetivos": [
+    "Medir y observar una calle.",
+    "Diseñar un reparto distinto del espacio.",
+    "Analizar efectos y conflictos.",
+    "Presentar la propuesta con claridad."
+   ],
+   "habilidades": [
+    "Diseño urbano básico.",
+    "Medición en campo.",
+    "Análisis de efectos.",
+    "Comunicación visual."
+   ],
+   "herramientas": [
+    "Un programa de dibujo.",
+    "Cinta métrica.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "Presenta el diseño como una propuesta y reconoce las necesidades de quienes dependen de vehículos, como transporte de carga o personas con movilidad reducida."
+   ],
+   "otroSector": "El mismo ejercicio sirve para repensar un estacionamiento, un patio escolar o un pasaje."
+  },
+  {
+   "id": "como-cambia-un-espacio-durante-el-dia",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cómo cambia un espacio durante el día?",
+   "resumen": "Observa un mismo lugar a distintas horas y describe cómo cambian quiénes lo usan, qué actividades ocurren y qué sensación produce.",
+   "tipo": "Investigación",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Tiempo",
+    "Espacio público"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Geografía",
+    "Sociología",
+    "Arquitectura",
+    "Psicología",
+    "Estadística",
+    "Antropología",
+    "Diseño",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Una plaza a las siete de la mañana no es la misma que a mediodía o a la noche. Cambian las personas, los ruidos, la sombra, la seguridad y las actividades.",
+    "Observar el ciclo completo ayuda a entender que un espacio cumple varios papeles y que un diseño pensado para una sola hora puede fallar en otras."
+   ],
+   "desarrollar": [
+    "Elige un lugar, como una esquina, un mercado o un parque, y regístralo en seis momentos del día durante tres días, con una ficha sobre cantidad de personas, tipos de actividades, ruido, luz y sensación general.",
+    "Resume los cambios en una línea de tiempo visual, identifica las horas con más actividad o más riesgo y propón cómo el espacio podría aprovechar mejor sus horas muertas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Fotografía de la luz",
+     "aporta": "documenta el cambio de luz con fotos del mismo ángulo."
+    },
+    {
+     "titulo": "Fin de semana",
+     "aporta": "compara con un día no laborable."
+    },
+    {
+     "titulo": "Mapa de sonidos",
+     "aporta": "añade un registro de qué sonidos predominan en cada hora."
+    }
+   ],
+   "objetivos": [
+    "Observar en distintos momentos.",
+    "Registrar con una ficha.",
+    "Resumir cambios visualmente.",
+    "Proponer mejoras por horario."
+   ],
+   "habilidades": [
+    "Observación sistemática.",
+    "Visualización de datos.",
+    "Análisis cualitativo.",
+    "Pensamiento creativo."
+   ],
+   "herramientas": [
+    "Una ficha de observación.",
+    "Un editor de gráficos o infografías.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo estudio sirve para observar un comedor universitario, una estación o un hospital durante el día."
+  },
+  {
+   "id": "estudio-de-flujos-de-personas-en-un-espacio-publico",
+   "area": "ciudades",
+   "areas2": [
+    "tecnologia",
+    "sociedad"
+   ],
+   "titulo": "Estudio de flujos de personas en un espacio público",
+   "resumen": "Cuenta y analiza cómo circula la gente por un espacio público, por dónde entra y sale, dónde se detiene y dónde se forman aglomeraciones.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Flujos",
+    "Conteo"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Arquitectura",
+    "Matemática",
+    "Geografía",
+    "Ingeniería de Sistemas",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Las personas no se distribuyen al azar: siguen caminos, evitan obstáculos y se concentran en ciertos puntos. Entender esos flujos ayuda a ubicar puertas, bancas, puestos y señales donde de verdad funcionan.",
+    "El conteo con método es una técnica sencilla que se usa en urbanismo y en comercio."
+   ],
+   "desarrollar": [
+    "Elige un espacio con varios accesos, como una plaza o la entrada de un mercado, y cuenta durante periodos de cinco minutos cuántas personas pasan por cada acceso y en qué dirección, en distintos horarios.",
+    "Dibuja un diagrama de flujos con flechas proporcionales, identifica los puntos de aglomeración y propón cambios de ubicación de elementos para mejorar la circulación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Mapa de trayectorias",
+     "aporta": "dibuja los caminos reales que siguen las personas, incluso los que no son oficiales."
+    },
+    {
+     "titulo": "Simulación",
+     "aporta": "programa una simulación sencilla de personas caminando."
+    },
+    {
+     "titulo": "Capacidad",
+     "aporta": "estima cuántas personas caben cómodamente en el espacio."
+    }
+   ],
+   "objetivos": [
+    "Contar flujos con método.",
+    "Representarlos en un diagrama.",
+    "Identificar aglomeraciones.",
+    "Proponer cambios."
+   ],
+   "habilidades": [
+    "Conteo y estadística.",
+    "Diagramas de flujo.",
+    "Análisis espacial.",
+    "Propuestas de mejora."
+   ],
+   "herramientas": [
+    "Contadores manuales o una aplicación de conteo.",
+    "Hoja de cálculo.",
+    "Un programa de dibujo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo estudio sirve para ubicar puestos de un evento, circulación en un hospital o filas en un comedor."
+  },
+  {
+   "id": "mapa-participativo-de-tu-barrio",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "tecnologia"
+   ],
+   "titulo": "Mapa participativo de tu barrio",
+   "resumen": "Construye con vecinos un mapa del barrio que muestre lo que las personas valoran, lo que les preocupa y los lugares que consideran importantes, para ver el barrio con sus propios ojos.",
+   "tipo": "Prototipo",
+   "tiempo": "3 a 4 semanas",
+   "horas": 24,
+   "etiquetas": [
+    "Mapeo comunitario",
+    "Participación"
+   ],
+   "intencion": [
+    "crear",
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Geografía",
+    "Trabajo Social",
+    "Sociología",
+    "Ingeniería de Sistemas",
+    "Arquitectura",
+    "Antropología",
+    "Comunicaciones",
+    "Educación"
+   ],
+   "problema": [
+    "Los mapas oficiales muestran calles y manzanas, pero no dicen dónde se juega, qué lugares dan miedo o dónde se conversa. Esa información solo la tienen quienes viven allí.",
+    "Un mapa participativo reúne esos saberes y permite conversar sobre el barrio con evidencia propia."
+   ],
+   "desarrollar": [
+    "Diseña una dinámica simple, como un mapa en papel o una hoja de marcadores, donde cada participante ubique lugares que le gustan, que le preocupan y que usa a diario.",
+    "Reúne los mapas de al menos diez personas, combínalos en uno solo, identifica coincidencias y diferencias y presenta el resultado a la comunidad como punto de partida de una conversación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Versión digital",
+     "aporta": "convierte el mapa en una página web interactiva."
+    },
+    {
+     "titulo": "Por edades",
+     "aporta": "compara cómo mapean el barrio niños, jóvenes y personas mayores."
+    },
+    {
+     "titulo": "Historias",
+     "aporta": "añade breves historias asociadas a algunos lugares."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una dinámica participativa.",
+    "Combinar mapas individuales.",
+    "Analizar coincidencias y diferencias.",
+    "Presentar resultados a la comunidad."
+   ],
+   "habilidades": [
+    "Mapeo participativo.",
+    "Facilitación de grupos.",
+    "Análisis cualitativo.",
+    "Comunicación a la comunidad."
+   ],
+   "herramientas": [
+    "Papel o un mapa en línea.",
+    "Marcadores o pegatinas.",
+    "Un editor de diseño."
+   ],
+   "lineamientos": [
+    "La participación debe ser voluntaria, con consentimiento informado; no registres nombres ni direcciones exactas.",
+    "Evita marcar viviendas concretas y respeta lugares que algunas personas no quieran compartir."
+   ],
+   "otroSector": "El mismo método sirve para mapear un colegio, una universidad o un lugar de trabajo con quienes lo usan."
+  },
+  {
+   "id": "que-necesidades-urbanas-perciben-los-vecinos-y-que-cambiarian-de",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "derecho"
+   ],
+   "titulo": "¿Qué necesidades urbanas perciben los vecinos y qué cambiarían de sus espacios comunes?",
+   "resumen": "Pregunta a quienes viven en un barrio qué problemas notan y qué cambiarían en sus espacios comunes, y ordena sus respuestas para ver qué necesidades son las más compartidas.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Necesidades",
+    "Participación"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Sociología",
+    "Trabajo Social",
+    "Arquitectura",
+    "Ciencias Políticas",
+    "Estadística",
+    "Geografía",
+    "Psicología",
+    "Derecho"
+   ],
+   "problema": [
+    "Quien vive en un barrio sabe cuáles son sus problemas, pero esa voz rara vez llega a quienes toman decisiones. Y lo que preocupa a unos no siempre es lo que preocupa a otros.",
+    "Preguntar de forma ordenada permite distinguir entre quejas aisladas y necesidades compartidas."
+   ],
+   "desarrollar": [
+    "Diseña una encuesta anónima con preguntas abiertas y cerradas sobre los espacios comunes del barrio, como qué les gusta, qué les molesta y qué cambiarían, y aplícala a una muestra pequeña.",
+    "Clasifica las respuestas por temas, calcula cuántas personas mencionan cada uno, contrasta con los problemas que tú observaste y prepara un resumen con las cinco necesidades más urgentes."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Prioridades",
+     "aporta": "pide que ordenen los problemas por importancia."
+    },
+    {
+     "titulo": "Distintos grupos",
+     "aporta": "compara lo que dicen jóvenes, adultos y personas mayores."
+    },
+    {
+     "titulo": "Devolución",
+     "aporta": "organiza una breve reunión para mostrar los resultados."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una encuesta abierta y cerrada.",
+    "Clasificar respuestas por temas.",
+    "Identificar necesidades compartidas.",
+    "Comunicar resultados."
+   ],
+   "habilidades": [
+    "Diseño de encuestas.",
+    "Análisis de texto simple.",
+    "Estadística descriptiva.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Un formulario anónimo.",
+    "Hoja de cálculo.",
+    "Un editor de infografías."
+   ],
+   "lineamientos": [
+    "La encuesta debe ser anónima y voluntaria; no incluyas preguntas sobre conflictos con personas concretas.",
+    "Presenta los resultados como tendencias de una muestra pequeña."
+   ],
+   "otroSector": "El mismo método sirve para recoger las necesidades de estudiantes de un colegio, usuarios de una biblioteca o trabajadores de una empresa."
+  },
+  {
+   "id": "oportunidades-de-mejora-urbana-mediante-observacion",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Oportunidades de mejora urbana mediante observación",
+   "resumen": "Aprende a mirar tu entorno como un diagnosticador urbano: recorre una zona con una ficha de observación y detecta pequeñas mejoras que cambiarían el uso del espacio.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Observación",
+    "Diagnóstico urbano"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Geografía",
+    "Ingeniería Civil",
+    "Sociología",
+    "Diseño",
+    "Ingeniería Ambiental",
+    "Trabajo Social",
+    "Antropología"
+   ],
+   "problema": [
+    "Muchas mejoras urbanas no necesitan grandes obras: un cruce pintado, una banca, una rampa o una luz pueden cambiar mucho. Pero hay que aprender a ver qué hace falta.",
+    "La observación sistemática entrena esa mirada y produce una lista de oportunidades concretas."
+   ],
+   "desarrollar": [
+    "Recorre una zona de entre cinco y diez cuadras con una ficha que incluya aspectos como seguridad, comodidad, accesibilidad, belleza y uso, y puntúa cada tramo.",
+    "Identifica las diez oportunidades de mejora más claras, clasifícalas por costo y por efecto, y presenta las tres con mejor relación entre ambos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar observadores",
+     "aporta": "haz que dos personas recorran la misma zona y compara."
+    },
+    {
+     "titulo": "Medir el cambio",
+     "aporta": "elige una mejora pequeña, aplícala con permiso y observa su efecto."
+    },
+    {
+     "titulo": "Álbum visual",
+     "aporta": "crea un álbum de antes y después con dibujos de las propuestas."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una ficha de observación.",
+    "Detectar oportunidades concretas.",
+    "Clasificar por costo y efecto.",
+    "Priorizar propuestas."
+   ],
+   "habilidades": [
+    "Observación sistemática.",
+    "Priorización.",
+    "Diseño de fichas.",
+    "Propuestas de mejora."
+   ],
+   "herramientas": [
+    "Una ficha de observación.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen.",
+    "No ejecutes cambios en el espacio público sin autorización; presenta tus ideas como propuestas."
+   ],
+   "otroSector": "La misma mirada sirve para detectar mejoras en un campus, una tienda o un puesto de trabajo."
+  },
+  {
+   "id": "inventario-de-infraestructura-comunitaria",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Inventario de infraestructura comunitaria",
+   "resumen": "Registra qué infraestructura de uso colectivo existe en una comunidad, como locales comunales, losas deportivas, postas o parques, en qué estado está y a quién sirve.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Inventario",
+    "Comunidad"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Arquitectura",
+    "Geografía",
+    "Trabajo Social",
+    "Sociología",
+    "Estadística",
+    "Administración",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Una comunidad no siempre sabe con qué infraestructura cuenta ni en qué estado está. Sin un inventario, es difícil pedir mejoras, planificar su uso o cuidarla.",
+    "Hacerlo con una ficha ordenada permite ver qué hay, qué falta y qué necesita mantenimiento."
+   ],
+   "desarrollar": [
+    "Diseña una ficha para registrar cada elemento de infraestructura comunitaria con su tipo, ubicación general, estado, usos y quién lo administra, y recorre una zona completando la ficha.",
+    "Resume el inventario en tablas y mapas, identifica los elementos en peor estado o poco utilizados y propón qué elementos hacen falta."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Actualización",
+     "aporta": "diseña un sistema para mantener el inventario al día."
+    },
+    {
+     "titulo": "Costo de mantenimiento",
+     "aporta": "estima cuánto costaría reparar lo que está en mal estado."
+    },
+    {
+     "titulo": "Uso real",
+     "aporta": "compara el uso real con el uso planificado de cada elemento."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una ficha de inventario.",
+    "Registrar la infraestructura de una zona.",
+    "Resumir en tablas y mapas.",
+    "Identificar prioridades."
+   ],
+   "habilidades": [
+    "Inventario en campo.",
+    "Organización de datos.",
+    "Cartografía básica.",
+    "Priorización."
+   ],
+   "herramientas": [
+    "Una ficha de inventario.",
+    "Hoja de cálculo.",
+    "Un mapa en línea."
+   ],
+   "lineamientos": [
+    "Registra solo infraestructura de uso público o comunitario, con permiso de quien la administre, y no datos de propiedades privadas.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo inventario sirve para un colegio, un campus, un hospital o un parque industrial."
+  },
+  {
+   "id": "comercio-local-y-uso-del-espacio-publico",
+   "area": "ciudades",
+   "areas2": [
+    "negocios",
+    "derecho"
+   ],
+   "titulo": "Comercio local y uso del espacio público",
+   "resumen": "Estudia cómo conviven los comercios, los vendedores y los peatones en una calle o plaza, y qué tensiones y beneficios genera el uso comercial del espacio público.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Comercio",
+    "Espacio público"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Derecho",
+    "Sociología",
+    "Arquitectura",
+    "Geografía",
+    "Administración",
+    "Trabajo Social",
+    "Ciencias Políticas"
+   ],
+   "problema": [
+    "Veredas con mesas, vendedores ambulantes, mercados informales y ferias dan vida y empleo a una zona, pero también reducen el espacio para caminar. Distintas personas defienden usos distintos del mismo lugar.",
+    "Entender esas tensiones permite proponer soluciones que no perjudiquen a ninguno de los grupos."
+   ],
+   "desarrollar": [
+    "Elige una calle o plaza con presencia de comercio y mide cuánto ancho de vereda ocupa el comercio, cuánto queda libre, cuántos puestos hay y qué horas funcionan.",
+    "Conversa con cuatro actores distintos, como un comerciante, un peatón, un vecino y un trabajador municipal, sobre sus necesidades, y propón un reparto del espacio que equilibre usos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Marco normativo",
+     "aporta": "revisa qué dicen las ordenanzas sobre el uso comercial del espacio público."
+    },
+    {
+     "titulo": "Beneficios económicos",
+     "aporta": "estima cuánto dinero y empleo genera el comercio de la zona."
+    },
+    {
+     "titulo": "Diseño del reparto",
+     "aporta": "dibuja una propuesta de ordenamiento con módulos o zonas."
+    }
+   ],
+   "objetivos": [
+    "Medir el uso comercial del espacio.",
+    "Escuchar a distintos actores.",
+    "Entender normas.",
+    "Proponer un reparto equilibrado."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Entrevistas.",
+    "Lectura de normas.",
+    "Propuesta de soluciones."
+   ],
+   "herramientas": [
+    "Cinta métrica.",
+    "Guía de entrevista.",
+    "Un programa de dibujo."
+   ],
+   "lineamientos": [
+    "Pide consentimiento para entrevistar y no expongas a vendedores sin permiso ni señales sus faltas.",
+    "Presenta tu análisis de forma neutral, sin juzgar a ningún grupo."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar el uso de espacios compartidos en un campus, un mercado o una estación."
+  },
+  {
+   "id": "donde-se-concentran-los-servicios-de-tu-barrio-y-que-tan-facil-e",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "negocios"
+   ],
+   "titulo": "¿Dónde se concentran los servicios de tu barrio y qué tan fácil es encontrarlos?",
+   "resumen": "Mapea los servicios esenciales de tu barrio, como farmacias, bancos, centros de salud, colegios y mercados, y evalúa qué tan cerca y fáciles de encontrar están.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Servicios",
+    "Mapa"
+   ],
+   "intencion": [
+    "investigar",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Geografía",
+    "Economía",
+    "Sociología",
+    "Arquitectura",
+    "Ingeniería de Sistemas",
+    "Estadística",
+    "Administración",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "Los servicios no se reparten por igual: algunas calles tienen de todo y otras casi nada. Además, a veces existen pero no son fáciles de encontrar por falta de señales o de información.",
+    "Mapearlos permite ver dónde se concentran y dónde faltan, y qué tan fácil es llegar."
+   ],
+   "desarrollar": [
+    "Recorre una zona y registra cada negocio y servicio esencial con su tipo y ubicación aproximada, y clasifícalos en categorías como salud, alimentación, educación, finanzas y trámites.",
+    "Haz un mapa por categoría, calcula la distancia a pie desde varios puntos del barrio a cada servicio y pregunta a cinco personas qué tan fácil les resulta encontrarlos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Servicios que faltan",
+     "aporta": "identifica qué servicio no existe en la zona y cuánto habría que caminar."
+    },
+    {
+     "titulo": "Horarios",
+     "aporta": "añade en qué horas está disponible cada servicio."
+    },
+    {
+     "titulo": "Guía del barrio",
+     "aporta": "elabora una guía ilustrada para nuevos vecinos."
+    }
+   ],
+   "objetivos": [
+    "Registrar servicios con método.",
+    "Mapearlos por categorías.",
+    "Calcular distancias.",
+    "Detectar servicios faltantes."
+   ],
+   "habilidades": [
+    "Inventario de campo.",
+    "Cartografía básica.",
+    "Cálculo de distancias.",
+    "Diseño de guías."
+   ],
+   "herramientas": [
+    "Una ficha de registro.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Registra solo establecimientos públicos y sus tipos, y no datos de las personas que trabajan ahí.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo mapa sirve para ubicar servicios dentro de un campus, un hospital o un parque industrial."
+  },
+  {
+   "id": "distribucion-de-comercios-y-actividad-comercial-en-una-zona",
+   "area": "ciudades",
+   "areas2": [
+    "negocios",
+    "sociedad"
+   ],
+   "titulo": "Distribución de comercios y actividad comercial en una zona",
+   "resumen": "Analiza cómo están distribuidos los comercios de una zona, dónde se concentra la actividad y qué factores explican que ciertas calles tengan más movimiento comercial.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Comercio",
+    "Actividad económica"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Geografía",
+    "Administración",
+    "Marketing",
+    "Arquitectura",
+    "Estadística",
+    "Sociología",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Ciertas calles concentran tiendas, restaurantes y servicios, mientras otras están casi vacías. Eso depende del flujo de gente, del transporte, de la seguridad, de las normas y de cómo se agrupan los negocios.",
+    "Entender esos patrones ayuda a decidir dónde conviene abrir un negocio y qué zonas necesitan impulso."
+   ],
+   "desarrollar": [
+    "Recorre varias calles y cuenta cuántos locales hay por cuadra, de qué tipo y cuántos están cerrados o en alquiler, y mide el flujo de peatones en horas clave.",
+    "Haz un mapa de intensidad comercial, relaciona el resultado con el flujo de personas y el transporte cercano, y explica por qué algunas calles son más activas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Tipos de negocios",
+     "aporta": "analiza qué tipos tienden a agruparse y por qué."
+    },
+    {
+     "titulo": "Locales vacíos",
+     "aporta": "estudia dónde hay más locales cerrados y qué podría explicarlo."
+    },
+    {
+     "titulo": "Un negocio nuevo",
+     "aporta": "recomienda dónde abrir un negocio de un tipo dado y justifica."
+    }
+   ],
+   "objetivos": [
+    "Contar y clasificar locales.",
+    "Medir flujo de peatones.",
+    "Mapear la actividad comercial.",
+    "Explicar los patrones."
+   ],
+   "habilidades": [
+    "Observación y conteo.",
+    "Cartografía.",
+    "Análisis económico básico.",
+    "Interpretación de resultados."
+   ],
+   "herramientas": [
+    "Una ficha de conteo.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Registra solo establecimientos visibles desde la vía pública y no datos de ventas ni de propietarios.",
+    "No uses tus resultados para señalar a negocios concretos como buenos o malos."
+   ],
+   "otroSector": "El mismo análisis sirve para ubicar un puesto en una feria, un kiosco en un campus o una tienda en un centro comercial."
+  },
+  {
+   "id": "comercio-y-movimiento-peatonal-como-se-influyen",
+   "area": "ciudades",
+   "areas2": [
+    "negocios",
+    "sociedad"
+   ],
+   "titulo": "Comercio y movimiento peatonal: ¿cómo se influyen?",
+   "resumen": "Investiga si las calles con más comercio atraen más peatones, o si más peatones atraen más comercio, y cómo cambia el movimiento a lo largo de una avenida comercial.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Comercio",
+    "Peatones"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Geografía",
+    "Arquitectura",
+    "Marketing",
+    "Estadística",
+    "Sociología",
+    "Administración",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Los negocios necesitan gente que pase, y la gente pasa donde hay cosas por hacer. Pero esa relación no es automática: depende del tipo de negocios, de la seguridad y de la comodidad de caminar.",
+    "Conocer cómo se influyen ayuda a planear tanto calles comerciales como la ubicación de nuevos negocios."
+   ],
+   "desarrollar": [
+    "Elige dos o tres calles con distinta cantidad de comercios y cuenta cuántas personas pasan por tramos de cinco minutos en distintos horarios, junto con el número de locales abiertos en cada tramo.",
+    "Relaciona ambos datos con un gráfico de dispersión, calcula la relación entre ellos y discute qué otros factores podrían explicar las diferencias."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Hora del día",
+     "aporta": "analiza cómo cambia la relación entre la mañana y la noche."
+    },
+    {
+     "titulo": "Tipo de comercio",
+     "aporta": "compara cómo influyen las tiendas, los restaurantes y los servicios."
+    },
+    {
+     "titulo": "Efecto de una mejora",
+     "aporta": "estudia qué pasó con el comercio tras una mejora de vereda en la zona."
+    }
+   ],
+   "objetivos": [
+    "Contar peatones y comercios.",
+    "Relacionar ambos datos.",
+    "Interpretar correlaciones con cuidado.",
+    "Discutir otros factores."
+   ],
+   "habilidades": [
+    "Conteo en campo.",
+    "Estadística básica.",
+    "Gráficos de dispersión.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Contadores manuales.",
+    "Hoja de cálculo.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen.",
+    "Recuerda que correlación no es causa: presenta tus conclusiones como hipótesis."
+   ],
+   "otroSector": "El mismo estudio sirve para evaluar cómo un evento o una obra cambia el movimiento de una zona."
+  },
+  {
+   "id": "comparando-dos-barrios-desde-la-perspectiva-de-infraestructura",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Comparando dos barrios desde la perspectiva de infraestructura",
+   "resumen": "Compara dos barrios con una misma ficha de criterios sobre veredas, pistas, agua, luz, áreas verdes y servicios, para ver qué diferencias hay y por qué.",
+   "tipo": "Análisis",
+   "tiempo": "3 a 4 semanas",
+   "horas": 24,
+   "etiquetas": [
+    "Comparación",
+    "Barrios"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Geografía",
+    "Ingeniería Civil",
+    "Arquitectura",
+    "Sociología",
+    "Estadística",
+    "Economía",
+    "Trabajo Social",
+    "Ingeniería Ambiental"
+   ],
+   "problema": [
+    "Dos barrios de la misma ciudad pueden tener infraestructuras muy distintas, y esa diferencia influye en la calidad de vida de quienes viven allí. Compararlos con un método común permite ver las brechas con claridad.",
+    "También ayuda a entender qué características del entorno, como la historia o el nivel de inversión, explican esas diferencias."
+   ],
+   "desarrollar": [
+    "Diseña una ficha con entre diez y quince indicadores de infraestructura y aplícala en dos barrios, mediante observación y datos públicos, con el mismo procedimiento en ambos.",
+    "Compara en una tabla y un gráfico, explica las brechas, investiga posibles causas y propón qué mejoras reducirían la diferencia."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Tercer barrio",
+     "aporta": "añade un tercer barrio y compara."
+    },
+    {
+     "titulo": "Inversión pública",
+     "aporta": "relaciona las diferencias con el gasto municipal en cada zona."
+    },
+    {
+     "titulo": "Voz de los vecinos",
+     "aporta": "contrasta tus indicadores con la percepción de quienes viven allí."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una ficha de indicadores.",
+    "Aplicarla de forma equivalente.",
+    "Comparar y explicar brechas.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Diseño de indicadores.",
+    "Observación sistemática.",
+    "Análisis comparativo.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Una ficha de evaluación.",
+    "Hoja de cálculo.",
+    "Datos públicos."
+   ],
+   "lineamientos": [
+    "Evita etiquetar a los barrios como mejores o peores: describe diferencias de infraestructura y no de personas.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "La misma comparación sirve para colegios, hospitales o campus de distintas zonas."
+  },
+  {
+   "id": "disena-un-plan-de-mejora-para-un-espacio-de-uso-comun",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "educacion"
+   ],
+   "titulo": "Diseña un plan de mejora para un espacio de uso común",
+   "resumen": "Elige un espacio de uso común, como el patio de un colegio, una escalera de un edificio o un parque, y elabora un plan de mejora completo con diagnóstico, propuestas, costos, etapas y responsables.",
+   "tipo": "Plan",
+   "tiempo": "4 a 6 semanas",
+   "horas": 30,
+   "etiquetas": [
+    "Plan de mejora",
+    "Espacios comunes"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Administración",
+    "Trabajo Social",
+    "Diseño",
+    "Sociología",
+    "Ingeniería Industrial",
+    "Economía"
+   ],
+   "problema": [
+    "Los espacios comunes son de todos y por eso, muchas veces, de nadie: nadie los mantiene ni decide cómo mejorarlos. Un plan claro ayuda a convertir buenas ideas en acciones posibles.",
+    "Redactar un plan es una habilidad muy útil, porque obliga a pensar en quién hace qué, con qué recursos y en qué orden."
+   ],
+   "desarrollar": [
+    "Elige un espacio, haz un diagnóstico con observación y conversaciones con usuarios, define los problemas principales y los objetivos de la mejora.",
+    "Diseña cinco acciones concretas con costo, responsable y plazo, ordénalas por etapas, define cómo se mediría el éxito y preséntalo en un documento o presentación de cinco páginas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Fuentes de recursos",
+     "aporta": "investiga cómo se podría financiar la mejora."
+    },
+    {
+     "titulo": "Plan de mantenimiento",
+     "aporta": "agrega cómo se cuidaría el espacio después de la mejora."
+    },
+    {
+     "titulo": "Presentación a la autoridad",
+     "aporta": "prepara una versión corta para presentarla a quien decide."
+    }
+   ],
+   "objetivos": [
+    "Hacer un diagnóstico participativo.",
+    "Definir objetivos y acciones.",
+    "Planificar costos, plazos y responsables.",
+    "Definir cómo medir el éxito."
+   ],
+   "habilidades": [
+    "Gestión de proyectos.",
+    "Diagnóstico participativo.",
+    "Presupuesto básico.",
+    "Redacción de planes."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de documentos o presentaciones.",
+    "Un cronograma."
+   ],
+   "lineamientos": [
+    "Presenta el plan como una propuesta y no como una decisión; no realices cambios sin autorización.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo formato sirve para planes de mejora de un colegio, una empresa o una organización estudiantil."
+  },
+  {
+   "id": "se-usan-los-puentes-peatonales-por-que-la-gente-cruza-por-abajo",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "salud"
+   ],
+   "titulo": "¿Se usan los puentes peatonales? Por qué la gente cruza por abajo",
+   "resumen": "Observa cuántas personas usan un puente peatonal y cuántas cruzan por la pista, y descubre qué hace que un puente se use o se ignore.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Puentes peatonales",
+    "Comportamiento"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Psicología",
+    "Sociología",
+    "Arquitectura",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Trabajo Social",
+    "Diseño"
+   ],
+   "problema": [
+    "En muchas ciudades hay puentes peatonales que casi nadie usa, mientras las personas cruzan por debajo entre los autos. Esto suele explicarse como falta de educación, pero muchas veces el problema es el diseño: es largo, empinado, oscuro, inseguro o desvía demasiado.",
+    "Entender las razones permite diseñar cruces que la gente sí use, y no solo culpar a quienes cruzan."
+   ],
+   "desarrollar": [
+    "Elige un puente peatonal y cuenta durante varios periodos cuántas personas lo usan y cuántas cruzan por la pista cerca de él, y mide el desvío extra que implica usar el puente y el esfuerzo de subir y bajar.",
+    "Conversa con quince cruzantes sobre por qué eligen una u otra opción, clasifica sus respuestas y propón mejoras de diseño o de ubicación, o alternativas a nivel."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Distintos puentes",
+     "aporta": "compara varios puentes y qué características tienen los más usados."
+    },
+    {
+     "titulo": "Tiempo extra",
+     "aporta": "calcula cuánto tarda cruzar por el puente frente a cruzar por la pista."
+    },
+    {
+     "titulo": "Alternativas",
+     "aporta": "evalúa un cruce a nivel con semáforo como opción."
+    }
+   ],
+   "objetivos": [
+    "Contar usos con método.",
+    "Medir esfuerzo y desvío.",
+    "Entender razones de comportamiento.",
+    "Proponer mejoras de diseño."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Entrevistas breves.",
+    "Análisis de comportamiento.",
+    "Propuestas de diseño."
+   ],
+   "herramientas": [
+    "Contadores manuales.",
+    "Una guía de preguntas breves.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No cruces por la pista para observar ni insistas a las personas que respondan, y evita juzgarlas.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo enfoque sirve para entender por qué no se usan escaleras, rampas o pasos peatonales en otros lugares."
+  },
+  {
+   "id": "mototaxis-combis-y-colectivos-el-transporte-que-no-sale-en-los-m",
+   "area": "ciudades",
+   "areas2": [
+    "negocios",
+    "sociedad"
+   ],
+   "titulo": "Mototaxis, combis y colectivos: el transporte que no sale en los mapas oficiales",
+   "resumen": "Estudia cómo funcionan los medios de transporte informales o no regulados de tu zona, quiénes los usan, cuánto cuestan y qué necesidades cubren que el transporte oficial no atiende.",
+   "tipo": "Investigación",
+   "tiempo": "~24 h",
+   "horas": 24,
+   "etiquetas": [
+    "Transporte informal",
+    "Movilidad"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Sociología",
+    "Ingeniería Civil",
+    "Geografía",
+    "Administración",
+    "Derecho",
+    "Trabajo Social",
+    "Antropología"
+   ],
+   "problema": [
+    "En muchas zonas, el transporte que más se usa no está en los mapas oficiales: mototaxis, combis, colectivos o triciclos. Cubren trayectos que el sistema formal no alcanza, pero también tienen problemas de seguridad, de regulación y de comodidad.",
+    "Entenderlos sin prejuicios permite ver qué hace falta para integrar o mejorar el servicio."
+   ],
+   "desarrollar": [
+    "Elige una zona donde existan estos servicios y registra con observación sus rutas aproximadas, sus tarifas, sus horarios y sus puntos de espera, y conversa con usuarios y conductores que acepten.",
+    "Mapea el servicio, compara tarifas y tiempos con el transporte formal para los mismos trayectos y concluye qué necesidades cubre, qué riesgos tiene y qué mejoras se podrían proponer."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Economía de un conductor",
+     "aporta": "estima cuánto gana y cuánto gasta un conductor al día, con su permiso."
+    },
+    {
+     "titulo": "Seguridad",
+     "aporta": "revisa las condiciones de seguridad para pasajeros."
+    },
+    {
+     "titulo": "Integración",
+     "aporta": "propón cómo podrían integrarse con el sistema formal."
+    }
+   ],
+   "objetivos": [
+    "Registrar un servicio informal con método.",
+    "Comparar con el transporte formal.",
+    "Entender necesidades cubiertas.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Investigación de campo.",
+    "Entrevistas.",
+    "Análisis comparativo.",
+    "Análisis crítico."
+   ],
+   "herramientas": [
+    "Una guía de entrevista.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Pide consentimiento a quienes entrevistes y no tomes datos de placas, nombres ni números de licencia.",
+    "Evita juzgar a quienes trabajan o usan estos servicios, y no recomiendes usar vehículos que no cumplan normas de seguridad.",
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro."
+   ],
+   "otroSector": "El mismo estudio sirve para entender otras economías informales, como el comercio ambulante o el reciclaje."
+  },
+  {
+   "id": "cuanto-espacio-de-la-calle-es-para-autos-y-cuanto-para-personas",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto espacio de la calle es para autos y cuánto para personas?",
+   "resumen": "Mide cuánto espacio ocupa cada tipo de uso en una calle, como autos en movimiento, autos estacionados, veredas y ciclovías, y compáralo con cuántas personas se mueven en cada modo.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Espacio vial",
+    "Equidad"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Ingeniería Civil",
+    "Geografía",
+    "Ingeniería Ambiental",
+    "Sociología",
+    "Ingeniería Industrial",
+    "Economía",
+    "Diseño"
+   ],
+   "problema": [
+    "En muchas calles la mayor parte del espacio es para autos, aunque la mayoría de las personas camina o va en bus. Esa distribución rara vez se mide, y por eso parece natural.",
+    "Compararla con quiénes realmente usan la calle permite discutir si el reparto es equitativo."
+   ],
+   "desarrollar": [
+    "Elige una calle y mide cuántos metros de ancho se dedican a veredas, carriles, ciclovía y estacionamiento, y cuenta durante un tiempo cuántas personas pasan caminando, en bus, en bici y en auto.",
+    "Calcula el espacio por persona en cada modo de transporte, grafica la comparación y discute qué cambios podrían equilibrarlo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Varias calles",
+     "aporta": "compara calles céntricas y de barrio."
+    },
+    {
+     "titulo": "Costo del espacio",
+     "aporta": "estima cuánto vale el espacio ocupado por estacionamientos."
+    },
+    {
+     "titulo": "Propuesta de reparto",
+     "aporta": "dibuja una alternativa con otro reparto del espacio."
+    }
+   ],
+   "objetivos": [
+    "Medir anchos de usos de la calle.",
+    "Contar personas por modo.",
+    "Calcular espacio por persona.",
+    "Discutir la equidad del reparto."
+   ],
+   "habilidades": [
+    "Medición en campo.",
+    "Conteo.",
+    "Cálculo y gráficos.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Cinta métrica.",
+    "Contadores manuales.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen.",
+    "Presenta tus datos de forma neutral y evita descalificar a quienes usan auto."
+   ],
+   "otroSector": "El mismo análisis sirve para el reparto de espacio en un campus, un aeropuerto o una plaza."
+  },
+  {
+   "id": "rutas-de-evacuacion-y-zonas-seguras-sabe-tu-comunidad-adonde-ir",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "salud"
+   ],
+   "titulo": "Rutas de evacuación y zonas seguras: ¿sabe tu comunidad adónde ir?",
+   "resumen": "Revisa si las rutas y puntos de reunión de emergencia de tu entorno están claros, señalizados y son conocidos por la gente, y diseña una mejora en información y señalización.",
+   "tipo": "Plan",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Evacuación",
+    "Sismos"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Arquitectura",
+    "Geografía",
+    "Ingeniería Ambiental",
+    "Trabajo Social",
+    "Educación",
+    "Sociología",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Lima y otras ciudades del Perú están expuestas a sismos y, en la costa, a tsunamis. En una emergencia, saber adónde ir y por dónde cambia mucho el resultado.",
+    "Pero muchas veces las rutas no están señalizadas, están bloqueadas o simplemente nadie las conoce."
+   ],
+   "desarrollar": [
+    "Elige un colegio, edificio o barrio, y verifica si existen rutas y zonas seguras señalizadas, si están despejadas y si las personas saben dónde están, con una encuesta breve y anónima.",
+    "Dibuja un plano con las rutas, mide la distancia y el tiempo a pie hasta el punto seguro, identifica obstáculos y propón mejoras de señalización y de comunicación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Simulacro observado",
+     "aporta": "observa un simulacro y mide cuánto tarda la evacuación."
+    },
+    {
+     "titulo": "Personas con movilidad reducida",
+     "aporta": "analiza cómo evacuarían quienes no pueden usar escaleras."
+    },
+    {
+     "titulo": "Plan familiar",
+     "aporta": "diseña un plan familiar de emergencia fácil de recordar."
+    }
+   ],
+   "objetivos": [
+    "Verificar rutas y señalización.",
+    "Medir distancias y tiempos.",
+    "Conocer el nivel de información.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Evaluación de riesgos.",
+    "Observación de campo.",
+    "Encuestas breves.",
+    "Comunicación de riesgos."
+   ],
+   "herramientas": [
+    "Un plano en línea.",
+    "Una guía de verificación.",
+    "Un formulario anónimo."
+   ],
+   "lineamientos": [
+    "Usa fuentes oficiales, como las de Defensa Civil, para definir zonas seguras; tu trabajo es un diagnóstico y no reemplaza un plan oficial.",
+    "Evita generar alarma y no propongas ninguna medida que contradiga las indicaciones oficiales."
+   ],
+   "otroSector": "El mismo método sirve para evacuación de incendios, de eventos masivos o de un edificio de oficinas."
+  },
+  {
+   "id": "un-mercado-de-abastos-como-infraestructura-del-barrio",
+   "area": "ciudades",
+   "areas2": [
+    "negocios",
+    "agricultura"
+   ],
+   "titulo": "Un mercado de abastos como infraestructura del barrio",
+   "resumen": "Estudia un mercado de abastos de tu zona como una pieza de infraestructura: cómo funciona, qué aporta al barrio, qué condiciones tiene y qué mejoras necesita.",
+   "tipo": "Análisis",
+   "tiempo": "~24 h",
+   "horas": 24,
+   "etiquetas": [
+    "Mercados",
+    "Alimentos"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Arquitectura",
+    "Sociología",
+    "Administración",
+    "Ingeniería Agroindustrial",
+    "Geografía",
+    "Salud Pública",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "Un mercado de abastos no es solo un lugar de compra: concentra empleo, abastecimiento de alimentos, encuentro social y tradición. Pero muchos tienen problemas de higiene, desorden, ventilación, seguridad y circulación.",
+    "Mirarlo como infraestructura permite pensar en su mejora sin perder lo que hace valioso al mercado."
+   ],
+   "desarrollar": [
+    "Con permiso de la administración, recorre un mercado y registra su distribución, sus accesos, la circulación, la ventilación, la limpieza y los servicios, y cuenta cuántos puestos hay por rubro.",
+    "Conversa con cinco comerciantes y cinco compradores, resume las fortalezas y los problemas, y propón mejoras de bajo costo en orden, limpieza, circulación y seguridad."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Flujo de personas",
+     "aporta": "mapea por dónde circula la gente y dónde hay aglomeraciones."
+    },
+    {
+     "titulo": "Cadena de abastecimiento",
+     "aporta": "investiga de dónde vienen los productos y cómo llegan."
+    },
+    {
+     "titulo": "Alternativas de diseño",
+     "aporta": "dibuja un rediseño de la distribución interna."
+    }
+   ],
+   "objetivos": [
+    "Evaluar un mercado como infraestructura.",
+    "Escuchar a los actores.",
+    "Identificar problemas.",
+    "Proponer mejoras viables."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Entrevistas.",
+    "Análisis de espacios.",
+    "Propuestas de mejora."
+   ],
+   "herramientas": [
+    "Una ficha de evaluación.",
+    "Un plano a mano.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Pide permiso a la administración antes de recorrer y entrevistar, no fotografíes a personas ni a los productos de los puestos sin autorización.",
+    "Presenta tus resultados con respeto hacia comerciantes y compradores."
+   ],
+   "otroSector": "El mismo análisis sirve para un terminal, un centro de abastos, un mall o un centro comercial."
+  },
+  {
+   "id": "puede-un-nino-jugar-seguro-en-tu-barrio",
+   "area": "ciudades",
+   "areas2": [
+    "sociedad",
+    "salud"
+   ],
+   "titulo": "¿Puede un niño jugar seguro en tu barrio?",
+   "resumen": "Evalúa qué espacios tienen los niños de tu barrio para jugar y moverse con seguridad, cuántos hay, en qué estado están y quiénes quedan sin acceso.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Infancia",
+    "Juego"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Psicología",
+    "Educación",
+    "Sociología",
+    "Trabajo Social",
+    "Ingeniería Civil",
+    "Salud Pública",
+    "Diseño"
+   ],
+   "problema": [
+    "Los niños necesitan espacios cercanos, seguros y variados para jugar. Pero en muchos barrios los parques están lejos, mal mantenidos, ocupados por autos o inseguros, y los niños juegan en la pista o se quedan en casa.",
+    "Mapear esos espacios permite ver qué zonas dejan a los niños sin lugares para jugar."
+   ],
+   "desarrollar": [
+    "Recorre una zona, identifica los espacios aptos para el juego infantil, como parques, canchas o patios, y evalúa seguridad, estado de los juegos, sombra, limpieza, distancia a las viviendas y cruces que hay que atravesar.",
+    "Elabora un mapa con el puntaje de cada lugar, pregunta a cinco padres o cuidadores qué los hace elegir un lugar o evitarlo, y propón mejoras de bajo costo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Juego en la calle",
+     "aporta": "analiza qué calles podrían cerrarse en ciertos horarios para el juego."
+    },
+    {
+     "titulo": "Distintas edades",
+     "aporta": "compara las necesidades de niños pequeños, escolares y adolescentes."
+    },
+    {
+     "titulo": "Voz de los niños",
+     "aporta": "con permiso, diseña una actividad donde los niños dibujen el lugar que les gustaría."
+    }
+   ],
+   "objetivos": [
+    "Evaluar espacios de juego.",
+    "Mapear su disponibilidad.",
+    "Escuchar a quienes cuidan niños.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Evaluación de espacios.",
+    "Observación.",
+    "Entrevistas.",
+    "Diseño de propuestas."
+   ],
+   "herramientas": [
+    "Una ficha de evaluación.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "No fotografíes ni grabes a niños, y si trabajas con menores, hazlo con autorización de sus familias y de una institución.",
+    "Observa desde lejos y no interactúes con niños que no conoces.",
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro."
+   ],
+   "otroSector": "El mismo estudio sirve para espacios de juego dentro de un colegio, un hospital pediátrico o un centro comunitario."
+  },
+  {
+   "id": "donde-se-acumula-la-basura-en-tu-barrio-y-por-que",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "salud"
+   ],
+   "titulo": "¿Dónde se acumula la basura en tu barrio y por qué?",
+   "resumen": "Mapea los puntos donde se acumula basura en tu zona, investiga qué los provoca, como horarios de recojo o falta de tachos, y propone soluciones que la comunidad pueda aplicar.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Residuos",
+    "Puntos críticos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Geografía",
+    "Salud Pública",
+    "Ingeniería Civil",
+    "Sociología",
+    "Trabajo Social",
+    "Estadística",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Los puntos críticos de basura se repiten: esquinas, terrenos baldíos o riberas donde cada día aparecen más residuos. No siempre es falta de educación, a veces faltan tachos, horarios de recojo claros o lugares autorizados.",
+    "Entender por qué ocurre en cada punto permite plantear soluciones adaptadas, y no solo campañas generales."
+   ],
+   "desarrollar": [
+    "Recorre tu zona y registra los puntos donde se acumula basura, qué tipo de residuos hay, cuánto, con qué frecuencia reaparece y qué hay cerca, como tachos, paraderos o comercios.",
+    "Conversa con vecinos y con un trabajador del recojo, si es posible, sobre los horarios y problemas, y propón una solución distinta para cada tipo de punto, con su costo y un responsable."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Horarios del recojo",
+     "aporta": "relaciona la acumulación con los días y horas de recojo."
+    },
+    {
+     "titulo": "Residuos reaprovechables",
+     "aporta": "identifica cuánto de lo que se acumula podría reciclarse."
+    },
+    {
+     "titulo": "Campaña vecinal",
+     "aporta": "diseña una campaña con mensajes basados en tus hallazgos."
+    }
+   ],
+   "objetivos": [
+    "Mapear puntos críticos de residuos.",
+    "Identificar causas.",
+    "Escuchar a vecinos y trabajadores.",
+    "Proponer soluciones concretas."
+   ],
+   "habilidades": [
+    "Registro de campo.",
+    "Mapeo.",
+    "Análisis de causas.",
+    "Diseño de soluciones."
+   ],
+   "herramientas": [
+    "Una ficha de registro.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Haz las observaciones de día, en grupo y desde espacios públicos; no te expongas al tráfico ni a zonas donde no te sientas seguro.",
+    "No manipules residuos ni los toques sin protección; observa y registra a distancia.",
+    "No fotografíes ni grabes a personas identificables ni anotes datos que las identifiquen."
+   ],
+   "otroSector": "El mismo mapa sirve para puntos de ruido, de grafitis, de cables caídos o de luminarias malogradas."
+  },
+  {
+   "id": "que-tan-conectado-digitalmente-esta-tu-barrio",
+   "area": "ciudades",
+   "areas2": [
+    "tecnologia",
+    "sociedad"
+   ],
+   "titulo": "¿Qué tan conectado digitalmente está tu barrio?",
+   "resumen": "Mide la cobertura móvil, la velocidad de internet y los puntos de wifi público de tu barrio, y descubre qué zonas quedan desconectadas y qué efecto tiene eso en el estudio y el trabajo.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Conectividad",
+    "Internet"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Electrónica",
+    "Telecomunicaciones",
+    "Geografía",
+    "Sociología",
+    "Economía",
+    "Estadística",
+    "Educación"
+   ],
+   "problema": [
+    "La conexión a internet se ha vuelto una infraestructura básica para estudiar, trabajar y hacer trámites. Pero no llega igual a todos los lugares: hay zonas con mala señal, internet lento o muy caro.",
+    "Medirla permite ver la brecha digital dentro de una ciudad y no solo entre regiones."
+   ],
+   "desarrollar": [
+    "Elige una zona y mide, en varios puntos y horarios, la velocidad de internet móvil con una aplicación de pruebas, la intensidad de señal y la existencia de wifi público.",
+    "Haz un mapa de calidad de conexión, compara con la cantidad de personas que dependen de internet para estudiar, y propón dónde convendría instalar puntos de acceso o mejoras."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo de la conexión",
+     "aporta": "calcula cuánto paga un hogar por internet y compara zonas."
+    },
+    {
+     "titulo": "Horas pico",
+     "aporta": "analiza cuánto baja la velocidad por la noche."
+    },
+    {
+     "titulo": "Efecto en el estudio",
+     "aporta": "pregunta de forma anónima a estudiantes cómo les afecta la mala conexión."
+    }
+   ],
+   "objetivos": [
+    "Medir conectividad con método.",
+    "Mapear calidad de conexión.",
+    "Relacionarla con necesidades.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Medición con aplicaciones.",
+    "Cartografía.",
+    "Análisis de datos.",
+    "Propuestas de mejora."
+   ],
+   "herramientas": [
+    "Una aplicación de prueba de velocidad.",
+    "Un mapa en línea.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Mide solo desde lugares públicos o propios, sin conectarte a redes privadas ni vulnerar accesos.",
+    "No publiques claves ni datos de redes de otras personas."
+   ],
+   "otroSector": "El mismo estudio sirve para evaluar la cobertura en un campus, un hospital rural o una zona de trabajo remoto."
+  },
+  {
+   "id": "que-barrios-se-calientan-mas-calor-techos-y-sombra",
+   "area": "ciudades",
+   "areas2": [
+    "ambiente",
+    "ciencias"
+   ],
+   "titulo": "¿Qué barrios se calientan más? Calor, techos y sombra",
+   "resumen": "Mide la temperatura en distintos puntos de tu zona y descubre cómo influyen la sombra, el cemento, los árboles y los techos en el calor que se siente en la calle.",
+   "tipo": "Análisis",
+   "tiempo": "~24 h",
+   "horas": 24,
+   "etiquetas": [
+    "Isla de calor",
+    "Sombra"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Ambiental",
+    "Geografía",
+    "Arquitectura",
+    "Física",
+    "Ingeniería Civil",
+    "Ciencia de Datos",
+    "Estadística",
+    "Salud Pública"
+   ],
+   "problema": [
+    "En una misma ciudad, algunas calles son mucho más calurosas que otras: el cemento, el asfalto y los techos de calamina absorben calor, y los árboles dan frescor. Se le llama isla de calor urbana.",
+    "Esto afecta la salud, el confort y el consumo de energía, y se puede medir con herramientas simples."
+   ],
+   "desarrollar": [
+    "Elige entre seis y diez puntos de tu zona con características distintas, como un parque, una calle sin árboles o una losa de cemento, y mide la temperatura del aire y de la superficie a la misma hora en varios días.",
+    "Relaciona las diferencias con el tipo de superficie, la sombra y la cantidad de vegetación, grafica los resultados y propón tres intervenciones para refrescar los puntos más calientes."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Cámara térmica o imágenes satelitales",
+     "aporta": "contrasta con mapas térmicos públicos de tu ciudad."
+    },
+    {
+     "titulo": "Efecto de un árbol",
+     "aporta": "mide cuántos grados baja la temperatura bajo la sombra de un árbol."
+    },
+    {
+     "titulo": "Costo de refrescar",
+     "aporta": "estima cuánto costaría sembrar árboles o pintar techos de claro."
+    }
+   ],
+   "objetivos": [
+    "Medir temperaturas en distintos puntos.",
+    "Relacionarlas con características del entorno.",
+    "Interpretar patrones.",
+    "Proponer intervenciones."
+   ],
+   "habilidades": [
+    "Medición con instrumentos.",
+    "Análisis estadístico básico.",
+    "Interpretación de datos.",
+    "Propuestas de solución."
+   ],
+   "herramientas": [
+    "Termómetros o sensores.",
+    "Hoja de cálculo.",
+    "Un mapa en línea."
+   ],
+   "lineamientos": [
+    "Evita medir en horas de calor extremo sin protección, usa agua, sombrero y protector solar, y no subas a techos.",
+    "Presenta tus resultados como mediciones de unos días, no como una caracterización completa."
+   ],
+   "otroSector": "El mismo estudio sirve para comparar el calor en aulas, mercados o espacios de trabajo."
+  },
+  {
+   "id": "la-historia-de-tu-barrio-como-cambio-en-50-anos",
+   "area": "ciudades",
+   "areas2": [
+    "arte",
+    "sociedad"
+   ],
+   "titulo": "La historia de tu barrio: cómo cambió en 50 años",
+   "resumen": "Reconstruye cómo ha cambiado tu barrio en las últimas décadas, con fotos antiguas, mapas, relatos de vecinos y datos, y muestra qué se transformó y qué permanece.",
+   "tipo": "Investigación",
+   "tiempo": "3 a 5 semanas",
+   "horas": 26,
+   "etiquetas": [
+    "Historia urbana",
+    "Memoria"
+   ],
+   "intencion": [
+    "investigar",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Arquitectura",
+    "Historia",
+    "Sociología",
+    "Antropología",
+    "Geografía",
+    "Comunicaciones",
+    "Diseño",
+    "Educación"
+   ],
+   "problema": [
+    "Un barrio cambia con el tiempo: aparecen nuevas calles, desaparecen lugares y cambian los usos. Esa memoria suele estar en las fotos familiares y en las conversaciones de los vecinos mayores.",
+    "Reconstruirla ayuda a entender el presente del barrio y a valorar lo que se podría perder."
+   ],
+   "desarrollar": [
+    "Reúne imágenes antiguas, con permiso, mapas históricos, planos o fotos aéreas públicas, y conversa con tres o cuatro vecinos mayores sobre cómo era el barrio antes.",
+    "Construye una línea de tiempo, compara el mapa de hace décadas con el de hoy, identifica los cambios más importantes y presenta el resultado como una exposición, un mapa o una pequeña web."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Lugares desaparecidos",
+     "aporta": "mapea los lugares que ya no existen y su historia."
+    },
+    {
+     "titulo": "Fotografía de antes y después",
+     "aporta": "toma fotos actuales desde el mismo ángulo que fotos antiguas."
+    },
+    {
+     "titulo": "Relatos",
+     "aporta": "recopila tres historias cortas de vecinos."
+    }
+   ],
+   "objetivos": [
+    "Reunir fuentes históricas.",
+    "Entrevistar con respeto.",
+    "Construir una línea de tiempo.",
+    "Presentar los cambios del barrio."
+   ],
+   "habilidades": [
+    "Investigación histórica.",
+    "Entrevistas.",
+    "Lectura de mapas antiguos.",
+    "Narración visual."
+   ],
+   "herramientas": [
+    "Archivos de fotos y mapas públicos.",
+    "Una grabadora, con permiso.",
+    "Un editor de línea de tiempo."
+   ],
+   "lineamientos": [
+    "Pide permiso para usar fotos y relatos, cuida la privacidad de las personas y no publiques imágenes de terceros sin autorización.",
+    "Cita las fuentes de los mapas y archivos."
+   ],
+   "otroSector": "El mismo método sirve para documentar la historia de un colegio, de un mercado, de una empresa o de una familia."
+  },
+  {
+   "id": "cuanto-cuesta-construir-y-mantener-una-vereda-un-parque-o-una-ci",
+   "area": "ciudades",
+   "areas2": [
+    "negocios",
+    "derecho"
+   ],
+   "titulo": "¿Cuánto cuesta construir y mantener una vereda, un parque o una ciclovía?",
+   "resumen": "Calcula con información pública cuánto cuesta construir y mantener obras urbanas pequeñas, y compáralas con otros gastos para entender qué tan caras o baratas son.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Costos",
+    "Obras públicas"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Ingeniería Civil",
+    "Economía",
+    "Arquitectura",
+    "Contabilidad",
+    "Administración",
+    "Ciencias Políticas",
+    "Estadística",
+    "Derecho"
+   ],
+   "problema": [
+    "Se habla mucho de que falta infraestructura, pero casi nunca se dice cuánto cuesta hacerla ni mantenerla. Una vereda, un parque o una ciclovía tienen costos de construcción y de mantenimiento en el tiempo.",
+    "Conocer esos costos permite discutir con realismo qué se puede hacer, en cuánto tiempo y con qué presupuesto."
+   ],
+   "desarrollar": [
+    "Con información pública, como expedientes de obras, portales de transparencia y precios de materiales, estima el costo por metro de una vereda, de una ciclovía y de un parque pequeño.",
+    "Calcula el costo de mantenimiento por año, compara con otros gastos de la municipalidad y estima cuánto costaría mejorar tres tramos de tu barrio."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Presupuesto detallado",
+     "aporta": "arma el presupuesto de una mejora concreta con partidas."
+    },
+    {
+     "titulo": "Comparar obras",
+     "aporta": "compara el costo por beneficiario de distintas obras."
+    },
+    {
+     "titulo": "Fuentes de financiamiento",
+     "aporta": "investiga cómo se financian este tipo de obras."
+    }
+   ],
+   "objetivos": [
+    "Buscar costos en información pública.",
+    "Calcular costos de construcción y mantenimiento.",
+    "Comparar obras.",
+    "Estimar el costo de una mejora."
+   ],
+   "habilidades": [
+    "Estimación de costos.",
+    "Lectura de presupuestos públicos.",
+    "Cálculo en hoja de cálculo.",
+    "Análisis comparativo."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Portales de transparencia y de obras públicas.",
+    "Precios de referencia de materiales."
+   ],
+   "lineamientos": [
+    "Usa solo información pública y fecha los precios; aclara que son estimaciones y no un presupuesto oficial.",
+    "No acuses a autoridades ni a empresas de sobrecostos sin pruebas."
+   ],
+   "otroSector": "El mismo análisis sirve para estimar el costo de mantener un campus, una carretera o una red de agua."
+  },
+  {
+   "id": "quien-decide-como-es-tu-calle-normas-de-veredas-retiros-y-altura",
+   "area": "ciudades",
+   "areas2": [
+    "derecho",
+    "sociedad"
+   ],
+   "titulo": "¿Quién decide cómo es tu calle? Normas de veredas, retiros y alturas",
+   "resumen": "Descubre qué normas determinan cómo se construyen y usan las calles y los edificios de tu barrio, quién las aplica y cómo puede participar un vecino.",
+   "tipo": "Guía",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Normativa urbana",
+    "Ciudadanía"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Derecho",
+    "Arquitectura",
+    "Ciencias Políticas",
+    "Ingeniería Civil",
+    "Geografía",
+    "Sociología",
+    "Administración",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "El ancho de una vereda, la altura de un edificio o el uso de un terreno no son decisiones al azar: las regulan normas municipales y nacionales que la mayoría de las personas no conoce.",
+    "Entender quién decide y con qué reglas permite hacer preguntas informadas y participar cuando se discuten cambios."
+   ],
+   "desarrollar": [
+    "Elige un tema, como veredas, retiros, alturas o uso de suelo, y busca en portales oficiales las normas que lo regulan en tu distrito, anotando qué dicen y quién las aplica.",
+    "Escribe una guía en lenguaje sencillo que explique qué se puede y qué no se puede hacer, a quién acudir para consultas o reclamos y cómo puede participar un vecino."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Caso real",
+     "aporta": "analiza un caso de tu barrio, como una obra, y qué normas se aplican."
+    },
+    {
+     "titulo": "Participación ciudadana",
+     "aporta": "investiga los mecanismos de participación en decisiones urbanas."
+    },
+    {
+     "titulo": "Comparar distritos",
+     "aporta": "compara la norma de dos distritos."
+    }
+   ],
+   "objetivos": [
+    "Ubicar normas en fuentes oficiales.",
+    "Entender quién decide.",
+    "Explicarlo en lenguaje claro.",
+    "Conocer mecanismos de participación."
+   ],
+   "habilidades": [
+    "Búsqueda de normas.",
+    "Lectura jurídica básica.",
+    "Redacción clara.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Portales oficiales.",
+    "Un editor de documentos.",
+    "Un editor de infografías."
+   ],
+   "lineamientos": [
+    "Usa solo fuentes oficiales y fecha tu información, porque las normas cambian con frecuencia.",
+    "Aclara que es una guía informativa y no asesoría legal."
+   ],
+   "otroSector": "La misma guía sirve para entender normas sobre comercio, ruido, medio ambiente o transporte."
   }
  ]
 }
