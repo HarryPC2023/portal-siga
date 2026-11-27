@@ -632,6 +632,4728 @@
     "Deja a la vista los supuestos que hiciste."
    ],
    "otroSector": "Sirve para un taller de reparaciones, un servicio de asesorías, un emprendimiento digital o una actividad de recaudación."
+  },
+  {
+   "id": "en-que-se-va-realmente-el-dinero-de-un-estudiante-durante-un-mes",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿En qué se va realmente el dinero de un estudiante durante un mes?",
+   "resumen": "Registra cada gasto durante un mes, clasifícalo y descubre en qué se va realmente tu dinero, qué gastos eran necesarios y cuáles podrían cambiar.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Finanzas personales",
+    "Datos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Estadística",
+    "Psicología",
+    "Ingeniería Industrial",
+    "Educación",
+    "Sociología"
+   ],
+   "problema": [
+    "Casi todos saben cuánto dinero les entra, pero pocos saben con certeza en qué se va. Los gastos pequeños y frecuentes, como pasajes, snacks, fotocopias o salidas, se olvidan al terminar el día y el mes parece que se esfumó.",
+    "Sin un registro, las decisiones sobre ahorro o gasto se toman por sensación. Contar el dinero con orden permite ver patrones que a veces sorprenden."
+   ],
+   "desarrollar": [
+    "Durante un mes anota cada gasto con su monto, su categoría, como transporte, comida, estudios u ocio, y si fue necesario, ocasional o prescindible, con una libreta o una hoja de cálculo.",
+    "Al final suma por categoría, grafica cómo se reparte tu dinero, identifica las tres categorías que más pesan y comenta qué te sorprendió y qué cambiarías."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Semana a semana",
+     "aporta": "compara cómo cambia el gasto entre semanas y descubre en cuáles gastas más y por qué."
+    },
+    {
+     "titulo": "Gastos por hábito",
+     "aporta": "separa lo que gastas por rutina de lo que gastas por impulso o por compromiso social."
+    },
+    {
+     "titulo": "Resumen para tomar decisiones",
+     "aporta": "convierte tus datos en un tablero simple que puedas actualizar cada mes."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un sistema de registro sencillo y constante.",
+    "Clasificar gastos con criterios claros.",
+    "Visualizar la distribución del dinero.",
+    "Reflexionar sobre qué cambiar con base en los datos."
+   ],
+   "habilidades": [
+    "Registro y organización de datos.",
+    "Análisis básico de presupuestos.",
+    "Visualización de información.",
+    "Reflexión crítica."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o libreta.",
+    "Un editor de gráficos.",
+    "Una aplicación de registro de gastos, si prefieres."
+   ],
+   "lineamientos": [
+    "Trabaja solo con tus propios gastos y no incluyas números de cuentas ni datos bancarios; usa montos y categorías.",
+    "Es un ejercicio de aprendizaje y no una asesoría financiera: no tomes decisiones de deuda o inversión solo por este análisis."
+   ],
+   "otroSector": "El mismo registro sirve para analizar el uso del tiempo, el consumo de datos móviles, la energía de un hogar o los gastos de una organización estudiantil."
+  },
+  {
+   "id": "disena-un-presupuesto-para-un-estudiante-con-ingresos-variables",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Diseña un presupuesto para un estudiante con ingresos variables",
+   "resumen": "Diseña un presupuesto mensual que funcione para quien no sabe cuánto recibirá cada mes, como quien da clases particulares, hace trabajos independientes o recibe apoyo irregular.",
+   "tipo": "Plan",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Presupuesto",
+    "Ingresos variables"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Trabajo Social",
+    "Ingeniería de Sistemas",
+    "Educación"
+   ],
+   "problema": [
+    "Los presupuestos clásicos suponen un ingreso fijo, pero muchos estudiantes tienen ingresos que cambian: un mes sube por un encargo y al siguiente casi no hay. En ese escenario es fácil gastar de más en un mes bueno y quedarse corto después.",
+    "Un buen presupuesto para ingresos variables define qué es lo primero que se cubre, cuánto se guarda de lo extra y cómo se actúa en un mes flojo."
+   ],
+   "desarrollar": [
+    "Inventa el caso de un estudiante con ingresos que cambian entre un mínimo y un máximo, con gastos fijos y variables, y diseña un presupuesto con reglas claras, como el orden en que se pagan las prioridades y qué porcentaje de lo extra se guarda.",
+    "Pruébalo con tres meses simulados, uno malo, uno normal y uno bueno, ajusta lo que no funcione y presenta una hoja sencilla con las reglas y un ejemplo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Ingreso mínimo seguro",
+     "aporta": "calcula cuánto necesita asegurar como mínimo para no entrar en problemas."
+    },
+    {
+     "titulo": "Fondo de amortiguación",
+     "aporta": "diseña un pequeño fondo que cubra los meses flojos."
+    },
+    {
+     "titulo": "Versión con una meta",
+     "aporta": "añade una meta de ahorro y mira cómo cambia el presupuesto."
+    }
+   ],
+   "objetivos": [
+    "Definir prioridades de gasto.",
+    "Establecer reglas para el ingreso extra.",
+    "Probar el presupuesto en varios escenarios.",
+    "Presentarlo de forma clara."
+   ],
+   "habilidades": [
+    "Diseño de presupuestos.",
+    "Modelado en hoja de cálculo.",
+    "Análisis de escenarios.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Casos inventados."
+   ],
+   "lineamientos": [
+    "Usa un caso inventado, no datos de personas reales, y aclara que es un modelo de ejemplo y no una recomendación personalizada.",
+    "No incluyas productos de deuda ni de inversión como solución sin explicar sus riesgos."
+   ],
+   "otroSector": "La misma lógica sirve para negocios con ventas irregulares, organizaciones con aportes variables o proyectos con financiamiento incierto."
+  },
+  {
+   "id": "cuanto-cuesta-realmente-estudiar-una-carrera-hasta-terminarla",
+   "area": "negocios",
+   "areas2": [
+    "educacion",
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto cuesta realmente estudiar una carrera hasta terminarla?",
+   "resumen": "Calcula todo lo que implica estudiar una carrera, de matrícula a transporte, materiales, comida y tiempo, y descubre cuánto cuesta realmente llegar al título.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Educación",
+    "Costos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Educación",
+    "Estadística",
+    "Sociología",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Cuando se habla del costo de estudiar, casi siempre se piensa en la pensión o la matrícula. Pero hay muchos otros gastos: transporte diario, materiales, copias, comida fuera de casa, equipos, internet, y el tiempo que se dedica en lugar de trabajar.",
+    "Al no sumarlos, las familias y los estudiantes subestiman lo que viene. Hacer la cuenta completa ayuda a planificar y a entender por qué algunos abandonan."
+   ],
+   "desarrollar": [
+    "Elige una carrera y una institución, real o inventada, y con información pública y estimaciones razonables calcula el costo por ciclo de matrícula o pensiones, transporte, materiales, alimentación y otros gastos.",
+    "Proyecta el total hasta terminar la carrera con un rango, de mínimo a máximo, indica qué supuestos usaste y presenta un resumen con gráficos y una lista de los gastos que más pesan."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo del tiempo",
+     "aporta": "añade lo que se dejaría de ganar si se estudia a tiempo completo."
+    },
+    {
+     "titulo": "Comparar carreras",
+     "aporta": "compara el costo total de dos carreras o dos instituciones."
+    },
+    {
+     "titulo": "Maneras de reducirlo",
+     "aporta": "investiga becas y ayudas que podrían disminuir el costo."
+    }
+   ],
+   "objetivos": [
+    "Identificar todos los componentes del costo.",
+    "Buscar datos públicos y justificarlos.",
+    "Proyectar un total con un rango.",
+    "Comunicar los supuestos con claridad."
+   ],
+   "habilidades": [
+    "Análisis de costos.",
+    "Búsqueda de información.",
+    "Proyección con supuestos.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Tarifas y reglamentos públicos de instituciones educativas.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Cita el origen de cada dato y marca lo que son estimaciones; no incluyas información personal de familias ni cuentas bancarias.",
+    "Evita concluir que una carrera «vale» más o menos que otra: el análisis es de costos, no de valor."
+   ],
+   "otroSector": "El mismo análisis sirve para estimar el costo total de una capacitación, de un posgrado, de un emprendimiento o de cualquier proyecto de largo plazo."
+  },
+  {
+   "id": "gastos-pequenos-e-invisibles-de-la-vida-universitaria",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Gastos pequeños e invisibles de la vida universitaria",
+   "resumen": "Descubre qué gastos pequeños y poco visibles, como copias, pasajes sueltos, café, cargadores o suscripciones, terminan sumando una parte importante de lo que cuesta ser universitario.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Gastos",
+    "Vida universitaria"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Psicología",
+    "Sociología",
+    "Estadística",
+    "Educación",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Un gasto pequeño no parece importar: un café, una copia, un pasaje extra. Pero cuando ocurren varias veces por semana, al final del mes suman más que algo que sí se planificó.",
+    "Además hay gastos invisibles que casi nunca se cuentan, como los de tiempo perdido, las multas por entregar tarde o las compras de última hora."
+   ],
+   "desarrollar": [
+    "Durante dos semanas registra todo gasto menor a una cantidad que tú defines, como unos pocos soles, con su motivo y si era previsible.",
+    "Multiplica cada tipo de gasto por las semanas del ciclo, muestra cuáles suman más de lo que imaginabas, y propón tres ajustes simples sin renunciar a lo que valoras."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Ciclo completo",
+     "aporta": "proyecta tus gastos pequeños a un ciclo universitario."
+    },
+    {
+     "titulo": "Lo que sí vale la pena",
+     "aporta": "identifica qué gastos pequeños sí te aportan algo importante y cuáles no."
+    },
+    {
+     "titulo": "Comparar con otros",
+     "aporta": "compara con un grupo pequeño de compañeros, de forma anónima, qué gastos son comunes."
+    }
+   ],
+   "objetivos": [
+    "Definir qué se considera un gasto pequeño.",
+    "Registrar con constancia.",
+    "Proyectar el efecto acumulado.",
+    "Elegir ajustes razonables."
+   ],
+   "habilidades": [
+    "Registro de datos.",
+    "Proyección simple.",
+    "Análisis de hábitos de consumo.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o libreta.",
+    "Un editor de gráficos.",
+    "Un formulario anónimo, si comparas con otros."
+   ],
+   "lineamientos": [
+    "Trabaja con tus propios gastos; si comparas con otras personas, hazlo de forma anónima y voluntaria.",
+    "No juzgues los gastos de nadie: lo importante es entender, no recortar todo lo que da gusto."
+   ],
+   "otroSector": "El mismo enfoque sirve para estudiar pérdidas pequeñas y repetidas en un negocio, en el uso del tiempo o en el consumo de recursos de una institución."
+  },
+  {
+   "id": "como-ahorrar-cuando-los-ingresos-son-limitados",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cómo ahorrar cuando los ingresos son limitados?",
+   "resumen": "Diseña una estrategia de ahorro para alguien con poco dinero disponible, que reduzca gastos innecesarios sin quitarle lo esencial ni generarle culpa.",
+   "tipo": "Plan",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Ahorro",
+    "Presupuesto"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Psicología",
+    "Trabajo Social",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Educación"
+   ],
+   "problema": [
+    "Los consejos de ahorro suelen ser genéricos y poco realistas: «ahorra el diez por ciento» no tiene mucho sentido cuando casi todo se va en lo básico. Cuando el margen es pequeño, cada decisión pesa.",
+    "Una estrategia útil parte de lo que se puede cambiar, empieza con montos posibles y se sostiene sin sentirse castigo."
+   ],
+   "desarrollar": [
+    "Inventa dos casos de personas con ingresos limitados pero distintos, con sus gastos fijos y variables, y para cada una identifica qué gastos son esenciales, cuáles ajustables y cuáles prescindibles.",
+    "Diseña una estrategia con tres o cuatro reglas concretas, por ejemplo qué guardar primero, qué cambiar por una alternativa más barata y qué revisar cada semana, y simula un trimestre para ver cuánto se lograría."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Medir la dificultad",
+     "aporta": "estima cuánto cuesta cada cambio en comodidad o tiempo."
+    },
+    {
+     "titulo": "Alternativas más baratas",
+     "aporta": "investiga opciones más económicas para tres gastos habituales."
+    },
+    {
+     "titulo": "Versión visual",
+     "aporta": "resume la estrategia en una hoja que se pueda pegar y consultar."
+    }
+   ],
+   "objetivos": [
+    "Distinguir gastos esenciales de ajustables.",
+    "Diseñar reglas posibles y sostenibles.",
+    "Simular su efecto.",
+    "Presentar la estrategia con claridad."
+   ],
+   "habilidades": [
+    "Planificación financiera personal.",
+    "Simulación en hoja de cálculo.",
+    "Diseño de hábitos.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Casos inventados.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Trabaja con casos inventados y no con datos de personas reales; explica que es un ejemplo y no una asesoría personalizada.",
+    "No sugieras recortar gastos de salud, seguridad o alimentación básica para ahorrar."
+   ],
+   "otroSector": "La misma estrategia de priorizar con recursos escasos sirve para el tiempo, la energía o el presupuesto de una organización pequeña."
+  },
+  {
+   "id": "el-reto-de-ahorrar-para-una-meta-especifica",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "El reto de ahorrar para una meta específica",
+   "resumen": "Elige algo concreto que quieras lograr, calcula cuánto cuesta y cuánto necesitas apartar cada semana, y prueba durante unas semanas qué estrategia te funciona.",
+   "tipo": "Plan",
+   "tiempo": "4 a 8 semanas",
+   "horas": 25,
+   "etiquetas": [
+    "Ahorro",
+    "Metas"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Psicología",
+    "Administración",
+    "Contabilidad",
+    "Educación",
+    "Estadística",
+    "Comunicaciones",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Ahorrar «para algo» es más fácil que ahorrar sin un objetivo, pero la mayoría de las metas se quedan en deseos porque no se calculan: cuánto cuesta, en cuánto tiempo y de dónde sale ese dinero.",
+    "Un reto con meta y seguimiento permite aprender qué estrategias funcionan para ti y por qué otras se abandonan."
+   ],
+   "desarrollar": [
+    "Elige una meta realista, como un equipo, un curso o un viaje corto, averigua su costo, define un plazo y calcula cuánto necesitarías apartar cada semana.",
+    "Durante varias semanas aplica una estrategia, como apartar al recibir dinero o reducir un gasto concreto, registra tu avance en un gráfico y concluye qué funcionó, qué no y qué ajustarías."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Comparar estrategias",
+     "aporta": "prueba dos estrategias distintas en semanas distintas y compáralas."
+    },
+    {
+     "titulo": "Imprevistos",
+     "aporta": "añade qué pasa cuando aparece un gasto no previsto y cómo se absorbe."
+    },
+    {
+     "titulo": "Tablero de avance",
+     "aporta": "crea un tablero visual que muestre el progreso hacia la meta."
+    }
+   ],
+   "objetivos": [
+    "Definir una meta medible.",
+    "Calcular el aporte necesario.",
+    "Registrar el avance con constancia.",
+    "Evaluar qué estrategia funcionó."
+   ],
+   "habilidades": [
+    "Planificación de metas.",
+    "Seguimiento de indicadores.",
+    "Autoevaluación.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o libreta.",
+    "Un gráfico de avance.",
+    "Precios de lo que quieres comprar."
+   ],
+   "lineamientos": [
+    "Elige una meta realista que no te obligue a recortar lo esencial, y no pidas préstamos ni uses productos financieros para el reto.",
+    "Es un ejercicio personal: no lo uses para comparar ni para presionar a nadie."
+   ],
+   "otroSector": "El mismo método sirve para metas de estudio, de salud, de un proyecto o de recaudación de fondos de una organización."
+  },
+  {
+   "id": "cuanto-cuesta-comprar-en-cuotas-frente-a-pagar-al-contado",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto cuesta comprar en cuotas frente a pagar al contado?",
+   "resumen": "Calcula cuánto termina costando un producto comprado en cuotas, con intereses y cargos, y compáralo con el precio al contado para decidir cuándo conviene cada opción.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Crédito",
+    "Cuotas"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Derecho",
+    "Matemática",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Pagar en cuotas hace que algo caro parezca accesible, pero la suma de las cuotas casi siempre es mayor que el precio al contado. Los intereses, comisiones y seguros no siempre se muestran con claridad, y es difícil compararlos.",
+    "Entender cuánto cuesta realmente el crédito ayuda a decidir con información, y a veces comprar en cuotas sí tiene sentido."
+   ],
+   "desarrollar": [
+    "Elige tres compras típicas, como un celular, una laptop o un electrodoméstico, busca con información pública sus precios al contado y sus planes en cuotas, con tasas y cargos publicados.",
+    "Calcula el costo total en cuotas, la diferencia con el contado y el costo por cada mes de financiamiento, y concluye en qué situaciones conviene y en cuáles no, con una tabla comparativa."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Calculadora de cuotas",
+     "aporta": "crea una hoja donde se escriba precio y plazo y muestre el costo total."
+    },
+    {
+     "titulo": "Efecto de un atraso",
+     "aporta": "estima cuánto sube el costo si se paga tarde."
+    },
+    {
+     "titulo": "Alternativas",
+     "aporta": "compara con ahorrar durante unos meses antes de comprar."
+    }
+   ],
+   "objetivos": [
+    "Reunir información pública de precios y tasas.",
+    "Calcular el costo total del financiamiento.",
+    "Comparar con el pago al contado.",
+    "Explicar claramente cuándo conviene cada opción."
+   ],
+   "habilidades": [
+    "Cálculo financiero básico.",
+    "Búsqueda de información.",
+    "Análisis comparativo.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Tarifarios y simuladores públicos.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Usa precios y tasas publicados y cita la fecha; no recomiendes productos financieros concretos ni empresas.",
+    "Aclara que es un ejercicio educativo y no una asesoría financiera, y que las condiciones reales cambian."
+   ],
+   "otroSector": "El mismo cálculo sirve para evaluar alquilar frente a comprar, pagar anual frente a mensual o comprar al por mayor frente a por menor."
+  },
+  {
+   "id": "el-costo-total-de-tener-un-producto-durante-varios-anos",
+   "area": "negocios",
+   "areas2": [
+    "ambiente",
+    "industria"
+   ],
+   "titulo": "El costo total de tener un producto durante varios años",
+   "resumen": "Descubre cuánto cuesta realmente tener un producto, sumando precio, uso, mantenimiento y reemplazo, y comprueba si el más barato al comprar es el más barato al final.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Costo total",
+    "Consumo"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Ingeniería Industrial",
+    "Contabilidad",
+    "Administración",
+    "Ingeniería Mecánica",
+    "Estadística",
+    "Ingeniería Electrónica",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Al comprar, casi siempre se compara el precio de venta. Pero un producto cuesta también lo que gasta al usarse, lo que se paga por repararlo y cada cuánto hay que reemplazarlo.",
+    "Un celular, una laptop o una moto baratos pueden salir más caros en tres años que uno de mayor precio. Esa cuenta rara vez se hace."
+   ],
+   "desarrollar": [
+    "Elige un producto de uso común y dos alternativas, una barata y una más cara, y reúne con información pública su precio, su consumo o gasto de uso, el costo de mantenimiento y su duración esperada.",
+    "Calcula el costo total en el periodo que consideres razonable, compara con una tabla y un gráfico y concluye cuál conviene según el uso que tendría."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Valor de reventa",
+     "aporta": "incluye cuánto podría recuperarse al venderlo después."
+    },
+    {
+     "titulo": "Cambiar el uso",
+     "aporta": "calcula cómo cambia el resultado si se usa más o menos de lo previsto."
+    },
+    {
+     "titulo": "Costo por uso",
+     "aporta": "convierte el costo total en un costo por día o por vez de uso."
+    }
+   ],
+   "objetivos": [
+    "Identificar todos los costos de poseer un producto.",
+    "Reunir datos con fuentes.",
+    "Calcular y comparar el costo total.",
+    "Explicar los supuestos."
+   ],
+   "habilidades": [
+    "Análisis de costos.",
+    "Cálculo en hoja de cálculo.",
+    "Búsqueda de datos.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Fichas técnicas y precios publicados.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Cita los precios con su fecha y marca lo que son estimaciones de duración y de uso; no recomiendes marcas concretas.",
+    "Aclara que el resultado depende del uso de cada persona y no es una conclusión general."
+   ],
+   "otroSector": "El mismo análisis sirve para evaluar maquinaria, software, vehículos de una empresa o equipamiento de una oficina."
+  },
+  {
+   "id": "cuanto-cuesta-moverte-transporte-propio-frente-a-publico",
+   "area": "negocios",
+   "areas2": [
+    "ciudades",
+    "ambiente"
+   ],
+   "titulo": "¿Cuánto cuesta moverte? Transporte propio frente a público",
+   "resumen": "Registra y compara el costo real de tus traslados durante una semana, sumando pasajes, combustible, mantenimiento, estacionamiento y tiempo, para ver qué opción conviene.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Transporte",
+    "Costos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Ingeniería Industrial",
+    "Ingeniería Civil",
+    "Contabilidad",
+    "Administración",
+    "Estadística",
+    "Geografía",
+    "Ingeniería Ambiental"
+   ],
+   "problema": [
+    "Mucha gente cree que tener moto o auto es más barato que el transporte público, o al revés, sin haber hecho la cuenta completa. Hay costos visibles, como el pasaje o la gasolina, y otros ocultos, como el mantenimiento, el seguro o el tiempo.",
+    "No todos pueden elegir: depende de la distancia, la seguridad y los horarios. Pero conocer los costos reales permite decidir mejor y entender por qué ciertas rutas pesan tanto en el presupuesto."
+   ],
+   "desarrollar": [
+    "Durante una semana anota cada traslado con su costo, su duración y el medio usado, y estima los costos que no pagas cada día, como mantenimiento o depreciación si usas un vehículo propio.",
+    "Calcula el costo por semana, por mes y por kilómetro, compara con otra alternativa realista para el mismo recorrido y presenta una conclusión con sus límites."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Valor del tiempo",
+     "aporta": "añade cuánto cuesta el tiempo de viaje según lo que podrías hacer en ese tiempo."
+    },
+    {
+     "titulo": "Transporte compartido",
+     "aporta": "calcula cuánto cambia el costo si se comparte el vehículo."
+    },
+    {
+     "titulo": "Un año completo",
+     "aporta": "proyecta los costos de movilidad durante un año."
+    }
+   ],
+   "objetivos": [
+    "Registrar traslados con método.",
+    "Identificar costos visibles y ocultos.",
+    "Comparar alternativas.",
+    "Presentar las conclusiones con claridad."
+   ],
+   "habilidades": [
+    "Registro de datos.",
+    "Análisis de costos.",
+    "Cálculo por unidad.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Una aplicación de mapas.",
+    "Tarifas públicas de transporte."
+   ],
+   "lineamientos": [
+    "Prioriza tu seguridad: la opción más barata no debe ser la menos segura, y no recomiendes manejar sin licencia ni conducir de forma riesgosa.",
+    "Usa tus propios datos o ejemplos inventados, sin registrar placas ni datos de otras personas."
+   ],
+   "otroSector": "El mismo análisis sirve para comparar costos de envío, de logística de una empresa o de viajes de trabajo."
+  },
+  {
+   "id": "disena-tu-fondo-de-emergencia-ideal",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Diseña tu fondo de emergencia ideal",
+   "resumen": "Calcula cuánto dinero necesitaría apartar una persona para enfrentar un imprevisto, cómo lo juntaría poco a poco y dónde lo mantendría, con casos ficticios.",
+   "tipo": "Plan",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Ahorro",
+    "Imprevistos"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Psicología",
+    "Estadística",
+    "Trabajo Social",
+    "Ingeniería Industrial",
+    "Educación"
+   ],
+   "problema": [
+    "Los imprevistos, como una reparación, una consulta o un pasaje urgente, llegan sin avisar. Quien no tiene un colchón suele endeudarse o dejar de pagar algo importante.",
+    "Pero «ahorra para emergencias» no dice cuánto ni cómo. El monto adecuado depende de los gastos fijos, de la estabilidad de los ingresos y de lo que cada persona considera una emergencia."
+   ],
+   "desarrollar": [
+    "Inventa dos personas con situaciones distintas y define para cada una qué sería una emergencia, cuáles son sus gastos mínimos mensuales y cuántos meses de colchón sería razonable apuntar.",
+    "Diseña un plan para llegar a ese monto en un plazo realista, con aportes pequeños, y explica dónde convendría mantenerlo para que esté disponible sin tentación de gastarlo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Distintos tamaños",
+     "aporta": "diseña una versión mínima, una media y una completa del fondo."
+    },
+    {
+     "titulo": "Usarlo y reponerlo",
+     "aporta": "define reglas de cuándo usarlo y cómo se repone después."
+    },
+    {
+     "titulo": "Simulación de un imprevisto",
+     "aporta": "simula qué pasa con y sin fondo ante un mismo imprevisto."
+    }
+   ],
+   "objetivos": [
+    "Definir qué es una emergencia.",
+    "Calcular un monto razonable con criterios claros.",
+    "Diseñar un plan de aportes.",
+    "Simular su efecto."
+   ],
+   "habilidades": [
+    "Planificación financiera.",
+    "Cálculo en hoja de cálculo.",
+    "Análisis de escenarios.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Casos inventados.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Trabaja con casos inventados y explica que es un ejemplo y no una asesoría financiera personalizada.",
+    "No recomiendes productos financieros ni inversiones concretas para el fondo."
+   ],
+   "otroSector": "El mismo concepto de reserva ante lo inesperado sirve para el inventario de un negocio, el tiempo de un proyecto o la caja de una organización."
+  },
+  {
+   "id": "cuanto-cuesta-mantener-un-hobby",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "arte"
+   ],
+   "titulo": "¿Cuánto cuesta mantener un hobby?",
+   "resumen": "Calcula cuánto cuesta realmente un pasatiempo, desde lo que se compra hasta lo que se gasta en usarlo y mantenerlo, y qué se obtiene a cambio.",
+   "tipo": "Análisis",
+   "tiempo": "~12 h",
+   "horas": 12,
+   "etiquetas": [
+    "Ocio",
+    "Costos"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Psicología",
+    "Estadística",
+    "Comunicaciones",
+    "Sociología",
+    "Educación"
+   ],
+   "problema": [
+    "Un hobby parece barato al empezar, pero con el tiempo se suman equipos, accesorios, cursos, entradas, reparaciones y reemplazos. Pocas veces se hace la cuenta, porque se disfruta y no se piensa como un gasto.",
+    "Conocer el costo real ayuda a decidir cuánto vale la pena invertir y a descubrir opciones más baratas para lo mismo."
+   ],
+   "desarrollar": [
+    "Elige un hobby tuyo o de alguien cercano con su permiso y lista todo lo que se ha gastado en el último año, dividiéndolo en compra inicial, consumibles, mantenimiento y otros.",
+    "Calcula el costo por mes y por vez que se practica, compara con alternativas más económicas y concluye qué parte del gasto realmente aporta disfrute."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Primer año frente a los siguientes",
+     "aporta": "compara cuánto cuesta empezar con cuánto cuesta continuar."
+    },
+    {
+     "titulo": "Compartir recursos",
+     "aporta": "analiza cómo cambia el costo si se comparten equipos con otras personas."
+    },
+    {
+     "titulo": "Comparar hobbies",
+     "aporta": "compara el costo por hora de disfrute de dos pasatiempos."
+    }
+   ],
+   "objetivos": [
+    "Listar costos con orden.",
+    "Calcular costos por unidad de uso.",
+    "Comparar alternativas.",
+    "Reflexionar sobre el valor que se obtiene."
+   ],
+   "habilidades": [
+    "Análisis de costos.",
+    "Cálculo por unidad.",
+    "Comparación de alternativas.",
+    "Reflexión crítica."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Registros o recuerdos de gastos.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Usa tus propios datos o los de alguien cercano con su permiso; evita comparar el valor de los pasatiempos de otras personas.",
+    "No lo uses para decidir dejar un pasatiempo que te hace bien solo por su costo."
+   ],
+   "otroSector": "El mismo cálculo sirve para costos de un equipo deportivo, de un servicio de suscripción o de un proyecto personal de largo plazo."
+  },
+  {
+   "id": "cuanto-cuesta-vivir-de-forma-independiente",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto cuesta vivir de forma independiente?",
+   "resumen": "Estima cuánto dinero necesita una persona joven para vivir sola o compartiendo vivienda en tu ciudad, con alquiler, servicios, comida y transporte.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Costo de vida",
+    "Independencia"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Sociología",
+    "Estadística",
+    "Arquitectura",
+    "Psicología",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "Muchos jóvenes sueñan con independizarse, pero casi nunca calculan qué implica: alquiler, garantía, servicios, comida, transporte, internet y gastos imprevistos. Subestimar esa cuenta lleva a decisiones apresuradas o a volver a casa.",
+    "Entender los números ayuda a planear y a ver qué ingresos serían necesarios, y qué cambia al compartir el costo con otras personas."
+   ],
+   "desarrollar": [
+    "Con información pública de precios de alquiler, servicios y alimentos de tu ciudad, arma un presupuesto mensual de una persona que vive sola y otro de tres personas que comparten vivienda, con rangos de mínimo y máximo.",
+    "Calcula el ingreso necesario en cada caso, compara los resultados y señala qué gastos tienen mayor peso y qué supuestos usaste."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo de arrancar",
+     "aporta": "calcula cuánto dinero se necesita antes de mudarse, como garantías y muebles básicos."
+    },
+    {
+     "titulo": "Distintos barrios",
+     "aporta": "compara el costo en dos zonas diferentes de la ciudad."
+    },
+    {
+     "titulo": "Escenarios de ingresos",
+     "aporta": "analiza con qué ingreso mensual el presupuesto sería sostenible."
+    }
+   ],
+   "objetivos": [
+    "Reunir datos públicos de precios.",
+    "Armar presupuestos con rangos.",
+    "Comparar escenarios.",
+    "Explicar los supuestos."
+   ],
+   "habilidades": [
+    "Búsqueda de información.",
+    "Presupuesto y proyección.",
+    "Análisis comparativo.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Portales públicos de precios y avisos.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Usa precios publicados como referencia y fecha cada dato; no uses información personal de arrendadores ni de inquilinos.",
+    "Aclara que son estimaciones para aprender y no un plan personal de mudanza."
+   ],
+   "otroSector": "El mismo método sirve para estimar el costo de abrir una oficina, de iniciar un negocio en otra ciudad o de mudarse por estudios."
+  },
+  {
+   "id": "cuanto-cuesta-cocinar-en-casa-frente-a-comprar-la-comida",
+   "area": "negocios",
+   "areas2": [
+    "agricultura",
+    "salud"
+   ],
+   "titulo": "¿Cuánto cuesta cocinar en casa frente a comprar la comida?",
+   "resumen": "Compara el costo real de preparar una comida en casa con el de comprarla hecha, incluyendo ingredientes, gas, tiempo y desperdicio.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Alimentación",
+    "Costos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Nutrición",
+    "Ingeniería Agroindustrial",
+    "Contabilidad",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Educación"
+   ],
+   "problema": [
+    "Se suele decir que cocinar en casa es más barato, pero casi nunca se hace la cuenta con todo: ingredientes, gas, tiempo de preparación, utensilios y lo que sobra o se desperdicia. Del otro lado, comprar comida preparada tiene su propio costo oculto.",
+    "El resultado depende de qué se cocina, para cuántas personas y con qué frecuencia."
+   ],
+   "desarrollar": [
+    "Elige tres comidas comunes en tu entorno, como un almuerzo, un desayuno y una cena, y para cada una calcula el costo de prepararla en casa sumando ingredientes, gas y desperdicio estimado, y el de comprarla hecha.",
+    "Compara por porción y por semana, estima también el tiempo que toma cada opción, y presenta cuándo conviene cocinar, cuándo comprar y cuándo una mezcla de ambas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Cocinar para varios",
+     "aporta": "calcula cómo baja el costo por porción al cocinar para más personas."
+    },
+    {
+     "titulo": "Planificar el menú",
+     "aporta": "diseña un menú semanal y calcula su costo."
+    },
+    {
+     "titulo": "Costo del tiempo",
+     "aporta": "añade el valor que le das a tu tiempo."
+    }
+   ],
+   "objetivos": [
+    "Identificar todos los costos de cada opción.",
+    "Calcular costos por porción.",
+    "Comparar con criterios claros.",
+    "Explicar los límites del análisis."
+   ],
+   "habilidades": [
+    "Análisis de costos.",
+    "Cálculo por porción.",
+    "Planificación.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Precios de mercado y recetas.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Usa precios reales de tu zona con su fecha y no hagas recomendaciones nutricionales ni de salud: el análisis es de costos.",
+    "Considera la higiene y la seguridad en la preparación de alimentos si pruebas las recetas."
+   ],
+   "otroSector": "El mismo análisis sirve para decidir entre hacer o comprar en un negocio, como producir una pieza propia o contratarla a un proveedor."
+  },
+  {
+   "id": "cuanto-cuesta-un-dia-tipico-en-tu-ciudad",
+   "area": "negocios",
+   "areas2": [
+    "ciudades",
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto cuesta un día típico en tu ciudad?",
+   "resumen": "Calcula cuánto cuesta vivir un día completo en tu ciudad, desde el transporte y la comida hasta una salida, y compáralo con otra forma de pasar el día.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Costo de vida",
+    "Ciudad"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Sociología",
+    "Geografía",
+    "Estadística",
+    "Contabilidad",
+    "Comunicaciones",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Cada ciudad tiene su propio costo cotidiano, que se nota en el pasaje, el almuerzo o una salida, pero casi nadie lo suma. Por eso es difícil comparar, por ejemplo, un día de estudio con uno de paseo, o una zona con otra.",
+    "Convertir un día en cifras ayuda a entender cuánto pesa cada tipo de gasto y por qué ciertas actividades se vuelven inalcanzables para algunas personas."
+   ],
+   "desarrollar": [
+    "Diseña tres días típicos distintos, como uno de clases, uno de trabajo y uno de salida con amigos, y calcula cuánto costaría cada uno con precios reales que anotes en tu zona.",
+    "Presenta los tres costos en una tabla y un gráfico, destaca qué actividades pesan más y propón dos alternativas más económicas para cada día."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra zona",
+     "aporta": "compara el costo del mismo día en otro barrio o ciudad."
+    },
+    {
+     "titulo": "Costo para quien tiene menos",
+     "aporta": "adapta los días a un presupuesto muy ajustado."
+    },
+    {
+     "titulo": "Día ideal",
+     "aporta": "diseña un día agradable al menor costo posible."
+    }
+   ],
+   "objetivos": [
+    "Definir días típicos con criterio.",
+    "Anotar precios reales con fecha.",
+    "Calcular y comparar costos.",
+    "Proponer alternativas."
+   ],
+   "habilidades": [
+    "Observación de precios.",
+    "Cálculo de costos.",
+    "Análisis comparativo.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Cuaderno de registro de precios.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Registra solo precios públicos, sin nombres de personas ni datos privados, y fecha cada dato.",
+    "No uses el análisis para juzgar estilos de vida: es una descripción de costos."
+   ],
+   "otroSector": "El mismo ejercicio sirve para estimar cuánto cuesta un día de producción, de rodaje, de un evento o de una jornada de trabajo."
+  },
+  {
+   "id": "el-impacto-de-las-compras-impulsivas",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "El impacto de las compras impulsivas",
+   "resumen": "Descubre qué compras haces sin planificar, qué las provoca y cuánto dinero representan, y prueba una pequeña estrategia para decidir mejor.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Consumo",
+    "Hábitos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Psicología",
+    "Economía",
+    "Administración",
+    "Comunicaciones",
+    "Publicidad",
+    "Sociología",
+    "Contabilidad",
+    "Estadística"
+   ],
+   "problema": [
+    "Una compra impulsiva ocurre cuando se decide en el momento, por una oferta, un anuncio, el cansancio o la emoción. Se siente bien al comprar, pero a veces se lamenta después.",
+    "Entender qué situaciones la activan permite diseñar maneras de decidir con más calma, sin quitarle gusto a comprar."
+   ],
+   "desarrollar": [
+    "Durante dos semanas anota cada compra y marca si estaba planeada o no, qué la provocó y cómo te sentiste después, sin juzgarte.",
+    "Suma el monto de lo no planeado, busca patrones y prueba una regla sencilla, como esperar un tiempo antes de comprar, durante otra semana. Compara y concluye qué te funcionó."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Anuncios y estímulos",
+     "aporta": "analiza qué tipo de publicidad o de oferta te llevó a comprar más."
+    },
+    {
+     "titulo": "Lo que no se lamenta",
+     "aporta": "identifica qué compras no planeadas sí valieron la pena."
+    },
+    {
+     "titulo": "Comparar con otros",
+     "aporta": "compara de manera anónima con compañeros qué activa sus compras."
+    }
+   ],
+   "objetivos": [
+    "Registrar compras y su origen.",
+    "Reconocer patrones.",
+    "Probar una estrategia simple.",
+    "Concluir con honestidad."
+   ],
+   "habilidades": [
+    "Autoobservación y registro.",
+    "Análisis de hábitos.",
+    "Diseño de pruebas simples.",
+    "Reflexión crítica."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o libreta.",
+    "Un editor de gráficos.",
+    "Un formulario anónimo, si comparas con otros."
+   ],
+   "lineamientos": [
+    "Trabaja con tus propias compras y no con las de otras personas; si comparas, hazlo de forma anónima y voluntaria.",
+    "No es un diagnóstico de conductas: si sientes que gastas de forma que te perjudica, conversa con alguien de confianza o un profesional."
+   ],
+   "otroSector": "El mismo método sirve para estudiar decisiones rápidas en otros ámbitos, como clics, inscripciones o suscripciones."
+  },
+  {
+   "id": "cuando-suben-los-precios-basicos-el-presupuesto-de-una-familia",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Cuando suben los precios básicos: el presupuesto de una familia",
+   "resumen": "Simula cómo cambia el presupuesto de una familia inventada cuando suben los precios de la comida, el transporte o los servicios, y qué decisiones tendría que tomar.",
+   "tipo": "Simulación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Precios",
+    "Hogar"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Estadística",
+    "Contabilidad",
+    "Administración",
+    "Sociología",
+    "Trabajo Social",
+    "Ingeniería Industrial",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Cuando suben los precios de lo básico, los hogares no solo pagan más: tienen que decidir qué recortar, qué cambiar por algo más barato y qué postergar. No todas las familias lo viven igual, porque depende de cuánto de su ingreso se va en lo esencial.",
+    "Las noticias hablan de porcentajes de inflación, pero rara vez se traducen a lo que ocurre en un presupuesto real."
+   ],
+   "desarrollar": [
+    "Inventa dos familias con distintos ingresos y arma el presupuesto mensual de cada una, con alimentos, transporte, servicios, educación y otros gastos, usando precios de referencia públicos.",
+    "Simula un aumento de precios en tres rubros, calcula cuánto sube el gasto en cada familia, qué porcentaje del ingreso representa y qué ajustes tendría que hacer, y compara los resultados."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Con datos públicos",
+     "aporta": "usa un índice de precios para ver cuánto subieron realmente los productos básicos en un año."
+    },
+    {
+     "titulo": "Diferentes hogares",
+     "aporta": "añade un hogar con gastos de salud o de cuidado y compara el efecto."
+    },
+    {
+     "titulo": "Respuestas posibles",
+     "aporta": "propón y compara tres estrategias para ajustarse a los precios más altos."
+    }
+   ],
+   "objetivos": [
+    "Construir presupuestos realistas con casos ficticios.",
+    "Aplicar cambios de precios con criterio.",
+    "Comparar el efecto entre hogares.",
+    "Explicar las decisiones posibles."
+   ],
+   "habilidades": [
+    "Modelado en hoja de cálculo.",
+    "Análisis de escenarios.",
+    "Lectura de datos de precios.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Precios de referencia de fuentes públicas.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Trabaja con familias inventadas y precios públicos; no uses datos de familias reales ni ejemplos que identifiquen a alguien.",
+    "Evita presentar el resultado como una predicción: es una simulación para entender el efecto."
+   ],
+   "otroSector": "La misma simulación sirve para estudiar el efecto de un aumento de costos en un negocio, un colegio o una organización."
+  },
+  {
+   "id": "simula-la-economia-de-un-hogar-durante-un-mes",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "educacion"
+   ],
+   "titulo": "Simula la economía de un hogar durante un mes",
+   "resumen": "Crea el mes económico de una familia ficticia, con ingresos, gastos, imprevistos y un plan de ahorro, y observa cómo sus decisiones afectan su resultado.",
+   "tipo": "Simulación",
+   "tiempo": "~25 h",
+   "horas": 25,
+   "etiquetas": [
+    "Hogar",
+    "Simulación"
+   ],
+   "intencion": [
+    "crear",
+    "investigar"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Contabilidad",
+    "Administración",
+    "Educación",
+    "Ingeniería de Sistemas",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "La economía de un hogar es un sistema de ingresos y gastos que cambia cada semana: llegan pagos, aparecen imprevistos y se toman decisiones sobre qué comprar. Entenderlo con un caso real es difícil porque implicaría datos privados.",
+    "Un caso ficticio bien armado permite practicar sin riesgo y aprender cómo pequeñas decisiones, como cuándo comprar o qué pagar primero, cambian el resultado del mes."
+   ],
+   "desarrollar": [
+    "Inventa una familia con integrantes, ingresos y gastos fijos, y define reglas para eventos del mes, como un gasto imprevisto, un ingreso extra o una oferta tentadora.",
+    "Simula el mes semana por semana, registra las decisiones y su efecto en un tablero, y propón un plan de ahorro realista para la familia, comprobando si se cumple en la simulación."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Juego de roles",
+     "aporta": "propón que varias personas tomen decisiones por la familia y compara resultados."
+    },
+    {
+     "titulo": "Meses encadenados",
+     "aporta": "continúa la simulación varios meses y observa cómo se acumulan los efectos."
+    },
+    {
+     "titulo": "Versión interactiva",
+     "aporta": "convierte la simulación en una hoja o página donde se elijan decisiones y se vea el resultado."
+    }
+   ],
+   "objetivos": [
+    "Construir un caso ficticio coherente.",
+    "Definir reglas de eventos y decisiones.",
+    "Simular y registrar resultados.",
+    "Diseñar un plan de ahorro y evaluarlo."
+   ],
+   "habilidades": [
+    "Modelado y simulación.",
+    "Registro de decisiones.",
+    "Análisis de resultados.",
+    "Diseño de planes."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Dados o una tabla de eventos aleatorios.",
+    "Herramientas de programación, si quieres automatizarla."
+   ],
+   "lineamientos": [
+    "Inventa los datos de la familia sin basarte en personas reales y no incluyas información financiera verdadera.",
+    "Aclara que es un juego de aprendizaje y no un modelo exacto de cómo funcionan todos los hogares."
+   ],
+   "otroSector": "La misma simulación sirve para entrenar decisiones en una pequeña empresa, una organización estudiantil o un proyecto con recursos limitados."
+  },
+  {
+   "id": "cuanto-ahorra-un-hogar-al-planificar-sus-compras",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "agricultura"
+   ],
+   "titulo": "¿Cuánto ahorra un hogar al planificar sus compras?",
+   "resumen": "Compara el gasto de un mes con compras planificadas frente a compras sin lista y descubre cuánto dinero y desperdicio puede evitar una buena organización.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Compras",
+    "Planificación"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Ingeniería Industrial",
+    "Contabilidad",
+    "Nutrición",
+    "Estadística",
+    "Ingeniería Agroindustrial",
+    "Educación"
+   ],
+   "problema": [
+    "Hacer las compras sin plan lleva a comprar de más, repetir productos o dejar que se echen a perder. Pero casi nadie mide cuánto dinero se pierde así, y la planificación suele verse como una molestia.",
+    "Medir la diferencia con datos propios permite saber si planificar realmente compensa el esfuerzo."
+   ],
+   "desarrollar": [
+    "Durante un mes anota lo que gastas en compras del hogar sin plan, y durante otro haz una lista semanal con lo que necesitas y un presupuesto, anotando lo comprado y lo que se desperdicia.",
+    "Compara los dos meses en gasto total, en cantidad de productos que sobraron y en tiempo invertido, y concluye si planificar vale la pena en tu caso."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Tamaño del hogar",
+     "aporta": "analiza cómo cambia el resultado según cuántas personas viven en casa."
+    },
+    {
+     "titulo": "Lista inteligente",
+     "aporta": "diseña una plantilla de lista de compras que ayude a no olvidar ni repetir."
+    },
+    {
+     "titulo": "Ofertas y planificación",
+     "aporta": "compara cuánto ahorra aprovechar ofertas con y sin plan."
+    }
+   ],
+   "objetivos": [
+    "Medir el gasto en compras con método.",
+    "Comparar dos formas de comprar.",
+    "Calcular el ahorro y el desperdicio.",
+    "Presentar conclusiones honestas."
+   ],
+   "habilidades": [
+    "Registro de datos.",
+    "Análisis comparativo.",
+    "Planificación.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Boletas o notas de compra.",
+    "Una plantilla de lista de compras."
+   ],
+   "lineamientos": [
+    "Si compartes los resultados, oculta nombres, direcciones y otros datos de las boletas; usa solo montos y productos.",
+    "Presenta los resultados como una experiencia de un mes y no como un promedio para todos."
+   ],
+   "otroSector": "El mismo análisis sirve para evaluar la planificación de compras de insumos en un negocio, un colegio o una cocina."
+  },
+  {
+   "id": "conviene-comprar-en-presentaciones-grandes-o-individuales",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Conviene comprar en presentaciones grandes o individuales?",
+   "resumen": "Calcula el precio por unidad de varios productos en presentaciones pequeñas, medianas y familiares, y descubre cuándo la grande realmente conviene.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Precios",
+    "Compras"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Matemática",
+    "Nutrición",
+    "Educación"
+   ],
+   "problema": [
+    "Se asume que la presentación grande es siempre más barata, pero no siempre es así: a veces cuesta casi lo mismo por unidad, otras veces se desperdicia por no consumirla a tiempo, y otras conviene mucho.",
+    "El precio por unidad no siempre está visible, y comparar presentaciones distintas exige hacer cuentas que casi nadie hace en la tienda."
+   ],
+   "desarrollar": [
+    "Elige diez productos de consumo común, anota el precio y el contenido de cada presentación disponible, y calcula el precio por unidad de medida para cada una.",
+    "Identifica en cuáles la presentación grande ahorra mucho, poco o nada, considera si se consumiría antes de vencer o de malograrse y arma una regla práctica para decidir."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Cuándo se desperdicia",
+     "aporta": "agrega el costo de lo que no se llega a usar."
+    },
+    {
+     "titulo": "Distintos tipos de tienda",
+     "aporta": "compara si cambia el resultado según el tipo de tienda."
+    },
+    {
+     "titulo": "Regla rápida",
+     "aporta": "crea una tarjeta simple para decidir en la tienda sin calculadora."
+    }
+   ],
+   "objetivos": [
+    "Reunir precios y contenidos con orden.",
+    "Calcular precios por unidad.",
+    "Comparar presentaciones.",
+    "Formular una regla práctica."
+   ],
+   "habilidades": [
+    "Cálculo de precios unitarios.",
+    "Observación de datos.",
+    "Análisis comparativo.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Cuaderno para anotar precios en tiendas.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Anota precios públicos con su fecha y evita fotografiar a personas dentro de tiendas; no recomiendes marcas ni tiendas específicas.",
+    "Considera que lo más barato por unidad no siempre es lo mejor si no se puede almacenar o consumir a tiempo."
+   ],
+   "otroSector": "El mismo análisis de precio por unidad sirve para insumos de un negocio, para servicios por horas o por paquetes, y para planes de datos."
+  },
+  {
+   "id": "el-costo-de-oportunidad-en-la-vida-cotidiana",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "educacion"
+   ],
+   "titulo": "El costo de oportunidad en la vida cotidiana",
+   "resumen": "Descubre cómo cada decisión cotidiana implica renunciar a otra opción, y practica reconocer qué se pierde y qué se gana al elegir.",
+   "tipo": "Investigación",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Economía",
+    "Decisiones"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Psicología",
+    "Filosofía",
+    "Educación",
+    "Estadística",
+    "Contabilidad",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Cada vez que se elige algo, se deja de elegir otra cosa: una tarde de estudio es una tarde que no se trabaja, y un gasto es dinero que no se ahorra. A ese valor de lo que se renuncia se le llama costo de oportunidad.",
+    "Casi nunca se piensa así, y por eso se toman decisiones que parecen gratis cuando no lo son. Hacerlo visible ayuda a decidir mejor."
+   ],
+   "desarrollar": [
+    "Elige cinco decisiones cotidianas, como estudiar o trabajar, comprar o ahorrar, ir a una actividad o descansar, y para cada una describe cuál era la mejor alternativa que se dejó y qué valor tendría.",
+    "Presenta cada caso en una ficha o tabla simple y explica en qué situaciones el costo de oportunidad cambia la decisión."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Un caso con números",
+     "aporta": "convierte uno de los casos en un cálculo con tiempo y dinero."
+    },
+    {
+     "titulo": "Decisiones de otros",
+     "aporta": "analiza las decisiones de un personaje ficticio y qué costo de oportunidad enfrentó."
+    },
+    {
+     "titulo": "Tarjeta de decisión",
+     "aporta": "crea una tarjeta con tres preguntas para pensar antes de decidir."
+    }
+   ],
+   "objetivos": [
+    "Comprender el concepto de costo de oportunidad.",
+    "Aplicarlo a decisiones cotidianas.",
+    "Comparar alternativas con criterio.",
+    "Explicarlo a otras personas con claridad."
+   ],
+   "habilidades": [
+    "Pensamiento económico.",
+    "Análisis de alternativas.",
+    "Argumentación.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o tabla.",
+    "Casos inventados.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Usa casos inventados o decisiones propias que quieras compartir; no juzgues las decisiones de nadie.",
+    "Recuerda que no todo se puede medir en dinero, y que la mejor alternativa para una persona no lo es para otra."
+   ],
+   "otroSector": "El mismo concepto sirve para decidir cómo asignar el tiempo de un equipo, los recursos de un proyecto o el presupuesto de una organización."
+  },
+  {
+   "id": "decisiones-economicas-con-informacion-limitada",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "ciencias"
+   ],
+   "titulo": "Decisiones económicas con información limitada",
+   "resumen": "Estudia cómo decidir bien cuando no tienes toda la información, qué factores pesan y cómo evitar los errores más comunes al elegir.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Decisiones",
+    "Incertidumbre"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Estadística",
+    "Administración",
+    "Psicología",
+    "Ingeniería Industrial",
+    "Matemática",
+    "Ciencia de Datos",
+    "Contabilidad"
+   ],
+   "problema": [
+    "Casi todas las decisiones económicas se toman sin saber todo: no se conocen los precios del futuro, ni las intenciones del otro, ni todos los costos ocultos. Aun así hay que decidir.",
+    "Entender qué factores influyen, desde el precio hasta las emociones, y qué errores son frecuentes, ayuda a decidir con más criterio sin esperar certeza total."
+   ],
+   "desarrollar": [
+    "Elige tres decisiones, como comprar un producto, aceptar un trabajo o iniciar un negocio, y para cada una lista qué información tienes, cuál falta, qué factores pesan y qué riesgos hay.",
+    "Aplica un método sencillo, como comparar escenarios optimista, normal y pesimista, y concluye cómo decidirías y qué información intentarías obtener primero."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Sesgos frecuentes",
+     "aporta": "identifica qué errores de juicio podrían influir en cada decisión."
+    },
+    {
+     "titulo": "Valor de la información",
+     "aporta": "estima cuánto valdría conseguir un dato antes de decidir."
+    },
+    {
+     "titulo": "Decidir en grupo",
+     "aporta": "compara cómo cambia la decisión si la toma un grupo."
+    }
+   ],
+   "objetivos": [
+    "Reconocer qué información falta.",
+    "Comparar escenarios.",
+    "Identificar factores y errores comunes.",
+    "Justificar una decisión con criterio."
+   ],
+   "habilidades": [
+    "Análisis de decisiones.",
+    "Pensamiento probabilístico básico.",
+    "Comparación de escenarios.",
+    "Argumentación."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o tabla.",
+    "Casos inventados.",
+    "Un editor de diagramas de decisión."
+   ],
+   "lineamientos": [
+    "Usa casos inventados y presenta tu método como una forma de pensar, no como una fórmula infalible.",
+    "No lo uses para tomar decisiones importantes de dinero o de salud sin consultar a un profesional."
+   ],
+   "otroSector": "La misma forma de decidir sirve en medicina, en ingeniería, en política pública o en cualquier decisión de un equipo."
+  },
+  {
+   "id": "crea-una-idea-de-negocio-con-baja-inversion",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Crea una idea de negocio con baja inversión",
+   "resumen": "Diseña una idea de negocio que pueda empezar con muy poco dinero, define qué problema resuelve, a quién le sirve y cómo se probaría antes de invertir más.",
+   "tipo": "Plan",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Emprendimiento",
+    "Idea de negocio"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Administración",
+    "Economía",
+    "Ingeniería Industrial",
+    "Contabilidad",
+    "Comunicaciones",
+    "Marketing",
+    "Ingeniería de Sistemas",
+    "Diseño"
+   ],
+   "problema": [
+    "Muchas buenas ideas no arrancan porque se piensa que hace falta mucho capital. Pero hay negocios que pueden probarse con muy poca inversión si se empieza pequeño, se usa lo que ya se tiene y se valida antes de gastar.",
+    "El reto está en elegir una idea que resuelva una necesidad real y en poder explicar con números cuánto costaría empezar."
+   ],
+   "desarrollar": [
+    "Elige un problema o una necesidad que veas a tu alrededor y propón un producto o servicio sencillo que lo resuelva, describiendo qué ofreces, a quién y por qué lo preferirían.",
+    "Lista lo mínimo necesario para empezar, estima el costo inicial con precios que investigues, define una prueba pequeña, como vender a diez personas, y qué resultado indicaría que vale la pena seguir."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Tres ideas comparadas",
+     "aporta": "propón tres ideas y compáralas por inversión, riesgo y facilidad."
+    },
+    {
+     "titulo": "Plan de prueba",
+     "aporta": "diseña una prueba de dos semanas con metas claras."
+    },
+    {
+     "titulo": "Plan de crecimiento",
+     "aporta": "describe qué harías si la prueba funciona."
+    }
+   ],
+   "objetivos": [
+    "Identificar una necesidad real.",
+    "Definir una oferta sencilla.",
+    "Estimar la inversión mínima.",
+    "Diseñar una prueba de validación."
+   ],
+   "habilidades": [
+    "Pensamiento emprendedor.",
+    "Estimación de costos.",
+    "Diseño de pruebas simples.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un lienzo de modelo de negocio.",
+    "Precios de mercado."
+   ],
+   "lineamientos": [
+    "Trabaja con una idea propia o ficticia y no uses datos privados de negocios reales ni de clientes.",
+    "Es un ejercicio de aprendizaje: no inviertas dinero real basándote solo en esta estimación."
+   ],
+   "otroSector": "El mismo método sirve para probar un producto digital, una actividad de una organización estudiantil o un servicio dentro de una empresa."
+  },
+  {
+   "id": "disena-un-modelo-de-negocio-para-un-producto-hecho-por-estudiant",
+   "area": "negocios",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "Diseña un modelo de negocio para un producto hecho por estudiantes",
+   "resumen": "Elige un producto que podrían fabricar o crear estudiantes y diseña cómo ganaría dinero: a quién se lo venden, cómo lo entregan, qué cuesta y cuánto dejaría.",
+   "tipo": "Plan",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Modelo de negocio",
+    "Estudiantes"
+   ],
+   "intencion": [
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Administración",
+    "Economía",
+    "Ingeniería Industrial",
+    "Marketing",
+    "Contabilidad",
+    "Diseño",
+    "Ingeniería de Sistemas",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Un producto hecho por estudiantes, como artesanías, apuntes, accesorios o postres, puede ser un pequeño negocio, pero solo si se piensa cómo se produce, se vende y se cobra, y si deja ganancia después de contar los costos y el tiempo.",
+    "Un modelo de negocio ordena esas decisiones en una sola vista y permite detectar qué falla antes de producir."
+   ],
+   "desarrollar": [
+    "Inventa un producto y describe con un lienzo de modelo de negocio sus clientes, propuesta de valor, canales de venta, fuentes de ingreso, costos principales y recursos necesarios.",
+    "Estima cuántas unidades se venderían al mes, calcula costos y ganancia, y señala los dos puntos más débiles del modelo con una mejora para cada uno."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Tres modelos posibles",
+     "aporta": "compara vender por encargo, en feria y por internet."
+    },
+    {
+     "titulo": "Costo del tiempo",
+     "aporta": "incluye cuánto vale el tiempo del equipo estudiante."
+    },
+    {
+     "titulo": "Escala",
+     "aporta": "analiza qué cambiaría si se vendiera diez veces más."
+    }
+   ],
+   "objetivos": [
+    "Describir el modelo con un lienzo.",
+    "Estimar ingresos y costos.",
+    "Identificar debilidades.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Diseño de modelos de negocio.",
+    "Estimación financiera.",
+    "Análisis crítico.",
+    "Trabajo en equipo."
+   ],
+   "herramientas": [
+    "Un lienzo de modelo de negocio.",
+    "Hoja de cálculo.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Trabaja con un producto inventado; si usas uno real, que sea tuyo o con permiso de sus autores.",
+    "Considera las normas de higiene y seguridad si el producto es de consumo."
+   ],
+   "otroSector": "El mismo modelo sirve para un servicio de la universidad, un club o una pequeña empresa de tecnología."
+  },
+  {
+   "id": "quien-es-el-cliente-de-tu-emprendimiento-perfil-de-cliente-ideal",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Quién es el cliente de tu emprendimiento? Perfil de cliente ideal",
+   "resumen": "Define con quién quieres trabajar: describe a tu cliente ideal con base en entrevistas breves y observación, y adapta tu oferta a lo que realmente necesita.",
+   "tipo": "Investigación",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Cliente",
+    "Marketing"
+   ],
+   "intencion": [
+    "investigar",
+    "crear"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Administración",
+    "Psicología",
+    "Sociología",
+    "Comunicaciones",
+    "Estadística",
+    "Economía",
+    "Diseño"
+   ],
+   "problema": [
+    "Muchos emprendimientos dicen venderle «a todos», y terminan sin llegarle a nadie. Cuando no se sabe quién es el cliente, el mensaje, el precio y el canal se eligen a ciegas.",
+    "Conocer a un cliente concreto, qué le preocupa, dónde compra y qué pagaría, orienta todas las decisiones siguientes."
+   ],
+   "desarrollar": [
+    "Elige un emprendimiento real o inventado y haz entrevistas cortas de cinco a diez personas que podrían ser sus clientes, con preguntas sobre qué necesitan, cómo lo resuelven hoy y qué les molesta.",
+    "Con las respuestas arma uno o dos perfiles de cliente, con rasgos, necesidades y frustraciones, y propón qué cambiarías en la oferta para ellos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Mapa de empatía",
+     "aporta": "completa un mapa de empatía con lo que piensan, ven y sienten."
+    },
+    {
+     "titulo": "Clientes que no son",
+     "aporta": "describe a quién no le servirías y por qué."
+    },
+    {
+     "titulo": "Mensaje por perfil",
+     "aporta": "escribe un mensaje de venta distinto para cada perfil."
+    }
+   ],
+   "objetivos": [
+    "Planificar entrevistas breves.",
+    "Identificar necesidades reales.",
+    "Construir perfiles de cliente.",
+    "Adaptar la oferta."
+   ],
+   "habilidades": [
+    "Entrevista y escucha.",
+    "Análisis cualitativo.",
+    "Síntesis de información.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Guion de preguntas.",
+    "Hoja de cálculo o tabla.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Pide permiso antes de entrevistar, explica para qué usarás las respuestas y no guardes nombres ni datos de contacto.",
+    "Presenta los perfiles como resúmenes y no como retratos de personas reales."
+   ],
+   "otroSector": "El mismo método sirve para conocer a usuarios de una aplicación, a estudiantes de un curso o a vecinos de una comunidad."
+  },
+  {
+   "id": "disena-una-propuesta-de-valor-para-un-emprendimiento",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Diseña una propuesta de valor para un emprendimiento",
+   "resumen": "Explica con claridad por qué alguien elegiría tu producto o servicio en lugar de otro, y comprueba si tu propuesta se entiende en una sola frase.",
+   "tipo": "Plan",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Propuesta de valor",
+    "Emprendimiento"
+   ],
+   "intencion": [
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Administración",
+    "Comunicaciones",
+    "Diseño",
+    "Economía",
+    "Psicología",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Una propuesta de valor responde qué ganas al elegir este producto y no otro. Muchos negocios la dan por supuesta y terminan describiendo características en lugar de beneficios.",
+    "Si el cliente no la entiende rápido, compara solo por precio, y ahí es difícil ganar."
+   ],
+   "desarrollar": [
+    "Para un emprendimiento real o inventado, lista los problemas que resuelve, los beneficios que da y lo que lo diferencia de las alternativas, y redáctalo en una frase clara.",
+    "Prueba la frase con cinco personas, anota qué entendieron y qué dudas tuvieron, y mejora hasta que se entienda sin explicación extra."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Tres versiones de la frase",
+     "aporta": "escribe tres versiones y averigua cuál se entiende mejor."
+    },
+    {
+     "titulo": "Frente a la competencia",
+     "aporta": "compara tu propuesta con la de dos competidores."
+    },
+    {
+     "titulo": "Del mensaje al producto",
+     "aporta": "revisa si el producto realmente cumple lo que promete."
+    }
+   ],
+   "objetivos": [
+    "Distinguir características de beneficios.",
+    "Redactar una propuesta clara.",
+    "Probarla con personas.",
+    "Mejorarla con la respuesta recibida."
+   ],
+   "habilidades": [
+    "Redacción clara.",
+    "Análisis de diferenciación.",
+    "Pruebas con usuarios.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Un lienzo de propuesta de valor.",
+    "Tarjetas o papelitos.",
+    "Un formulario sencillo."
+   ],
+   "lineamientos": [
+    "No prometas beneficios que el producto no pueda cumplir y evita comparaciones que perjudiquen injustamente a otros.",
+    "Pide permiso a quienes prueben tu frase y no registres sus datos personales."
+   ],
+   "otroSector": "El mismo ejercicio sirve para presentar un proyecto, un portafolio personal o una propuesta de investigación."
+  },
+  {
+   "id": "calcula-el-punto-de-equilibrio-de-un-pequeno-negocio",
+   "area": "negocios",
+   "areas2": [
+    "industria"
+   ],
+   "titulo": "Calcula el punto de equilibrio de un pequeño negocio",
+   "resumen": "Averigua cuántas unidades tiene que vender un negocio pequeño para no perder dinero, separando costos fijos y variables, y simula qué pasa si cambian los precios o los costos.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Punto de equilibrio",
+    "Costos"
+   ],
+   "intencion": [
+    "resolver",
+    "investigar"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Contabilidad",
+    "Economía",
+    "Administración",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Matemática",
+    "Ingeniería de Sistemas",
+    "Finanzas"
+   ],
+   "problema": [
+    "Un negocio puede estar lleno de clientes y aun así perder dinero si los ingresos no cubren los costos. El punto de equilibrio indica cuánto hay que vender para empezar a ganar.",
+    "Muchos emprendedores lo calculan mal o no lo calculan, y tienen que adivinar si les conviene seguir."
+   ],
+   "desarrollar": [
+    "Inventa un negocio pequeño, como una venta de comida o un servicio, con precios, costos fijos, como alquiler o servicios, y costos variables por unidad.",
+    "Calcula el punto de equilibrio en unidades y en soles, grafica ingresos y costos, y simula qué ocurre si sube el costo de un insumo o si baja el precio, explicando cada resultado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Varios productos",
+     "aporta": "calcula el punto de equilibrio cuando el negocio vende más de un producto."
+    },
+    {
+     "titulo": "Meta de ganancia",
+     "aporta": "calcula cuánto vender para ganar una cantidad deseada."
+    },
+    {
+     "titulo": "Margen de seguridad",
+     "aporta": "mide cuánto pueden caer las ventas antes de perder dinero."
+    }
+   ],
+   "objetivos": [
+    "Distinguir costos fijos y variables.",
+    "Calcular el punto de equilibrio.",
+    "Graficar la situación.",
+    "Analizar cambios en precios y costos."
+   ],
+   "habilidades": [
+    "Análisis de costos.",
+    "Cálculo en hoja de cálculo.",
+    "Gráficos de ingresos y costos.",
+    "Interpretación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Datos inventados."
+   ],
+   "lineamientos": [
+    "Usa datos inventados, no datos reales de negocios que no sean tuyos.",
+    "Indica que los costos del modelo son supuestos y que en un negocio real habría que verificarlos."
+   ],
+   "otroSector": "El mismo cálculo sirve para evaluar un evento, un taller, un producto digital o una campaña."
+  },
+  {
+   "id": "cuando-suben-los-costos-que-pasa-con-las-ganancias",
+   "area": "negocios",
+   "areas2": [
+    "industria"
+   ],
+   "titulo": "Cuando suben los costos: ¿qué pasa con las ganancias?",
+   "resumen": "Simula qué le ocurre a las ganancias de un negocio pequeño cuando suben los costos de sus insumos, y evalúa las decisiones posibles: subir precios, bajar costos o aguantar.",
+   "tipo": "Simulación",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Costos",
+    "Ganancias"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Contabilidad",
+    "Economía",
+    "Administración",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Matemática",
+    "Ingeniería de Sistemas",
+    "Finanzas"
+   ],
+   "problema": [
+    "Cuando sube el precio de un insumo, el negocio se enfrenta a una decisión difícil. Si sube sus precios, puede perder clientes; si no lo hace, pierde ganancia.",
+    "Entender cuánto afecta cada insumo ayuda a decidir qué hacer y a no reaccionar por intuición."
+   ],
+   "desarrollar": [
+    "Inventa un negocio con varios insumos y calcula su margen de ganancia actual. Simula tres aumentos, de cinco, diez y veinte por ciento, en el insumo principal.",
+    "Para cada caso compara tres respuestas posibles: subir precios, cambiar de insumo o reducir la porción, y estima el efecto sobre la ganancia, sin olvidar que algunos clientes podrían irse."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Insumo más sensible",
+     "aporta": "identifica de qué insumo depende más la ganancia."
+    },
+    {
+     "titulo": "Efecto en la demanda",
+     "aporta": "añade cuánto bajarían las ventas si sube el precio."
+    },
+    {
+     "titulo": "Plan de contingencia",
+     "aporta": "propón qué haría el negocio ante un aumento brusco."
+    }
+   ],
+   "objetivos": [
+    "Medir el margen de ganancia.",
+    "Simular aumentos de costos.",
+    "Comparar respuestas posibles.",
+    "Elegir una decisión con argumentos."
+   ],
+   "habilidades": [
+    "Análisis de sensibilidad.",
+    "Cálculo de márgenes.",
+    "Simulación en hoja de cálculo.",
+    "Toma de decisiones."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Datos inventados."
+   ],
+   "lineamientos": [
+    "Usa un negocio inventado y presenta el resultado como una simulación y no como una predicción.",
+    "Evita sugerir que bajar la calidad o la higiene sea una opción aceptable para ahorrar."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar cómo afecta un alza de costos a un colegio, una pequeña industria o una organización."
+  },
+  {
+   "id": "cuanto-cobrar-por-tu-producto-o-servicio-hecho-a-mano",
+   "area": "negocios",
+   "areas2": [
+    "arte",
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto cobrar por tu producto o servicio hecho a mano?",
+   "resumen": "Calcula un precio justo para algo que haces a mano, contando materiales, tiempo, gastos y ganancia, para no cobrar de menos ni de más.",
+   "tipo": "Análisis",
+   "tiempo": "~15 h",
+   "horas": 15,
+   "etiquetas": [
+    "Precios",
+    "Artesanía"
+   ],
+   "intencion": [
+    "resolver",
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Diseño",
+    "Marketing",
+    "Ingeniería Industrial",
+    "Comunicaciones",
+    "Estadística"
+   ],
+   "problema": [
+    "Quien hace productos o servicios por su cuenta suele fijar el precio por intuición o copiando a otros, y con frecuencia no cuenta su propio tiempo. Así se cobra de menos y el trabajo no resulta sostenible.",
+    "Un precio bien calculado ayuda a decidir, a explicar el valor al cliente y a saber si el negocio realmente deja algo."
+   ],
+   "desarrollar": [
+    "Elige un producto o servicio hecho a mano, real o inventado, y calcula el costo de materiales, el tiempo de trabajo con un valor por hora que definas, y gastos como transporte, empaque o publicidad.",
+    "Suma, agrega un margen de ganancia, compara con los precios de dos alternativas del mercado y decide un precio justificando por qué."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Precio por volumen",
+     "aporta": "calcula cómo cambia el precio si se hacen diez unidades en lugar de una."
+    },
+    {
+     "titulo": "Costo del tiempo",
+     "aporta": "analiza qué pasa con el precio según el valor que se dé a la hora de trabajo."
+    },
+    {
+     "titulo": "Prueba con clientes",
+     "aporta": "pregunta a cinco personas qué pagarían y compara con tu cálculo."
+    }
+   ],
+   "objetivos": [
+    "Identificar todos los costos de producir.",
+    "Valorar el tiempo propio.",
+    "Fijar un margen razonable.",
+    "Comparar con el mercado."
+   ],
+   "habilidades": [
+    "Cálculo de costos.",
+    "Fijación de precios.",
+    "Análisis de mercado.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Precios de materiales.",
+    "Precios de productos similares."
+   ],
+   "lineamientos": [
+    "Usa precios públicos o casos inventados y no copies precios de competidores como si fueran tuyos.",
+    "Si pruebas con clientes reales, pide su opinión sin presionarles a comprar."
+   ],
+   "otroSector": "El mismo cálculo sirve para cobrar clases, diseño, programación o cualquier servicio que se vende por proyecto."
+  },
+  {
+   "id": "disena-una-estrategia-de-precios-para-un-emprendimiento",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Diseña una estrategia de precios para un emprendimiento",
+   "resumen": "Diseña cómo fijar y organizar los precios de un negocio, con distintas opciones como paquetes, niveles o descuentos, y evalúa cuál resulta más conveniente.",
+   "tipo": "Plan",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Precios",
+    "Estrategia"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Comunicaciones",
+    "Psicología"
+   ],
+   "problema": [
+    "Fijar un precio no es solo sumar costos: también influye cómo se compara con la competencia, qué percibe el cliente y si hay opciones para distintos presupuestos.",
+    "Una estrategia de precios define qué se cobra, a quién y de qué forma, y puede cambiar mucho los resultados sin cambiar el producto."
+   ],
+   "desarrollar": [
+    "Para un emprendimiento inventado, diseña tres estrategias de precios, por ejemplo un precio único, tres niveles de opciones o paquetes con descuento, y define el precio de cada una.",
+    "Simula con supuestos cuántos clientes elegirían cada opción, calcula ingresos y ganancia en cada estrategia, y recomienda la más conveniente explicando los supuestos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Precio psicológico",
+     "aporta": "analiza cómo cambia la percepción si el precio termina en cierto número."
+    },
+    {
+     "titulo": "Precios por temporada",
+     "aporta": "diseña precios que varíen según la época o el horario."
+    },
+    {
+     "titulo": "Prueba real",
+     "aporta": "prueba dos precios con grupos pequeños y compara."
+    }
+   ],
+   "objetivos": [
+    "Conocer estrategias de precios.",
+    "Simular su efecto.",
+    "Calcular ingresos y ganancias.",
+    "Justificar una elección."
+   ],
+   "habilidades": [
+    "Estrategia de precios.",
+    "Simulación en hoja de cálculo.",
+    "Análisis de escenarios.",
+    "Argumentación."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Datos inventados."
+   ],
+   "lineamientos": [
+    "Usa un caso inventado y evita estrategias engañosas: los precios deben ser claros y honestos.",
+    "Aclara que los supuestos de demanda son estimaciones."
+   ],
+   "otroSector": "El mismo análisis sirve para fijar la cuota de una organización, el precio de un servicio digital o tarifas de un taller."
+  },
+  {
+   "id": "cuanto-pagaria-un-cliente-por-un-producto-nuevo",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto pagaría un cliente por un producto nuevo?",
+   "resumen": "Diseña una pequeña encuesta para averiguar cuánto estaría dispuesta a pagar la gente por un producto nuevo, y analiza qué precio aceptaría la mayoría.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Precios",
+    "Encuestas"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Estadística",
+    "Economía",
+    "Administración",
+    "Psicología",
+    "Comunicaciones",
+    "Ciencia de Datos",
+    "Sociología"
+   ],
+   "problema": [
+    "Antes de lanzar un producto es difícil saber cuánto pagaría la gente. Si se pregunta directamente, muchas personas responden por cortesía o sin pensarlo, y los resultados no siempre sirven.",
+    "Hay maneras sencillas de preguntar que dan una idea más realista, como mostrar rangos de precios o preguntar cuándo algo parece demasiado barato o demasiado caro."
+   ],
+   "desarrollar": [
+    "Elige un producto o servicio, real o inventado, y diseña una encuesta corta con preguntas sobre precios, como a partir de qué monto les parecería caro y a partir de cuál sospecharían de su calidad.",
+    "Aplícala a una muestra pequeña, grafica las respuestas, identifica el rango de precios aceptable y explica cómo elegirías el precio final."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Por tipo de cliente",
+     "aporta": "compara las respuestas por grupos, como edad o presupuesto."
+    },
+    {
+     "titulo": "Decir y hacer",
+     "aporta": "compara lo que dicen que pagarían con lo que realmente compran en una venta de prueba."
+    },
+    {
+     "titulo": "Mejorar la encuesta",
+     "aporta": "revisa qué preguntas confundieron y reescríbelas."
+    }
+   ],
+   "objetivos": [
+    "Diseñar preguntas claras.",
+    "Recoger respuestas de forma ética.",
+    "Analizar rangos de precios.",
+    "Elegir un precio con datos."
+   ],
+   "habilidades": [
+    "Diseño de encuestas.",
+    "Estadística descriptiva.",
+    "Interpretación de resultados.",
+    "Visualización de datos."
+   ],
+   "herramientas": [
+    "Un formulario de encuesta.",
+    "Hoja de cálculo.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "La encuesta debe ser anónima, voluntaria y explicar para qué se usará; no pidas datos personales.",
+    "Reconoce que una muestra pequeña no representa a todo el mercado."
+   ],
+   "otroSector": "El mismo método sirve para probar cuánto valoran las personas un servicio, una cuota o una entrada a un evento."
+  },
+  {
+   "id": "como-cambia-la-demanda-cuando-cambia-el-precio",
+   "area": "negocios",
+   "areas2": [
+    "ciencias",
+    "educacion"
+   ],
+   "titulo": "¿Cómo cambia la demanda cuando cambia el precio?",
+   "resumen": "Estudia con ejemplos cómo varía lo que se compra cuando sube o baja el precio, y por qué algunos productos son más sensibles que otros.",
+   "tipo": "Simulación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Demanda",
+    "Elasticidad"
+   ],
+   "intencion": [
+    "investigar",
+    "otro-sector"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Estadística",
+    "Matemática",
+    "Administración",
+    "Ingeniería Industrial",
+    "Ciencia de Datos",
+    "Ingeniería de Sistemas",
+    "Contabilidad"
+   ],
+   "problema": [
+    "En economía se sabe que, en general, si sube el precio se compra menos. Pero cuánto menos depende del producto: si es necesario o tiene sustitutos, el cambio es distinto.",
+    "Esa sensibilidad, llamada elasticidad, explica por qué algunos negocios pueden subir precios sin perder clientes y otros no."
+   ],
+   "desarrollar": [
+    "Elige tres productos de distinto tipo, uno básico, uno con muchos sustitutos y uno de lujo, e inventa datos razonables de cantidad vendida a distintos precios para cada uno.",
+    "Grafica las tres curvas de demanda, calcula cuánto cambia la cantidad ante un cambio de precio y explica por qué cada producto reacciona distinto."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Con datos reales",
+     "aporta": "busca datos públicos de precios y consumo de un producto y analiza su reacción."
+    },
+    {
+     "titulo": "Efecto en los ingresos",
+     "aporta": "calcula cuándo subir el precio aumenta o reduce los ingresos totales."
+    },
+    {
+     "titulo": "Un juego con el grupo",
+     "aporta": "simula el mercado con compañeros que decidan si comprar a cada precio."
+    }
+   ],
+   "objetivos": [
+    "Comprender la relación precio y cantidad.",
+    "Graficar curvas de demanda.",
+    "Calcular sensibilidad.",
+    "Explicar diferencias entre productos."
+   ],
+   "habilidades": [
+    "Modelado económico básico.",
+    "Gráficos de demanda.",
+    "Cálculo de variaciones.",
+    "Interpretación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Datos inventados o públicos."
+   ],
+   "lineamientos": [
+    "Si usas datos inventados, indica que son ilustrativos; si usas datos reales, cita la fuente.",
+    "No generalices: la sensibilidad depende del contexto y del momento."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar cómo responde el uso de un servicio, de un transporte o de una app ante cambios de tarifa."
+  },
+  {
+   "id": "por-que-un-mismo-producto-cuesta-tan-distinto-en-tu-zona",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "ciudades"
+   ],
+   "titulo": "¿Por qué un mismo producto cuesta tan distinto en tu zona?",
+   "resumen": "Compara el precio de los mismos productos en distintos tipos de tienda y zonas cercanas, y busca las razones de las diferencias.",
+   "tipo": "Investigación",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Precios",
+    "Mercado local"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Estadística",
+    "Sociología",
+    "Geografía",
+    "Marketing",
+    "Ingeniería Industrial",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Un mismo producto puede costar distinto en el mercado, la bodega, el supermercado o una tienda de conveniencia, y también según el barrio. Casi nadie se detiene a preguntarse por qué.",
+    "Las diferencias dependen de costos, de la comodidad, del volumen de compra y del tipo de cliente, y entenderlas ayuda a comprar mejor y a fijar precios."
+   ],
+   "desarrollar": [
+    "Elige un grupo de productos básicos, anota su precio en cuatro tipos de establecimiento de tu zona durante la misma semana, y calcula el costo de una misma canasta en cada uno.",
+    "Muestra las diferencias en una tabla y un gráfico, y propón explicaciones razonables para cada diferencia, indicando cuáles son hipótesis y cuáles se pueden comprobar."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Otra zona",
+     "aporta": "repite el estudio en otro barrio y compara."
+    },
+    {
+     "titulo": "Costo de comodidad",
+     "aporta": "estima cuánto más se paga por estar cerca o abierto más horas."
+    },
+    {
+     "titulo": "Cambios en el tiempo",
+     "aporta": "repite la medición en otra semana y observa si los precios cambian."
+    }
+   ],
+   "objetivos": [
+    "Recolectar precios con método.",
+    "Comparar canastas.",
+    "Formular hipótesis sobre las diferencias.",
+    "Presentar resultados con claridad."
+   ],
+   "habilidades": [
+    "Observación de datos.",
+    "Análisis comparativo.",
+    "Formulación de hipótesis.",
+    "Visualización."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Cuaderno de registro de precios.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Anota solo precios públicos y no fotografíes a personas ni a empleados; no juzgues a un negocio como bueno o malo por su precio.",
+    "Pide permiso si vas a anotar precios dentro de una tienda pequeña."
+   ],
+   "otroSector": "El mismo método sirve para comparar tarifas de servicios, de transporte, de internet o de alquileres entre zonas."
+  },
+  {
+   "id": "por-que-elegimos-un-negocio-y-no-otro",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Por qué elegimos un negocio y no otro?",
+   "resumen": "Investiga qué factores hacen que las personas elijan una tienda o un servicio frente a otro, como precio, cercanía, confianza o trato, y cómo se ordenan según el tipo de cliente.",
+   "tipo": "Investigación",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Consumidor",
+    "Decisiones"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Psicología",
+    "Sociología",
+    "Administración",
+    "Economía",
+    "Comunicaciones",
+    "Estadística",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Dos negocios similares pueden tener resultados muy distintos. A veces gana el más barato, otras el más cercano, el más confiable o el que atiende mejor.",
+    "Saber qué pesa más en la decisión de compra ayuda a un negocio a enfocar sus esfuerzos en lo que realmente importa a sus clientes."
+   ],
+   "desarrollar": [
+    "Elige un tipo de negocio de tu zona, como una bodega, una librería o una cafetería, y arma una encuesta anónima corta pidiendo que ordenen por importancia factores como precio, cercanía, variedad, atención y limpieza.",
+    "Analiza los resultados por grupos, identifica los factores que más pesan y propón tres acciones que un negocio podría tomar con esa información."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Por qué se deja de ir",
+     "aporta": "investiga qué razones llevan a dejar de comprar en un lugar."
+    },
+    {
+     "titulo": "Lo que no se dice",
+     "aporta": "compara lo que las personas dicen que valoran con lo que realmente hacen."
+    },
+    {
+     "titulo": "Decisión de grupo",
+     "aporta": "analiza si la elección cambia cuando se compra en compañía."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una encuesta sobre decisiones de compra.",
+    "Ordenar factores por importancia.",
+    "Analizar por grupos.",
+    "Proponer acciones concretas."
+   ],
+   "habilidades": [
+    "Diseño de encuestas.",
+    "Estadística descriptiva.",
+    "Análisis de consumidor.",
+    "Comunicación de hallazgos."
+   ],
+   "herramientas": [
+    "Un formulario de encuesta.",
+    "Hoja de cálculo.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "La encuesta debe ser anónima y voluntaria; no preguntes por datos personales ni nombres de negocios concretos para criticarlos.",
+    "Presenta los resultados como tendencias de una muestra pequeña."
+   ],
+   "otroSector": "El mismo estudio sirve para entender por qué se elige una aplicación, una universidad o un medio de transporte."
+  },
+  {
+   "id": "competencia-local-que-hace-distinta-a-una-marca",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "arte"
+   ],
+   "titulo": "Competencia local: ¿qué hace distinta a una marca?",
+   "resumen": "Compara dos o tres negocios del mismo rubro en tu zona y descubre qué los diferencia en oferta, imagen, trato y precio, y qué espacio queda libre para un nuevo competidor.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Competencia",
+    "Marca"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Administración",
+    "Diseño",
+    "Comunicaciones",
+    "Economía",
+    "Sociología",
+    "Psicología",
+    "Publicidad"
+   ],
+   "problema": [
+    "En una misma calle hay varios negocios que venden casi lo mismo. Algunos se ven iguales y compiten solo por precio; otros logran una identidad que los hace reconocibles.",
+    "Analizar a la competencia sin copiarla permite entender qué valoran los clientes y dónde hay oportunidades que nadie está cubriendo."
+   ],
+   "desarrollar": [
+    "Elige un rubro, como cafeterías o librerías, y observa desde fuera tres negocios cercanos: qué ofrecen, cómo se presentan, qué precios muestran, cómo atienden y qué público parece frecuentarlos.",
+    "Arma una tabla comparativa, identifica qué hace distinto a cada uno y propón un posicionamiento posible para un negocio nuevo que no repita lo mismo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Mapa de posicionamiento",
+     "aporta": "ubica a los negocios en un mapa de precio frente a calidad percibida."
+    },
+    {
+     "titulo": "Voz de los clientes",
+     "aporta": "pregunta a cinco clientes por qué prefieren cada lugar."
+    },
+    {
+     "titulo": "Marca propia",
+     "aporta": "diseña el nombre y el mensaje de un negocio nuevo del rubro."
+    }
+   ],
+   "objetivos": [
+    "Observar a la competencia con criterio.",
+    "Comparar atributos de forma ordenada.",
+    "Identificar oportunidades.",
+    "Proponer un posicionamiento."
+   ],
+   "habilidades": [
+    "Análisis competitivo.",
+    "Observación sistemática.",
+    "Síntesis de información.",
+    "Pensamiento creativo."
+   ],
+   "herramientas": [
+    "Una tabla comparativa.",
+    "Cuaderno de observación.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Observa solo lo público, sin ingresar a zonas privadas ni pedir información confidencial, y evita críticas personales a los dueños.",
+    "Presenta tus conclusiones como una lectura externa y no como un juicio sobre la calidad de los negocios."
+   ],
+   "otroSector": "El mismo análisis sirve para comparar aplicaciones, universidades, clubes o servicios públicos de un mismo tipo."
+  },
+  {
+   "id": "marketing-de-bajo-costo-para-un-negocio-pequeno",
+   "area": "negocios",
+   "areas2": [
+    "tecnologia",
+    "sociedad"
+   ],
+   "titulo": "Marketing de bajo costo para un negocio pequeño",
+   "resumen": "Diseña un conjunto de acciones de marketing que un negocio pequeño pueda hacer con muy poco dinero, como redes, recomendaciones, alianzas locales y buena presencia.",
+   "tipo": "Plan",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Marketing",
+    "Bajo costo"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Comunicaciones",
+    "Publicidad",
+    "Administración",
+    "Diseño",
+    "Ingeniería de Sistemas",
+    "Economía",
+    "Psicología"
+   ],
+   "problema": [
+    "Un negocio pequeño no puede gastar como una gran marca, pero tampoco necesita hacerlo para ser visto. Hay acciones baratas o gratuitas que funcionan si se eligen bien y se hacen con constancia.",
+    "El problema es que muchos prueban un poco de todo sin medir nada, y no saben qué les trajo clientes."
+   ],
+   "desarrollar": [
+    "Inventa un negocio pequeño y propón cinco acciones de bajo costo, como una cuenta en redes con contenido útil, un sistema de recomendados, una alianza con un negocio vecino o un buen letrero.",
+    "Para cada acción estima costo, esfuerzo y resultado esperado, elige las dos más convenientes y define cómo medirías si funcionan."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Calendario de un mes",
+     "aporta": "arma un calendario de acciones y contenidos para un mes."
+    },
+    {
+     "titulo": "Medir sin gastar",
+     "aporta": "diseña una forma simple de saber de dónde vino cada cliente."
+    },
+    {
+     "titulo": "Comparar con pagar anuncios",
+     "aporta": "compara el costo por cliente de estas acciones con el de una publicidad pagada."
+    }
+   ],
+   "objetivos": [
+    "Conocer acciones de marketing accesibles.",
+    "Estimar costo y resultado.",
+    "Priorizar con criterio.",
+    "Definir cómo medir resultados."
+   ],
+   "habilidades": [
+    "Planificación de marketing.",
+    "Estimación de costo y retorno.",
+    "Redacción de mensajes.",
+    "Medición básica."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de diseño sencillo.",
+    "Redes sociales de ejemplo."
+   ],
+   "lineamientos": [
+    "Trabaja con un negocio inventado o uno tuyo; no publiques sobre un negocio real sin permiso ni uses imágenes de terceros.",
+    "No prometas resultados ni uses mensajes engañosos."
+   ],
+   "otroSector": "El mismo plan sirve para difundir un evento, un club, un proyecto social o un portafolio personal."
+  },
+  {
+   "id": "plan-de-marketing-y-lanzamiento-con-presupuesto-limitado",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Plan de marketing y lanzamiento con presupuesto limitado",
+   "resumen": "Arma el plan completo para lanzar un producto o servicio con presupuesto limitado: objetivos, público, mensaje, canales, calendario y cómo medir si funcionó.",
+   "tipo": "Plan",
+   "tiempo": "3 a 5 semanas",
+   "horas": 25,
+   "etiquetas": [
+    "Lanzamiento",
+    "Plan de marketing"
+   ],
+   "intencion": [
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Administración",
+    "Comunicaciones",
+    "Publicidad",
+    "Economía",
+    "Diseño",
+    "Contabilidad",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "Lanzar algo sin plan suele dar mucho ruido y pocos clientes. Un lanzamiento necesita saber a quién se dirige, qué se quiere lograr, cuándo y con qué recursos.",
+    "Con presupuesto limitado, cada decisión cuenta, y es importante priorizar lo que sí mueve las ventas."
+   ],
+   "desarrollar": [
+    "Elige un producto o servicio inventado y redacta un plan con objetivos medibles, público, mensaje central, canales elegidos, presupuesto repartido, calendario de actividades y responsables.",
+    "Define indicadores, como consultas o ventas, y una reunión de revisión a mitad del plan donde se decida qué ajustar según lo observado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Antes, durante y después",
+     "aporta": "divide el plan en etapas con acciones para cada una."
+    },
+    {
+     "titulo": "Plan B",
+     "aporta": "prepara qué se haría si los primeros resultados son menores a lo esperado."
+    },
+    {
+     "titulo": "Presentación del plan",
+     "aporta": "prepara una presentación corta para convencer a un inversionista ficticio."
+    }
+   ],
+   "objetivos": [
+    "Definir objetivos medibles.",
+    "Repartir un presupuesto limitado.",
+    "Programar actividades.",
+    "Establecer indicadores y revisión."
+   ],
+   "habilidades": [
+    "Planificación estratégica.",
+    "Gestión de presupuesto.",
+    "Programación de actividades.",
+    "Presentación de planes."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de presentaciones.",
+    "Un calendario."
+   ],
+   "lineamientos": [
+    "Trabaja con un producto inventado y presupuestos de referencia, y no prometas resultados reales de ventas.",
+    "Evita usar datos personales para segmentar de forma invasiva."
+   ],
+   "otroSector": "El mismo plan sirve para lanzar una campaña social, un evento académico o un emprendimiento digital."
+  },
+  {
+   "id": "que-promocion-o-publicidad-atrae-mas-clientes-con-el-mismo-presu",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Qué promoción o publicidad atrae más clientes con el mismo presupuesto?",
+   "resumen": "Compara con un caso inventado qué conviene más con un mismo presupuesto: un descuento, un anuncio, un regalo o una recomendación, midiendo cuántos clientes y cuánta ganancia trae cada una.",
+   "tipo": "Simulación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Publicidad",
+    "Promociones"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Estadística",
+    "Publicidad",
+    "Administración",
+    "Economía",
+    "Ciencia de Datos",
+    "Comunicaciones",
+    "Contabilidad"
+   ],
+   "problema": [
+    "Un negocio con un presupuesto pequeño debe elegir entre varias formas de atraer clientes. No todas rinden igual, y muchas se eligen por costumbre y no por resultados.",
+    "Comparar por costo por cliente nuevo y por ganancia final permite decidir mejor y probar con poco riesgo."
+   ],
+   "desarrollar": [
+    "Inventa un negocio con un presupuesto fijo de promoción y propón cuatro opciones, con supuestos razonables de alcance, tasa de respuesta y compra.",
+    "Calcula para cada opción el número de clientes, el costo por cliente y la ganancia, compara y explica qué supuestos cambian el resultado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Prueba A/B",
+     "aporta": "diseña una prueba para comparar dos mensajes con un grupo pequeño."
+    },
+    {
+     "titulo": "Efecto a largo plazo",
+     "aporta": "analiza qué opción trae clientes que regresan."
+    },
+    {
+     "titulo": "Combinaciones",
+     "aporta": "evalúa si combinar dos acciones rinde más que una sola."
+    }
+   ],
+   "objetivos": [
+    "Comparar opciones con el mismo presupuesto.",
+    "Calcular costo por cliente.",
+    "Analizar la sensibilidad a los supuestos.",
+    "Elegir con argumentos."
+   ],
+   "habilidades": [
+    "Análisis de marketing.",
+    "Simulación en hoja de cálculo.",
+    "Diseño de pruebas.",
+    "Interpretación de resultados."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Datos inventados."
+   ],
+   "lineamientos": [
+    "Usa supuestos inventados y no los presentes como resultados reales de campañas.",
+    "Si haces una prueba con personas, que sea voluntaria y sin recoger datos personales."
+   ],
+   "otroSector": "El mismo método sirve para comparar formas de invitar a un evento, de convocar voluntarios o de difundir un proyecto."
+  },
+  {
+   "id": "cuanto-cuesta-conseguir-un-nuevo-cliente",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto cuesta conseguir un nuevo cliente?",
+   "resumen": "Calcula cuánto invierte un negocio, en publicidad, tiempo y descuentos, para conseguir un cliente nuevo, y compáralo con lo que ese cliente deja en ganancia.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Clientes",
+    "Costo de adquisición"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Administración",
+    "Economía",
+    "Contabilidad",
+    "Estadística",
+    "Ciencia de Datos",
+    "Ingeniería Industrial",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Atraer un cliente cuesta dinero y tiempo, pero casi nunca se calcula. Un negocio puede estar gastando más en conseguir clientes de lo que esos clientes le dejan.",
+    "Conocer ese costo permite decidir cuánto invertir en publicidad y cuáles clientes convienen más."
+   ],
+   "desarrollar": [
+    "Inventa un negocio y suma todo lo que gasta en conseguir clientes en un mes, incluidos anuncios, descuentos de bienvenida y horas de trabajo, y divídelo entre los clientes nuevos que llegaron.",
+    "Compara ese costo con la ganancia que deja un cliente promedio durante varios meses, y concluye si el negocio está ganando o perdiendo por cada cliente nuevo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Por canal",
+     "aporta": "calcula el costo por cliente en cada canal de captación."
+    },
+    {
+     "titulo": "Clientes que se quedan",
+     "aporta": "incluye cuánto tiempo permanece un cliente y cuánto deja en total."
+    },
+    {
+     "titulo": "Meta de crecimiento",
+     "aporta": "calcula cuánto se podría invertir para crecer sin perder dinero."
+    }
+   ],
+   "objetivos": [
+    "Identificar los costos de captar clientes.",
+    "Calcular el costo por cliente.",
+    "Compararlo con la ganancia que deja.",
+    "Tomar decisiones de inversión."
+   ],
+   "habilidades": [
+    "Análisis de costos.",
+    "Cálculo de indicadores.",
+    "Interpretación financiera.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Datos inventados."
+   ],
+   "lineamientos": [
+    "Usa un negocio inventado y aclara que son supuestos; no uses datos reales de clientes.",
+    "El resultado es un ejercicio de aprendizaje y no una asesoría de inversión."
+   ],
+   "otroSector": "El mismo cálculo sirve para evaluar el costo de captar voluntarios, usuarios de una aplicación o estudiantes de un curso."
+  },
+  {
+   "id": "promociones-y-descuentos-le-convienen-al-negocio",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Promociones y descuentos: ¿le convienen al negocio?",
+   "resumen": "Calcula cuánto debe aumentar la venta para que un descuento compense la rebaja del precio, y simula cuándo una promoción deja ganancia y cuándo pierde.",
+   "tipo": "Simulación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Descuentos",
+    "Promociones"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Marketing",
+    "Contabilidad",
+    "Administración",
+    "Estadística",
+    "Ingeniería Industrial",
+    "Matemática",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Un descuento atrae clientes, pero reduce lo que se gana por cada venta. Si no se vende lo suficiente más, el negocio termina ganando menos aunque venda más.",
+    "Muchos negocios hacen promociones por costumbre sin calcular a partir de cuántas ventas extra valen la pena."
+   ],
+   "desarrollar": [
+    "Inventa un producto con precio, costo y margen, y calcula cuánto deben aumentar las ventas para que un descuento de diez, veinte y treinta por ciento deje la misma ganancia que antes.",
+    "Simula distintos aumentos de venta posibles y señala en qué casos la promoción conviene, en cuáles no, y qué alternativas hay, como un paquete o un regalo en lugar de bajar el precio."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Descuentos por cantidad",
+     "aporta": "analiza ofertas del tipo segunda unidad a mitad de precio."
+    },
+    {
+     "titulo": "Efecto en la imagen",
+     "aporta": "reflexiona cómo los descuentos frecuentes cambian lo que el cliente espera pagar."
+    },
+    {
+     "titulo": "Promoción por tiempo limitado",
+     "aporta": "evalúa si la urgencia aumenta las compras sin dañar el margen."
+    }
+   ],
+   "objetivos": [
+    "Calcular el margen con descuento.",
+    "Determinar las ventas necesarias.",
+    "Simular escenarios.",
+    "Proponer alternativas."
+   ],
+   "habilidades": [
+    "Cálculo de márgenes.",
+    "Análisis de escenarios.",
+    "Simulación.",
+    "Decisión informada."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Datos inventados."
+   ],
+   "lineamientos": [
+    "Usa productos y precios inventados; no presentes el resultado como regla para todos los negocios.",
+    "Evita proponer descuentos engañosos, como subir el precio antes de rebajarlo."
+   ],
+   "otroSector": "El mismo análisis sirve para evaluar becas, cuotas reducidas, ofertas de lanzamiento o tarifas promocionales."
+  },
+  {
+   "id": "disena-una-oferta-atractiva-sin-sacrificar-ganancias",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Diseña una oferta atractiva sin sacrificar ganancias",
+   "resumen": "Diseña una oferta que le parezca atractiva al cliente, como un combo, un paquete o un beneficio extra, y verifica con números que el negocio igual gane.",
+   "tipo": "Plan",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Ofertas",
+    "Márgenes"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Ingeniería Industrial",
+    "Comunicaciones",
+    "Estadística",
+    "Psicología"
+   ],
+   "problema": [
+    "Una buena oferta no es solo bajar el precio: puede combinar productos, agregar un beneficio de bajo costo o dar más valor sin regalar el margen.",
+    "El reto es que el cliente sienta que gana y que el negocio no pierda."
+   ],
+   "desarrollar": [
+    "Para un negocio inventado, diseña tres ofertas distintas, por ejemplo un combo, un paquete familiar y un beneficio extra de bajo costo, y calcula el costo y el margen de cada una.",
+    "Compara cuál resulta más atractiva y cuál deja más ganancia, y elige la mejor combinación explicando el equilibrio entre ambas."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Lo que valora el cliente",
+     "aporta": "pregunta a cinco personas qué oferta les parecería mejor."
+    },
+    {
+     "titulo": "Ofertas por temporada",
+     "aporta": "diseña ofertas distintas para días de más y de menos demanda."
+    },
+    {
+     "titulo": "Oferta para clientes frecuentes",
+     "aporta": "adapta la oferta para quienes compran con regularidad."
+    }
+   ],
+   "objetivos": [
+    "Diseñar ofertas con valor percibido.",
+    "Calcular márgenes por oferta.",
+    "Comparar atractivo y ganancia.",
+    "Elegir con criterio."
+   ],
+   "habilidades": [
+    "Diseño de ofertas.",
+    "Cálculo de márgenes.",
+    "Pensamiento creativo.",
+    "Análisis comparativo."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de diseño sencillo.",
+    "Datos inventados."
+   ],
+   "lineamientos": [
+    "Usa un negocio inventado y asegúrate de que las ofertas sean claras y honestas, sin letras chicas engañosas.",
+    "No sacrifiques calidad ni seguridad para mejorar el margen."
+   ],
+   "otroSector": "El mismo ejercicio sirve para diseñar paquetes de servicios, planes de suscripción o entradas con beneficios para un evento."
+  },
+  {
+   "id": "programas-de-fidelizacion-de-clientes",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "tecnologia"
+   ],
+   "titulo": "Programas de fidelización de clientes",
+   "resumen": "Diseña un programa para que los clientes vuelvan, como puntos, tarjetas o beneficios, y calcula si el costo del programa se compensa con las ventas que genera.",
+   "tipo": "Plan",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Fidelización",
+    "Clientes"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Marketing",
+    "Administración",
+    "Psicología",
+    "Economía",
+    "Ingeniería de Sistemas",
+    "Comunicaciones",
+    "Estadística",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Conseguir un cliente nuevo cuesta más que mantener uno que ya compró. Por eso muchos negocios usan tarjetas de sellos, puntos o descuentos para quienes regresan.",
+    "Pero un programa mal diseñado puede costar más de lo que deja, o no cambiar el comportamiento de nadie."
+   ],
+   "desarrollar": [
+    "Para un negocio inventado, diseña dos programas de fidelización distintos, con reglas claras sobre cómo se gana y cómo se canjea el beneficio, y estima su costo por cliente.",
+    "Supón cuántos clientes volverían más seguido y cuánto más gastarían, calcula el efecto sobre la ganancia y elige el programa más conveniente con sus riesgos."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Costo del beneficio",
+     "aporta": "calcula el costo real de cada recompensa para el negocio."
+    },
+    {
+     "titulo": "Versión digital",
+     "aporta": "propone cómo funcionaría el programa con un código o una aplicación sencilla."
+    },
+    {
+     "titulo": "Qué hacer con quienes no vuelven",
+     "aporta": "diseña un mensaje para reactivar a clientes inactivos."
+    }
+   ],
+   "objetivos": [
+    "Diseñar reglas claras de beneficios.",
+    "Estimar el costo del programa.",
+    "Calcular el efecto sobre las ventas.",
+    "Comparar alternativas."
+   ],
+   "habilidades": [
+    "Diseño de programas.",
+    "Estimación de costos y retorno.",
+    "Análisis de escenarios.",
+    "Pensamiento centrado en el cliente."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de diseño sencillo.",
+    "Datos inventados."
+   ],
+   "lineamientos": [
+    "Usa un negocio inventado y evita pedir datos personales innecesarios a los clientes en tu diseño.",
+    "Si propones un programa digital, considera la protección de los datos de los clientes."
+   ],
+   "otroSector": "El mismo concepto sirve para premiar a voluntarios, a usuarios activos de una aplicación o a socios de una organización."
+  },
+  {
+   "id": "comparando-modelos-y-estrategias-de-venta-de-distintos-negocios",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "Comparando modelos y estrategias de venta de distintos negocios",
+   "resumen": "Compara cómo ganan dinero tres negocios de distinto tipo, como una tienda, una suscripción y un servicio por encargo, y qué ventajas y riesgos tiene cada modelo.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Modelos de negocio",
+    "Comparación"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Administración",
+    "Marketing",
+    "Economía",
+    "Ingeniería Industrial",
+    "Contabilidad",
+    "Comunicaciones",
+    "Sociología",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "No todos los negocios ganan dinero de la misma manera: algunos venden productos, otros cobran por uso, otros por suscripción o por comisión. Cada modelo tiene sus costos, sus riesgos y su manera de crecer.",
+    "Compararlos ayuda a entender por qué ciertos negocios se parecen y por qué algunos resultan más estables que otros."
+   ],
+   "desarrollar": [
+    "Elige tres negocios conocidos de distinto modelo y, con información pública, describe cómo generan ingresos, cuáles son sus costos principales y qué clientes atienden.",
+    "Arma una tabla comparativa, identifica las ventajas y riesgos de cada modelo y concluye cuál sería más fácil de iniciar con poco capital y por qué."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Modelo mixto",
+     "aporta": "propón cómo un negocio podría combinar dos modelos."
+    },
+    {
+     "titulo": "Un cambio de modelo",
+     "aporta": "analiza un caso en que un negocio cambió su forma de cobrar."
+    },
+    {
+     "titulo": "Aplicarlo a tu idea",
+     "aporta": "elige el modelo más adecuado para una idea tuya."
+    }
+   ],
+   "objetivos": [
+    "Reconocer distintos modelos de ingreso.",
+    "Comparar con información pública.",
+    "Evaluar ventajas y riesgos.",
+    "Aplicar el análisis a una idea."
+   ],
+   "habilidades": [
+    "Análisis de modelos de negocio.",
+    "Búsqueda de información.",
+    "Análisis comparativo.",
+    "Argumentación."
+   ],
+   "herramientas": [
+    "Una tabla comparativa.",
+    "Informes y páginas públicas de empresas.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Usa solo información pública y cita las fuentes; no ataques ni elogies a empresas concretas sin sustento.",
+    "Aclara que un análisis externo no conoce los datos internos de los negocios."
+   ],
+   "otroSector": "La misma comparación sirve para estudiar cómo se financian organizaciones, medios de comunicación o aplicaciones."
+  },
+  {
+   "id": "compras-en-grupo-y-gastos-compartidos-cuanto-se-ahorra",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "tecnologia"
+   ],
+   "titulo": "Compras en grupo y gastos compartidos: ¿cuánto se ahorra?",
+   "resumen": "Calcula cuánto dinero puede ahorrarse un grupo comprando o pagando en común, como servicios compartidos o compras por mayor, y qué reglas hacen que funcione.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Compras en grupo",
+    "Gastos compartidos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Ingeniería Industrial",
+    "Sociología",
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Trabajo Social"
+   ],
+   "problema": [
+    "Comprar entre varios suele salir más barato: se consigue precio por volumen, se dividen costos fijos y se evita el desperdicio. Pero también aparecen problemas, como quién adelanta el dinero o quién usa más.",
+    "Sin reglas claras, los acuerdos informales terminan en malestar."
+   ],
+   "desarrollar": [
+    "Inventa tres situaciones, como compartir una suscripción, comprar alimentos por mayor entre varios hogares o dividir el alquiler de un equipo, y calcula el ahorro frente a comprar individualmente.",
+    "Identifica los riesgos de cada una y propón reglas simples, como quién administra, cómo se paga y qué se hace si alguien deja el grupo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Cuánta gente es ideal",
+     "aporta": "calcula cuántas personas conviene reunir antes de que el ahorro deje de crecer."
+    },
+    {
+     "titulo": "Registro de gastos",
+     "aporta": "diseña una hoja para llevar cuentas claras del grupo."
+    },
+    {
+     "titulo": "Cuando alguien no cumple",
+     "aporta": "propón reglas para resolver los desacuerdos."
+    }
+   ],
+   "objetivos": [
+    "Calcular ahorros por compra colectiva.",
+    "Identificar riesgos del acuerdo.",
+    "Proponer reglas claras.",
+    "Diseñar un registro simple."
+   ],
+   "habilidades": [
+    "Cálculo de ahorro.",
+    "Diseño de reglas.",
+    "Organización de cuentas.",
+    "Negociación."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Casos inventados."
+   ],
+   "lineamientos": [
+    "Usa casos inventados y no incluyas datos reales de personas ni de sus cuentas.",
+    "Revisa las condiciones de uso de los servicios antes de proponer compartirlos, pues algunos lo prohíben."
+   ],
+   "otroSector": "El mismo análisis sirve para compras compartidas entre negocios pequeños, organizaciones o comunidades."
+  },
+  {
+   "id": "modelo-economico-de-una-cooperativa-estudiantil",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "educacion"
+   ],
+   "titulo": "Modelo económico de una cooperativa estudiantil",
+   "resumen": "Diseña cómo funcionaría una cooperativa estudiantil que vende productos o servicios: quién aporta, cómo se decide, cuánto se gana y cómo se reparte.",
+   "tipo": "Plan",
+   "tiempo": "3 a 5 semanas",
+   "horas": 25,
+   "etiquetas": [
+    "Cooperativa",
+    "Economía solidaria"
+   ],
+   "intencion": [
+    "crear"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Sociología",
+    "Trabajo Social",
+    "Derecho",
+    "Ingeniería Industrial",
+    "Educación"
+   ],
+   "problema": [
+    "Una cooperativa es un negocio donde las personas que participan son también sus dueñas. Para estudiantes puede ser una forma de vender útiles, comida o servicios y reinvertir lo que se gana.",
+    "Pero necesita reglas claras de aportes, decisiones y reparto, y números que muestren si es sostenible."
+   ],
+   "desarrollar": [
+    "Inventa una cooperativa de estudiantes con un producto o servicio, define cuánto aporta cada socio, qué costos tiene y cuánto vende por mes, y calcula su resultado económico.",
+    "Diseña las reglas de decisión y de reparto de excedentes, simula tres meses y señala qué problemas podrían aparecer y cómo se resolverían."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Reparto del excedente",
+     "aporta": "compara repartir todo, reinvertir parte o dejar un fondo común."
+    },
+    {
+     "titulo": "Distintos niveles de aporte",
+     "aporta": "analiza qué pasa si los socios aportan montos o tiempos distintos."
+    },
+    {
+     "titulo": "Estatutos básicos",
+     "aporta": "redacta un reglamento simple de la cooperativa."
+    }
+   ],
+   "objetivos": [
+    "Comprender cómo funciona una cooperativa.",
+    "Calcular su resultado económico.",
+    "Diseñar reglas de decisión y reparto.",
+    "Simular y evaluar riesgos."
+   ],
+   "habilidades": [
+    "Modelado económico.",
+    "Diseño organizacional.",
+    "Simulación en hoja de cálculo.",
+    "Trabajo en equipo."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de documentos.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Trabaja con un caso inventado; si luego quieres formar una cooperativa real, consulta la normativa y a un asesor, pues exige trámites propios.",
+    "No presentes el modelo como un acuerdo legal."
+   ],
+   "otroSector": "El mismo modelo sirve para organizaciones de vecinos, asociaciones de productores o clubes con fines económicos."
+  },
+  {
+   "id": "como-repartir-costos-y-beneficios-de-una-compra-colectiva-de-for",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "derecho"
+   ],
+   "titulo": "¿Cómo repartir costos y beneficios de una compra colectiva de forma justa?",
+   "resumen": "Compara distintas formas de repartir costos y beneficios en un grupo, como por partes iguales, por uso o por capacidad de pago, y qué considera justa la gente en cada caso.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Reparto",
+    "Justicia"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Matemática",
+    "Sociología",
+    "Derecho",
+    "Administración",
+    "Psicología",
+    "Contabilidad",
+    "Filosofía"
+   ],
+   "problema": [
+    "Cuando varias personas comparten un gasto, no siempre es evidente cómo dividirlo. Repartir en partes iguales es simple, pero puede resultar injusto si alguien usa más o gana menos.",
+    "Lo que se considera justo depende de lo que se valore, como la igualdad, el uso o la necesidad, y por eso es un buen tema para analizar con casos concretos."
+   ],
+   "desarrollar": [
+    "Inventa tres situaciones de gasto compartido, como un viaje, un servicio o una compra grande, y calcula el reparto con tres reglas distintas: partes iguales, por uso y por capacidad de pago.",
+    "Compara los resultados, pregunta a un grupo pequeño cuál regla les parece más justa en cada caso y analiza por qué las opiniones difieren."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Reglas mixtas",
+     "aporta": "diseña una regla que combine dos criterios."
+    },
+    {
+     "titulo": "Un modelo simple de decisión",
+     "aporta": "propone cómo un grupo podría elegir su regla de manera democrática."
+    },
+    {
+     "titulo": "Casos reales de la comunidad",
+     "aporta": "analiza cómo se reparten costos en una junta de vecinos o una asociación."
+    }
+   ],
+   "objetivos": [
+    "Aplicar distintas reglas de reparto.",
+    "Comparar resultados.",
+    "Recoger opiniones sobre justicia.",
+    "Argumentar una propuesta."
+   ],
+   "habilidades": [
+    "Cálculo de repartos.",
+    "Análisis de criterios de justicia.",
+    "Encuestas breves.",
+    "Argumentación."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un formulario anónimo.",
+    "Casos inventados."
+   ],
+   "lineamientos": [
+    "Usa casos inventados y consulta opiniones de forma anónima y voluntaria, sin forzar a nadie a revelar sus ingresos.",
+    "No presentes una regla como la única justa: depende de los valores del grupo."
+   ],
+   "otroSector": "El mismo análisis sirve para repartir tareas, cuotas de una organización o beneficios de un proyecto comunitario."
+  },
+  {
+   "id": "es-viable-economicamente-tu-idea",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Es viable económicamente tu idea?",
+   "resumen": "Evalúa si una idea de proyecto o negocio se sostendría económicamente, revisando cuánto cuesta, cuánto ingresaría, qué riesgos tiene y qué haría falta para que funcione.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Viabilidad",
+    "Evaluación"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Contabilidad",
+    "Ingeniería Industrial",
+    "Finanzas",
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Marketing"
+   ],
+   "problema": [
+    "Una idea puede ser buena y aun así no ser viable si los costos superan lo que puede ingresar o si depende de condiciones difíciles de lograr. Evaluar la viabilidad antes de empezar evita perder tiempo y dinero.",
+    "No se trata de decir si la idea es buena o mala, sino de entender qué tendría que cumplirse para que funcione."
+   ],
+   "desarrollar": [
+    "Elige una idea tuya o inventada y evalúa sus partes principales: demanda esperada, costos de arranque y de operación, ingresos posibles y riesgos que podrían afectarla.",
+    "Arma un escenario normal, uno optimista y uno pesimista, y concluye si la idea es viable, qué condiciones necesita y cuáles serían los primeros pasos para probarla con poco riesgo."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Lista de supuestos",
+     "aporta": "identifica los supuestos más frágiles y cómo comprobarlos."
+    },
+    {
+     "titulo": "Factores que no son dinero",
+     "aporta": "añade tiempo, esfuerzo del equipo y valor social."
+    },
+    {
+     "titulo": "Comparar dos ideas",
+     "aporta": "evalúa dos ideas con los mismos criterios y elige una."
+    }
+   ],
+   "objetivos": [
+    "Evaluar costos, ingresos y riesgos.",
+    "Construir escenarios.",
+    "Identificar supuestos críticos.",
+    "Concluir con criterio."
+   ],
+   "habilidades": [
+    "Análisis de viabilidad.",
+    "Modelado financiero básico.",
+    "Análisis de riesgos.",
+    "Comunicación de conclusiones."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de presentaciones.",
+    "Datos inventados o estimados."
+   ],
+   "lineamientos": [
+    "Usa una idea propia o inventada y marca claramente las estimaciones; no inviertas dinero real solo por este análisis.",
+    "Si la idea involucra a otras personas, pide su opinión sin comprometer datos privados."
+   ],
+   "otroSector": "El mismo análisis sirve para evaluar un proyecto social, una app, un evento o una propuesta de investigación."
+  },
+  {
+   "id": "plan-financiero-y-simulacion-de-un-proyecto-ficticio",
+   "area": "negocios",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "Plan financiero y simulación de un proyecto ficticio",
+   "resumen": "Construye el plan financiero completo de un proyecto o negocio ficticio, con inversión, ingresos, costos, flujo de caja y escenarios, y simula varios meses.",
+   "tipo": "Simulación",
+   "tiempo": "4 a 6 semanas",
+   "horas": 30,
+   "etiquetas": [
+    "Plan financiero",
+    "Simulación"
+   ],
+   "intencion": [
+    "crear",
+    "investigar"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Finanzas",
+    "Contabilidad",
+    "Economía",
+    "Administración",
+    "Ingeniería Industrial",
+    "Estadística",
+    "Ingeniería de Sistemas",
+    "Matemática"
+   ],
+   "problema": [
+    "Un plan financiero ordena en números lo que un proyecto necesita y lo que podría generar. Sin él es difícil saber cuándo habrá dinero, cuándo faltará y cuánto se necesita para empezar.",
+    "Practicar con un caso ficticio permite aprender las partes de un plan sin arriesgar dinero real."
+   ],
+   "desarrollar": [
+    "Inventa un proyecto con una inversión inicial, define los ingresos y costos mensuales durante un año, y arma un flujo de caja que muestre mes a mes cuánto dinero entra, sale y queda.",
+    "Simula un escenario normal y otro con ventas menores, señala en qué meses faltaría dinero y qué decisiones tomarías, y resume en una hoja de resultados."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Cuándo se recupera la inversión",
+     "aporta": "calcula en qué mes el proyecto recupera lo invertido."
+    },
+    {
+     "titulo": "Fuentes de financiamiento",
+     "aporta": "compara usar ahorros propios, un socio o un préstamo ficticio."
+    },
+    {
+     "titulo": "Informe para un inversionista",
+     "aporta": "prepara un resumen de una página del plan."
+    }
+   ],
+   "objetivos": [
+    "Estructurar un plan financiero.",
+    "Construir un flujo de caja.",
+    "Simular escenarios.",
+    "Comunicar resultados."
+   ],
+   "habilidades": [
+    "Modelado financiero.",
+    "Flujo de caja.",
+    "Simulación en hoja de cálculo.",
+    "Presentación de informes."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Usa un proyecto ficticio y datos inventados; no uses información financiera real de personas ni empresas.",
+    "Aclara que es un ejercicio y no una asesoría, y que un plan real necesita validación profesional."
+   ],
+   "otroSector": "El mismo plan sirve para organizar el presupuesto de un evento, de una organización estudiantil o de una investigación."
+  },
+  {
+   "id": "quien-se-queda-con-el-dinero-entre-la-chacra-y-tu-mesa",
+   "area": "negocios",
+   "areas2": [
+    "agricultura",
+    "sociedad"
+   ],
+   "titulo": "¿Quién se queda con el dinero entre la chacra y tu mesa?",
+   "resumen": "Sigue el recorrido de un alimento desde quien lo produce hasta quien lo consume y calcula cuánto del precio final se queda cada participante de la cadena.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Cadena de valor",
+    "Alimentos"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Ingeniería Agroindustrial",
+    "Administración",
+    "Sociología",
+    "Estadística",
+    "Contabilidad",
+    "Geografía",
+    "Ingeniería Industrial"
+   ],
+   "problema": [
+    "El precio que se paga por un alimento en el mercado no es el que recibe quien lo cultivó. En el camino participan transportistas, mayoristas, minoristas y otros, y cada uno cobra por su trabajo y su riesgo.",
+    "A veces el productor recibe muy poco y el consumidor paga mucho, y es difícil saber dónde se concentra la diferencia."
+   ],
+   "desarrollar": [
+    "Elige un alimento común y, con información pública de precios en chacra, mayorista y minorista, reconstruye su cadena y calcula qué proporción del precio final corresponde a cada etapa.",
+    "Presenta el resultado en un gráfico, analiza qué etapas aportan más valor o más costo, y reflexiona sobre qué cambios podrían hacer la cadena más justa o más eficiente."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Productos distintos",
+     "aporta": "compara la cadena de dos alimentos, uno fresco y uno procesado."
+    },
+    {
+     "titulo": "Venta directa",
+     "aporta": "calcula qué cambiaría si el productor vendiera directo al consumidor."
+    },
+    {
+     "titulo": "Evolución de precios",
+     "aporta": "estudia cómo varían los márgenes en el tiempo."
+    }
+   ],
+   "objetivos": [
+    "Reconstruir una cadena de valor.",
+    "Calcular la distribución del precio.",
+    "Analizar costos de cada etapa.",
+    "Reflexionar sobre mejoras posibles."
+   ],
+   "habilidades": [
+    "Análisis de cadenas de valor.",
+    "Búsqueda de datos públicos.",
+    "Cálculo de márgenes.",
+    "Visualización."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Reportes de precios del Estado y de mercados mayoristas.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Usa precios públicos con su fecha y evita culpar a un grupo de la cadena: cada etapa tiene costos reales.",
+    "Aclara que los márgenes varían según el lugar y la temporada."
+   ],
+   "otroSector": "La misma lógica sirve para analizar cadenas de otros productos, como ropa, tecnología o materiales de construcción."
+  },
+  {
+   "id": "si-es-gratis-quien-paga-la-economia-de-las-apps-gratuitas",
+   "area": "negocios",
+   "areas2": [
+    "tecnologia",
+    "derecho"
+   ],
+   "titulo": "Si es gratis, ¿quién paga? La economía de las apps gratuitas",
+   "resumen": "Investiga cómo ganan dinero las aplicaciones y servicios gratuitos, mediante publicidad, datos, versiones pagadas o alianzas, y qué implica eso para quien los usa.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Modelos gratuitos",
+    "Datos"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Ingeniería de Sistemas",
+    "Administración",
+    "Derecho",
+    "Marketing",
+    "Comunicaciones",
+    "Ciencia de Datos",
+    "Sociología"
+   ],
+   "problema": [
+    "Muchas aplicaciones no cobran, pero sus empresas ganan millones. Los ingresos pueden venir de anuncios, de planes pagados, de comisiones o de usar la información de los usuarios, y no siempre se explica con claridad.",
+    "Entender cómo funciona ese modelo ayuda a usar los servicios con criterio y a diseñar los propios."
+   ],
+   "desarrollar": [
+    "Elige cuatro aplicaciones gratuitas de uso común y, con información pública, como sus términos de uso y reportes, identifica de dónde obtiene dinero cada una.",
+    "Clasifica los modelos, compara qué le cuesta al usuario aunque no pague en dinero, como atención o datos, y escribe una guía corta de preguntas que conviene hacerse antes de usar un servicio gratuito."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Tu propio uso",
+     "aporta": "estima cuánto tiempo y datos propios entregas a una aplicación."
+    },
+    {
+     "titulo": "Modelo para una app propia",
+     "aporta": "diseña cómo ganaría dinero una aplicación estudiantil sin depender de los datos."
+    },
+    {
+     "titulo": "Cambios de modelo",
+     "aporta": "estudia una app que pasó de gratuita a pagada y qué ocurrió."
+    }
+   ],
+   "objetivos": [
+    "Identificar modelos de ingreso.",
+    "Leer información pública con criterio.",
+    "Reconocer costos no monetarios.",
+    "Formular preguntas de uso responsable."
+   ],
+   "habilidades": [
+    "Análisis de modelos de negocio.",
+    "Lectura crítica de términos de uso.",
+    "Investigación en fuentes públicas.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Una tabla comparativa.",
+    "Términos de uso y reportes públicos.",
+    "Un editor de presentaciones."
+   ],
+   "lineamientos": [
+    "Usa solo información pública y no afirmes prácticas que no puedas sustentar con fuentes.",
+    "No incluyas tus datos personales ni los de otros en el análisis."
+   ],
+   "otroSector": "El mismo análisis sirve para entender cómo se financian medios, plataformas educativas o servicios públicos."
+  },
+  {
+   "id": "cuanto-cuesta-formalizar-un-negocio-pequeno-y-que-tramites-exige",
+   "area": "negocios",
+   "areas2": [
+    "derecho",
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto cuesta formalizar un negocio pequeño y qué trámites exige?",
+   "resumen": "Investiga qué pasos, plazos y costos implica formalizar un negocio pequeño en tu país, y compara qué se gana y qué se paga al ser formal frente a informal.",
+   "tipo": "Guía",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Formalización",
+    "Trámites"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Derecho",
+    "Administración",
+    "Contabilidad",
+    "Economía",
+    "Ingeniería Industrial",
+    "Ciencias Políticas",
+    "Comunicaciones",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Muchos negocios pequeños funcionan sin registro porque formalizarse parece complicado y caro. Pero la formalidad también da acceso a crédito, contratos, comprobantes y protección.",
+    "La información oficial suele estar dispersa, y entenderla ayuda a decidir con calma."
+   ],
+   "desarrollar": [
+    "Con información de páginas oficiales, arma una guía paso a paso de cómo formalizar un negocio de un solo dueño, indicando trámites, instituciones, costos, tiempos y obligaciones tributarias básicas.",
+    "Compara de forma sencilla qué costos y beneficios tendría ser formal para un negocio pequeño inventado, y presenta una lista de preguntas para resolver con un profesional."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Régimen y costos",
+     "aporta": "compara las opciones de régimen tributario disponibles."
+    },
+    {
+     "titulo": "Barreras percibidas",
+     "aporta": "entrevista a dos emprendedores sobre por qué postergan la formalización."
+    },
+    {
+     "titulo": "Guía visual",
+     "aporta": "convierte los pasos en un esquema fácil de seguir."
+    }
+   ],
+   "objetivos": [
+    "Investigar trámites oficiales.",
+    "Organizar la información paso a paso.",
+    "Comparar costos y beneficios.",
+    "Explicar con claridad."
+   ],
+   "habilidades": [
+    "Búsqueda en fuentes oficiales.",
+    "Organización de procesos.",
+    "Análisis de costos.",
+    "Redacción clara."
+   ],
+   "herramientas": [
+    "Portales oficiales.",
+    "Hoja de cálculo.",
+    "Un editor de esquemas."
+   ],
+   "lineamientos": [
+    "Usa solo fuentes oficiales y fecha tu información, porque las normas cambian con frecuencia.",
+    "Aclara que es una guía informativa y no asesoría legal ni tributaria."
+   ],
+   "otroSector": "La misma guía sirve para trámites de otras actividades, como registrar una asociación, una marca o un proyecto."
+  },
+  {
+   "id": "cuanto-cuesta-una-cola-el-valor-del-tiempo-perdido-en-un-tramite",
+   "area": "negocios",
+   "areas2": [
+    "ciudades",
+    "industria"
+   ],
+   "titulo": "¿Cuánto cuesta una cola? El valor del tiempo perdido en un trámite",
+   "resumen": "Mide cuánto tiempo pasan las personas esperando en un trámite o servicio, conviértelo en un costo y propón cambios que reduzcan la espera.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Tiempo",
+    "Colas"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Ingeniería Industrial",
+    "Economía",
+    "Estadística",
+    "Administración",
+    "Ingeniería de Sistemas",
+    "Matemática",
+    "Sociología",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Hacer una cola parece un asunto menor, pero el tiempo de espera tiene un costo para quien espera y para quien atiende. Cuando miles de personas hacen colas cada día, el costo total es enorme.",
+    "Pocas veces se mide, y por eso es difícil saber qué mejoras valen la pena."
+   ],
+   "desarrollar": [
+    "Elige un lugar donde haya colas, como una ventanilla, una cafetería o un paradero, y mide durante varios momentos cuánto esperan las personas y cuánto dura la atención, sin registrar datos personales.",
+    "Calcula el tiempo total perdido, conviértelo en un valor aproximado usando un monto por hora que justifiques, y propón dos cambios simples, como horarios, más puntos de atención o reservas, y estima su efecto."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Modelo de colas",
+     "aporta": "aplica un modelo simple de colas para estimar esperas."
+    },
+    {
+     "titulo": "Costo para el negocio",
+     "aporta": "estima cuántos clientes se pierden por esperas largas."
+    },
+    {
+     "titulo": "Horas pico",
+     "aporta": "analiza cómo cambia la espera según el momento del día."
+    }
+   ],
+   "objetivos": [
+    "Medir tiempos con un método.",
+    "Convertir tiempo en costo.",
+    "Identificar cuellos de botella.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Medición de procesos.",
+    "Estadística descriptiva.",
+    "Análisis de cuellos de botella.",
+    "Propuesta de mejoras."
+   ],
+   "herramientas": [
+    "Cronómetro o app de notas.",
+    "Hoja de cálculo.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Observa desde un lugar público, sin grabar ni fotografiar a las personas y sin anotar datos que las identifiquen.",
+    "Si observas dentro de un establecimiento, pide permiso al responsable."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar esperas en hospitales, transporte, atención en línea o procesos de una empresa."
+  },
+  {
+   "id": "la-economia-de-tu-campus-que-se-compra-y-se-vende-a-tu-alrededor",
+   "area": "negocios",
+   "areas2": [
+    "sociedad",
+    "ciudades"
+   ],
+   "titulo": "La economía de tu campus: ¿qué se compra y se vende a tu alrededor?",
+   "resumen": "Mapea los negocios y servicios que rodean tu universidad, qué venden, a qué precios y a quién, y estima cuánto dinero mueve esa pequeña economía.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Campus",
+    "Mercado local"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Sociología",
+    "Estadística",
+    "Marketing",
+    "Geografía",
+    "Contabilidad",
+    "Comunicaciones"
+   ],
+   "problema": [
+    "Alrededor de una universidad hay una economía propia: kioscos, fotocopiadoras, comedores, librerías, transporte y servicios. Miles de estudiantes consumen cada día, pero casi nadie sabe qué hay realmente ni cuánto se mueve.",
+    "Conocerla permite ver oportunidades, brechas y cómo se relaciona la vida estudiantil con el comercio."
+   ],
+   "desarrollar": [
+    "Recorre las zonas cercanas a tu campus y registra qué tipos de negocios hay, qué venden y a qué precios aproximados, sin ingresar a zonas privadas ni anotar nombres de personas.",
+    "Clasifica los negocios, haz un mapa simple, estima ventas diarias con supuestos razonables, calcula el gasto estudiantil mensual aproximado y destaca qué servicios faltan o abundan."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Lo que falta",
+     "aporta": "identifica necesidades estudiantiles que no tienen oferta cercana."
+    },
+    {
+     "titulo": "Horarios",
+     "aporta": "analiza en qué horas se concentra el consumo."
+    },
+    {
+     "titulo": "Comparar con otro campus",
+     "aporta": "compara la economía de dos zonas universitarias."
+    }
+   ],
+   "objetivos": [
+    "Observar y registrar con método.",
+    "Clasificar negocios y servicios.",
+    "Estimar el movimiento económico.",
+    "Detectar oportunidades."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Clasificación de datos.",
+    "Estimación con supuestos.",
+    "Mapeo."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un mapa en línea.",
+    "Cuaderno de campo."
+   ],
+   "lineamientos": [
+    "Registra solo información pública sobre negocios y no sobre personas, y evita fotografiar a los vendedores sin permiso.",
+    "Presenta estimaciones como aproximaciones y no como cifras de ventas reales."
+   ],
+   "otroSector": "El mismo método sirve para estudiar la economía de un mercado, un barrio, un parque industrial o un terminal."
+  },
+  {
+   "id": "vale-la-pena-pagar-por-un-curso-o-certificacion",
+   "area": "negocios",
+   "areas2": [
+    "educacion"
+   ],
+   "titulo": "¿Vale la pena pagar por un curso o certificación?",
+   "resumen": "Crea una forma de evaluar si un curso o certificación vale lo que cuesta, comparando precio, tiempo, contenido, reconocimiento y lo que podría aportar.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Educación",
+    "Inversión"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Educación",
+    "Administración",
+    "Psicología",
+    "Estadística",
+    "Contabilidad",
+    "Sociología",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Hay una oferta enorme de cursos y certificaciones, algunos gratuitos y otros muy caros. No siempre es claro cuáles aportan algo y cuáles solo cuestan.",
+    "Decidir con criterio exige comparar lo que se invierte, en dinero y en tiempo, con lo que se obtiene, sin caer en promesas exageradas."
+   ],
+   "desarrollar": [
+    "Elige tres cursos o certificaciones de un mismo tema, con información pública de precio, duración, contenido, reseñas y requisitos, y arma una tabla comparativa.",
+    "Define criterios de evaluación con pesos, como utilidad, costo, reconocimiento y tiempo, puntúa cada opción y explica qué decidiría una persona con un presupuesto limitado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Alternativas gratuitas",
+     "aporta": "compara con recursos gratuitos equivalentes."
+    },
+    {
+     "titulo": "Señales de alerta",
+     "aporta": "elabora una lista de señales de un curso poco confiable."
+    },
+    {
+     "titulo": "Costo del tiempo",
+     "aporta": "añade el valor de las horas que exige el curso."
+    }
+   ],
+   "objetivos": [
+    "Reunir información comparable.",
+    "Definir criterios de evaluación.",
+    "Puntuar alternativas.",
+    "Justificar una decisión."
+   ],
+   "habilidades": [
+    "Análisis multicriterio.",
+    "Lectura crítica de ofertas.",
+    "Búsqueda de información.",
+    "Argumentación."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Páginas públicas de los cursos.",
+    "Una tabla comparativa."
+   ],
+   "lineamientos": [
+    "No afirmes que un curso funciona o es una estafa sin pruebas; presenta criterios y deja que cada persona decida.",
+    "No incluyas datos de compra ni cuentas personales."
+   ],
+   "otroSector": "El mismo método sirve para evaluar un posgrado, un software, un equipo o cualquier inversión de aprendizaje."
+  },
+  {
+   "id": "un-mercado-en-miniatura-simula-oferta-y-demanda-con-tu-grupo",
+   "area": "negocios",
+   "areas2": [
+    "educacion",
+    "ciencias"
+   ],
+   "titulo": "Un mercado en miniatura: simula oferta y demanda con tu grupo",
+   "resumen": "Organiza un juego donde unos hacen de vendedores y otros de compradores con costos y disposiciones a pagar ficticias, y observa cómo se forman los precios.",
+   "tipo": "Simulación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Mercado",
+    "Juego"
+   ],
+   "intencion": [
+    "crear",
+    "investigar"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Economía",
+    "Educación",
+    "Estadística",
+    "Matemática",
+    "Psicología",
+    "Administración",
+    "Ingeniería de Sistemas",
+    "Sociología"
+   ],
+   "problema": [
+    "La oferta y la demanda se explican con curvas, pero es más fácil entenderlas jugando. Cuando compradores y vendedores negocian, los precios se acercan a un punto de equilibrio sin que nadie lo dicte.",
+    "Un experimento sencillo muestra por qué ocurre y qué pasa cuando cambian las condiciones."
+   ],
+   "desarrollar": [
+    "Reparte a cada participante una tarjeta con un costo de producción o un precio máximo ficticio, deja que negocien por rondas y registra los precios de cada transacción.",
+    "Grafica cómo se acercan los precios al equilibrio, repite cambiando una condición, como un impuesto o una escasez, y explica los cambios observados."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Versión con programación",
+     "aporta": "simula el mercado con un programa y compara con el juego."
+    },
+    {
+     "titulo": "Efecto de una regla",
+     "aporta": "introduce un precio máximo y observa qué ocurre."
+    },
+    {
+     "titulo": "Resumen para enseñar",
+     "aporta": "prepara una guía para repetir el juego en otro grupo."
+    }
+   ],
+   "objetivos": [
+    "Diseñar un experimento de mercado.",
+    "Registrar y graficar resultados.",
+    "Comprender el equilibrio.",
+    "Analizar el efecto de cambios."
+   ],
+   "habilidades": [
+    "Diseño de experimentos.",
+    "Gráficos de oferta y demanda.",
+    "Análisis de resultados.",
+    "Facilitación de grupos."
+   ],
+   "herramientas": [
+    "Tarjetas o papelitos.",
+    "Hoja de cálculo.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Usa montos ficticios y que la participación sea voluntaria; no incluyas dinero real.",
+    "Explica a los participantes que es un juego de aprendizaje y no refleja todos los mercados."
+   ],
+   "otroSector": "El mismo juego sirve para explicar subastas, asignación de recursos o fijación de precios en otros contextos."
+  },
+  {
+   "id": "por-que-suben-los-precios-en-ciertas-epocas",
+   "area": "negocios",
+   "areas2": [
+    "agricultura",
+    "sociedad"
+   ],
+   "titulo": "¿Por qué suben los precios en ciertas épocas?",
+   "resumen": "Analiza con datos públicos cómo cambian los precios de ciertos productos a lo largo del año y busca las razones de esas subidas y bajadas.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Estacionalidad",
+    "Precios"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Estadística",
+    "Ciencia de Datos",
+    "Ingeniería Agroindustrial",
+    "Administración",
+    "Matemática",
+    "Geografía",
+    "Ingeniería de Sistemas"
+   ],
+   "problema": [
+    "Algunos productos suben de precio en ciertos meses, por cosechas, festividades, clima o demanda. Quienes compran lo notan, pero pocas veces se estudia con datos cuánto cambian ni por qué.",
+    "Conocer estos patrones permite planificar compras, presupuestos y ventas."
+   ],
+   "desarrollar": [
+    "Elige dos o tres productos, como frutas, verduras o útiles escolares, descarga series públicas de precios por mes durante varios años y grafícalas.",
+    "Identifica los meses de precios más altos y más bajos, busca explicaciones razonables y compara si el patrón se repite cada año, indicando cuáles explicaciones son hipótesis."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Calendario de compras",
+     "aporta": "crea un calendario sugerido de cuándo conviene comprar cada producto."
+    },
+    {
+     "titulo": "Eventos especiales",
+     "aporta": "analiza el efecto de una festividad o de un fenómeno climático."
+    },
+    {
+     "titulo": "Predicción simple",
+     "aporta": "prueba un método sencillo para estimar el precio del próximo mes."
+    }
+   ],
+   "objetivos": [
+    "Obtener y limpiar series de precios.",
+    "Identificar patrones estacionales.",
+    "Buscar explicaciones sustentadas.",
+    "Comunicar los resultados."
+   ],
+   "habilidades": [
+    "Análisis de series de tiempo.",
+    "Limpieza de datos.",
+    "Visualización.",
+    "Pensamiento crítico."
+   ],
+   "herramientas": [
+    "Hoja de cálculo o Python.",
+    "Portales de datos públicos de precios.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Cita la fuente y el periodo de los datos, y distingue entre lo que muestran y las explicaciones que propones.",
+    "No presentes la predicción como un pronóstico confiable."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar la estacionalidad del consumo de energía, de turismo o de matrículas."
+  },
+  {
+   "id": "la-pollada-cuanto-se-gana-realmente-en-una-actividad-para-recaud",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "La pollada: ¿cuánto se gana realmente en una actividad para recaudar fondos?",
+   "resumen": "Calcula cuánto deja realmente una actividad de recaudación como una pollada, un bingo o una venta, contando costos, tiempo y riesgos, y cómo mejorar el resultado.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Recaudación",
+    "Eventos"
+   ],
+   "intencion": [
+    "investigar",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Contabilidad",
+    "Administración",
+    "Economía",
+    "Ingeniería Industrial",
+    "Trabajo Social",
+    "Estadística",
+    "Marketing",
+    "Sociología"
+   ],
+   "problema": [
+    "En muchas comunidades y organizaciones se recauda fondos con actividades como polladas o rifas. Se ven llenas de gente, pero no siempre se sabe cuánto queda tras descontar insumos, alquileres, tiempo y lo que no se vendió.",
+    "Hacer la cuenta con orden ayuda a decidir si la actividad vale la pena y cómo mejorar la ganancia."
+   ],
+   "desarrollar": [
+    "Inventa una actividad de recaudación y lista todos sus ingresos posibles y costos, como insumos, permisos, alquiler, publicidad y movilidad, incluyendo el tiempo voluntario con un valor referencial.",
+    "Calcula la ganancia neta en un caso normal, otro con menos asistentes y otro con sobrante de comida, y propón tres cambios que aumenten lo recaudado."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Punto de equilibrio",
+     "aporta": "calcula cuántas entradas hay que vender para no perder."
+    },
+    {
+     "titulo": "Comparar actividades",
+     "aporta": "compara una pollada con una rifa o una venta de postres."
+    },
+    {
+     "titulo": "Rendición de cuentas",
+     "aporta": "diseña un informe sencillo para mostrar a la comunidad cuánto se recaudó y en qué se usó."
+    }
+   ],
+   "objetivos": [
+    "Listar ingresos y costos con orden.",
+    "Calcular la ganancia neta.",
+    "Analizar escenarios.",
+    "Proponer mejoras y rendir cuentas."
+   ],
+   "habilidades": [
+    "Presupuesto de eventos.",
+    "Análisis de escenarios.",
+    "Cálculo de punto de equilibrio.",
+    "Comunicación transparente."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Un editor de gráficos.",
+    "Datos inventados."
+   ],
+   "lineamientos": [
+    "Usa un caso inventado y, si organizas una actividad real, cumple las normas de higiene, seguridad y permisos locales.",
+    "Mantén transparencia con los fondos recaudados."
+   ],
+   "otroSector": "El mismo análisis sirve para planificar cualquier evento de una organización, como un festival, una feria o una campaña."
+  },
+  {
+   "id": "como-pagamos-hoy-efectivo-billeteras-digitales-y-tarjetas",
+   "area": "negocios",
+   "areas2": [
+    "tecnologia",
+    "sociedad"
+   ],
+   "titulo": "¿Cómo pagamos hoy? Efectivo, billeteras digitales y tarjetas",
+   "resumen": "Investiga cómo pagan las personas en tu entorno, qué ventajas y problemas ven en el efectivo, las billeteras digitales y las tarjetas, y qué factores influyen en su elección.",
+   "tipo": "Investigación",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Pagos",
+    "Digitalización"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Ingeniería de Sistemas",
+    "Administración",
+    "Sociología",
+    "Marketing",
+    "Estadística",
+    "Comunicaciones",
+    "Derecho"
+   ],
+   "problema": [
+    "Los medios de pago han cambiado rápido: junto al efectivo ahora hay billeteras digitales, códigos QR y tarjetas. Pero no todos los usan, y los negocios pequeños a veces dudan en aceptarlos.",
+    "Entender qué valoran las personas, como rapidez, seguridad o costo, ayuda a ver barreras y oportunidades."
+   ],
+   "desarrollar": [
+    "Diseña una encuesta anónima corta sobre cómo pagan en sus compras habituales, qué medios usan y por qué, y aplícala a una muestra pequeña de personas.",
+    "Analiza los resultados por grupos, identifica ventajas y barreras de cada medio y escribe recomendaciones para un negocio pequeño que se pregunta si debería aceptar pagos digitales."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Visión del comerciante",
+     "aporta": "entrevista a dos comerciantes sobre sus razones."
+    },
+    {
+     "titulo": "Costos de aceptar pagos",
+     "aporta": "compara las comisiones y costos de cada medio con datos públicos."
+    },
+    {
+     "titulo": "Seguridad",
+     "aporta": "elabora una guía de buenas prácticas para pagar con seguridad."
+    }
+   ],
+   "objetivos": [
+    "Diseñar una encuesta anónima.",
+    "Analizar hábitos de pago.",
+    "Identificar barreras.",
+    "Formular recomendaciones."
+   ],
+   "habilidades": [
+    "Diseño de encuestas.",
+    "Análisis de datos.",
+    "Comprensión de medios de pago.",
+    "Comunicación clara."
+   ],
+   "herramientas": [
+    "Un formulario anónimo.",
+    "Hoja de cálculo.",
+    "Información pública de comisiones."
+   ],
+   "lineamientos": [
+    "La encuesta debe ser anónima y voluntaria, sin pedir números de cuentas, tarjetas ni datos bancarios.",
+    "No promociones empresas concretas ni des asesoría financiera."
+   ],
+   "otroSector": "El mismo estudio sirve para investigar cómo se adoptan otras tecnologías en comercios, colegios o instituciones."
+  },
+  {
+   "id": "cuanto-valdria-el-trabajo-del-hogar-que-no-se-paga",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Cuánto valdría el trabajo del hogar que no se paga?",
+   "resumen": "Calcula cuánto costaría pagar por el trabajo doméstico y de cuidado que se hace sin cobrar, como cocinar, limpiar y cuidar, y qué dice eso sobre cómo se valora ese trabajo.",
+   "tipo": "Análisis",
+   "tiempo": "~18 h",
+   "horas": 18,
+   "etiquetas": [
+    "Trabajo no remunerado",
+    "Cuidado"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Sociología",
+    "Trabajo Social",
+    "Estadística",
+    "Psicología",
+    "Contabilidad",
+    "Administración",
+    "Derecho"
+   ],
+   "problema": [
+    "Mucho del trabajo que sostiene a las familias, como cocinar, limpiar, cuidar a niños o a adultos mayores, no se paga y casi no aparece en las estadísticas económicas. Se hace principalmente en casa y muchas veces por mujeres.",
+    "Ponerle un valor en soles no reemplaza su importancia, pero ayuda a visibilizarlo y a discutir cómo se reparte."
+   ],
+   "desarrollar": [
+    "Durante una semana registra cuánto tiempo se dedica en un hogar, el tuyo o uno ficticio, a distintas tareas de cuidado y trabajo doméstico, sin identificar a personas.",
+    "Valora ese tiempo usando tarifas públicas de servicios equivalentes, calcula el monto semanal y anual, y reflexiona sobre cómo se reparte el trabajo y qué cambiaría si se reconociera económicamente."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Distintos métodos de valoración",
+     "aporta": "compara valorar por costo de reemplazo y por costo de oportunidad."
+    },
+    {
+     "titulo": "Diferencias entre hogares",
+     "aporta": "compara dos hogares ficticios con composiciones distintas."
+    },
+    {
+     "titulo": "Datos públicos",
+     "aporta": "relaciona tus resultados con encuestas públicas de uso del tiempo."
+    }
+   ],
+   "objetivos": [
+    "Registrar el uso del tiempo.",
+    "Valorar el trabajo no pagado.",
+    "Comparar métodos.",
+    "Reflexionar sobre su reparto."
+   ],
+   "habilidades": [
+    "Registro de datos.",
+    "Valoración económica.",
+    "Análisis crítico.",
+    "Sensibilidad social."
+   ],
+   "herramientas": [
+    "Hoja de cálculo.",
+    "Tarifas públicas de servicios.",
+    "Encuestas públicas de uso del tiempo."
+   ],
+   "lineamientos": [
+    "Trabaja con tu propio hogar solo si te sientes cómodo, o con un caso ficticio, y no expongas conflictos familiares.",
+    "Presenta el valor como una forma de visibilizar y no como una medida de la dignidad de nadie."
+   ],
+   "otroSector": "El mismo método sirve para valorar el trabajo voluntario, comunitario o de una organización sin fines de lucro."
+  },
+  {
+   "id": "en-que-gasta-tu-municipalidad-lee-un-presupuesto-publico",
+   "area": "negocios",
+   "areas2": [
+    "derecho",
+    "ciudades"
+   ],
+   "titulo": "¿En qué gasta tu municipalidad? Lee un presupuesto público",
+   "resumen": "Lee el presupuesto público de una municipalidad, descubre en qué se gasta el dinero de los vecinos y compara con las necesidades de la zona.",
+   "tipo": "Análisis",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Presupuesto público",
+    "Transparencia"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Economía",
+    "Derecho",
+    "Ciencias Políticas",
+    "Contabilidad",
+    "Administración",
+    "Estadística",
+    "Ingeniería Civil",
+    "Sociología"
+   ],
+   "problema": [
+    "Los municipios administran dinero público para obras y servicios, y por ley deben informar cómo lo usan. Pero esa información suele estar en tablas difíciles de leer.",
+    "Aprender a leerla permite entender las prioridades de una zona y hacer preguntas informadas como ciudadano."
+   ],
+   "desarrollar": [
+    "Elige un municipio y busca en portales oficiales su presupuesto y ejecución, y clasifica los gastos por rubros, como limpieza, seguridad, obras y administración.",
+    "Calcula qué porcentaje va a cada rubro y el gasto por habitante, compara con otro municipio similar y plantea tres preguntas que un vecino podría hacer a la gestión."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Presupuesto frente a ejecución",
+     "aporta": "compara lo planificado con lo gastado realmente."
+    },
+    {
+     "titulo": "Obras visibles",
+     "aporta": "relaciona una obra con su costo y su avance."
+    },
+    {
+     "titulo": "Resumen para vecinos",
+     "aporta": "prepara una hoja informativa en lenguaje sencillo."
+    }
+   ],
+   "objetivos": [
+    "Ubicar información presupuestal oficial.",
+    "Clasificar y calcular gastos.",
+    "Comparar municipios.",
+    "Formular preguntas informadas."
+   ],
+   "habilidades": [
+    "Lectura de presupuestos.",
+    "Búsqueda en portales de transparencia.",
+    "Análisis de datos.",
+    "Comunicación ciudadana."
+   ],
+   "herramientas": [
+    "Portales oficiales de transparencia.",
+    "Hoja de cálculo.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Usa solo datos públicos y evita acusar de mal uso del dinero: solo describe y pregunta.",
+    "Cita la fuente y fecha del presupuesto, y aclara que no verificas la ejecución en el terreno."
+   ],
+   "otroSector": "La misma lectura sirve para presupuestos de universidades, de ministerios o de organizaciones con fondos públicos."
+  },
+  {
+   "id": "puede-un-negocio-ser-rentable-y-resolver-un-problema-social",
+   "area": "negocios",
+   "areas2": [
+    "sociedad"
+   ],
+   "titulo": "¿Puede un negocio ser rentable y resolver un problema social?",
+   "resumen": "Estudia cómo algunos negocios generan ingresos y a la vez resuelven un problema social, y diseña un modelo posible donde ambas cosas se sostengan.",
+   "tipo": "Investigación",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Emprendimiento social",
+    "Impacto"
+   ],
+   "intencion": [
+    "investigar",
+    "crear"
+   ],
+   "datos": "publicos",
+   "datosTexto": "públicos: trabaja con informes, estadísticas y registros que publican instituciones y fuentes abiertas.",
+   "carreras": [
+    "Administración",
+    "Economía",
+    "Trabajo Social",
+    "Sociología",
+    "Ingeniería Industrial",
+    "Derecho",
+    "Comunicaciones",
+    "Contabilidad"
+   ],
+   "problema": [
+    "Hay emprendimientos que no solo buscan ganar, sino también resolver un problema, como el acceso a alimentos, a educación o a empleo. Pero resolver un problema social suele costar, y no siempre es claro cómo hacerlo sin depender de donaciones.",
+    "Entender cómo lo logran ayuda a diseñar propuestas más sostenibles."
+   ],
+   "desarrollar": [
+    "Elige dos o tres ejemplos de emprendimientos con impacto social, con información pública, y analiza qué problema resuelven, a quién sirven, cómo ganan dinero y qué los hace sostenibles.",
+    "Con lo aprendido, diseña un modelo para un problema de tu entorno, describe cómo se financiaría, cómo medirías el impacto y qué riesgos tendría."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Medir el impacto",
+     "aporta": "propón indicadores para saber si el problema realmente mejora."
+    },
+    {
+     "titulo": "Tensiones",
+     "aporta": "analiza qué pasa cuando el interés económico y el social chocan."
+    },
+    {
+     "titulo": "Alianzas",
+     "aporta": "identifica qué instituciones podrían apoyar el modelo."
+    }
+   ],
+   "objetivos": [
+    "Analizar modelos de emprendimiento social.",
+    "Entender su financiamiento.",
+    "Diseñar un modelo propio.",
+    "Definir cómo medir su impacto."
+   ],
+   "habilidades": [
+    "Análisis de modelos.",
+    "Diseño de impacto.",
+    "Pensamiento crítico.",
+    "Presentación de propuestas."
+   ],
+   "herramientas": [
+    "Informes públicos de organizaciones.",
+    "Un lienzo de modelo de negocio.",
+    "Hoja de cálculo."
+   ],
+   "lineamientos": [
+    "Usa información pública y reconoce los límites de lo que se puede medir desde fuera.",
+    "No presentes la propuesta como una solución definitiva a un problema complejo."
+   ],
+   "otroSector": "El mismo análisis sirve para estudiar organizaciones sin fines de lucro, proyectos comunitarios o programas de responsabilidad social."
+  },
+  {
+   "id": "que-le-conviene-digitalizar-a-un-negocio-de-barrio",
+   "area": "negocios",
+   "areas2": [
+    "tecnologia"
+   ],
+   "titulo": "¿Qué le conviene digitalizar a un negocio de barrio?",
+   "resumen": "Evalúa qué procesos de un negocio pequeño convendría pasar a herramientas digitales, como ventas, inventario o pedidos, comparando el costo, el beneficio y la facilidad de cada uno.",
+   "tipo": "Plan",
+   "tiempo": "~22 h",
+   "horas": 22,
+   "etiquetas": [
+    "Digitalización",
+    "Pequeño negocio"
+   ],
+   "intencion": [
+    "crear",
+    "resolver"
+   ],
+   "datos": "ficticios",
+   "datosTexto": "ficticios: trabaja con casos inventados o simulados; no hace falta pedir permiso a nadie ni usar información real de otras personas.",
+   "carreras": [
+    "Ingeniería de Sistemas",
+    "Administración",
+    "Ingeniería Industrial",
+    "Economía",
+    "Contabilidad",
+    "Marketing",
+    "Comunicaciones",
+    "Ciencia de Datos"
+   ],
+   "problema": [
+    "Muchas bodegas, talleres y tiendas siguen usando cuaderno y calculadora. Digitalizar todo de golpe puede ser caro y complicado, pero hay mejoras pequeñas que ahorran tiempo y evitan pérdidas.",
+    "El reto es elegir por dónde empezar según lo que de verdad necesita el negocio y lo que puede pagar."
+   ],
+   "desarrollar": [
+    "Inventa un negocio de barrio y describe sus procesos actuales, como ventas, cuentas de fiado, inventario y pedidos a proveedores, indicando qué problemas tiene cada uno.",
+    "Para cada proceso propón una herramienta digital sencilla, estima costo y beneficio, y ordena una ruta de tres pasos para digitalizar según prioridad y facilidad."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Capacitación",
+     "aporta": "diseña cómo se enseñaría a usar las herramientas al personal."
+    },
+    {
+     "titulo": "Riesgos",
+     "aporta": "analiza los riesgos de depender de la tecnología, como cortes de internet."
+    },
+    {
+     "titulo": "Hoja para pedir ayuda",
+     "aporta": "prepara una lista de preguntas para consultar a un proveedor."
+    }
+   ],
+   "objetivos": [
+    "Describir procesos del negocio.",
+    "Identificar problemas y oportunidades.",
+    "Evaluar costo y beneficio.",
+    "Priorizar una ruta."
+   ],
+   "habilidades": [
+    "Análisis de procesos.",
+    "Evaluación de tecnologías.",
+    "Priorización.",
+    "Comunicación a no técnicos."
+   ],
+   "herramientas": [
+    "Diagramas simples de procesos.",
+    "Hoja de cálculo.",
+    "Información pública de herramientas."
+   ],
+   "lineamientos": [
+    "Usa un negocio inventado y no recomiendes productos comerciales concretos como los únicos posibles.",
+    "Considera la protección de los datos de clientes y el acceso real a internet en el barrio."
+   ],
+   "otroSector": "El mismo plan sirve para digitalizar procesos de un colegio, una posta, una asociación o una pequeña empresa."
+  },
+  {
+   "id": "cuanto-dinero-mueve-una-feria-o-un-festival-en-tu-barrio",
+   "area": "negocios",
+   "areas2": [
+    "ciudades",
+    "arte"
+   ],
+   "titulo": "¿Cuánto dinero mueve una feria o un festival en tu barrio?",
+   "resumen": "Estima cuánto dinero se mueve en una feria, festival o mercado de tu barrio, quiénes se benefician y qué costos y efectos trae para la zona.",
+   "tipo": "Análisis",
+   "tiempo": "~20 h",
+   "horas": 20,
+   "etiquetas": [
+    "Ferias",
+    "Economía local"
+   ],
+   "intencion": [
+    "investigar"
+   ],
+   "datos": "propios",
+   "datosTexto": "mediciones propias: las que tú mismo tomes u observes en tu entorno, sin recoger datos personales de otras personas.",
+   "carreras": [
+    "Economía",
+    "Administración",
+    "Sociología",
+    "Marketing",
+    "Estadística",
+    "Arquitectura",
+    "Comunicaciones",
+    "Contabilidad"
+   ],
+   "problema": [
+    "Una feria o un festival atrae visitantes, y con ellos compras de comida, productos y transporte. Pero casi nunca se calcula cuánto dinero circula ni quién se beneficia más.",
+    "Hacerlo ayuda a valorar estos eventos y a entender sus costos, como basura, ruido o tráfico."
+   ],
+   "desarrollar": [
+    "Elige una feria o un evento de tu zona, cuenta con observación cuántas personas asisten por hora, cuántos puestos hay y cuánto se vende aproximadamente según los precios.",
+    "Estima el movimiento de dinero del evento, clasifica por tipo de ingreso y de beneficiario, y lista los costos que recaen en la comunidad, concluyendo cómo mejorar el balance."
+   ],
+   "ampliaciones": [
+    {
+     "titulo": "Visitantes de otras zonas",
+     "aporta": "estima cuánto dinero llega desde fuera del barrio."
+    },
+    {
+     "titulo": "Efecto en negocios cercanos",
+     "aporta": "observa cómo cambian las ventas de las tiendas vecinas."
+    },
+    {
+     "titulo": "Propuesta de mejora",
+     "aporta": "diseña un plan para que el evento deje más y moleste menos."
+    }
+   ],
+   "objetivos": [
+    "Observar y contar con método.",
+    "Estimar el movimiento económico.",
+    "Identificar beneficiarios y costos.",
+    "Proponer mejoras."
+   ],
+   "habilidades": [
+    "Observación de campo.",
+    "Estimación con supuestos.",
+    "Análisis de impacto local.",
+    "Comunicación de resultados."
+   ],
+   "herramientas": [
+    "Cuaderno de campo.",
+    "Hoja de cálculo.",
+    "Un editor de gráficos."
+   ],
+   "lineamientos": [
+    "Observa desde zonas públicas, sin grabar a las personas ni pedir datos privados a los comerciantes, y presenta cifras como estimaciones.",
+    "Pide permiso a los organizadores si vas a consultar información interna del evento."
+   ],
+   "otroSector": "El mismo método sirve para estimar el movimiento económico de un partido, un concierto, un mercado de temporada o un evento universitario."
   }
  ]
 }
