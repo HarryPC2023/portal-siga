@@ -263,7 +263,6 @@
     "Trabajo Social",
     "Economía",
     "Estadística",
-    "Medicina",
     "Ingeniería Ambiental"
    ],
    "problema": [
@@ -339,7 +338,6 @@
     "Administración",
     "Estadística",
     "Ingeniería Industrial",
-    "Medicina",
     "Trabajo Social",
     "Economía"
    ],
@@ -417,7 +415,6 @@
     "Estadística",
     "Educación",
     "Comunicaciones",
-    "Medicina",
     "Ingeniería Industrial"
    ],
    "problema": [
@@ -494,8 +491,7 @@
     "Nutrición",
     "Psicología",
     "Educación",
-    "Administración",
-    "Medicina"
+    "Administración"
    ],
    "problema": [
     "Las bebidas azucaradas son baratas, están por todas partes y se asocian a momentos agradables. Las campañas que solo regañan o asustan suelen ser ignoradas.",

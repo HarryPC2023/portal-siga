@@ -345,7 +345,6 @@
     "Sociología",
     "Psicología",
     "Enfermería",
-    "Medicina",
     "Administración",
     "Ingeniería de Sistemas",
     "Comunicaciones"
@@ -424,7 +423,6 @@
     "Ingeniería de Sistemas",
     "Estadística",
     "Educación",
-    "Medicina",
     "Nutrición"
    ],
    "problema": [
@@ -578,8 +576,7 @@
     "Arquitectura",
     "Psicología",
     "Educación",
-    "Ingeniería de Sistemas",
-    "Medicina"
+    "Ingeniería de Sistemas"
    ],
    "problema": [
     "Una persona con discapacidad puede encontrar barreras desde antes de llegar a un servicio: transporte, entradas con escalones, información que no está en formatos accesibles o personal que no sabe comunicarse con ella.",
@@ -655,7 +652,6 @@
     "Educación",
     "Comunicaciones",
     "Estadística",
-    "Medicina",
     "Enfermería"
    ],
    "problema": [
