@@ -215,11 +215,6 @@ function lineaCarreras(i) {
             c.slice(0, CARRERAS_EN_TARJETA).map((t) => el('span', { class: 'pp-tag', text: t })),
             resto > 0 ? el('span', { class: 'pp-tag pp-tag-mas', text: `+${resto} más` }) : null));
 }
-// «También en: Sociedad · Educación»: las áreas cuyos conocimientos usa la idea además de la suya.
-function lineaCruce(i) {
-    const nombres = (i.areas2 || []).map((x) => (areaDe(x) || {}).corto).filter(Boolean);
-    return nombres.length ? el('p', { class: 'pp-cruza' }, el('b', { text: 'También en: ' }), nombres.join(' · ')) : null;
-}
 
 function tarjeta(i, extra = {}) {
     const a = areaDe(i.area) || { nombre: '', c: '#2F63D6', f: '#E4EEFF' };
@@ -233,7 +228,6 @@ function tarjeta(i, extra = {}) {
             el('h3', { class: 'pp-idea-t', text: i.titulo }),
             el('p', { class: 'pp-idea-d', text: i.resumen }),
             lineaCarreras(i),
-            lineaCruce(i),
             btnVer));
     card.addEventListener('click', () => abrirFicha(i.id));
     return card;
