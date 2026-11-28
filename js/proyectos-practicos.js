@@ -15,7 +15,6 @@ const $ = (s) => document.querySelector(s);
 const CLAVE_GUARDADAS = 'siga_pp_guardadas_v1';
 const RUTA_IDEAS = 'js/proyectos/';
 const PAGINA = 6;                        // tarjetas por página (los botones «Anterior / Siguiente» cambian de página)
-const PROGRAMACION = { sin: 'no hace falta', opcional: 'opcional', incluida: 'incluida' };
 
 /* ───── las ideas: índice liviano al abrir, ficha completa al abrir una idea ───── */
 let IDEAS = [];                          // el índice: lo que necesitan las tarjetas, los filtros y la búsqueda
@@ -203,20 +202,18 @@ function pintarIntenciones() {
     }));
 }
 
-function metaDatos(i) {
-    const f = FUENTES[i.datos];
-    if (!f) return null;
-    return el('p', { class: 'pp-meta' }, el('b', { text: 'Datos: ' }), f.corto,
-        i.prog ? [' · ', el('b', { text: 'Programación: ' }), PROGRAMACION[i.prog] || i.prog] : null);
-}
-// «Puede interesar a: Trabajo Social · Sociología · Psicología +5 más»: las 3 primeras carreras de la ficha (van de la más afín a la menos afín).
-// El resto se ve al abrir la idea. Si el índice no trae carreras, no se muestra la línea.
+// «Puede interesar a:» y debajo las 3 primeras carreras de la ficha, cada una en su etiqueta (van de la más afín a la menos afín) y «+N más».
+// El resto se ve al abrir la idea. Si el índice no trae carreras, no se muestra el bloque.
 const CARRERAS_EN_TARJETA = 3;
 function lineaCarreras(i) {
     const c = i.carreras || [];
     if (!c.length) return null;
     const resto = c.length - CARRERAS_EN_TARJETA;
-    return el('p', { class: 'pp-cruza' }, el('b', { text: 'Puede interesar a: ' }), c.slice(0, CARRERAS_EN_TARJETA).join(' · '), resto > 0 ? ` +${resto} más` : '');
+    return el('div', { class: 'pp-carreras' },
+        el('p', { class: 'pp-cruza' }, el('b', { text: 'Puede interesar a:' })),
+        el('div', { class: 'pp-tags' },
+            c.slice(0, CARRERAS_EN_TARJETA).map((t) => el('span', { class: 'pp-tag', text: t })),
+            resto > 0 ? el('span', { class: 'pp-tag pp-tag-mas', text: `+${resto} más` }) : null));
 }
 // «También en: Sociedad · Educación»: las áreas cuyos conocimientos usa la idea además de la suya.
 function lineaCruce(i) {
@@ -235,10 +232,8 @@ function tarjeta(i, extra = {}) {
         el('div', { class: 'pp-idea-cuerpo' },
             el('h3', { class: 'pp-idea-t', text: i.titulo }),
             el('p', { class: 'pp-idea-d', text: i.resumen }),
-            el('div', { class: 'pp-tags' }, i.tipo ? el('span', { class: 'pp-tag', text: i.tipo }) : null, i.tiempo ? el('span', { class: 'pp-tag', text: i.tiempo }) : null),
             lineaCarreras(i),
             lineaCruce(i),
-            metaDatos(i),
             btnVer));
     card.addEventListener('click', () => abrirFicha(i.id));
     return card;
