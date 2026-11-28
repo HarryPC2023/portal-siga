@@ -22,7 +22,7 @@ let IDEAS = [];                          // el índice: lo que necesitan las tar
 let versionIdeas = '0';
 let fuenteSupabase = false;              // true si el índice vino de Supabase
 const fichasPorArea = new Map();         // área → promesa con { id → ficha completa }; se descarga una sola vez por área
-const COLUMNAS_INDICE = 'id,area,areas2,titulo,resumen,tipo,tiempo,horas,etiquetas,intencion,datos,prog,busca,orden';
+const COLUMNAS_INDICE = 'id,area,areas2,titulo,resumen,tipo,tiempo,horas,etiquetas,intencion,datos,prog,carreras,busca,orden';
 const LOTE = 1000;                       // Supabase entrega como máximo 1000 filas por consulta: se pide por lotes
 async function indiceDesdeSupabase() {
     const filas = [];
@@ -156,7 +156,7 @@ function ideasFiltradas() {
     const q = norm(estado.q.trim());
     return IDEAS.filter((i) => (!estado.area || i.area === estado.area) && pasaFiltros(i, q));
 }
-// Ideas de OTRAS áreas que usan conocimientos del área elegida («Se cruza con»). Es un bloque aparte: no se mezclan con las del área.
+// Ideas de OTRAS áreas que usan conocimientos del área elegida («También en» / «coinciden con»). Es un bloque aparte: no se mezclan con las del área.
 function ideasCruzadas() {
     if (!estado.area) return [];
     const q = norm(estado.q.trim());
@@ -209,10 +209,19 @@ function metaDatos(i) {
     return el('p', { class: 'pp-meta' }, el('b', { text: 'Datos: ' }), f.corto,
         i.prog ? [' · ', el('b', { text: 'Programación: ' }), PROGRAMACION[i.prog] || i.prog] : null);
 }
-// «Se cruza con: Sociedad · Educación»: las áreas cuyos conocimientos usa la idea además de la suya.
+// «Puede interesar a: Trabajo Social · Sociología · Psicología +5 más»: las 3 primeras carreras de la ficha (van de la más afín a la menos afín).
+// El resto se ve al abrir la idea. Si el índice no trae carreras, no se muestra la línea.
+const CARRERAS_EN_TARJETA = 3;
+function lineaCarreras(i) {
+    const c = i.carreras || [];
+    if (!c.length) return null;
+    const resto = c.length - CARRERAS_EN_TARJETA;
+    return el('p', { class: 'pp-cruza' }, el('b', { text: 'Puede interesar a: ' }), c.slice(0, CARRERAS_EN_TARJETA).join(' · '), resto > 0 ? ` +${resto} más` : '');
+}
+// «También en: Sociedad · Educación»: las áreas cuyos conocimientos usa la idea además de la suya.
 function lineaCruce(i) {
     const nombres = (i.areas2 || []).map((x) => (areaDe(x) || {}).corto).filter(Boolean);
-    return nombres.length ? el('p', { class: 'pp-cruza' }, el('b', { text: 'Se cruza con: ' }), nombres.join(' · ')) : null;
+    return nombres.length ? el('p', { class: 'pp-cruza' }, el('b', { text: 'También en: ' }), nombres.join(' · ')) : null;
 }
 
 function tarjeta(i, extra = {}) {
@@ -227,6 +236,7 @@ function tarjeta(i, extra = {}) {
             el('h3', { class: 'pp-idea-t', text: i.titulo }),
             el('p', { class: 'pp-idea-d', text: i.resumen }),
             el('div', { class: 'pp-tags' }, i.tipo ? el('span', { class: 'pp-tag', text: i.tipo }) : null, i.tiempo ? el('span', { class: 'pp-tag', text: i.tiempo }) : null),
+            lineaCarreras(i),
             lineaCruce(i),
             metaDatos(i),
             btnVer));
@@ -286,11 +296,11 @@ function pintarIdeas() {
     $('#ppIdeas').replaceChildren(...visibles.map((i) => tarjeta(i)));
     $('#ppIdeas').classList.toggle('pp-ideas-4', !filtrando && lista.length === 4);
     pintarPaginador($('#ppPag'), lista.length, estado.pagina, filtrando, (p) => { estado.pagina = p; pintarIdeas(); irAlBloque('#ideas'); });
-    // Bloque aparte: ideas de otras áreas que se cruzan con el área elegida.
+    // Bloque aparte: ideas de otras áreas que coinciden con el área elegida.
     const wrap = $('#ppCruceWrap');
     wrap.hidden = !(ar && cruce.length);
     if (ar && cruce.length) {
-        $('#ppCruceT').textContent = `Ideas de otras áreas que se cruzan con ${ar.corto || ar.nombre}`;
+        $('#ppCruceT').textContent = `Ideas de otras áreas que coinciden con ${ar.corto || ar.nombre}`;
         estado.paginaCruce = Math.min(estado.paginaCruce, Math.max(1, Math.ceil(cruce.length / PAGINA)));
         $('#ppCruce').replaceChildren(...cruce.slice((estado.paginaCruce - 1) * PAGINA, estado.paginaCruce * PAGINA).map((i) => tarjeta(i)));
         pintarPaginador($('#ppPagCruce'), cruce.length, estado.paginaCruce, true, (p) => { estado.paginaCruce = p; pintarIdeas(); irAlBloque('#ppCruceWrap'); });
@@ -386,7 +396,7 @@ function pintarFicha(i, completa) {
             i.tipo ? el('span', { class: 'pp-tag', text: i.tipo }) : null,
             i.tiempo ? el('span', { class: 'pp-tag', text: `Tiempo orientativo: ${i.tiempo}` }) : null,
             (i.etiquetas || []).map((t) => el('span', { class: 'pp-tag-s', text: t }))),
-        cruces.length ? el('p', { class: 'pp-meta' }, el('b', { text: 'Se cruza con: ' }), cruces.join(' · ')) : null,
+        cruces.length ? el('p', { class: 'pp-meta' }, el('b', { text: 'También en: ' }), cruces.join(' · ')) : null,
         completa === null ? el('p', { class: 'pp-aviso', text: 'Cargando el detalle de la idea…' }) : null,
         completa === false ? el('p', { class: 'pp-aviso', text: 'No pudimos cargar el detalle de esta idea. Revisa tu conexión y vuelve a abrirla.' }) : null,
         completa ? [
@@ -627,7 +637,7 @@ async function enviarPropuesta(ev) {
     if (!problema) return mostrarErrorProp('Cuéntanos con tus palabras qué problema quieres entender o resolver.', $('#ppPropProblema'));
     if (!$('#ppPropAcepta').checked) return mostrarErrorProp('Para enviar la idea hay que aceptar que puede publicarse en el catálogo.', $('#ppPropAcepta'));
     const cruces = [...document.querySelectorAll('#ppPropCruces input:checked')].map((c) => c.value).filter((c) => c !== area);
-    if (cruces.length > 2) return mostrarErrorProp('Elige como máximo 2 áreas en «Se cruza con».');
+    if (cruces.length > 2) return mostrarErrorProp('Elige como máximo 2 áreas en «También en».');
     const boton = $('#ppPropEnviar'); boton.disabled = true; boton.textContent = 'Enviando…';
     mostrarErrorProp('');
     try {

@@ -80,11 +80,11 @@ def main():
     ideas.sort(key=lambda i: orden[i['area']])      # se conserva el orden del archivo dentro de cada área
     indice = []
     for i in ideas:
-        # Solo lo que NO está ya en la fila (carreras, habilidades y herramientas); título, resumen, tipo y etiquetas se buscan desde la propia fila.
+        # «busca» junta carreras, habilidades y herramientas normalizadas (las carreras también van en la fila para la tarjeta); título, resumen, tipo y etiquetas se buscan desde la propia fila.
         busca = norm(' '.join([' '.join(i.get('carreras', [])), ' '.join(i.get('habilidades', [])), ' '.join(i.get('herramientas', []))]))
         fila = {'id': i['id'], 'area': i['area'], 'areas2': i.get('areas2', []), 'titulo': i['titulo'], 'resumen': i['resumen'], 'tipo': i['tipo'],
                 'tiempo': i['tiempo'], 'horas': i['horas'], 'etiquetas': i.get('etiquetas', []), 'intencion': i.get('intencion', []),
-                'datos': i['datos'], 'busca': busca}
+                'datos': i['datos'], 'carreras': i.get('carreras', []), 'busca': busca}
         if i.get('prog'): fila['prog'] = i['prog']
         indice.append(fila)
 
@@ -98,7 +98,7 @@ def main():
     for a in areas:
         n = sum(1 for i in indice if i['area'] == a)
         c = sum(1 for i in indice if a in i['areas2'])
-        print(f'  {a:12} {n:3} ideas' + (f' (+{c} que se cruzan)' if c else ''))
+        print(f'  {a:12} {n:3} ideas' + (f' (+{c} que coinciden)' if c else ''))
 
 
 if __name__ == '__main__':
